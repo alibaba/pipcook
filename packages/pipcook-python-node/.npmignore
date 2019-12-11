@@ -1,0 +1,5 @@
+node_modules
+.vscode/
+tsconfig.tsbuildinfo
+pipcook_env
+.temp

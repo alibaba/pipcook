@@ -1,0 +1,51 @@
+{
+  "name": "@pipcook/pipcook-board-client",
+  "version": "0.1.15",
+  "description": "board for pipcook",
+  "dependencies": {
+    "@ali/ice-add-image": "^2.0.1",
+    "@alifd/next": "^1.x",
+    "@icedesign/container": "^1.x",
+    "@icedesign/img": "^1.x",
+    "@icedesign/layout": "^1.x",
+    "@icedesign/notification": "^1.0.5",
+    "@icedesign/theme": "^1.0.0",
+    "axios": "^0.17.1",
+    "classnames": "^2.2.5",
+    "enquire-js": "^0.1.2",
+    "prop-types": "^15.5.8",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-images-upload": "^1.2.7",
+    "react-router-dom": "^5.0.1"
+  },
+  "devDependencies": {
+    "@ice/spec": "^0.1.1",
+    "eslint": "^6.0.1",
+    "ice-plugin-fusion": "^0.1.4",
+    "ice-plugin-moment-locales": "^0.1.0",
+    "ice-scripts": "^2.0.0",
+    "stylelint": "^10.1.0"
+  },
+  "scripts": {
+    "start": "ice-scripts dev",
+    "build": "ice-scripts build",
+    "lint": "npm run eslint && npm run stylelint",
+    "eslint": "eslint --cache --ext .js,.jsx ./",
+    "stylelint": "stylelint ./**/*.scss",
+    "clean": "rm -rf ./build"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "iceworks": {
+    "type": "react",
+    "adapter": "adapter-react-v3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ice-lab/react-materials/tree/master/scaffolds/ice-design-lite"
+  },
+  "proxy": "http://localhost:7778",
+  "gitHead": "52f0d49f29e1226a351d80cd5d83751e8dca1681"
+}

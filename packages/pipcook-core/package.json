@@ -1,0 +1,35 @@
+{
+  "name": "@pipcook/pipcook-core",
+  "version": "0.1.29",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "@types/fs-extra": "^8.0.1",
+    "better-opn": "^1.0.0",
+    "chalk": "^3.0.0",
+    "cli-progress": "^3.4.0",
+    "decompress-zip": "^0.2.2",
+    "fastify": "^2.10.0",
+    "fastify-static": "^2.5.0",
+    "fs-extra": "^8.1.0",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0",
+    "request": "^2.88.0",
+    "rxjs": "^6.5.3",
+    "xml2js": "^0.4.22"
+  },
+  "gitHead": "52f0d49f29e1226a351d80cd5d83751e8dca1681"
+}

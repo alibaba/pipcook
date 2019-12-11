@@ -1,0 +1,13 @@
+node_modules
+/lerna-debug.log
+pipcook-pipeline-*
+.DS_STORE
+.vscode/
+dist
+tsconfig.tsbuildinfo
+samples/
+samples*/
+.pipcook-log/
+doc/
+pipcook_venv
+.temp

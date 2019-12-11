@@ -1,0 +1,25 @@
+{
+  "name": "@pipcook/pipcook-plugins-odps-data-collect",
+  "version": "0.1.21",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pipcook/pipcook-core": "^0.1.28",
+    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "fs-extra": "^8.1.0",
+    "odps": "x.x.x"
+  },
+  "gitHead": "52f0d49f29e1226a351d80cd5d83751e8dca1681"
+}
