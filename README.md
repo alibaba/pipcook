@@ -1,18 +1,18 @@
-# Pipcook
+# pipcook
 
-With the mission of enabling front-end engineers to utilize the power of machine learning without any prerequisites and the vision to lead front-end technical field to the intelligentization, Pipcook has became the one-step front-end algorithm platform from processing data to deploying models. Pipcook is focused on front-end area and developed from front-end developers view. With the principle of being frendly for web developer, Pipcook will push the whole area forward with the engine of machine learning.
+With the mission of enabling front-end engineers to utilize the power of machine learning without any prerequisites and the vision to lead front-end technical field to the intelligentization, pipcook has became the one-step front-end algorithm platform from processing data to deploying models. pipcook is focused on front-end area and developed from front-end developers view. With the principle of being frendly for web developer, pipcook will push the whole area forward with the engine of machine learning.
 
 ## Quick Start
 
 - Environment: Node.js >= 10.16, Npm >= 6.1
 - Python: python >= 3.6 with correct pip installed (This is required if you want to use pipcook-python-node. For more info, check [here](https://github.com/alibaba/pipcook/wiki/%E6%83%B3%E8%A6%81%E4%BD%BF%E7%94%A8python%EF%BC%9F))
 
-We recommend to install scafford tool for Pipcook to manage Pipcook projects.
+We recommend to install pipcook-cli to manage pipcook projects.
 ```
 sudo npm install -g pipcook-cli
 ```
 
-You can initialize a Pipcook project with just a few commands
+You can initialize a pipcook project with just a few commands
 ```
 mkdir pipcook-example && cd pipcook-example
 pipcook init
@@ -24,7 +24,7 @@ cd pipcook-example
 Please refer to [this link](https://github.com/alibaba/pipcook/wiki/Pipcook-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F) to check the full documentation
 
 
-## Run your first Pipcook pipeline
+## Run your first pipcook pipeline
 In the initialized folder, we have prepared several samples for you, They are :
 
 - pipeline-mnist-image-classification: pipeline for classific Mnist image classification problem.
