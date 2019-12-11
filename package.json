@@ -1,0 +1,24 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.7.0",
+    "@typescript-eslint/parser": "^2.7.0",
+    "eslint": "^6.6.0",
+    "lerna": "^3.18.4",
+    "typedoc": "^0.15.4",
+    "typedoc-plugin-markdown": "^2.2.14",
+    "typescript": "^3.7.2"
+  },
+  "scripts": {
+    "eslint": "eslint packages --ext .ts",
+    "doc": "rm -rf ./doc && typedoc --plugin typedoc-plugin-markdown"
+  },
+  "dependencies": {
+    "better-opn": "^1.0.0",
+    "typedoc-plugin-lerna": "^0.1.0"
+  }
+}

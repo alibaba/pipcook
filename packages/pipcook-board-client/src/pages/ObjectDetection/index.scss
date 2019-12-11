@@ -1,0 +1,22 @@
+.object-detection{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+
+  .result {
+    margin-top: 40px;
+  }
+  
+  .image-wrapper {
+    position: relative;
+
+    .lines {
+      position: absolute;
+      border: 3px solid red;
+    }
+  }
+
+
+}

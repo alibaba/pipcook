@@ -1,0 +1,30 @@
+{
+  "name": "@pipcook/pipcook-cli",
+  "version": "0.1.23",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "pipcook": "./bin/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pipcook/pipcook-core": "^0.1.28",
+    "chalk": "^3.0.0",
+    "commander": "^4.0.1",
+    "console.table": "^0.10.0",
+    "fs-extra": "^7.0.1",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0",
+    "inquirer": "^6.2.2",
+    "minimist": "^1.2.0",
+    "ora": "^3.4.0",
+    "request": "^2.88.0",
+    "semver": "^6.3.0"
+  },
+  "gitHead": "52f0d49f29e1226a351d80cd5d83751e8dca1681"
+}

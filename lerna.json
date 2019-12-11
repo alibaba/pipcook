@@ -1,0 +1,15 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "independent",
+  "npmClient": "tnpm",
+  "command":{
+    "bootstrap":{
+        "hoist":true
+    },
+    "publishConfig": {
+      "access": "public"
+    }
+  }
+}

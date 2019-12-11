@@ -1,0 +1,19 @@
+.status{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+
+  .no-job {
+    font-size: 20px;
+  }
+
+  .tips {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 20px;
+  }
+}
