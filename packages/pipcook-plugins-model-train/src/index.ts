@@ -2,7 +2,7 @@
  * plugin to train model
  */
 
-import {PipcookModel, UniformSampleData, ArgsType, ModelTrainType} from '@pipcook/pipcook-core';
+import {PipcookModel, UniformTfSampleData, ArgsType, ModelTrainType} from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 
 /**
@@ -13,7 +13,7 @@ import * as assert from 'assert';
  * @param batchSize : need to specify batch size
  * @param optimizer : need to specify optimizer
  */
-const ModelTrain: ModelTrainType = async (data: UniformSampleData, model: PipcookModel, args?: ArgsType): Promise<PipcookModel> => {
+const ModelTrain: ModelTrainType = async (data: UniformTfSampleData, model: PipcookModel, args?: ArgsType): Promise<PipcookModel> => {
   try {
     const {
       epochs = 10,

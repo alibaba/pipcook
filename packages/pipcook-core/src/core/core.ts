@@ -89,6 +89,7 @@ export class PipcookRunner {
     // store Pipcook log
     const json = JSON.stringify(getLog(this));
     fs.outputFileSync(path.join(<string>this.logDir, 'logs' ,this.pipelineId+'.json'), json);
+    fs.removeSync(path.join(process.cwd(), '.temp'));
   }
 
   /**
@@ -104,6 +105,7 @@ export class PipcookRunner {
    * @param components: components to be executed
    */
   run = async (components:PipcookComponentResult[]) => {
+    fs.removeSync(path.join(process.cwd(), '.temp'));
     await this.startServer();
     this.startTime = Date.now()
     this.pipelineId = 'pipcook-pipeline-' + this.startTime;

@@ -3,7 +3,7 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import {ModelLoadType, PipcookModel, UniformSampleData, getModelDir, getMetadata} from '@pipcook/pipcook-core';
+import {ModelLoadType, PipcookModel, UniformTfSampleData, getModelDir, getMetadata} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -130,13 +130,13 @@ async function buildObjectDetectionModel() {
  * assertion test
  * @param data 
  */
-const assertionTest = (data: UniformSampleData) => {
+const assertionTest = (data: UniformTfSampleData) => {
   assert.ok(data.metaData.feature, 'Image feature is missing');
   assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 2d or 3d');
   assert.ok(data.metaData.label.shape && data.metaData.label.shape.length == 2, 'The label vector should be a one hot vector');
 }
 
-const imageDetectionModelLoad: ModelLoadType = async (data: UniformSampleData, args?: any): Promise<PipcookModel> => {
+const imageDetectionModelLoad: ModelLoadType = async (data: UniformTfSampleData, args?: any): Promise<PipcookModel> => {
   const {
     optimizer = tf.train.rmsprop(5e-3),
     modelId=''
@@ -150,7 +150,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformSampleData, a
   if (modelId) {
     model = <tf.Sequential>(await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json')));
     const metaData = getMetadata(modelId);
-    data = <UniformSampleData>{metaData};
+    data = <UniformTfSampleData>{metaData};
   } else {
     const {model: odModel, fineTuningLayers} = await buildObjectDetectionModel();
     for (const layer of fineTuningLayers) {

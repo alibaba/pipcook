@@ -1,6 +1,6 @@
 {
-  "name": "@pipcook/pipcook-python-node",
-  "version": "0.1.13",
+  "name": "@pipcook/pipcook-plugins-image-coco-data-collect",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -11,17 +11,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json && cp ./src/communication/ipker.json ./dist/communication"
+    "compile": "tsc -b tsconfig.json"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tensorflow/tfjs-node-gpu": "^1.4.0",
-    "fs-extra": "^8.1.0",
-    "kill-port": "^1.6.0",
-    "node-cleanup": "^2.1.2",
-    "ora": "^4.0.3",
-    "zeromq": "^6.0.0-beta.5"
+    "@pipcook/pipcook-core": "^0.1.28",
+    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "cli-progress": "^3.4.0",
+    "glob": "^7.1.5",
+    "glob-promise": "^3.4.0"
   },
   "gitHead": "52f0d49f29e1226a351d80cd5d83751e8dca1681"
 }

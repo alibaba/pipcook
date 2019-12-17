@@ -193,8 +193,8 @@ export async function runPredict(runner: PipcookRunner, request: any) {
     return;
   }
   let result: any;
-  await inputData.forEachAsync((e: any) => {
-    result = model.predict(e);
+  await inputData.forEachAsync(async (e: any) => {
+    result = await model.predict(e);
   });
   return {
     status: true,

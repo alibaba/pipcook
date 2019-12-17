@@ -1,7 +1,7 @@
 /**
  * @file this is for plugin to process text claasifiaction
  */
-import {UniformSampleData, ArgsType, DataProcessType} from '@pipcook/pipcook-core'
+import {UniformTfSampleData, ArgsType, DataProcessType} from '@pipcook/pipcook-core'
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import nodejieba from 'nodejieba';
@@ -15,7 +15,7 @@ const processText = (data: tf.data.Dataset<any>) => {
   })
 }
 
-const textClassDataProcess: DataProcessType = async (data: UniformSampleData, args?: ArgsType): Promise<UniformSampleData> => {
+const textClassDataProcess: DataProcessType = async (data: UniformTfSampleData, args?: ArgsType): Promise<UniformTfSampleData> => {
   const {
     splitWord = true
   } = args || {};
@@ -35,7 +35,7 @@ const textClassDataProcess: DataProcessType = async (data: UniformSampleData, ar
     testDataProcessed = processText(testData);
   }
 
-  const result: UniformSampleData = {
+  const result: UniformTfSampleData = {
     trainData: <tf.data.Dataset<any>>trainDataProcessed,
     metaData: data.metaData
   };

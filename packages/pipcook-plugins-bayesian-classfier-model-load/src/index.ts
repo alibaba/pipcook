@@ -2,7 +2,7 @@
  * @file This is for the plugin to load Bayes Classifier model.
  */
 
-import {ModelLoadType, PipcookModel, UniformSampleData, ModelLoadArgsType, getModelDir} from '@pipcook/pipcook-core';
+import {ModelLoadType, PipcookModel, ModelLoadArgsType, getModelDir, UniformTfSampleData} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 const bayes = require('bayes');
@@ -12,7 +12,7 @@ import * as fs from 'fs';
  * assertion test
  * @param data 
  */
-const assertionTest = (data: UniformSampleData) => {
+const assertionTest = (data: UniformTfSampleData) => {
   assert.ok(data.metaData.feature && data.metaData.feature.shape 
     && data.metaData.feature.shape.length === 1, 'feature should only have one dimension which is the feature name');
   assert.ok(data.metaData.label && data.metaData.label.shape 
@@ -24,7 +24,7 @@ const assertionTest = (data: UniformSampleData) => {
  * @param data Pipcook uniform sample data
  * @param args args. If the model path is provided, it will restore the model previously saved
  */
-const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformSampleData, args?: ModelLoadArgsType): Promise<PipcookModel> => {
+const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleData, args?: ModelLoadArgsType): Promise<PipcookModel> => {
   assert.ok(args && args.modelName, 'Please provide the unique model name to identify');
   const {
     modelId='',
