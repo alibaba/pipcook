@@ -23,11 +23,11 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
   
   await Python.scope('detectron', (python: any) => {
     const _ = python.nA;
-    python.runshell('pip install torch torchvision');
-    python.runshell('pip install opencv-python');
-    python.runshell(`pip install -U 'git+https://github.com/facebookresearch/fvcore'`)
-    python.runshell('pip install cython');
-    python.runshell(`pip install 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'`);
+    python.runshell('pip install torch torchvision --no-cache-dir ');
+    python.runshell('pip install opencv-python --no-cache-dir ');
+    python.runshell(`pip install -U 'git+https://github.com/facebookresearch/fvcore' --no-cache-dir `)
+    python.runshell('pip install cython --no-cache-dir ');
+    python.runshell(`pip install 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI' --no-cache-dir `);
     python.runshell(`git clone https://github.com/facebookresearch/detectron2.git`);
 
     if (system === 'mac') {
