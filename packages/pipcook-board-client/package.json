@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-board-client",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "board for pipcook",
   "dependencies": {
     "@ali/ice-add-image": "^2.0.1",
@@ -47,5 +47,5 @@
     "url": "https://github.com/ice-lab/react-materials/tree/master/scaffolds/ice-design-lite"
   },
   "proxy": "http://localhost:7778",
-  "gitHead": "c501fe15c240332f394d906d0435e14598b98141"
+  "gitHead": "4ab1582b42a140855845af540ebc789c8045f79c"
 }
