@@ -1,7 +1,7 @@
 /**
  * @file this is for Pipcook plugin to train Bayes Classifier.
  */
-import {ModelTrainType, PipcookModel, UniformSampleData, metaData} from '@pipcook/pipcook-core';
+import {ModelTrainType, PipcookModel, UniformTfSampleData, metaData} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 const _cliProgress = require('cli-progress');
@@ -10,7 +10,7 @@ const _cliProgress = require('cli-progress');
  * assertion test
  * @param data 
  */
-const assertionTest = (data: UniformSampleData, trainData: tf.data.Dataset<{ xs: tf.Tensor<any>; ys?: tf.Tensor<any>; }>, metaData: metaData) => {
+const assertionTest = (data: UniformTfSampleData, trainData: tf.data.Dataset<{ xs: tf.Tensor<any>; ys?: tf.Tensor<any>; }>, metaData: metaData) => {
   assert.ok(data.metaData.feature && data.metaData.feature.shape 
     && data.metaData.feature.shape.length === 1, 'feature should only have one dimension which is the feature name');
   assert.ok(data.metaData.label && data.metaData.label.shape 
@@ -25,7 +25,7 @@ const assertionTest = (data: UniformSampleData, trainData: tf.data.Dataset<{ xs:
  * @param data Pipcook uniform data 
  * @param model Eshcer model
  */
-const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformSampleData, model: PipcookModel): Promise<PipcookModel> => {
+const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampleData, model: PipcookModel): Promise<PipcookModel> => {
   const {trainData, metaData} = data;
   assertionTest(data, trainData, metaData);
   

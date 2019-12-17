@@ -1,5 +1,5 @@
 /**
- * @file This plugin is to object detection data from PASCOL VOC format. Make sure that
+ * @file This plugin is to object detection data from coco format. Make sure that
  * the data is conform to expectation.
  */
 
@@ -21,7 +21,8 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
   let {
     url='',
     validationSplit=0,
-    testSplit=0
+    testSplit=0,
+    annotationFileName='annotation.json'
   } = args || {};
   assert.ok(url, 'Please specify a url of zip of your dataset');
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
@@ -46,30 +47,67 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
   }
   console.log('unzip and collecting data...');
   await unZipData(url, saveDir);
-  const imagePaths = await glob(path.join(saveDir, 'images' , '*.+(jpg|jpeg|png)'));
+  const imagePaths = await glob(path.join(saveDir, 'images' ,'*.+(jpg|jpeg|png)'));
   shuffle(imagePaths);
   const countNumber = imagePaths.length;
   console.log('create annotation file...');
   const typeSet = new Set<string>();
+  const annotation = require(path.join(saveDir, annotationFileName));
   for (let i = 0; i < countNumber; i++) {
-    const imagePath = imagePaths[i]
+    const imagePath = imagePaths[i];
     const imagePathSplit = imagePath.split(path.sep);
-    const fileNameSplit = imagePathSplit[imagePathSplit.length - 1].split('.');
-    const fileName = fileNameSplit.slice(0, fileNameSplit.length - 1).join('.');
-    const annotation = await parseAnnotation(path.join(saveDir, 'annotations', fileName+'.xml'));
-    annotation.annotation.folder[0] = imagePathSplit.slice(0, imagePathSplit.length - 1).join(path.sep);
-    console.log(JSON.stringify(annotation));
+    const fileName = imagePathSplit[imagePathSplit.length - 1];
+    const cocoImage = annotation.images.find((e:any) => e.file_name == fileName);
+    const currentAnnotation: any = {
+      annotation: {
+        folder: [
+          path.join(saveDir, 'images')
+        ],
+        filename: [
+          cocoImage.file_name
+        ],
+        size: [
+          {
+            width: [
+              cocoImage.width
+            ],
+            height: [
+              cocoImage.height
+            ]
+          }
+        ],
+        segmented: [
+          0
+        ],
+     }
+    }
+    const objects = annotation.annotations.filter((e: any) => e.image_id == cocoImage.id);
+    currentAnnotation.annotation.object = objects.map((object: any) => {
+      return {
+        name: [object.category_name],
+        pose: ["Unspecified"],
+        truncated: ["0"],
+        difficult: ["0"],
+        bndbox: [
+          {
+            xmin: [object.bbox[0]],
+            ymin: [object.bbox[1]],
+            xmax: [object.bbox[0] + object.bbox[2]],
+            ymax: [object.bbox[1] + object.bbox[3]]
+          }
+        ]
+      };
+    })
     if (i >= countNumber * (testSplit + validationSplit)) {
       typeSet.add('train');
-      createAnnotationFromJson(path.join(saveDir, 'annotations', 'train' ) ,annotation);
+      createAnnotationFromJson(path.join(saveDir, 'annotations', 'train' ), currentAnnotation);
     } else if (validationSplit > 0 && i >= countNumber * validationSplit) {
       typeSet.add('validation');
-      createAnnotationFromJson(path.join(saveDir ,'annotations', 'validation') ,annotation);
+      createAnnotationFromJson(path.join(saveDir ,'annotations', 'validation') ,currentAnnotation);
     } else {
       typeSet.add('test');
-      createAnnotationFromJson(path.join(saveDir ,'annotations', 'test') ,annotation);
+      createAnnotationFromJson(path.join(saveDir ,'annotations', 'test') ,currentAnnotation);
     }
-    fs.removeSync(path.join(saveDir, 'annotations', fileName+'.xml'))
   }
 
   if (!typeSet.has('train')) {

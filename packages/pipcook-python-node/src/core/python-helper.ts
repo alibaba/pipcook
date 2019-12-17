@@ -30,9 +30,15 @@ export function conversion(target: any) {
   } else if (target.__pipcook__identifier) {
     return target.__pipcook__identifier;
   } else if (Array.isArray(target)) {
-    return `(${target.toString()})`
+    let result = '(';
+    target.forEach((item: any) => {
+      result += `${conversion(item)},`;
+    })
+    result = result.slice(0, result.length - 1);
+    result += ')';
+    return result;
   } else {
-    return target
+    return JSON.stringify(target)
   }
 }
 

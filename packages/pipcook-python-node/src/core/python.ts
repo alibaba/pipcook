@@ -3,6 +3,7 @@
 import Executor from '../communication/communication';
 import {getObject, conversion} from './python-helper';
 import {PythonObject} from '../types/python-object';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 
 /**
  * get a random identifier for a PythonObject
@@ -30,14 +31,16 @@ export default class Python {
    * 
    * @param python Python instance
    */
-  static async constructPythonStatements(python: Python) {
+  static async constructPythonStatements(python: Python, user_expressions?: any) {
     const statements = python.statements;
     let codes = '';
     statements.forEach((statement: string) => {
       codes += statement + '\n';
     });
-    await Executor.execute(python.scope, codes);
-    python.statements = [];
+    console.log('codes executed: []', codes);
+    const result = await Executor.execute(python.scope, codes, user_expressions);
+    python.statements.splice(0, python.statements.length);
+    return result;
   }
 
   /**
@@ -53,7 +56,7 @@ export default class Python {
       this.pythons.push(python);
     }
     await Executor.openSession(scope);
-    callback(python);
+    await callback(python);
     await this.constructPythonStatements(python);
   }
 
@@ -401,8 +404,25 @@ export default class Python {
    * Please use convert method to convert PythonObject to its identifier when use this method
    */
   runRaw = (raw: string) => {
+    raw = raw.replace(/\s/g, '');
     const identifier = getId();
     this.statements.push(`${identifier} = ${raw}`);
+    return getObject(identifier, this.statements);
+  }
+
+  evluate = async (object: PythonObject) => {
+    this.statements.push(`${object.__pipcook__identifier}`);
+    const result: any = 
+      await Python.constructPythonStatements(this, {type: `type(${object.__pipcook__identifier})`, value: `${object.__pipcook__identifier}`});
+    return {
+      type: result.type,
+      value: result.value
+    }
+  }
+  createNumpyFromTf = (tensor: tf.Tensor) => {
+    const identifier = getId();
+    this.statements.push(`import numpy as np`);
+    this.statements.push(`${identifier} = np.array(${JSON.stringify(tensor.arraySync())}, '${tensor.dtype}')`);
     return getObject(identifier, this.statements);
   }
 }

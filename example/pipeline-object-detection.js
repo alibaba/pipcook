@@ -28,13 +28,13 @@ let imageDetectionModelLoad = require('../packages/pipcook-plugins-image-detecti
 let imageDetectionDataAccess = require('../packages/pipcook-plugins-image-detection-data-access').default;
 
 async function startPipeline() {
-  // collect mnist data
+  // collect detection data
   const dataCollect = DataCollect(imageDetectionDataCollect, {
     url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/componentRecognition.zip',
     testSplit: 0.1
   });
   
-  // access mnist data into our specifiction
+  // access detection data into our specifiction
   const dataAccess = DataAccess(imageDetectionDataAccess);
 
   // load mobile net model

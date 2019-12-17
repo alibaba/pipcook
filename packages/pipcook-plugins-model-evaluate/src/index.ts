@@ -1,7 +1,7 @@
 /**
  * @file This is for plugin to evaluate  model.
  */
-import {PipcookModel, UniformSampleData, ArgsType, ModelEvaluateType, EvaluateResult} from '@pipcook/pipcook-core';
+import {PipcookModel, UniformTfSampleData, ArgsType, ModelEvaluateType, EvaluateResult} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 
@@ -11,7 +11,7 @@ import * as assert from 'assert';
  * @param model Pipcook model
  * @param args args: specify batch size, total batches to iterate
  */
-const ModelEvalute: ModelEvaluateType = async (data: UniformSampleData, model: PipcookModel, args?: ArgsType): Promise<EvaluateResult> => {
+const ModelEvalute: ModelEvaluateType = async (data: UniformTfSampleData, model: PipcookModel, args?: ArgsType): Promise<EvaluateResult> => {
   let batchSize = 32;
   let batches = null;
   let dataSize: number = 0;

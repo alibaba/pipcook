@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import { UniformSampleData, OriginSampleData, ArgsType, parseAnnotation, DataAccessType} from '@pipcook/pipcook-core';
+import { UniformTfSampleData, OriginSampleData, ArgsType, parseAnnotation, DataAccessType} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 import glob from 'glob-promise';
@@ -71,7 +71,7 @@ const getLabelMap = async (data: OriginSampleData[]) => {
  * @param data: origin sample data
  * @param imgSize: the image size to uniform
  */
-const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformSampleData> => {
+const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformTfSampleData> => {
   if (!Array.isArray(data)) {
     data = [data];
   }
@@ -97,7 +97,7 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
     }
   }
 
-  const result: UniformSampleData = {
+  const result: UniformTfSampleData = {
     trainData: tf.data.array(trainDataFlows),
     metaData: {
       feature:

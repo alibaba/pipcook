@@ -2,7 +2,7 @@
  * @file This plugin is used to load the simple CNN for iamge classification. 
  */
 
-import {ModelLoadType, PipcookModel, UniformSampleData, getModelDir, getMetadata} from '@pipcook/pipcook-core';
+import {ModelLoadType, PipcookModel, UniformTfSampleData, getModelDir, getMetadata} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -10,13 +10,13 @@ import * as path from 'path';
  * assertion test
  * @param data 
  */
-const assertionTest = (data: UniformSampleData) => {
+const assertionTest = (data: UniformTfSampleData) => {
   assert.ok(data.metaData.feature, 'Image feature is missing');
   assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 2d or 3d');
   assert.ok(data.metaData.label.shape && data.metaData.label.shape.length == 2, 'The label vector should be a one hot vector');
 }
 
-const simpleCnnModelLoad: ModelLoadType = async (data: UniformSampleData, args?: any): Promise<PipcookModel> => {
+const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args?: any): Promise<PipcookModel> => {
   const {
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
@@ -36,7 +36,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformSampleData, args?:
   if (modelId) {
     model = <tf.Sequential>(await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json')));
     const metaData = getMetadata(modelId);
-    data = <UniformSampleData>{metaData};
+    data = <UniformTfSampleData>{metaData};
   } else {
     model = tf.sequential();
     model.add(tf.layers.conv2d({

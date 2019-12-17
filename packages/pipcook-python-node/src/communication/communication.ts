@@ -127,6 +127,14 @@ export default class Executor {
           if (json.status && json.execution_count !== undefined) {
             if (json.status === 'ok') {
               message.status = true;
+              if (json.user_expressions) {
+                for (let key in json.user_expressions) {
+                  if (json.user_expressions[key].status === 'ok') {
+                    message[key] = json.user_expressions[key].data['text/plain'];
+                  }
+                  
+                }
+              }
             } else {
               message.status = false;
               message.traceback = json.traceback;
@@ -148,7 +156,7 @@ export default class Executor {
    * @param scope the scope name
    * @param code codes to be executed
    */
-  static execute = (scope:string, code: string) => {
+  static execute = (scope:string, code: string, user_expressions?: any) => {
     const session:Session = Executor.sessions.find((e: any) => e.id === scope);
     if (!session) {
       throw new Error('no session Found!');
@@ -161,7 +169,7 @@ export default class Executor {
     const content = {
       code: code,
       silent: true,
-      user_expressions: {}
+      user_expressions: user_expressions || {}
     };
 
     session.socketDealer.send(
@@ -178,7 +186,7 @@ export default class Executor {
           session.last_header.msg_id = session.dealerMsg.responseId;
           if (session.dealerMsg.status) {
             clearInterval(session.timer);
-            resolve();   
+            resolve(session.dealerMsg);   
           } else {
             if (Array.isArray(session.dealerMsg.traceback)) {
               session.dealerMsg.traceback.forEach((item: string) => {
