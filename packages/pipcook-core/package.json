@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-core",
-  "version": "0.1.36",
+  "version": "0.1.37",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -29,8 +29,8 @@
     "glob-promise": "^3.4.0",
     "request": "^2.88.0",
     "rxjs": "^6.5.3",
-    "xml2js": "^0.4.22",
-    "systeminformation": "^4.16.0"
+    "systeminformation": "^4.16.0",
+    "xml2js": "^0.4.22"
   },
   "gitHead": "52f0d49f29e1226a351d80cd5d83751e8dca1681"
 }

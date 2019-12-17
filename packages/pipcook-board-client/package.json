@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-board-client",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "board for pipcook",
   "dependencies": {
     "@ali/ice-add-image": "^2.0.1",
