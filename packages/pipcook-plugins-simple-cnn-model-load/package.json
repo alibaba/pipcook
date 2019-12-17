@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-simple-cnn-model-load",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,9 +16,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.1.37",
+    "@pipcook/pipcook-core": "^0.1.38",
     "@tensorflow-models/mobilenet": "^2.0.4",
     "@tensorflow/tfjs-node-gpu": "x.x.x"
   },
-  "gitHead": "52f0d49f29e1226a351d80cd5d83751e8dca1681"
+  "gitHead": "c501fe15c240332f394d906d0435e14598b98141"
 }
