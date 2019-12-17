@@ -3,8 +3,9 @@ const fse = require('fs-extra');
 const childProcess = require('child_process');
 const ora = require('ora');
 const path = require('path');
-const {dependencies, pipcookLogName} = require('./config');
+let {dependencies, pipcookLogName} = require('./config');
 const spinner = ora();
+const request = require('request');
 
 /**
  * install all dependencies of pipcook into working dir
@@ -37,10 +38,14 @@ const init = async (cmdObj) => {
     childProcess.execSync(`${client} init -y`, {
       cwd: dirname,
     });
-    console.log('root Password');
-    // childProcess.execSync(`sudo chown -R $USER:$GROUP ~/.npm`);
-    // childProcess.execSync(`sudo chown -R $USER:$GROUP ~/.config`);
-    // install dependencies
+
+    try {
+      await downloadConfig();
+      dependencies = require(path.join(__dirname, 'temp', 'config.js')).dependencies;
+    } catch (err) {
+      console.log(err);
+    }
+
     for (const item of dependencies) {
       spinner.start(`installing ${item} ...`);
       childProcess.execSync(`${client} install ${item} --save`, {
@@ -53,5 +58,34 @@ const init = async (cmdObj) => {
     fse.removeSync(dirname);
   }
 };
+
+function downloadConfig() {
+  fse.ensureFileSync(path.join(__dirname, 'temp', 'config.js'))
+  return new Promise((resolve, reject) => {
+    const file = fse.createWriteStream(path.join(__dirname, 'temp', 'config.js'));
+    let receivedBytes = 0
+    request.get('https://raw.githubusercontent.com/alibaba/pipcook/master/packages/pipcook-cli/lib/config.js')
+      .on('response', (response) => {
+        const totalBytes = response.headers['content-length'];
+      })
+      .on('data', (chunk) => {
+        receivedBytes += chunk.length;
+      })
+      .pipe(file)
+      .on('error', (err) => {
+          fse.unlink(fileName);
+          reject(err);
+      });
+  
+    file.on('finish', () => {
+      resolve();
+    });
+  
+    file.on('error', (err) => {
+      fse.unlink(fileName);
+      reject(err);
+    });
+  })
+}
 
 module.exports = init;
