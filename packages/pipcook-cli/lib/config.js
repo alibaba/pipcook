@@ -18,7 +18,12 @@ module.exports = {
     '@pipcook/pipcook-plugins-image-detection-data-collect',
     '@pipcook/pipcook-plugins-image-detection-model-load',
     '@pipcook/pipcook-python-node',
-    '@pipcook/pipcook-plugins-text-class-data-collect'
+    '@pipcook/pipcook-plugins-text-class-data-collect',
+    '@pipcook/pipcook-plugins-detection-detectron-model-evaluate',
+    '@pipcook/pipcook-plugins-detection-detectron-model-load',
+    '@pipcook/pipcook-plugins-detection-detectron-model-train',
+    '@pipcook/pipcook-plugins-detection-detectron-data-access',
+    '@pipcook/pipcook-plugins-image-coco-data-collect'
   ],
   pipcookLogName: '.pipcook-log'
 }
