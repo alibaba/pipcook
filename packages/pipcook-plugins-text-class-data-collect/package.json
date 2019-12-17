@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-text-class-data-collect",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,9 +16,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.1.37",
+    "@pipcook/pipcook-core": "^0.1.38",
     "csv-parser": "^2.3.2",
     "fs-extra": "^8.1.0"
   },
-  "gitHead": "52f0d49f29e1226a351d80cd5d83751e8dca1681"
+  "gitHead": "c501fe15c240332f394d906d0435e14598b98141"
 }
