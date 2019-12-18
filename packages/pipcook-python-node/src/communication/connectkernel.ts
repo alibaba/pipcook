@@ -32,7 +32,7 @@ export function startKernel(shell_port: number, iopub_port: number) {
 
     // install virtualenv if it does not exist and meanwhile install ipython
     const output = childProcess.spawn(`${venvDir ? '' : 'pip install virtualenv && virtualenv --no-site-packages pipcook_venv && \\'} 
-      . ${path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate')} && pip install ipykernel==5.1.3`, [], {
+      . ${path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate')} && pip install ipykernel==5.1.3 && kill $(lsof -t -i:${shell_port}) && kill $(lsof -t -i:${iopub_port}) `, [], {
         shell: true,
         cwd: process.cwd(),
       })

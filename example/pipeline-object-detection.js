@@ -21,42 +21,40 @@
  */
 let {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner} = require('../packages/pipcook-core');
 
-let imageClassModelTrain = require('../packages/pipcook-plugins-model-train').default;
-let classModelEvalute = require('../packages/pipcook-plugins-model-evaluate').default;
-let imageDetectionDataCollect = require('../packages/pipcook-plugins-image-detection-data-collect').default;
-let imageDetectionModelLoad = require('../packages/pipcook-plugins-image-detection-model-load').default;
-let imageDetectionDataAccess = require('../packages/pipcook-plugins-image-detection-data-access').default;
+let imageCocoDataCollect = require('../packages/pipcook-plugins-image-coco-data-collect').default;
+let imageDetectronAccess = require('../packages/pipcook-plugins-detection-detectron-data-access').default;
+let detectronModelLoad = require('../packages/pipcook-plugins-detection-detectron-model-load').default;
+let detectronModelTrain = require('../packages/pipcook-plugins-detection-detectron-model-train').default;
+let detectronModelEvaluate = require('../packages/pipcook-plugins-detection-detectron-model-evaluate').default;
 
 async function startPipeline() {
-  // collect detection data
-  const dataCollect = DataCollect(imageDetectionDataCollect, {
-    url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/componentRecognition.zip',
-    testSplit: 0.1
+   // collect detection data
+   const dataCollect = DataCollect(imageCocoDataCollect, {
+    url: 'xxx',
+    testSplit: 0.1,
+    annotationFileName: 'annotation.json'
   });
   
   // access detection data into our specifiction
-  const dataAccess = DataAccess(imageDetectionDataAccess);
+  const dataAccess = DataAccess(imageDetectronAccess);
 
   // load mobile net model
-  const modelLoad = ModelLoad(imageDetectionModelLoad, {
+  const modelLoad = ModelLoad(detectronModelLoad, {
     modelName: 'test1'
   });
 
   // train the model
-  const modelTrain = ModelTrain(imageClassModelTrain, {
-    epochs: 20,
-    batchSize: 4
-  });
+  const modelTrain = ModelTrain(detectronModelTrain);
 
   // evaluate the model
-  const modelEvaluate = ModelEvaluate(classModelEvalute);
+  const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
 
   const runner = new PipcookRunner('test1', {
     predictServer: true
   });
 
   runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate])
-  
+
 }
 
 startPipeline();
