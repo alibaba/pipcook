@@ -130,7 +130,7 @@ export class PipcookRunner {
       // error handle
       this.endTime = Date.now();
       assignFailures(components);
-      this.error = error.toString();
+      this.error = error && error.toString();
       await this.savePipcook();
       logError('Component ' + this.components[this.currentIndex].type + ' error: ');
       logError(error);

@@ -21,7 +21,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     assert.ok(args && args.modelName, 'Please give your model a name');
   }
   
-  await Python.scope('detectron', (python: any) => {
+  await Python.scope('detectron', async (python: any) => {
     const _ = python.nA;
     python.runshell('pip install torch torchvision --no-cache-dir ');
     python.runshell('pip install opencv-python --no-cache-dir ');
@@ -35,6 +35,8 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     } else {
       python.runshell('cd detectron2 && python setup.py build develop');
     }
+
+    await python.reconnect();
 
     const [register_coco_instances] = python.fromImport('detectron2.data.datasets', ['register_coco_instances']);
     const [DefaultTrainer, hooks] = python.fromImport('detectron2.engine', ['DefaultTrainer', 'hooks']);
@@ -63,7 +65,10 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     cfg.SOLVER.BASE_LR = 0.000025;
     cfg.SOLVER.NUM_GPUS = 2;
     cfg.SOLVER.MAX_ITER = 100000;
-    cfg.MODEL.DEVICE = device;
+    if (device === 'cpu') {
+      cfg.MODEL.DEVICE = device;
+    }
+    
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128;
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = Object.keys(data.metaData.label.valueMap).length;
 
@@ -107,13 +112,15 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
         }
         
         cfg.MODEL.ROI_HEADS.NUM_CLASSES = Object.keys(data.metaData.label.valueMap).length;
-        cfg.MODEL.DEVICE=device;
+        if (device === 'cpu') {
+          cfg.MODEL.DEVICE = device;
+        }
         cfg.INPUT.FORMAT = 'RGB';
     
         const model = DefaultPredictor(cfg)
         const img = python.createNumpyFromTf(inputData);
         const out = model(img)
-        const ins = out['instances'].to(torch.device(device))
+        const ins = out['instances'].to(torch.device('cpu'))
         const boxes = ins.pred_boxes.tensor.numpy()
         const scores = ins.scores.numpy()
         const classes = ins.pred_classes.numpy()

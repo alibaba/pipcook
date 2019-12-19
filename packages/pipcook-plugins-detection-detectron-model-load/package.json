@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-detection-detectron-model-load",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
