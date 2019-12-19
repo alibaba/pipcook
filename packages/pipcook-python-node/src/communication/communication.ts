@@ -33,6 +33,11 @@ export default class Executor {
     }
   }
 
+  static closeSession = async (scope: string) => {
+    await Executor.exit(scope);
+    Executor.sessions = Executor.sessions.filter((session: any) => session.id !== scope);
+  }
+
   /**
    * exit a session
    */

@@ -37,7 +37,6 @@ export default class Python {
     statements.forEach((statement: string) => {
       codes += statement + '\n';
     });
-    console.log('codes executed: []', codes);
     const result = await Executor.execute(python.scope, codes, user_expressions);
     python.statements.splice(0, python.statements.length);
     return result;
@@ -424,5 +423,11 @@ export default class Python {
     this.statements.push(`import numpy as np`);
     this.statements.push(`${identifier} = np.array(${JSON.stringify(tensor.arraySync())}, '${tensor.dtype}')`);
     return getObject(identifier, this.statements);
+  }
+
+  reconnect = async () => {
+    await Python.constructPythonStatements(this);
+    await Executor.closeSession(this.scope);
+    await Executor.openSession(this.scope);
   }
 }
