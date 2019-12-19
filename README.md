@@ -1,6 +1,6 @@
 # pipcook
 
-With the mission of enabling front-end engineers to utilize the power of machine learning without any prerequisites and the vision to lead front-end technical field to the intelligentization, pipcook has become the one-step front-end algorithm platform from processing data to deploying models. Pipcook is focused on the front-end area and developed from the front-end developers' view. With the principle of being friendly for web developers, pipcook will push the whole area forward with the engine of machine learning.
+With the mission of enabling front-end engineers to utilize the power of machine learning without any prerequisites and the vision to lead front-end technical field to the intelligentization, pipcook has become the one-step front-end algorithm platform from processing data to deploying models. Pipcook is focused on the front-end area and developed from the front-end developers' view. With the principle of being friendly for web developers, pipcook will push the whole area forward with the engine of machine learning. We are named 'pipcook' since our platform is based on pip (pipeline) and we also want to include the python ecosystem (python PyPI)
 
 ## Quick Start
 
