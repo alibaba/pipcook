@@ -38,7 +38,7 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
       }
     }
     dataFlows.push({
-      xs: tf.cast(tf.node.decodeImage(imageArray), 'float32'),
+      xs: tf.cast(tf.node.decodeImage(imageArray, 3), 'float32'),
       ys: tf.tensor1d(target)
     })
   }

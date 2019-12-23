@@ -49,7 +49,10 @@ export function serverModel(fastify: any) {
         const modelId = modelSplit[2];
         const modelName = modelSplit[3];
         // pipecook will arrange logs and models in the same name convention
-        const log = require(path.join(process.cwd(), '.pipcook-log', 'logs', `pipcook-pipeline-${modelId}.json`));
+        let log: any = {};
+        try {
+          log = require(path.join(process.cwd(), '.pipcook-log', 'logs', `pipcook-pipeline-${modelId}.json`));
+        } finally {}
         models.push({
           modelId: modelId + '-' + modelName,  modelName,
           evaluation: JSON.stringify(log.latestEvaluateResult),
