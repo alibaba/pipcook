@@ -1,4 +1,4 @@
-import {ModelLoadType, PipcookModel, UniformGeneralSampleData, getOsInfo, getModelDir} from '@pipcook/pipcook-core';
+import {ModelLoadType, PipcookModel, UniformGeneralSampleData, getOsInfo, getModelDir, getMetadata} from '@pipcook/pipcook-core';
 import {Python} from '@pipcook/pipcook-python-node';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -11,7 +11,11 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
   const {
     device='cpu',
-    modelId=''
+    modelId='',
+    baseLearningRate=0.00025,
+    numWorkers=4,
+    maxIter=100000,
+    numGpus=2,
   } = args || {};
 
   let trainer: any;
@@ -19,6 +23,9 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
   if (!modelId) {
     assert.ok(args && args.modelName, 'Please give your model a name');
+  } else {
+    const metaData = getMetadata(modelId);
+    data = <UniformGeneralSampleData>{...data, metaData};
   }
   
   await Python.scope('detectron', async (python: any) => {
@@ -59,12 +66,17 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
       cfg.DATASETS.TEST = python.createList(['val_dataset']);
     }
 
-    cfg.DATALOADER.NUM_WORKERS = 4;
-    cfg.MODEL.WEIGHTS = "detectron2://ImageNetPretrained/MSRA/R-50.pkl";
+    cfg.DATALOADER.NUM_WORKERS = numWorkers;
+    if (!modelId) {
+      cfg.MODEL.WEIGHTS = "detectron2://ImageNetPretrained/MSRA/R-50.pkl";
+    } else {
+      cfg.MODEL.WEIGHTS = path.join(getModelDir(modelId), 'model_final.pth');
+    }
+    
     cfg.SOLVER.IMS_PER_BATCH = 4;
-    cfg.SOLVER.BASE_LR = 0.000025;
-    cfg.SOLVER.NUM_GPUS = 2;
-    cfg.SOLVER.MAX_ITER = 100000;
+    cfg.SOLVER.BASE_LR = baseLearningRate;
+    cfg.SOLVER.NUM_GPUS = numGpus;
+    cfg.SOLVER.MAX_ITER = maxIter;
     if (device === 'cpu') {
       cfg.MODEL.DEVICE = device;
     }
@@ -81,7 +93,12 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
     os.makedirs(cfg.OUTPUT_DIR, _({"exist_ok": true}));
     trainer = DefaultTrainer(cfg);
-    trainer.resume_or_load(_({"resume": true}));
+    if (modelId) {
+      trainer.resume_or_load(_({"resume": true}));
+    } else {
+      trainer.resume_or_load(_({"resume": false}));
+    }
+    
   });
 
   return {
@@ -140,6 +157,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
         `);
 
         prediction = await python.evaluate(preds);
+        console.log('detection2 prediction: ', prediction);
       });
 
       return prediction;

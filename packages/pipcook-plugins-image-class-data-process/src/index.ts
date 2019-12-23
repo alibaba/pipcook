@@ -26,7 +26,7 @@ const processImage = async (processingData: any, rotationRange: number, brightne
   const imageArray = new Uint8Array(trainImageBuffer);
 
   return {
-    xs: tf.cast(tf.node.decodeImage(imageArray), 'float32'),
+    xs: tf.cast(tf.node.decodeImage(imageArray, 3), 'float32'),
     ys: label
   }
 }

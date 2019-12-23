@@ -34,7 +34,7 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
       label = tf.oneHot(tf.scalar(oneHotMap[label], 'int32'), Object.keys(oneHotMap).length);
     }
     dataFlows.push({
-      xs: tf.cast(tf.node.decodeImage(imageArray), 'float32'),
+      xs: tf.cast(tf.node.decodeImage(imageArray, 3), 'float32'),
       ys: label
     })
   }
