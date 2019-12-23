@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-image-class-data-access",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.1.39",
+    "@pipcook/pipcook-core": "^0.1.42",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
     "cli-progress": "^3.4.0",
     "glob": "^7.1.5",
