@@ -10,6 +10,7 @@ import {runPredict} from '../core/core-helper';
 import {PipcookModel} from '../types/model';
 
 const opn = require('better-opn');
+const fs = require('fs-extra');
 
 /**
  * get a server instance. Disable the logger of server
@@ -51,7 +52,9 @@ export function serverModel(fastify: any) {
         // pipecook will arrange logs and models in the same name convention
         let log: any = {};
         try {
-          log = require(path.join(process.cwd(), '.pipcook-log', 'logs', `pipcook-pipeline-${modelId}.json`));
+          if(fs.pathExistsSync(path.join(process.cwd(), '.pipcook-log', 'logs', `pipcook-pipeline-${modelId}.json`))) {
+            log = require(path.join(process.cwd(), '.pipcook-log', 'logs', `pipcook-pipeline-${modelId}.json`));
+          }
         } finally {}
         models.push({
           modelId: modelId + '-' + modelName,  modelName,
