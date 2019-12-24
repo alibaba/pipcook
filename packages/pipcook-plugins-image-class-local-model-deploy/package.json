@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-image-class-local-model-deploy",
-  "version": "0.1.25",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
