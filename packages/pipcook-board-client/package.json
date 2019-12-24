@@ -3,7 +3,6 @@
   "version": "0.1.19",
   "description": "board for pipcook",
   "dependencies": {
-    "@ali/ice-add-image": "^2.0.1",
     "@alifd/next": "^1.x",
     "@icedesign/container": "^1.x",
     "@icedesign/img": "^1.x",

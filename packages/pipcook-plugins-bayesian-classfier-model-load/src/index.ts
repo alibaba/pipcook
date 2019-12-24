@@ -25,17 +25,17 @@ const assertionTest = (data: UniformTfSampleData) => {
  * @param args args. If the model path is provided, it will restore the model previously saved
  */
 const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleData, args?: ModelLoadArgsType): Promise<PipcookModel> => {
-  assert.ok(args && args.modelName, 'Please provide the unique model name to identify');
   const {
     modelId='',
   } = args || {};
   if (!modelId) {
     assertionTest(data);
+    assert.ok(args && args.modelName, 'Please provide the unique model name to identify');
   }
   let classifier = bayes();
   if (modelId) {
     const json = fs.readFileSync(getModelDir(modelId));
-    classifier = classifier.fromJSON(json);
+    classifier = bayes.fromJson(json);
   }
   const result: PipcookModel = {
     model: classifier,

@@ -96,7 +96,7 @@ export class PipcookRunner {
    * start the server when the pipeline is started.
    */
   startServer = async () => {
-    const server = await serveRunner(this);
+    const server = await await serveRunner(this);
     return server;
   }
 
@@ -105,20 +105,24 @@ export class PipcookRunner {
    * @param components: components to be executed
    */
   run = async (components:PipcookComponentResult[]) => {
-    fs.removeSync(path.join(process.cwd(), '.temp'));
-    await this.startServer();
+    fs.removeSync(path.join(process.cwd(), '.temp')); 
+
     this.startTime = Date.now()
     this.pipelineId = 'pipcook-pipeline-' + this.startTime;
     logStartExecution(this);
     if (!components || components.length <= 0) {
       throw new Error('Please specify at least one plugin to run!');
     }
+
     linkComponents(components);
     this.components = components;
-    
+
+    await this.startServer();
+
     if (this.onlyPredict) {
       return;
     }
+
     // create pipeline of plugins
     const pipeline = createPipeline(components, this);
     pipeline.subscribe((result: any) => {

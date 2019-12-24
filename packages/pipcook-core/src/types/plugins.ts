@@ -1,8 +1,8 @@
 
-import * as tf from '@tensorflow/tfjs-node-gpu';
 import {OriginSampleData, UniformSampleData} from './data';
 import {PipcookModel} from './model';
 import {EvaluateResult, DeploymentResult} from './other';
+import {PipcookComponentResult} from './component';
 
 export interface PipcookPlugin {
 }
@@ -44,5 +44,5 @@ export interface ModelEvaluateType extends PipcookPlugin {
 }
 
 export interface ModelDeployType extends PipcookPlugin {
-  (data: UniformSampleData | UniformSampleData[], model: PipcookModel | PipcookModel[], args?: ArgsType): Promise<DeploymentResult>
+  (args: ArgsType): Promise<any>
 }

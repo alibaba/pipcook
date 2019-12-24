@@ -126,7 +126,7 @@ export const ModelEvaluate: PipcookLifeCycleComponent = (plugin: ModelEvaluateTy
 export const ModelDeploy: PipcookLifeCycleComponent = (plugin: ModelDeployType, params?: any) => {
   const result = produceResultFactory(MODELDEPLOY, plugin, params);
   result.observer = (data: UniformSampleData | UniformSampleData[], model: PipcookModel | PipcookModel[]) => {
-    return from(plugin(data, model, params));
+    return from(plugin(params));
   };
   result.returnType = DEPLOYMENT;
   return result;

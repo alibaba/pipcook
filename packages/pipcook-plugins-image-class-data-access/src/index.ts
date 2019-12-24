@@ -18,14 +18,14 @@ const _cliProgress = require('cli-progress');
  * @param dataFlows sample data
  * @param type : train/test/validation
  */
-const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneHotMap: any, dataFlows: any[], type: string) => {
+const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneHotMap: any, dataFlows: any[], type: string, imagePath: string) => {
   console.log(`access ${type} image data...`);
   const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
   bar1.start(fileNames.length, 0);
   for (let j = 0; j < fileNames.length; j++) {
     const jsonData = await parseAnnotation(fileNames[j]);
     bar1.update(j);
-    let image = await Jimp.read(path.join(jsonData.annotation.folder[0], jsonData.annotation.filename[0]));
+    let image = await Jimp.read(path.join(imagePath, jsonData.annotation.filename[0]));
     image = image.resize(imgSize[0], imgSize[1]);
     const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
     const imageArray = new Uint8Array(trainImageBuffer);
@@ -85,15 +85,16 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];
     const {trainDataPath, validationDataPath, testDataPath} = dataSample;  
+    const imagePath = path.join(trainDataPath, '..', '..', 'images')
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
-    await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, trainDataFlows, 'train data');
+    await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, trainDataFlows, 'train data', imagePath);
     if (validationDataPath) {
       const validationFileNames: string[] = await glob(path.join(validationDataPath, '*.xml'));
-      await concatenateDataFlows(validationFileNames, imgSize, oneHotMap, validationDataFlows, 'validation data');
+      await concatenateDataFlows(validationFileNames, imgSize, oneHotMap, validationDataFlows, 'validation data', imagePath);
     }
     if (testDataPath) {
       const testFileNames: string[] = await glob(path.join(testDataPath, '*.xml'));
-      await concatenateDataFlows(testFileNames, imgSize, oneHotMap, testDataFlows, 'test data');
+      await concatenateDataFlows(testFileNames, imgSize, oneHotMap, testDataFlows, 'test data', imagePath);
     }
   }
 

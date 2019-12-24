@@ -55,8 +55,10 @@ export async function processImageClassification(data: any, dataAccess: PipcookC
     result = result.batch(data.length);
     result = result.take(1);
     return result;
-  } finally {
-    fs.removeSync(trainDataPath);
+  } catch(err) {
+    console.error(err);
+  }finally {
+    // fs.removeSync(trainDataPath);
   }
 }
 

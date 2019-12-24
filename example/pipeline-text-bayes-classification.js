@@ -6,7 +6,7 @@ const bayesianClassiferModelLoader = require('../packages/pipcook-plugins-bayesi
 const bayesianClassifierModelTrain = require('../packages/pipcook-plugins-bayesian-classifier-model-train').default;
 const classModelEvalute = require('../packages/pipcook-plugins-model-evaluate').default;
 const textClassDataCollect = require('../packages/pipcook-plugins-text-class-data-collect').default;
-
+const textClassLocalModelDeploy = require('../packages/pipcook-plugins-text-class-local-model-deploy').default;
 
 
 async function pipeLine() {
@@ -29,11 +29,13 @@ async function pipeLine() {
 
   const modelEvaluate = ModelEvaluate(classModelEvalute);
 
+  const modelDeploy = ModelDeploy(textClassLocalModelDeploy);
+
   const runner = new PipcookRunner('test2', {
     predictServer: true
   });
 
-  runner.run([dataCollect, dataAccess, dataProcess, modelLoad, modelTrain, modelEvaluate])
+  runner.run([dataCollect, dataAccess, dataProcess, modelLoad, modelTrain, modelEvaluate, modelDeploy])
 }
 
 pipeLine();

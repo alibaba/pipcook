@@ -24,6 +24,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
   if (!modelId) {
     assert.ok(args && args.modelName, 'Please give your model a name');
   } else {
+    args.modelName = 'predict';
     const metaData = getMetadata(modelId);
     data = <UniformGeneralSampleData>{...data, metaData};
   }
@@ -54,14 +55,20 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     setup_logger()
 
     const validationData = data.validationData || data.testData;
-    register_coco_instances("train_dataset", {}, data.trainData, path.join(data.trainData, '..', '..' , 'images'))
+    if (data.trainData) {
+      register_coco_instances("train_dataset", {}, data.trainData, path.join(data.trainData, '..', '..' , 'images'))
+    }
+    
     if (validationData) {
       register_coco_instances("val_dataset", {}, validationData, path.join(validationData, '..', '..' , 'images'))
     }
 
     cfg = get_cfg();
     cfg.merge_from_file(path.join(__dirname, 'config', 'faster_rcnn_R_50_C4_3x.yaml'));
-    cfg.DATASETS.TRAIN = python.createList(["train_dataset"]);
+    if (data.trainData) {
+      cfg.DATASETS.TRAIN = python.createList(["train_dataset"]);
+    }
+    
     if (validationData) {
       cfg.DATASETS.TEST = python.createList(['val_dataset']);
     }
@@ -84,21 +91,18 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128;
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = Object.keys(data.metaData.label.valueMap).length;
 
-    if (!modelId) {
-      cfg.OUTPUT_DIR = path.join(process.cwd(), '.temp', 'output');
-    } else {
-      cfg.OUTPUT_DIR = getModelDir(modelId);
-    }
+    cfg.OUTPUT_DIR = path.join(process.cwd(), '.temp', 'output');
     
 
     os.makedirs(cfg.OUTPUT_DIR, _({"exist_ok": true}));
-    trainer = DefaultTrainer(cfg);
-    if (modelId) {
-      trainer.resume_or_load(_({"resume": true}));
-    } else {
-      trainer.resume_or_load(_({"resume": false}));
+    if (data.trainData) {
+      trainer = DefaultTrainer(cfg);
+      if (modelId) {
+        trainer.resume_or_load(_({"resume": true}));
+      } else {
+        trainer.resume_or_load(_({"resume": false}));
+      }
     }
-    
   });
 
   return {
