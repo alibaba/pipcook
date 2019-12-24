@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "0.1.29",
+  "version": "0.1.30",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.1.43",
+    "@pipcook/pipcook-core": "^0.1.44",
     "chalk": "^3.0.0",
     "commander": "^4.0.1",
     "console.table": "^0.10.0",
