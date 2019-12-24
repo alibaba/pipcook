@@ -8,6 +8,8 @@ import * as path from 'path'
 import {PipcookRunner} from '../core/core';
 import {runPredict} from '../core/core-helper';
 import {PipcookModel} from '../types/model';
+import {logError} from '../utils/logger';
+import {ModelLoadType} from '../types/plugins';
 
 const opn = require('better-opn');
 const fs = require('fs-extra');
@@ -195,13 +197,32 @@ function serveStatic(fastify: any) {
  * this is used to start the server and pipcook board when a pipeline is started.
  * @param runner 
  */
-export function serveRunner(runner: PipcookRunner) {
+export async function serveRunner(runner: PipcookRunner) {
   runner.fastify = require('fastify')({ logger: false });
   // serve static assets and three endpoints
   serveStatic(runner.fastify);
   serverModel(runner.fastify);
   serveDataset(runner.fastify);
   serveLog(runner.fastify);
+
+  // if this parameter is true, that means we need to load the model first.
+  if (runner.onlyPredict) {
+    const modelComponent = runner.components.find((e) => e.type === 'modelLoad');
+    if (!modelComponent) {
+      logError('Please provide plugin to load model');
+      return;
+    }
+  
+    const modelPlugin = <ModelLoadType>modelComponent.plugin;
+    if (!(modelComponent.params && modelComponent.params.modelId)) {
+      logError('Please provide model id in prediction pipeline');
+      return;
+    }
+    const model = await modelPlugin(null, {
+      modelId: modelComponent.params.modelId
+    });
+    runner.latestModel = model;
+  }
 
 
   // only use predict endpoint when the parameter: predictServer is true

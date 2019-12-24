@@ -4,17 +4,13 @@
 import * as path from 'path';
 import {PipcookRunner} from './core'; 
 import {PipcookComponentResult} from '../types/component';
-import {logCurrentExecution, logError} from '../utils/logger';
+import {ModelDeployType} from '../types/plugins';
+import {logCurrentExecution} from '../utils/logger';
 import {Observable, from} from 'rxjs';
 import {flatMap} from 'rxjs/operators';
 import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA} from '../constants/other';
 import {DATAACCESS} from '../constants/plugins';
-import {PipcookModel} from '../types/model';
-import {IMAGE_CLASSIFICATION, OBJECT_DETECTION, TEXT_CLASSIFICATION} from '../constants/model';
-import {processImageClassification, processTextClassification} from '../utils/serverProcess';
-import {ModelLoadType} from '../types/plugins';
 
-const opn = require('better-opn');
 
 /**
  * Retreive relative logs required to be stored.
@@ -142,60 +138,19 @@ export function assignFailures(components: PipcookComponentResult[]) {
  * The function will be called after the pipeline is finished and predictServer parameter is true
  */
 export async function runPredict(runner: PipcookRunner, request: any) {
-  const {components, onlyPredict, latestModel} = runner;
+  const {components, latestModel} = runner;
+  const {data} = request.body;
 
   // we need to find out the dataAccess and dataProcess component 
   // since the prediction data needs to be processed by these two steps
   const dataAccess = components.find((e) => e.type === 'dataAccess');
   const dataProcess = components.find((e) => e.type === 'dataProcess');
-  let model = <PipcookModel>latestModel;
+  const modelDeploy = components.find((e) => e.type === 'modelDeploy');
 
-  // if this parameter is true, that means we need to load the model first.
-  if (onlyPredict) {
-    const modelComponent = components.find((e) => e.type === 'modelLoad');
-    if (!modelComponent) {
-      logError('Please provide plugin to load model');
-      return;
-    }
-  
-    const modelPlugin = <ModelLoadType>modelComponent.plugin;
-    if (!(modelComponent.params && modelComponent.params.modelId)) {
-      logError('Please provide model id in prediction pipeline');
-      return;
-    }
-    model = await modelPlugin(null, {
-      modelId: modelComponent.params.modelId
-    });
-  }
-  const type = model.type;
-
-  // access plugin is necessary
-  if (!dataAccess) {
-    logError('current pipeline does not have data access plugin!');
-    return;
-  }
-  const {data} = request.body;
-  if (!Array.isArray(data)) {
-    return {
-      status: false,
-      msg: 'the input data must be an array'
-    };
-  }
-  let inputData;
-  if (type === IMAGE_CLASSIFICATION) {
-    inputData = await processImageClassification(data, dataAccess, dataProcess, IMAGE_CLASSIFICATION);
-  } else if (type === OBJECT_DETECTION) {
-    inputData = await processImageClassification(data, dataAccess, dataProcess, OBJECT_DETECTION);
-  } else if (type === TEXT_CLASSIFICATION) {
-    inputData = await processTextClassification(data, dataAccess, dataProcess);
-  } else {
-    logError('the model loaded is not of a supported type');
-    return;
-  }
-  let result: any;
-  await inputData.forEachAsync(async (e: any) => {
-    result = await model.predict(e);
+  const result = await (<ModelDeployType>modelDeploy.plugin)({
+    data, dataAccess, model: latestModel, dataProcess
   });
+
   return {
     status: true,
     result: result

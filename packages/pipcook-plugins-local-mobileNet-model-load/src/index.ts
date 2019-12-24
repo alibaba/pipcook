@@ -110,27 +110,30 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
         await this.model.save('file://' + modelPath);
       },
       predict: function (inputData: tf.Tensor<any>) {
-        const predictResult = (this.model.predict(inputData)).dataSync();
-        let count = 0;
-        let prop = predictResult[count];
-        for (let j = 1; j < predictResult.length; j++) {
-          if (predictResult[j] > prop) {
-            count = j;
-            prop = predictResult[j];
-          }
-        }
-        let index = null;
-        if (data.metaData.label.valueMap) {
-          for (let key in data.metaData.label.valueMap) {
-            if (data.metaData.label.valueMap[key] === count) {
-              index = key;
+        const predictResultArray = (this.model.predict(inputData)).arraySync();
+        const result = predictResultArray.map((predictResult: any[]) => {
+          let count = 0;
+          let prop = predictResult[count];
+          for (let j = 1; j < predictResult.length; j++) {
+            if (predictResult[j] > prop) {
+              count = j;
+              prop = predictResult[j];
             }
           }
-        }
-        if (index !== null) {
-          return index;
-        }
-        return predictResult;
+          let index = null;
+          if (data.metaData.label.valueMap) {
+            for (let key in data.metaData.label.valueMap) {
+              if (data.metaData.label.valueMap[key] === count) {
+                index = key;
+              }
+            }
+          }
+          if (index !== null) {
+            return index;
+          }
+          return predictResult;
+        })
+        return result; 
       },
       modelName: (<string>(args.modelName))
     }

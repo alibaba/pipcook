@@ -1,6 +1,6 @@
 {
-  "name": "@pipcook/pipcook-plugins-odps-data-collect",
-  "version": "0.1.26",
+  "name": "@pipcook/pipcook-plugins-text-class-local-model-deploy",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -19,7 +19,7 @@
     "@pipcook/pipcook-core": "^0.1.43",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
     "fs-extra": "^8.1.0",
-    "odps": "x.x.x"
+    "uuid": "^3.3.3"
   },
   "gitHead": "4ab1582b42a140855845af540ebc789c8045f79c"
 }

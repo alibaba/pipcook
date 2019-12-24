@@ -30,7 +30,7 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
   
   await convertPascol2CocoFileOutput(trainFiles, path.join(trainDataPath, '..', 'train.json'));
   
-  const trainJsonContent = require(path.join(trainDataPath, '..', 'test.json'));
+  const trainJsonContent = require(path.join(trainDataPath, '..', 'train.json'));
   const categories = trainJsonContent.categories;
   const oneHotMap:any = {};
   categories.forEach((category: any) => {

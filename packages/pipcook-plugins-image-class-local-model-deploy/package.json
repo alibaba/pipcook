@@ -1,6 +1,6 @@
 {
-  "name": "@pipcook/pipcook-plugins-image-detection-model-load",
-  "version": "0.1.12",
+  "name": "@pipcook/pipcook-plugins-image-class-local-model-deploy",
+  "version": "0.1.25",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -17,8 +17,9 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.1.43",
-    "@tensorflow-models/mobilenet": "^2.0.4",
-    "@tensorflow/tfjs-node-gpu": "x.x.x"
+    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "fs-extra": "^8.1.0",
+    "uuid": "^3.3.3"
   },
   "gitHead": "4ab1582b42a140855845af540ebc789c8045f79c"
 }
