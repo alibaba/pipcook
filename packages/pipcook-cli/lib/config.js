@@ -14,16 +14,16 @@ module.exports = {
     '@pipcook/pipcook-plugins-odps-data-collect',
     '@pipcook/pipcook-plugins-simple-cnn-model-load',
     '@pipcook/pipcook-plugins-image-class-data-collect',
-    '@pipcook/pipcook-plugins-image-detection-data-access',
-    '@pipcook/pipcook-plugins-image-detection-data-collect',
-    '@pipcook/pipcook-plugins-image-detection-model-load',
     '@pipcook/pipcook-python-node',
     '@pipcook/pipcook-plugins-text-class-data-collect',
     '@pipcook/pipcook-plugins-detection-detectron-model-evaluate',
     '@pipcook/pipcook-plugins-detection-detectron-model-load',
     '@pipcook/pipcook-plugins-detection-detectron-model-train',
     '@pipcook/pipcook-plugins-detection-detectron-data-access',
-    '@pipcook/pipcook-plugins-image-coco-data-collect'
+    '@pipcook/pipcook-plugins-image-coco-data-collect',
+    '@pipcook/pipcook-plugins-detection-detectron-model-deploy',
+    '@pipcook/pipcook-plugins-image-class-local-model-deploy',
+    '@pipcook/pipcook-plugins-text-class-local-model-deploy'
   ],
   pipcookLogName: '.pipcook-log'
 }
