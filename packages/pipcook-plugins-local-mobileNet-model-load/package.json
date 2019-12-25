@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-local-mobilenet-model-load",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.1.44",
+    "@pipcook/pipcook-core": "^0.1.45",
     "@tensorflow-models/mobilenet": "^2.0.4",
     "@tensorflow/tfjs-node-gpu": "x.x.x"
   },
