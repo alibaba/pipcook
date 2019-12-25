@@ -66,7 +66,10 @@ export function createPipeline(components: PipcookComponentResult[], self: any, 
   const firstComponent = components[0];
   firstComponent.status = 'running';
   logCurrentExecution(firstComponent, logType)
-  const firstObservable = <Observable<any>>firstComponent.observer();
+  const insertParams = {
+    
+  }
+  const firstObservable = <Observable<any>>firstComponent.observer(self.latestOriginSampleData, self.latestModel, insertParams);
   self.updatedType = firstComponent.returnType;
 
   const flatMapArray: any = [];
@@ -81,9 +84,9 @@ export function createPipeline(components: PipcookComponentResult[], self: any, 
         return from(assignLatestResult(updatedType, result, self)).pipe(
           flatMap(() => {
             if (component.type === DATAACCESS) {
-              return component.observer(self.latestOriginSampleData, self.latestModel, self.pipelineId, self.logDir);
+              return component.observer(self.latestOriginSampleData, self.latestModel, insertParams);
             } else {
-              return component.observer(self.latestSampleData, self.latestModel, self.pipelineId, self.logDir);
+              return component.observer(self.latestSampleData, self.latestModel, insertParams);
             }
             
           })

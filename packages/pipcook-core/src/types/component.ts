@@ -1,7 +1,7 @@
 import {PipcookPlugin} from './plugins';
 import {PipcookModel} from './model'
-import {OriginSampleData, UniformSampleData} from './data';
-import {PipcookMergeArray, PipObject} from './other';
+import {OriginSampleData, UniformSampleData, InsertParams} from './data';
+import {PipObject} from './other';
 import { Subscribable } from 'rxjs';
 
 export interface PipcookComponent {
@@ -9,7 +9,8 @@ export interface PipcookComponent {
 }
 
 interface ObserverFunc {
-  (data?: OriginSampleData | OriginSampleData[]| UniformSampleData | UniformSampleData[] | null, model?: PipcookModel | PipcookModel[] |null, ...args: any): Subscribable<any>
+  (data: OriginSampleData | OriginSampleData[]| UniformSampleData | UniformSampleData[] | null, 
+    model: PipcookModel | PipcookModel[] |null, insertParams: InsertParams): Subscribable<any>
 }
 
 export interface PipcookComponentResult {
@@ -17,7 +18,7 @@ export interface PipcookComponentResult {
   plugin?: PipcookPlugin,
   mergeComponents?: PipcookComponent[][],
   params?: PipObject,
-  observer: ObserverFunc;
+  observer?: ObserverFunc;
   returnType: string;
   previousComponent: PipcookComponentResult | null;
   status: 'not execute' | 'running' | 'success' | 'failure'
