@@ -222,7 +222,9 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
       width: parseInt(xmlJson.annotation.size[0].width[0]),
       id: i+1
     });
-
+    if (!(xmlJson.annotation && xmlJson.annotation.object && xmlJson.annotation.object.length > 0)) {
+      continue;
+    }
     xmlJson.annotation.object.forEach((item: any) => {
       const name = item.name[0];
       const category = cocoJson.categories.find((e: any) => e.name === name);

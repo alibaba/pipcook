@@ -71,7 +71,9 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     
     if (validationData) {
       cfg.DATASETS.TEST = python.createList(['val_dataset']);
-    }
+    } else {
+
+    }cfg.DATASETS.TEST = python.createList(['train_dataset']);
 
     cfg.DATALOADER.NUM_WORKERS = numWorkers;
     if (!modelId) {
@@ -93,6 +95,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
     cfg.OUTPUT_DIR = path.join(process.cwd(), '.temp', 'output');
     
+    python.print(cfg);
 
     os.makedirs(cfg.OUTPUT_DIR, _({"exist_ok": true}));
     if (data.trainData) {
@@ -105,6 +108,28 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     }
   });
 
+  // to initialize prediction environment
+  let torch: any;
+  let config: any;
+  await Python.scope('detectron_prediction', async (python: any) => {
+    const _ = python.nA;
+    torch = python.import('torch');
+    const [get_cfg] = python.fromImport('detectron2.config', ['get_cfg']);
+
+    config = get_cfg();
+    config.merge_from_file(path.join(__dirname, 'config', 'faster_rcnn_R_50_C4_3x.yaml'));
+    if (!modelId) {
+      config.MODEL.WEIGHTS = path.join(process.cwd(), '.temp', 'output', 'model_final.pth');
+    } else {
+      config.MODEL.WEIGHTS = path.join(getModelDir(modelId), 'model_final.pth');
+    }
+    
+    config.MODEL.ROI_HEADS.NUM_CLASSES = Object.keys(data.metaData.label.valueMap).length;
+    if (device === 'cpu') {
+      config.MODEL.DEVICE = device;
+    }  
+  })
+
   return {
     model: trainer,
     type: 'object detection',
@@ -116,32 +141,15 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     save: async function(modelPath: string) {
       fs.copySync(path.join(process.cwd(), '.temp', 'output'), modelPath);
     },
-    predict: async function (inputData: tf.Tensor<any>) {
+    predict: async function (inputData: string) {
       let prediction: any;
-      Python.scope('detectron_prediction', async (python: any) => {
-        const _ = python.nA;
-        const torch = python.import('torch');
-        const [get_cfg] = python.fromImport('detectron2.config', ['get_cfg']);
-        const [DefaultPredictor] = python.fromImport('detectron2.engine.defaults', ['DefaultPredictor']);        
-    
-        cfg = get_cfg();
-        cfg.merge_from_file(path.join(__dirname, 'config', 'faster_rcnn_R_50_C4_3x.yaml'));
-        if (!modelId) {
-          cfg.MODEL.WEIGHTS = path.join(process.cwd(), '.temp', 'output', 'model_final.pth');
-        } else {
-          cfg.MODEL.WEIGHTS = path.join(getModelDir(modelId), 'model_final.pth');
-        }
-        
-        cfg.MODEL.ROI_HEADS.NUM_CLASSES = Object.keys(data.metaData.label.valueMap).length;
-        if (device === 'cpu') {
-          cfg.MODEL.DEVICE = device;
-        }
-        cfg.INPUT.FORMAT = 'RGB';
-    
-        const model = DefaultPredictor(cfg)
-        const img = python.createNumpyFromTf(inputData);
-        const out = model(img)
-        const ins = out['instances'].to(torch.device('cpu'))
+      await Python.scope('detectron_prediction', async (python: any) => {
+        const [DefaultPredictor] = python.fromImport('detectron2.engine.defaults', ['DefaultPredictor']);
+        const predictor = DefaultPredictor(config)
+        const cv2 = python.import('cv2')
+        const img = cv2.imread(inputData)
+        const out = predictor(img)
+        const ins = python.runRaw(`${Python.convert(out)}['instances'].to(${Python.convert(torch)}.device('cpu'))`)
         const boxes = ins.pred_boxes.tensor.numpy()
         const scores = ins.scores.numpy()
         const classes = ins.pred_classes.numpy()
@@ -157,14 +165,13 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
                 'width': int(bbox[2] - bbox[0] + 0.5),
                 'height': int(bbox[3] - bbox[1] + 0.5)
             }
-          } for (bbox, score, cl) in zip(${python.convert(boxes)}, ${python.convert(scores)}, ${python.convert(classes)}) if score > 0.7]
+          } for (bbox, score, cl) in zip(${Python.convert(boxes)}, ${Python.convert(scores)}, ${Python.convert(classes)}) if score > 0.7]
         `);
 
         prediction = await python.evaluate(preds);
-        console.log('detection2 prediction: ', prediction);
       });
 
-      return prediction;
+      return prediction.value;
     },
     modelName: (<string>(args.modelName)),
     modelPath: path.join(process.cwd(), '.temp', 'output'), 

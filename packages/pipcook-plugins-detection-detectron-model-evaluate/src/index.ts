@@ -28,7 +28,7 @@ const imageDetectronModelTrain: ModelEvaluateType =
 
     const val_result = inference_on_dataset(trainer.model, val_loader, evaluator)
 
-    evaluationResult = await python.evluate(val_result);
+    evaluationResult = await python.evaluate(val_result);
   });
   return {
     result: evaluationResult

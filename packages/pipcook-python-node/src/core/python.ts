@@ -403,20 +403,29 @@ export default class Python {
    * Please use convert method to convert PythonObject to its identifier when use this method
    */
   runRaw = (raw: string) => {
-    raw = raw.replace(/\s/g, '');
+    raw = raw.replace(/\n/g, ' ');
     const identifier = getId();
     this.statements.push(`${identifier} = ${raw}`);
     return getObject(identifier, this.statements);
   }
 
-  evluate = async (object: PythonObject) => {
+  evaluate = async (object: PythonObject) => {
     this.statements.push(`${object.__pipcook__identifier}`);
     const result: any = 
       await Python.constructPythonStatements(this, {type: `type(${object.__pipcook__identifier})`, value: `${object.__pipcook__identifier}`});
-    return {
-      type: result.type,
-      value: result.value
+    try {
+      const res = {
+        type: result.type,
+        value: eval(result.value)
+      }
+      return res;
+    } catch (err) {
+      return {
+        type: result.type,
+        value: result.value
+      }
     }
+    
   }
   createNumpyFromTf = (tensor: tf.Tensor) => {
     const identifier = getId();

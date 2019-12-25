@@ -80,6 +80,7 @@ export class PipcookRunner {
       this.onlyPredict = true;
     }
     fs.ensureDirSync(path.join(this.logDir, 'models'));
+    fs.removeSync(path.join(process.cwd(), '.temp'));
   }
 
   /**
@@ -89,7 +90,6 @@ export class PipcookRunner {
     // store Pipcook log
     const json = JSON.stringify(getLog(this));
     fs.outputFileSync(path.join(<string>this.logDir, 'logs' ,this.pipelineId+'.json'), json);
-    fs.removeSync(path.join(process.cwd(), '.temp'));
   }
 
   /**

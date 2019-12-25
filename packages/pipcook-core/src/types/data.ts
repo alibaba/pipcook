@@ -30,3 +30,6 @@ export interface UniformGeneralSampleData extends UniformSampleData {
   validationData?: string;
   testData?: string;
 }
+
+export interface InsertParams {
+}

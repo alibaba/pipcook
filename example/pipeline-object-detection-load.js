@@ -19,15 +19,22 @@
  *   predict interface we defined for model. For more information, Please refer to https://github.com/alibaba/pipcook/wiki/pipcook-plugins-model-evaluate
  * 
  */
-let {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner} = require('../packages/pipcook-core');
+let {DataAccess, ModelLoad, PipcookRunner, ModelDeploy, ModelTrain, ModelEvaluate, DataCollect} = require('../packages/pipcook-core');
 
-let imageCocoDataCollect = require('../packages/pipcook-plugins-image-coco-data-collect').default;
 let imageDetectronAccess = require('../packages/pipcook-plugins-detection-detectron-data-access').default;
 let detectronModelLoad = require('../packages/pipcook-plugins-detection-detectron-model-load').default;
+let detectronModelDeploy = require('../packages/pipcook-plugins-detection-detectron-model-deploy').default;
+let imageCocoDataCollect = require('../packages/pipcook-plugins-image-coco-data-collect').default;
+
 let detectronModelTrain = require('../packages/pipcook-plugins-detection-detectron-model-train').default;
 let detectronModelEvaluate = require('../packages/pipcook-plugins-detection-detectron-model-evaluate').default;
 
 async function startPipeline() {
+  const dataCollect = DataCollect(imageCocoDataCollect, {
+    url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/test.zip',
+    annotationFileName: 'annotation.json'
+  }); 
+
   // access detection data into our specifiction
   const dataAccess = DataAccess(imageDetectronAccess);
 
@@ -35,15 +42,20 @@ async function startPipeline() {
   const modelLoad = ModelLoad(detectronModelLoad, {
     modelName: 'test1',
     device: 'cpu',
-    modelId: '1576570936019-test1',
-    maxIter: 1
+    maxIter: 1,
   });
+
+  const modelTrain = ModelTrain(detectronModelTrain);
+
+  const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
+
+  const modelDeploy = ModelDeploy(detectronModelDeploy);
 
   const runner = new PipcookRunner('test1', {
-    onlyPredict: true
+    predictServer: true
   });
 
-  runner.run([dataAccess, modelLoad])
+  runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy])
 
 }
 
