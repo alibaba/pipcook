@@ -47,7 +47,7 @@ async function startPipeline() {
 
   // train the model
   const modelTrain = ModelTrain(imageClassModelTrain, {
-    epochs: 1
+    epochs: 20
   });
 
   // evaluate the model

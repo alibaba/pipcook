@@ -19,13 +19,13 @@
  *   predict interface we defined for model. For more information, Please refer to https://github.com/alibaba/pipcook/wiki/pipcook-plugins-model-evaluate
  * 
  */
-let {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner} = require('@pipcook/pipcook-core');
+let {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner} = require('../packages/pipcook-core');
 
-let imageCocoDataCollect = require('@pipcook/pipcook-plugins-image-coco-data-collect').default;
-let imageDetectronAccess = require('@pipcook/pipcook-plugins-detection-detectron-data-access').default;
-let detectronModelLoad = require('@pipcook/pipcook-plugins-detection-detectron-model-load').default;
-let detectronModelTrain = require('@pipcook/pipcook-plugins-detection-detectron-model-train').default;
-let detectronModelEvaluate = require('@pipcook/pipcook-plugins-detection-detectron-model-evaluate').default;
+let imageCocoDataCollect = require('../packages/pipcook-plugins-image-coco-data-collect').default;
+let imageDetectronAccess = require('../packages/pipcook-plugins-detection-detectron-data-access').default;
+let detectronModelLoad = require('../packages/pipcook-plugins-detection-detectron-model-load').default;
+let detectronModelTrain = require('../packages/pipcook-plugins-detection-detectron-model-train').default;
+let detectronModelEvaluate = require('../packages/pipcook-plugins-detection-detectron-model-evaluate').default;
 
 async function startPipeline() {
    // collect detection data
@@ -41,7 +41,7 @@ async function startPipeline() {
   // load mobile net model
   const modelLoad = ModelLoad(detectronModelLoad, {
     modelName: 'test1',
-    device: 'cuda'
+    device: 'cpu'
   });
 
   // train the model
