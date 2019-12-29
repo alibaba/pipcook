@@ -8,6 +8,7 @@ import glob from 'glob-promise';
 import * as path from 'path';
 import * as assert from 'assert';
 const fs = require('fs-extra');
+const uuidv1 = require('uuid/v1');
 
 /**
  * collect the data either from remote url or local file. It expects a zip 
@@ -49,7 +50,7 @@ const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Pr
     const splitString = imagePath.split(path.sep);
     const trainType = splitString[splitString.length - 3];
     const category = splitString[splitString.length - 2];
-    const imageName = splitString[splitString.length -1];
+    const imageName = uuidv1() + splitString[splitString.length -1];
     const annotationDir = path.join(saveDir, 'annotations' ,trainType);
     createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
     typeSet.add(trainType);
