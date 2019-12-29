@@ -22,6 +22,7 @@
     "fs-extra": "^8.1.0",
     "glob": "^7.1.5",
     "glob-promise": "^3.4.0",
+    "uuid": "^3.3.3",
     "xml2js": "^0.4.22"
   },
   "gitHead": "f8a5b10422f44ff886bcdc929aeb0925576caaee"
