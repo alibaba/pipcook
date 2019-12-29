@@ -53,6 +53,7 @@ const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Pr
     const annotationDir = path.join(saveDir, 'annotations' ,trainType);
     createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
     typeSet.add(trainType);
+    fs.moveSync(imagePath, path.join(saveDir, 'images', imageName), { overwrite: true });
   });
 
   if (!typeSet.has('train')) {

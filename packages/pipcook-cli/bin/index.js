@@ -8,6 +8,7 @@ const log = require('../lib/log');
 const board = require('../lib/board');
 const start = require('../lib/start');
 const devPlugin = require('../lib/devPlugin');
+const dataset = require('../lib/dataset');
 
 // check node version
 if (!semver.gte(process.version, '10.0.0')) {
@@ -63,6 +64,14 @@ program
   .description('initialize plugin development environment')
   .action((dir, cmdObj) => {
     devPlugin(cmdObj);
+  })
+
+program
+  .command('dataset')
+  .option('-t, --type', 'action type')
+  .description('type of action you want to do on dataset')
+  .action((dir, cmdObj) => {
+    dataset(cmdObj);
   })
 
 program.parse(process.argv);
