@@ -31,7 +31,7 @@ let detectronModelEvaluate = require('../packages/pipcook-plugins-detection-dete
 
 async function startPipeline() {
   const dataCollect = DataCollect(imageCocoDataCollect, {
-    url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/test.zip',
+    url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/autoLayoutGroupRecognition.zip',
     annotationFileName: 'annotation.json'
   }); 
 
