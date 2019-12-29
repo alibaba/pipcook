@@ -24,7 +24,7 @@ async function startPipeline() {
   // load mobile net model
   const modelLoad = ModelLoad(simpleCnnModelLoad, {
     modelName: 'test1',
-    modelId: '1576029886695-test1'
+    modelId: '<your own id>'
   });
 
   const runner = new PipcookRunner('test1', {
