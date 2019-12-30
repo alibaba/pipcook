@@ -9,7 +9,7 @@ With the mission of enabling front-end engineers to utilize the power of machine
 
 We recommend to install pipcook-cli to manage pipcook projects:
 ```
-sudo npm install -g pipcook-cli
+sudo npm install -g @pipcook/pipcook-cli
 ```
 
 You can initialize a pipcook project with just a few commands:
