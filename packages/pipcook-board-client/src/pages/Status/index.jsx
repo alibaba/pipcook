@@ -66,20 +66,29 @@ export default class Status extends Component {
           </div>
         }
         {
-          status == 'success' &&
+          status == 'no job' &&
             <div className="tips">
               Currently a pipeline is running. Below is Infomation: <br />
               PipeLine Name: {id} <br />
               PipeLine Name: {name} <br />
               PipeLine Version: {version} <br />
               Start Time: {startTime} <br />
-              <a href={
-                type === 'image classification' ? "#/image-classification" : (
-                  type === 'object detection' ? "#/object-detection" : (
-                    type === 'text classification' ? "#/text-classification" : '#/'
-                  )
-                )
-              }><Button type="primary">Go to Prediction</Button></a>
+              <div>
+                local prediction server has been running, API is as follows: <br /><br />
+                <div className="codes">
+                  POST <br /><br />
+                  http://127.0.0.1:7778/predict <br /><br />
+                  {
+                    `
+                    {
+                      "data": [<array of your data>]
+                    }
+                    `
+                  }<br /><br />
+                  application/json
+                </div>
+                
+              </div>
             </div>
         }
         {
