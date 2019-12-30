@@ -84,7 +84,7 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
     } else {
       const trainableLayers = ['denseModified','conv_pw_13_bn','conv_pw_13','conv_dw_13_bn','conv _dw_13'];
       const mobilenet = await
-        tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json');
+        tf.loadLayersModel('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/models/mobilenet/model.json');
       const newInputLayer = tf.input({shape: inputShape});
       const output = applyModel(newInputLayer, mobilenet);
       const predictions = <tf.SymbolicTensor> tf.layers.dense({units: outputShape[1],  activation: 'softmax', name: 'denseModified'}).apply(output); 
