@@ -19,6 +19,11 @@ pipcook init
 cd pipcook-project
 ```
 
+note: if you use some client other than npm, such as cnpm (taobao mirror), you can specify client by
+```
+pipcook init -c cnpm
+```
+
 ## Documentation
 
 Please refer to [this link](https://github.com/alibaba/pipcook/wiki/Pipcook-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F) to check the full documentation.
