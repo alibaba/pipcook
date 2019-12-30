@@ -16,7 +16,7 @@ You can initialize a pipcook project with just a few commands:
 ```
 mkdir pipcook-example && cd pipcook-example
 pipcook init
-cd pipcook-example
+cd pipcook-project
 ```
 
 ## Documentation
