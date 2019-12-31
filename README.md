@@ -16,7 +16,12 @@ You can initialize a pipcook project with just a few commands:
 ```
 mkdir pipcook-example && cd pipcook-example
 pipcook init
-cd pipcook-example
+cd pipcook-project
+```
+
+note: if you use some client other than npm, such as cnpm (taobao mirror), you can specify client by
+```
+pipcook init -c cnpm
 ```
 
 ## Documentation
