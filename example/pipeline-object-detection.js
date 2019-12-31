@@ -35,19 +35,15 @@ async function startPipeline() {
     annotationFileName: 'annotation.json'
   });
   
-  // access detection data into our specifiction
   const dataAccess = DataAccess(imageDetectronAccess);
 
-  // load mobile net model
   const modelLoad = ModelLoad(detectronModelLoad, {
     modelName: 'test1',
     device: 'cpu'
   });
 
-  // train the model
   const modelTrain = ModelTrain(detectronModelTrain);
 
-  // evaluate the model
   const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
 
   const runner = new PipcookRunner('test1', {
