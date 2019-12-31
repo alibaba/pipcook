@@ -20,12 +20,15 @@
  *   predict interface we defined for model. For more information, Please refer to https://github.com/alibaba/pipcook/wiki/pipcook-plugins-model-evaluate
  * 
  */
-let {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner} = require('@pipcook/pipcook-core');
-let imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
-let simpleCnnModelLoad = require('@pipcook/pipcook-plugins-simple-cnn-model-load').default;
-let modelTrainPlugin = require('@pipcook/pipcook-plugins-model-train').default;
-let modelEvalutePlugin = require('@pipcook/pipcook-plugins-model-evaluate').default;
-let imageMnistDataCollection = require('@pipcook/pipcook-plugins-image-mnist-data-collect').default
+const {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner} = require('@pipcook/pipcook-core');
+
+const imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
+const simpleCnnModelLoad = require('@pipcook/pipcook-plugins-simple-cnn-model-load').default;
+const modelTrainPlugin = require('@pipcook/pipcook-plugins-model-train').default;
+const modelEvalutePlugin = require('@pipcook/pipcook-plugins-model-evaluate').default;
+const imageMnistDataCollection = require('@pipcook/pipcook-plugins-image-mnist-data-collect').default
+const imageModelDeploy = require('@pipcook/pipcook-plugins-image-class-local-model-deploy').default;
+
 
 async function startPipeline() {
   // collect mnist data
@@ -52,11 +55,13 @@ async function startPipeline() {
   // evaluate the model
   const modelEvaluate = ModelEvaluate(modelEvalutePlugin);
 
+  const modelDeploy = ModelDeploy(imageModelDeploy);
+
   const runner = new PipcookRunner('pipeline-mnist-example', {
     predictServer: true
   });
 
-  runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate])
+  runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy])
 }
 
 startPipeline();
