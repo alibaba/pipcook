@@ -13,7 +13,7 @@ const {DataAccess, ModelLoad, PipcookRunner, ModelDeploy} = require('@pipcook/pi
 
 const imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
 const simpleCnnModelLoad = require('@pipcook/pipcook-plugins-simple-cnn-model-load').default;
-
+const imageClassLocalModelDeploy = require('@pipcook/pipcook-plugins-image-class-local-model-deploy').default;
 
 async function startPipeline() {
   // access mnist data into our specifiction
@@ -24,7 +24,7 @@ async function startPipeline() {
   // load mobile net model
   const modelLoad = ModelLoad(simpleCnnModelLoad, {
     modelName: 'test1',
-    modelId: '<your own id>'
+    modelId: '<model id>'
   });
 
   // deploy to local
