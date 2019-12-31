@@ -20,7 +20,7 @@
  *   predict interface we defined for model. For more information, Please refer to https://github.com/alibaba/pipcook/wiki/pipcook-plugins-model-evaluate
  * 
  */
-const {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner} = require('@pipcook/pipcook-core');
+const {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy} = require('@pipcook/pipcook-core');
 
 const imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
 const simpleCnnModelLoad = require('@pipcook/pipcook-plugins-simple-cnn-model-load').default;

@@ -20,7 +20,7 @@
  * 
  */
 
-const {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner} = require('@pipcook/pipcook-core');
+const {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy} = require('@pipcook/pipcook-core');
 
 const imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
 const mobileNetLoad = require('@pipcook/pipcook-plugins-local-mobilenet-model-load').default;
