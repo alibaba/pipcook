@@ -66,7 +66,7 @@ export default class Status extends Component {
           </div>
         }
         {
-          status == 'no job' &&
+          status == 'success' &&
             <div className="tips">
               Currently a pipeline is running. Below is Infomation: <br />
               PipeLine Name: {id} <br />
@@ -74,7 +74,7 @@ export default class Status extends Component {
               PipeLine Version: {version} <br />
               Start Time: {startTime} <br />
               <div>
-                local prediction server has been running, API is as follows: <br /><br />
+                local prediction server has been running, API is as follows, only if you specify local deploy plugin, this will work: <br /><br />
                 <div className="codes">
                   POST <br /><br />
                   http://127.0.0.1:7778/predict <br /><br />
