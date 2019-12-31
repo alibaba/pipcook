@@ -45,3 +45,6 @@ RUN apt install lsof
 
 ENV TF_FORCE_GPU_ALLOW_GROWTH=true
 ENV LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64
+## add cuda 10.0 support
+COPY --from=nvidia/cuda:10.0-cudnn7-devel /usr/local/cuda-10.0 /usr/local/cuda-10.0
+ENV LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64:${LD_LIBRARY_PATH}
