@@ -20,13 +20,14 @@
  * 
  */
 
-let {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner} = require('../packages/pipcook-core');
+const {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy} = require('@pipcook/pipcook-core');
 
-let imageClassDataAccess = require('../packages/pipcook-plugins-image-class-data-access').default;
-let mobileNetLoad = require('../packages/pipcook-plugins-local-mobileNet-model-load').default;
-let modelTrainPlugin = require('../packages/pipcook-plugins-model-train').default;
-let modelEvaluatePlugin = require('../packages/pipcook-plugins-model-evaluate').default;
-let imageClassDataCollect = require('../packages/pipcook-plugins-image-class-data-collect').default
+const imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
+const mobileNetLoad = require('@pipcook/pipcook-plugins-local-mobileNet-model-load').default;
+const modelTrainPlugin = require('@pipcook/pipcook-plugins-model-train').default;
+const modelEvaluatePlugin = require('@pipcook/pipcook-plugins-model-evaluate').default;
+const imageClassDataCollect = require('@pipcook/pipcook-plugins-image-class-data-collect').default
+const imageClassLocalModelDeploy = require('@pipcook/pipcook-plugins-image-class-local-model-deploy').default;
 
 async function startPipeline() {
   // collect mnist data
@@ -52,11 +53,14 @@ async function startPipeline() {
   // evaluate the model
   const modelEvaluate = ModelEvaluate(modelEvaluatePlugin);
 
+  // deploy into local
+  const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
+
   const runner = new PipcookRunner('test1', {
     predictServer: true
   });
 
-  runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate])
+  runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy])
 }
 
 startPipeline();
