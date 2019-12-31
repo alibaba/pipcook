@@ -11,7 +11,7 @@
  */
 
 
-const {Python} = require('../packages/pipcook-python-node');
+const {Python} = require('@pipcook/pipcook-python-node');
 
 async function train () {
   await Python.scope('test1', (python) => {
