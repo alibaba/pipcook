@@ -44,7 +44,8 @@ async function startPipeline() {
 
   // load mobile net model
   const modelLoad = ModelLoad(mobileNetLoad, {
-    modelName: 'test1'
+    modelName: 'test1',
+    isFreeze: false
   });
 
   // train the model
