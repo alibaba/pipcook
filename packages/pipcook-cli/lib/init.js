@@ -65,7 +65,7 @@ function downloadConfig() {
     return new Promise((resolve, reject) => {
       const file = fse.createWriteStream(path.join(__dirname, 'temp', 'config.js'));
       let receivedBytes = 0
-      request.get('https://raw.githubusercontent.com/alibaba/pipcook/master/packages/pipcook-cli/lib/config.js')
+      request.get('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/assets/config.js')
         .on('response', (response) => {
           const totalBytes = response.headers['content-length'];
         })

@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "",
   "main": "index.js",
   "scripts": {
