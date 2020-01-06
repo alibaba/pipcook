@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-image-mnist-data-collect
+
 **This plugin is used to collect classic mnist handwritten datasets in the image classification pipeline and store them in a certain dataset format (pascol voc)
 
 <a name="klNlr"></a>

@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-image-class-data-collect
+
 This plugin is used to collect images in the image classification pipeline and store them in a certain dataset format (pascol voc)
 
 <a name="klNlr"></a>

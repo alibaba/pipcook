@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-detection-detectron-model-deploy
+
 This plugin is used to deploy the detectron2 object detection model locally, start a local server, and return the corresponding prediction results.
 
 <a name="Ej4GX"></a>

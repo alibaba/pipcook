@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-text-class-data-collect
+
 此插件用于文本分类管道中将文本数据收集进来并以一定的数据集格式存储 (csv)
 
 

@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-detection-detectron-model-deploy
+
 此插件用于将 detectron2 目标检测模型部署到本地，启动一个本地的 server， 并且返回相应的预测结果
 
 <a name="Ej4GX"></a>

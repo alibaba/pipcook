@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-image-detection-data-access
+
 接入目标检测数据，此插件期待 PASCOL VOC 格式的数据集进入，并将数据接入为 tf.data api的数据进入下游
 
 

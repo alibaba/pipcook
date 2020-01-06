@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-image-detection-data-collect
+
 This plugin is used to collect images in the target detection pipeline and store them in a certain dataset format (pascol voc)
 
 <a name="c8ad2b59"></a>

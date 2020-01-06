@@ -1,3 +1,5 @@
+# 内置 pipeline 详细介绍
+
 <a name="6WNZz"></a>
 ## 图片分类
 我们内置了多个插件可以组合完成一个图片分类的 pipeline， 下面我们通过介绍各个环节的插件来详细介绍这条 pipeline 是怎么完成工作的，相关代码您可以在[这里](https://github.com/alibaba/pipcook/blob/master/example/pipeline-databinding-image-classification.js)找到

@@ -1,3 +1,5 @@
+# 想要使用python？
+
 pipcook 的宗旨是服务于前端工程师，推动前端智能化发展，所以 pipcook 采用 JavaScript （TypeScript) 开发，给予开发者基于 JS 的 API 并且在全部的 pipeline 在 JS 的环境中运行。然而，现阶段在数学，数据分析，数据处理和机器学习领域，python 语言的类库更多，生态更加繁荣。因此，我们开发了 pipcook-python-node， 希望将整个 python的生态引入 pipcook， 并且以 JS 的方式调用 python 的类库，从而扩展 JS 的能力
 
 <a name="VLC91"></a>

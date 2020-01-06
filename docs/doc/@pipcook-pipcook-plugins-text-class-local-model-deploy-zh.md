@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-text-class-local-model-deploy
+
 此插件用于将文本分类模型部署到本地，启动一个本地的 server， 并且返回相应的预测结果
 
 <a name="Ej4GX"></a>

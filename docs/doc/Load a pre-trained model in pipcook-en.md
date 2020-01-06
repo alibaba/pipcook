@@ -1,3 +1,5 @@
+# Load a pre-trained model in pipcook
+
 Assuming that we have trained a model with pipcook's pipeline, we may want to load the trained model directly. For example, after training the image classification model, we want to load the model and deploy it locally for prediction.
 
 The code is as follows:

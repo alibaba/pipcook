@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-local-mobilenet-model-load
+
 此模型将会加载 mobilenet_v1  模型，用于图片分类训练
 <a name="klNlr"></a>
 #### pipcook 插件类别：

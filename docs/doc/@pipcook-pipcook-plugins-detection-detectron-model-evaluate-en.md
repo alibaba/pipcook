@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-detection-detectron-model-evaluate
+
 We have officially built a facebook-based python object detection framework detectron2, which is used to evaluate the model in the process of detectron2 training.
 
 <a name="klNlr"></a>

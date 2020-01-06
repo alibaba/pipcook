@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-bayesian-classifier-model-train
+
 贝叶斯分类器模型训练
 
 <a name="klNlr"></a>

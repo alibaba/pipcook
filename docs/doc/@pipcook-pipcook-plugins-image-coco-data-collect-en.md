@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-image-coco-data-collect
+
 In many cases, we use the coco data format to store the target detection data. Our pipelines also support input in this format. This plug-in will collect the target detection data of coco data, and convert it into pascol voc format storage.
 
 <a name="klNlr"></a>

@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-local-mobilenet-model-load
+
 This model will be loaded Mobilenet_v1 model for image classification training
 <a name="klNlr"></a>
 #### <br />

@@ -1,3 +1,5 @@
+# ModelTrain Plugin
+
 This plug-in is used to train a model. The interface provides the ability to configure basic parameters of the training model, but these parameters should not be required, allows plug-in developers to define the appropriate hyper-parameters within the plug-in.
 
 ```typescript

@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-detection-detectron-data-access
+
 我们官方内置了一条基于 facebook 的 python 目标检测框架 detectron2，此插件用于 detectron2 训练的链路中数据接入的部分，此插件将会把数据接入为 detectron2 接受的数据
 
 <a name="klNlr"></a>

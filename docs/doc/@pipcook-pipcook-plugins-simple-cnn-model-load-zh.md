@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-simple-cnn-model-load
+
 此模型将会加载一个简单的包含5个卷积层的 CNN 网络，用于图片分类训练
 
 <a name="klNlr"></a>

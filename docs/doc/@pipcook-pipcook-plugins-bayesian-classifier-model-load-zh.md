@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-bayesian-classifier-model-load
+
 此插件用来加载传统机器学习-贝叶斯多分类器
 
 <a name="klNlr"></a>

@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-image-mnist-data-collect
+
 此插件用于图片分类管道中将经典 mnist 手写数据集收集进来并以一定的数据集格式存储 (PASCOL VOC)
 
 <a name="klNlr"></a>
