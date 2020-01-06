@@ -31,18 +31,18 @@ pip --version
 
 We have defined a set of interfaces for each plug-in. Each type of plugin must be implemented strictly according to the interfaces. The detailed information is as follows:
 
-- [Data Collect](https://alibaba.github.io/pipcook/doc/DataCollect  Plugin-en)
-- [Data Access](https://alibaba.github.io/pipcook/doc/DataAccess Plugin-en)
-- [Data Process](https://alibaba.github.io/pipcook/doc/DataProcess Plugin-en)
-- [Model Load](https://alibaba.github.io/pipcook/doc/ModelLoad Plugin-en)
-- [Model Train](https://alibaba.github.io/pipcook/doc/ModelTrain Plugin-en)
-- [Model Evaluate](https://alibaba.github.io/pipcook/doc/ModelEvaluate Plugin-en)
-- [Model Deploy](https://alibaba.github.io/pipcook/doc/ModelDeploy Plugin-en)
+- [Data Collect](https://alibaba.github.io/pipcook/doc/DataCollect%20%20Plugin-en)
+- [Data Access](https://alibaba.github.io/pipcook/doc/DataAccess%20Plugin-en)
+- [Data Process](https://alibaba.github.io/pipcook/doc/DataProcess%20Plugin-en)
+- [Model Load](https://alibaba.github.io/pipcook/doc/ModelLoad%20Plugin-en)
+- [Model Train](https://alibaba.github.io/pipcook/doc/ModelTrain%20Plugin-en)
+- [Model Evaluate](https://alibaba.github.io/pipcook/doc/ModelEvaluate%20Plugin-en)
+- [Model Deploy](https://alibaba.github.io/pipcook/doc/ModelDeploy%20Plugin-en)
 
 <a name="078c8c94"></a>
 ### How to develop and debug a plug-in
 
-You can refer [here](https://alibaba.github.io/pipcook/doc/How to develop a plugin?-en) View how to develop and debug a plug-in
+You can refer [here](https://alibaba.github.io/pipcook/doc/How%20to%20develop%20a%20plugin%3F-en) View how to develop and debug a plug-in
 
 
 <a name="e71b4e54"></a>
@@ -54,4 +54,4 @@ For data reading and processing involved in development, please refer to our [Da
 <a name="f31ccad5"></a>
 ### Contribution guide
 
-Please refer [Here](https://alibaba.github.io/pipcook/doc/How to Contribute-en) View github code Submission Guide
+Please refer [Here](https://alibaba.github.io/pipcook/doc/How%20to%20Contribute-en) View github code Submission Guide

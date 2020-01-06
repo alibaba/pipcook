@@ -8,7 +8,7 @@ pipcook 非常欢迎开发者为我们贡献插件从而扩展 pipcook 的功能
 
 ---
 
-首先，我们强烈建议您可以先了解我们定义的插件规范，只要符合我们定义的 interface 的插件才可以被接受，具体每个插件的规范您可以参考[这里](https://alibaba.github.io/pipcook/doc/开发者手册-zh)的插件开发规范
+首先，我们强烈建议您可以先了解我们定义的插件规范，只要符合我们定义的 interface 的插件才可以被接受，具体每个插件的规范您可以参考[这里](https://alibaba.github.io/pipcook/doc/%E5%BC%80%E5%8F%91%E8%80%85%E6%89%8B%E5%86%8C-zh)的插件开发规范
 
 
 <a name="bf4fba37"></a>

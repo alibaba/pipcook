@@ -10,7 +10,7 @@
 
 - 操作系统：支持 MacOs, Linux
 - 运行环境：Node.js >= 10.16， Npm >= 6.1.0
-- python要求 （如果要用到python桥接功能）: python >= 3.6, pip 指向正确的 python3 路径, 关于更多信息，可参考[这里](https://alibaba.github.io/pipcook/doc/想要使用python？-zh)
+- python要求 （如果要用到python桥接功能）: python >= 3.6, pip 指向正确的 python3 路径, 关于更多信息，可参考[这里](https://alibaba.github.io/pipcook/doc/%E6%83%B3%E8%A6%81%E4%BD%BF%E7%94%A8python%EF%BC%9F-zh)
 
 或者我们强烈建议您直接使用我们的 docker 镜像，以确保 pipcook 的运行环境正确
 
@@ -88,7 +88,7 @@ pipcook board
 
 ---
 
-如果您想了解上面的样例文件是如何编写的，下面我们将一步步介绍我们如何编写一个简单的 Pipcook 训练周期。 假设您有一个场景，您有一些关于mnist 手写数字的图片数据，您想用这些图片作为训练数据训练一个神经网络用来做分类，让我们通过一步步编写一个 Pipcook 文件来做到这些事情。想要了解有哪些插件可以选择或是想要了解每个插件有哪些参数或者怎么使用插件？请[移步这里](https://alibaba.github.io/pipcook/doc/插件介绍-zh)
+如果您想了解上面的样例文件是如何编写的，下面我们将一步步介绍我们如何编写一个简单的 Pipcook 训练周期。 假设您有一个场景，您有一些关于mnist 手写数字的图片数据，您想用这些图片作为训练数据训练一个神经网络用来做分类，让我们通过一步步编写一个 Pipcook 文件来做到这些事情。想要了解有哪些插件可以选择或是想要了解每个插件有哪些参数或者怎么使用插件？请[移步这里](https://alibaba.github.io/pipcook/doc/%E6%8F%92%E4%BB%B6%E4%BB%8B%E7%BB%8D-zh)
 <a name="lLXG5"></a>
 #### 准备
 您可以创建一个新的文件来从头开始编写 Pipcook 训练周期，假设我们将此文件命名为 pipcook_try.js
@@ -106,7 +106,7 @@ const dataCollect = DataCollect(imageMnistDataCollection, {
 
 <a name="qFI64"></a>
 #### 数据接入
-Pipcook 支持在单个的工程中配置多个数据收集的来源，这些来自不同地方的数据应该被表示为统一的数据格式，例如，在图片问题中，所有的收集应该以统一的 PASCOL VOC 格式传入下游，我们有一个统一的数据接入层，我们使用 imageClassDataAccess 插件,  传入DataAccess Component。 此插件可以指定我们统一接入的图片尺寸，插件将自动把图片统一到一样的尺寸，并且以 tf.Data 的标准数据处理 API 传入下游，关于数据集标准，请参考[这里](https://alibaba.github.io/pipcook/doc/数据集-zh)
+Pipcook 支持在单个的工程中配置多个数据收集的来源，这些来自不同地方的数据应该被表示为统一的数据格式，例如，在图片问题中，所有的收集应该以统一的 PASCOL VOC 格式传入下游，我们有一个统一的数据接入层，我们使用 imageClassDataAccess 插件,  传入DataAccess Component。 此插件可以指定我们统一接入的图片尺寸，插件将自动把图片统一到一样的尺寸，并且以 tf.Data 的标准数据处理 API 传入下游，关于数据集标准，请参考[这里](https://alibaba.github.io/pipcook/doc/%E6%95%B0%E6%8D%AE%E9%9B%86-zh)
 
 ```typescript
  // access mnist data into our specifiction

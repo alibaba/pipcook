@@ -8,7 +8,7 @@ pipcookwelcome developers to contribute to pipcook. This topic describes how to 
 
 ---
 
-First, we strongly recommend that you understand the plugin specifications defined by us. Only plug-ins that meet the interface defined by us can be accepted. For more information about the specifications of each plugin, see [Here](https://alibaba.github.io/pipcook/doc/developer guide-en) for plugin development specifications
+First, we strongly recommend that you understand the plugin specifications defined by us. Only plug-ins that meet the interface defined by us can be accepted. For more information about the specifications of each plugin, see [Here](https://alibaba.github.io/pipcook/doc/developer%20guide-en) for plugin development specifications
 
 
 <a name="bf4fba37"></a>

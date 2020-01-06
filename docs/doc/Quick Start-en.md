@@ -10,7 +10,7 @@ This article will show how to build a Pipcook pipeline step by step from an exam
 
 - operating system：MacOs, Linux
 - Runtime：Node.js >= 10.16， Npm >= 6.1.0
-- Python Requirement （If you want to use python bridging）: python >= 3.6, pip points to the correct python3 path.  [See here](https://alibaba.github.io/pipcook/doc/Want to use python?-en) for more information.
+- Python Requirement （If you want to use python bridging）: python >= 3.6, pip points to the correct python3 path.  [See here](https://alibaba.github.io/pipcook/doc/Want%20to%20use%20python%3F-en) for more information.
 
 We strongly recommend that you directly use our docker mirror to ensure that the pipcook runtime environment is correct.
 
@@ -95,7 +95,7 @@ Do you want to try more? We also have another sample file pipeline-databinding-i
 
 ---
 
-If you want to know how the above example was written, let's take a step-by-step introduction on how we write a simple Pipcook training file. Suppose you have a scene where you have some picture data about MNIST  images, and you want to use these pictures as training data to train a neural network for classification. Let us do this by writing a pipcook training pipeline step by step. To know which plugins you can choose or what parameters each plugin has or how to use them? [Please move here](https://alibaba.github.io/pipcook/doc/Introduction of pipcook plugin-en).
+If you want to know how the above example was written, let's take a step-by-step introduction on how we write a simple Pipcook training file. Suppose you have a scene where you have some picture data about MNIST  images, and you want to use these pictures as training data to train a neural network for classification. Let us do this by writing a pipcook training pipeline step by step. To know which plugins you can choose or what parameters each plugin has or how to use them? [Please move here](https://alibaba.github.io/pipcook/doc/Introduction%20of%20pipcook%20plugin-en).
 
 <a name="lLXG5"></a>
 #### Prepare

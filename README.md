@@ -26,7 +26,7 @@ pipcook init -c cnpm
 
 ## Documentation
 
-Please refer to [this link](https://github.com/alibaba/pipcook/wiki/Pipcook-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F) to check the full documentation.
+Please refer to [中文](https://alibaba.github.io/pipcook/doc/pipcook%20%E6%98%AF%E4%BB%80%E4%B9%88-zh)｜ [english](https://alibaba.github.io/pipcook/doc/What%20is%20Pipcook%3F-en)
 
 
 ## Run your first pipcook pipeline

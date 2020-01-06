@@ -1,6 +1,6 @@
 # What is Pipcook?
 
-With the mission of enabaling front-end developers to use machine learning with no prerequisites and the vision of leading the front-end technology field to intelligentization, pipcook has became a one-stage front-end algorithm engineering platform that process data, train models, and deploy models. Pipcook will focus on the front-end field,  adhere to the principle  being friendly to front-end engineers, and finally promote the development of the front-end industry with machine learning.
+With the mission of enabaling front-end developers to use machine learning with no prerequisites and the vision of leading the front-end technology field to intelligentization, pipcook has became a one-stage front-end algorithm engineering platform that process data, train models, and deploy models. Pipcook will focus on the front-end field,  adhere to the principle  being friendly to front-end engineers, and finally promote the development of the front-end industry with machine learning.
 
 <a name="wB8yF"></a>
 ### How does it work
@@ -19,7 +19,7 @@ Our plugin mechanism is highly scalable and following the principle that one plu
 
 ---
 
-Can't wait to start a pipcook project ?, Please [check here to quickly start a project](https://alibaba.github.io/pipcook/doc/Quick Start-en).
+Can't wait to start a pipcook project ?, Please [check here to quickly start a project](https://alibaba.github.io/pipcook/doc/Quick%20Start-en).
 
 <a name="uXh3I"></a>
 ### Concept
@@ -38,15 +38,15 @@ Can't wait to start a pipcook project ?, Please [check here to quickly start a p
 
 After building a machine learning project, if you want to learn more about pipcook, see the following link for more information
 
-- [Learn more about plugins](https://alibaba.github.io/pipcook/doc/Introduction of pipcook plugin-en)
-- [Want to use python?](https://alibaba.github.io/pipcook/doc/Want to use python?-en)
-- [Learn more about the built-in pipeline](https://alibaba.github.io/pipcook/doc/Built-in pipeline detail-en)
+- [Learn more about plugins](https://alibaba.github.io/pipcook/doc/Introduction%20of%20pipcook%20plugin-en)
+- [Want to use python?](https://alibaba.github.io/pipcook/doc/Want%20to%20use%20python%3F-en)
+- [Learn more about the built-in pipeline](https://alibaba.github.io/pipcook/doc/Built-in%20pipeline%20detail-en)
 - [Learn more about the command line tool pipcook-cli](https://alibaba.github.io/pipcook/doc/pipcook-cli-en)
-- [Load a pre-trained model in pipcook](https://alibaba.github.io/pipcook/doc/Load a pre-trained model in pipcook-en)
+- [Load a pre-trained model in pipcook](https://alibaba.github.io/pipcook/doc/Load%20a%20pre-trained%20model%20in%20pipcook-en)
 
 <a name="fi47u"></a>
 ### Want to Contribute?
 
 ---
 
-Please refer to our [Developer Guide](https://alibaba.github.io/pipcook/doc/developer guide-en)
+Please refer to our [Developer Guide](https://alibaba.github.io/pipcook/doc/developer%20guide-en)
