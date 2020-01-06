@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-detection-detectron-model-load
+
 We have officially built a facebook-based python target detection framework detectron2. this plug-in is used to load the model in the detectron2 training link and load the target detection model based on Faster RCNN.
 
 <a name="klNlr"></a>

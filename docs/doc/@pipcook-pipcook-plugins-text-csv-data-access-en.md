@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-text-csv-data-access
+
 Unified access to text classification data. This plugin accepts csv format data and sends it to downstream  as tf.data
 
 <a name="klNlr"></a>

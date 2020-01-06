@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-bayesian-classifier-model-load
+
 This plugin is used to load traditional machine learning-Bayes multiple classifiers
 
 <a name="klNlr"></a>

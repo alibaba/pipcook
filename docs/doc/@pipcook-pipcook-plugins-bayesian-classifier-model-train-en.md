@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-bayesian-classifier-model-train
+
 Training of Bayes classifier model
 
 <a name="klNlr"></a>

@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-simple-cnn-model-load
+
 This model will load a simple CNN network containing 5 convolution layers , For image classification training
 
 <a name="klNlr"></a>

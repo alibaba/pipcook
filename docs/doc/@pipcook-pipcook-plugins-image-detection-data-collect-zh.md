@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-image-detection-data-collect
+
 此插件用于目标检测管道中将图片收集进来并以一定的数据集格式存储 (PASCOL VOC)
 
 

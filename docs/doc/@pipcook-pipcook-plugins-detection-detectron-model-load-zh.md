@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-detection-detectron-model-load
+
 我们官方内置了一条基于 facebook 的 python 目标检测框架 detectron2，此插件用于 detectron2 训练的链路中模型加载的部分，会加载基于 Faster RCNN 的目标检测模型
 
 <a name="klNlr"></a>

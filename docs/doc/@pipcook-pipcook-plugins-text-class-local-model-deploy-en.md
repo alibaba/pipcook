@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-text-class-local-model-deploy
+
 This plug-in is used to deploy the text classification model locally, start a local server, and return the corresponding prediction results.
 
 <a name="Ej4GX"></a>

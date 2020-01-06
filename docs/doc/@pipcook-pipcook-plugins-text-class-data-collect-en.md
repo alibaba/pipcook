@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-text-class-data-collect
+
 This plugin is used to collect text data in the text classification pipeline and store it in a certain dataset format (csv)
 
 <a name="c8ad2b59"></a>

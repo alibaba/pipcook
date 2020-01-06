@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-image-coco-data-collect
+
 在很多时候，我们使用 coco data 的格式来存储目标检测的数据，我们的管道同样支持这种格式的输入，此插件将会收集 coco data 的目标检测数据，并将其转化为 PASCOL VOC 的格式存储。
 
 <a name="klNlr"></a>

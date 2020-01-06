@@ -1,3 +1,5 @@
+# @pipcook/pipcook-plugins-class-model-evaluate
+
 <a name="article-title"></a>
 # 
 分类模型评估，此模型适用于对普遍的分类模型进行评估

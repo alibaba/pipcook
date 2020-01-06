@@ -1,3 +1,5 @@
+# Built-in pipeline detail
+
 <a name="6WNZz"></a>
 ## Image Classification
 We have builtin  plugins that can be combined to complete a pipeline of image classification. The following describes how the pipeline works by introducing plugins of each step. For the relevant code, you can find [here](https://github.com/alibaba/pipcook/blob/master/example/pipeline-databinding-image-classification.js)
