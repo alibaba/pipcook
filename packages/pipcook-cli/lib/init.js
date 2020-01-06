@@ -43,7 +43,6 @@ const init = async (cmdObj) => {
       await downloadConfig();
       dependencies = require(path.join(__dirname, 'temp', 'config.js')).dependencies;
     } catch (err) {
-      console.log(err);
     }
 
     for (const item of dependencies) {
