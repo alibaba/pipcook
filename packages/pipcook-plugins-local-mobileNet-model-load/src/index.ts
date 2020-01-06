@@ -65,7 +65,8 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
       optimizer = tf.train.rmsprop(0.00005, 1e-7),
       loss = 'categoricalCrossentropy',
       metrics = ['accuracy'],
-      modelId=''
+      modelId='',
+      isFreeze=true
     } = args || {};
 
     let inputShape, outputShape: number[];
@@ -89,7 +90,9 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
       const output = applyModel(newInputLayer, mobilenet);
       const predictions = <tf.SymbolicTensor> tf.layers.dense({units: outputShape[1],  activation: 'softmax', name: 'denseModified'}).apply(output); 
       let mobilenetModified = tf.model({inputs: newInputLayer, outputs: predictions, name: 'modelModified' });
-      mobilenetModified = freezeModelLayers(trainableLayers, mobilenetModified);
+      if (isFreeze) {
+        mobilenetModified = freezeModelLayers(trainableLayers, mobilenetModified);
+      }
       model = mobilenetModified;
     }
     
