@@ -24,7 +24,7 @@ pip install virtualenv
 virtualenv --no-site-packages pipcook_venv
 ```
 
-**我们强烈建议您使用我们的 docker 镜像去运行 pipcook，这样您不再需要执行上述命令，也不需要担心环境的问题, 可以参考**[**这里**](https://www.yuque.com/znzce0/in8hih/qm7a2i)**有详细的 docker 的信息**
+**我们强烈建议您使用我们的 docker 镜像去运行 pipcook，这样您不再需要执行上述命令，也不需要担心环境的问题, 可以参考**[**这里**](https://alibaba.github.io/pipcook/doc/快速入门-zh)**有详细的 docker 的信息**
 ```typescript
 docker pull pipcook/pipcook
 ```

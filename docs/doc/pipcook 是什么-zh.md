@@ -10,7 +10,7 @@ Pipcook 的核心是一条 pipeline， 在这个 pipeline 中，将会有一系�
 
 ---
 
-是否已经迫不及待开始一个 pipcook 工程?，请[参考这里来快速开始](https://www.yuque.com/znzce0/in8hih/qm7a2i)一个工程吧
+是否已经迫不及待开始一个 pipcook 工程?，请[参考这里来快速开始](https://alibaba.github.io/pipcook/doc/快速入门-zh)一个工程吧
 
 <a name="3yV7x"></a>
 ### 概念
@@ -28,15 +28,15 @@ Pipcook 的核心是一条 pipeline， 在这个 pipeline 中，将会有一系�
 
 在亲手搭建了一个机器学习项目之后，您是否想了解 pipcook 的更多信息，您可以查看以下链接了解更多
 
-- [了解更多关于插件的信息](https://www.yuque.com/znzce0/in8hih/ucrm9q)
-- [想要使用 python ？](https://www.yuque.com/znzce0/in8hih/ic1cvg)
-- [了解更多内置 pipeline 的信息](https://www.yuque.com/znzce0/in8hih/ldotys)
-- [了解更多命令行工具 pipcook-cli 的信息](https://www.yuque.com/znzce0/in8hih/lrouoi)
-- [使用一个之前在 pipcook 训练好的模型](https://www.yuque.com/znzce0/in8hih/lriapp)
+- [了解更多关于插件的信息](https://alibaba.github.io/pipcook/doc/插件介绍-zh)
+- [想要使用 python ？](https://alibaba.github.io/pipcook/doc/想要使用python？-zh)
+- [了解更多内置 pipeline 的信息](https://alibaba.github.io/pipcook/doc/内置 pipeline 详细介绍-zh)
+- [了解更多命令行工具 pipcook-cli 的信息](https://alibaba.github.io/pipcook/doc/pipcook-cli-zh)
+- [使用一个之前在 pipcook 训练好的模型](https://alibaba.github.io/pipcook/doc/加载一个训练好的模型进行预测或者再次训练-zh)
 
 <a name="gcbA2"></a>
 ### 想要 Contribute ?
 
 ---
 
-请参考我们的[开发者手册](https://www.yuque.com/znzce0/in8hih/developguide)
+请参考我们的[开发者手册](https://alibaba.github.io/pipcook/doc/开发者手册-zh)
