@@ -5,7 +5,7 @@ With the mission of enabling front-end engineers to utilize the power of machine
 ## Quick Start
 
 - Environment: Node.js >= 10.16, Npm >= 6.1
-- Python: python >= 3.6 with correct pip installed (This is required if you want to use pipcook-python-node. For more info, check [here](https://github.com/alibaba/pipcook/wiki/%E6%83%B3%E8%A6%81%E4%BD%BF%E7%94%A8python%EF%BC%9F))
+- Python: python >= 3.6 with correct pip installed (This is required if you want to use pipcook-python-node. 
 
 We recommend to install pipcook-cli to manage pipcook projects:
 ```
