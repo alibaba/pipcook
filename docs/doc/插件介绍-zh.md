@@ -30,7 +30,7 @@ pipcook 使用插件的形式来实现具体机器学习周期中的任务，这
 
 ---
 
-我们为每个类型的插件定义了接口和规范，开发者需要实现我们的接口并按照相应的规范进行开发插件，这样能保证任何插件可以无缝嵌入到我们的 pipeline 中，有关更多插件规范的信息，请移步[这里](https://www.yuque.com/znzce0/in8hih/developguide)
+我们为每个类型的插件定义了接口和规范，开发者需要实现我们的接口并按照相应的规范进行开发插件，这样能保证任何插件可以无缝嵌入到我们的 pipeline 中，有关更多插件规范的信息，请移步[这里](https://alibaba.github.io/pipcook/doc/开发者手册-zh)
 
 
 <a name="08576523"></a>
@@ -75,11 +75,11 @@ npm install mobileNetModelLoad --save
 #### Data Collect
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-collect](https://www.yuque.com/znzce0/in8hih/iu3fz3) | 将本地或者远程图片收集进来，储存为 PASCOL VOC 数据集格式 |
-| [@pipcook/pipcook-plugins-image-mnist-data-collect](https://www.yuque.com/znzce0/in8hih/kiwmg4) | Mnist 手写数据集收集，储存为 PASCOL VOC 数据集格式 |
-| [@pipcook/pipcook-plugins-image-detection-data-collect](https://www.yuque.com/znzce0/in8hih/kwntgf) | 将本地或者远程的目标检测数据收集进来，存储为 PASCOL VOC 数据集格式 |
-| [@pipcook/pipcook-plugins-text-class-data-collect](https://www.yuque.com/znzce0/in8hih/bvptkm) | 将本地或者远程的分本分类的数据收集进来，存储为 csv 数据格式 |
-| [@pipcook/pipcook-plugins-image-coco-data-collect](https://www.yuque.com/znzce0/in8hih/zdziph) | 将本地或者远程的 coco format 的目标检测数据收集进来，存储为 PASCOL VOC 数据格式 |
+| [@pipcook/pipcook-plugins-image-class-data-collect](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-image-class-data-collect-zh) | 将本地或者远程图片收集进来，储存为 PASCOL VOC 数据集格式 |
+| [@pipcook/pipcook-plugins-image-mnist-data-collect](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-image-mnist-data-collect-zh) | Mnist 手写数据集收集，储存为 PASCOL VOC 数据集格式 |
+| [@pipcook/pipcook-plugins-image-detection-data-collect](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-image-detection-data-collect-zh) | 将本地或者远程的目标检测数据收集进来，存储为 PASCOL VOC 数据集格式 |
+| [@pipcook/pipcook-plugins-text-class-data-collect](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-text-class-data-collect-zh) | 将本地或者远程的分本分类的数据收集进来，存储为 csv 数据格式 |
+| [@pipcook/pipcook-plugins-image-coco-data-collect](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-image-coco-data-collect-zh) | 将本地或者远程的 coco format 的目标检测数据收集进来，存储为 PASCOL VOC 数据格式 |
 
 
 
@@ -87,10 +87,10 @@ npm install mobileNetModelLoad --save
 #### Data Access
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-access](https://www.yuque.com/znzce0/in8hih/dx591h) | 图片分类数据接入 |
-| [@pipcook/pipcook-plugins-text-csv-data-access](https://www.yuque.com/znzce0/in8hih/ysb07g) | 文本分类数据接入 |
-| [@pipcook/pipcook-plugins-image-detection-data-access](https://www.yuque.com/znzce0/in8hih/zyyk2s) | 基于 tfjs 的简单目标检测数据接入 |
-| [@pipcook/pipcook-plugins-detection-detectron-data-access](https://www.yuque.com/znzce0/in8hih/ysxqnx) | 基于 detectron2 的目标检测模型接入 |
+| [@pipcook/pipcook-plugins-image-class-data-access](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-image-class-data-access-zh) | 图片分类数据接入 |
+| [@pipcook/pipcook-plugins-text-csv-data-access](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-text-csv-data-access-zh) | 文本分类数据接入 |
+| [@pipcook/pipcook-plugins-image-detection-data-access](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-image-detection-data-access-zh) | 基于 tfjs 的简单目标检测数据接入 |
+| [@pipcook/pipcook-plugins-detection-detectron-data-access](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-detection-detectron-data-access-zh) | 基于 detectron2 的目标检测模型接入 |
 |  |  |
 
 
@@ -99,8 +99,8 @@ npm install mobileNetModelLoad --save
 #### Data Process
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-process](https://www.yuque.com/znzce0/in8hih/stiv88) | 图片分类数据预处理 |
-| [@pipcook/pipcook-plugins-text-class-data-process](https://www.yuque.com/znzce0/in8hih/qutwtb) | 文本分类数据分词预处理 |
+| [@pipcook/pipcook-plugins-image-class-data-process](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-image-class-data-process-zh) | 图片分类数据预处理 |
+| [@pipcook/pipcook-plugins-text-class-data-process](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-text-class-data-process-zh) | 文本分类数据分词预处理 |
 
 
 
@@ -108,10 +108,10 @@ npm install mobileNetModelLoad --save
 #### Model Load
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-local-mobilenet-model-load](https://www.yuque.com/znzce0/in8hih/ah4hiu) | MobileNet 模型加载 |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-load](https://www.yuque.com/znzce0/in8hih/qx3nei) | 贝叶斯分类器加载 |
-| [@pipcook/pipcook-plugins-simple-cnn-model-load](https://www.yuque.com/znzce0/in8hih/vdghv7) | 简单 CNN 模型加载 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-load](https://www.yuque.com/znzce0/in8hih/qnoy1f) | 基于 detectron2 的目标检测模型加载 |
+| [@pipcook/pipcook-plugins-local-mobilenet-model-load](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-local-mobilenet-model-load-zh) | MobileNet 模型加载 |
+| [@pipcook/pipcook-plugins-bayesian-classifier-model-load](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-bayesian-classifier-model-load-zh) | 贝叶斯分类器加载 |
+| [@pipcook/pipcook-plugins-simple-cnn-model-load](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-simple-cnn-model-load-zh) | 简单 CNN 模型加载 |
+| [@pipcook/pipcook-plugins-detection-detectron-model-load](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-detection-detectron-model-load-zh) | 基于 detectron2 的目标检测模型加载 |
 
 
 
@@ -119,9 +119,9 @@ npm install mobileNetModelLoad --save
 #### Model Train
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-model-train](https://www.yuque.com/znzce0/in8hih/gg9z98) | 通用的 tfjs 模型训练 |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-train](https://www.yuque.com/znzce0/in8hih/ac5vzz) | 贝叶斯模型训练 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-train](https://www.yuque.com/znzce0/in8hih/fu0hf9) | 基于 detectron2 的目标检测模型训练 |
+| [@pipcook/pipcook-plugins-model-train](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-model-train-zh) | 通用的 tfjs 模型训练 |
+| [@pipcook/pipcook-plugins-bayesian-classifier-model-train](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-bayesian-classifier-model-train-zh) | 贝叶斯模型训练 |
+| [@pipcook/pipcook-plugins-detection-detectron-model-train](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-detection-detectron-model-train-zh) | 基于 detectron2 的目标检测模型训练 |
 
 
 
@@ -129,8 +129,8 @@ npm install mobileNetModelLoad --save
 #### Model Evaluate
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-class-model-evaluate](https://www.yuque.com/znzce0/in8hih/hpssg9) | 分类模型评估 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-evaluate](https://www.yuque.com/znzce0/in8hih/gsgtkv) | 基于 detectron2 的目标检测模型评估 |
+| [@pipcook/pipcook-plugins-class-model-evaluate](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-class-model-evaluate-zh) | 分类模型评估 |
+| [@pipcook/pipcook-plugins-detection-detectron-model-evaluate](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-detection-detectron-model-evaluate-zh) | 基于 detectron2 的目标检测模型评估 |
 |  |  |
 
 
@@ -139,8 +139,8 @@ npm install mobileNetModelLoad --save
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-text-class-local-model-deploy](https://www.yuque.com/znzce0/in8hih/bvfc7w) | 文本分类本地部署 |
-| [@pipcook/pipcook-plugins-image-class-local-model-deploy](https://www.yuque.com/znzce0/in8hih/eba0az) | 图片分类本地部署 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-deploy](https://www.yuque.com/znzce0/in8hih/sbiwcc) | 目标检测本地部署 |
+| [@pipcook/pipcook-plugins-text-class-local-model-deploy](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-text-class-local-model-deploy-zh) | 文本分类本地部署 |
+| [@pipcook/pipcook-plugins-image-class-local-model-deploy](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-image-class-local-model-deploy-zh) | 图片分类本地部署 |
+| [@pipcook/pipcook-plugins-detection-detectron-model-deploy](https://alibaba.github.io/pipcook/doc/@pipcook-pipcook-plugins-detection-detectron-model-deploy-zh) | 目标检测本地部署 |
 
 
