@@ -75,6 +75,7 @@ npm install mobileNetModelLoad --save
 
 <a name="a8ab2a0c"></a>
 #### Data Collect
+
 | Name | Description |
 | --- | --- |
 | [@pipcook/pipcook-plugins-image-class-data-collect](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-class-data-collect-zh) | 将本地或者远程图片收集进来，储存为 PASCOL VOC 数据集格式 |
@@ -87,6 +88,7 @@ npm install mobileNetModelLoad --save
 
 <a name="f8aacfa5"></a>
 #### Data Access
+
 | Name | Description |
 | --- | --- |
 | [@pipcook/pipcook-plugins-image-class-data-access](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-class-data-access-zh) | 图片分类数据接入 |
@@ -99,6 +101,7 @@ npm install mobileNetModelLoad --save
 
 <a name="7475a7cc"></a>
 #### Data Process
+
 | Name | Description |
 | --- | --- |
 | [@pipcook/pipcook-plugins-image-class-data-process](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-class-data-process-zh) | 图片分类数据预处理 |
@@ -108,6 +111,7 @@ npm install mobileNetModelLoad --save
 
 <a name="2aa2d88a"></a>
 #### Model Load
+
 | Name | Description |
 | --- | --- |
 | [@pipcook/pipcook-plugins-local-mobilenet-model-load](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-local-mobilenet-model-load-zh) | MobileNet 模型加载 |
@@ -119,6 +123,7 @@ npm install mobileNetModelLoad --save
 
 <a name="a264a20f"></a>
 #### Model Train
+
 | Name | Description |
 | --- | --- |
 | [@pipcook/pipcook-plugins-model-train](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-model-train-zh) | 通用的 tfjs 模型训练 |
@@ -129,6 +134,7 @@ npm install mobileNetModelLoad --save
 
 <a name="c9320ee5"></a>
 #### Model Evaluate
+
 | Name | Description |
 | --- | --- |
 | [@pipcook/pipcook-plugins-class-model-evaluate](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-class-model-evaluate-zh) | 分类模型评估 |
