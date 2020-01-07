@@ -15,6 +15,7 @@
     "prop-types": "^15.5.8",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
+    "react-draggable": "^4.2.0",
     "react-images-upload": "^1.2.7",
     "react-router-dom": "^5.0.1"
   },
