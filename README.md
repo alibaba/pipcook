@@ -60,4 +60,4 @@ lerna run compile
 ```
 
 ## RoadMap
-![pipcook roadmap](https://img.alicdn.com/tfs/TB1qsKJtkT2gK0jSZFkXXcIQFXa-824-1178.jpg)
+![pipcook roadmap](https://img.alicdn.com/tfs/TB1qsKJtkT2gK0jSZFkXXcIQFXa-824-1178.jpg | width=400)
