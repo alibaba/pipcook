@@ -14,6 +14,19 @@ import {getLog, createPipeline, assignLatestResult, linkComponents, assignFailur
 import {logStartExecution, logError, logComplete} from '../utils/logger';
 import {serveRunner} from '../board/board';
 
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key: any, value: any) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
+
 /**
  * @class: This is the core part of Pipcook. It's responsible for running Pipcook components,
  * @public pipelineName: name of current pipeline
@@ -88,7 +101,7 @@ export class PipcookRunner {
    */
   savePipcook = async () => {
     // store Pipcook log
-    const json = JSON.stringify(getLog(this));
+    const json = JSON.stringify(getLog(this), getCircularReplacer());
     fs.outputFileSync(path.join(<string>this.logDir, 'logs' ,this.pipelineId+'.json'), json);
   }
 

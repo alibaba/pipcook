@@ -3,7 +3,8 @@ import * as path from 'path';
 const fs = require('fs-extra');
 const ora = require('ora');
 const spinner = ora();
-const kill = require('kill-port')
+const kill = require('kill-port');
+const commandExistsSync = require('command-exists').sync;
 
 /**
  * To start a ipyhton kernel. To successfully execute this function, python and pip are required.
@@ -30,8 +31,17 @@ export function startKernel(shell_port: number, iopub_port: number) {
       fs.removeSync(path.join(process.cwd(), 'pipcook_venv'));
     }
 
+    let pipCommand = 'pip';
+    if (commandExistsSync('pip3')) {
+      pipCommand = 'pip3';
+    } else if (commandExistsSync('pip3.6')) {
+      pipCommand = 'pip3.6';
+    } else if (commandExistsSync('pip3.7')) {
+      pipCommand = 'pip3.7';
+    }
+
     // install virtualenv if it does not exist and meanwhile install ipython
-    const output = childProcess.spawn(`${venvDir ? '' : 'pip install virtualenv && virtualenv --no-site-packages pipcook_venv && \\'} 
+    const output = childProcess.spawn(`${venvDir ? '' : `${pipCommand} install virtualenv && virtualenv --no-site-packages pipcook_venv && \\`} 
       . ${path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate')} && pip install ipykernel==5.1.3 && kill $(lsof -t -i:${shell_port}) && kill $(lsof -t -i:${iopub_port}) `, [], {
         shell: true,
         cwd: process.cwd(),
