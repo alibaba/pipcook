@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-python-node",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@tensorflow/tfjs-node-gpu": "^1.4.0",
+    "command-exists": "^1.2.8",
     "fs-extra": "^8.1.0",
     "kill-port": "^1.6.0",
     "node-cleanup": "^2.1.2",
