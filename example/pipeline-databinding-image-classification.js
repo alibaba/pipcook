@@ -48,7 +48,8 @@ async function startPipeline() {
 
   // train the model
   const modelTrain = ModelTrain(modelTrainPlugin, {
-    epochs: 15
+    epochs: 15,
+    batchSize: 16
   });
 
   // evaluate the model

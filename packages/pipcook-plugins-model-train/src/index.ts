@@ -4,6 +4,7 @@
 
 import {PipcookModel, UniformTfSampleData, ArgsType, ModelTrainType} from '@pipcook/pipcook-core';
 import * as assert from 'assert';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 
 /**
  * model for image claasifiaction
