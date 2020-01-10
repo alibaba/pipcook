@@ -18,38 +18,27 @@ const _cliProgress = require('cli-progress');
  * @param dataFlows sample data
  * @param type : train/test/validation
  */
-const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneHotMap: any, type: string, imagePath: string) => {
+const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneHotMap: any, dataFlows: any[], type: string, imagePath: string) => {
   console.log(`access ${type} image data...`);
   const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
   bar1.start(fileNames.length, 0);
-  let fileNamesArray: any = [];
   for (let j = 0; j < fileNames.length; j++) {
     const jsonData = await parseAnnotation(fileNames[j]);
     bar1.update(j);
-    fileNamesArray.push({
-      name: jsonData.annotation.filename[0],
-      label:  jsonData.annotation.object[0].name[0]
-    });
-  }
-
-  fileNamesArray = tf.data.array(fileNamesArray);
-  console.log(fileNamesArray);
-  const dataFlows = fileNamesArray.mapAsync(async (data: any) => {
-    let {name, label} = data;
-    let image = await Jimp.read(path.join(imagePath, name));
+    let image = await Jimp.read(path.join(imagePath, jsonData.annotation.filename[0]));
     image = image.resize(imgSize[0], imgSize[1]);
     const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
     const imageArray = new Uint8Array(trainImageBuffer);
+    let label:any = jsonData.annotation.object[0].name[0];
     if (Object.keys(oneHotMap).length > 1) {
-      label = tf.oneHot(tf.scalar(oneHotMap[label], 'int32'), Object.keys(oneHotMap).length);
+      label = tf.tidy(() => tf.oneHot(tf.scalar(oneHotMap[label], 'int32'), Object.keys(oneHotMap).length));
     }
-    return {
-      xs: tf.cast(tf.node.decodeImage(imageArray, 3), 'float32'),
+    dataFlows.push(tf.tidy(() => ({
+      xs: tf.tidy(() => tf.cast(tf.node.decodeImage(imageArray, 3), 'float32')),
       ys: label
-    }
-  });
+    })))
+  }
   bar1.stop();
-  return dataFlows;
 }
 
 /**
@@ -91,26 +80,26 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
 
   const {imgSize=[128, 128]} = args || {};
 
-  let trainDataFlows:any, validationDataFlows:any, testDataFlows:any;
+  let trainDataFlows:any[]=[], validationDataFlows:any[]=[], testDataFlows:any[]=[]
   
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];
     const {trainDataPath, validationDataPath, testDataPath} = dataSample;  
     const imagePath = path.join(trainDataPath, '..', '..', 'images')
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
-    trainDataFlows = await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, 'train data', imagePath);
+    await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, trainDataFlows, 'train data', imagePath);
     if (validationDataPath) {
       const validationFileNames: string[] = await glob(path.join(validationDataPath, '*.xml'));
-      validationDataFlows = await concatenateDataFlows(validationFileNames, imgSize, oneHotMap, 'validation data', imagePath);
+      await concatenateDataFlows(validationFileNames, imgSize, oneHotMap, validationDataFlows, 'validation data', imagePath);
     }
     if (testDataPath) {
       const testFileNames: string[] = await glob(path.join(testDataPath, '*.xml'));
-      testDataFlows = await concatenateDataFlows(testFileNames, imgSize, oneHotMap, 'test data', imagePath);
+      await concatenateDataFlows(testFileNames, imgSize, oneHotMap, testDataFlows, 'test data', imagePath);
     }
   }
 
   const result: UniformTfSampleData = {
-    trainData: trainDataFlows,
+    trainData: tf.data.array(trainDataFlows),
     metaData: {
       feature:
         {
@@ -126,11 +115,11 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
       },
     }
   };
-  if (validationDataFlows && validationDataFlows.size > 0) {
-    result.validationData = validationDataFlows;
+  if (validationDataFlows.length > 0) {
+    result.validationData = tf.data.array(validationDataFlows);
   }
-  if (testDataFlows && testDataFlows.size > 0) {
-    result.testData = testDataFlows;
+  if (testDataFlows.length > 0) {
+    result.testData = tf.data.array(testDataFlows);
   }
   
   return result;
