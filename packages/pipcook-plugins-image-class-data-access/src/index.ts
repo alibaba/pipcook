@@ -18,8 +18,9 @@ const _cliProgress = require('cli-progress');
  * @param dataFlows sample data
  * @param type : train/test/validation
  */
-const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneHotMap: any, dataFlows: any[], type: string, imagePath: string) => {
+const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneHotMap: any, type: string, imagePath: string) => {
   console.log(`access ${type} image data...`);
+  let dataFlows: any = [];
   const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
   bar1.start(fileNames.length, 0);
   for (let j = 0; j < fileNames.length; j++) {
@@ -34,11 +35,22 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
       label = tf.tidy(() => tf.oneHot(tf.scalar(oneHotMap[label], 'int32'), Object.keys(oneHotMap).length));
     }
     dataFlows.push(tf.tidy(() => ({
-      xs: tf.tidy(() => tf.cast(tf.node.decodeImage(imageArray, 3), 'float32')),
+      xs: imageArray,
       ys: label
-    })))
+    })));
   }
+  dataFlows = tf.data.array(dataFlows);
+  const dataset = dataFlows.map((data: any) => {
+    const {xs, ys} = data;
+    return tf.tidy(() => (
+      {
+        xs: tf.tidy(() => tf.cast(tf.node.decodeImage(xs, 3), 'float32')),
+        ys: ys
+      }
+    ));
+  })
   bar1.stop();
+  return dataset;
 }
 
 /**
@@ -80,26 +92,27 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
 
   const {imgSize=[128, 128]} = args || {};
 
-  let trainDataFlows:any[]=[], validationDataFlows:any[]=[], testDataFlows:any[]=[]
+  let trainDataFlows:any, validationDataFlows:any, testDataFlows:any;
   
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];
     const {trainDataPath, validationDataPath, testDataPath} = dataSample;  
     const imagePath = path.join(trainDataPath, '..', '..', 'images')
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
-    await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, trainDataFlows, 'train data', imagePath);
+    trainDataFlows = await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, 'train data', imagePath);
     if (validationDataPath) {
       const validationFileNames: string[] = await glob(path.join(validationDataPath, '*.xml'));
-      await concatenateDataFlows(validationFileNames, imgSize, oneHotMap, validationDataFlows, 'validation data', imagePath);
+      validationDataFlows = await concatenateDataFlows(validationFileNames, imgSize, oneHotMap, 'validation data', imagePath);
     }
     if (testDataPath) {
       const testFileNames: string[] = await glob(path.join(testDataPath, '*.xml'));
-      await concatenateDataFlows(testFileNames, imgSize, oneHotMap, testDataFlows, 'test data', imagePath);
+      testDataFlows = await concatenateDataFlows(testFileNames, imgSize, oneHotMap, 'test data', imagePath);
     }
   }
 
+
   const result: UniformTfSampleData = {
-    trainData: tf.data.array(trainDataFlows),
+    trainData: trainDataFlows,
     metaData: {
       feature:
         {
@@ -115,12 +128,15 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
       },
     }
   };
-  if (validationDataFlows.length > 0) {
-    result.validationData = tf.data.array(validationDataFlows);
+  if (validationDataFlows && validationDataFlows.size > 0) {
+    result.validationData = validationDataFlows;
   }
-  if (testDataFlows.length > 0) {
-    result.testData = tf.data.array(testDataFlows);
+  if (testDataFlows && testDataFlows.size > 0) {
+    result.testData = testDataFlows;
   }
+
+
+  
   
   return result;
 }
