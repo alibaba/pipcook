@@ -141,13 +141,17 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     save: async function(modelPath: string) {
       fs.copySync(path.join(process.cwd(), '.temp', 'output'), modelPath);
     },
-    predict: async function (inputData: string) {
+    predict: async function (inputData: string[]) {
       let prediction: any;
       await Python.scope('detectron_prediction', async (python: any) => {
         const [DefaultPredictor] = python.fromImport('detectron2.engine.defaults', ['DefaultPredictor']);
-        const predictor = DefaultPredictor(config)
-        const cv2 = python.import('cv2')
-        const img = cv2.imread(inputData)
+        const predictor = DefaultPredictor(config);
+        const cv2 = python.import('cv2');
+        const numpy = python.import('numpy');
+        const images = inputData.map((data: string) => {
+          return cv2.imread(data)
+        })
+        const img = numpy.array(images);
         const out = predictor(img)
         const ins = python.runRaw(`${Python.convert(out)}['instances'].to(${Python.convert(torch)}.device('cpu'))`)
         const boxes = ins.pred_boxes.tensor.numpy()
