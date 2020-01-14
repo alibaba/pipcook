@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-detection-detectron-model-deploy",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
