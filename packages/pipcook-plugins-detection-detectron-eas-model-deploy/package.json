@@ -1,0 +1,26 @@
+{
+  "name": "@pipcook/pipcook-plugins-detection-detectron-model-deploy",
+  "version": "0.2.0",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pipcook/pipcook-core": "^0.2.0",
+    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "ali-oss": "^6.4.0",
+    "fs-extra": "^8.1.0",
+    "uuid": "^3.3.3"
+  },
+  "gitHead": "f8a5b10422f44ff886bcdc929aeb0925576caaee"
+}
