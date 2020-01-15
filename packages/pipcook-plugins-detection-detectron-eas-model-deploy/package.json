@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/pipcook-plugins-bayesian-classifier-model-load",
+  "name": "pipcook-plugins-detection-detectron-eas-model-deploy",
   "version": "0.3.0",
   "description": "",
   "main": "dist/index",
@@ -18,7 +18,9 @@
   "dependencies": {
     "@pipcook/pipcook-core": "^0.3.0",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
-    "bayes": "^0.0.7"
+    "ali-oss": "^6.4.0",
+    "fs-extra": "^8.1.0",
+    "uuid": "^3.3.3"
   },
   "gitHead": "66875a843e69413c5f36b5310031f21b87f23341"
 }

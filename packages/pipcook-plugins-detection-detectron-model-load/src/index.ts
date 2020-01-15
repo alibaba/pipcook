@@ -36,13 +36,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     python.runshell(`pip install -U 'git+https://github.com/facebookresearch/fvcore' --no-cache-dir `)
     python.runshell('pip install cython --no-cache-dir ');
     python.runshell(`pip install 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI' --no-cache-dir `);
-    python.runshell(`git clone https://github.com/facebookresearch/detectron2.git`);
-
-    if (system === 'mac') {
-      python.runshell('cd detectron2 && MACOSX_DEPLOYMENT_TARGET=10.9 CC=clang CXX=clang++ python setup.py build develop');
-    } else {
-      python.runshell('cd detectron2 && python setup.py build develop');
-    }
+    python.runshell(`pip install 'git+https://github.com/facebookresearch/detectron2.git' --no-cache-dir `);
 
     await python.reconnect();
 
@@ -55,11 +49,13 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     setup_logger()
 
     const validationData = data.validationData || data.testData;
+    
     if (data.trainData) {
       register_coco_instances("train_dataset", {}, data.trainData, path.join(data.trainData, '..', '..' , 'images'))
     }
     
-    if (validationData) {
+    const validationJson = validationData && require(validationData);
+    if (validationJson && validationJson.annotations && validationJson.annotations.length > 0) {
       register_coco_instances("val_dataset", {}, validationData, path.join(validationData, '..', '..' , 'images'))
     }
 
@@ -69,11 +65,11 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
       cfg.DATASETS.TRAIN = python.createList(["train_dataset"]);
     }
     
-    if (validationData) {
+    if (validationJson && validationJson.annotations && validationJson.annotations.length > 0) {
       cfg.DATASETS.TEST = python.createList(['val_dataset']);
     } else {
-
-    }cfg.DATASETS.TEST = python.createList(['train_dataset']);
+      cfg.DATASETS.TEST = python.createList(['train_dataset']);
+    }
 
     cfg.DATALOADER.NUM_WORKERS = numWorkers;
     if (!modelId) {
@@ -140,6 +136,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     metrics: [],
     save: async function(modelPath: string) {
       fs.copySync(path.join(process.cwd(), '.temp', 'output'), modelPath);
+      fs.copySync(path.join(__dirname, 'config'), path.join(modelPath, 'config'));
     },
     predict: async function (inputData: string[]) {
       let prediction: any;
@@ -178,8 +175,11 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
       return prediction.value;
     },
     modelName: (<string>(args.modelName)),
-    modelPath: path.join(process.cwd(), '.temp', 'output'), 
     config: cfg,
+    extraParams: {
+      detectronConfigPath: path.join(__dirname, 'config'),
+      modelPath: modelId ? path.join(getModelDir(modelId), 'model_final.pth') : path.join(process.cwd(), '.temp', 'output', 'model_final.pth')
+    }
   }
 }
 
