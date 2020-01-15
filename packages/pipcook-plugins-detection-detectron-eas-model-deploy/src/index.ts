@@ -12,7 +12,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
   const {
     easName='', cpus=2, memory=4000, ossConfig={}, ossDir=''
   } = args || {};
-  const packagePath = path.join(process.cwd(), '.temp1', uuidv1());
+  const packagePath = path.join(process.cwd(), '.temp', uuidv1());
   fs.ensureDirSync(path.join(packagePath, easName))
   try {
     // get detectron env
