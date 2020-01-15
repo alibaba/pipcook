@@ -3,7 +3,7 @@ import * as path from 'path';
 const uuidv1 = require('uuid/v1');
 const fs = require('fs-extra');
 
-const detectionDetectronModelDeploy: ModelDeployType = async (args: ArgsType): Promise<any> => {
+const detectionDetectronModelDeploy: ModelDeployType = async (dataHolder: any, modelHolder: any, args: ArgsType): Promise<any> => {
   const {
     data='', model=''
   } = args || {};
