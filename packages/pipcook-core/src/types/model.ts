@@ -16,6 +16,6 @@ export interface PipcookModel {
   save: ModelLoadAndSaveFunction;
   predict: any;
   modelName: string;
-  modelPath?: string;
   config?: any;
+  extraParams?: any;
 }

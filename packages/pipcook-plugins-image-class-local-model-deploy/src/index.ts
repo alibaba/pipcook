@@ -3,7 +3,7 @@ import * as path from 'path';
 const uuidv1 = require('uuid/v1');
 const fs = require('fs-extra');
 
-const imageClassLocalModelDeploy: ModelDeployType = async (args: ArgsType): Promise<any> => {
+const imageClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, modelHolder: any, args: ArgsType): Promise<any> => {
   const {
     data, dataAccess, model, dataProcess
   } = args || {};

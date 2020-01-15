@@ -10,6 +10,8 @@ const DecompressZip = require('decompress-zip');
 const _cliProgress = require('cli-progress');
 const request = require('request');
 const si = require('systeminformation');
+const targz = require('targz');
+
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
  * For more info, you can check the sources codes of plugin: @pipcook/pipcook-plugins-image-class-data-collect
@@ -101,6 +103,21 @@ export function downloadZip(url: string, fileName: string) {
       bar1.stop();
       reject(err);
     });
+  })
+}
+
+export function compressTarFile(sourcePath: string, targetPath: string) {
+  return new Promise((resolve, reject) => {
+      targz.compress({
+        src: sourcePath,
+        dest: targetPath
+      }, (err: Error) => {
+          if(err) {
+              reject(err);
+          } else {
+              resolve();
+          }
+      });
   })
 }
 

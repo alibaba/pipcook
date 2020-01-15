@@ -30,6 +30,7 @@
     "request": "^2.88.0",
     "rxjs": "^6.5.3",
     "systeminformation": "^4.16.0",
+    "targz": "^1.0.1",
     "xml2js": "^0.4.22"
   },
   "gitHead": "f8a5b10422f44ff886bcdc929aeb0925576caaee"
