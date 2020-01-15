@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-text-class-data-process",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.2.0",
+    "@pipcook/pipcook-core": "^0.2.5",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
     "nodejieba": "^2.3.3"
   },
