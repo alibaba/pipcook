@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/pipcook-plugins-detection-detectron-model-deploy",
+  "name": "pipcook-plugins-detection-detectron-eas-model-deploy",
   "version": "0.2.0",
   "description": "",
   "main": "dist/index",
