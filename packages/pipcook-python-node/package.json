@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-python-node",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -24,5 +24,5 @@
     "ora": "^4.0.3",
     "zeromq": "^6.0.0-beta.5"
   },
-  "gitHead": "f8a5b10422f44ff886bcdc929aeb0925576caaee"
+  "gitHead": "66875a843e69413c5f36b5310031f21b87f23341"
 }
