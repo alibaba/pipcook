@@ -10,6 +10,9 @@ const DecompressZip = require('decompress-zip');
 const _cliProgress = require('cli-progress');
 const request = require('request');
 const si = require('systeminformation');
+const targz = require('targz');
+const extract = require('extract-zip')
+
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
  * For more info, you can check the sources codes of plugin: @pipcook/pipcook-plugins-image-class-data-collect
@@ -104,6 +107,21 @@ export function downloadZip(url: string, fileName: string) {
   })
 }
 
+export function compressTarFile(sourcePath: string, targetPath: string) {
+  return new Promise((resolve, reject) => {
+      targz.compress({
+        src: sourcePath,
+        dest: targetPath
+      }, (err: Error) => {
+          if(err) {
+              reject(err);
+          } else {
+              resolve();
+          }
+      });
+  })
+}
+
 /**
  * unzip compressed data
  * @param filePath : path of zip
@@ -111,32 +129,14 @@ export function downloadZip(url: string, fileName: string) {
  */
 export function unZipData(filePath: string, targetPath: string) {
   return new Promise((resolve, reject) => {
-    const unzipper = new DecompressZip(filePath);
-    const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
-    unzipper.on('error', function (err: Error) {
-      bar1.stop();
-      reject(err);
-    });
-    
-    unzipper.on('extract', function () {
-      bar1.stop();
-      resolve();
-    });
-    
-    unzipper.on('progress', function (fileIndex: number, fileCount: number) {
-      if (fileIndex === 1) {
-        bar1.start(fileCount, 0);
+    extract(filePath, {dir: targetPath}, function (err: Error) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
       }
-      bar1.update(fileIndex);
     });
-    
-    unzipper.extract({
-        path: targetPath,
-        filter: function (file: any) {
-            return file.type !== "SymbolicLink";
-        }
-    });
-  })
+  });
 }
 
 /**
