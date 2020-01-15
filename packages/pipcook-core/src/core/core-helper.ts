@@ -150,7 +150,7 @@ export async function runPredict(runner: PipcookRunner, request: any) {
   const dataProcess = components.find((e) => e.type === 'dataProcess');
   const modelDeploy = components.find((e) => e.type === 'modelDeploy');
 
-  const result = await (<ModelDeployType>modelDeploy.plugin)({
+  const result = await (<ModelDeployType>modelDeploy.plugin)({},{},{
     data, dataAccess, model: latestModel, dataProcess
   });
 

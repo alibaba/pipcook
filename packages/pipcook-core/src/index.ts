@@ -7,6 +7,6 @@ export {DataCollectType, DataAccessType, DataProcessType, ModelLoadType,
 export {DataCollect, DataAccess, DataProcess, ModelLoad, ModelTrain, ModelEvaluate, ModelDeploy} from './components/PipcookLifeCycleComponent';
 export {PipcookRunner} from './core/core';
 export {createAnnotationFile, parseAnnotation, unZipData, downloadZip, getOsInfo, transformCsv,
-  getDatasetDir, createAnnotationFromJson, getMetadata, getModelDir, convertPascol2CocoFileOutput } from './utils/publicUtils';
+  getDatasetDir, createAnnotationFromJson, getMetadata, getModelDir, convertPascol2CocoFileOutput, compressTarFile } from './utils/publicUtils';
 export {startBoard} from './board/board';
 export {PipcookComponentResult} from './types/component';
