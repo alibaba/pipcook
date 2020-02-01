@@ -23,7 +23,7 @@ Data Collect
 
 数据压缩文件储存在本地的时候
 
-```typescript
+```
 const dataCollect = DataCollect(textClassDataCollect, {
   url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textDataBinding.csv',
   validationSplit:0.1,

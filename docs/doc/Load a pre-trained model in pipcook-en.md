@@ -4,7 +4,7 @@ Assuming that we have trained a model with pipcook's pipeline, we may want to lo
 
 The code is as follows:
 
-```typescript
+```
 const {DataAccess, ModelLoad, PipcookRunner, ModelDeploy} = require('@pipcook/pipcook-core');
 
 const imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
@@ -47,7 +47,7 @@ Note that you need to replace the modelId parameter in the model loading plug-in
 
 After the command prompts that the local deployment has been successful, you can directly send a request for prediction like localhost. The following is our request format (take curl as an example ), the data in data is an array of image URLs to be predicted.
 
-```typescript
+```
 curl -X POST \
   http://127.0.0.1:7778/predict \
   -H 'Content-Type: application/json' \
@@ -59,7 +59,7 @@ curl -X POST \
 
 Response returned
 
-```typescript
+```
 {
     "status": true,
     "result": [

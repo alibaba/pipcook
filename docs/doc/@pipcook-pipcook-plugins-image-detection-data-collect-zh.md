@@ -21,7 +21,7 @@ Data Collect
 
 数据压缩文件储存在远程的时候
 
-```typescript
+```
 const dataCollect = DataCollect(imageDetectionDataCollect, {
   url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/componentRecognition.zip',
   testSplit: 0.1

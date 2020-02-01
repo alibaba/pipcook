@@ -16,7 +16,7 @@ Model Train
 <a name="eiyJr"></a>
 #### 例子
 
-```typescript
+```
 const modelTrain = ModelTrain(imageClassModelTrain, {
   epochs: 15
 });

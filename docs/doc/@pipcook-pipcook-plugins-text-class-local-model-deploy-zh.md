@@ -14,7 +14,7 @@ Model Deploy
 <a name="ZZcV2"></a>
 #### 例子：
 
-```typescript
+```
 const textClassLocalModelDeploy = require('@pipcook/pipcook-plugins-text-class-local-model-deploy').default;
 const modelDeploy = ModelDeploy(textClassLocalModelDeploy);
 ```
@@ -23,7 +23,7 @@ const modelDeploy = ModelDeploy(textClassLocalModelDeploy);
 #### 注意
 对于我们的本地部署链路，以下是我们的请求格式 (以 curl 为例），data 里的数据是所需要预测的文本的数组
 
-```typescript
+```
 curl -X POST \
   http://127.0.0.1:7778/predict \
   -H 'Content-Type: application/json' \
@@ -35,7 +35,7 @@ curl -X POST \
 
 输出
 
-```typescript
+```
 {
     "status": true,
     "result": [

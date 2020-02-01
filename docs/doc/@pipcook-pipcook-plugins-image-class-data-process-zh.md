@@ -16,7 +16,7 @@ Data Process
 <a name="vE6A8"></a>
 #### 例子
 
-```typescript
+```
 const dataAccess = DataProcess(imageClassDataProcess, {
   normalization: true,
   rotationRange: 15

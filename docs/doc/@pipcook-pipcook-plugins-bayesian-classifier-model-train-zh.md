@@ -13,7 +13,7 @@ Model Train
 <a name="h7WRB"></a>
 #### 例子
 
-```typescript
+```
 const modelTrain = ModelTrain(bayesianClassifierModelTrain);
 ```
 

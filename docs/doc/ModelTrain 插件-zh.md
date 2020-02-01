@@ -2,7 +2,7 @@
 
 此插件用来训练一个模型，interface 提供一个训练模型基本参数的配置能力，但是这些参数不应该是必须的，允许插件开发者在插件内部定义其认为合适的超参数。
 
-```typescript
+```
 interface PipcookPlugin {
 }
 

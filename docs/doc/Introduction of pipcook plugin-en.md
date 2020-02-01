@@ -42,7 +42,7 @@ We have defined interfaces and specifications for each type of plugins. Develope
 
 For each plug-in, we need to pass it into the corresponding type of parsers for parsing. For the above 10 types of plug-ins, there are 7 types of parsers:
 
-```typescript
+```
 function DataCollect(plugin: EscherPlugin, params: object);
 function DataAccess(plugin: EscherPlugin, params: object);
 function DataProcess(plugin: EscherPlugin, params: object);
@@ -60,7 +60,7 @@ function ModelDeploy(plugin: EscherPlugin, params: object);
 
 Pipcook plugins are divided into built-in plugins and third-party plugins. Each plugin is an independent npm package, and the required plugins need to be installed independently. For example, we need a model plugin loaded with MobileNet, we can use the following command in the project directory to install, **We will integrate the builtin plugins directly into a pipcook scaffold project. You do not need to install these builtin plugins separately.**
 
-```typescript
+```
 npm install mobileNetModelLoad --save
 ```
 

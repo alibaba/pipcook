@@ -9,25 +9,25 @@ The purpose of pipcook is to serve front-end engineers and promote the developme
 
 python >= 3.6, you can run the command below to get python version
 
-```typescript
+```
 python --version
 ```
 
 to get pip version
 
-```typescript
+```
 pip --version
 ```
 
 In fact, when you use the pipcook-python-node api, we will automatically create a virtual environment in the current working directory, but in order to ensure the environment configuration is correct, you can also manually create a python virtual environment, you can run the following command in the current working directory
 
-```typescript
+```
 pip install virtualenv
 virtualenv --no-site-packages pipcook_venv
 ```
 
 **We strongly recommend that you use our docker image to run pipcook, so that you no longer need to execute the above commands, and you don't need to worry about the environment, you can refer to the detailed docker information **[**here**](https://alibaba.github.io/pipcook/doc/Quick%20Start-en)<br />**
-```typescript
+```
 docker pull pipcook/pipcook
 ```
 
@@ -393,7 +393,7 @@ This method operates on two python objects, equivalent to a // b in python
 
 This method is used to execute native python statements. This method is not recommended. If you are sure that the API we provide at this stage cannot meet your requirements, you can use this method, mainly using Python.convert (PythonObject) escape, for example:
 
-```typescript
+```
 const number1 = python.createNumber(2)
 const number2 = python.createNumber(3)
 const result = pyhton.runRaw(`${Python.convert(number1)} + ${Python.convert(number2)}`);

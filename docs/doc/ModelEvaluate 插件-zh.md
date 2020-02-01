@@ -2,7 +2,7 @@
 
 Model Evaluate 插件对模型的训练结果进行深入分析，以帮助您了解模型对测试集的表现如何。
 
-```typescript
+```
 interface PipcookPlugin {
 }
 

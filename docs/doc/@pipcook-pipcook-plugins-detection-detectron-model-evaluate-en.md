@@ -13,7 +13,7 @@ No
 <a name="z3d7G"></a>
 #### Example:
 
-```typescript
+```
 let detectronModelEvaluate = require('@pipcook/pipcook-plugins-detection-detectron-model-evaluate').default;
 const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
 ```

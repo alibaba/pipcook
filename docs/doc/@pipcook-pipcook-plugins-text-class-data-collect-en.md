@@ -20,7 +20,7 @@ Data Collect
 #### Example:
 When a compressed data file is stored locally
 
-```typescript
+```
 const dataCollect = DataCollect(textClassDataCollect, {
   url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textDataBinding.csv',
   validationSplit:0.1,

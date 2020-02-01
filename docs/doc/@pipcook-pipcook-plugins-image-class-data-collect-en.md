@@ -13,7 +13,7 @@ Data Collect
 <a name="2e1Vr"></a>
 #### Example:
 When data compression files are stored remotely
-```typescript
+```
 const dataCollect = DataCollect(imageClassDataCollect, {
    url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/eCommerceImageClassification.zip'
 });
@@ -21,7 +21,7 @@ const dataCollect = DataCollect(imageClassDataCollect, {
 
 When a compressed data file is stored locally
 
-```typescript
+```
 const dataCollect = DataCollect(imageClassDataCollect, {
     url: 'file:///home/dataset/data.zip'
 });

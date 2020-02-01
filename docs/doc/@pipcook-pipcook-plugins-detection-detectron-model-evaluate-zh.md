@@ -13,7 +13,7 @@ Model Evaluate
 <a name="z3d7G"></a>
 #### 例子：
 
-```typescript
+```
 let detectronModelEvaluate = require('@pipcook/pipcook-plugins-detection-detectron-model-evaluate').default;
 const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
 ```

@@ -18,7 +18,7 @@ Data Collect
 
 When data compression files are stored remotely
 
-```typescript
+```
 const dataCollect = DataCollect(imageDetectionDataCollect, {
   url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/componentRecognition.zip',
   testSplit: 0.1

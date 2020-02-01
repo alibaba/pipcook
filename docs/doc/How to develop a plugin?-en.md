@@ -34,7 +34,7 @@ A plug-in consists of the following parts:
 
 The pipcook-cli tool provides a convenient way to initialize the plugin development workspace. You only need to run the following command:
 
-```typescript
+```
 pipcook plugin-dev -t <plugin type>
 cd template-plugin
 npm install
@@ -60,7 +60,7 @@ You can initialize a development environment, which contains the following struc
 
 If you check our [Plug-in prototype specification](https://www.yuque.com/znzce0/in8hih/developguide) , you will notice that the plug-in we define mainly contains three parameters: data (not necessary), model (not necessary), and args. The data and model parameters are automatically injected by pipcook during pipeline execution. The args parameters are custom parameters that can be input by the plug-in. After a plug-in is developed and the user runs pipeline, the user does not need to display input data and model parameters to the corresponding component of the plug-in. For example, the interface of a data access plug-in is:
 
-```typescript
+```
 interface DataAccessType extends PipcookPlugin {
   (data: OriginSampleData | OriginSampleData[], args?: ArgsType): Promise<UniformSampleData>
 }
@@ -68,7 +68,7 @@ interface DataAccessType extends PipcookPlugin {
 
 Therefore, any data access plug-in contains two parameters, data and args. However, the user code should be similar to this:
 
-```typescript
+```
 const dataAccess = DataAccess(imageClassDataAccess, {
   imgSize:[28, 28],
 });
@@ -85,7 +85,7 @@ This chapter uses a simple example to show how to develop a data processing plug
 <a name="fdRb0"></a>
 #### Data processing plug-in interface
 
-```typescript
+```
 export interface DataProcessType extends PipcookPlugin {
   (data: UniformSampleData | UniformSampleData[], args?: ArgsType): Promise<UniformSampleData>
 }
@@ -93,7 +93,7 @@ export interface DataProcessType extends PipcookPlugin {
 
 First, you can view the interface of the plug-in type you want to develop according to the preceding link. For example, the plug-in of the data processing type accepts a parameter of the supposed sampledata type and an optional parameter of the ArgsType type as shown above. The following figure shows the sub-interface type of sampledata:
 
-```typescript
+```
 interface UniformSampleData{
   trainData: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
   validationData?: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
@@ -113,7 +113,7 @@ ArgsType is the custom parameter that the plug-in expects to enter.
 #### Prepare mock data
 You can prepare the corresponding mock data based on the interface to develop the plug-in. For example, if we develop a data processing plug-in, we can construct the following mock data
 
-```typescript
+```
 const data = {
 	trainData: tf.data.array([{xs: [1,2,3], ys: [1]},{xs: [4,5,6], ys: [2]}]),
   metaData: {
@@ -133,7 +133,7 @@ const data = {
 
 For example, if the data processing plug-in needs to double the size of each feature, you can implement your plug-in as follows:
 
-```typescript
+```
 import {DataProcessType, UniformSampleData, ArgsType} from '@pipcook/pipcook-core'
 
 const templateDataProcess: DataProcessType = async (data: UniformSampleData, args?: ArgsType): Promise<UniformSampleData> => {
@@ -159,7 +159,7 @@ After ensuring the preceding two points, you can run a real pipcook pipeline to 
 
 ---
 
-After you have developed the plugin, you can create your own github repository, and push your code and corresponding unit tests to your own repository, the repository should be named 'pipcook-plugins-xxx-<plugin type>'
+After you have developed the plugin, you can create your own github repository, and push your code and corresponding unit tests to your own repository, the repository should be named 'pipcook-plugins-xxx-(plugin type)'
 
 You can also submit a pull request to the master branch to submit your plug-in documentation and corresponding instructions. The steps are as follows:
 
@@ -174,7 +174,7 @@ You can also submit a pull request to the master branch to submit your plug-in d
 <a name="qadiP"></a>
 #### Create a branch based on your plugin
 
-```typescript
+```
 git checkout -b pipcook-plugins-xxx-<plugin type>
 ```
 
@@ -189,15 +189,14 @@ Then, create two new documents in pipcook/docs/doc, which are the Chinese and En
 <a name="slBaM"></a>
 #### Submit to your forked repository
 
-```typescript
+```
 git add . && git commit -m "plugin doc dev" && git push
 ```
-<a name="3AEgI"></a>
-#### 
+
 <a name="v8XsX"></a>
 #### Submit a Pull Request
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580539335805-714c29f9-9901-4bca-b16f-b98dde74a608.png#align=left&display=inline&height=86&name=image.png&originHeight=172&originWidth=1318&size=131735&status=done&style=none&width=659)
 
+![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580539335805-714c29f9-9901-4bca-b16f-b98dde74a608.png#align=left&display=inline&height=86&name=image.png&originHeight=172&originWidth=1318&size=131735&status=done&style=none&width=659)
 
 
 After passing our review, we will add your document to pipcook's official document and merge your code into the master branch, and publish your plug-in to the npm repository of pipcook. You will also become one of the developers of pipcook.

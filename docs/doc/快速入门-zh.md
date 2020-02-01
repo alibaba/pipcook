@@ -22,13 +22,13 @@
 <a name="PEMXT"></a>
 #### 本地方式
 (如果您想使用 gpu加速功能和基于 detectron2 的目标检测 python 桥接链路，我们建议您使用下面的 docker 方式安装) 首先安装 pipcook 脚手架 pipcook-cli, 此工具将提供环境初始化，控制流程开始与结束，日志查看等功能。
-```typescript
+```
 sudo npm install -g @pipcook/pipcook-cli
 ```
 
 安装好脚手架之后，可以创建工程文件夹 (或者集成进现有的任何前端项目)，然后使用脚手架简单的几条指令快速生成项目
 
-```typescript
+```
 mkdir pipcook-example && cd pipcook-example
 pipcook init
 cd pipcook-project
@@ -36,7 +36,7 @@ cd pipcook-project
 
 此时，Pipcook 所有需要的相关的环境已经安装完毕，此外，还会为您生成一些 Pipcook 工程的样例文件<br />在生成的项目空间里，我们在 examples 文件夹里为您准备了两个样例文件， 您可以直接运行他们去开始一个机器学习工程 pipeline. 例如，您可以快速运行这个文件进行一次mnist 手写数字的识别，想要开始这个训练，您只需要一个简单的命令
 
-```typescript
+```
 node examples/pipeline-mnist-image-classification.js
 ```
 
@@ -47,25 +47,25 @@ node examples/pipeline-mnist-image-classification.js
 #### Docker 方式 (GPU 推荐方式)
 在需要使用gpu加速的场景下，我们建议您使用我们的 Docker 镜像进行 pipcook 的训练。在我们的镜像中，在开始之前，请确保您的系统已经正确安装了 Docker<br />我们可以运行如下命令拉取镜像
 
-```typescript
+```
 docker pull pipcook/pipcook
 ```
 
 首先在本地创建一个工作空间，例如我们创建一个 example 文件夹，如果您的环境有可以用于训练的 GPU (仅限Linux), 具有支持CUDA的NVIDIA®GPU和正确的驱动程序，您可以运行如下命令进入镜像（启动容器），并且将您的工作空间 mount 进入 docker 环境。如果使用 CPU 训练，则不需要加 --gpus all 参数
-```typescript
+```
 mkdir ${local_workspace} // 例如： /Users/queyue/documents/example
 docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1g --gpus all pipcook/pipcook /bin/bash
 ```
 
 现在，您可以进入到项目空间里，并且使用我们已经安装好的脚手架初始化项目空间
 
-```typescript
+```
 pipcook init
 ```
 
 我们在 examples 文件夹里为您准备了两个样例文件， 您可以直接运行他们去开始一个机器学习工程 pipeline. 例如，您可以快速进行一次mnist 手写数字的识别，想要开始这个训练，您只需要一个简单的命令
 
-```typescript
+```
 cd pipcook-project
 node examples/pipeline-mnist-image-classfication.js
 ```
@@ -77,7 +77,7 @@ node examples/pipeline-mnist-image-classfication.js
 
 同时，如果您想要查看你之前训练过的模型或者使用过的训练集，您可以运行如下命令打开 pipcook-board
 
-```typescript
+```
 pipcook board
 ```
 
@@ -97,7 +97,7 @@ pipcook board
 #### 数据收集
 第一步，我们需要将这些分散的图片按照固定的数据集规范统一收集过来，在这个场景里，我们提供了 mnist 的数据收集插件  @ali/pipcook-plugins-image-mnist-data-collection 我们只需要简单的指定需要用到的插件以及根据插件文档此插件所需的参数, 最终将这个参数传给 DataCollect Component 即可
 
-```typescript
+```
 const dataCollect = DataCollect(imageMnistDataCollection, {
   trainingCount:8000,
   testCount: 2000
@@ -108,7 +108,7 @@ const dataCollect = DataCollect(imageMnistDataCollection, {
 #### 数据接入
 Pipcook 支持在单个的工程中配置多个数据收集的来源，这些来自不同地方的数据应该被表示为统一的数据格式，例如，在图片问题中，所有的收集应该以统一的 PASCOL VOC 格式传入下游，我们有一个统一的数据接入层，我们使用 imageClassDataAccess 插件,  传入DataAccess Component。 此插件可以指定我们统一接入的图片尺寸，插件将自动把图片统一到一样的尺寸，并且以 tf.Data 的标准数据处理 API 传入下游，关于数据集标准，请参考[这里](https://alibaba.github.io/pipcook/doc/%E6%95%B0%E6%8D%AE%E9%9B%86-zh)
 
-```typescript
+```
  // access mnist data into our specifiction
 const dataAccess = DataAccess(imageClassDataAccess, {
   imgSize:[28, 28],
@@ -119,7 +119,7 @@ const dataAccess = DataAccess(imageClassDataAccess, {
 #### 模型载入
 在这个过程里，我们将会载入所需要的模型，这个模型可以来自于您自己搭建的模型，或者一些预训练的模型，甚至于加载 keras 和 python tensorflow 的模型，最终给出一个统一的模型格式，在这个例子中，假设我们想要用 mobileNet 进行mnist 的分类，我们使用 mobileNetModelLoad 插件来做这个事情
 
-```typescript
+```
 const modelLoad = ModelLoad(mobileNetLoad, {
   modelName: 'test1'
 });
@@ -129,7 +129,7 @@ const modelLoad = ModelLoad(mobileNetLoad, {
 #### 模型训练
 加载完模型后，我们启动模型开始训练，此插件和模型载入插件尽可能的不耦合，我们使用 imageClassModelTrain 插件来进行模型训练
 
-```typescript
+```
 const modelTrain = ModelTrain(imageClassModelTrain, {
   epochs: 15
 });
@@ -139,7 +139,7 @@ const modelTrain = ModelTrain(imageClassModelTrain, {
 #### 模型评估
 在模型的训练完成之后，我们还希望用我们的测试集去评估一下模型的表现，我们可以使用 imageClassModelEvaluate 插件去做评估
 
-```typescript
+```
 const modelEvaluate = ModelEvaluate(classModelEvalute);
 ```
 
@@ -147,7 +147,7 @@ const modelEvaluate = ModelEvaluate(classModelEvalute);
 #### 启动 Runner
 现在我们对于机器学习生命周期的每一步的环节就已经编写完成啦，下面我们要将每一个插件传入给 Pipcook runner，并告诉 Pipcook 启动一个 runner 去开始训练流程，如下所示
 
-```typescript
+```
 const runner = new PipcookRunner('test1', {
   predictServer: true
 })

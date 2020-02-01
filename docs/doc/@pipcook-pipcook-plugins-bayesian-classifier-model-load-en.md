@@ -15,7 +15,7 @@ Model Load
 <a name="mvTEu"></a>
 #### Example
 
-```typescript
+```
 const modelLoad = ModelLoad(bayesianClassiferModelLoader, {
   modelName: 'testModelName'
 });

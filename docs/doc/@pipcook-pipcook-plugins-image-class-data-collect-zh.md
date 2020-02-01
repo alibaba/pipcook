@@ -13,7 +13,7 @@ Data Collect
 <a name="2e1Vr"></a>
 #### 例子:
 数据压缩文件储存在远程的时候
-```typescript
+```
 const dataCollect = DataCollect(imageClassDataCollect, {
    url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/eCommerceImageClassification.zip'
 });
@@ -21,7 +21,7 @@ const dataCollect = DataCollect(imageClassDataCollect, {
 
 数据压缩文件储存在本地的时候
 
-```typescript
+```
 const dataCollect = DataCollect(imageClassDataCollect, {
     url: 'file:///home/dataset/data.zip'
 });

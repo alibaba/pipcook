@@ -26,13 +26,13 @@ First install piphook-cli , it is a pipcook scaffolding that provides environme
 
 If you want to use GPU acceleration  and python bridge (for instance, our built-in object detection pipeline), we suggest you use the following docker method
 
-```typescript
+```
 sudo npm install -g @pipcook/pipcook-cli
 ```
 
 After the scaffold is installed, you can create a project folder (or integrate into any existing front-end project), and then use the simple instructions of the scaffold to quickly generate the project.
 
-```typescript
+```
 mkdir pipcook-example && cd pipcook-example
 pipcook init
 cd pipcook-project
@@ -42,7 +42,7 @@ At this time, all the relevant environments needed for pipcook have been install
 
 We have prepared severaal samples for you in the examples folder. You can run them directly to start a machine learning project pipeline. For example, you can run this file quickly to recognize MNIST  numbers. To start this training, you only need a simple command.
 
-```typescript
+```
 node examples/pipeline-mnist-image-classfication.js
 ```
 
@@ -53,26 +53,26 @@ In the case of GPU acceleration, we suggest you use our docker mirror for pipcoo
 
 We can run the following command to pull the mirror.
 
-```typescript
+```
 docker pull pipcook/pipcook
 ```
 
 First, create a workspace locally. For example, let's create an example folder. If your environment has GPUs that can be used for training (Linux only), NVIDIA ® GPUs that support CUDA, and the correct drivers, you can run the following command to enter the mirror (start the container), and mount your workspace into the docker environment. If CPU training is used, the '-- GPUs all' parameter does not need to be added.
 
-```typescript
+```
 mkdir ${local_workspace} // such as： /Users/queyue/documents/example
 docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1g --gpus all pipcook/pipcook /bin/bash
 ```
 
 Now, you can enter the project space and use the scaffold we have installed to initialize the project space.
 
-```typescript
+```
 pipcook init
 ```
 
 We have prepared several sample files for you in the examples folder. You can run them directly to start a machine learning project pipeline. For example, you can quickly carry out a MNIST  number recognition. To start this training, you only need a simple command.
 
-```typescript
+```
 cd pipcook-project
 node examples/pipeline-mnist-image-classfication.js
 ```
@@ -84,7 +84,7 @@ After the training, the system will start the local deployment, which will be de
 
 At the same time, if you want to view your previously trained models or used training sets, you can run the following command to open pipcook board
 
-```typescript
+```
 pipcook board
 ```
 
@@ -107,7 +107,7 @@ You can create a new file for the pipeline from scratch, assuming we name this f
 
 At first, we need to collect these  images. In this scenario, we provide the data collection plugin @ali/pipcook-plugins-image-mnist-data-collection. We just need to simply specify the plugin to be used and the parameters required according to the plugin document, and finally pass the parameters to DataCollect Component.
 
-```typescript
+```
 const dataCollect = DataCollect(imageMnistDataCollection, {
   trainingCount:8000,
   testCount: 2000
@@ -120,7 +120,7 @@ The data from different places should be represented as a unified data format ac
 
 This plugin can specify the image size we access uniformly and  unify the image to the same size automatically, and transmit it to the downstream through tf.data's standard data processing API. For dataset standards, please refer to [here](https://github.com/alibaba/pipcook/wiki/%E6%95%B0%E6%8D%AE%E9%9B%86).
 
-```typescript
+```
  // access mnist data into our specifiction
 const dataAccess = DataAccess(imageClassDataAccess, {
   imgSize:[28, 28],
@@ -132,7 +132,7 @@ const dataAccess = DataAccess(imageClassDataAccess, {
 
 In this process, we will load the required model. This model can come from the model you built, or some pre-training models, or even the models of keras and python tensorflow. Finally, we will give a unified model format. In this example, if we want to use mobileNet to classify the MNIST, we use mobileNetModelLoad plugin to do this.
 
-```typescript
+```
 const modelLoad = ModelLoad(mobileNetLoad, {
   modelName: 'test1'
 });
@@ -142,7 +142,7 @@ const modelLoad = ModelLoad(mobileNetLoad, {
 #### Model train
 After loading the model, we start the model training. We use the imageClassModelTrain plugin for model training.
 
-```typescript
+```
 const modelTrain = ModelTrain(imageClassModelTrain, {
   epochs: 15
 });
@@ -153,7 +153,7 @@ const modelTrain = ModelTrain(imageClassModelTrain, {
 
 After the model training, we also hope to use our test set to evaluate the performance of the model. We can use the imageClassModelEvaluate plugin to do the evaluation.
 
-```typescript
+```
 const modelEvaluate = ModelEvaluate(classModelEvalute);
 ```
 
@@ -162,7 +162,7 @@ const modelEvaluate = ModelEvaluate(classModelEvalute);
 
 Now we have completed every step of the machine learning life cycle, let's pass each plugin to pipcook runner, and tell pipcook to start a runner to begin the training process, as shown below.
 
-```typescript
+```
 const runner = new PipcookRunner('test1', {
   predictServer: true
 })

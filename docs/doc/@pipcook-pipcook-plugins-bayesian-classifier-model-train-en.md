@@ -13,7 +13,7 @@ No
 <a name="h7WRB"></a>
 #### Example
 
-```typescript
+```
 const modelTrain = ModelTrain(bayesianClassifierModelTrain);
 ```
 

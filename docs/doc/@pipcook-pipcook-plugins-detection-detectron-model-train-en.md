@@ -14,7 +14,7 @@ Model Train
 <a name="HEIMw"></a>
 #### Example:
 
-```typescript
+```
 let detectronModelTrain = require('../packages/pipcook-plugins-detection-detectron-model-train').default;
 const modelTrain = ModelTrain(detectronModelTrain);
 

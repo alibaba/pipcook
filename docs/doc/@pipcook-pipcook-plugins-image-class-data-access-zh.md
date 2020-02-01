@@ -15,7 +15,7 @@ Data Access
 #### 例子
 统一将上游进来的数据集统一为28*28的尺寸
 
-```typescript
+```
 const dataAccess = DataAccess(imageClassDataAccess, {
   imgSize:[28, 28],
 });

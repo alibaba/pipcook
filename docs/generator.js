@@ -48,6 +48,7 @@ async function generate(lang) {
       markdownContent = markdownContent.replace(new RegExp(wholeUrl, 'g'), `https://alibaba.github.io/pipcook/doc/${encodeURIComponent(tocMap[slug])}`)
     }
     const title = toc.title.replace(/\//g, '-');
+    markdownContent = markdownContent.replace(/```typescript/g, '```');
     fs.outputFileSync(path.join(docDir, `${title}-${lang}.md`), markdownContent);
   }
 }

@@ -14,7 +14,7 @@ Model Deploy
 <a name="ZZcV2"></a>
 #### Example:
 
-```typescript
+```
 const textClassLocalModelDeploy = require('@pipcook/pipcook-plugins-text-class-local-model-deploy').default;
 const modelDeploy = ModelDeploy(textClassLocalModelDeploy);
 ```
@@ -23,7 +23,7 @@ const modelDeploy = ModelDeploy(textClassLocalModelDeploy);
 #### Notice
 For our locally deployed links, the following is our request format (take curl as an example). The data in data is an array of text to be predicted.
 
-```typescript
+```
 curl -X POST \
   http://127.0.0.1:7778/predict \
   -H 'Content-Type: application/json' \
@@ -35,7 +35,7 @@ curl -X POST \
 
 Output
 
-```typescript
+```
 {
     "status": true,
     "result": [

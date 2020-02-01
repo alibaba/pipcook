@@ -19,7 +19,7 @@ Model Load
 <a name="OH9Ct"></a>
 #### 例子
 
-```typescript
+```
 const modelLoad = ModelLoad(simpleCnnModelLoad, {
    modelName: 'test1'
 });
