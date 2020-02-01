@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-text-csv-data-access",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.3.3",
+    "@pipcook/pipcook-core": "^0.4.0",
     "@tensorflow/tfjs-node-gpu": "x.x.x"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856"
