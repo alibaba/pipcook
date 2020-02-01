@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-image-detection-data-access",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.3.1",
+    "@pipcook/pipcook-core": "^0.3.3",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
     "cli-progress": "^3.4.0",
     "glob": "^7.1.5",
@@ -25,5 +25,5 @@
     "mnist": "^1.1.0",
     "xml2js": "^0.4.22"
   },
-  "gitHead": "66875a843e69413c5f36b5310031f21b87f23341"
+  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856"
 }
