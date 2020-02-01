@@ -51,7 +51,6 @@ export function createAnnotationFromJson(annotationDir: string, json: any) {
   let filename = json.annotation.filename[0];
   const fileNameSplit = filename.split('.');
   filename = fileNameSplit.slice(0, fileNameSplit.length - 1).join('.');
-
   const xml = (new xml2js.Builder()).buildObject(json);
   fs.outputFileSync(path.join(annotationDir, `${filename}.xml`), xml);
 }

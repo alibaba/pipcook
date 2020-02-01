@@ -83,6 +83,10 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
     }
     const objects = annotation.annotations.filter((e: any) => e.image_id == cocoImage.id);
     currentAnnotation.annotation.object = objects.map((object: any) => {
+      if (!object.category_name) {
+        const category = annotation.categories.find((e: any) => e.id == object.category_id).name;
+        object.category_name = category;
+      }
       return {
         name: [object.category_name],
         pose: ["Unspecified"],
