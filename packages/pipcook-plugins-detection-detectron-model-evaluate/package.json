@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-detection-detectron-model-evaluate",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.3.0",
-    "@pipcook/pipcook-python-node": "^0.3.0",
+    "@pipcook/pipcook-core": "^0.3.1",
+    "@pipcook/pipcook-python-node": "^0.3.1",
     "@tensorflow/tfjs-node-gpu": "x.x.x"
   },
   "gitHead": "66875a843e69413c5f36b5310031f21b87f23341"
