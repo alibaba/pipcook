@@ -165,11 +165,11 @@ export default templateDataProcess;
 
 <a name="C8oUt"></a>
 #### fork 项目
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580538912983-a2f236f1-454f-4d17-be67-a1c88fb42f1a.png#align=left&display=inline&height=179&name=image.png&originHeight=358&originWidth=2006&size=219404&status=done&style=none&width=1003)
+![image.png](https://img.alicdn.com/tfs/TB1aaMbuKL2gK0jSZFmXXc7iXXa-2006-358.png)
 
 <a name="0prlf"></a>
 #### 克隆本地
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580538946503-934368a7-9e53-403e-9299-9d6bfa707493.png#align=left&display=inline&height=184&name=image.png&originHeight=424&originWidth=828&size=176376&status=done&style=none&width=359)
+![image.png](https://img.alicdn.com/tfs/TB1CWz7uGL7gK0jSZFBXXXZZpXa-718-368.png)
 
 <a name="qadiP"></a>
 #### 根据您的插件创建分支
@@ -182,7 +182,7 @@ git checkout -b pipcook-plugins-xxx-<plugin type>
 #### 编写文档
 首先，编辑文件 pipcook/docs/doc/插件介绍-zh.md 和 pipcook/docs/doc/Introduction of pipcook plugin-en.md, 更新如下的插件列表
 
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580539222364-f158701f-c01a-48e5-b744-49aee210f91b.png#align=left&display=inline&height=238&name=image.png&originHeight=700&originWidth=1454&size=516382&status=done&style=none&width=494)
+![image.png](https://img.alicdn.com/tfs/TB14EscuG61gK0jSZFlXXXDKFXa-988-476.png)
 
 然后，在 pipcook/docs/doc 中新建两个文档，分别为您的插件的中英文介绍，在上面的列表中建立超链接指向您的新文档。在文档中，应该包含怎样安装插件和您自己的仓库地址
 
@@ -196,6 +196,6 @@ git add . && git commit -m "plugin doc dev" && git push
 <a name="v8XsX"></a>
 #### 提交 Pull Request
 
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580539335805-714c29f9-9901-4bca-b16f-b98dde74a608.png#align=left&display=inline&height=86&name=image.png&originHeight=172&originWidth=1318&size=131735&status=done&style=none&width=659)
+![image.png](https://img.alicdn.com/tfs/TB1IP69uKT2gK0jSZFvXXXnFXXa-1318-172.png)
 
 在通过我们的审核之后，我们将会把您的文档添加进 pipcook 的官方文档中，并且把您的代码合并到 master 分支中，并把您的插件发布至 pipcook 的 npm仓库，同时，您也将会成为 pipcook 的开发者之一。

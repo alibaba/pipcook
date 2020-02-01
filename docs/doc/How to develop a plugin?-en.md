@@ -165,11 +165,11 @@ You can also submit a pull request to the master branch to submit your plug-in d
 
 <a name="C8oUt"></a>
 #### Fork Project
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580538912983-a2f236f1-454f-4d17-be67-a1c88fb42f1a.png#align=left&display=inline&height=179&name=image.png&originHeight=358&originWidth=2006&size=219404&status=done&style=none&width=1003)
+![image.png](https://img.alicdn.com/tfs/TB1aaMbuKL2gK0jSZFmXXc7iXXa-2006-358.png)
 
 <a name="0prlf"></a>
 #### Clone to your local
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580538946503-934368a7-9e53-403e-9299-9d6bfa707493.png#align=left&display=inline&height=184&name=image.png&originHeight=424&originWidth=828&size=176376&status=done&style=none&width=359)
+![image.png](https://img.alicdn.com/tfs/TB1CWz7uGL7gK0jSZFBXXXZZpXa-718-368.png)
 
 <a name="qadiP"></a>
 #### Create a branch based on your plugin
@@ -182,7 +182,7 @@ git checkout -b pipcook-plugins-xxx-<plugin type>
 #### Write your documents
 First, edit the file pipcook/docs/doc/plug-in Introduction-zh. md and pipcook/docs/doc/Introduction of pipcook plugin-en.md, and update the following plug-in list
 
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580539222364-f158701f-c01a-48e5-b744-49aee210f91b.png#align=left&display=inline&height=238&name=image.png&originHeight=700&originWidth=1454&size=516382&status=done&style=none&width=494)
+![image.png](https://img.alicdn.com/tfs/TB14EscuG61gK0jSZFlXXXDKFXa-988-476.png)
 
 Then, create two new documents in pipcook/docs/doc, which are the Chinese and English versions of plugin documents. In the preceding list, create a hyperlink pointing to your new document. The document should contain how to install the plugin and the link to your own repository.
 
@@ -196,7 +196,7 @@ git add . && git commit -m "plugin doc dev" && git push
 <a name="v8XsX"></a>
 #### Submit a Pull Request
 
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580539335805-714c29f9-9901-4bca-b16f-b98dde74a608.png#align=left&display=inline&height=86&name=image.png&originHeight=172&originWidth=1318&size=131735&status=done&style=none&width=659)
+![image.png](https://img.alicdn.com/tfs/TB1IP69uKT2gK0jSZFvXXXnFXXa-1318-172.png)
 
 
 After passing our review, we will add your document to pipcook's official document and merge your code into the master branch, and publish your plug-in to the npm repository of pipcook. You will also become one of the developers of pipcook.

@@ -10,7 +10,7 @@ With the mission of enabaling front-end developers to use machine learning with 
 
 The core of Pipcook is a pipeline in which a series of plugins will be embedded. Each plugin is responsible for specific steps in the machine learning lifecycle. The input and output data of each plugin will be circulated in this pipeline. Pipcook is based on the Rxjs responsive framework and is responsible for responding, scheduling, and managing the data in the pipeline. The pipeline of Pipcook is shown in the following:
 
-![image.png](https://img.alicdn.com/tfs/TB1eZrDtkT2gK0jSZFkXXcIQFXa-2323-969.png)
+![](https://img.alicdn.com/tfs/TB1eZrDtkT2gK0jSZFkXXcIQFXa-2323-969.png)
 
 Our plugin mechanism is highly scalable and following the principle that one plugin only does one thing. pipcook connects these plugins to implement a machine learning engineering pipeline. At the same time, users only need to call some simple APIs to specify the required plugins and build a project.
 
