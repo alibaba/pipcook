@@ -13,6 +13,29 @@ const en_repo = 'znzce0/lpqk9b'
 // toc
 const zh_toc = `https://www.yuque.com/api/v2/repos/${zh_repo}/toc`
 const en_toc = `https://www.yuque.com/api/v2/repos/${en_repo}/toc`
+
+replaceList = [
+  {
+    origin: 'https://cdn.nlark.com/yuque/0/2020/png/654014/1580538912983-a2f236f1-454f-4d17-be67-a1c88fb42f1a.png#align=left&display=inline&height=179&name=image.png&originHeight=358&originWidth=2006&size=219404&status=done&style=none&width=1003',
+    newText: 'https://img.alicdn.com/tfs/TB1aaMbuKL2gK0jSZFmXXc7iXXa-2006-358.png'
+  },
+  {
+    origin: 'https://cdn.nlark.com/yuque/0/2020/png/654014/1580538946503-934368a7-9e53-403e-9299-9d6bfa707493.png#align=left&display=inline&height=184&name=image.png&originHeight=424&originWidth=828&size=176376&status=done&style=none&width=359',
+    newText: 'https://img.alicdn.com/tfs/TB1CWz7uGL7gK0jSZFBXXXZZpXa-718-368.png'
+  },
+  {
+    origin: 'https://cdn.nlark.com/yuque/0/2020/png/654014/1580539222364-f158701f-c01a-48e5-b744-49aee210f91b.png#align=left&display=inline&height=238&name=image.png&originHeight=700&originWidth=1454&size=516382&status=done&style=none&width=494',
+    newText: 'https://img.alicdn.com/tfs/TB14EscuG61gK0jSZFlXXXDKFXa-988-476.png'
+  },
+  {
+    origin: 'https://cdn.nlark.com/yuque/0/2020/png/654014/1580539335805-714c29f9-9901-4bca-b16f-b98dde74a608.png#align=left&display=inline&height=86&name=image.png&originHeight=172&originWidth=1318&size=131735&status=done&style=none&width=659',
+    newText: 'https://img.alicdn.com/tfs/TB1IP69uKT2gK0jSZFvXXXnFXXa-1318-172.png'
+  },
+  {
+    origin: 'https://cdn.nlark.com/yuque/0/2020/png/654014/1578400785510-71c4832c-aca3-4709-92d4-fb7f048fb6ff.png#align=left&display=inline&height=969&originHeight=969&originWidth=2323&size=0&status=done&style=none&width=2323',
+    newText: 'https://img.alicdn.com/tfs/TB1eZrDtkT2gK0jSZFkXXcIQFXa-2323-969.png'
+  }
+]
  
 
 async function generate(lang) {
@@ -49,6 +72,11 @@ async function generate(lang) {
     }
     const title = toc.title.replace(/\//g, '-');
     markdownContent = markdownContent.replace(/```typescript/g, '```');
+
+    replaceList.forEach((text) => {
+      markdownContent = markdownContent.replace(new RegExp(text.origin, 'g'), text.newText);
+    })
+    
     fs.outputFileSync(path.join(docDir, `${title}-${lang}.md`), markdownContent);
   }
 }
