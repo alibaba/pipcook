@@ -2,7 +2,7 @@
 
 The Model Evaluate plug-in deeply analyzes the training results of the Model to help you understand how the Model performs on the test set.
 
-```typescript
+```
 interface PipcookPlugin {
 }
 

@@ -14,6 +14,6 @@ Data Process
 <a name="itUHR"></a>
 #### Example
 
-```typescript
+```
  const dataProcess = DataProcess(textClassDataProcess);
 ```

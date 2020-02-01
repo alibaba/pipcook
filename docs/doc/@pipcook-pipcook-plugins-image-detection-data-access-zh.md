@@ -18,6 +18,6 @@ Data Access
 <a name="8cb94eb1"></a>
 #### 例子
 
-```typescript
+```
 const dataAccess = DataAccess(imageDetectionDataAccess);
 ```

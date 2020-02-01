@@ -1,7 +1,7 @@
 # DataCollect 插件
 
 DataCollect 插件旨在帮助用户收集各种数据，并将数据以一种标准化的方式储存下来，供管道中后续插件使用。数据的来源可以是多样的，例如本地各种格式的文件和文件夹，网络下载的文件，数据库（或者odps）等 query 下来的数据。同时，此插件还应该支持将数据划分为不同的数据集，并将数据格式明确的透露出来。同时，此插件应该准确的输出关于数据本身的信息，例如每个 feature 的名字， feature 的类型，样本数量， 以及数据的所有相关的 meta 信息。
-```typescript
+```
 export interface OriginSampleData {
   trainDataPath: string;
   testDataPath?: string;

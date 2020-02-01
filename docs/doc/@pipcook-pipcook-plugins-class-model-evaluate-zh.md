@@ -17,6 +17,6 @@ Model Evaluate
 <a name="aVQje"></a>
 #### 例子
 
-```typescript
+```
 const modelEvaluate = ModelEvaluate(classModelEvalute);
 ```

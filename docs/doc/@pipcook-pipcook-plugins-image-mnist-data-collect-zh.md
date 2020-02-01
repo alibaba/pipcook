@@ -16,7 +16,7 @@ Data Collect
 #### 例子
 收集2000张图片作为训练集和500张图片作为测试集
 
-```typescript
+```
 const dataCollect = DataCollect(imageMnistDataCollection, {
   trainingCount:2000,
   testCount: 500

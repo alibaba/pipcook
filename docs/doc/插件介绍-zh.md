@@ -42,7 +42,7 @@ pipcook 使用插件的形式来实现具体机器学习周期中的任务，这
 
 对于每个插件，我们需要把它传入相应类型的解析器进行解析，对于上述7种类型的插件会有10种类型的解析器，他们分别是:
 
-```typescript
+```
 function DataCollect(plugin: EscherPlugin, params: object);
 function DataAccess(plugin: EscherPlugin, params: object);
 function DataProcess(plugin: EscherPlugin, params: object);
@@ -60,7 +60,7 @@ function ModelDeploy(plugin: EscherPlugin, params: object);
 
 pipcook 的插件分为内置插件和第三方插件，每个插件都是一个独立的 npm 包，对于所需的插件，需要独立安装，例如，我们需要一个载入 MobileNet 的模型插件，我们可以在工程目录中使用如下命令安装，**我们会将内置插件直接集成到一个 pipcook 脚手架工程里，您不需要单独安装这些内置插件**
 
-```typescript
+```
 npm install mobileNetModelLoad --save
 ```
 

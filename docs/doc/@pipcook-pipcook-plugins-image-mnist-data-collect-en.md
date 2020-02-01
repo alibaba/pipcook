@@ -16,7 +16,7 @@ Data Collect
 #### Example
 Collect 2000 pictures as the training set and 500 pictures as the test set
 
-```typescript
+```
 const dataCollect = DataCollect(imageMnistDataCollection, {
   trainingCount:2000,
   testCount: 500

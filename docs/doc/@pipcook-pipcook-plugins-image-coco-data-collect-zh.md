@@ -17,7 +17,7 @@ Data Collect
 <a name="2e1Vr"></a>
 #### 例子:
 
-```typescript
+```
 const dataCollect = DataCollect(imageCocoDataCollect, {
     url: 'xxx',
     testSplit: 0.1,

@@ -4,7 +4,7 @@
 
 代码如下：
 
-```typescript
+```
 const {DataAccess, ModelLoad, PipcookRunner, ModelDeploy} = require('@pipcook/pipcook-core');
 
 const imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
@@ -45,7 +45,7 @@ startPipeline();
 
 此时，当命令好提示本地部署已经成功后，您可以直接像 localhost 发送请求进行预测，以下是我们的请求格式 (以 curl 为例），data 里的数据是所需要预测的图片 url 的数组
 
-```typescript
+```
 curl -X POST \
   http://127.0.0.1:7778/predict \
   -H 'Content-Type: application/json' \
@@ -57,7 +57,7 @@ curl -X POST \
 
 返回的 response
 
-```typescript
+```
 {
     "status": true,
     "result": [

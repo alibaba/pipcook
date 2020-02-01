@@ -5,14 +5,14 @@ Pipcook-cli is a pipcook command line tool that allows you to quickly execute a 
 <a name="RhDhK"></a>
 #### Command line tool installation
 
-```typescript
+```
 sudo npm install @pipcook/pipcook-cli -g
 ```
 
 <a name="MEdO8"></a>
 #### Initialize a pipcook project
 
-```typescript
+```
 pipcook init [OPTIONS]
 
 -c: npm client，for example cnpm, tnpm，etc. default is npm
@@ -23,7 +23,7 @@ pipcook init -c cnpm
 <a name="p1aoX"></a>
 #### View the pipcook-board
 
-```typescript
+```
 pipcook board
 ```
 

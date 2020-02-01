@@ -13,7 +13,7 @@ Model Deploy
 
 Example:
 
-```typescript
+```
 const imageClassLocalModelDeploy = require('@pipcook/pipcook-plugins-image-class-local-model-deploy').default;
 
 // deploy into local
@@ -24,7 +24,7 @@ const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
 
 Notice<br />For our local deployment, the following is our request format (take curl as an example). The datais an array of image URLs to be predicted.
 
-```typescript
+```
 curl -X POST \
   http://127.0.0.1:7778/predict \
   -H 'Content-Type: application/json' \
@@ -36,7 +36,7 @@ curl -X POST \
 
 Output
 
-```typescript
+```
 {
     "status": true,
     "result": [

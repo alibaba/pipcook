@@ -15,6 +15,6 @@ Data Access
 <a name="4WAOj"></a>
 #### Example
 
-```typescript
+```
 const dataAccess = DataAccess(textClassDataAccess);
 ```

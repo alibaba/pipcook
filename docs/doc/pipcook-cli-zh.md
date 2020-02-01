@@ -5,13 +5,13 @@ pipcook-cli 是 pipcook 的命令行工具，可以快速的执行一些必要�
 <a name="icYcP"></a>
 #### 安装 pipcook-cli
 
-```typescript
+```
 sudo npm install @pipcook/pipcook-cli -g
 ```
 
 <a name="MEdO8"></a>
 #### 初始化项目
-```typescript
+```
 pipcook init [OPTIONS]
 
 -c: npm 客户端，比如 tnpm cnpm 等
@@ -22,7 +22,7 @@ pipcook init -c cnpm
 <a name="p1aoX"></a>
 #### 可视化日志工具
 
-```typescript
+```
 pipcook board
 ```
 

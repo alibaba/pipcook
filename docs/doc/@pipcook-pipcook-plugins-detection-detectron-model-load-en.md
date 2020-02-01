@@ -15,7 +15,7 @@ Model Load
 
 Example:
 
-```typescript
+```
 let detectronModelLoad = require('@pipcook/pipcook-plugins-detection-detectron-model-load').default;
 
 const modelLoad = ModelLoad(detectronModelLoad, {

@@ -9,25 +9,25 @@ pipcook 的宗旨是服务于前端工程师，推动前端智能化发展，所
 
 python >= 3.6, 查看 python 版本， 可以运行查看
 
-```typescript
+```
 python --version
 ```
 
 pip 指向正确的 python 版本， 可以运行查看
 
-```typescript
+```
 pip --version
 ```
 
 实际上当您使用 pipcook-python-node 的 api时，我们会自动在当前工作目录创建虚拟环境，但是为了保证环境配置正确，您也可以手动实现创建 python 虚拟环境，您可以在当前工作目录运行如下命令
 
-```typescript
+```
 pip install virtualenv
 virtualenv --no-site-packages pipcook_venv
 ```
 
 **我们强烈建议您使用我们的 docker 镜像去运行 pipcook，这样您不再需要执行上述命令，也不需要担心环境的问题, 可以参考**[**这里**](https://alibaba.github.io/pipcook/doc/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8-zh)**有详细的 docker 的信息**
-```typescript
+```
 docker pull pipcook/pipcook
 ```
 
@@ -391,7 +391,7 @@ Python.scope('test1', (python) => {
 
 此方法用来执行原生的 python 语句，此方法不推荐使用，如果您确定现阶段我们提供的 API 无法满足您的要求，可以使用此方法，主要要使用 Python.convert(PythonObject) 转义， 例如：
 
-```typescript
+```
 const number1 = python.createNumber(2)
 const number2 = python.createNumber(3)
 const result = pyhton.runRaw(`${Python.convert(number1)} + ${Python.convert(number2)}`);

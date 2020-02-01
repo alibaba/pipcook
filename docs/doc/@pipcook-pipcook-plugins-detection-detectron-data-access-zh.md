@@ -13,7 +13,7 @@ Data Access
 <a name="dp5l1"></a>
 #### 例子：
 
-```typescript
+```
 let imageDetectronAccess = require('@pipcook/pipcook-plugins-detection-detectron-data-access').default;
 const dataAccess = DataAccess(imageDetectronAccess);
 ```

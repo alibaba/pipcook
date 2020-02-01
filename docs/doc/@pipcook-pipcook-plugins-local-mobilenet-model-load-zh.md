@@ -17,7 +17,7 @@ Model Load
 <a name="J1CAM"></a>
 #### 例子
 
-```typescript
+```
 const modelLoad = ModelLoad(mobileNetLoad, {
   modelName: 'test1'
 });

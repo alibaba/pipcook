@@ -2,7 +2,7 @@
 
 此插件为数据接入插件，旨在将不同来源的数据 dataset 统一接入 pipcook。同时，你可以在此插件中进行一定的数据验证，以确保数据接入质量。
 
-```typescript
+```
 interface PipcookPlugin {
 }
 

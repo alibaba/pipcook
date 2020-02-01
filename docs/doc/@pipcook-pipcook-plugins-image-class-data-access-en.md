@@ -15,7 +15,7 @@ Data Access
 #### Example
 Unified the upstream data set into 28*28 Size
 
-```typescript
+```
 const dataAccess = DataAccess(imageClassDataAccess, {
   imgSize:[28, 28],
 });
