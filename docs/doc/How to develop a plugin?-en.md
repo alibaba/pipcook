@@ -1,22 +1,38 @@
 # How to develop a plugin?
 
-pipcookwelcome developers to contribute to pipcook. This topic describes how to develop a plugin. The content in this topic is just a few suggestions, the specific plugins can be successfully run in pipcook as long as they comply with our plugin prototype specifications.
+Pipcook welcomes developers to contribute plug-ins for us to extend the functions of pipcook. This document describes how to develop a plug-in. The content involved in this article is just a few suggestions, the specific plug-in can run successfully in pipcook as long as it meets our plug-in prototype specifications.
 
 
 <a name="ff93a5f0"></a>
-### Plugin Specification
+### Plug-in specifications
 
 ---
 
-First, we strongly recommend that you understand the plugin specifications defined by us. Only plug-ins that meet the interface defined by us can be accepted. For more information about the specifications of each plugin, see [Here](https://alibaba.github.io/pipcook/doc/developer%20guide-en) for plugin development specifications
+First, we strongly recommend that you first understand the plug-in specifications that we define. Only plug-ins that meet the interface that we define can be accepted. For more information about the specification of each plug-in, see [Here](https://www.yuque.com/znzce0/in8hih/developguide) for Plug-in development specifications
 
+The plug-in type can be:
+
+- dataCollect
+- dataAccess
+- dataProcess
+- modelLoad
+- modelTrain
+- modelEvaluate
+- modelDeploy
 
 <a name="bf4fba37"></a>
-### Plugin development environment initialization
+### Create a plug-in
 
 ---
 
-The pipcook cli tool provides a convenient way to initialize plugins to develop workspaces. You only need to run the following command:
+A plug-in consists of the following parts:
+
+- A JavaScript function.
+- Type of function (inherited interface)
+- Function parameters: include data, model, and custom parameters.
+- Function return value: the return value of the plug-in type.
+
+The pipcook-cli tool provides a convenient way to initialize the plugin development workspace. You only need to run the following command:
 
 ```typescript
 pipcook plugin-dev -t <plugin type>
@@ -24,34 +40,164 @@ cd template-plugin
 npm install
 ```
 
-The plug-in type can be:
-
-- dataAccess
-- dataCollect
-- dataProcess
-- modelEvaluate
-- modelLoad
-- modelTrain
 
 You can initialize a development environment, which contains the following structure
 
 - template-plugin
   - src
     - Index. ts // plug-in code main entry
-  - Package. json // npm project configuration and dependency files
-  - . Npmignore // npm release configuration file
-  - Tsconfig. json // typescript compilation configuration file
+  - package. json // npm project configuration and dependency files
+  - . npmignore // npm publish configuration file
+  - tsconfig. json // typescript compilation configuration file
 
 
-<a name="b7c0bfff"></a>
-### Debugging
+<br />
+
+<a name="5AOjl"></a>
+### Auto-injected parameters and user-defined parameters
 
 ---
 
-During the development process, if you want to view the intermediate state of your plug-in code running, we recommend that you first make a mock data for the plug-in input, which must comply with the relevant prototype interface. If you feel that your plug-in has been developed, you can go to the pipcook project directory and run
+If you check our [Plug-in prototype specification](https://www.yuque.com/znzce0/in8hih/developguide) , you will notice that the plug-in we define mainly contains three parameters: data (not necessary), model (not necessary), and args. The data and model parameters are automatically injected by pipcook during pipeline execution. The args parameters are custom parameters that can be input by the plug-in. After a plug-in is developed and the user runs pipeline, the user does not need to display input data and model parameters to the corresponding component of the plug-in. For example, the interface of a data access plug-in is:
 
 ```typescript
-npm link ${root dir}
+interface DataAccessType extends PipcookPlugin {
+  (data: OriginSampleData | OriginSampleData[], args?: ArgsType): Promise<UniformSampleData>
+}
 ```
 
-Install the plug-in to the pipcook project, and then create a test file in the examples file to link your plug-in to other related plug-ins/
+Therefore, any data access plug-in contains two parameters, data and args. However, the user code should be similar to this:
+
+```typescript
+const dataAccess = DataAccess(imageClassDataAccess, {
+  imgSize:[28, 28],
+});
+```
+
+When you use the plug-in, you do not directly call the plug-in. Instead, you can pass the plug-in into the corresponding component and the user parameters at the same time. The user parameters are the args parameters.
+
+<a name="doESO"></a>
+### Write a plug-in
+
+---
+
+This chapter uses a simple example to show how to develop a data processing plug-in
+<a name="fdRb0"></a>
+#### Data processing plug-in interface
+
+```typescript
+export interface DataProcessType extends PipcookPlugin {
+  (data: UniformSampleData | UniformSampleData[], args?: ArgsType): Promise<UniformSampleData>
+}
+```
+
+First, you can view the interface of the plug-in type you want to develop according to the preceding link. For example, the plug-in of the data processing type accepts a parameter of the supposed sampledata type and an optional parameter of the ArgsType type as shown above. The following figure shows the sub-interface type of sampledata:
+
+```typescript
+interface UniformSampleData{
+  trainData: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
+  validationData?: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
+  testData?: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
+  metaData: metaData;
+  dataStatistics?: statistic[];
+  validationResult?: {
+    result: boolean;
+    message: string;
+  }
+}
+```
+
+ArgsType is the custom parameter that the plug-in expects to enter.
+
+<a name="unEcd"></a>
+#### Prepare mock data
+You can prepare the corresponding mock data based on the interface to develop the plug-in. For example, if we develop a data processing plug-in, we can construct the following mock data
+
+```typescript
+const data = {
+	trainData: tf.data.array([{xs: [1,2,3], ys: [1]},{xs: [4,5,6], ys: [2]}]),
+  metaData: {
+    feature: {
+    	name: 'train',
+      type: 'int32',
+      shape: [1,3]
+    },
+    label: {
+    	name: 'test,
+      type: 'int32',
+      shape: [1]
+    },
+  }
+}
+```
+
+For example, if the data processing plug-in needs to double the size of each feature, you can implement your plug-in as follows:
+
+```typescript
+import {DataProcessType, UniformSampleData, ArgsType} from '@pipcook/pipcook-core'
+
+const templateDataProcess: DataProcessType = async (data: UniformSampleData, args?: ArgsType): Promise<UniformSampleData> => {
+  const {trainData} = data;
+  return {
+  	...data,
+    trainData: trainData.map((v) => 2*v)
+  }
+}
+
+export default templateDataProcess;
+```
+
+After developing your plug-in, you need to check the following two points:
+
+- Your plug-in runs well without any errors
+- The results returned by your plug-in also comply with the results specifications.
+
+After ensuring the preceding two points, you can run a real pipcook pipeline to check whether your plug-in is compatible with the corresponding upstream and downstream plug-ins.
+
+<a name="CQJZ0"></a>
+### Release Process
+
+---
+
+After you have developed the plugin, you can create your own github repository, and push your code and corresponding unit tests to your own repository, the repository should be named 'pipcook-plugins-xxx-<plugin type>'
+
+You can also submit a pull request to the master branch to submit your plug-in documentation and corresponding instructions. The steps are as follows:
+
+<a name="C8oUt"></a>
+#### Fork Project
+![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580538912983-a2f236f1-454f-4d17-be67-a1c88fb42f1a.png#align=left&display=inline&height=179&name=image.png&originHeight=358&originWidth=2006&size=219404&status=done&style=none&width=1003)
+
+<a name="0prlf"></a>
+#### Clone to your local
+![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580538946503-934368a7-9e53-403e-9299-9d6bfa707493.png#align=left&display=inline&height=184&name=image.png&originHeight=424&originWidth=828&size=176376&status=done&style=none&width=359)
+
+<a name="qadiP"></a>
+#### Create a branch based on your plugin
+
+```typescript
+git checkout -b pipcook-plugins-xxx-<plugin type>
+```
+
+<a name="rSehE"></a>
+#### Write your documents
+First, edit the file pipcook/docs/doc/plug-in Introduction-zh. md and pipcook/docs/doc/Introduction of pipcook plugin-en.md, and update the following plug-in list
+
+![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580539222364-f158701f-c01a-48e5-b744-49aee210f91b.png#align=left&display=inline&height=238&name=image.png&originHeight=700&originWidth=1454&size=516382&status=done&style=none&width=494)
+
+Then, create two new documents in pipcook/docs/doc, which are the Chinese and English versions of plugin documents. In the preceding list, create a hyperlink pointing to your new document. The document should contain how to install the plugin and the link to your own repository.
+
+<a name="slBaM"></a>
+#### Submit to your forked repository
+
+```typescript
+git add . && git commit -m "plugin doc dev" && git push
+```
+<a name="3AEgI"></a>
+#### 
+<a name="v8XsX"></a>
+#### Submit a Pull Request
+![image.png](https://cdn.nlark.com/yuque/0/2020/png/654014/1580539335805-714c29f9-9901-4bca-b16f-b98dde74a608.png#align=left&display=inline&height=86&name=image.png&originHeight=172&originWidth=1318&size=131735&status=done&style=none&width=659)
+
+
+
+After passing our review, we will add your document to pipcook's official document and merge your code into the master branch, and publish your plug-in to the npm repository of pipcook. You will also become one of the developers of pipcook.

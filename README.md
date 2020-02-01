@@ -49,6 +49,8 @@ node examples/pipeline-mnist-image-classification.js
 
 ## How to contribute
 
+For detailed information about how to contribute to our project, Please check here [中文](https://alibaba.github.io/pipcook/doc/%E5%BC%80%E5%8F%91%E8%80%85%E6%89%8B%E5%86%8C-zh)｜ [english](https://alibaba.github.io/pipcook/doc/developer%20guide-en)
+
 Please make sure you have installed Typescript and Lerna. To check, run the following commands:
 ```
 lerna -v
