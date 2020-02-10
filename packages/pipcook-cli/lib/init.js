@@ -33,6 +33,13 @@ const init = async (cmdObj) => {
     fse.copyFileSync(path.join(__dirname, '..', 'assets', 'python-keras.js'), 
       path.join(dirname, 'examples', 'python-keras.js'));
     fse.ensureDirSync(path.join(dirname, pipcookLogName));
+
+    fse.ensureDirSync(path.join(dirname, '.scripts'));
+    fse.copyFileSync(path.join(__dirname, '..', 'scripts', 'image-classification.js'), 
+      path.join(dirname, '.scripts', 'image-classification.js'));
+    fse.copyFileSync(path.join(__dirname, '..', 'scripts', 'object-detection.js'), 
+      path.join(dirname, '.scripts', 'object-detection.js'));
+
     
     // init npm project
     childProcess.execSync(`${client} init -y`, {

@@ -44,7 +44,6 @@ async function startPipeline() {
 
   // load mobile net model
   const modelLoad = ModelLoad(simpleCnnModelLoad, {
-    modelName: 'test1'
   });
 
   // train the model

@@ -15,7 +15,6 @@ export interface PipcookModel {
   history?: tf.History;
   save: ModelLoadAndSaveFunction;
   predict: any;
-  modelName: string;
   config?: any;
   extraParams?: any;
 }

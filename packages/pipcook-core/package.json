@@ -32,6 +32,7 @@
     "rxjs": "^6.5.3",
     "systeminformation": "^4.16.0",
     "targz": "^1.0.1",
+    "uuid": "^3.4.0",
     "xml2js": "^0.4.22"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856"

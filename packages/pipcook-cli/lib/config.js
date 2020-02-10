@@ -23,7 +23,9 @@ module.exports = {
     '@pipcook/pipcook-plugins-image-coco-data-collect',
     '@pipcook/pipcook-plugins-detection-detectron-model-deploy',
     '@pipcook/pipcook-plugins-image-class-local-model-deploy',
-    '@pipcook/pipcook-plugins-text-class-local-model-deploy'
+    '@pipcook/pipcook-plugins-text-class-local-model-deploy',
+    '@pipcook/pipcook-plugins-detection-detectron-eas-model-deploy',
+    '@pipcook/pipcook-app'
   ],
-  pipcookLogName: '.pipcook-log'
+  pipcookLogName: 'pipcook-output'
 }

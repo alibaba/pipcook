@@ -13,7 +13,7 @@ const cTable = require('console.table');
 const log = async () => {
   const logDir = path.join(process.cwd(), pipcookLogName);
   try {
-    const files = await glob(path.join(logDir, 'logs' ,'pipcook-pipeline-*.json'));
+    const files = await glob(path.join(logDir, '*' ,'log.json'));
     const jsonObject = files.map((file) => {
       try {
         const json = fse.readFileSync(file);
@@ -22,7 +22,6 @@ const log = async () => {
         timestamp = new Date(Number(timestamp[timestamp.length - 1])).toLocaleString();
         return {
           pipelineId: jsonObj.pipelineId,
-          pipelineName: jsonObj.pipelineName,
           success: jsonObj.error ? 'no' : 'yes',
           evaluation: jsonObj.latestEvaluateResult ? JSON.stringify(jsonObj.latestEvaluateResult) : '',
           time: timestamp,

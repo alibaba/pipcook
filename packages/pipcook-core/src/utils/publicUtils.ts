@@ -142,7 +142,7 @@ export function unZipData(filePath: string, targetPath: string) {
  * get pipcook dataset directory path
  */
 export function getDatasetDir() {
-  return path.join(process.cwd(), '.pipcook-log', 'datasets')
+  return path.join(process.cwd(), 'pipcook-output', 'datasets')
 }
 
 /**
@@ -150,7 +150,7 @@ export function getDatasetDir() {
  */
 
 export function getModelDir(modelId: string) {
-  return path.join(process.cwd(), '.pipcook-log', 'models', `pipcook-pipeline-${modelId}-model`);
+  return path.join(process.cwd(), 'pipcook-output', modelId, 'model');
 }
 
 /**
@@ -158,8 +158,7 @@ export function getModelDir(modelId: string) {
  */
 
 export function getMetadata(modelId: string) {
-  const id = modelId.split('-')[0];
-  const json = require(path.join(process.cwd(), '.pipcook-log', 'logs', `pipcook-pipeline-${id}.json`));
+  const json = require(path.join(process.cwd(), 'pipcook-output', modelId, `log.json`));
   return json && json.latestSampleData && json.latestSampleData.metaData
 }
 

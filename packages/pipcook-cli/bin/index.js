@@ -9,6 +9,7 @@ const board = require('../lib/board');
 const start = require('../lib/start');
 const devPlugin = require('../lib/devPlugin');
 const dataset = require('../lib/dataset');
+const trainK8s = require('../lib/trainK8s');
 
 // check node version
 if (!semver.gte(process.version, '10.0.0')) {
@@ -72,6 +73,13 @@ program
   .description('type of action you want to do on dataset')
   .action((dir, cmdObj) => {
     dataset(cmdObj);
+  })
+
+program
+  .command('applyk8s <taskConfig> <k8sConfig> <podConfig>')
+  .description('use k8s to train')
+  .action((taskConfig, k8sConfig, podConfig) => {
+    trainK8s(taskConfig, k8sConfig, podConfig)
   })
 
 program.parse(process.argv);

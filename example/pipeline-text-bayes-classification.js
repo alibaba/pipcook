@@ -2,7 +2,7 @@ const {DataCollect, DataAccess, DataProcess, ModelLoad, ModelTrain, ModelEvaluat
 
 const textClassDataAccess = require('@pipcook/pipcook-plugins-text-csv-data-access').default;
 const textClassDataProcess = require('@pipcook/pipcook-plugins-text-class-data-process').default
-const bayesianClassiferModelLoader = require('@pipcook/pipcook-plugins-bayesian-classfier-model-load').default;
+const bayesianClassiferModelLoader = require('@pipcook/pipcook-plugins-bayesian-classifier-model-load').default;
 const bayesianClassifierModelTrain = require('@pipcook/pipcook-plugins-bayesian-classifier-model-train').default;
 const classModelEvalute = require('@pipcook/pipcook-plugins-model-evaluate').default;
 const textClassDataCollect = require('@pipcook/pipcook-plugins-text-class-data-collect').default;
@@ -22,7 +22,6 @@ async function pipeLine() {
   const dataProcess = DataProcess(textClassDataProcess);
 
   const modelLoad = ModelLoad(bayesianClassiferModelLoader, {
-    modelName: 'testModelName'
   });
 
   const modelTrain = ModelTrain(bayesianClassifierModelTrain);
@@ -31,7 +30,7 @@ async function pipeLine() {
 
   const modelDeploy = ModelDeploy(textClassLocalModelDeploy);
 
-  const runner = new PipcookRunner('test2', {
+  const runner = new PipcookRunner({
     predictServer: true
   });
 

@@ -56,7 +56,6 @@ const ModelTrain: ModelTrainType = async (data: UniformTfSampleData, model: Pipc
       outputType: 'int32',
       save: model.save,
       predict: model.predict,
-      modelName: model.modelName
     }
     return result;
   } catch (err) {

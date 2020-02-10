@@ -43,23 +43,20 @@ export function startServer(fastify: any) {
 export function serverModel(fastify: any) {
   fastify.get('/models', async (req: any, reply: any) => {
     try {
-      const modelDirs: string[] = await glob(path.join(process.cwd(),'.pipcook-log', 'models' ,'pipcook-pipeline-*-model'));
+      const modelDirs: string[] = await glob(path.join(process.cwd(),'pipcook-output', '*', 'model'));
       const models:any[] = [];
       modelDirs.forEach((modelDir) => {
         const modelPathSplit = modelDir.split(path.sep);
-        const modelNameSplit = modelPathSplit[modelPathSplit.length - 1];
-        const modelSplit = modelNameSplit.split('-');
-        const modelId = modelSplit[2];
-        const modelName = modelSplit[3];
+        const modelNameSplit = modelPathSplit[modelPathSplit.length - 2];
         // pipecook will arrange logs and models in the same name convention
         let log: any = {};
         try {
-          if(fs.pathExistsSync(path.join(process.cwd(), '.pipcook-log', 'logs', `pipcook-pipeline-${modelId}.json`))) {
-            log = require(path.join(process.cwd(), '.pipcook-log', 'logs', `pipcook-pipeline-${modelId}.json`));
+          if(fs.pathExistsSync(path.join(process.cwd(), 'pipcook-output', modelNameSplit, `log.json`))) {
+            log = require(path.join(process.cwd(), 'pipcook-output', modelNameSplit ,`log.json`));
           }
         } finally {}
         models.push({
-          modelId: modelId + '-' + modelName,  modelName,
+          modelId: modelNameSplit,  modelName: modelNameSplit,
           evaluation: JSON.stringify(log.latestEvaluateResult),
           startTime: log.startTime,
           endTime: log.endTime,
@@ -87,7 +84,7 @@ export function serverModel(fastify: any) {
 export function serveDataset(fastify: any) {
   fastify.get('/datasets', async (req: any, reply: any) => {
     try {
-      const dataDirs: string[] = await glob(path.join(process.cwd(),'.pipcook-log', 'datasets' ,'*'));
+      const dataDirs: string[] = await glob(path.join(process.cwd(),'pipcook-output', 'datasets' ,'*'));
       const datasets:any[] = [];
       for (let i = 0; i < dataDirs.length; i++) {
         const dataDir = dataDirs[i];
@@ -122,16 +119,7 @@ export function serveDataset(fastify: any) {
  * @param pipelineId : id of pipeline
  */
 async function getModelId(pipelineId: string) {
-  const modelDirs: string[] = await glob(path.join(process.cwd(),'.pipcook-log', 'models' ,`${pipelineId}-*-model`));
-  const modelIds = modelDirs.map((name: string) => {
-    const modelPathSplit = name.split(path.sep);
-    const modelNameSplit = modelPathSplit[modelPathSplit.length - 1];
-    const modelSplit = modelNameSplit.split('-');
-    const modelId = modelSplit[2];
-    const modelName = modelSplit[3];
-    return modelId + '-' + modelName;
-  })
-  return modelIds;
+  return pipelineId;
 }
 
 /**
@@ -141,7 +129,7 @@ async function getModelId(pipelineId: string) {
 export function serveLog(fastify: any) {
   fastify.get('/log', async (req: any, reply: any) => {
     try {
-      const logDirs: string[] = await glob(path.join(process.cwd(),'.pipcook-log', 'logs' ,'*'));
+      const logDirs: string[] = await glob(path.join(process.cwd(),'pipcook-output','*' ,'log.json'));
       const logs:any[] = [];
       for (let i = 0; i < logDirs.length; i++) {
         const logDir = logDirs[i];
@@ -150,7 +138,6 @@ export function serveLog(fastify: any) {
         logs.push({
           modelId,
           pipelineId: log.pipelineId,
-          pipelineName: log.pipelineName,
           pipelineVersion: log.pipelineVersion,
           evaluation: JSON.stringify(log.latestEvaluateResult),
           startTime: log.startTime,
@@ -239,7 +226,6 @@ export async function serveRunner(runner: PipcookRunner) {
     return {
       status: runner.status,
       type: model && model.type,
-      name: runner.pipelineName,
       version: runner.pipelineVersion,
       startTime: runner.startTime,
       id: runner.pipelineId
@@ -259,6 +245,15 @@ export async function serveRunner(runner: PipcookRunner) {
       resolve();
     });
   })
+}
+
+export async function shutdown(runner: PipcookRunner) {
+  if (runner.fastify && !runner.predictServer) {
+    await runner.fastify.close();
+  }
+  if (!runner.predictServer) {
+    process.exit(0);
+  } 
 }
 
 /**
