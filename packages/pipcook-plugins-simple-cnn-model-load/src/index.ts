@@ -27,7 +27,6 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
   let inputShape, outputShape: number[];
   if (!modelId) {
     assertionTest(data);
-    assert.ok(args && args.modelName, 'Please give your model a name');
     inputShape = data.metaData.feature.shape;
     outputShape = data.metaData.label.shape;
   }
@@ -119,7 +118,6 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
       })
       return result; 
     },
-    modelName: (<string>(args.modelName))
   };
 
   return result;

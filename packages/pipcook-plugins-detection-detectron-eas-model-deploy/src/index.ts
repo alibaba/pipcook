@@ -1,4 +1,4 @@
-import {ArgsType, ModelDeployType, downloadZip, unZipData, getModelDir, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
+import {ArgsType, ModelDeployType, downloadZip, unZipData, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 

@@ -51,7 +51,6 @@ export default class Log extends Component {
         <Table dataSource={data}>
           <Table.Column title="Pipeline Id" dataIndex="pipelineId" />
           <Table.Column title="Model Id" dataIndex="modelId" />
-          <Table.Column title="Pipeline Name" dataIndex="pipelineName"/>
           <Table.Column title="Pipeline Versiom" dataIndex="pipelineVersion" />
           <Table.Column title="Test Evaluation" dataIndex="evaluation"/>
           <Table.Column title="Type" dataIndex="type"/>

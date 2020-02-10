@@ -1,0 +1,46 @@
+{
+  "name": "@pipcook/pipcook-app",
+  "version": "0.4.0",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "@pipcook/pipcook-core": "0.x.x",
+    "@pipcook/pipcook-plugins-bayesian-classifier-model-load": "0.x.x",
+    "@pipcook/pipcook-plugins-bayesian-classifier-model-train": "0.x.x",
+    "@pipcook/pipcook-plugins-detection-detectron-data-access": "0.x.x",
+    "@pipcook/pipcook-plugins-detection-detectron-model-deploy": "0.x.x",
+    "@pipcook/pipcook-plugins-detection-detectron-model-evaluate": "0.x.x",
+    "@pipcook/pipcook-plugins-detection-detectron-model-load": "0.x.x",
+    "@pipcook/pipcook-plugins-detection-detectron-model-train": "0.x.x",
+    "@pipcook/pipcook-plugins-image-class-data-access": "0.x.x",
+    "@pipcook/pipcook-plugins-image-class-data-collect": "0.x.x",
+    "@pipcook/pipcook-plugins-image-class-data-process": "0.x.x",
+    "@pipcook/pipcook-plugins-image-class-local-model-deploy": "0.x.x",
+    "@pipcook/pipcook-plugins-image-coco-data-collect": "0.x.x",
+    "@pipcook/pipcook-plugins-image-mnist-data-collect": "0.x.x",
+    "@pipcook/pipcook-plugins-local-mobilenet-model-load": "0.x.x",
+    "@pipcook/pipcook-plugins-model-evaluate": "0.x.x",
+    "@pipcook/pipcook-plugins-model-train": "0.x.x",
+    "@pipcook/pipcook-plugins-odps-data-collect": "0.1.26",
+    "@pipcook/pipcook-plugins-simple-cnn-model-load": "0.x.x",
+    "@pipcook/pipcook-plugins-text-class-data-collect": "0.x.x",
+    "@pipcook/pipcook-plugins-text-class-data-process": "0.x.x",
+    "@pipcook/pipcook-plugins-text-class-local-model-deploy": "0.x.x",
+    "@pipcook/pipcook-plugins-text-csv-data-access": "0.x.x",
+    "@pipcook/pipcook-python-node": "0.x.x",
+    "@pipcook/pipcook-plugins-detection-detectron-eas-model-deploy": "0.x.x"
+  }
+}

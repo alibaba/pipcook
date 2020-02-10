@@ -17,6 +17,8 @@ import {DATAACCESS} from '../constants/plugins';
  * @param pipcookRunner : The pipcookRunner object
  */
 export function getLog(pipcookRunner: PipcookRunner) {
+  delete pipcookRunner.latestModel;
+  delete pipcookRunner.fastify;
   return pipcookRunner;
 }
 
@@ -25,7 +27,7 @@ export function getLog(pipcookRunner: PipcookRunner) {
    * @param updatedType: updated return type of plugin
    * @param result: lasted return data of plugin
    */
-  export async function assignLatestResult(updatedType: string, result: any, self: any) {
+  export async function assignLatestResult(updatedType: string, result: any, self: any, saveModelCallback?: Function) {
     switch (updatedType) {
       case DATA:
         self.latestSampleData = result;
@@ -44,13 +46,13 @@ export function getLog(pipcookRunner: PipcookRunner) {
         break;
       case MODELTOSAVE:
         self.latestModel = result;
-        if (Array.isArray(result)) {
-          result.forEach(async (model) => {
-            await model.save(path.join(<string>self.logDir, 'models' ,self.pipelineId + '-' + model.modelName +'-model'));
-          })
-        } else {
-          await result.save(path.join(<string>self.logDir, 'models', self.pipelineId + '-' + result.modelName +'-model'));
+        if (Array.isArray(result) && result.length > 0) {
+          result = result[0];
         }
+        await result.save(path.join(<string>self.logDir, 'model'));
+        if (saveModelCallback) {
+          await saveModelCallback(path.join(<string>self.logDir, 'model'), self.pipelineId);
+        } 
         break;
       default:
         throw new Error('Returned Data Type is not recognized');
@@ -62,7 +64,7 @@ export function getLog(pipcookRunner: PipcookRunner) {
  * @param components: EscherComponent 
  * @param self: the pipeline subject
  */
-export function createPipeline(components: PipcookComponentResult[], self: any, logType='normal') {
+export function createPipeline(components: PipcookComponentResult[], self: any, logType='normal', saveModelCallback?: Function) {
   const firstComponent = components[0];
   firstComponent.status = 'running';
   logCurrentExecution(firstComponent, logType)
@@ -81,7 +83,7 @@ export function createPipeline(components: PipcookComponentResult[], self: any, 
         component.previousComponent.status = 'success';
         self.currentIndex++;
         logCurrentExecution(component, logType);
-        return from(assignLatestResult(updatedType, result, self)).pipe(
+        return from(assignLatestResult(updatedType, result, self, saveModelCallback)).pipe(
           flatMap(() => {
             if (component.type === DATAACCESS) {
               return component.observer(self.latestOriginSampleData, self.latestModel, insertParams);

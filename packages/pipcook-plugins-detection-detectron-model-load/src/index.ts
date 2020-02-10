@@ -1,14 +1,11 @@
-import {ModelLoadType, PipcookModel, UniformGeneralSampleData, getOsInfo, getModelDir, getMetadata} from '@pipcook/pipcook-core';
+import {ModelLoadType, PipcookModel, UniformGeneralSampleData, getModelDir, getMetadata} from '@pipcook/pipcook-core';
 import {Python} from '@pipcook/pipcook-python-node';
 import * as assert from 'assert';
 import * as path from 'path';
-import * as tf from '@tensorflow/tfjs-node-gpu';
 
 const fs = require('fs-extra');
 
 const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSampleData, args?: any): Promise<PipcookModel> => {
-  const system = await getOsInfo();
-
   const {
     device='cpu',
     modelId='',
@@ -21,10 +18,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
   let trainer: any;
   let cfg: any;
 
-  if (!modelId) {
-    assert.ok(args && args.modelName, 'Please give your model a name');
-  } else {
-    args.modelName = 'predict';
+  if (modelId) {
     const metaData = getMetadata(modelId);
     data = <UniformGeneralSampleData>{...data, metaData};
   }
@@ -174,7 +168,6 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
       return prediction.value;
     },
-    modelName: (<string>(args.modelName)),
     config: cfg,
     extraParams: {
       detectronConfigPath: path.join(__dirname, 'config'),

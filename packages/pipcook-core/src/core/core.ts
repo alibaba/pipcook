@@ -3,16 +3,18 @@
  * information required for run-time machine learning execution.
  */
 
-import config from '../config';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+const uuidv1 = require('uuid/v1');
+
+import config from '../config';
 import {PipcookComponentResult} from '../types/component';
 import {OriginSampleData, UniformSampleData} from '../types/data';
 import {PipcookModel} from '../types/model';
 import {DeploymentResult, EvaluateResult} from '../types/other';
 import {getLog, createPipeline, assignLatestResult, linkComponents, assignFailures} from './core-helper';
 import {logStartExecution, logError, logComplete} from '../utils/logger';
-import {serveRunner} from '../board/board';
+import {serveRunner, shutdown} from '../board/board';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -29,7 +31,6 @@ const getCircularReplacer = () => {
 
 /**
  * @class: This is the core part of Pipcook. It's responsible for running Pipcook components,
- * @public pipelineName: name of current pipeline
  * @public pipelineVersion: we will record current Pipcook version, in case we will change protocol later
  * @public logDir: directory for log
  * @public pipelineId: id for this time's execution
@@ -51,7 +52,6 @@ const getCircularReplacer = () => {
  * @private onlyPredict: if the pipeline is not for training, but just for prediction
  */
 export class PipcookRunner {
-  pipelineName: string = '';
   pipelineVersion: string = config.version;
   logDir: string|null = null;
   pipelineId: string|null = null;
@@ -78,13 +78,10 @@ export class PipcookRunner {
 
   /**
    * Constructor, user need to specify pipeline name when init
-   * @param pipelineName: pipeline name
    */
-  constructor(pipelineName: string, options: any) {
-    if (pipelineName) {
-      this.pipelineName = pipelineName;
-    }
-    this.logDir = path.join(process.cwd(), '.pipcook-log');
+  constructor(options?: any) {
+    this.pipelineId = uuidv1();
+    this.logDir = path.join(process.cwd(), 'pipcook-output', this.pipelineId);
     fs.ensureDirSync(this.logDir);
     if (options && options.predictServer) {
       this.predictServer = true;
@@ -92,7 +89,7 @@ export class PipcookRunner {
     if (options && options.onlyPredict) {
       this.onlyPredict = true;
     }
-    fs.ensureDirSync(path.join(this.logDir, 'models'));
+    fs.ensureDirSync(path.join(this.logDir, 'model'));
     fs.removeSync(path.join(process.cwd(), '.temp'));
   }
 
@@ -102,7 +99,7 @@ export class PipcookRunner {
   savePipcook = async () => {
     // store Pipcook log
     const json = JSON.stringify(getLog(this), getCircularReplacer());
-    fs.outputFileSync(path.join(<string>this.logDir, 'logs' ,this.pipelineId+'.json'), json);
+    fs.outputFileSync(path.join(<string>this.logDir, 'log.json'), json);
   }
 
   /**
@@ -113,15 +110,8 @@ export class PipcookRunner {
     return server;
   }
 
-  /**
-   * run components
-   * @param components: components to be executed
-   */
-  run = async (components:PipcookComponentResult[]) => {
-    fs.removeSync(path.join(process.cwd(), '.temp')); 
-
+  init = async (components:PipcookComponentResult[]) => {
     this.startTime = Date.now()
-    this.pipelineId = 'pipcook-pipeline-' + this.startTime;
     logStartExecution(this);
     if (!components || components.length <= 0) {
       throw new Error('Please specify at least one plugin to run!');
@@ -131,34 +121,60 @@ export class PipcookRunner {
     this.components = components;
 
     await this.startServer();
+  }
+
+  handleError = async (error: Error, components:PipcookComponentResult[]) => {
+    this.status = 'error';
+    // error handle
+    this.endTime = Date.now();
+    assignFailures(components);
+    this.error = error && error.toString();
+    await this.savePipcook();
+    logError('Component ' + this.components[this.currentIndex].type + ' error: ');
+    logError(error);
+    console.log(error);
+  }
+
+  handleSuccess = async () => {
+    // end the pipeline
+    this.status = 'success';
+    this.endTime = Date.now();
+    await this.savePipcook();
+    logComplete(); 
+    if (this.predictServer) {
+      console.log('You could open http://localhost:7778 locally to check status and do prediction!');
+    }
+  }
+
+  /**
+   * run components
+   * @param components: components to be executed
+   */
+  run = async (components:PipcookComponentResult[], successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) => {
+    await this.init(components);
 
     if (this.onlyPredict) {
       return;
     }
-
+    
     // create pipeline of plugins
-    const pipeline = createPipeline(components, this);
+    const pipeline = createPipeline(components, this, 'normal', saveModelCallback);
     pipeline.subscribe((result: any) => {
       // success handle
       components[components.length - 1].status = 'success';
       assignLatestResult(<string>this.updatedType, result, this);
-    }, async (error: any) => {
-      this.status = 'error';
-      // error handle
-      this.endTime = Date.now();
-      assignFailures(components);
-      this.error = error && error.toString();
-      await this.savePipcook();
-      logError('Component ' + this.components[this.currentIndex].type + ' error: ');
-      logError(error);
-      console.log(error);
-    }, async (complete: any) => {
-      // end the pipeline
-      this.status = 'success';
-      this.endTime = Date.now();
-      await this.savePipcook();
-      logComplete(); 
-      console.log('The prediction server has been started. You could open http://localhost:7778 locally to check status!')
+    }, async (error: Error) => {
+      await this.handleError(error, components);
+      if (errorCallback) {
+        await errorCallback(error, this);
+      }
+      await shutdown(this);
+    }, async () => {
+      await this.handleSuccess();
+      if (successCallback) {
+        await successCallback(this);
+      }
+      await shutdown(this);
     });
   }
 }

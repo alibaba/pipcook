@@ -72,7 +72,6 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
     let inputShape, outputShape: number[];
     if (!modelId) {
       assertionTest(data);
-      assert.ok(args && args.modelName, 'Please give your model a name');
       inputShape = data.metaData.feature.shape;
       outputShape = data.metaData.label.shape || [0];
     }
@@ -138,7 +137,6 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
         })
         return result; 
       },
-      modelName: (<string>(args.modelName))
     }
 
 }

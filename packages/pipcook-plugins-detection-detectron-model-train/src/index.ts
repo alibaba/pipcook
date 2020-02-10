@@ -18,7 +18,6 @@ const imageDetectronModelTrain: ModelTrainType = async (data: UniformGeneralSamp
     outputType: 'int32',
     save: model.save,
     predict: model.predict,
-    modelName: model.modelName,
     config: model.config,
     extraParams: model.extraParams
   }

@@ -7,7 +7,7 @@ import {PipcookComponentResult} from '../types/component';
 const log = console.log;
 
 export function logStartExecution(pipcookRunner: PipcookRunner) {
-  log(chalk.green(`Start Execution: \n Pipeline Name: ${pipcookRunner.pipelineName} \n Pipeline Id: ${pipcookRunner.pipelineId}`))
+  log(chalk.green(`Start Execution: \n Pipeline Id: ${pipcookRunner.pipelineId}`))
 }
 
 export function logCurrentExecution(component: PipcookComponentResult, type='normal') {
@@ -24,5 +24,5 @@ export function logError(error: any) {
 }
 
 export function logComplete() {
-  log(chalk.green('Pipcook running is completed. You could use pipcook-cli log to check logs'));
+  log(chalk.green('Pipcook running is completed.'));
 }

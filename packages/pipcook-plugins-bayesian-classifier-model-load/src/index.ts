@@ -7,7 +7,7 @@ import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 const bayes = require('bayes');
 import * as fs from 'fs';
-
+import * as path from 'path';
 /**
  * assertion test
  * @param data 
@@ -30,11 +30,10 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
   } = args || {};
   if (!modelId) {
     assertionTest(data);
-    assert.ok(args && args.modelName, 'Please provide the unique model name to identify');
   }
   let classifier = bayes();
   if (modelId) {
-    const json = fs.readFileSync(getModelDir(modelId));
+    const json = fs.readFileSync(path.join(getModelDir(modelId), 'model.json'));
     classifier = bayes.fromJson(json);
   }
   const result: PipcookModel = {
@@ -46,7 +45,7 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
     outputType: 'string',
     save: function(modelPath: string) {
       const json = this.model.toJson();
-      fs.writeFileSync(modelPath, json);
+      fs.writeFileSync(path.join(modelPath, 'model.json'), json);
     },
     predict: function(data: tf.Tensor<any>) {
       assert.ok(data.shape[0] === 1)
@@ -54,7 +53,6 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
       const output = this.model.categorize(input);
       return output;
     }, 
-    modelName: (<string>(args.modelName))
   }
   return result;
 }

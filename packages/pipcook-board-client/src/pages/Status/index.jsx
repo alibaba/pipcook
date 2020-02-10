@@ -59,8 +59,7 @@ export default class Status extends Component {
           <div className="tips">
             <Loading tip="" visible={status == 'running'} inline={false} style={{marginBottom: 40}}/>
             Currently a pipeline is running. Below is Infomation: <br />
-            PipeLine Name: {id} <br />
-            PipeLine Name: {name} <br />
+            PipeLine Id: {id} <br />
             PipeLine Version: {version} <br />
             Start Time: {startTime} <br />
           </div>
@@ -69,8 +68,7 @@ export default class Status extends Component {
           status == 'success' &&
             <div className="tips">
               Currently a pipeline is running. Below is Infomation: <br />
-              PipeLine Name: {id} <br />
-              PipeLine Name: {name} <br />
+              PipeLine Id: {id} <br />
               PipeLine Version: {version} <br />
               Start Time: {startTime} <br />
               <div>
@@ -95,8 +93,7 @@ export default class Status extends Component {
           status == 'error' &&
             <div className="tips">
               The pipeline come acrss errors. Please check logs<br />
-              PipeLine Name: {id} <br />
-              PipeLine Name: {name} <br />
+              PipeLine Id: {id} <br />
               PipeLine Version: {version} <br />
               Start Time: {startTime} <br />
             </div>

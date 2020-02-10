@@ -37,7 +37,6 @@ async function startPipeline() {
   const dataAccess = DataAccess(imageDetectronAccess);
 
   const modelLoad = ModelLoad(detectronModelLoad, {
-    modelName: 'test1',
     device: 'cpu'
   });
 

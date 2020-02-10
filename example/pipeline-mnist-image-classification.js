@@ -42,7 +42,6 @@ async function startPipeline() {
 
   // load mobile net model
   const modelLoad = ModelLoad(simpleCnnModelLoad, {
-    modelName: 'test1'
   });
 
   // train the model
@@ -56,7 +55,7 @@ async function startPipeline() {
   // deploy to local
   const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
 
-  const runner = new PipcookRunner('test1', {
+  const runner = new PipcookRunner({
     predictServer: true
   });
 

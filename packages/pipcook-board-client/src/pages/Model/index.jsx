@@ -35,7 +35,6 @@ export default class Model extends Component {
       <div className="home">
         <Table dataSource={models}>
           <Table.Column title="Model Id" dataIndex="modelId"/>
-          <Table.Column title="Model Name" dataIndex="modelName" />
           <Table.Column title="Test Evaluation" dataIndex="evaluation"/>
           <Table.Column title="Type" dataIndex="type"/>
           <Table.Column title="Start Time" dataIndex="startTime"/>
