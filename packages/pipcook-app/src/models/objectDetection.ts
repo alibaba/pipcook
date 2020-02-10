@@ -31,6 +31,8 @@ export interface EasConfigI {
   accessKeySecret: string;
   bucket: string;
   ossDir: string;
+  gpu?: number;
+  resource?: string;
 }
 
 export default class ObjectDetection {
@@ -112,6 +114,8 @@ export default class ObjectDetection {
         bucket: easConfig.bucket
       }, 
       ossDir: easConfig.ossDir,
+      gpu: easConfig.gpu, 
+      resource: easConfig.resource
     });
     
     const runner = new PipcookRunner({
