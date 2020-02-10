@@ -10,7 +10,7 @@ const fs = require('fs-extra');
 
 const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {
   const {
-    easName='', cpus=2, memory=4000, ossConfig={}, ossDir='', gpu, resource
+    easName='', cpus=2, memory=4000, ossConfig={}, ossDir='', gpu, resource, eascmd
   } = args || {};
   const packagePath = path.join(process.cwd(), '.temp', uuidv1());
   fs.ensureDirSync(path.join(packagePath, easName))
@@ -66,8 +66,11 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
     await client.put(path.join(ossDir, easName + '.tar.gz'), path.join(packagePath, easName + '.tar.gz'), {timeout: 60000000});
 
     // create service
-    assert.ok(shell.which('eascmd'), 'please install eascmd first');
-    if (shell.exec('eascmd create ' + path.join(packagePath, easName, 'app.json')).code !== 0) {
+    if (!eascmd) {
+      assert.ok(shell.which('eascmd'), 'please install eascmd first');
+    }
+    
+    if (shell.exec(`${eascmd || 'eascmd'} create ` + path.join(packagePath, easName, 'app.json')).code !== 0) {
       shell.echo('Error: create service' + easName + 'failed');
       shell.exit(1);
     }

@@ -3,7 +3,7 @@ import * as tf from '@tensorflow/tfjs-node-gpu';
 
 import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy} from '@pipcook/pipcook-core';
 import imageClassDataAccess from '@pipcook/pipcook-plugins-image-class-data-access';
-import mobileNetLoad from '@pipcook/pipcook-plugins-local-mobileNet-model-load';
+import mobileNetLoad from '@pipcook/pipcook-plugins-local-mobilenet-model-load';
 import modelTrainPlugin from '@pipcook/pipcook-plugins-model-train';
 import modelEvaluatePlugin from '@pipcook/pipcook-plugins-model-evaluate';
 import imageClassDataCollect from '@pipcook/pipcook-plugins-image-class-data-collect';
