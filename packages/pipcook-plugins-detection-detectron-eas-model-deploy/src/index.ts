@@ -10,7 +10,7 @@ const fs = require('fs-extra');
 
 const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {
   const {
-    easName='', cpus=2, memory=4000, ossConfig={}, ossDir=''
+    easName='', cpus=2, memory=4000, ossConfig={}, ossDir='', gpu, resource
   } = args || {};
   const packagePath = path.join(process.cwd(), '.temp', uuidv1());
   fs.ensureDirSync(path.join(packagePath, easName))
@@ -22,17 +22,26 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
     await unZipData(zipPath, path.join(packagePath, easName))
     fs.removeSync(zipPath)
     // write app.json
+    const metadata: any = {
+      cpu: cpus,
+      memory: memory,
+      "rpc.keepalive": 60000
+    }
+
+    if (gpu) {
+      metadata.gpu = gpu;
+    }
+    if (resource) {
+      metadata.resource = resource;
+    }
+
     const app = {
       processor_path: 'http://' + ossConfig.bucket +'.'+ossConfig.region+'.aliyuncs.com/'+ossDir+'/'+easName+'.tar.gz',
       processor_entry: './app.py',
       processor_type: "python",
       name: easName,
       generate_token: "true",
-      metadata: {
-        cpu: cpus,
-        memory: memory,
-        "rpc.keepalive": 60000
-      }
+      metadata
     }
     fs.outputFileSync(path.join(packagePath, easName, 'app.json'), JSON.stringify(app));
     // copy config
