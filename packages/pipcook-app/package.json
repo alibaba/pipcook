@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-app",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -20,7 +20,7 @@
     "@pipcook/pipcook-plugins-bayesian-classifier-model-load": "^0.x.x",
     "@pipcook/pipcook-plugins-bayesian-classifier-model-train": "^0.x.x",
     "@pipcook/pipcook-plugins-detection-detectron-data-access": "^0.x.x",
-    "@pipcook/pipcook-plugins-detection-detectron-eas-model-deploy": "^0.5.1",
+    "@pipcook/pipcook-plugins-detection-detectron-eas-model-deploy": "^0.5.2",
     "@pipcook/pipcook-plugins-detection-detectron-model-deploy": "^0.x.x",
     "@pipcook/pipcook-plugins-detection-detectron-model-evaluate": "^0.x.x",
     "@pipcook/pipcook-plugins-detection-detectron-model-load": "^0.x.x",
