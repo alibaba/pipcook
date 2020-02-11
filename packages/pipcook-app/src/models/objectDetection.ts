@@ -1,5 +1,5 @@
 
-import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy} from '@pipcook/pipcook-core';
+import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip} from '@pipcook/pipcook-core';
 
 import imageCocoDataCollect from '@pipcook/pipcook-plugins-image-coco-data-collect';
 import imageDetectronAccess from '@pipcook/pipcook-plugins-detection-detectron-data-access';
@@ -8,6 +8,8 @@ import detectronModelTrain from '@pipcook/pipcook-plugins-detection-detectron-mo
 import detectronModelEvaluate from '@pipcook/pipcook-plugins-detection-detectron-model-evaluate';
 import easModelDeploy from '@pipcook/pipcook-plugins-detection-detectron-eas-model-deploy';
 import detectronLocalDeploy from '@pipcook/pipcook-plugins-detection-detectron-model-deploy'
+import * as fs from 'fs-extra';
+import * as path from 'path'
 
 export interface MetaDataI {
   device?: 'cpu' | 'gpu',
@@ -82,6 +84,48 @@ export default class ObjectDetection {
 
     runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
     
+  }
+
+
+  async deployEasByUrl(modelUrl: string, labelJsonUrl: string, easConfig: EasConfigI) {
+    const tempPth = path.join(process.cwd(), '.temp', Date.now().toString());
+    try {
+      const modelPath = path.join(tempPth, 'model_final.pth');
+      const labelJsonPath = path.join(tempPth, 'valueMap.json');
+      await downloadZip(modelUrl, modelPath);
+      await downloadZip(labelJsonUrl, labelJsonPath);
+      const valueMap = require(labelJsonPath);
+      const modelDeploy = await easModelDeploy({
+        metaData: {
+          label: {
+            valueMap
+          }
+        }
+      }, {
+        extraParams: {
+          modelPath,
+          detectronConfigPath: path.join(__dirname, '..', 'assets', 'config')
+        }
+      },  {
+        easName:easConfig.easName, 
+        cpus: easConfig.cpus, 
+        memory: easConfig.memory, 
+        ossConfig: {
+          region: easConfig.region,
+          accessKeyId: easConfig.accessKeyId,
+          accessKeySecret: easConfig.accessKeySecret,
+          bucket: easConfig.bucket
+        }, 
+        ossDir: easConfig.ossDir,
+        gpu: easConfig.gpu, 
+        resource: easConfig.resource,
+        eascmd: easConfig.eascmd,
+        envPackName: easConfig.envPackName,
+        envScriptName: easConfig.envScriptName
+      });
+    } finally {
+      fs.removeSync(tempPth);
+    }
   }
 
   async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI,
