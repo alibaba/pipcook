@@ -34,6 +34,7 @@ export interface EasConfigI {
   gpu?: number;
   resource?: string;
   eascmd?: string;
+  envPackName?: string;
 }
 
 export default class ObjectDetection {
@@ -117,7 +118,8 @@ export default class ObjectDetection {
       ossDir: easConfig.ossDir,
       gpu: easConfig.gpu, 
       resource: easConfig.resource,
-      eascmd: easConfig.eascmd
+      eascmd: easConfig.eascmd,
+      envPackName: easConfig.envPackName
     });
     
     const runner = new PipcookRunner({
