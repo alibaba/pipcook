@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-app",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
