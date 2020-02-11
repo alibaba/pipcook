@@ -9,16 +9,19 @@ const fs = require('fs-extra');
 
 
 const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {
-  const {
-    easName='', cpus=2, memory=4000, ossConfig={}, ossDir='', gpu, resource, eascmd
+  let {
+    easName='', cpus=2, memory=4000, ossConfig={}, ossDir='', gpu, resource, eascmd, envPackName
   } = args || {};
+  if (!envPackName) {
+    envPackName = 'ENV.zip';
+  }
   const packagePath = path.join(process.cwd(), '.temp', uuidv1());
   fs.ensureDirSync(path.join(packagePath, easName))
   try {
     // get detectron env
     const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/'
     const zipPath = path.join(packagePath, easName, 'ENV.zip')
-    await downloadZip(envUrl + 'ENV.zip', zipPath);
+    await downloadZip(envUrl + envPackName, zipPath);
     await unZipData(zipPath, path.join(packagePath, easName))
     fs.removeSync(zipPath)
     // write app.json
