@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json"
+    "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
   },
   "author": "",
   "license": "ISC",
@@ -41,6 +41,7 @@
     "@pipcook/pipcook-plugins-text-class-local-model-deploy": "^0.x.x",
     "@pipcook/pipcook-plugins-text-csv-data-access": "^0.x.x",
     "@pipcook/pipcook-python-node": "^0.x.x",
-    "@tensorflow/tfjs-node-gpu": "x.x.x"
+    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "fs-extra": "^8.1.0"
   }
 }
