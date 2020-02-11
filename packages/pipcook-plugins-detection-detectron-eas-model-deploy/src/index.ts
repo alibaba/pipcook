@@ -10,10 +10,13 @@ const fs = require('fs-extra');
 
 const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {
   let {
-    easName='', cpus=2, memory=4000, ossConfig={}, ossDir='', gpu, resource, eascmd, envPackName
+    easName='', cpus=2, memory=4000, ossConfig={}, ossDir='', gpu, resource, eascmd, envPackName, envScriptName
   } = args || {};
   if (!envPackName) {
     envPackName = 'ENV.zip';
+  }
+  if (!envScriptName) {
+    envScriptName = 'app.py';
   }
   const packagePath = path.join(process.cwd(), '.temp', uuidv1());
   fs.ensureDirSync(path.join(packagePath, easName))
@@ -56,7 +59,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
     fs.copySync(modelPath, path.join(packagePath, easName, 'output', 'model_final.pth'));
 
     // copy app.py
-    await downloadZip(envUrl + 'app.py', path.join(packagePath, easName, 'app.py'));
+    await downloadZip(envUrl + envScriptName, path.join(packagePath, easName, 'app.py'));
 
     // save label map
     fs.writeFileSync(path.join(packagePath, easName, 'label.json'), JSON.stringify(data.metaData.label.valueMap));
