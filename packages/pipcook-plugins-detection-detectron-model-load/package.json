@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-detection-detectron-model-load",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.2",
+    "@pipcook/pipcook-core": "^0.5.3",
     "@pipcook/pipcook-python-node": "^0.5.2",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
     "fs-extra": "^8.1.0"
