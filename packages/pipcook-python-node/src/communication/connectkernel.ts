@@ -24,7 +24,8 @@ export function startKernel(shell_port: number, iopub_port: number) {
       "kernel_name": ""
     }
   `
-  fs.outputFileSync(path.join(process.cwd(), '.temp', 'ipker.json'), tempJson);
+  const tempJsonPath = path.join(process.cwd(), '.temp', 'node-python' ,Date.now().toString(), 'ipker.json');
+  fs.outputFileSync(tempJsonPath, tempJson);
   return new Promise((resolve, reject) => {
     const venvDir = fs.pathExistsSync(path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate'));
     if (!venvDir) {
@@ -58,7 +59,7 @@ export function startKernel(shell_port: number, iopub_port: number) {
     output.on('close', (code) => {
       // start ipython kernel with specific port
       const child = childProcess.spawn(`. ${path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate')} \\
-      && ipython kernel --IPKernelApp.connection_file=${path.join(process.cwd(), '.temp', 'ipker.json')}`, [], {
+      && ipython kernel --IPKernelApp.connection_file=${tempJsonPath}`, [], {
         shell: true,
         cwd: process.cwd(),
       });
@@ -81,6 +82,7 @@ export function startKernel(shell_port: number, iopub_port: number) {
 
       child.on('close', (code) => {
         reject(code);
+        fs.removeSync(tempJsonPath);
       })
     });
 

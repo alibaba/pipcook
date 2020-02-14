@@ -6,8 +6,8 @@ export default class Home extends Component {
   render() {
     return (
       <div className="home">
-        <div dangerouslySetInnerHTML={{__html:document}} />
-        {/* <iframe src="https://www.yuque.com/queyue-lsdxp/in8hih/ggg0lu" style={{width: '100%', height: '100vh'}}/> */}
+        {/* <div dangerouslySetInnerHTML={{__html:document}} /> */}
+        <iframe src="https://alibaba.github.io/pipcook/doc/What%20is%20Pipcook%3F-en" style={{minWidth: '100%', minHeight: '100vh'}}/>
       </div>
     );
   }

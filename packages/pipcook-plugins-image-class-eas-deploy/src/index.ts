@@ -1,16 +1,18 @@
-import {ArgsType, ModelDeployType, downloadZip, unZipData, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
+import {ArgsType, ModelDeployType, downloadZip, unZipData, getModelDir, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
+import {Python} from '@pipcook/pipcook-python-node';
 import * as path from 'path';
 import * as assert from 'assert';
+import * as fs from 'fs-extra';
 
 const OSS = require('ali-oss');
 const shell = require('shelljs');
 const uuidv1 = require('uuid/v1');
-const fs = require('fs-extra');
+const glob = require('glob-promise');
 
 
-const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {
+const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {
   let {
-    easName='', 
+    easName='',
     cpus=2, 
     memory=4000, 
     ossConfig={}, 
@@ -19,9 +21,29 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
     resource, 
     eascmd, 
     envPackName, 
-    envScriptName, 
+    envScriptName,
+    pipelineId,
     updateOrCreate
   } = args || {};
+
+  await Python.scope('image-deploy', async (python: any) => {
+    const _ = python.nA;
+    python.runshell('pip install tensorflowjs==1.5.2');
+    await python.reconnect();
+  });
+
+  const kerasActivation = 
+  await glob(path.join(process.cwd(), 'pipcook_venv', 'lib', '*', 'site-packages', 'tensorflow_core', 'python', 'keras', 'activations.py'));
+
+  kerasActivation.forEach((kerasPath: string) => {
+    fs.copyFileSync(path.join(__dirname, 'assets', 'activations.py'), kerasPath);
+  });
+
+  await Python.scope('image-deploy', async (python: any) => {
+    const _ = python.nA;
+    python.runshell(`tensorflowjs_converter --input_format=tfjs_layers_model --output_format=keras ${path.join(getModelDir(pipelineId), 'model.json')} ${path.join(getModelDir(pipelineId), 'model.h5')}`);
+  });
+
   if (!envPackName) {
     envPackName = 'ENV.zip';
   }
@@ -36,7 +58,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
   const client = OSS(ossConfig);
   try {
     // get detectron env
-    const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/'
+    const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/image-classification/'
     const zipPath = path.join(packagePath, easName, 'ENV.zip')
     await downloadZip(envUrl + envPackName, zipPath);
     await unZipData(zipPath, path.join(packagePath, easName))
@@ -45,7 +67,8 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
     const metadata: any = {
       cpu: cpus,
       memory: memory,
-      "rpc.keepalive": 60000
+      "rpc.keepalive": 60000,
+      region: "shanghai", 
     }
 
     if (gpu) {
@@ -64,20 +87,18 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
       metadata
     }
     fs.outputFileSync(path.join(packagePath, easName, 'app.json'), JSON.stringify(app));
-    // copy config
-    const configPath = model.extraParams.detectronConfigPath
-    fs.copySync(configPath, path.join(packagePath, easName, 'config'));
 
     // copy model
-    const modelPath = model.extraParams.modelPath;
-    fs.copySync(modelPath, path.join(packagePath, easName, 'output', 'model_final.pth'));
+    const modelPath = path.join(getModelDir(pipelineId), 'model.h5');
+    fs.copySync(modelPath, path.join(packagePath, easName, 'model.h5'));
 
     // copy app.py
-    await downloadZip(envUrl + envScriptName, path.join(packagePath, easName, 'app.py'));
+    fs.copyFileSync(path.join(__dirname, 'assets', 'app.py'), path.join(packagePath, easName, 'app.py'));
 
     // save label map
     fs.writeFileSync(path.join(packagePath, easName, 'label.json'), JSON.stringify(data.metaData.label.valueMap));
 
+    console.log('uploading..., please wait');
     // package the whole content
     await compressTarFile(path.join(packagePath, easName), path.join(packagePath, easName + '.tar.gz'));
 
@@ -89,7 +110,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
     if (!eascmd) {
       assert.ok(shell.which('eascmd'), 'please install eascmd first');
     }
-    
+
     if (updateOrCreate === 'create') {
       if (shell.exec(`${eascmd || 'eascmd'} create ` + path.join(packagePath, easName, 'app.json')).code !== 0) {
         shell.echo('Error: create service' + easName + 'failed');
@@ -99,14 +120,17 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
         shell.echo('Error: create service' + easName + 'failed');
       }
     }
+    
   } finally {
     fs.removeSync(packagePath);
     try {
       await client.delete(path.join(ossDir, easName + '.tar.gz'));
     } catch (err) {
     }
+   
   }
 }
 
-export default detectionDetectronModelDeploy;
+export default imageClassEasDeploy;
+
 

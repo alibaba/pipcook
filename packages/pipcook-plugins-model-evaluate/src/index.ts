@@ -57,6 +57,7 @@ const ModelEvalute: ModelEvaluateType = async (data: UniformTfSampleData, model:
       metrics.forEach((metric, index) => {
         result[metric] = evaluateResult[index].dataSync();
       });
+      console.log('evaluate result: ', result);
       return result;
     } else {
       // Pipcook model implements predict interface, call it to calculate accuracy manually
