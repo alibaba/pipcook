@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-bayesian-classifier-model-train",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.0",
+    "@pipcook/pipcook-core": "^0.5.1",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
     "cli-progress": "^3.3.1"
   },
