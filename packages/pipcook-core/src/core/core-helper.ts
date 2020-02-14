@@ -56,8 +56,8 @@ export function getLog(pipcookRunner: PipcookRunner) {
           const valueMap = 
           (self.latestSampleData && self.latestSampleData.metaData 
             && self.latestSampleData.metaData.label && self.latestSampleData.metaData.label.valueMap) || {};
-          const valueMapPath = fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
-          await saveModelCallback(path.join(<string>self.logDir, 'model'), self.pipelineId, valueMapPath);
+          fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
+          await saveModelCallback(path.join(<string>self.logDir, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
         } 
         break;
       default:
