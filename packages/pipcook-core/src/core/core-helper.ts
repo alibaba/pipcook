@@ -2,6 +2,8 @@
  * @file This file is for helper functions related to Pipcook-core
  */
 import * as path from 'path';
+import * as fs from 'fs-extra';
+
 import {PipcookRunner} from './core'; 
 import {PipcookComponentResult} from '../types/component';
 import {ModelDeployType} from '../types/plugins';
@@ -27,7 +29,7 @@ export function getLog(pipcookRunner: PipcookRunner) {
    * @param updatedType: updated return type of plugin
    * @param result: lasted return data of plugin
    */
-  export async function assignLatestResult(updatedType: string, result: any, self: any, saveModelCallback?: Function) {
+  export async function assignLatestResult(updatedType: string, result: any, self: PipcookRunner, saveModelCallback?: Function) {
     switch (updatedType) {
       case DATA:
         self.latestSampleData = result;
@@ -51,7 +53,11 @@ export function getLog(pipcookRunner: PipcookRunner) {
         }
         await result.save(path.join(<string>self.logDir, 'model'));
         if (saveModelCallback) {
-          await saveModelCallback(path.join(<string>self.logDir, 'model'), self.pipelineId);
+          const valueMap = 
+          (self.latestSampleData && self.latestSampleData.metaData 
+            && self.latestSampleData.metaData.label && self.latestSampleData.metaData.label.valueMap) || {};
+          const valueMapPath = fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
+          await saveModelCallback(path.join(<string>self.logDir, 'model'), self.pipelineId, valueMapPath);
         } 
         break;
       default:
@@ -64,12 +70,12 @@ export function getLog(pipcookRunner: PipcookRunner) {
  * @param components: EscherComponent 
  * @param self: the pipeline subject
  */
-export function createPipeline(components: PipcookComponentResult[], self: any, logType='normal', saveModelCallback?: Function) {
+export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType='normal', saveModelCallback?: Function) {
   const firstComponent = components[0];
   firstComponent.status = 'running';
   logCurrentExecution(firstComponent, logType)
   const insertParams = {
-    
+    pipelineId: self.pipelineId
   }
   const firstObservable = <Observable<any>>firstComponent.observer(self.latestOriginSampleData, self.latestModel, insertParams);
   self.updatedType = firstComponent.returnType;

@@ -13,6 +13,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     numWorkers=4,
     maxIter=100000,
     numGpus=2,
+    pipelineId
   } = args || {};
 
   let trainer: any;
@@ -83,7 +84,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128;
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = Object.keys(data.metaData.label.valueMap).length;
 
-    cfg.OUTPUT_DIR = path.join(process.cwd(), '.temp', 'output');
+    cfg.OUTPUT_DIR = path.join(process.cwd(), '.temp', pipelineId, 'output');
     
     python.print(cfg);
 
@@ -109,7 +110,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     config = get_cfg();
     config.merge_from_file(path.join(__dirname, 'config', 'faster_rcnn_R_50_C4_3x.yaml'));
     if (!modelId) {
-      config.MODEL.WEIGHTS = path.join(process.cwd(), '.temp', 'output', 'model_final.pth');
+      config.MODEL.WEIGHTS = path.join(process.cwd(), '.temp', pipelineId, 'output', 'model_final.pth');
     } else {
       config.MODEL.WEIGHTS = path.join(getModelDir(modelId), 'model_final.pth');
     }
@@ -129,7 +130,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     outputType: 'int32',
     metrics: [],
     save: async function(modelPath: string) {
-      fs.copySync(path.join(process.cwd(), '.temp', 'output'), modelPath);
+      fs.copySync(path.join(process.cwd(), '.temp', pipelineId, 'output'), modelPath);
       fs.copySync(path.join(__dirname, 'config'), path.join(modelPath, 'config'));
     },
     predict: async function (inputData: string[]) {
@@ -171,7 +172,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     config: cfg,
     extraParams: {
       detectronConfigPath: path.join(__dirname, 'config'),
-      modelPath: modelId ? path.join(getModelDir(modelId), 'model_final.pth') : path.join(process.cwd(), '.temp', 'output', 'model_final.pth')
+      modelPath: modelId ? path.join(getModelDir(modelId), 'model_final.pth') : path.join(process.cwd(), '.temp', pipelineId, 'output', 'model_final.pth')
     }
   }
 }

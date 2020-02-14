@@ -41,6 +41,7 @@
     "@pipcook/pipcook-plugins-text-class-local-model-deploy": "^0.x.x",
     "@pipcook/pipcook-plugins-text-csv-data-access": "^0.x.x",
     "@pipcook/pipcook-python-node": "^0.x.x",
+    "@pipcook/pipcook-plugins-image-class-eas-deploy": "^0.x.x",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
     "fs-extra": "^8.1.0"
   }

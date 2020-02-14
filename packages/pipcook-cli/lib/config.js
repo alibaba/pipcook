@@ -25,6 +25,7 @@ module.exports = {
     '@pipcook/pipcook-plugins-image-class-local-model-deploy',
     '@pipcook/pipcook-plugins-text-class-local-model-deploy',
     '@pipcook/pipcook-plugins-detection-detectron-eas-model-deploy',
+    "@pipcook/pipcook-plugins-image-class-eas-deploy",
     '@pipcook/pipcook-app'
   ],
   pipcookLogName: 'pipcook-output'

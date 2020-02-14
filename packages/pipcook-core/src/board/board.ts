@@ -251,6 +251,7 @@ export async function shutdown(runner: PipcookRunner) {
   if (runner.fastify && !runner.predictServer) {
     await runner.fastify.close();
   }
+  fs.removeSync(path.join(process.cwd(), '.temp', runner.pipelineId));
   if (!runner.predictServer) {
     process.exit(0);
   } 

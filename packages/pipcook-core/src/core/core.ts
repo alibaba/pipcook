@@ -56,7 +56,7 @@ export class PipcookRunner {
   logDir: string|null = null;
   pipelineId: string|null = null;
   latestOriginSampleData:  OriginSampleData | OriginSampleData[] |null = null;
-  latestSampleData: UniformSampleData | UniformSampleData[] |null = null;
+  latestSampleData: UniformSampleData |null = null;
   latestModel: PipcookModel | PipcookModel[] |null = null;
   latestEvaluateResult: EvaluateResult | null = null;
   latestDeploymentResult: DeploymentResult | null = null;
@@ -90,7 +90,8 @@ export class PipcookRunner {
       this.onlyPredict = true;
     }
     fs.ensureDirSync(path.join(this.logDir, 'model'));
-    fs.removeSync(path.join(process.cwd(), '.temp'));
+    fs.ensureDirSync(path.join(process.cwd(), '.temp', this.pipelineId));
+    // fs.removeSync(path.join(process.cwd(), '.temp'));
   }
 
   /**

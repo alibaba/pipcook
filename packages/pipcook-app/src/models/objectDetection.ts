@@ -11,6 +11,8 @@ import detectronLocalDeploy from '@pipcook/pipcook-plugins-detection-detectron-m
 import * as fs from 'fs-extra';
 import * as path from 'path'
 
+import { getEasParam, EasConfigI } from '../utils/utils';
+
 export interface MetaDataI {
   device?: 'cpu' | 'gpu',
   baseLearningRate?: number,
@@ -22,22 +24,6 @@ export interface MetaDataI {
 export interface TrainInfoI {
   testSplit?: number,
   annotationFileName: string;
-}
-
-export interface EasConfigI {
-  easName: string;
-  cpus: number;
-  memory: number;
-  region: string;
-  accessKeyId: string;
-  accessKeySecret: string;
-  bucket: string;
-  ossDir: string;
-  gpu?: number;
-  resource?: string;
-  eascmd?: string;
-  envPackName?: string;
-  envScriptName?: string;
 }
 
 export default class ObjectDetection {
@@ -54,8 +40,7 @@ export default class ObjectDetection {
     }
   }
 
-  async train(dataSource: string, trainInfo: TrainInfoI, 
-    predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
+  async _train(dataSource: string, trainInfo: TrainInfoI, ) {
     const dataCollect = DataCollect(imageCocoDataCollect, {
       url: dataSource,
       testSplit: trainInfo.testSplit || '0.1',
@@ -75,6 +60,14 @@ export default class ObjectDetection {
     const modelTrain = ModelTrain(detectronModelTrain);
 
     const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
+
+    return {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate};
+  }
+
+  async train(dataSource: string, trainInfo: TrainInfoI, 
+    predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
+    
+    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = await this._train(dataSource, trainInfo);
 
     const modelDeploy = ModelDeploy(detectronLocalDeploy)
     
@@ -106,23 +99,7 @@ export default class ObjectDetection {
           modelPath,
           detectronConfigPath: path.join(__dirname, '..', 'assets', 'config')
         }
-      },  {
-        easName:easConfig.easName, 
-        cpus: easConfig.cpus, 
-        memory: easConfig.memory, 
-        ossConfig: {
-          region: easConfig.region,
-          accessKeyId: easConfig.accessKeyId,
-          accessKeySecret: easConfig.accessKeySecret,
-          bucket: easConfig.bucket
-        }, 
-        ossDir: easConfig.ossDir,
-        gpu: easConfig.gpu, 
-        resource: easConfig.resource,
-        eascmd: easConfig.eascmd,
-        envPackName: easConfig.envPackName,
-        envScriptName: easConfig.envScriptName
-      });
+      },  getEasParam(easConfig));
     } finally {
       fs.removeSync(tempPth);
     }
@@ -130,43 +107,10 @@ export default class ObjectDetection {
 
   async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI,
      predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
-    const dataCollect = DataCollect(imageCocoDataCollect, {
-      url: dataSource,
-      testSplit: trainInfo.testSplit || '0.1',
-      annotationFileName: trainInfo.annotationFileName || 'annotation.json'
-    });
-    
-    const dataAccess = DataAccess(imageDetectronAccess);
 
-    const modelLoad = ModelLoad(detectronModelLoad, {
-      device: this.metaData.device || 'cpu',
-      maxIter: this.metaData.maxIter,
-      baseLearningRate: this.metaData.baseLearningRate,
-      numWorkers: this.metaData.numWorkers,
-      numGpus: this.metaData.numGpus,
-    });
+    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = await this._train(dataSource, trainInfo);
 
-    const modelTrain = ModelTrain(detectronModelTrain);
-
-    const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
-
-    const modelDeploy = ModelDeploy(easModelDeploy, {
-      easName:easConfig.easName, 
-      cpus: easConfig.cpus, 
-      memory: easConfig.memory, 
-      ossConfig: {
-        region: easConfig.region,
-        accessKeyId: easConfig.accessKeyId,
-        accessKeySecret: easConfig.accessKeySecret,
-        bucket: easConfig.bucket
-      }, 
-      ossDir: easConfig.ossDir,
-      gpu: easConfig.gpu, 
-      resource: easConfig.resource,
-      eascmd: easConfig.eascmd,
-      envPackName: easConfig.envPackName,
-      envScriptName: easConfig.envScriptName
-    });
+    const modelDeploy = ModelDeploy(easModelDeploy, getEasParam(easConfig));
     
     const runner = new PipcookRunner({
       predictServer
