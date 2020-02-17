@@ -19,7 +19,7 @@ Our plugin mechanism is highly scalable and following the principle that one plu
 
 ---
 
-Can't wait to start a pipcook project ?, Please [check here to quickly start a project](https://alibaba.github.io/pipcook/doc/Quick%20Start-en).
+Can't wait to start a pipcook project ?, Please [check here to quickly start a project](https://alibaba.github.io/pipcook/doc/High-Level%20API%20Quick%20Start-en).
 
 <a name="uXh3I"></a>
 ### Concept
@@ -38,6 +38,7 @@ Can't wait to start a pipcook project ?, Please [check here to quickly start a p
 
 After building a machine learning project, if you want to learn more about pipcook, see the following link for more information
 
+- [Learn how to use low-level plugin way to run pipeline. (more flexible way)](https://alibaba.github.io/pipcook/doc/Low-level-plugin-style%20Quick%20Start-en)
 - [Learn more about plugins](https://alibaba.github.io/pipcook/doc/Introduction%20of%20pipcook%20plugin-en)
 - [Want to use python?](https://alibaba.github.io/pipcook/doc/Want%20to%20use%20python%3F-en)
 - [Learn more about the built-in pipeline](https://alibaba.github.io/pipcook/doc/Built-in%20pipeline%20detail-en)

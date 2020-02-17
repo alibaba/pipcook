@@ -1,6 +1,7 @@
 const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
+const token = 'fRJ8MhS37ATDEW1VclgaFRCtiDUqezUMY7IdV7kd';
 
 // doc dir
 const docDir = path.join(__dirname, 'doc');
@@ -41,9 +42,17 @@ replaceList = [
 async function generate(lang) {
   let tocRes;
   if (lang === 'zh') {
-    tocRes = await axios.get(zh_toc);
+    tocRes = await axios.get(zh_toc, {
+      headers: {
+        'X-Auth-Token': token
+      }
+    });
   } else {
-    tocRes = await axios.get(en_toc);
+    tocRes = await axios.get(en_toc,  {
+      headers: {
+        'X-Auth-Token': token
+      }
+    });
   }
   const tocs = tocRes.data.data;
   const tocMap = {};
@@ -52,8 +61,13 @@ async function generate(lang) {
   })
   for (let i = 0; i < tocs.length; i++) {
     const toc = tocs[i];
+    console.log(toc.slug, toc.title);
     const markdown = 
-      await axios.get(`https://www.yuque.com/api/v2/repos/${lang === 'zh' ? zh_repo : en_repo}/docs/${toc.slug}?raw=1`);
+      await axios.get(`https://www.yuque.com/api/v2/repos/${lang === 'zh' ? zh_repo : en_repo}/docs/${toc.slug}?raw=1`, {
+        headers: {
+          'X-Auth-Token': token
+        }
+      });
     let markdownContent = markdown.data.data.body;
     markdownContent = `# ${markdown.data.data.title}\n\n` + markdownContent;
     let regex;

@@ -1,6 +1,6 @@
-# 快速入门
+# 低阶-插件方式-快速入门
 
-本文将从实例的角度，一步步搭建出一个 Pipcook 应用，让你能快速的入门 Pipcook， 启动 Pipcook 工程
+本文将从实例的角度，一步步搭建出一个 Pipcook 应用，让你能快速的入门 Pipcook， 启动 Pipcook 工程，比较于 高阶 api 的方式，这种方式可以自由组合不同的插件和第三方开发的插件，更加灵活
 
 <a name="wvxFK"></a>
 ### 环境准备
@@ -10,7 +10,7 @@
 
 - 操作系统：支持 MacOs, Linux
 - 运行环境：Node.js >= 10.16， Npm >= 6.1.0
-- python要求 （如果要用到python桥接功能）: python >= 3.6, pip 指向正确的 python3 路径, 关于更多信息，可参考[这里](https://alibaba.github.io/pipcook/doc/%E6%83%B3%E8%A6%81%E4%BD%BF%E7%94%A8python%EF%BC%9F-zh)
+- python要求 （如果要用到python桥接功能）: pip/pip3/pip3.6/pip3.7 其中之一指向正确的 python3.6/python3.7 路径, 关于更多信息，可参考[这里](https://alibaba.github.io/pipcook/doc/%E6%83%B3%E8%A6%81%E4%BD%BF%E7%94%A8python%EF%BC%9F-zh)
 
 或者我们强烈建议您直接使用我们的 docker 镜像，以确保 pipcook 的运行环境正确
 
@@ -21,7 +21,7 @@
 
 <a name="PEMXT"></a>
 #### 本地方式
-(如果您想使用 gpu加速功能和基于 detectron2 的目标检测 python 桥接链路，我们建议您使用下面的 docker 方式安装) 首先安装 pipcook 脚手架 pipcook-cli, 此工具将提供环境初始化，控制流程开始与结束，日志查看等功能。
+(如果您想使用 gpu加速功能和基于 detectron2 的目标检测 python 桥接链路，我们建议您使用 docker 方式) 首先安装 pipcook 脚手架 pipcook-cli, 此工具将提供环境初始化，控制流程开始与结束，日志查看等功能。
 ```
 sudo npm install -g @pipcook/pipcook-cli
 ```
@@ -33,11 +33,12 @@ mkdir pipcook-example && cd pipcook-example
 pipcook init
 cd pipcook-project
 ```
+（如果您在使用国内的 npm 客户端，如 cnpm， 那么您可以使用 pipcook init -c cnpm 来初始化)
 
-此时，Pipcook 所有需要的相关的环境已经安装完毕，此外，还会为您生成一些 Pipcook 工程的样例文件<br />在生成的项目空间里，我们在 examples 文件夹里为您准备了两个样例文件， 您可以直接运行他们去开始一个机器学习工程 pipeline. 例如，您可以快速运行这个文件进行一次mnist 手写数字的识别，想要开始这个训练，您只需要一个简单的命令
+此时，Pipcook 所有需要的相关的环境已经安装完毕，此外，还会为您生成一些 Pipcook 工程的样例文件<br />在生成的项目空间里，我们在 examples 文件夹里为您准备了几个样例文件， 您可以直接运行他们去开始一个机器学习工程 pipeline. 例如，您可以快速运行这个文件进行一次mnist 手写数字的识别，想要开始这个训练，您只需要一个简单的命令
 
 ```
-node examples/pipeline-mnist-image-classification.js
+node examples/pipeline-example/pipeline-mnist-image-classification.js
 ```
 
 
@@ -63,17 +64,15 @@ docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1g 
 pipcook init
 ```
 
-我们在 examples 文件夹里为您准备了两个样例文件， 您可以直接运行他们去开始一个机器学习工程 pipeline. 例如，您可以快速进行一次mnist 手写数字的识别，想要开始这个训练，您只需要一个简单的命令
-
 ```
 cd pipcook-project
-node examples/pipeline-mnist-image-classfication.js
+node examples/pipeline-example/pipeline-mnist-image-classification.js
 ```
 
 <a name="vHxNL"></a>
 #### 训练完成后
 
-训练完成后，系统将会启动本地部署，默认会部署到 7778端口，如果在本地环境，您可以按照提示打开浏览器启动一个简单的预测页面。如果您想要查看之前的数据集，或者使用数据集中的某个样本，可以进入 .pipcook-log/datasets 文件夹找到您的数据集
+训练完成后，系统将会启动本地部署，默认会部署到 7778端口，如果在本地环境，您可以按照提示打开浏览器启动一个简单的预测页面。如果您想要查看之前的数据集，或者使用数据集中的某个样本，可以进入 pipcook-output/datasets 文件夹找到您的数据集
 
 同时，如果您想要查看你之前训练过的模型或者使用过的训练集，您可以运行如下命令打开 pipcook-board
 

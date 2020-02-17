@@ -6,4 +6,4 @@ const classifier = new pipcook.imageClassification('mobilenet', {
 
 classifier.train('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/eCommerceImageClassification.zip', {
   epochs: 15,
-}, false);
+}, true);
