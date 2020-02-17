@@ -44,7 +44,7 @@ In the initialized folder, we have prepared several samples for you, They are:
 
 For example, you can quickly run the pipeline to do a mnist image classification. To start the pipeline, just run:
 ```
-node examples/pipeline-mnist-image-classification.js
+node examples/pipcook-app-example/pipcook-imageclass-app-test.js
 ```
 
 ## How to contribute
