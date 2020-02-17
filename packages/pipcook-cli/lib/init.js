@@ -39,19 +39,24 @@ const init = async (cmdObj) => {
       cwd: dirname,
     });
 
-    try {
-      await downloadConfig();
-      dependencies = require(path.join(__dirname, 'temp', 'config.js')).dependencies;
-    } catch (err) {
-    }
+    // try {
+    //   await downloadConfig();
+    //   dependencies = require(path.join(__dirname, 'temp', 'config.js')).dependencies;
+    // } catch (err) {
+    // }
 
-    for (const item of dependencies) {
-      spinner.start(`installing ${item} ...`);
-      childProcess.execSync(`${client} install ${item} --save`, {
-        cwd: dirname,
-      });
-      spinner.succeed(`install ${item} successfully`);
-    }
+    // for (const item of dependencies) {
+    //   spinner.start(`installing ${item} ...`);
+    //   childProcess.execSync(`${client} install ${item} --save`, {
+    //     cwd: dirname,
+    //   });
+    //   spinner.succeed(`install ${item} successfully`);
+    // }
+    spinner.start(`installing ...`);
+    childProcess.execSync(`${client} install @pipcook/pipcook-app --save`, {
+      cwd: dirname,
+    });
+    spinner.succeed(`install successfully`);
   } catch (error) {
     spinner.fail(`install ${error} error`);
     fse.removeSync(dirname);
