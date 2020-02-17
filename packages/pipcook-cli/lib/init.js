@@ -24,14 +24,7 @@ const init = async (cmdObj) => {
     }
     fse.ensureDirSync(path.join(dirname, 'examples'));
     // we prepared several examples. Here copy these examples to current working directory
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pipeline-databinding-image-classification.js'), 
-      path.join(dirname, 'examples', 'pipeline-databinding-image-classification.js'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pipeline-mnist-image-classfication.js'), 
-      path.join(dirname, 'examples', 'pipeline-mnist-image-classification.js'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pipeline-object-detection.js'), 
-      path.join(dirname, 'examples', 'pipeline-object-detection.js'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'python-keras.js'), 
-      path.join(dirname, 'examples', 'python-keras.js'));
+    fse.copySync(path.join(__dirname, '..', 'assets', 'example'), path.join(dirname, 'examples'));
     fse.ensureDirSync(path.join(dirname, pipcookLogName));
 
     fse.ensureDirSync(path.join(dirname, '.scripts'));
