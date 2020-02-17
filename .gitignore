@@ -8,7 +8,6 @@ tsconfig.tsbuildinfo
 samples/
 samples*/
 .pipcook-log/
-doc/
 pipcook_venv
 .temp
 detectron2

@@ -1,6 +1,6 @@
-# Quick Start
+# Low-level-plugin-style Quick Start
 
-This article will show how to build a Pipcook pipeline step by step from an example, so that you can quickly get started with Pipcook and start the Pipcook project.
+This article will show how to build a Pipcook pipeline step by step from an example, so that you can quickly get started with Pipcook and start the Pipcook project. Compared to high-level API, this way let you combine different plugins as you want and provide more flexible way to build pipeline.
 
 <a name="wvxFK"></a>
 ### Prepare the environment
@@ -10,7 +10,7 @@ This article will show how to build a Pipcook pipeline step by step from an exam
 
 - operating system：MacOs, Linux
 - Runtime：Node.js >= 10.16， Npm >= 6.1.0
-- Python Requirement （If you want to use python bridging）: python >= 3.6, pip points to the correct python3 path.  [See here](https://alibaba.github.io/pipcook/doc/Want%20to%20use%20python%3F-en) for more information.
+- Python Requirement （If you want to use python bridging）: one of pip/pip3/pip3.6/pip3.7 points to current Python 3.6/3.7.  [See here](https://alibaba.github.io/pipcook/doc/Want%20to%20use%20python%3F-en) for more information.
 
 We strongly recommend that you directly use our docker mirror to ensure that the pipcook runtime environment is correct.
 
@@ -22,7 +22,7 @@ We strongly recommend that you directly use our docker mirror to ensure that the
 <a name="PEMXT"></a>
 #### Local
 
-First install piphook-cli , it is a pipcook scaffolding that provides environment initialization, control process start and end, log view and etc.
+First install pipcook-cli , it is a pipcook scaffolding that provides environment initialization, control process start and end, log view and etc.
 
 If you want to use GPU acceleration  and python bridge (for instance, our built-in object detection pipeline), we suggest you use the following docker method
 
@@ -43,7 +43,7 @@ At this time, all the relevant environments needed for pipcook have been install
 We have prepared severaal samples for you in the examples folder. You can run them directly to start a machine learning project pipeline. For example, you can run this file quickly to recognize MNIST  numbers. To start this training, you only need a simple command.
 
 ```
-node examples/pipeline-mnist-image-classfication.js
+node examples/pipeline-example/pipeline-mnist-image-classfication.js
 ```
 
 <a name="BLMFh"></a>
@@ -74,13 +74,13 @@ We have prepared several sample files for you in the examples folder. You can ru
 
 ```
 cd pipcook-project
-node examples/pipeline-mnist-image-classfication.js
+node examples/pipeline-example/pipeline-mnist-image-classfication.js
 ```
 
 
 <a name="m3sMv"></a>
 #### After the training
-After the training, the system will start the local deployment, which will be deployed to port 7778 by default. If you are in the local environment, you can follow the prompts to open the browser and start a simple prediction page. If you want to view the previous dataset, or use a sample in the dataset, you can go to the .pipcook-log/datasets folder to find your dataset.
+After the training, the system will start the local deployment, which will be deployed to port 7778 by default. If you are in the local environment, you can follow the prompts to open the browser and start a simple prediction page. If you want to view the previous dataset, or use a sample in the dataset, you can go to the pipcook-output/datasets folder to find your dataset.
 
 At the same time, if you want to view your previously trained models or used training sets, you can run the following command to open pipcook board
 

@@ -7,4 +7,4 @@ const classifier = new pipcook.objectDetection('faster-rcnn', {
 
 classifier.train('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/autoLayoutGroupRecognition.zip', {
   testSplit: 0.01
-});
+}, true);
