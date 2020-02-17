@@ -41,8 +41,6 @@ RUN npm install @pipcook/pipcook-cli -g
 RUN mv /usr/bin/python /usr/bin/python.bak
 RUN ln -s /usr/bin/python3.7 /usr/bin/python
 RUN apt install lsof
-RUN cd /home/ && pipcook init
-
 
 ENV TF_FORCE_GPU_ALLOW_GROWTH=true
 ENV LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64
