@@ -2,7 +2,7 @@ import { UniformSampleData, OriginSampleData, ArgsType, parseAnnotation, DataAcc
 
 
 const templateDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformSampleData> => {
-  return <UniformSampleData>{};
+  return {} as UniformSampleData;
 }
 
 export default templateDataAccess;
