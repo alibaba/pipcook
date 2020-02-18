@@ -54,14 +54,16 @@ In the case of GPU acceleration, we suggest you use our docker mirror for pipcoo
 We can run the following command to pull the mirror.
 
 ```
-docker pull pipcook/pipcook
+docker pull pipcook/pipcook:version-0.4
+
 ```
 
 First, create a workspace locally. For example, let's create an example folder. If your environment has GPUs that can be used for training (Linux only), NVIDIA ® GPUs that support CUDA, and the correct drivers, you can run the following command to enter the mirror (start the container), and mount your workspace into the docker environment. If CPU training is used, the '-- GPUs all' parameter does not need to be added.
 
 ```
 mkdir ${local_workspace} // such as： /Users/queyue/documents/example
-docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1g --gpus all pipcook/pipcook /bin/bash
+docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1g --gpus all pipcook/pipcook:version-0.4
+ /bin/bash
 ```
 
 Now, you can enter the project space and use the scaffold we have installed to initialize the project space.

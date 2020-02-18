@@ -46,13 +46,14 @@ node examples/pipcook-app-example/pipcook-imageclass-app-test.js
 In scenarios where gpu acceleration is required, we recommend that you use our Docker image for pipcook training. In our image, before you start, make sure that your system has installed Docker correctly<br />Run the following command to pull the image:
 
 ```
-docker pull pipcook/pipcook
+docker pull pipcook/pipcook:version-0.4
 ```
 
 First, create a workspace locally. For example, create an example folder. If your environment has a GPU that can be used for training (Linux only), NVIDIA that supports CUDA®GPU and the correct driver, you can run the following command to enter the image (start the container), and mount your workspace into the docker environment. If you use CPU training, you do not need to add the -- gpus all parameter.
 ```
 mkdir ${local_workspace}
-docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1g --gpus all pipcook/pipcook /bin/bash
+docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1g --gpus all pipcook/pipcook:version-0.4
+ /bin/bash
 ```
 
 Now, you can enter the project and initialize the project using the scaffold that we have installed.
