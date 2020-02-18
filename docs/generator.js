@@ -1,7 +1,7 @@
 const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
-const token = '';
+const token = 'fRJ8MhS37ATDEW1VclgaFRCtiDUqezUMY7IdV7kd';
 
 // doc dir
 const docDir = path.join(__dirname, 'doc');

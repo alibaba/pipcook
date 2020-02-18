@@ -49,13 +49,14 @@ node examples/pipeline-example/pipeline-mnist-image-classification.js
 在需要使用gpu加速的场景下，我们建议您使用我们的 Docker 镜像进行 pipcook 的训练。在我们的镜像中，在开始之前，请确保您的系统已经正确安装了 Docker<br />我们可以运行如下命令拉取镜像
 
 ```
-docker pull pipcook/pipcook
+docker pull pipcook/pipcook:version-0.4
 ```
 
 首先在本地创建一个工作空间，例如我们创建一个 example 文件夹，如果您的环境有可以用于训练的 GPU (仅限Linux), 具有支持CUDA的NVIDIA®GPU和正确的驱动程序，您可以运行如下命令进入镜像（启动容器），并且将您的工作空间 mount 进入 docker 环境。如果使用 CPU 训练，则不需要加 --gpus all 参数
 ```
 mkdir ${local_workspace} // 例如： /Users/queyue/documents/example
-docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1g --gpus all pipcook/pipcook /bin/bash
+docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1g --gpus all pipcook/pipcook:version-0.4
+ /bin/bash
 ```
 
 现在，您可以进入到项目空间里，并且使用我们已经安装好的脚手架初始化项目空间
