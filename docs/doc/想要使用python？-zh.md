@@ -28,7 +28,7 @@ virtualenv --no-site-packages pipcook_venv
 
 **我们强烈建议您使用我们的 docker 镜像去运行 pipcook，这样您不再需要执行上述命令，也不需要担心环境的问题, 可以参考**[**这里**](https://alibaba.github.io/pipcook/doc/%E4%BD%8E%E9%98%B6-%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F-%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8-zh)**有详细的 docker 的信息**
 ```
-docker pull pipcook/pipcook
+docker pull pipcook/pipcook:version-0.4
 ```
 
 <a name="XZqjF"></a>
