@@ -28,7 +28,8 @@ virtualenv --no-site-packages pipcook_venv
 
 **We strongly recommend that you use our docker image to run pipcook, so that you no longer need to execute the above commands, and you don't need to worry about the environment, you can refer to the detailed docker information **[**here**](https://alibaba.github.io/pipcook/doc/Low-level-plugin-style%20Quick%20Start-en)<br />**
 ```
-docker pull pipcook/pipcook
+docker pull pipcook/pipcook:version-0.4
+
 ```
 
 <a name="XZqjF"></a>
