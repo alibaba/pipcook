@@ -4,9 +4,9 @@
   ],
   "version": "independent",
   "npmClient": "npm",
-  "command":{
-    "bootstrap":{
-        "hoist":true
+  "command": {
+    "bootstrap": {
+      "hoist":true
     },
     "publishConfig": {
       "access": "public"
