@@ -32,7 +32,7 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
   
   const trainJsonContent = require(path.join(trainDataPath, '..', 'train.json'));
   const categories = trainJsonContent.categories;
-  const oneHotMap:any = {};
+  const oneHotMap: any = {};
   categories.forEach((category: any) => {
     oneHotMap[category.name] = category.id
   })

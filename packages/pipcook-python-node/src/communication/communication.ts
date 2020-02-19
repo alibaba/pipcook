@@ -22,7 +22,7 @@ export default class Executor {
    * open a session which is bound to a scope
    */
   static openSession = async (scope: string) => {
-    let session:Session = Executor.sessions.find((e: any) => e.id === scope);
+    let session: Session = Executor.sessions.find((e: any) => e.id === scope);
     if (!session) {
       session = await Executor.createSession(scope);
       session.socketSubscriber.connect(kernel.transport + "://" + kernel.ip + ":" + session.ioPort);
@@ -42,7 +42,7 @@ export default class Executor {
    * exit a session
    */
   static exit = async (scope: string) => {
-    let session:Session = Executor.sessions.find((e: any) => e.id === scope);
+    const session: Session = Executor.sessions.find((e: any) => e.id === scope);
     await session.kernel.cleanup();
   }
 
@@ -133,7 +133,7 @@ export default class Executor {
             if (json.status === 'ok') {
               message.status = true;
               if (json.user_expressions) {
-                for (let key in json.user_expressions) {
+                for (const key in json.user_expressions) {
                   if (json.user_expressions[key].status === 'ok') {
                     message[key] = json.user_expressions[key].data['text/plain'];
                   }
@@ -161,8 +161,8 @@ export default class Executor {
    * @param scope the scope name
    * @param code codes to be executed
    */
-  static execute = (scope:string, code: string, user_expressions?: any) => {
-    const session:Session = Executor.sessions.find((e: any) => e.id === scope);
+  static execute = (scope: string, code: string, user_expressions?: any) => {
+    const session: Session = Executor.sessions.find((e: any) => e.id === scope);
     if (!session) {
       throw new Error('no session Found!');
     }

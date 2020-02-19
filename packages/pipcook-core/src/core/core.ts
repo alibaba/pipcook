@@ -64,12 +64,12 @@ export class PipcookRunner {
   fastify: any = {};
 
   updatedType: string | null = null;
-  components:PipcookComponentResult[] = [];
-  currentIndex: number = -1;
+  components: PipcookComponentResult[] = [];
+  currentIndex = -1;
   error: any = null;
 
-  startTime: number = 0;
-  endTime: number = 0;
+  startTime = 0;
+  endTime = 0;
 
   predictServer = false;
   onlyPredict = false;
@@ -111,7 +111,7 @@ export class PipcookRunner {
     return server;
   }
 
-  init = async (components:PipcookComponentResult[]) => {
+  init = async (components: PipcookComponentResult[]) => {
     this.startTime = Date.now()
     logStartExecution(this);
     if (!components || components.length <= 0) {
@@ -124,7 +124,7 @@ export class PipcookRunner {
     await this.startServer();
   }
 
-  handleError = async (error: Error, components:PipcookComponentResult[]) => {
+  handleError = async (error: Error, components: PipcookComponentResult[]) => {
     this.status = 'error';
     // error handle
     this.endTime = Date.now();
@@ -151,7 +151,7 @@ export class PipcookRunner {
    * run components
    * @param components: components to be executed
    */
-  run = async (components:PipcookComponentResult[], successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) => {
+  run = async (components: PipcookComponentResult[], successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) => {
     await this.init(components);
 
     if (this.onlyPredict) {

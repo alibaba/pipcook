@@ -18,12 +18,12 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
     const jsonData = await parseAnnotation(fileNames[j]);
     bar1.update(j);
     let image = await Jimp.read(path.join(jsonData.annotation.folder[0], jsonData.annotation.filename[0]));
-    let xratio = 1.0 * imgSize[0] / image.bitmap.width;
-    let yratio = 1.0 * imgSize[1] / image.bitmap.height;
+    const xratio = 1.0 * imgSize[0] / image.bitmap.width;
+    const yratio = 1.0 * imgSize[1] / image.bitmap.height;
     image = image.resize(imgSize[0], imgSize[1]);
     const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
     const imageArray = new Uint8Array(trainImageBuffer);
-    let target = [];
+    const target = [];
     jsonData.annotation.object.forEach((item: any) => {
       target.push(oneHotMap[item.name[0]])
       target.push(parseFloat(item.bndbox[0].xmin[0]) * xratio )
@@ -86,7 +86,7 @@ const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[]
 
   const oneHotMap = await getLabelMap(data);
 
-  let trainDataFlows:any[]=[], validationDataFlows:any[]=[], testDataFlows:any[]=[]
+  const trainDataFlows: any[]=[], validationDataFlows: any[]=[], testDataFlows: any[]=[]
   
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];

@@ -59,16 +59,16 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
     delimiter=',',
   } = args || {};
 
-  const trainDataFlows:any = [], 
-  validationDataFlows:any = [], 
-  testDataFlows:any = [];
+  const trainDataFlows: any = [], 
+  validationDataFlows: any = [], 
+  testDataFlows: any = [];
 
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];
     const {trainDataPath, validationDataPath, testDataPath} = dataSample;
     const trainData: tf.data.Dataset<any> = await getDataset(trainDataPath, hasHeader, delimiter);
     trainDataFlows.push(trainData);
-    let validationData : tf.data.Dataset<any>;
+    let validationData: tf.data.Dataset<any>;
     if (validationDataPath) {
       validationData = await getDataset(validationDataPath, hasHeader, delimiter);
       validationDataFlows.push(validationData);
@@ -81,7 +81,7 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
   }
    
   assert.ok(trainDataFlows.length > 0, 'No train data is found!');
-  let uniformData = concatenateDataFlows(trainDataFlows);
+  const uniformData = concatenateDataFlows(trainDataFlows);
   const result: UniformSampleData = {
     trainData: uniformData,
     metaData: {
@@ -99,11 +99,11 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
     }
   };
   if (validationDataFlows.length > 0) {
-    let validationData = concatenateDataFlows(validationDataFlows);
+    const validationData = concatenateDataFlows(validationDataFlows);
     result.validationData = validationData;
   }
   if (testDataFlows.length > 0) {
-    let testData = concatenateDataFlows(testDataFlows); 
+    const testData = concatenateDataFlows(testDataFlows); 
     result.testData = testData;
   }
   

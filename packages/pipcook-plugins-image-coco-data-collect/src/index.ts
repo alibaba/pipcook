@@ -57,7 +57,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
     const imagePath = imagePaths[i];
     const imagePathSplit = imagePath.split(path.sep);
     const fileName = imagePathSplit[imagePathSplit.length - 1];
-    const cocoImage = annotation.images.find((e:any) => e.file_name == fileName);
+    const cocoImage = annotation.images.find((e: any) => e.file_name == fileName);
     const currentAnnotation: any = {
       annotation: {
         folder: [

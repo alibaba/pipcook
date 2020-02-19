@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs-node-gpu';
 
 export interface ModelLoadAndSaveFunction {
-  (modelPath: string): any
+  (modelPath: string): any;
 }
 
 export interface PipcookModel {

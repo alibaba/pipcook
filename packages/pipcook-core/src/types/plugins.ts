@@ -24,25 +24,25 @@ export interface DataCollectType extends PipcookPlugin {
 }
 
 export interface DataAccessType extends PipcookPlugin {
-  (data: OriginSampleData | OriginSampleData[], args?: ArgsType): Promise<UniformSampleData>
+  (data: OriginSampleData | OriginSampleData[], args?: ArgsType): Promise<UniformSampleData>;
 }
 
 export interface DataProcessType extends PipcookPlugin {
-  (data: UniformSampleData | UniformSampleData[], args?: ArgsType): Promise<UniformSampleData>
+  (data: UniformSampleData | UniformSampleData[], args?: ArgsType): Promise<UniformSampleData>;
 }
 
 export interface ModelLoadType extends PipcookPlugin {
-  (data: UniformSampleData | UniformSampleData[], args?: ModelLoadArgsType): Promise<PipcookModel>
+  (data: UniformSampleData | UniformSampleData[], args?: ModelLoadArgsType): Promise<PipcookModel>;
 }
 
 export interface ModelTrainType extends PipcookPlugin {
-  (data: UniformSampleData | UniformSampleData[], model: PipcookModel | PipcookModel[], args?: ArgsType): Promise<PipcookModel>
+  (data: UniformSampleData | UniformSampleData[], model: PipcookModel | PipcookModel[], args?: ArgsType): Promise<PipcookModel>;
 }
 
 export interface ModelEvaluateType extends PipcookPlugin {
-  (data: UniformSampleData | UniformSampleData[], model: PipcookModel | PipcookModel[], args?: ArgsType): Promise<EvaluateResult>
+  (data: UniformSampleData | UniformSampleData[], model: PipcookModel | PipcookModel[], args?: ArgsType): Promise<EvaluateResult>;
 }
 
 export interface ModelDeployType extends PipcookPlugin {
-  (data: any, model: any, args?: ArgsType): Promise<any>
+  (data: any, model: any, args?: ArgsType): Promise<any>;
 }
