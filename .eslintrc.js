@@ -1,15 +1,10 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
-  rules: {
-      'no-var': "error",
-      '@typescript-eslint/consistent-type-definitions': [
-          "error",
-          "interface"
-      ]  
+  'extends': [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+  ],
+  'rules': {
+    '@typescript-eslint/no-var-requires': 'off',
   },
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module",
-  },
-}
+};
