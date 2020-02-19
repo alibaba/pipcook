@@ -33,20 +33,27 @@ pipcook init
 cd pipcook-project
 ```
 
-
 ## Run your first pipcook pipeline
 
-In the initialized folder, we have prepared several samples for you, They are:
+In the initialized folder, we have prepared several examples for you, some of they are:
 
-- pipeline-mnist-image-classification: pipeline for classific Mnist image classification problem.
-- pipeline-databinding-image-classification: pipeline example to train the iamge classification task which is to classifify [imgcook](https://www.imgcook.com/) databinding pictures.
-- pipeline-object-detection: pipeline example to train object detection task which is for component recognition used by imgcook.
-- python-keras: example to use Python Keras library to train deep leraning network in js syntax and runtime.
+- [pipeline-mnist-image-classification][]: pipeline for classific Mnist image classification problem.
+- [pipeline-databinding-image-classification][]: pipeline example to train the iamge classification task which is to classifify [imgcook](https://www.imgcook.com/) databinding pictures.
+- [pipeline-object-detection][]: pipeline example to train object detection task which is for component recognition used by imgcook.
+- [python-keras][]: example to use Python Keras library to train deep leraning network in js syntax and runtime.
 
-For example, you can quickly run the pipeline to do a mnist image classification. To start the pipeline, just run:
+> For complete examples, see [here](./example).
+
+And it is easy and quick to run these examples. For example, to do a minst image classification, just run the following to start the pipeline:
+
 ```
 node examples/pipcook-app-example/pipcook-imageclass-app-test.js
 ```
+
+[pipeline-mnist-image-classification]: example/pipeline-example/pipeline-mnist-image-classification.js
+[pipeline-databinding-image-classification]: example/pipeline-example/pipeline-databinding-image-classification.js
+[pipeline-object-detection]: example/pipeline-example/pipeline-object-detection.js
+[python-keras]: example/python-nodejs-example/python-keras.js
 
 ## How to contribute
 
