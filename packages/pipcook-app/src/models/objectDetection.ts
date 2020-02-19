@@ -14,15 +14,15 @@ import * as path from 'path'
 import { getEasParam, EasConfigI } from '../utils/utils';
 
 export interface MetaDataI {
-  device?: 'cpu' | 'gpu',
-  baseLearningRate?: number,
-  numWorkers?: number,
-  maxIter?: number,
-  numGpus?: number,
+  device?: 'cpu' | 'gpu';
+  baseLearningRate?: number;
+  numWorkers?: number;
+  maxIter?: number;
+  numGpus?: number;
 }
 
 export interface TrainInfoI {
-  testSplit?: number,
+  testSplit?: number;
   annotationFileName: string;
 }
 
