@@ -30,7 +30,7 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
     image = image.resize(imgSize[0], imgSize[1]);
     const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
     const imageArray = new Uint8Array(trainImageBuffer);
-    let label:any = jsonData.annotation.object[0].name[0];
+    let label: any = jsonData.annotation.object[0].name[0];
     if (Object.keys(oneHotMap).length > 1) {
       label = tf.tidy(() => tf.oneHot(tf.scalar(oneHotMap[label], 'int32'), Object.keys(oneHotMap).length));
     }
@@ -92,7 +92,7 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
 
   const {imgSize=[128, 128]} = args || {};
 
-  let trainDataFlows:any, validationDataFlows:any, testDataFlows:any;
+  let trainDataFlows: any, validationDataFlows: any, testDataFlows: any;
   
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];

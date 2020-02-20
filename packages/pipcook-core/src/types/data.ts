@@ -16,13 +16,13 @@ export interface UniformSampleData{
   validationResult?: {
     result: boolean;
     message: string;
-  }
+  };
 }
 
 export interface UniformTfSampleData extends UniformSampleData {
-  trainData: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
-  validationData?: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
-  testData?: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
+  trainData: tf.data.Dataset<{xs: tf.Tensor<any>; ys?: tf.Tensor<any>}>;
+  validationData?: tf.data.Dataset<{xs: tf.Tensor<any>; ys?: tf.Tensor<any>}>;
+  testData?: tf.data.Dataset<{xs: tf.Tensor<any>; ys?: tf.Tensor<any>}>;
 }
 
 export interface UniformGeneralSampleData extends UniformSampleData {

@@ -233,7 +233,7 @@ export default class Python {
   /**
    * same as a == b in python
    */
-  equal = (object1: PythonObject, object2:PythonObject) => {
+  equal = (object1: PythonObject, object2: PythonObject) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${conversion(object1)} == ${conversion(object2)}`);
     return getObject(identifier, this.statements);
@@ -242,7 +242,7 @@ export default class Python {
   /**
    * same as a!=b in python
    */
-  notEqual = (object1: PythonObject, object2:PythonObject) => {
+  notEqual = (object1: PythonObject, object2: PythonObject) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${conversion(object1)} != ${conversion(object2)}`);
     return getObject(identifier, this.statements);
@@ -251,7 +251,7 @@ export default class Python {
   /**
    * same as a > b in python
    */
-  larger = (object1: PythonObject, object2:PythonObject) => {
+  larger = (object1: PythonObject, object2: PythonObject) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${conversion(object1)} > ${conversion(object2)}`);
     return getObject(identifier, this.statements);
@@ -260,7 +260,7 @@ export default class Python {
   /**
    * same as a < b in python
    */
-  smaller = (object1: PythonObject, object2:PythonObject) => {
+  smaller = (object1: PythonObject, object2: PythonObject) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${conversion(object1)} < ${conversion(object2)}`);
     return getObject(identifier, this.statements);
@@ -269,7 +269,7 @@ export default class Python {
   /**
    * same as a >= b in python
    */
-  largerEqual = (object1: PythonObject, object2:PythonObject) => {
+  largerEqual = (object1: PythonObject, object2: PythonObject) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${conversion(object1)} >= ${conversion(object2)}`);
     return getObject(identifier, this.statements);
@@ -278,7 +278,7 @@ export default class Python {
   /**
    * same as a <= b in python
    */
-  smallerEqual = (object1: PythonObject, object2:PythonObject) => {
+  smallerEqual = (object1: PythonObject, object2: PythonObject) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${conversion(object1)} <= ${conversion(object2)}`);
     return getObject(identifier, this.statements);
@@ -287,7 +287,7 @@ export default class Python {
   /**
    * same as a and b in python
    */
-  and = (object1: PythonObject, object2:PythonObject) => {
+  and = (object1: PythonObject, object2: PythonObject) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${conversion(object1)} and ${conversion(object2)}`);
     return getObject(identifier, this.statements);
@@ -296,7 +296,7 @@ export default class Python {
   /**
    * same as a or b in python
    */
-  or = (object1: PythonObject, object2:PythonObject) => {
+  or = (object1: PythonObject, object2: PythonObject) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${conversion(object1)} or ${conversion(object2)}`);
     return getObject(identifier, this.statements);

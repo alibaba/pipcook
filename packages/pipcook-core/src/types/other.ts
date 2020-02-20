@@ -24,8 +24,8 @@ export interface statistic {
 export interface DeploymentResult {
   version: string;
   deployService: string;
-  serviceapi: string,
-  extraData: any
+  serviceapi: string;
+  extraData: any;
 } 
 
 export interface PipObject {
