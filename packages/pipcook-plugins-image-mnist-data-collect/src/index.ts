@@ -29,7 +29,7 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
   for (let i = 0; i < trainingSet.length; i++) {
     bar1.update(i);
     const trainingSample = trainingSet[i];
-    const input = (trainingSample.input).map((x:any) => x * 255);
+    const input = (trainingSample.input).map((x: any) => x * 255);
     const output = trainingSample.output;
     const imageDir = path.join(saveDir, 'images');
     const annotationDir = path.join(saveDir, 'annotations', 'train');
@@ -47,7 +47,7 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
   for (let i = 0; i < testSet.length; i++) {
     bar2.update(i);
     const trainingSample = testSet[i];
-    const input = (trainingSample.input).map((x:any) => x * 255);
+    const input = (trainingSample.input).map((x: any) => x * 255);
     const output = trainingSample.output;
     const imageDir = path.join(saveDir, 'images');
     const annotationDir = path.join(saveDir, 'annotations', 'test');

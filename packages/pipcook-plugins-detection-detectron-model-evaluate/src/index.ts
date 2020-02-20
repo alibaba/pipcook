@@ -13,7 +13,7 @@ const imageDetectronModelTrain: ModelEvaluateType =
     assert.ok(model && model.config, 'Error! No model path detected');
     const config = model.config;
     let trainer = model.model;
-    let evaluationResult: string = '';
+    let evaluationResult = '';
     await Python.scope('detectron', async (python: any) => {
       const _ = python.nA;
       const cfg = python.runRaw(Python.convert(config));

@@ -25,11 +25,11 @@ export interface Session {
   id: string;
   parent_header: Header;
   last_header: Header;
-  dealerMsg: Message,
-  socketDealer: zmq.Dealer,
-  socketSubscriber: zmq.Subscriber,
-  timer: NodeJS.Timeout,
-  ioPort: number,
-  shellPort: number,
-  kernel: any
+  dealerMsg: Message;
+  socketDealer: zmq.Dealer;
+  socketSubscriber: zmq.Subscriber;
+  timer: NodeJS.Timeout;
+  ioPort: number;
+  shellPort: number;
+  kernel: any;
 }

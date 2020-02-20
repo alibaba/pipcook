@@ -20,7 +20,7 @@ import {PipcookModel} from '../types/model';
  * @param params: plugin's parameters
  */
 function produceResultFactory(type: 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelTrain' | 'modelEvaluate' | 'modelDeploy',
-  plugin: PipcookPlugin, params? :any): PipcookComponentResult {
+  plugin: PipcookPlugin, params? : any): PipcookComponentResult {
   const result: PipcookComponentResult = {
     type, 
     plugin,

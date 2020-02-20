@@ -14,7 +14,7 @@ import * as assert from 'assert';
 const ModelEvalute: ModelEvaluateType = async (data: UniformTfSampleData, model: PipcookModel, args?: ArgsType): Promise<EvaluateResult> => {
   let batchSize = 32;
   let batches = null;
-  let dataSize: number = 0;
+  let dataSize = 0;
   if (args && args.batchSize) {
     batchSize = args.batchSize;
   }

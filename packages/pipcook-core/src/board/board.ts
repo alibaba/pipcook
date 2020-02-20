@@ -44,7 +44,7 @@ export function serverModel(fastify: any) {
   fastify.get('/models', async (req: any, reply: any) => {
     try {
       const modelDirs: string[] = await glob(path.join(process.cwd(),'pipcook-output', '*', 'model'));
-      const models:any[] = [];
+      const models: any[] = [];
       modelDirs.forEach((modelDir) => {
         const modelPathSplit = modelDir.split(path.sep);
         const modelNameSplit = modelPathSplit[modelPathSplit.length - 2];
@@ -85,7 +85,7 @@ export function serveDataset(fastify: any) {
   fastify.get('/datasets', async (req: any, reply: any) => {
     try {
       const dataDirs: string[] = await glob(path.join(process.cwd(),'pipcook-output', 'datasets' ,'*'));
-      const datasets:any[] = [];
+      const datasets: any[] = [];
       for (let i = 0; i < dataDirs.length; i++) {
         const dataDir = dataDirs[i];
         const dataDirSplit = dataDir.split(path.sep);
@@ -130,7 +130,7 @@ export function serveLog(fastify: any) {
   fastify.get('/log', async (req: any, reply: any) => {
     try {
       const logDirs: string[] = await glob(path.join(process.cwd(),'pipcook-output','*' ,'log.json'));
-      const logs:any[] = [];
+      const logs: any[] = [];
       for (let i = 0; i < logDirs.length; i++) {
         const logDir = logDirs[i];
         const log = require(logDir);
@@ -215,7 +215,7 @@ export async function serveRunner(runner: PipcookRunner) {
   // only use predict endpoint when the parameter: predictServer is true
   if (runner.predictServer || runner.onlyPredict) {
     runner.fastify.post('/predict', async (request: any, reply: any) => {
-      let result = await runPredict(runner, request);
+      const result = await runPredict(runner, request);
       return result;
     });
   } 

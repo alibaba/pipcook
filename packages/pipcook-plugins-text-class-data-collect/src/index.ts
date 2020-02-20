@@ -9,7 +9,7 @@ const csv = require('csv-parser')
 
 const transformCsv = (result: any) => {
   const texts = [];
-  for (let key in result) {
+  for (const key in result) {
     let text = result[key];
     if (text.includes(',')){
       if (text.includes('"')) {

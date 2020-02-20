@@ -9,7 +9,7 @@ import {PythonObject} from '../types/python-object';
 export function conversion(target: any) {
   if (target.__pipcook__args) {
     let args = '';
-    for (let key in target) {
+    for (const key in target) {
       if (key !== '__pipcook__args') {
         args += `${key}=${conversion(target[key])},`
       }

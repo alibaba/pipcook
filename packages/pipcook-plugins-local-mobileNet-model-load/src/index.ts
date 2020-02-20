@@ -124,7 +124,7 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
           }
           let index = null;
           if (data.metaData.label.valueMap) {
-            for (let key in data.metaData.label.valueMap) {
+            for (const key in data.metaData.label.valueMap) {
               if (data.metaData.label.valueMap[key] === count) {
                 index = key;
               }
