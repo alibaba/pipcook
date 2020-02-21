@@ -51,10 +51,13 @@ export function serverModel(fastify: any) {
         // pipecook will arrange logs and models in the same name convention
         let log: any = {};
         try {
-          if(fs.pathExistsSync(path.join(process.cwd(), 'pipcook-output', modelNameSplit, `log.json`))) {
-            log = require(path.join(process.cwd(), 'pipcook-output', modelNameSplit ,`log.json`));
+          const logPath = path.join(process.cwd(), 'pipcook-output', modelNameSplit, 'log.json');
+          if (fs.pathExistsSync(logPath)) {
+            log = require(logPath);
           }
-        } finally {}
+        } finally {
+          // TODO(yorkie): move the "model push" here?
+        }
         models.push({
           modelId: modelNameSplit,  modelName: modelNameSplit,
           evaluation: JSON.stringify(log.latestEvaluateResult),
@@ -200,7 +203,7 @@ export async function serveRunner(runner: PipcookRunner) {
       return;
     }
   
-    const modelPlugin = <ModelLoadType>modelComponent.plugin;
+    const modelPlugin = modelComponent.plugin as ModelLoadType;
     if (!(modelComponent.params && modelComponent.params.modelId)) {
       logError('Please provide model id in prediction pipeline');
       return;
@@ -222,7 +225,7 @@ export async function serveRunner(runner: PipcookRunner) {
 
   // This is for /status endpoint. Used when the pipeline is running and the front-end needs to know its status.
   runner.fastify.get('/status', async (req: any, reply: any) => {
-    const model = <PipcookModel>runner.latestModel;
+    const model = runner.latestModel as PipcookModel;
     return {
       status: runner.status,
       type: model && model.type,

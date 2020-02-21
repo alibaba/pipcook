@@ -8,7 +8,7 @@ export interface DataDescriptor {
   valueMap?: any;
 }
 
-export interface metaData {
+export interface MetaData {
   feature: DataDescriptor;
   label: DataDescriptor;
   trainSize?: number;
@@ -16,7 +16,7 @@ export interface metaData {
   testSize?: number;
 }
 
-export interface statistic {
+export interface Statistic {
   metricName: string;
   metricValue: number;
 }
@@ -36,6 +36,5 @@ export interface EvaluateResult {
   [key: string]: any;
 }
 
-export interface PipcookMergeArray {
-  
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PipcookMergeArray {}

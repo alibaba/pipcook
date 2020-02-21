@@ -5,6 +5,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
   ],
   'rules': {
+    'no-useless-escape': 'off',
     '@typescript-eslint/no-var-requires': 'off',
   },
 };

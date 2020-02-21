@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs-node-gpu';
-import {metaData, statistic} from './other';
+import {MetaData, Statistic} from './other';
 
 export interface OriginSampleData {
   trainDataPath: string;
@@ -7,12 +7,12 @@ export interface OriginSampleData {
   validationDataPath?: string;
 }
 
-export interface UniformSampleData{
+export interface UniformSampleData {
   trainData: any;
   validationData?: any;
   testData?: any;
-  metaData: metaData;
-  dataStatistics?: statistic[];
+  metaData: MetaData;
+  dataStatistics?: Statistic[];
   validationResult?: {
     result: boolean;
     message: string;
@@ -31,5 +31,5 @@ export interface UniformGeneralSampleData extends UniformSampleData {
   testData?: string;
 }
 
-export interface InsertParams {
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface InsertParams {}
