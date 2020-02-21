@@ -95,15 +95,16 @@ export default class Executor {
     socketSubscriber.receive()
     .then((msg: Buffer[]) => {
       msg.forEach((item, index) => {
+        let json = null;
         try {
-          const json = JSON.parse(item.toString());
-          if (json.name === 'stdout') {
-            console.log('[PYTHON: ]', json.text);
-          } else if (json.name === 'stderr') {
-            console.error('[PYTHON: ]', json.text);
-          }
-        } catch (e) {
-
+          json = JSON.parse(item.toString());
+        } catch (err) {
+          json = {};
+        }
+        if (json.name === 'stdout') {
+          console.log('[PYTHON: ]', json.text);
+        } else if (json.name === 'stderr') {
+          console.log('[PYTHON: ]', json.text);
         }
       });
       Executor.handleSubscriberMsg(socketSubscriber);
@@ -145,7 +146,8 @@ export default class Executor {
               message.traceback = json.traceback;
             }
           }
-        } catch (err) {   
+        } catch (err) {
+          // TODO: how to handle with this error?
         }
       });
       session.dealerMsg = message;
