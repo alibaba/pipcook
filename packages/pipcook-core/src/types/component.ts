@@ -4,9 +4,8 @@ import {OriginSampleData, UniformSampleData, InsertParams} from './data';
 import {PipObject} from './other';
 import { Subscribable } from 'rxjs';
 
-export interface PipcookComponent {
-
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PipcookComponent {}
 
 interface ObserverFunc {
   (data: OriginSampleData | OriginSampleData[]| UniformSampleData | UniformSampleData[] | null, 

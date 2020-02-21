@@ -4,8 +4,8 @@ import {PipcookModel} from './model';
 import {EvaluateResult, DeploymentResult} from './other';
 import {PipcookComponentResult} from './component';
 
-export interface PipcookPlugin {
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PipcookPlugin {}
 
 export interface ArgsType {
   [key: string]: any;

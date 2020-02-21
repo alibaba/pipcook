@@ -13,7 +13,6 @@ import {flatMap} from 'rxjs/operators';
 import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA} from '../constants/other';
 import {DATAACCESS} from '../constants/plugins';
 
-
 /**
  * Retreive relative logs required to be stored.
  * @param pipcookRunner : The pipcookRunner object
@@ -24,46 +23,46 @@ export function getLog(pipcookRunner: PipcookRunner) {
   return pipcookRunner;
 }
 
-  /**
-   * According to return type of plugin, we need to update runner.
-   * @param updatedType: updated return type of plugin
-   * @param result: lasted return data of plugin
-   */
-  export async function assignLatestResult(updatedType: string, result: any, self: PipcookRunner, saveModelCallback?: Function) {
-    switch (updatedType) {
-      case DATA:
-        self.latestSampleData = result;
-        break;
-      case MODEL:
-        self.latestModel = result;
-        break;
-      case EVALUATE:
-        self.latestEvaluateResult = result;
-        break;
-      case DEPLOYMENT:
-        self.latestDeploymentResult = result;
-        break;
-      case ORIGINDATA:
-        self.latestOriginSampleData = result;
-        break;
-      case MODELTOSAVE:
-        self.latestModel = result;
-        if (Array.isArray(result) && result.length > 0) {
-          result = result[0];
-        }
-        await result.save(path.join(<string>self.logDir, 'model'));
-        if (saveModelCallback) {
-          const valueMap = 
-          (self.latestSampleData && self.latestSampleData.metaData 
-            && self.latestSampleData.metaData.label && self.latestSampleData.metaData.label.valueMap) || {};
-          fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
-          await saveModelCallback(path.join(<string>self.logDir, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
-        } 
-        break;
-      default:
-        throw new Error('Returned Data Type is not recognized');
-    }
+/**
+ * According to return type of plugin, we need to update runner.
+ * @param updatedType: updated return type of plugin
+ * @param result: lasted return data of plugin
+ */
+export async function assignLatestResult(updatedType: string, result: any, self: PipcookRunner, saveModelCallback?: Function) {
+  switch (updatedType) {
+    case DATA:
+      self.latestSampleData = result;
+      break;
+    case MODEL:
+      self.latestModel = result;
+      break;
+    case EVALUATE:
+      self.latestEvaluateResult = result;
+      break;
+    case DEPLOYMENT:
+      self.latestDeploymentResult = result;
+      break;
+    case ORIGINDATA:
+      self.latestOriginSampleData = result;
+      break;
+    case MODELTOSAVE:
+      self.latestModel = result;
+      if (Array.isArray(result) && result.length > 0) {
+        result = result[0];
+      }
+      await result.save(path.join(self.logDir as string, 'model'));
+      if (saveModelCallback) {
+        const valueMap = 
+        (self.latestSampleData && self.latestSampleData.metaData 
+          && self.latestSampleData.metaData.label && self.latestSampleData.metaData.label.valueMap) || {};
+        fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
+        await saveModelCallback(path.join(self.logDir as string, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
+      } 
+      break;
+    default:
+      throw new Error('Returned Data Type is not recognized');
   }
+}
 
 /**
  * create the pipeline according to the components given. The pipelien serializes all components sepcified
@@ -77,7 +76,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
   const insertParams = {
     pipelineId: self.pipelineId
   }
-  const firstObservable = <Observable<any>>firstComponent.observer(self.latestOriginSampleData, self.latestModel, insertParams);
+  const firstObservable = firstComponent.observer(self.latestOriginSampleData, self.latestModel, insertParams) as Observable<any>;
   self.updatedType = firstComponent.returnType;
 
   const flatMapArray: any = [];
@@ -106,7 +105,6 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
   }
   
   return firstObservable.pipe(
-    // @ts-ignore
     ...flatMapArray
   );
 }
@@ -158,7 +156,7 @@ export async function runPredict(runner: PipcookRunner, request: any) {
   const dataProcess = components.find((e) => e.type === 'dataProcess');
   const modelDeploy = components.find((e) => e.type === 'modelDeploy');
 
-  const result = await (<ModelDeployType>modelDeploy.plugin)({},{},{
+  const result = await (modelDeploy.plugin as ModelDeployType)({}, {}, {
     data, dataAccess, model: latestModel, dataProcess
   });
 

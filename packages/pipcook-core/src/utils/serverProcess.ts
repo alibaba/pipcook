@@ -12,7 +12,7 @@ export async function processImageClassification(data: any, dataAccess: PipcookC
   const trainDataPath = path.join(process.cwd(), '.temp');
   try {
     data.forEach((dataImage: any) => {
-      const fileName = 'image-'+Date.now()+'.jpg';
+      const fileName = `image-${Date.now()}.jpg`;
       fs.outputFileSync(path.join(trainDataPath, fileName), dataImage, {encoding: 'base64'});
       if (type === IMAGE_CLASSIFICATION) {
         createAnnotationFile(trainDataPath, fileName, trainDataPath, 'no');
@@ -43,10 +43,10 @@ export async function processImageClassification(data: any, dataAccess: PipcookC
     let result: any = {
       trainDataPath,
     }
-    const dataAccessPlugin = <DataAccessType>dataAccess.plugin;
+    const dataAccessPlugin = dataAccess.plugin as DataAccessType;
     result = await dataAccessPlugin(result, dataAccess.params);
     if (dataProcess) {
-      const dataProcessPlugin = <DataProcessType>dataProcess.plugin;
+      const dataProcessPlugin = dataProcess.plugin as DataProcessType;
       result = await dataProcessPlugin(result, dataProcess.params);
     }
     result = result.trainData.map((e: any) => {
@@ -76,10 +76,10 @@ export async function processTextClassification(data: any, dataAccess: PipcookCo
       let result: any = {
         trainDataPath: path.join(trainDataPath, 'train.csv'),
       }
-      const dataAccessPlugin = <DataAccessType>dataAccess.plugin;
+      const dataAccessPlugin = dataAccess.plugin as DataAccessType;
       result = await dataAccessPlugin(result, dataAccess.params);
       if (dataProcess) {
-        const dataProcessPlugin = <DataProcessType>dataProcess.plugin;
+        const dataProcessPlugin = dataProcess.plugin as DataProcessType;
         result = await dataProcessPlugin(result, dataProcess.params);
       }
       result = result.trainData.map((e: any) => {
