@@ -11,7 +11,7 @@ const processImage = async (processingData: any, rotationRange: number, brightne
   const image = processingData[metaData.feature.name];
   const label = processingData[metaData.label.name];
   const imageEncode = await tf.node.encodeJpeg(image);
-  const imageBuffer = <Buffer>imageEncode.buffer;
+  const imageBuffer = imageEncode.buffer as Buffer;
   let trainImage = await Jimp.read(imageBuffer);
   if (rotationRange) {
     trainImage = trainImage.rotate((Math.random() - 0.5) * 2 * rotationRange, false);

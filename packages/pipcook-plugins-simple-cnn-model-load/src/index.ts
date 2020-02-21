@@ -33,9 +33,9 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
   
   let model: tf.Sequential | null = null;
   if (modelId) {
-    model = <tf.Sequential>(await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json')));
+    model = (await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json'))) as tf.Sequential;
     const metaData = getMetadata(modelId);
-    data = <UniformTfSampleData>{metaData};
+    data = {metaData} as UniformTfSampleData;
   } else {
     model = tf.sequential();
     model.add(tf.layers.conv2d({
@@ -75,7 +75,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
     model.add(tf.layers.dense({units: outputShape[1], activation: 'softmax', kernelInitializer: 'glorotUniform'}));
   }
 
-  (<tf.Sequential>model).compile({
+  (model as tf.Sequential).compile({
     optimizer,
     loss,
     metrics,

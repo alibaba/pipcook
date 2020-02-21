@@ -42,7 +42,7 @@ const ModelTrain: ModelTrainType = async (data: UniformTfSampleData, model: Pipc
     if (validationData) {
       const validateDs = validationData.batch(batchSize);
       trainConfig.validationData = validateDs;
-      trainConfig.validationBatches = parseInt(String((<any>data.validationData).size / batchSize));
+      trainConfig.validationBatches = parseInt(String((data.validationData as any).size / batchSize));
     }
     const history = await trainModel.fitDataset(ds, trainConfig);
     const result: PipcookModel = {

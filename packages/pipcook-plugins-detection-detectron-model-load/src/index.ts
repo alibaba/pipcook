@@ -21,7 +21,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
   if (modelId) {
     const metaData = getMetadata(modelId);
-    data = <UniformGeneralSampleData>{...data, metaData};
+    data = {...data, metaData} as UniformGeneralSampleData;
   }
   
   await Python.scope('detectron', async (python: any) => {

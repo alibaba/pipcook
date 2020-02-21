@@ -5,6 +5,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
   ],
   'rules': {
+    'prefer-const': 'off',
     'no-useless-escape': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/camelcase': 'off',

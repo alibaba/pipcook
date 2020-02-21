@@ -32,7 +32,7 @@ const ModelEvalute: ModelEvaluateType = async (data: UniformTfSampleData, model:
       throw new Error('Please specify the batches.');
     }
     if (!batches) {
-      dataSize = <number>((data.testData && data.testData.size) || data.metaData.testSize);
+      dataSize = ((data.testData && data.testData.size) || data.metaData.testSize) as number;
     }
 
     const testData = data.testData;
@@ -41,7 +41,7 @@ const ModelEvalute: ModelEvaluateType = async (data: UniformTfSampleData, model:
     if (model.model instanceof tf.LayersModel) {
       batches = Math.ceil(Number(dataSize) / batchSize)
       const ds = testData.repeat().batch(batchSize);
-      let evaluateResult: any = await model.model.evaluateDataset(<tf.data.Dataset<{}>>ds, {
+      let evaluateResult: any = await model.model.evaluateDataset(ds as tf.data.Dataset<{}>, {
         batches
       });
   

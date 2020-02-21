@@ -36,7 +36,7 @@ const textClassDataProcess: DataProcessType = async (data: UniformTfSampleData, 
   }
 
   const result: UniformTfSampleData = {
-    trainData: <tf.data.Dataset<any>>trainDataProcessed,
+    trainData: trainDataProcessed as tf.data.Dataset<any>,
     metaData: data.metaData
   };
 
