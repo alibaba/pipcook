@@ -100,7 +100,7 @@ export class PipcookRunner {
   savePipcook = async () => {
     // store Pipcook log
     const json = JSON.stringify(getLog(this), getCircularReplacer());
-    fs.outputFileSync(path.join(<string>this.logDir, 'log.json'), json);
+    fs.outputFileSync(path.join(this.logDir as string, 'log.json'), json);
   }
 
   /**
@@ -163,7 +163,7 @@ export class PipcookRunner {
     pipeline.subscribe((result: any) => {
       // success handle
       components[components.length - 1].status = 'success';
-      assignLatestResult(<string>this.updatedType, result, this);
+      assignLatestResult(this.updatedType as string, result, this);
     }, async (error: Error) => {
       await this.handleError(error, components);
       if (errorCallback) {
