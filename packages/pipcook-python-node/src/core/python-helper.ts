@@ -84,8 +84,8 @@ function createProxy(object: any, statements: string[]) {
  * @param identifier: the identifier used in python codes that linked between python and object
  */
 export function getObject(identifier: string, statements: string[]): PythonObject {
-  const object: PythonObject = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const object: PythonObject = function callable() {};
   object.__pipcook__identifier = identifier;
-  const proxy = createProxy(object, statements);
-  return proxy;
+  return createProxy(object, statements);
 }

@@ -14,7 +14,7 @@
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "eslint": "eslint packages --ext .ts",
+    "lint": "eslint . --ext .ts",
     "doc": "rm -rf ./doc && typedoc --plugin typedoc-plugin-markdown"
   },
   "dependencies": {
