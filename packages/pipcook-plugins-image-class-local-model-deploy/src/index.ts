@@ -22,11 +22,11 @@ const imageClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, mode
       trainDataPath: path.join(trainDataPath, 'annotations', 'train'),
     }
 
-    const dataAccessPlugin = <DataAccessType>dataAccess.plugin;
+    const dataAccessPlugin = dataAccess.plugin as DataAccessType;
     result = await dataAccessPlugin(result, dataAccess.params);
 
     if (dataProcess) {
-      const dataProcessPlugin = <DataProcessType>dataProcess.plugin;
+      const dataProcessPlugin = dataProcess.plugin as DataProcessType;
       result = await dataProcessPlugin(result, dataProcess.params);
     }
     

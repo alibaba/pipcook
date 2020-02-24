@@ -126,6 +126,7 @@ const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDa
     try {
       await client.delete(path.join(ossDir, easName + '.tar.gz'));
     } catch (err) {
+      // TODO: catch err?
     }
    
   }

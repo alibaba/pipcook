@@ -78,16 +78,16 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
 
     let model: tf.Sequential | tf.LayersModel | null = null;
     if (modelId) {
-      model = <tf.Sequential>(await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json')));
+      model = (await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json'))) as tf.Sequential;
       const metaData = getMetadata(modelId);
-      data = <UniformTfSampleData>{metaData};
+      data = {metaData} as UniformTfSampleData;
     } else {
       const trainableLayers = ['denseModified','conv_pw_13_bn','conv_pw_13','conv_dw_13_bn','conv _dw_13'];
       const mobilenet = await
         tf.loadLayersModel('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/models/mobilenet/model.json');
       const newInputLayer = tf.input({shape: inputShape});
       const output = applyModel(newInputLayer, mobilenet);
-      const predictions = <tf.SymbolicTensor> tf.layers.dense({units: outputShape[1],  activation: 'softmax', name: 'denseModified'}).apply(output); 
+      const predictions = tf.layers.dense({units: outputShape[1],  activation: 'softmax', name: 'denseModified'}).apply(output) as tf.SymbolicTensor;
       let mobilenetModified = tf.model({inputs: newInputLayer, outputs: predictions, name: 'modelModified' });
       if (isFreeze) {
         mobilenetModified = freezeModelLayers(trainableLayers, mobilenetModified);

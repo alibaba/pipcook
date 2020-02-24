@@ -10,18 +10,19 @@ const fs = require('fs-extra');
 
 const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {
   let {
-    easName='', 
-    cpus=2, 
-    memory=4000, 
-    ossConfig={}, 
-    ossDir='', 
-    gpu, 
-    resource, 
-    eascmd, 
-    envPackName, 
-    envScriptName, 
+    easName='',
+    cpus=2,
+    memory=4000,
+    ossConfig={},
+    ossDir='',
+    gpu,
+    resource,
+    eascmd,
+    envPackName,
+    envScriptName,
     updateOrCreate
   } = args || {};
+
   if (!envPackName) {
     envPackName = 'ENV.zip';
   }
@@ -104,6 +105,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
     try {
       await client.delete(path.join(ossDir, easName + '.tar.gz'));
     } catch (err) {
+      // TODO: cache error?
     }
   }
 }
