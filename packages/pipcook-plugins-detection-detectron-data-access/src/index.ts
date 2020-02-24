@@ -13,7 +13,7 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
   }
 
 
-  const {trainDataPath, validationDataPath, testDataPath} = <OriginSampleData><unknown>data;
+  const {trainDataPath, validationDataPath, testDataPath} = data as OriginSampleData;
   const trainFiles = await glob(path.join(trainDataPath, '*.xml'));
   let validationFiles: string[] = [];
 
