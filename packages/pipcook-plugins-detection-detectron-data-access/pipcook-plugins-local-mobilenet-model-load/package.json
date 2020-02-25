@@ -1,0 +1,24 @@
+{
+  "name": "@pipcook/pipcook-plugins-local-mobilenet-model-load",
+  "version": "0.5.3",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pipcook/pipcook-core": "^0.5.3",
+    "@tensorflow-models/mobilenet": "^2.0.4",
+    "@tensorflow/tfjs-node-gpu": "x.x.x"
+  },
+  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856"
+}
