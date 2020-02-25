@@ -104,7 +104,11 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
     self.updatedType = components[i].returnType;
   }
   
-  return firstObservable.pipe.apply(firstObservable, flatMapArray);
+  return firstObservable.pipe(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    ...flatMapArray
+  );
 }
 
 /**
