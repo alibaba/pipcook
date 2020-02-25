@@ -23,7 +23,7 @@
 const {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy} = require('@pipcook/pipcook-core');
 
 const imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
-const mobileNetLoad = require('@pipcook/pipcook-plugins-local-mobileNet-model-load').default;
+const mobileNetLoad = require('@pipcook/pipcook-plugins-local-mobilenet-model-load').default;
 const modelTrainPlugin = require('@pipcook/pipcook-plugins-model-train').default;
 const modelEvaluatePlugin = require('@pipcook/pipcook-plugins-model-evaluate').default;
 const imageClassDataCollect = require('@pipcook/pipcook-plugins-image-class-data-collect').default
