@@ -2,7 +2,6 @@
   <a href="https://www.npmjs.com/package/@pipcook/pipcook-core"><img alt="npm" src="https://img.shields.io/npm/dm/@pipcook/pipcook-core"></a>
   <a href="https://www.npmjs.com/package/@pipcook/pipcook-core"><img alt="npm" src="https://img.shields.io/npm/v/@pipcook/pipcook-core"></a>
   <a href="https://hub.docker.com/r/pipcook/pipcook"><img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/pipcook/pipcook"></a>
-  <a href="https://www.npmjs.com/package/rax"><img src="https://img.shields.io/npm/dm/rax.svg"></a>
   <a href="https://github.com/alibaba/pipcook"><img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/alibaba/pipcook"></a>
   <a href="https://github.com/alibaba/pipcook"><img src="https://img.shields.io/github/issues/alibaba/pipcook" alt="gzip size"></a>
   <a href="https://opensource.org/licenses/Apache-2.0"> <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>

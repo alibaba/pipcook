@@ -31,6 +31,7 @@ export function getEasParam(easConfig: EasConfigI) {
     resource: easConfig.resource,
     eascmd: easConfig.eascmd,
     envPackName: easConfig.envPackName,
-    envScriptName: easConfig.envScriptName
+    envScriptName: easConfig.envScriptName,
+    updateOrCreate: easConfig.updateOrCreate
   } 
 }
