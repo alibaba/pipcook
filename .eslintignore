@@ -2,3 +2,6 @@ node_modules
 example
 docs
 dist
+
+packages/pipcook-core/src/assets
+packages/pipcook-board-client/build

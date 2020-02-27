@@ -103,7 +103,9 @@ const dataset = async (cmdObj) => {
           imageName = imageName[imageName.length - 1];
           fse.copySync(image, path.join(process.cwd(), 'merge-data', 'images', imageName));
         })
-      } finally {} 
+      } finally {
+        // TODO(yorkie): remove the try-catch block.
+      } 
     }
 
     fse.outputJSONSync(path.join(process.cwd(), 'merge-data', 'annotation.json'), newJson);
