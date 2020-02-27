@@ -31,8 +31,8 @@ const devPlugin = (cmdObj) => {
     fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'src', `${pluginType}.ts`), 
       path.join(dirname, 'src', `index.ts`));
     console.log('success');
-  } catch (error) {
-    console.error(err);
+  } catch (e) {
+    console.error(e);
     fse.removeSync(dirname);
   }
   

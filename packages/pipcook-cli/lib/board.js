@@ -1,18 +1,10 @@
 const chalk = require('chalk');
-const {startBoard} = require('@pipcook/pipcook-core')
-/**
- *  start pipcook board
- */
-const board = async () => {
+const {startBoard} = require('@pipcook/pipcook-core');
+
+module.exports = function() {
   try {
     startBoard();
-  } catch (error) {
-    console.log(
-      chalk.red(
-        error
-      )
-    );
+  } catch (e) {
+    console.error(chalk.red(e));
   }
 };
-
-module.exports = board;
