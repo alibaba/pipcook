@@ -15,7 +15,7 @@ if (!semver.gte(process.version, '10.0.0')) {
   console.log(
     chalk.red(
       `Pipcook requires node version higher than node 10.x. Howeverm your kicak node version is ${process.version}, ` +
-        'Please update node.js'
+      'Please update node.js'
     )
   );
   return;
@@ -31,7 +31,6 @@ program
   .description('Init the Pipcook project')
   .action((dir, cmdObj) => {
     init(cmdObj);
-    // console.log(cmdObj);
   });
 
 // start the pipeline. Actually same as node xxx at current stage
@@ -40,23 +39,19 @@ program
   .description('start pipeline in specified file or run index.js by default')
   .action((fileName) => {
     start(fileName);
-  })
+  });
 
 // print out basic logs
 program
   .command('log')
   .description('Print out Pipcook log')
-  .action(() => {
-    log();
-  })
+  .action(log);
 
 // start pipcook board
 program
   .command('board')
   .description('Start Pipcook Board')
-  .action(() => {
-    board();
-  })
+  .action(board);
 
 program
   .command('plugin-dev')
@@ -64,7 +59,7 @@ program
   .description('initialize plugin development environment')
   .action((dir, cmdObj) => {
     devPlugin(cmdObj);
-  })
+  });
 
 program
   .command('dataset')
@@ -72,6 +67,6 @@ program
   .description('type of action you want to do on dataset')
   .action((dir, cmdObj) => {
     dataset(cmdObj);
-  })
+  });
 
 program.parse(process.argv);

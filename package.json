@@ -16,7 +16,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "build": "lerna run compile",
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint . --ext .ts --ext .js",
     "test": "npm run lint",
     "doc": "rm -rf ./doc && typedoc --plugin typedoc-plugin-markdown"
   },

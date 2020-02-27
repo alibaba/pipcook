@@ -67,10 +67,12 @@ function downloadConfig() {
   try {
     fse.ensureFileSync(path.join(__dirname, 'temp', 'config.js'))
     return new Promise((resolve, reject) => {
-      const file = fse.createWriteStream(path.join(__dirname, 'temp', 'config.js'));
+      const filename = path.join(__dirname, 'temp', 'config.js');
+      const file = fse.createWriteStream(filename);
       let receivedBytes = 0
       request.get('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/assets/config.js')
         .on('response', (response) => {
+          // TODO(yorkie): remove the following unused variable.
           const totalBytes = response.headers['content-length'];
         })
         .on('data', (chunk) => {
@@ -78,8 +80,8 @@ function downloadConfig() {
         })
         .pipe(file)
         .on('error', (err) => {
-            fse.unlink(fileName);
-            reject(err);
+          fse.unlink(filename);
+          reject(err);
         });
     
       file.on('finish', () => {
@@ -87,7 +89,7 @@ function downloadConfig() {
       });
     
       file.on('error', (err) => {
-        fse.unlink(fileName);
+        fse.unlink(filename);
         reject(err);
       });
     })
