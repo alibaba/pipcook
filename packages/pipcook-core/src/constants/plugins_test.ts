@@ -10,7 +10,7 @@ import {
 } from './plugins';
 
 describe('plugins constant', () => {
-  it('should has some constants', () => {
+  it('should own some constants', () => {
     expect(DATACOLLECT).toEqual('dataCollect');
     expect(DATAACCESS).toEqual('dataAccess');
     expect(DATAPROCESS).toEqual('dataProcess');
