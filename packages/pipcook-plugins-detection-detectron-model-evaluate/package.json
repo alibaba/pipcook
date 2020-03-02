@@ -20,5 +20,9 @@
     "@pipcook/pipcook-python-node": "^0.5.2",
     "@tensorflow/tfjs-node-gpu": "x.x.x"
   },
-  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856"
+  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
+  "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "nyc": "14.1.1"
+  }
 }
