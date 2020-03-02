@@ -1,10 +1,9 @@
 const {DataCollect, DataAccess, DataProcess, ModelLoad, ModelTrain, ModelEvaluate, ModelDeploy, PipcookRunner} = require('@pipcook/pipcook-core');
 
 const textClassDataAccess = require('@pipcook/pipcook-plugins-text-csv-data-access').default;
-const textClassDataProcess = require('@pipcook/pipcook-plugins-text-class-data-process').default
 const bayesianClassiferModelLoader = require('@pipcook/pipcook-plugins-bayesian-classifier-model-load').default;
 const bayesianClassifierModelTrain = require('@pipcook/pipcook-plugins-bayesian-classifier-model-train').default;
-const classModelEvalute = require('@pipcook/pipcook-plugins-model-evaluate').default;
+const classModelEvalute = require('@pipcook/pipcook-plugins-bayesian-classifier-model-evaluate').default;
 const textClassDataCollect = require('@pipcook/pipcook-plugins-text-class-data-collect').default;
 const textClassLocalModelDeploy = require('@pipcook/pipcook-plugins-text-class-local-model-deploy').default;
 
@@ -19,8 +18,6 @@ async function pipeLine() {
 
   const dataAccess = DataAccess(textClassDataAccess);
 
-  const dataProcess = DataProcess(textClassDataProcess);
-
   const modelLoad = ModelLoad(bayesianClassiferModelLoader, {
   });
 
@@ -34,7 +31,7 @@ async function pipeLine() {
     predictServer: true
   });
 
-  runner.run([dataCollect, dataAccess, dataProcess, modelLoad, modelTrain, modelEvaluate, modelDeploy])
+  runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy])
 }
 
 pipeLine();

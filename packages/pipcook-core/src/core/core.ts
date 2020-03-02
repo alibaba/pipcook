@@ -120,7 +120,6 @@ export class PipcookRunner {
 
     linkComponents(components);
     this.components = components;
-
     await this.startServer();
   }
 

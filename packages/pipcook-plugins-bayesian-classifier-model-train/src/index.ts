@@ -1,10 +1,12 @@
 /**
  * @file this is for Pipcook plugin to train Bayes Classifier.
  */
-import {ModelTrainType, PipcookModel, UniformTfSampleData, MetaData} from '@pipcook/pipcook-core';
+import {ModelTrainType, PipcookModel, UniformTfSampleData, MetaData, ArgsType, getModelDir} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
-const _cliProgress = require('cli-progress');
+import * as path from 'path';
+import * as fs from 'fs';
+import {Python} from '@pipcook/pipcook-python-node';
 
 /**
  * assertion test
@@ -25,31 +27,63 @@ const assertionTest = (data: UniformTfSampleData, trainData: tf.data.Dataset<{ x
  * @param data Pipcook uniform data 
  * @param model Eshcer model
  */
-const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampleData, model: PipcookModel): Promise<PipcookModel> => {
+const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampleData, model: PipcookModel, args?: ArgsType): Promise<PipcookModel> => {
+  const { pipelineId } = args || {};
   const {trainData, metaData} = data;
   assertionTest(data, trainData, metaData);
   
-  const trainModel = model.model;
+  const classifier = model.model;
+  const {mode} = model.extraParams;
+  
+  const rawData: any[] = [];
+  const rawClass: any[] = [];
+  await trainData.forEachAsync((e: any) => {
+    rawData.push(e[metaData.feature.name].dataSync()[0]);
+    rawClass.push(e[metaData.label.name].dataSync()[0]);
+  });
 
-  let count = 0;
-  await trainData.forEachAsync((e: any) => {
-    count++;
+  let text_list;
+  let feature_list;
+  let feature_words: any;
+
+  await Python.scope('bayes_text_classification', async (python: any) => {
+    const _ = python.nA;
+    const TextProcessing = python.runRaw('TextProcessing');
+    const MakeWordsSet = python.runRaw('MakeWordsSet');
+    const words_dict = python.runRaw('words_dict');
+    const TextFeatures = python.runRaw('TextFeatures');
+
+    text_list = TextProcessing(rawData, rawClass,_({test_size: 0.2}))
+    let stopwords_file: any;
+    let stoppath = '';
+    if (mode === 'en') {
+      stoppath = path.join(__dirname, 'assets', 'stopwords_en.txt');
+    } else {
+      stoppath = path.join(__dirname, 'assets', 'stopwords_cn.txt');
+    }
+    stopwords_file = python.createString(stoppath);
+    fs.copyFileSync(stoppath, path.join(getModelDir(pipelineId), 'stopwords.txt'))
+    const stopwords_set = MakeWordsSet(stopwords_file)
+    feature_words = words_dict(text_list[0], stopwords_set)
+    feature_list = TextFeatures(text_list[1], text_list[2], feature_words)
+    classifier.fit(feature_list[0], text_list[3])
   });
-  const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
-  bar1.start(count, 0);
-  count = 0;
-  await trainData.forEachAsync((e: any) => {
-    count = count + 1;
-    bar1.update(count);
-    const trainX = e[metaData.feature.name].dataSync()[0];
-    const trainY = e[metaData.label.name].dataSync()[0];
-    trainModel.learn(trainX, trainY);
-  });
-  bar1.stop();
 
   return {
     ...model,
-    model: trainModel
+    model: classifier,
+    extraParams: {
+      feature_list,
+      text_list,
+    },
+    save: async function(modelPath: string) {
+      await Python.scope('bayes_text_classification', async (python: any) => {
+        const saveModel = python.runRaw('saveModel')
+        saveModel(this.model, path.join(modelPath, 'model.pkl'));
+        const save_all_words_list = python.runRaw('save_all_words_list');
+        save_all_words_list(feature_words, path.join(modelPath, 'feature_words.pkl'))
+      });
+    },
   }
 }
 

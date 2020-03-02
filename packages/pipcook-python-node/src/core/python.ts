@@ -1,9 +1,9 @@
-
+import * as tf from '@tensorflow/tfjs-node-gpu';
+import * as fs from 'fs-extra';
 
 import Executor from '../communication/communication';
-import {getObject, conversion} from './python-helper';
-import {PythonObject} from '../types/python-object';
-import * as tf from '@tensorflow/tfjs-node-gpu';
+import { getObject, conversion } from './python-helper';
+import { PythonObject, InstallOptionsI } from '../types/python-object';
 
 /**
  * get a random identifier for a PythonObject
@@ -103,8 +103,11 @@ export default class Python {
    * @param packageName: name of package
    * @param version: version of package, default to latest
    */
-  install = (packageName: string, version?: string) => {
-    this.statements.push(`!pip install ${packageName}${version ? '=='+version : ''}`);
+  install = (packageName: string, options?: InstallOptionsI) => {
+    const {
+      version='', source=''
+    } = options || {};
+    this.statements.push(`!pip install ${packageName}${version ? '=='+version : ''} ${source ? ('-i ' + source) : ''}`);
   }
 
   /**
@@ -325,15 +328,6 @@ export default class Python {
     this.statements = [...statementsTemp, ...ifStatements];
   }
 
-  // while = (condition: PythonObject, execution: Function) => {
-  //   this.statements.push(`while ${condition.__pipcook__identifier}:`);
-  //   const statementsTemp = this.statements;
-  //   this.statements = [];
-  //   execution();
-  //   const ifStatements = this.statements.map((ele: string) => '\t'+ele);
-  //   this.statements = [...statementsTemp, ...ifStatements];
-  // }
-
   /**
    * same as a + b in python
    */
@@ -409,6 +403,11 @@ export default class Python {
     return getObject(identifier, this.statements);
   }
 
+  executePythonFile = (filePath: string) => {
+    const fileContent = fs.readFileSync(filePath).toString();
+    this.statements.push(fileContent);
+  }
+
   evaluate = async (object: PythonObject) => {
     this.statements.push(`${object.__pipcook__identifier}`);
     const result: any = 
@@ -425,8 +424,8 @@ export default class Python {
         value: result.value
       }
     }
-    
   }
+
   createNumpyFromTf = (tensor: tf.Tensor) => {
     const identifier = getId();
     this.statements.push(`import numpy as np`);

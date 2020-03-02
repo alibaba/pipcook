@@ -33,3 +33,8 @@ export interface Session {
   shellPort: number;
   kernel: any;
 }
+
+export interface InstallOptionsI {
+  version?: string;
+  source?: string;
+}
