@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ts-node ../../run_tests.ts",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
@@ -35,5 +35,11 @@
     "uuid": "^3.4.0",
     "xml2js": "^0.4.22"
   },
-  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856"
+  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
+  "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "jasmine": "^3.5.0",
+    "nyc": "14.1.1",
+    "ts-node": "^8.6.2"
+  }
 }

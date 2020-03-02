@@ -6,7 +6,7 @@
   "npmClient": "npm",
   "command": {
     "bootstrap": {
-      "hoist":true
+      "hoist": true
     },
     "publishConfig": {
       "access": "public"
