@@ -45,5 +45,9 @@
     "@pipcook/pipcook-python-node": "^0.5.2",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
     "fs-extra": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "nyc": "14.1.1"
   }
 }
