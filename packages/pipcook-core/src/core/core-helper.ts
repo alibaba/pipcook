@@ -17,10 +17,12 @@ import {DATAACCESS} from '../constants/plugins';
  * Retreive relative logs required to be stored.
  * @param pipcookRunner : The pipcookRunner object
  */
-export function getLog(pipcookRunner: PipcookRunner) {
-  delete pipcookRunner.latestModel;
-  delete pipcookRunner.fastify;
-  return pipcookRunner;
+export function getLog(pipcookRunner: PipcookRunner): any {
+  return {
+    ...pipcookRunner,
+    fastify: null,
+    latestModel: null
+  };
 }
 
 /**

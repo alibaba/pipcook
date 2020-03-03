@@ -10,7 +10,6 @@ module.exports = {
     '@pipcook/pipcook-plugins-local-mobilenet-model-load',
     '@pipcook/pipcook-plugins-model-train',
     '@pipcook/pipcook-plugins-text-csv-data-access',
-    '@pipcook/pipcook-plugins-text-class-data-process',
     '@pipcook/pipcook-plugins-odps-data-collect',
     '@pipcook/pipcook-plugins-simple-cnn-model-load',
     '@pipcook/pipcook-plugins-image-class-data-collect',
@@ -26,7 +25,10 @@ module.exports = {
     '@pipcook/pipcook-plugins-text-class-local-model-deploy',
     '@pipcook/pipcook-plugins-detection-detectron-eas-model-deploy',
     "@pipcook/pipcook-plugins-image-class-eas-deploy",
-    '@pipcook/pipcook-app'
+    '@pipcook/pipcook-app',
+    "@pipcook/pipcook-plugins-bayesian-classifier-model-eas-deploy",
+    "@pipcook/pipcook-plugins-bayesian-classifier-model-evaluate"
+
   ],
   pipcookLogName: 'pipcook-output'
 }

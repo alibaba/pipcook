@@ -5,7 +5,7 @@
 import {ModelLoadType, PipcookModel, ModelLoadArgsType, getModelDir, UniformTfSampleData} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
-const bayes = require('bayes');
+import {Python} from '@pipcook/pipcook-python-node';
 import * as fs from 'fs';
 import * as path from 'path';
 /**
@@ -27,15 +27,40 @@ const assertionTest = (data: UniformTfSampleData) => {
 const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleData, args?: ModelLoadArgsType): Promise<PipcookModel> => {
   const {
     modelId='',
-  } = args || {};
+    mode='cn',
+    pipelineId
+  } = args || {} as ModelLoadArgsType;
+  
   if (!modelId) {
     assertionTest(data);
   }
-  let classifier = bayes();
-  if (modelId) {
-    const json = fs.readFileSync(path.join(getModelDir(modelId), 'model.json'));
-    classifier = bayes.fromJson(json);
-  }
+
+  let classifier: any;
+
+  await Python.scope('bayes_text_classification', async (python: any) => {
+    const _ = python.nA;
+    python.install('jieba', {
+      source: 'https://pypi.tuna.tsinghua.edu.cn/simple'
+    });
+    python.install('sklearn', {
+      source: 'https://pypi.tuna.tsinghua.edu.cn/simple'
+    });
+    python.install('numpy', {
+      source: 'https://pypi.tuna.tsinghua.edu.cn/simple'
+    });
+
+    await python.reconnect();
+    python.executePythonFile(path.join(__dirname, 'assets', 'script.py'));
+    const loadModel = python.runRaw('loadModel')
+    const getBayesModel = python.runRaw('getBayesModel')
+    if (modelId) {
+      classifier = loadModel(path.join(getModelDir(modelId), 'model.pkl'));
+    } else {
+      classifier = getBayesModel();
+    }
+  });
+
+
   const result: PipcookModel = {
     model: classifier,
     type: 'text classification',
@@ -43,15 +68,25 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
     inputType: 'string',
     outputShape: [1],
     outputType: 'string',
-    save: function(modelPath: string) {
-      const json = this.model.toJson();
-      fs.writeFileSync(path.join(modelPath, 'model.json'), json);
+    extraParams: {
+      mode
     },
-    predict: function(data: tf.Tensor<any>) {
-      assert.ok(data.shape[0] === 1)
-      const input = data.dataSync()[0];
-      const output = this.model.categorize(input);
-      return output;
+    save: async function(modelPath: string) {
+      await Python.scope('bayes_text_classification', async (python: any) => {
+        const saveModel = python.runRaw('saveModel')
+        saveModel(this.model, path.join(modelPath, 'model.pkl'))
+      });
+    },
+    predict: async function(data: tf.Tensor<any>) {
+      const predictData = data.dataSync()[0];
+      let prediction: any;
+      await Python.scope('bayes_text_classification', async (python: any) => {
+        const processPredictData = python.runRaw('processPredictData');
+        const processData = processPredictData(predictData, path.join(getModelDir(pipelineId), 'feature_words.pkl'), path.join(getModelDir(pipelineId), 'stopwords.txt'))
+        prediction = this.model.predict(processData)
+        prediction = await python.evaluate(prediction);
+      });
+      return prediction;
     }, 
   }
   return result;

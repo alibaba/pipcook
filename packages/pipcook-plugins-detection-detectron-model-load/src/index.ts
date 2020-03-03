@@ -1,6 +1,5 @@
 import {ModelLoadType, PipcookModel, UniformGeneralSampleData, getModelDir, getMetadata} from '@pipcook/pipcook-core';
 import {Python} from '@pipcook/pipcook-python-node';
-import * as assert from 'assert';
 import * as path from 'path';
 
 const fs = require('fs-extra');
@@ -86,8 +85,6 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
     cfg.OUTPUT_DIR = path.join(process.cwd(), '.temp', pipelineId, 'output');
     
-    python.print(cfg);
-
     os.makedirs(cfg.OUTPUT_DIR, _({"exist_ok": true}));
     if (data.trainData) {
       trainer = DefaultTrainer(cfg);
