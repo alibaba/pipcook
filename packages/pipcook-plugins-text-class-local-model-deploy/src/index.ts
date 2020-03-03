@@ -7,6 +7,7 @@ const textClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, model
   const {
     data, dataAccess, model, dataProcess
   } = args || {};
+
   if (!data) {
     return;
   }
@@ -30,11 +31,17 @@ const textClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, model
       result = await dataProcessPlugin(result, dataProcess.params);
     }
 
-    const prediction: any[] = [];
+    const predictionPromise: any[] = [];
 
     await result.trainData.forEachAsync((e: any) => {
-      prediction.push(model.predict(e.xs))
+      predictionPromise.push(model.predict(e.xs))
     })
+
+    const prediction: any[] = [];
+    for (let i = 0; i < predictionPromise.length; i++){
+      const currentPredict = await predictionPromise[i];
+      prediction.push(currentPredict)
+    }
     return prediction;
   } finally {
     fs.removeSync(trainDataPath);

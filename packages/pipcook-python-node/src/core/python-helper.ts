@@ -58,7 +58,12 @@ function createProxy(object: any, statements: string[]) {
         return target[key];
       }
       const identifier = 'id_' + Date.now() + parseInt(String(Math.random() * 100000));
-      statements.push(`${identifier} = ${target.__pipcook__identifier}.${String(key)}`);
+      if (isNaN(Number(String(key)))) {
+        statements.push(`${identifier} = ${target.__pipcook__identifier}.${String(key)}`);
+      } else {
+        statements.push(`${identifier} = ${target.__pipcook__identifier}[${String(key)}]`);
+      }
+      
       return getObject(identifier, statements);
     },
     set(target, prop, value){
