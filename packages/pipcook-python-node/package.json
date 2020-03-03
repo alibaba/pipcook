@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-python-node",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",

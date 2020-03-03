@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-bayesian-classifier-model-evaluate",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,9 +16,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.3",
-    "@tensorflow/tfjs-node-gpu": "x.x.x",
-    "@pipcook/pipcook-python-node": "^0.5.2"
+    "@pipcook/pipcook-core": "^0.5.4",
+    "@pipcook/pipcook-python-node": "^0.5.3",
+    "@tensorflow/tfjs-node-gpu": "x.x.x"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {
