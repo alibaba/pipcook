@@ -9,7 +9,7 @@ import classModelEvalute from '@pipcook/pipcook-plugins-bayesian-classifier-mode
 import textClassLocalModelDeploy from '@pipcook/pipcook-plugins-text-class-local-model-deploy';
 import textClassEasDeploy from '@pipcook/pipcook-plugins-bayesian-classifier-model-eas-deploy'
 
-import { getEasParam, EasConfigI } from '../utils/utils';
+import {getEasParam, EasConfigI} from '../utils/utils';
 
 export default class TextClassification {
 
@@ -25,7 +25,7 @@ export default class TextClassification {
     }
   }
 
-  async _train(dataSource: string, trainInfo: any) {
+  _train(dataSource: string, trainInfo: any) {
     const dataCollect = DataCollect(textClassDataCollect, {
       url: dataSource
     })
@@ -44,7 +44,7 @@ export default class TextClassification {
   async train(dataSource: string, trainInfo: any, 
     predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
     
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = await this._train(dataSource, trainInfo);
+    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
 
     const modelDeploy = ModelDeploy(textClassLocalModelDeploy)
     
@@ -59,7 +59,7 @@ export default class TextClassification {
   async trainAndEasDeploy(dataSource: string, trainInfo: any, easConfig: EasConfigI,
      predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
 
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = await this._train(dataSource, trainInfo);
+    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
 
     const modelDeploy = ModelDeploy(textClassEasDeploy, getEasParam(easConfig));
     

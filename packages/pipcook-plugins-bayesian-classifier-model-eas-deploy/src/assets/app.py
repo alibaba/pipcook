@@ -32,7 +32,7 @@ def processPredictData(data):
     all_words_list = pickle.load(open('./model/feature_words.pkl', 'rb'))
     word_cuts = []
     for i in range(len(data)):
-      word_cuts.append(jieba.cut(data[i], cut_all=False) )
+        word_cuts.append(jieba.cut(data[i], cut_all=False) )
     stopwords_file = './model/stopwords.txt'
     stopwords_set = MakeWordsSet(stopwords_file)
     feature_words = words_dict(all_words_list, stopwords_set)
