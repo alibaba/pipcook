@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-bayesian-classifier-model-eas-deploy",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.3",
-    "@pipcook/pipcook-python-node": "^0.5.2",
+    "@pipcook/pipcook-core": "^0.5.4",
+    "@pipcook/pipcook-python-node": "^0.5.3",
     "@tensorflow/tfjs-node-gpu": "x.x.x",
     "ali-oss": "^6.4.0",
     "fs-extra": "^8.1.0",
