@@ -2,14 +2,12 @@
 
 The Model Evaluate plug-in deeply analyzes the training results of the Model to help you understand how the Model performs on the test set.
 
-```
-interface PipcookPlugin {
-}
+```ts
+interface PipcookPlugin {}
 
 interface ArgsType {
   [key: string]: any;
 }
-
 
 interface DataDescriptor {
   name: string;
@@ -63,11 +61,9 @@ export interface PipcookModel {
   config?: any;
 }
 
-
 interface EvaluateResult {
   [key: string]: any;
 }
-
 export interface ModelEvaluateType extends PipcookPlugin {
   (data: UniformSampleData | UniformSampleData[], model: PipcookModel | PipcookModel[], args?: ArgsType): Promise<EvaluateResult>
 }

@@ -2,14 +2,12 @@
 
 This plug-in is used to train a model. The interface provides the ability to configure basic parameters of the training model, but these parameters should not be required, allows plug-in developers to define the appropriate hyper-parameters within the plug-in.
 
-```
-interface PipcookPlugin {
-}
+```ts
+interface PipcookPlugin {}
 
 interface ArgsType {
   [key: string]: any;
 }
-
 
 interface DataDescriptor {
   name: string;
@@ -69,4 +67,5 @@ export interface ModelTrainType extends PipcookPlugin {
 }
 ```
 
-Input: training data, loaded models, and all training-related hyper-parameters<br />Output: model information
+- Input: training data, loaded models, and all training-related hyper-parameters.
+- Output: model information.

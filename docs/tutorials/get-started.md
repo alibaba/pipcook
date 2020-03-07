@@ -1,9 +1,8 @@
-# Get started
+# Get Started
 
 This topic describes how to quickly train a machine learning model from examples.
 
-<a name="wvxFK"></a>
-### Environment preparation
+## Environment Requirements
 
 - Operating system: MacOs and Linux are supported
 - Runtime Environment: Node. js> = 10.16, Npm> = 6.1.0
@@ -11,11 +10,9 @@ This topic describes how to quickly train a machine learning model from examples
 
 Or we strongly recommend that you directly use our docker image to ensure that the pipcook runtime environment is correct.
 
-<a name="KKc8r"></a>
-### Environment initialization and quick start
+## Quick Start
 
-<a name="PEMXT"></a>
-#### Local
+### Local
 
 (If you want to use gpu acceleration and the object detection python-bridge link based on detectron2, we recommend that you use docker way). First install the pipcook scaffold pipcook-cli, which provides environment initialization, control the start and end of the process, and view logs.
 
@@ -37,9 +34,9 @@ At this point, all the relevant environments required by Pipcook have been insta
 $ node examples/pipcook-app-example/pipcook-imageclass-app-test.js
 ```
 
-<a name="BLMFh"></a>
-#### Docker Way(GPU recommended mode)
-In scenarios where gpu acceleration is required, we recommend that you use our Docker image for pipcook training. In our image, before you start, make sure that your system has installed Docker correctly<br />Run the following command to pull the image:
+#### Docker (GPU recommended mode)
+
+In scenarios where gpu acceleration is required, we recommend that you use our Docker image for pipcook training. In our image, before you start, make sure that your system has installed Docker correctly, run the following command to pull the image:
 
 ```sh
 $ docker pull pipcook/pipcook:version-0.4
@@ -64,17 +61,17 @@ $ cd pipcook-project
 $ node examples/pipcook-app-example/pipcook-imageclass-app-test.js
 ```
 
+### Application APIs
 
-<a name="DbcKB"></a>
-### High Level API details
+Currently, we have 2 application APIs for some tasks:
 
-Currently, we have prepared two high-level APIs for Your Task: image classification and object detection:
+- [Image Classification](#image-classification)
+- [Object Detection](#object-detection)
 
-<a name="r4Eqz"></a>
 #### Image Classification
 
 ```js
-const pipcook = require('@pipcook/pipcook-app').default;
+import pipcook from '@pipcook/pipcook-app';
 
 const classifier = new pipcook.imageClassification('mobilenet' // the network to load, currently support mobilenet or simplecnn
 , {
@@ -82,7 +79,7 @@ const classifier = new pipcook.imageClassification('mobilenet' // the network to
   optimizer: ..., // optional，default is tf.train.rmsprop. type of optimizer，more details at https://js.tensorflow.org/api/latest/#Training-Optimizers
   loss: ..., // optional，default is categoricalCrossentropy. type of loss function，more details at https://js.tensorflow.org/api/latest/#Training-Losses
   metrics: ..., // optional，default is ['accuracy']. metrics to evaluate model，more details at https://js.tensorflow.org/api/latest/#Metrics
-})
+});
 
 classifier.train('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/eCommerceImageClassification.zip' // url of train data, you can check url to see data format required
 , {
@@ -91,11 +88,10 @@ classifier.train('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classifica
 }, false);
 ```
 
-<a name="OIoeS"></a>
 #### Object Detection
 
 ```js
-const pipcook = require('@pipcook/pipcook-app').default;
+import pipcook from '@pipcook/pipcook-app';
 
 const classifier = new pipcook.objectDetection('faster-rcnn', {
   device: 'cpu' | 'gpu', // optional，default is to use cpu to train
@@ -110,4 +106,3 @@ classifier.train('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classifica
   testSplit: 0.01 // optional，default is 0. percent of data to treat as test dataset.
 });
 ```
-

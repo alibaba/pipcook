@@ -2,14 +2,12 @@
 
 After the data access plug-in unifies the data format and outputs the current training data, the DataProcess plug-in Performs unified pre-processing operations before the data enters the model, including data cleaning, data transformation, and data standardization. Theoretically, you can use this plug-in to process your data in any form, including changes to data features or Wei Du.
 
-```
-interface PipcookPlugin {
-}
+```ts
+interface PipcookPlugin {}
 
 interface ArgsType {
   [key: string]: any;
 }
-
 
 interface DataDescriptor {
   name: string;
@@ -44,7 +42,6 @@ interface OriginSampleData {
   testDataPath?: string;
   validationDataPath?: string;
 }
-
 
 interface DataProcessType extends PipcookPlugin {
   (data: UniformSampleData | UniformSampleData[], args?: ArgsType): Promise<UniformSampleData>

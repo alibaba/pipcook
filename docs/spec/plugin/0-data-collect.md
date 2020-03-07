@@ -1,16 +1,15 @@
-# DataCollect  Plugin
+# DataCollect Plugin
 
 DataCollect plug-in is designed to help users collect various data and store the data in a standardized way for subsequent plug-ins in the pipeline. The sources of data can be various, such as files and folders in various local formats, files downloaded from the Internet, and data queried from databases (or ODPS. At the same time, this plug-in should also support dividing data into different datasets and clearly revealing the data format. At the same time, the plug-in should accurately output information about the data itself, such as the name of each feature, the type of the feature, the number of samples, and all relevant meta information of the data.
 
-```
+```ts
 export interface OriginSampleData {
   trainDataPath: string;
   testDataPath?: string;
   validationDataPath?: string;
 }
 
-interface PipcookPlugin {
-}
+interface PipcookPlugin {}
 
 export interface ArgsType {
   [key: string]: any;

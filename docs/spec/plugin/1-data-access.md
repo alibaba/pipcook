@@ -2,14 +2,12 @@
 
 This plugin is a data access plug-in, designed to connect datasets from different sources to pipcook. At the same time, you can perform certain data verification in this plug-in to ensure the quality of data access.
 
-```
-interface PipcookPlugin {
-}
+```ts
+interface PipcookPlugin {}
 
 interface ArgsType {
   [key: string]: any;
 }
-
 
 interface DataDescriptor {
   name: string;
@@ -48,7 +46,6 @@ interface OriginSampleData {
 interface DataAccessType extends PipcookPlugin {
   (data: OriginSampleData | OriginSampleData[], args?: ArgsType): Promise<UniformSampleData>
 }
-
 ```
 
 - Input: DataAccess accepts the output of DataCollect.
