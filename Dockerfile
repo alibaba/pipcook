@@ -22,10 +22,9 @@ RUN apt-get update \
   && apt-get --no-install-recommends install -y libsm6 libxext6 libxrender-dev
 
 RUN curl -sL https://deb.nodesource.com/setup_12.x \
-  && apt-get --no-install-recommends -y install nodejs npm wget \
+  && apt-get --no-install-recommends -y install nodejs npm wget lsof \
   && npm install n -g && n stable && PATH="$PATH" \
-  && npm install @pipcook/pipcook-cli -g && mv /usr/bin/python /usr/bin/python.bak && ln -s /usr/bin/python3.7 /usr/bin/python \
-  && apt-get --no-install-recommends -y install lsof
+  && npm install @pipcook/pipcook-cli -g && mv /usr/bin/python /usr/bin/python.bak && ln -s /usr/bin/python3.7 /usr/bin/python
 
 ENV TF_FORCE_GPU_ALLOW_GROWTH=true
 ENV LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64
