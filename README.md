@@ -93,7 +93,7 @@ $ node examples/pipcook-app-example/pipcook-imageclass-app-test.js
 
 ## Documentation
 
-Please refer to [中文](https://alibaba.github.io/pipcook/doc/pipcook%20%E6%98%AF%E4%BB%80%E4%B9%88-zh)｜ [English](https://alibaba.github.io/pipcook/doc/What%20is%20Pipcook%3F-en)
+Please refer to [English](docs/what-is-pipcook) | [中文](docs/zh-cn/what-is-pipcook)
 
 ## Developers
 
@@ -122,7 +122,7 @@ After the above, now build the project:
 $ npm run build
 ```
 
-- Developer Documentation [中文](https://alibaba.github.io/pipcook/doc/%E5%BC%80%E5%8F%91%E8%80%85%E6%89%8B%E5%86%8C-zh) ｜ [English](https://alibaba.github.io/pipcook/doc/developer%20guide-en)
+- Developer Documentation([English](docs/tutorials/developer-guide) | [中文](docs/zh-cn/tutorials/developer-guide))
 - [Project Guide](./docs/meta/PROJECT_GUIDE.md)
 - [Roadmap, 2020](https://github.com/alibaba/pipcook/issues/30)
 
