@@ -1,4 +1,4 @@
-# Introduction of pipcook plugin
+# Plugin Specification
 
 pipcook uses plugins to implement tasks in a specific machine learning cycle, which ensures that our core is simple, stable, and efficient enough. At the same time, through a set of plug-n specifications defined by pipcook, we can also allow third parties to develop plugins, which ensures the scalability of pipcook. Theoretically, through plugins, we can implement any machine learning task.
 
