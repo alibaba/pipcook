@@ -1,28 +1,50 @@
 /**
  * @file This file is for all loggers.
  */
-import {PipcookRunner} from '../core/core'; 
+
 import chalk from 'chalk';
+import {PipcookRunner} from '../core/core';
 import {PipcookComponentResult} from '../types/component';
-const log = console.log;
 
-export function logStartExecution(pipcookRunner: PipcookRunner) {
-  log(chalk.green(`Start Execution: \n Pipeline Id: ${pipcookRunner.pipelineId}`))
+enum LoggerColor {
+  GREEN = 'green',
+  CYAN  = 'cyan',
+  RED   = 'red',
 }
 
-export function logCurrentExecution(component: PipcookComponentResult, type='normal') {
-  if (type === 'normal') {
-    log(chalk.cyan(`Current Execution Component: ${component.type}`))
-  } else if (type === 'merge') {
-    log(chalk.cyan(`In Merge, Current Execution Component: ${component.type}`))
+type LoggerFunction = (input: string) => void;
+
+// TODO(Yorkie): support custom Console?
+function createLogger(level: string, color: LoggerColor): LoggerFunction {
+  return (input) => (console as any)[level](chalk[color](input));
+}
+
+export default class Logger {
+  protected static log: LoggerFunction = createLogger('log', LoggerColor.GREEN);
+  protected static info: LoggerFunction = createLogger('info', LoggerColor.CYAN);
+  protected static error: LoggerFunction = createLogger('error', LoggerColor.RED);
+
+  public static logStartExecution(pipline: PipcookRunner) {
+    this.log(`start execution: \npipeline id: ${pipline.pipelineId}`);
   }
-  
+  public static logCurrentExecution(component: PipcookComponentResult, type = 'normal') {
+    let msg = `current execution component: ${component.type}`;
+    if (type === 'merge') {
+      msg = 'in merge, ' + msg;
+    }
+    this.info(msg);
+  }
+  public static logError(errmsg: string | Error) {
+    if (errmsg instanceof Error)
+      errmsg = errmsg.stack;
+    return this.error(errmsg);
+  }
+  public static logComplete() {
+    return this.log('Pipline is completed.');
+  }
 }
 
-export function logError(error: any) {
-  log(chalk.red(error));
-}
-
-export function logComplete() {
-  log(chalk.green('Pipcook running is completed.'));
-}
+export const logStartExecution = Logger.logStartExecution;
+export const logCurrentExecution = Logger.logCurrentExecution;
+export const logError = Logger.logError;
+export const logComplete = Logger.logComplete;
