@@ -1,4 +1,4 @@
-- [What's Pipcook](README.md)
+- [What's Pipcook](/README.md)
 
 - Tutorials
 

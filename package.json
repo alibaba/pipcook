@@ -20,7 +20,7 @@
     "lint": "eslint . --ext .ts --ext .js",
     "pretest": "npm run lint",
     "test": "lerna run --scope @pipcook/pipcook-core test",
-    "doc": "typedoc"
+    "typedoc": "typedoc"
   },
   "dependencies": {
     "better-opn": "^1.0.0"

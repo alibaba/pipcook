@@ -7,5 +7,7 @@
   "preserveConstEnums": "true",
   "exclude": "*_test.ts",
   "stripInternal": "false",
-  "excludeExternals": "true"
+  "excludeExternals": "true",
+  "readme": "none",
+  "categorizeByGroup": "true"
 }

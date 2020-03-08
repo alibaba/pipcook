@@ -18,7 +18,7 @@ jobs:
       - name: Build documentation
         run: |
           npm install
-          npm run doc
+          npm run typedoc
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
