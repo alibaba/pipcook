@@ -28,13 +28,13 @@ You can refer [here](../spec/plugin.md) for Plugin Specification.
 
 We have defined a set of interfaces for each plugin. Each type of plugin must be implemented strictly according to the interfaces. The detailed information is as follows:
 
-- [Data Collect](https://alibaba.github.io/pipcook/doc/DataCollect%20%20Plugin-en)
-- [Data Access](https://alibaba.github.io/pipcook/doc/DataAccess%20Plugin-en)
-- [Data Process](https://alibaba.github.io/pipcook/doc/DataProcess%20Plugin-en)
-- [Model Load](https://alibaba.github.io/pipcook/doc/ModelLoad%20Plugin-en)
-- [Model Train](https://alibaba.github.io/pipcook/doc/ModelTrain%20Plugin-en)
-- [Model Evaluate](https://alibaba.github.io/pipcook/doc/ModelEvaluate%20Plugin-en)
-- [Model Deploy](https://alibaba.github.io/pipcook/doc/ModelDeploy%20Plugin-en)
+- [Data Collect](./plugin/0-data-collect.md)
+- [Data Access](./plugin/1-data-access.md)
+- [Data Process](./plugin/2-data-process.md)
+- [Model Load](./plugin/3-model-load.md)
+- [Model Train](./plugin/4-model-train.md)
+- [Model Evaluate](./plugin/5-model-evaluate.md)
+- [Model Deploy](./plugin/6-model-deploy.md)
 
 ## Dataset Specification
 

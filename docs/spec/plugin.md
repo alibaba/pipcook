@@ -56,57 +56,57 @@ The following is a list of plugins in different types:
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-collect](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-class-data-collect-en) | Collect local or remote images and store them in pascol voc dataset format |
-| [@pipcook/pipcook-plugins-image-mnist-data-collect](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-mnist-data-collect-en) | Mnist handwritten dataset collection, stored in pascol voc dataset format |
-| [@pipcook/pipcook-plugins-image-detection-data-collect](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-detection-data-collect-en) | Collect local or remote target detection data and store them in pascol voc dataset format |
-| [@pipcook/pipcook-plugins-text-class-data-collect](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-text-class-data-collect-en) | Collect local or remote data of this classification and store it in csv data format |
-| [@pipcook/pipcook-plugins-image-coco-data-collect](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-coco-data-collect-en) | Collect local or remote object detection data in coco format and store it in pascol voc data format |
+| [@pipcook/pipcook-plugins-image-class-data-collect](../plugins/%40pipcook-pipcook-plugins-image-class-data-collect.md) | Collect local or remote images and store them in pascol voc dataset format |
+| [@pipcook/pipcook-plugins-image-mnist-data-collect](../plugins/%40pipcook-pipcook-plugins-image-mnist-data-collect.md) | Mnist handwritten dataset collection, stored in pascol voc dataset format |
+| [@pipcook/pipcook-plugins-image-detection-data-collect](../plugins/%40pipcook-pipcook-plugins-image-detection-data-collect.md) | Collect local or remote target detection data and store them in pascol voc dataset format |
+| [@pipcook/pipcook-plugins-text-class-data-collect](../plugins/%40pipcook-pipcook-plugins-text-class-data-collect.md) | Collect local or remote data of this classification and store it in csv data format |
+| [@pipcook/pipcook-plugins-image-coco-data-collect](../plugins/%40pipcook-pipcook-plugins-image-coco-data-collect.md) | Collect local or remote object detection data in coco format and store it in pascol voc data format |
 
 
 #### Data Access
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-access](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-class-data-access-en) | Image classification data access |
-| [@pipcook/pipcook-plugins-text-csv-data-access](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-text-csv-data-access-en) | Text classification data access |
-| [@pipcook/pipcook-plugins-image-detection-data-access](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-detection-data-access-en) | Simple target detection data access based on tfjs |
-| [@pipcook/pipcook-plugins-detection-detectron-data-access](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-detection-detectron-data-access-en) | Object detection model access based on detectron2 |
+| [@pipcook/pipcook-plugins-image-class-data-access](../plugins/%40pipcook-pipcook-plugins-image-class-data-access.md) | Image classification data access |
+| [@pipcook/pipcook-plugins-text-csv-data-access](../plugins/%40pipcook-pipcook-plugins-text-csv-data-access.md) | Text classification data access |
+| [@pipcook/pipcook-plugins-image-detection-data-access](../plugins/%40pipcook-pipcook-plugins-image-detection-data-access.md) | Simple target detection data access based on tfjs |
+| [@pipcook/pipcook-plugins-detection-detectron-data-access](../plugins/%40pipcook-pipcook-plugins-detection-detectron-data-access.md) | Object detection model access based on detectron2 |
 
 #### Data Process
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-process](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-class-data-process-en) | Image classification data preprocessing |
-| [@pipcook/pipcook-plugins-text-class-data-process](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-text-class-data-process-en) | Text Classification Data Word Segmentation preprocessing |
+| [@pipcook/pipcook-plugins-image-class-data-process](../plugins/%40pipcook-pipcook-plugins-image-class-data-process.md) | Image classification data preprocessing |
+| [@pipcook/pipcook-plugins-text-class-data-process](../plugins/%40pipcook-pipcook-plugins-text-class-data-process.md) | Text Classification Data Word Segmentation preprocessing |
 
 #### Model Load
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-local-mobilenet-model-load](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-local-mobilenet-model-load-en) | MobileNet model loading |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-load](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-bayesian-classifier-model-load-en) | Loading of Bayes classifier |
-| [@pipcook/pipcook-plugins-simple-cnn-model-load](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-simple-cnn-model-load-en) | Simple CNN model loading |
-| [@pipcook/pipcook-plugins-detection-detectron-model-load](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-detection-detectron-model-load-en) | Loading of object detection model based on detectron2 |
+| [@pipcook/pipcook-plugins-local-mobilenet-model-load](../plugins/%40pipcook-pipcook-plugins-local-mobilenet-model-load.md) | MobileNet model loading |
+| [@pipcook/pipcook-plugins-bayesian-classifier-model-load](../plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-load.md) | Loading of Bayes classifier |
+| [@pipcook/pipcook-plugins-simple-cnn-model-load](../plugins/%40pipcook-pipcook-plugins-simple-cnn-model-load.md) | Simple CNN model loading |
+| [@pipcook/pipcook-plugins-detection-detectron-model-load](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-load.md) | Loading of object detection model based on detectron2 |
 
 #### Model Train
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-model-train](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-model-train-en) | General tfjs model training |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-train](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-bayesian-classifier-model-train-en) | Bayes model training |
-| [@pipcook/pipcook-plugins-detection-detectron-model-train](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-detection-detectron-model-train-en) | Target detection model training based on detectron2 |
+| [@pipcook/pipcook-plugins-model-train](../plugins/%40pipcook-pipcook-plugins-model-train.md) | General tfjs model training |
+| [@pipcook/pipcook-plugins-bayesian-classifier-model-train](../plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-train.md) | Bayes model training |
+| [@pipcook/pipcook-plugins-detection-detectron-model-train](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-train.md) | Target detection model training based on detectron2 |
 
 #### Model Evaluate
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-class-model-evaluate](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-class-model-evaluate-en) | Classification Model Evaluation |
-| [@pipcook/pipcook-plugins-detection-detectron-model-evaluate](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-detection-detectron-model-evaluate-en) | Evaluation of target detection model based on detectron2 |
+| [@pipcook/pipcook-plugins-class-model-evaluate](../plugins/%40pipcook-pipcook-plugins-class-model-evaluate.md) | Classification Model Evaluation |
+| [@pipcook/pipcook-plugins-detection-detectron-model-evaluate](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-evaluate.md) | Evaluation of target detection model based on detectron2 |
 
 #### Model Deploy
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-text-class-local-model-deploy](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-text-class-local-model-deploy-en) | Text Classification local deployment |
-| [@pipcook/pipcook-plugins-image-class-local-model-deploy](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-image-class-local-model-deploy-en) | Image classification local deployment |
-| [@pipcook/pipcook-plugins-detection-detectron-model-deploy](https://alibaba.github.io/pipcook/doc/%40pipcook-pipcook-plugins-detection-detectron-model-deploy-en) | Target Detection local deployment |
+| [@pipcook/pipcook-plugins-text-class-local-model-deploy](../plugins/%40pipcook-pipcook-plugins-text-class-local-model-deploy.md) | Text Classification local deployment |
+| [@pipcook/pipcook-plugins-image-class-local-model-deploy](../plugins/%40pipcook-pipcook-plugins-image-class-local-model-deploy.md) | Image classification local deployment |
+| [@pipcook/pipcook-plugins-detection-detectron-model-deploy](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-deploy.md) | Target Detection local deployment |
