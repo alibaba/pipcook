@@ -128,11 +128,10 @@ export class PipcookRunner {
     // error handle
     this.endTime = Date.now();
     assignFailures(components);
-    this.error = error && error.toString();
+    this.error = error.message;
     await this.savePipcook();
     logError('Component ' + this.components[this.currentIndex].type + ' error: ');
     logError(error);
-    console.log(error);
   }
 
   handleSuccess = async () => {
