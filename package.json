@@ -10,7 +10,7 @@
     "eslint": "^6.6.0",
     "lerna": "^3.18.4",
     "typedoc": "^0.15.4",
-    "typedoc-plugin-markdown": "^2.2.14",
+    "typedoc-plugin-lerna": "^0.1.0",
     "typescript": "^3.7.2"
   },
   "scripts": {
@@ -19,10 +19,9 @@
     "lint": "eslint . --ext .ts --ext .js",
     "pretest": "npm run lint",
     "test": "lerna run --scope @pipcook/pipcook-core test",
-    "doc": "rm -rf ./doc && typedoc --plugin typedoc-plugin-markdown"
+    "doc": "typedoc ."
   },
   "dependencies": {
-    "better-opn": "^1.0.0",
-    "typedoc-plugin-lerna": "^0.1.0"
+    "better-opn": "^1.0.0"
   }
 }

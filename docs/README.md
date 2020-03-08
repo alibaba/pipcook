@@ -1,4 +1,4 @@
-# Pipcook Documentation
+# Pipcook
 
 A JavaScript application framework for machine learning and its engineering.
 
