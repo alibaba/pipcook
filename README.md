@@ -67,7 +67,7 @@ $ npm install -g @pipcook/pipcook-cli
 
 Initialize a project:
 
-```shell
+```sh
 $ mkdir pipcook-example && cd pipcook-example
 $ pipcook init
 $ cd pipcook-project
@@ -87,7 +87,7 @@ In this reposiory, We have prepared several examples, some of they are:
 See [here](./example) for complete list, and it's easy and quick to run these examples. For example, to do a minst 
 image classification, just run the following to start the pipeline:
 
-```shell
+```sh
 $ node examples/pipcook-app-example/pipcook-imageclass-app-test.js
 ```
 
@@ -99,26 +99,26 @@ Please refer to [English](docs/) | [中文](docs/zh-cn/)
 
 Clone this repository:
 
-```shell
+```sh
 $ git clone git@github.com:alibaba/pipcook.git
 ```
 
 Install [lerna][] and [TypeScript][], and check:
 
-```shell
+```sh
 $ lerna -v
 $ tsc -v
 ```
 
 or install via [npm][]:
 
-```shell
+```sh
 $ npm install
 ```
 
 After the above, now build the project:
 
-```shell
+```sh
 $ npm run build
 ```
 
