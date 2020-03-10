@@ -89,7 +89,7 @@ If you want to know how the above example was written, let's take a step-by-step
 
 You can create a new file for the pipeline from scratch, assuming we name this file `pipcook_try.js`.
 
-#### Data Collect
+### Data Collect
 
 At first, we need to collect these  images. In this scenario, we provide the data collection plugin @ali/pipcook-plugins-image-mnist-data-collection. We just need to simply specify the plugin to be used and the parameters required according to the plugin document, and finally pass the parameters to DataCollect Component.
 
@@ -100,7 +100,7 @@ const dataCollect = DataCollect(imageMnistDataCollection, {
 });
 ```
 
-#### Data Access
+### Data Access
 
 The data from different places should be represented as a unified data format according to Pipcook standard format. For example, all the collection should be sent to the downstream in a unified  Pascol VOC format. We have an unified data access layer and use `imageClassDataAccess` plugin.
 
@@ -113,7 +113,7 @@ const dataAccess = DataAccess(imageClassDataAccess, {
 });
 ```
 
-#### Model Load
+### Model Load
 
 In this process, we will load the required model. This model can come from the model you built, or some pre-training models, or even the models of keras and python tensorflow. Finally, we will give a unified model format. In this example, if we want to use mobileNet to classify the MNIST, we use mobileNetModelLoad plugin to do this.
 
@@ -123,7 +123,7 @@ const modelLoad = ModelLoad(mobileNetLoad, {
 });
 ```
 
-#### Model Train
+### Model Train
 
 After loading the model, we start the model training. We use the imageClassModelTrain plugin for model training.
 
@@ -133,7 +133,7 @@ const modelTrain = ModelTrain(imageClassModelTrain, {
 });
 ```
 
-#### Model Evaluate
+### Model Evaluate
 
 After the model training, we also hope to use our test set to evaluate the performance of the model. We can use the imageClassModelEvaluate plugin to do the evaluation.
 
@@ -141,7 +141,7 @@ After the model training, we also hope to use our test set to evaluate the perfo
 const modelEvaluate = ModelEvaluate(classModelEvalute);
 ```
 
-#### Start Up
+### Start Up
 
 Now we have completed every step of the machine learning life cycle, let's pass each plugin to pipcook runner, and tell pipcook to start a runner to begin the training process, as shown below.
 

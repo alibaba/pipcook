@@ -4,7 +4,7 @@ Pipcook welcomes developers to contribute plugins for us to extend the functions
 
 ## Plugin Specification
 
-We strongly recommend that you first understand the plugin specifications that we define. Only plugins that meet the interface that we define can be accepted. For more information about the specification of each plugin, see [here](./developer-guide.md) for plugin development specifications.
+We strongly recommend that you first understand the plugin specifications that we define. Only plugins that meet the interface that we define can be accepted. For more information about the specification of each plugin, see [here](../devel/developer-guide.md) for plugin development specifications.
 
 The plugin type could be:
 
@@ -161,7 +161,7 @@ $ git checkout -b pipcook-plugins-{name}-{type}
 
 #### Write your documents
 
-First, open the file [docs/spec/plugin.md](./docs/spec/plugin.md), and update the following plugin list:
+First, open the file [docs/spec/plugin.md](/spec/plugin.md), and update the following plugin list:
 
 ![image.png](https://img.alicdn.com/tfs/TB14EscuG61gK0jSZFlXXXDKFXa-988-476.png)
 
