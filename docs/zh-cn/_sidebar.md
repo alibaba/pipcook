@@ -1,17 +1,17 @@
 - [什么是 Pipcook](README.md)
 
-- 教程
+- 新手教程
 
   - [新手入门](./tutorials/get-started.md)
-  - [命令行工具入门](./tutorials/get-started-with-cli.md)
-  - [Pipeline API 入门](./tutorials/get-started-with-pipeline-api)
+  - [新手入门——命令行工具](./tutorials/get-started-with-cli.md)
+  - [新手入门——Pipeline](./tutorials/get-started-with-pipeline-api)
   - [如何开发插件](./tutorials/how-to-develop-a-plugin.md)
-  - [想使用 Python？](./tutorials/want-to-use-python.md)
-  - [如何加载预先训练好的模型](./tutorials/load-a-pre-trained-model-in-pipcook)
+  - [如何在 Pipcook 中使用 Python](./tutorials/want-to-use-python.md)
+  - [如何使用一个之前就训练好的模型](./tutorials/load-a-pre-trained-model-in-pipcook)
 
-- 开发
+- 开发者
 
-  - [开发者引导](./tutorials/developer-guide.md)
+  - [开发者指南](./devel/developer-guide.md)
 
 - 规范
 

@@ -9,9 +9,9 @@
   - [Want to use Python](/tutorials/want-to-use-python.md)
   - [Load a pre-trained model](/tutorials/load-a-pre-trained-model-in-pipcook)
 
-- Development
+- Developers
 
-  - [Developer guide](/tutorials/developer-guide.md)
+  - [Developer guide](/devel/developer-guide.md)
 
 - Specification
 
