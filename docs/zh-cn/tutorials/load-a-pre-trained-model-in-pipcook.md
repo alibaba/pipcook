@@ -1,10 +1,10 @@
-# 加载一个训练好的模型进行预测或者再次训练
+# 如何使用一个之前就训练好的模型
 
-假设我们已经用 pipcook 的 pipeline 训练好了一个模型，我们或许想要直接加载训练好的模型。比如，我们训练好了图片分类模型，我们想要加载这个模型部署到本地进行预测。
+假设我们已经训练好了一个模型，我们或许想要直接加载训练好的模型。比如，我们训练好了图片分类模型，我们想要加载这个模型部署到本地进行预测。
 
 代码如下：
 
-```
+```ts
 const {DataAccess, ModelLoad, PipcookRunner, ModelDeploy} = require('@pipcook/pipcook-core');
 
 const imageClassDataAccess = require('@pipcook/pipcook-plugins-image-class-data-access').default;
@@ -35,18 +35,17 @@ async function startPipeline() {
 }
 
 startPipeline();
-
-
-
 ```
 
 
-需要注意的是，您需要将上面代码中模型加载插件中的 modelId 参数替换为您自己之前训练好的模型 id， 这个 id 可以在 pipcook board 中查看，如图：<br />![image.png](https://cdn.nlark.com/yuque/0/2019/png/654014/1577784838889-b2ec66bc-aa7b-43ad-87a0-088fa7d85516.png#align=left&display=inline&height=139&name=image.png&originHeight=278&originWidth=1722&size=94819&status=done&style=none&width=861)
+需要注意的是，您需要将上面代码中模型加载插件中的 modelId 参数替换为您自己之前训练好的模型 id， 这个 id 可以在 pipcook board 中查看，如图
+
+![image.png](https://cdn.nlark.com/yuque/0/2019/png/654014/1577784838889-b2ec66bc-aa7b-43ad-87a0-088fa7d85516.png#align=left&display=inline&height=139&name=image.png&originHeight=278&originWidth=1722&size=94819&status=done&style=none&width=861)
 
 此时，当命令好提示本地部署已经成功后，您可以直接像 localhost 发送请求进行预测，以下是我们的请求格式 (以 curl 为例），data 里的数据是所需要预测的图片 url 的数组
 
-```
-curl -X POST \
+```sh
+$ curl -X POST \
   http://127.0.0.1:7778/predict \
   -H 'Content-Type: application/json' \
   -H 'Host: 127.0.0.1:7778' \
@@ -55,7 +54,7 @@ curl -X POST \
   }'
 ```
 
-返回的 response
+返回：
 
 ```
 {
@@ -65,4 +64,3 @@ curl -X POST \
     ]
 }
 ```
-

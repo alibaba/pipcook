@@ -1,45 +1,40 @@
 # 想要使用python？
 
-pipcook 的宗旨是服务于前端工程师，推动前端智能化发展，所以 pipcook 采用 JavaScript （TypeScript) 开发，给予开发者基于 JS 的 API 并且在全部的 pipeline 在 JS 的环境中运行。然而，现阶段在数学，数据分析，数据处理和机器学习领域，python 语言的类库更多，生态更加繁荣。因此，我们开发了 pipcook-python-node， 希望将整个 python的生态引入 pipcook， 并且以 JS 的方式调用 python 的类库，从而扩展 JS 的能力
+Pipcook 的宗旨是服务于前端工程师，推动前端智能化发展，所以 pipcook 采用 JavaScript（TypeScript) 开发，给予开发者基于 JavaScript 的 API 并且在全部的 pipeline 在 JavaScript 的环境中运行。然而，现阶段在数学，数据分析，数据处理和机器学习领域，python 语言的类库更多，生态更加繁荣。因此，我们开发了 `pipcook-python-node`，希望将整个 Python 的生态引入 Pipcook， 并且以 JavaScript 的方式调用 Python 的类库，从而扩展 JS 的能力
 
-<a name="VLC91"></a>
-### 运行环境
+## 运行环境
 
----
+Python >= 3.6, 查看 python 版本， 可以运行查看
 
-python >= 3.6, 查看 python 版本， 可以运行查看
-
-```
-python --version
+```sh
+$ python --version
 ```
 
 pip 指向正确的 python 版本， 可以运行查看
 
-```
-pip --version
+```sh
+$ pip --version
 ```
 
 实际上当您使用 pipcook-python-node 的 api时，我们会自动在当前工作目录创建虚拟环境，但是为了保证环境配置正确，您也可以手动实现创建 python 虚拟环境，您可以在当前工作目录运行如下命令
 
-```
-pip install virtualenv
-virtualenv --no-site-packages pipcook_venv
-```
-
-**我们强烈建议您使用我们的 docker 镜像去运行 pipcook，这样您不再需要执行上述命令，也不需要担心环境的问题, 可以参考**[**这里**](https://alibaba.github.io/pipcook/doc/%E4%BD%8E%E9%98%B6-%E6%8F%92%E4%BB%B6%E6%96%B9%E5%BC%8F-%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8-zh)**有详细的 docker 的信息**
-```
-docker pull pipcook/pipcook:version-0.4
+```sh
+$ pip install virtualenv
+$ virtualenv --no-site-packages pipcook_venv
 ```
 
-<a name="XZqjF"></a>
-### 一个例子
+> 我们强烈建议您使用我们的 docker 镜像去运行 pipcook，这样您不再需要执行上述命令，也不需要担心环境的问题, 可以参考[这里](./get-started-with-pipeline-api.md)，有详细的 docker 的信息
 
----
+```sh
+$ docker pull pipcook/pipcook:version-0.4
+```
+
+## 一个例子
 
 在这里让我们用一个实例向您展示您可以如何使用 pipcook-python-node 去利用 python 的生态。此例子是关于一个深度学习的训练，展示了我们如何在 js 里使用 Keras (一个著名的基于 tensorflow 的 python 高阶深度学习框架)进行深度卷积网络的训练，为了更好的说明，我们将比较使用 python 和 js 做到相同的事情
 
-<a name="4MzuV"></a>
-#### python
+### python
+
 ```python
 import numpy as np
 import keras
@@ -65,8 +60,7 @@ model.compile(loss='categorical_crossentropy', optimizer=sgd)
 model.fit(x_train, y_train, batch_size=32, epochs=10)
 ```
 
-<a name="to2iW"></a>
-#### pipcook-python-node (JS)
+### pipcook-python-node (JavaScript)
 
 ```python
 Python.scope('test1', (python) => {
@@ -115,11 +109,7 @@ Python.scope('test1', (python) => {
 - 我们提供了 API: python.import 来代替原生的 import 关键字
 - 我们后续会介绍更多的 pipcook-python-node 的 API
 
-
-<a name="4ycEM"></a>
-### API 介绍
-
----
+## API 介绍
 
 <a name="rphvI"></a>
 #### Python.scope(scopeName: string, callback: Function)

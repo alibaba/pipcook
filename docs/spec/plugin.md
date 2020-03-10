@@ -52,7 +52,7 @@ $ npm install mobileNetModelLoad --save
 
 The following is a list of plugins in different types:
 
-#### Data Collect
+### DataCollect
 
 | Name | Description |
 | --- | --- |
@@ -63,7 +63,7 @@ The following is a list of plugins in different types:
 | [@pipcook/pipcook-plugins-image-coco-data-collect](../plugins/%40pipcook-pipcook-plugins-image-coco-data-collect.md) | Collect local or remote object detection data in coco format and store it in pascol voc data format |
 
 
-#### Data Access
+### DataAccess
 
 | Name | Description |
 | --- | --- |
@@ -72,14 +72,14 @@ The following is a list of plugins in different types:
 | [@pipcook/pipcook-plugins-image-detection-data-access](../plugins/%40pipcook-pipcook-plugins-image-detection-data-access.md) | Simple target detection data access based on tfjs |
 | [@pipcook/pipcook-plugins-detection-detectron-data-access](../plugins/%40pipcook-pipcook-plugins-detection-detectron-data-access.md) | Object detection model access based on detectron2 |
 
-#### Data Process
+### DataProcess
 
 | Name | Description |
 | --- | --- |
 | [@pipcook/pipcook-plugins-image-class-data-process](../plugins/%40pipcook-pipcook-plugins-image-class-data-process.md) | Image classification data preprocessing |
 | [@pipcook/pipcook-plugins-text-class-data-process](../plugins/%40pipcook-pipcook-plugins-text-class-data-process.md) | Text Classification Data Word Segmentation preprocessing |
 
-#### Model Load
+### ModelLoad
 
 | Name | Description |
 | --- | --- |
@@ -88,7 +88,7 @@ The following is a list of plugins in different types:
 | [@pipcook/pipcook-plugins-simple-cnn-model-load](../plugins/%40pipcook-pipcook-plugins-simple-cnn-model-load.md) | Simple CNN model loading |
 | [@pipcook/pipcook-plugins-detection-detectron-model-load](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-load.md) | Loading of object detection model based on detectron2 |
 
-#### Model Train
+### ModelTrain
 
 | Name | Description |
 | --- | --- |
@@ -96,14 +96,14 @@ The following is a list of plugins in different types:
 | [@pipcook/pipcook-plugins-bayesian-classifier-model-train](../plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-train.md) | Bayes model training |
 | [@pipcook/pipcook-plugins-detection-detectron-model-train](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-train.md) | Target detection model training based on detectron2 |
 
-#### Model Evaluate
+### ModelEvaluate
 
 | Name | Description |
 | --- | --- |
 | [@pipcook/pipcook-plugins-class-model-evaluate](../plugins/%40pipcook-pipcook-plugins-class-model-evaluate.md) | Classification Model Evaluation |
 | [@pipcook/pipcook-plugins-detection-detectron-model-evaluate](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-evaluate.md) | Evaluation of target detection model based on detectron2 |
 
-#### Model Deploy
+### ModelDeploy
 
 | Name | Description |
 | --- | --- |
