@@ -1,0 +1,27 @@
+name: gh-pages
+
+on:
+  push:
+    branches:
+      - master
+      - add/typedoc
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Build documentation
+        run: |
+          npm install
+          npm run typedoc
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_SECRET_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
