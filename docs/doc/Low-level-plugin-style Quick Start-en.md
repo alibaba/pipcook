@@ -165,9 +165,7 @@ const modelEvaluate = ModelEvaluate(classModelEvalute);
 Now we have completed every step of the machine learning life cycle, let's pass each plugin to pipcook runner, and tell pipcook to start a runner to begin the training process, as shown below.
 
 ```
-const runner = new PipcookRunner('test1', {
-  predictServer: true
-})
+const runner = new PipcookRunner()
 runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate])
 ```
 

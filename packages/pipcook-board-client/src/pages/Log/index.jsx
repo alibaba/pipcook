@@ -1,45 +1,47 @@
 import React, { Component } from 'react';
-const axios = require('axios');
-import IceNotification from '@icedesign/notification';
-import { Table } from '@alifd/next';
-import { Button, Dialog } from '@alifd/next';
+import axios from 'axios';
+import { Table , Button, Dialog } from '@alifd/next';
+
+
+import {messageError} from '../../utils/message';
 
 export default class Log extends Component {
 
   state = {
-    data: []
+    data: [],
   }
+
   componentDidMount = async () => {
-    axios.get('/log')
-      .then((response) => {
-        const data =response.data.data;
-        const result = data.map((item) => {
+    try {
+      let response = await axios.get('/log/logs');
+      response = response.data;
+      if (response.status) {
+        const result = response.logs.map((item) => {
           return {
            ...item,
            startTime: new Date(item.startTime).toLocaleString(), 
            endTime: new Date(item.endTime).toLocaleString(),
-          }
-        })
-        this.setState({ data: result});
-      })
-      .catch((err) => {
-        IceNotification.error({
-          message: 'Error',
-          description: JSON.stringify(err)
-        })
-      })
+          };
+        });
+        this.setState({data: result});
+      } else {
+        messageError(response.msg);
+      }
+    } catch (err) {
+      messageError(err.message);
+    }
   }
 
   showModal = (record, value) => {
     if (value === 0) {
       Dialog.show({
         title: 'Plugins Status',
-        content: record.components
+        content: record.components,
       });
     } else if (value === 1) {
       Dialog.show({
         title: 'Dataset',
-        content: record.dataset
+        content: record.dataset,
       });
     }
   }
@@ -50,7 +52,6 @@ export default class Log extends Component {
       <div className="home">
         <Table dataSource={data}>
           <Table.Column title="Pipeline Id" dataIndex="pipelineId" />
-          <Table.Column title="Model Id" dataIndex="modelId" />
           <Table.Column title="Pipeline Versiom" dataIndex="pipelineVersion" />
           <Table.Column title="Test Evaluation" dataIndex="evaluation"/>
           <Table.Column title="Type" dataIndex="type"/>

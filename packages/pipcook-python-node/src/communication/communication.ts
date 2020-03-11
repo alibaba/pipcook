@@ -94,7 +94,7 @@ export default class Executor {
   static handleSubscriberMsg = (socketSubscriber: zmq.Subscriber) => {
     socketSubscriber.receive()
     .then((msg: Buffer[]) => {
-      msg.forEach((item, index) => {
+      msg.forEach((item) => {
         let json = null;
         try {
           json = JSON.parse(item.toString());
@@ -109,7 +109,7 @@ export default class Executor {
       });
       Executor.handleSubscriberMsg(socketSubscriber);
     })
-    .catch((err) => {
+    .catch(() => {
       Executor.handleSubscriberMsg(socketSubscriber)
     });
   }

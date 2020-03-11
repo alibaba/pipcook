@@ -1,10 +1,10 @@
-import {ModelEvaluateType, PipcookModel, UniformGeneralSampleData, ArgsType, EvaluateResult} from '@pipcook/pipcook-core';
+import {ModelEvaluateType, PipcookModel, UniformGeneralSampleData, EvaluateResult} from '@pipcook/pipcook-core';
 import {Python} from '@pipcook/pipcook-python-node';
 import * as assert from 'assert';
 import * as path from 'path';
 
 const imageDetectronModelTrain: ModelEvaluateType = 
-  async (data: UniformGeneralSampleData, model: PipcookModel, args?: ArgsType): Promise<EvaluateResult> => {
+  async (data: UniformGeneralSampleData, model: PipcookModel): Promise<EvaluateResult> => {
     const validationData = data.validationData || data.testData;
     const validationJson = validationData && require(validationData);
     if (!(validationJson && validationJson.annotations && validationJson.annotations.length > 0)) {

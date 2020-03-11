@@ -1,12 +1,8 @@
 const chalk = require('chalk');
 const fse = require('fs-extra');
-const childProcess = require('child_process');
-const ora = require('ora');
 const path = require('path');
 const {pipcookLogName} = require('./config');
-const spinner = ora();
 const glob = require('glob-promise');
-const cTable = require('console.table');
 /**
  * install all dependencies of pipcook into working dir
  */

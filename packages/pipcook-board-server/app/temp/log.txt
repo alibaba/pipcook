@@ -1,0 +1,61 @@
+- installing ...
+npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+* Downloading libtensorflow
+events.js:174
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: read ECONNRESET
+    at TLSWrap.onStreamRead (internal/stream_base_commons.js:111:27)
+Emitted 'error' event at:
+    at TLSSocket.socketErrorListener (_http_client.js:392:9)
+    at TLSSocket.emit (events.js:198:13)
+    at emitErrorNT (internal/streams/destroy.js:91:8)
+    at emitErrorAndCloseNT (internal/streams/destroy.js:59:3)
+    at process._tickCallback (internal/process/next_tick.js:63:19)
+npm WARN @tensorflow-models/mobilenet@2.0.4 requires a peer of @tensorflow/tfjs-core@~1.2.1 but none is installed. You must install peer dependencies yourself.
+npm WARN @tensorflow-models/mobilenet@2.0.4 requires a peer of @tensorflow/tfjs-converter@~1.2.1 but none is installed. You must install peer dependencies yourself.
+npm WARN pipcook-project@1.0.0 No description
+npm WARN pipcook-project@1.0.0 No repository field.
+
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! @tensorflow/tfjs-node-gpu@1.6.0 install: `node scripts/install.js gpu download`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the @tensorflow/tfjs-node-gpu@1.6.0 install script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/queyue/.tnpm/_logs/2020-03-09T11_20_53_277Z-debug.log
+✖ install Error: Command failed: npm install @pipcook/pipcook-app --save
+npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+* Downloading libtensorflow
+events.js:174
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: read ECONNRESET
+    at TLSWrap.onStreamRead (internal/stream_base_commons.js:111:27)
+Emitted 'error' event at:
+    at TLSSocket.socketErrorListener (_http_client.js:392:9)
+    at TLSSocket.emit (events.js:198:13)
+    at emitErrorNT (internal/streams/destroy.js:91:8)
+    at emitErrorAndCloseNT (internal/streams/destroy.js:59:3)
+    at process._tickCallback (internal/process/next_tick.js:63:19)
+npm WARN @tensorflow-models/mobilenet@2.0.4 requires a peer of @tensorflow/tfjs-core@~1.2.1 but none is installed. You must install peer dependencies yourself.
+npm WARN @tensorflow-models/mobilenet@2.0.4 requires a peer of @tensorflow/tfjs-converter@~1.2.1 but none is installed. You must install peer dependencies yourself.
+npm WARN pipcook-project@1.0.0 No description
+npm WARN pipcook-project@1.0.0 No repository field.
+
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! @tensorflow/tfjs-node-gpu@1.6.0 install: `node scripts/install.js gpu download`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the @tensorflow/tfjs-node-gpu@1.6.0 install script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/queyue/.tnpm/_logs/2020-03-09T11_20_53_277Z-debug.log
+ error

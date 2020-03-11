@@ -1,7 +1,5 @@
 const fse = require('fs-extra');
-const ora = require('ora');
 const path = require('path');
-const spinner = ora();
 const glob = require('glob-promise');
 
 /**

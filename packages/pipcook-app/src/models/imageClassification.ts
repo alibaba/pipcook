@@ -90,9 +90,7 @@ export default class ImageClassification {
 
     const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
 
-    const runner = new PipcookRunner({
-      predictServer
-    });  
+    const runner = new PipcookRunner();  
     await runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
   }
 
@@ -102,9 +100,7 @@ export default class ImageClassification {
 
       const modelDeploy = ModelDeploy(imageClassEasDeploy, getEasParam(easConfig));
   
-      const runner = new PipcookRunner({
-        predictServer
-      });  
+      const runner = new PipcookRunner();  
       await runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
   }
 
@@ -118,7 +114,7 @@ export default class ImageClassification {
       await downloadZip(path.join(modelUrl, 'weights.bin'), path.join(tempModelPath, 'weights.bin'));
       await downloadZip(labelJsonUrl, labelJsonPath);
       const valueMap = require(labelJsonPath);
-      const modelDeploy = await imageClassEasDeploy({
+      await imageClassEasDeploy({
         metaData: {
           label: {
             valueMap
