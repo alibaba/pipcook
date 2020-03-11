@@ -1,6 +1,6 @@
 # 插件规范
 
-pipcook 使用插件的形式来实现具体机器学习周期中的任务，这可以保证我们的核心足够精简，稳定和高效。同时，通过 pipcook 定义的一套对于每个环节的插件规范，我们还可以允许第三方开发插件，这样就保证了 pipcook 的可扩展性，理论上通过插件，我们可以实现任意一个机器学习的任务。
+Pipcook 使用插件的形式来实现具体机器学习周期中的任务，这可以保证我们的核心足够精简，稳定和高效。同时，通过 pipcook 定义的一套对于每个环节的插件规范，我们还可以允许第三方开发插件，这样就保证了 pipcook 的可扩展性，理论上通过插件，我们可以实现任意一个机器学习的任务。
 
 ## 插件类型
 
@@ -54,28 +54,28 @@ $ npm install mobileNetModelLoad --save
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-data-collect-zh) | 将本地或者远程图片收集进来，储存为 PASCOL VOC 数据集格式 |
-| [@pipcook/pipcook-plugins-image-mnist-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-mnist-data-collect-zh) | Mnist 手写数据集收集，储存为 PASCOL VOC 数据集格式 |
-| [@pipcook/pipcook-plugins-image-detection-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-detection-data-collect-zh) | 将本地或者远程的目标检测数据收集进来，存储为 PASCOL VOC 数据集格式 |
-| [@pipcook/pipcook-plugins-text-class-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-class-data-collect-zh) | 将本地或者远程的分本分类的数据收集进来，存储为 csv 数据格式 |
-| [@pipcook/pipcook-plugins-image-coco-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-coco-data-collect-zh) | 将本地或者远程的 coco format 的目标检测数据收集进来，存储为 PASCOL VOC 数据格式 |
+| [@pipcook/pipcook-plugins-image-class-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-data-collect-zh.md) | 将本地或者远程图片收集进来，储存为 PASCOL VOC 数据集格式 |
+| [@pipcook/pipcook-plugins-image-mnist-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-mnist-data-collect-zh.md) | Mnist 手写数据集收集，储存为 PASCOL VOC 数据集格式 |
+| [@pipcook/pipcook-plugins-image-detection-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-detection-data-collect-zh.md) | 将本地或者远程的目标检测数据收集进来，存储为 PASCOL VOC 数据集格式 |
+| [@pipcook/pipcook-plugins-text-class-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-class-data-collect-zh.md) | 将本地或者远程的分本分类的数据收集进来，存储为 csv 数据格式 |
+| [@pipcook/pipcook-plugins-image-coco-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-coco-data-collect-zh.md) | 将本地或者远程的 coco format 的目标检测数据收集进来，存储为 PASCOL VOC 数据格式 |
 
 ### DataAccess
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-data-access-zh) | 图片分类数据接入 |
-| [@pipcook/pipcook-plugins-text-csv-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-csv-data-access-zh) | 文本分类数据接入 |
-| [@pipcook/pipcook-plugins-image-detection-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-detection-data-access-zh) | 基于 tfjs 的简单目标检测数据接入 |
-| [@pipcook/pipcook-plugins-detection-detectron-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-data-access-zh) | 基于 detectron2 的目标检测模型接入 |
+| [@pipcook/pipcook-plugins-image-class-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-data-access-zh.md) | 图片分类数据接入 |
+| [@pipcook/pipcook-plugins-text-csv-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-csv-data-access-zh.md) | 文本分类数据接入 |
+| [@pipcook/pipcook-plugins-image-detection-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-detection-data-access-zh.md) | 基于 tfjs 的简单目标检测数据接入 |
+| [@pipcook/pipcook-plugins-detection-detectron-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-data-access-zh.md) | 基于 detectron2 的目标检测模型接入 |
 |  |  |
 
 ### DataProcess
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-process](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-data-process-zh) | 图片分类数据预处理 |
-| [@pipcook/pipcook-plugins-text-class-data-process](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-class-data-process-zh) | 文本分类数据分词预处理 |
+| [@pipcook/pipcook-plugins-image-class-data-process](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-data-process-zh.md) | 图片分类数据预处理 |
+| [@pipcook/pipcook-plugins-text-class-data-process](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-class-data-process-zh.md) | 文本分类数据分词预处理 |
 
 
 
@@ -83,31 +83,31 @@ $ npm install mobileNetModelLoad --save
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-local-mobilenet-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-local-mobilenet-model-load-zh) | MobileNet 模型加载 |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-load-zh) | 贝叶斯分类器加载 |
-| [@pipcook/pipcook-plugins-simple-cnn-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-simple-cnn-model-load-zh) | 简单 CNN 模型加载 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-load-zh) | 基于 detectron2 的目标检测模型加载 |
+| [@pipcook/pipcook-plugins-local-mobilenet-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-local-mobilenet-model-load-zh.md) | MobileNet 模型加载 |
+| [@pipcook/pipcook-plugins-bayesian-classifier-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-load-zh.md) | 贝叶斯分类器加载 |
+| [@pipcook/pipcook-plugins-simple-cnn-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-simple-cnn-model-load-zh.md) | 简单 CNN 模型加载 |
+| [@pipcook/pipcook-plugins-detection-detectron-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-load-zh.md) | 基于 detectron2 的目标检测模型加载 |
 
 ### ModelTrain
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-model-train](/zh-cn/plugins/%40pipcook-pipcook-plugins-model-train-zh) | 通用的 tfjs 模型训练 |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-train](/zh-cn/plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-train-zh) | 贝叶斯模型训练 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-train](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-train-zh) | 基于 detectron2 的目标检测模型训练 |
+| [@pipcook/pipcook-plugins-model-train](/zh-cn/plugins/%40pipcook-pipcook-plugins-model-train-zh.md) | 通用的 tfjs 模型训练 |
+| [@pipcook/pipcook-plugins-bayesian-classifier-model-train](/zh-cn/plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-train-zh.md) | 贝叶斯模型训练 |
+| [@pipcook/pipcook-plugins-detection-detectron-model-train](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-train-zh.md) | 基于 detectron2 的目标检测模型训练 |
 
 ### ModelEvaluate
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-class-model-evaluate](/zh-cn/plugins/%40pipcook-pipcook-plugins-class-model-evaluate-zh) | 分类模型评估 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-evaluate](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-evaluate-zh) | 基于 detectron2 的目标检测模型评估 |
+| [@pipcook/pipcook-plugins-class-model-evaluate](/zh-cn/plugins/%40pipcook-pipcook-plugins-class-model-evaluate-zh.md) | 分类模型评估 |
+| [@pipcook/pipcook-plugins-detection-detectron-model-evaluate](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-evaluate-zh.md) | 基于 detectron2 的目标检测模型评估 |
 |  |  |
 
 ### ModelDeploy
 
 | Name | Description |
 | --- | --- |
-| [@pipcook/pipcook-plugins-text-class-local-model-deploy](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-class-local-model-deploy-zh) | 文本分类本地部署 |
-| [@pipcook/pipcook-plugins-image-class-local-model-deploy](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-local-model-deploy-zh) | 图片分类本地部署 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-deploy](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-deploy-zh) | 目标检测本地部署 |
+| [@pipcook/pipcook-plugins-text-class-local-model-deploy](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-class-local-model-deploy-zh.md) | 文本分类本地部署 |
+| [@pipcook/pipcook-plugins-image-class-local-model-deploy](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-local-model-deploy-zh.md) | 图片分类本地部署 |
+| [@pipcook/pipcook-plugins-detection-detectron-model-deploy](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-deploy-zh.md) | 目标检测本地部署 |
