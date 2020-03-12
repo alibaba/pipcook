@@ -1,8 +1,7 @@
 
 import {OriginSampleData, UniformSampleData} from './data';
 import {PipcookModel} from './model';
-import {EvaluateResult, DeploymentResult} from './other';
-import {PipcookComponentResult} from './component';
+import {EvaluateResult} from './other';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PipcookPlugin {}

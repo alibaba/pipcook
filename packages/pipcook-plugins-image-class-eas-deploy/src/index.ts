@@ -27,7 +27,6 @@ const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDa
   } = args || {};
 
   await Python.scope('image-deploy', async (python: any) => {
-    const _ = python.nA;
     python.runshell('pip install tensorflowjs==1.5.2');
     await python.reconnect();
   });
@@ -40,7 +39,6 @@ const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDa
   });
 
   await Python.scope('image-deploy', async (python: any) => {
-    const _ = python.nA;
     python.runshell(`tensorflowjs_converter --input_format=tfjs_layers_model --output_format=keras ${path.join(getModelDir(pipelineId), 'model.json')} ${path.join(getModelDir(pipelineId), 'model.h5')}`);
   });
 

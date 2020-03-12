@@ -3,11 +3,11 @@
  * the data is conform to expectation.
  */
 
-import { UniformGeneralSampleData, OriginSampleData, ArgsType, convertPascol2CocoFileOutput, DataAccessType} from '@pipcook/pipcook-core';
+import { UniformGeneralSampleData, OriginSampleData, convertPascol2CocoFileOutput, DataAccessType} from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 
-const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformGeneralSampleData> => {
+const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData): Promise<UniformGeneralSampleData> => {
   if (Array.isArray(data)) {
     throw new Error('only one dataset can be specified');
   }

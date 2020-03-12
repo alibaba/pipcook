@@ -27,7 +27,7 @@ export function getServer() {
  * @param fastify : fastify server instance
  */
 export function startServer(fastify: any) {
-  fastify.listen(7778, '0.0.0.0' ,function (err: Error, address: string) {
+  fastify.listen(7778, '0.0.0.0' ,function (err: Error) {
     if (err) {
       fastify.log.error(err)
     }
@@ -41,7 +41,7 @@ export function startServer(fastify: any) {
  * @param fastify 
  */
 export function serverModel(fastify: any) {
-  fastify.get('/models', async (req: any, reply: any) => {
+  fastify.get('/models', async () => {
     try {
       const modelDirs: string[] = await glob(path.join(process.cwd(),'pipcook-output', '*', 'model'));
       const models: any[] = [];
@@ -85,7 +85,7 @@ export function serverModel(fastify: any) {
  * @param fastify 
  */
 export function serveDataset(fastify: any) {
-  fastify.get('/datasets', async (req: any, reply: any) => {
+  fastify.get('/datasets', async () => {
     try {
       const dataDirs: string[] = await glob(path.join(process.cwd(),'pipcook-output', 'datasets' ,'*'));
       const datasets: any[] = [];
@@ -130,7 +130,7 @@ async function getModelId(pipelineId: string) {
  * @param fastify 
  */
 export function serveLog(fastify: any) {
-  fastify.get('/log', async (req: any, reply: any) => {
+  fastify.get('/log', async () => {
     try {
       const logDirs: string[] = await glob(path.join(process.cwd(),'pipcook-output','*' ,'log.json'));
       const logs: any[] = [];
@@ -217,14 +217,14 @@ export async function serveRunner(runner: PipcookRunner) {
 
   // only use predict endpoint when the parameter: predictServer is true
   if (runner.predictServer || runner.onlyPredict) {
-    runner.fastify.post('/predict', async (request: any, reply: any) => {
+    runner.fastify.post('/predict', async (request: any) => {
       const result = await runPredict(runner, request);
       return result;
     });
   } 
 
   // This is for /status endpoint. Used when the pipeline is running and the front-end needs to know its status.
-  runner.fastify.get('/status', async (req: any, reply: any) => {
+  runner.fastify.get('/status', async () => {
     const model = runner.latestModel as PipcookModel;
     return {
       status: runner.status,
@@ -235,7 +235,7 @@ export async function serveRunner(runner: PipcookRunner) {
     };
   })
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     runner.fastify.listen(7778, '0.0.0.0' , (err: Error, address: string) => {
       if (err) {
         runner.fastify.log.error(err)

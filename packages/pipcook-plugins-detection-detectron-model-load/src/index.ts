@@ -35,7 +35,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     await python.reconnect();
 
     const [register_coco_instances] = python.fromImport('detectron2.data.datasets', ['register_coco_instances']);
-    const [DefaultTrainer, hooks] = python.fromImport('detectron2.engine', ['DefaultTrainer', 'hooks']);
+    const [DefaultTrainer] = python.fromImport('detectron2.engine', ['DefaultTrainer', 'hooks']);
     const [get_cfg] = python.fromImport('detectron2.config', ['get_cfg']);
     const os = python.import('os');
     const [setup_logger] = python.fromImport('detectron2.utils.logger', ['setup_logger']);
@@ -100,7 +100,6 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
   let torch: any;
   let config: any;
   await Python.scope('detectron_prediction', async (python: any) => {
-    const _ = python.nA;
     torch = python.import('torch');
     const [get_cfg] = python.fromImport('detectron2.config', ['get_cfg']);
 

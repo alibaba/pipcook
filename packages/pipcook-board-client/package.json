@@ -33,7 +33,7 @@
     "start": "ice-scripts dev",
     "build": "ice-scripts build",
     "lint": "npm run eslint && npm run stylelint",
-    "eslint": "eslint --cache --ext .js,.jsx ./",
+    "eslint": "eslint --cache --ext .js,.jsx ./ --fix",
     "stylelint": "stylelint ./**/*.scss",
     "clean": "rm -rf ./build"
   },

@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-const axios = require('axios');
 import IceNotification from '@icedesign/notification';
-import { Table } from '@alifd/next';
-import { Button, Dialog } from '@alifd/next';
+import { Table , Button, Dialog } from '@alifd/next';
+
+const axios = require('axios');
 
 export default class Log extends Component {
 
   state = {
-    data: []
+    data: [],
   }
+
   componentDidMount = async () => {
     axios.get('/log')
       .then((response) => {
@@ -18,28 +19,28 @@ export default class Log extends Component {
            ...item,
            startTime: new Date(item.startTime).toLocaleString(), 
            endTime: new Date(item.endTime).toLocaleString(),
-          }
-        })
+          };
+        });
         this.setState({ data: result});
       })
       .catch((err) => {
         IceNotification.error({
           message: 'Error',
-          description: JSON.stringify(err)
-        })
-      })
+          description: JSON.stringify(err),
+        });
+      });
   }
 
   showModal = (record, value) => {
     if (value === 0) {
       Dialog.show({
         title: 'Plugins Status',
-        content: record.components
+        content: record.components,
       });
     } else if (value === 1) {
       Dialog.show({
         title: 'Dataset',
-        content: record.dataset
+        content: record.dataset,
       });
     }
   }
