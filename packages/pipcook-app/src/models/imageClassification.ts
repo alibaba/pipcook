@@ -1,7 +1,7 @@
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
 
-import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip} from '@pipcook/pipcook-core';
+import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, download} from '@pipcook/pipcook-core';
 import imageClassDataAccess from '@pipcook/pipcook-plugins-image-class-data-access';
 import mobileNetLoad from '@pipcook/pipcook-plugins-local-mobilenet-model-load';
 import modelTrainPlugin from '@pipcook/pipcook-plugins-model-train';
@@ -114,9 +114,9 @@ export default class ImageClassification {
     const tempModelPath = path.join(process.cwd(), 'pipcoook-output', tempPipelineId, 'model');
     try {
       const labelJsonPath = path.join(tempPth, 'valueMap.json');
-      await downloadZip(path.join(modelUrl, 'model.json'), path.join(tempModelPath, 'model.json'));
-      await downloadZip(path.join(modelUrl, 'weights.bin'), path.join(tempModelPath, 'weights.bin'));
-      await downloadZip(labelJsonUrl, labelJsonPath);
+      await download(path.join(modelUrl, 'model.json'), path.join(tempModelPath, 'model.json'));
+      await download(path.join(modelUrl, 'weights.bin'), path.join(tempModelPath, 'weights.bin'));
+      await download(labelJsonUrl, labelJsonPath);
       const valueMap = require(labelJsonPath);
       await imageClassEasDeploy({
         metaData: {

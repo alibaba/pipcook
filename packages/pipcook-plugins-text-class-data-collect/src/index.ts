@@ -1,7 +1,7 @@
 /**
  * @file For plugin to collect test classification data
  */
-import {DataCollectType, OriginSampleData, ArgsType, getDatasetDir, downloadZip} from '@pipcook/pipcook-core';
+import {DataCollectType, OriginSampleData, ArgsType, getDatasetDir, download} from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 const fs = require('fs-extra')
@@ -62,7 +62,7 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
   } else {
     const targetPath = path.join(saveDir, fileName);
     console.log('downloading dataset ...')
-    await downloadZip(url, targetPath);
+    await download(url, targetPath);
     url = targetPath;
   }
 

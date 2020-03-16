@@ -18,7 +18,7 @@
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.4",
     "@pipcook/pipcook-python-node": "^0.5.3",
-    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "@tensorflow/tfjs-node-gpu": "^1.7.0",
     "ali-oss": "^6.4.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",

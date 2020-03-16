@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import {OriginSampleData, ArgsType, unZipData, downloadZip, getDatasetDir, parseAnnotation, createAnnotationFromJson, DataCollectType} from '@pipcook/pipcook-core';
+import {OriginSampleData, ArgsType, unZipData, download, getDatasetDir, parseAnnotation, createAnnotationFromJson, DataCollectType} from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as assert from 'assert';
@@ -41,7 +41,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
   } else {
     const targetPath = path.join(saveDir, Date.now() + '.zip');
     console.log('downloading dataset ...')
-    await downloadZip(url, targetPath);
+    await download(url, targetPath);
     url = targetPath;
   }
   console.log('unzip and collecting data...');

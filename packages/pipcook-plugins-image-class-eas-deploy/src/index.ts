@@ -1,4 +1,4 @@
-import {ArgsType, ModelDeployType, downloadZip, unZipData, getModelDir, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
+import {ArgsType, ModelDeployType, download, unZipData, getModelDir, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
 import {Python} from '@pipcook/pipcook-python-node';
 import * as path from 'path';
 import * as assert from 'assert';
@@ -58,7 +58,7 @@ const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDa
     // get detectron env
     const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/image-classification/'
     const zipPath = path.join(packagePath, easName, 'ENV.zip')
-    await downloadZip(envUrl + envPackName, zipPath);
+    await download(envUrl + envPackName, zipPath);
     await unZipData(zipPath, path.join(packagePath, easName))
     fs.removeSync(zipPath)
     // write app.json

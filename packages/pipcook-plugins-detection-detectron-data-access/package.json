@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.4",
-    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "@tensorflow/tfjs-node-gpu": "^1.7.0",
     "cli-progress": "^3.4.0",
     "glob": "^7.1.5",
     "glob-promise": "^3.4.0"

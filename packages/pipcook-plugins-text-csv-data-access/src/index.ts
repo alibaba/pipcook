@@ -49,7 +49,7 @@ async function getDataset(url: string, hasHeader: boolean, delimiter: string): P
  * @param data Pipcook origin sample data
  * @param args oneHotTransfer: if current plugin will transfer label data to one-hot (only used when it's not one hot data.)
  */
-const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformSampleData> => {
+const textClassDataAccess: DataAccessType = async (args?: ArgsType): Promise<UniformSampleData> => {
   if (!Array.isArray(data)) {
     data = [data];
   }

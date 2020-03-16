@@ -1,4 +1,4 @@
-import {DataProcessType, ArgsType, ModelDeployType, downloadZip, createAnnotationFile, DataAccessType} from '@pipcook/pipcook-core';
+import {DataProcessType, ArgsType, ModelDeployType, download, createAnnotationFile, DataAccessType} from '@pipcook/pipcook-core';
 import * as path from 'path';
 const uuidv1 = require('uuid/v1');
 const fs = require('fs-extra');
@@ -14,7 +14,7 @@ const imageClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, mode
   try {
     for (let i = 0; i < data.length; i++) {
       const picName = uuidv1()+'.png'; 
-      await downloadZip(data[i], path.join(trainDataPath, 'images', picName));
+      await download(data[i], path.join(trainDataPath, 'images', picName));
       createAnnotationFile(path.join(trainDataPath, 'annotations', 'train'), picName, picName, 'not set');
     }
 

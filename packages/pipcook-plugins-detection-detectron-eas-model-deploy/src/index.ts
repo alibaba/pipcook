@@ -1,4 +1,4 @@
-import {ArgsType, ModelDeployType, downloadZip, unZipData, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
+import {ArgsType, ModelDeployType, download, unZipData, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 
@@ -39,7 +39,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
     // get detectron env
     const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/'
     const zipPath = path.join(packagePath, easName, 'ENV.zip')
-    await downloadZip(envUrl + envPackName, zipPath);
+    await download(envUrl + envPackName, zipPath);
     await unZipData(zipPath, path.join(packagePath, easName))
     fs.removeSync(zipPath)
     // write app.json
@@ -74,7 +74,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
     fs.copySync(modelPath, path.join(packagePath, easName, 'output', 'model_final.pth'));
 
     // copy app.py
-    await downloadZip(envUrl + envScriptName, path.join(packagePath, easName, 'app.py'));
+    await download(envUrl + envScriptName, path.join(packagePath, easName, 'app.py'));
 
     // save label map
     fs.writeFileSync(path.join(packagePath, easName, 'label.json'), JSON.stringify(data.metaData.label.valueMap));
