@@ -9,7 +9,7 @@ const uuidv1 = require('uuid/v1');
 
 import config from '../config';
 import {PipcookComponentResult} from '../types/component';
-import {OriginSampleData, UniformSampleData} from '../types/data';
+import {UniformSampleData} from '../types/data';
 import {PipcookModel} from '../types/model';
 import {DeploymentResult, EvaluateResult} from '../types/other';
 import {getLog, createPipeline, assignLatestResult, linkComponents, assignFailures} from './core-helper';
@@ -41,7 +41,6 @@ const getCircularReplacer = () => {
  * @public components: all components executed in the pipeline
  * @public currentIndex: lastest indes of components executed
  * @public error: if there are any error
- * @public latestOriginSampleData: lastest origin sample data flow in pipeline
  * @public latestEvaluateResult: evaluation result
  * @public startTime: start time of pipeline
  * @public endTime: end time of pipeline
@@ -55,7 +54,6 @@ export class PipcookRunner {
   pipelineVersion: string = config.version;
   logDir: string|null = null;
   pipelineId: string|null = null;
-  latestOriginSampleData:  OriginSampleData | OriginSampleData[] |null = null;
   latestSampleData: UniformSampleData |null = null;
   latestModel: PipcookModel | PipcookModel[] |null = null;
   latestEvaluateResult: EvaluateResult | null = null;
@@ -90,6 +88,7 @@ export class PipcookRunner {
       this.onlyPredict = true;
     }
     fs.ensureDirSync(path.join(this.logDir, 'model'));
+    fs.ensureDirSync(path.join(this.logDir, 'data'));
     fs.ensureDirSync(path.join(process.cwd(), '.temp', this.pipelineId));
     // fs.removeSync(path.join(process.cwd(), '.temp'));
   }

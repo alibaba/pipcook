@@ -1,12 +1,12 @@
 
-import {OriginSampleData, UniformSampleData} from './data';
+import {UniformSampleData} from './data';
 import {PipcookModel} from './model';
 import {EvaluateResult} from './other';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PipcookPlugin {}
-
 export interface ArgsType {
+  pipelineId: string;
+  modelDir: string;
+  dataDir: string;
   [key: string]: any;
 }
 
@@ -18,12 +18,17 @@ export interface ModelLoadArgsType extends ArgsType {
   modelId: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PipcookPlugin {
+  (args?: ArgsType): Promise<any>
+}
+
 export interface DataCollectType extends PipcookPlugin {
-  (args?: ArgsType): Promise<OriginSampleData>; 
+  (args?: ArgsType): Promise<void>; 
 }
 
 export interface DataAccessType extends PipcookPlugin {
-  (data: OriginSampleData | OriginSampleData[], args?: ArgsType): Promise<UniformSampleData>;
+  (args?: ArgsType): Promise<UniformSampleData>;
 }
 
 export interface DataProcessType extends PipcookPlugin {

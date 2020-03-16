@@ -6,12 +6,10 @@ import * as fs from 'fs-extra';
 
 import {PipcookRunner} from './core'; 
 import {PipcookComponentResult} from '../types/component';
-import {ModelDeployType} from '../types/plugins';
 import {logCurrentExecution} from '../utils/logger';
 import {Observable, from} from 'rxjs';
 import {flatMap} from 'rxjs/operators';
-import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA} from '../constants/other';
-import {DATAACCESS} from '../constants/plugins';
+import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE} from '../constants/other';
 
 /**
  * Retreive relative logs required to be stored.
@@ -44,9 +42,6 @@ export async function assignLatestResult(updatedType: string, result: any, self:
     case DEPLOYMENT:
       self.latestDeploymentResult = result;
       break;
-    case ORIGINDATA:
-      self.latestOriginSampleData = result;
-      break;
     case MODELTOSAVE:
       self.latestModel = result;
       if (Array.isArray(result) && result.length > 0) {
@@ -76,9 +71,11 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
   firstComponent.status = 'running';
   logCurrentExecution(firstComponent, logType)
   const insertParams = {
-    pipelineId: self.pipelineId
+    pipelineId: self.pipelineId,
+    modelDir: path.join(self.logDir, 'model'),
+    dataDir: path.join(self.logDir, 'data'),
   }
-  const firstObservable = firstComponent.observer(self.latestOriginSampleData, self.latestModel, insertParams) as Observable<any>;
+  const firstObservable = firstComponent.observer(null, self.latestModel, insertParams) as Observable<any>;
   self.updatedType = firstComponent.returnType;
 
   const flatMapArray: any = [];
@@ -92,12 +89,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
         logCurrentExecution(component, logType);
         return from(assignLatestResult(updatedType, result, self, saveModelCallback)).pipe(
           flatMap(() => {
-            if (component.type === DATAACCESS) {
-              return component.observer(self.latestOriginSampleData, self.latestModel, insertParams);
-            } else {
-              return component.observer(self.latestSampleData, self.latestModel, insertParams);
-            }
-            
+            return component.observer(self.latestSampleData, self.latestModel, insertParams);
           })
         )  
       });
@@ -144,29 +136,5 @@ export function assignFailures(components: PipcookComponentResult[]) {
       })
     }
   })
-}
-
-/**
- * this is to start the pipcook prediction service.
- * The function will be called after the pipeline is finished and predictServer parameter is true
- */
-export async function runPredict(runner: PipcookRunner, request: any) {
-  const {components, latestModel} = runner;
-  const {data} = request.body;
-
-  // we need to find out the dataAccess and dataProcess component 
-  // since the prediction data needs to be processed by these two steps
-  const dataAccess = components.find((e) => e.type === 'dataAccess');
-  const dataProcess = components.find((e) => e.type === 'dataProcess');
-  const modelDeploy = components.find((e) => e.type === 'modelDeploy');
-
-  const result = await (modelDeploy.plugin as ModelDeployType)({}, {}, {
-    data, dataAccess, model: latestModel, dataProcess
-  });
-
-  return {
-    status: true,
-    result: result
-  }
 }
 

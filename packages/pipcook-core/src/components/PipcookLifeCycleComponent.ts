@@ -54,7 +54,7 @@ export const DataCollect: PipcookLifeCycleComponent = (plugin: DataCollectType, 
 export const DataAccess: PipcookLifeCycleComponent = (plugin: DataAccessType, params?: any) => {
   const result = produceResultFactory(DATAACCESS, plugin, params);
   result.observer = (data: any, model, insertParams) => {
-    return from(plugin(data, {...params, ...insertParams}));
+    return from(plugin({...params, ...insertParams}));
   };
   result.returnType = DATA;
   return result;

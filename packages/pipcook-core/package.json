@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "@tensorflow/tfjs-node-gpu": "^1.7.0",
     "@types/fs-extra": "^8.0.1",
     "better-opn": "^1.0.0",
     "chalk": "^3.0.0",

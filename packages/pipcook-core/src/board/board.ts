@@ -152,7 +152,6 @@ export function serveLog(fastify: any) {
               status: component.status
             }
           })),
-          dataset: JSON.stringify(log.latestOriginSampleData)
         })
       }
       return {
@@ -208,9 +207,7 @@ export async function serveRunner(runner: PipcookRunner) {
       logError('Please provide model id in prediction pipeline');
       return;
     }
-    const model = await modelPlugin(null, {
-      modelId: modelComponent.params.modelId
-    });
+
     runner.latestModel = model;
   }
 

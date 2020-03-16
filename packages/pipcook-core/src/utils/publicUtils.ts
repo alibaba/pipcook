@@ -70,7 +70,7 @@ export async function parseAnnotation(filename: string) {
  * @param url: url of the file
  * @param: full path of file that will be stored
  */
-export function downloadZip(url: string, fileName: string) {
+export function download(url: string, fileName: string) {
   fs.ensureFileSync(fileName)
   return new Promise((resolve, reject) => {
     const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
@@ -135,13 +135,6 @@ export function unZipData(filePath: string, targetPath: string) {
       }
     });
   });
-}
-
-/**
- * get pipcook dataset directory path
- */
-export function getDatasetDir() {
-  return path.join(process.cwd(), 'pipcook-output', 'datasets')
 }
 
 /**

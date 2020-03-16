@@ -45,10 +45,10 @@ export async function processImageClassification(data: any[],
       trainDataPath,
     }
     const dataAccessPlugin = dataAccess.plugin as DataAccessType;
-    result = await dataAccessPlugin(result, dataAccess.params);
+    result = await dataAccessPlugin(dataAccess.params);
     if (dataProcess) {
       const dataProcessPlugin = dataProcess.plugin as DataProcessType;
-      result = await dataProcessPlugin(result, dataProcess.params);
+      result = await dataProcessPlugin(dataProcess.params);
     }
     result = result.trainData.map((e: any) => {
       return e.xs;
@@ -80,7 +80,7 @@ export async function processTextClassification(
       trainDataPath: path.join(trainDataPath, 'train.csv'),
     }
     const dataAccessPlugin = dataAccess.plugin as DataAccessType;
-    result = await dataAccessPlugin(result, dataAccess.params);
+    result = await dataAccessPlugin(dataAccess.params);
     if (dataProcess) {
       const dataProcessPlugin = dataProcess.plugin as DataProcessType;
       result = await dataProcessPlugin(result, dataProcess.params);
