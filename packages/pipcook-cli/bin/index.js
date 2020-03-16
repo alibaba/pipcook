@@ -47,11 +47,13 @@ program
   .description('Print out Pipcook log')
   .action(log);
 
-// start pipcook board
 program
-  .command('board')
+  .command('board [stop]')
+  .option('-p, --plugin', 'customized ui plugin')
   .description('Start Pipcook Board')
-  .action(board);
+  .action((stop, cmdObj) => {
+    board(stop, cmdObj.plugin);
+  });
 
 program
   .command('plugin-dev')

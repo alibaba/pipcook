@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import IceNotification from '@icedesign/notification';
+import axios from 'axios';
 import { Table } from '@alifd/next';
 
-const axios = require('axios');
+import {messageError} from '../../utils/message';
 
 export default class Model extends Component {
 
@@ -11,10 +11,11 @@ export default class Model extends Component {
   }
 
   componentDidMount = async () => {
-    axios.get('/models')
-      .then((response) => {
-        const data =response.data.data;
-        const result = data.map((item) => {
+    try {
+      let response = await axios.get('/log/models');
+      response = response.data;
+      if (response.status) {
+        const result = response.data.map((item) => {
           return {
            ...item,
            startTime: new Date(item.startTime).toLocaleString(), 
@@ -22,13 +23,13 @@ export default class Model extends Component {
           };
         });
         this.setState({ models: result});
-      })
-      .catch((err) => {
-        IceNotification.error({
-          message: 'Error',
-          description: JSON.stringify(err),
-        });
-      });
+      } else {
+        messageError(response.msg);
+      }
+    } catch (err) {
+      messageError(err.message);
+    }
+    
   }
 
   render() {

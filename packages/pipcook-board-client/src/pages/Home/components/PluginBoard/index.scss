@@ -1,0 +1,65 @@
+.plugin-show {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  .plugin-board {
+    height: 100%;
+    padding-left: 10px;
+    border-right: 1.5px solid rgba(54, 54, 54, 0.2);
+    min-width: 400px;
+  }
+
+  .plugin-choose {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+
+    .plugin-delete {
+      width: 15px;
+      height: 15px;
+    }
+
+    .plugin-title {
+      font-size: 24px;
+      margin-bottom:100px;
+    }
+
+    .next-step {
+      height: 200px !important;
+    }
+
+    .over-item.next-step-item-node-circle {
+      border: 5px solid rgb(54, 132, 251) !important;
+    }
+
+    .config-button {
+      margin-top: 3px;
+      margin-bottom: 3px;
+    }
+  }
+
+  .pipeline-button {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .log-wrap {
+    margin-top: 20px;
+    width: 500px;
+    height: 500px;
+    border: 1px solid rgba(0,0,0,0.1);
+    word-wrap:break-word; 
+    word-break:break-all; 
+    white-space: pre;
+    overflow: auto;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .quick-choose {
+    margin-bottom: 50px;
+  }
+}
+

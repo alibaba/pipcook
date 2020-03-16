@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import IceNotification from '@icedesign/notification';
+import axios from 'axios';
 import { Table } from '@alifd/next';
 
-const axios = require('axios');
+import {messageError} from '../../utils/message';
 
 export default class Dataset extends Component {
 
@@ -11,17 +11,18 @@ export default class Dataset extends Component {
   }
 
   componentDidMount = async () => {
-    axios.get('/datasets')
-      .then((response) => {
-        const data =response.data.data;
-        this.setState({ data });
-      })
-      .catch((err) => {
-        IceNotification.error({
-          message: 'Error',
-          description: JSON.stringify(err),
-        });
-      });
+    try {
+      let response = await axios.get('/log/datasets');
+      response = response.data;
+      if (response.status) {
+        this.setState({data: response.data});
+      } else {
+        messageError(response.msg);
+      }
+      
+    } catch (err) {
+      messageError(err.message);
+    }
   }
 
   render() {

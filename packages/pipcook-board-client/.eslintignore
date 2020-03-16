@@ -1,4 +1,3 @@
-  
 build/
 tests/
 demo/
@@ -11,3 +10,4 @@ coverage/
 
 package-lock.json
 yarn.lock
+

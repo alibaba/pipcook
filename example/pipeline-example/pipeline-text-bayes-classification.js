@@ -27,9 +27,7 @@ async function pipeLine() {
 
   const modelDeploy = ModelDeploy(textClassLocalModelDeploy);
 
-  const runner = new PipcookRunner({
-    predictServer: true
-  });
+  const runner = new PipcookRunner();
 
   runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy])
 }

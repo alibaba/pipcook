@@ -37,15 +37,9 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
   let classifier: any;
 
   await Python.scope('bayes_text_classification', async (python: any) => {
-    python.install('jieba', {
-      source: 'https://pypi.tuna.tsinghua.edu.cn/simple'
-    });
-    python.install('sklearn', {
-      source: 'https://pypi.tuna.tsinghua.edu.cn/simple'
-    });
-    python.install('numpy', {
-      source: 'https://pypi.tuna.tsinghua.edu.cn/simple'
-    });
+    python.install('jieba');
+    python.install('sklearn');
+    python.install('numpy');
 
     await python.reconnect();
     python.executePythonFile(path.join(__dirname, 'assets', 'script.py'));

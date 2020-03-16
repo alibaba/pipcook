@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import IceNotification from '@icedesign/notification';
+import axios from 'axios';
 import { Table , Button, Dialog } from '@alifd/next';
 
-const axios = require('axios');
+
+import {messageError} from '../../utils/message';
 
 export default class Log extends Component {
 
@@ -11,24 +12,24 @@ export default class Log extends Component {
   }
 
   componentDidMount = async () => {
-    axios.get('/log')
-      .then((response) => {
-        const data =response.data.data;
-        const result = data.map((item) => {
+    try {
+      let response = await axios.get('/log/logs');
+      response = response.data;
+      if (response.status) {
+        const result = response.logs.map((item) => {
           return {
            ...item,
            startTime: new Date(item.startTime).toLocaleString(), 
            endTime: new Date(item.endTime).toLocaleString(),
           };
         });
-        this.setState({ data: result});
-      })
-      .catch((err) => {
-        IceNotification.error({
-          message: 'Error',
-          description: JSON.stringify(err),
-        });
-      });
+        this.setState({data: result});
+      } else {
+        messageError(response.msg);
+      }
+    } catch (err) {
+      messageError(err.message);
+    }
   }
 
   showModal = (record, value) => {
@@ -51,7 +52,6 @@ export default class Log extends Component {
       <div className="home">
         <Table dataSource={data}>
           <Table.Column title="Pipeline Id" dataIndex="pipelineId" />
-          <Table.Column title="Model Id" dataIndex="modelId" />
           <Table.Column title="Pipeline Versiom" dataIndex="pipelineVersion" />
           <Table.Column title="Test Evaluation" dataIndex="evaluation"/>
           <Table.Column title="Type" dataIndex="type"/>

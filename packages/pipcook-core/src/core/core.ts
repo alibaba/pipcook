@@ -14,7 +14,6 @@ import {PipcookModel} from '../types/model';
 import {DeploymentResult, EvaluateResult} from '../types/other';
 import {getLog, createPipeline, assignLatestResult, linkComponents, assignFailures} from './core-helper';
 import {logStartExecution, logError, logComplete} from '../utils/logger';
-import {serveRunner, shutdown} from '../board/board';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -46,9 +45,6 @@ const getCircularReplacer = () => {
  * @public endTime: end time of pipeline
  * @public status: status of current pipeline
  * 
- * @private fastify: fastify server instance
- * @private predictServer: if run prediction server
- * @private onlyPredict: if the pipeline is not for training, but just for prediction
  */
 export class PipcookRunner {
   pipelineVersion: string = config.version;
@@ -59,8 +55,6 @@ export class PipcookRunner {
   latestEvaluateResult: EvaluateResult | null = null;
   latestDeploymentResult: DeploymentResult | null = null;
 
-  fastify: any = {};
-
   updatedType: string | null = null;
   components: PipcookComponentResult[] = [];
   currentIndex = -1;
@@ -69,28 +63,18 @@ export class PipcookRunner {
   startTime = 0;
   endTime = 0;
 
-  predictServer = false;
-  onlyPredict = false;
-
   status: 'running' | 'error' | 'success' = 'running';
 
   /**
    * Constructor, user need to specify pipeline name when init
    */
-  constructor(options?: any) {
+  constructor() {
     this.pipelineId = uuidv1();
     this.logDir = path.join(process.cwd(), 'pipcook-output', this.pipelineId);
     fs.ensureDirSync(this.logDir);
-    if (options && options.predictServer) {
-      this.predictServer = true;
-    }
-    if (options && options.onlyPredict) {
-      this.onlyPredict = true;
-    }
     fs.ensureDirSync(path.join(this.logDir, 'model'));
     fs.ensureDirSync(path.join(this.logDir, 'data'));
     fs.ensureDirSync(path.join(process.cwd(), '.temp', this.pipelineId));
-    // fs.removeSync(path.join(process.cwd(), '.temp'));
   }
 
   /**
@@ -102,14 +86,6 @@ export class PipcookRunner {
     fs.outputFileSync(path.join(this.logDir as string, 'log.json'), json);
   }
 
-  /**
-   * start the server when the pipeline is started.
-   */
-  startServer = async () => {
-    const server = await await serveRunner(this);
-    return server;
-  }
-
   init = async (components: PipcookComponentResult[]) => {
     this.startTime = Date.now()
     logStartExecution(this);
@@ -119,7 +95,6 @@ export class PipcookRunner {
 
     linkComponents(components);
     this.components = components;
-    await this.startServer();
   }
 
   handleError = async (error: Error, components: PipcookComponentResult[]) => {
@@ -139,9 +114,6 @@ export class PipcookRunner {
     this.endTime = Date.now();
     await this.savePipcook();
     logComplete(); 
-    if (this.predictServer) {
-      console.log('You could open http://localhost:7778 locally to check status and do prediction!');
-    }
   }
 
   /**
@@ -150,10 +122,6 @@ export class PipcookRunner {
    */
   run = async (components: PipcookComponentResult[], successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) => {
     await this.init(components);
-
-    if (this.onlyPredict) {
-      return;
-    }
     
     // create pipeline of plugins
     const pipeline = createPipeline(components, this, 'normal', saveModelCallback);
@@ -166,13 +134,11 @@ export class PipcookRunner {
       if (errorCallback) {
         await errorCallback(error, this);
       }
-      await shutdown(this);
     }, async () => {
       await this.handleSuccess();
       if (successCallback) {
         await successCallback(this);
       }
-      await shutdown(this);
     });
   }
 }
