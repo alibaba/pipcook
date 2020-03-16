@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import ImageUploader from 'react-images-upload';
 import './index.scss';
 import { Loading } from '@alifd/next';
+
 const axios = require('axios');
-import { Button } from '@alifd/next';
 
 export default class Status extends Component {
 
   state = {
     status: 'no job',
-    type: 'no job',
-    name: null, 
     version: null, 
     startTime: null, 
     id: null,
@@ -18,46 +15,45 @@ export default class Status extends Component {
 
   timer= null;
 
-  fetch = () => {
-    axios.get('/status')
-    .then((response) => {
-      const {status, type, name, version, startTime, id} = response.data;
-      this.setState({
-        status, type, name, version, startTime, id
-      });
-    })
-    .catch((error) => {
-      this.setState({
-        status: 'no job'
-      })
-    });
-  }
-
   componentDidMount() {
     this.fetch();
     this.timer = setInterval(this.fetch, 2000);
   }
 
-
   componentWillUnmount() {
     clearInterval(this.timer);
   }
 
+  fetch = () => {
+    axios.get('/status')
+    .then((response) => {
+      const {status, version, startTime, id} = response.data;
+      this.setState({
+        status, version, startTime, id,
+      });
+    })
+    .catch(() => {
+      this.setState({
+        status: 'no job',
+      });
+    });
+  }
+
   render() {
-    const {status, type, name, version, startTime, id} = this.state;
+    const {status, version, startTime, id} = this.state;
     return (
 
       <div className="status">
         {
-          status == 'no job' && 
+          status === 'no job' && 
           <div className="no-job">
             Currently there is no job found. Please check Home page to see how to create a Pipcook pipeline and run the job.
           </div>
         }
         {
-          status == 'running' &&  
+          status === 'running' &&  
           <div className="tips">
-            <Loading tip="" visible={status == 'running'} inline={false} style={{marginBottom: 40}}/>
+            <Loading tip="" visible={status === 'running'} inline={false} style={{marginBottom: 40}}/>
             Currently a pipeline is running. Below is Infomation: <br />
             PipeLine Id: {id} <br />
             PipeLine Version: {version} <br />
@@ -65,7 +61,7 @@ export default class Status extends Component {
           </div>
         }
         {
-          status == 'success' &&
+          status === 'success' &&
             <div className="tips">
               Currently a pipeline is running. Below is Infomation: <br />
               PipeLine Id: {id} <br />
@@ -90,7 +86,7 @@ export default class Status extends Component {
             </div>
         }
         {
-          status == 'error' &&
+          status === 'error' &&
             <div className="tips">
               The pipeline come acrss errors. Please check logs<br />
               PipeLine Id: {id} <br />

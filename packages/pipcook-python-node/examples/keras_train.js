@@ -9,15 +9,12 @@ async function train () {
     const np = python.import('numpy');
     const keras = python.import('keras');
     const [Sequential] = python.fromImport('keras.models', ['Sequential']);
-    const [Dense, Dropout, Flatten] = python.fromImport('keras.layers', ['Dense', 'Dropout', 'Flatten']);
-    const [Conv2D, MaxPooling2D] = python.fromImport('keras.layers', ['Conv2D', 'MaxPooling2D']);
+    const [Dense, Flatten] = python.fromImport('keras.layers', ['Dense', 'Dropout', 'Flatten']);
+    const [Conv2D] = python.fromImport('keras.layers', ['Conv2D', 'MaxPooling2D']);
     const [SGD] = python.fromImport('keras.optimizers', ['SGD']);
 
     const x_train = np.random.random([100, 100, 100, 3]);
     const y_train = keras.utils.to_categorical(np.random.randint(10, _({size: [100, 1]})), _({num_classes: 10}));
-
-    const x_test = np.random.random([20, 100, 100, 3]);
-    const y_test = keras.utils.to_categorical(np.random.randint(10, _({size: [20, 1]})), _({num_classes: 10}));
 
     const model = Sequential();
 

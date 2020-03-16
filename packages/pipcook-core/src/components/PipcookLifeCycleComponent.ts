@@ -7,10 +7,8 @@ import {PipcookLifeCycleComponent, PipcookComponentResult} from '../types/compon
 import {PipcookPlugin, DataCollectType, DataAccessType, DataProcessType, ModelLoadType, 
   ModelTrainType, ModelEvaluateType, ModelDeployType} from '../types/plugins';
 import {DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELTRAIN, MODELEVALUATE, MODELDEPLOY} from '../constants/plugins';
-import {DATA, MODEL, EVALUATE, DEPLOYMENT, MERGE, MODELTOSAVE, ORIGINDATA} from '../constants/other';
+import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA} from '../constants/other';
 import { from } from 'rxjs';
-import {OriginSampleData, UniformSampleData, InsertParams} from '../types/data';
-import {PipcookModel} from '../types/model';
 
 
 /**

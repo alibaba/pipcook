@@ -2,6 +2,10 @@ node_modules
 example
 docs
 dist
+test
+pipcook_venv
 
 packages/pipcook-core/src/assets
-packages/pipcook-board-client/build
+packages/pipcook-cli/assets
+packages/pipcook-board-client
+packages/pipcook-board-server

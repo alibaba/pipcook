@@ -1,7 +1,7 @@
-import {ModelTrainType, PipcookModel, UniformGeneralSampleData, ArgsType} from '@pipcook/pipcook-core';
+import {ModelTrainType, PipcookModel, UniformGeneralSampleData} from '@pipcook/pipcook-core';
 import {Python} from '@pipcook/pipcook-python-node';
 
-const imageDetectronModelTrain: ModelTrainType = async (data: UniformGeneralSampleData, model: PipcookModel, args?: ArgsType): Promise<PipcookModel> => {
+const imageDetectronModelTrain: ModelTrainType = async (data: UniformGeneralSampleData, model: PipcookModel): Promise<PipcookModel> => {
   const trainer = model.model;
   await Python.scope('detectron', (python: any) => {
     const currentTrainer = python.runRaw(Python.convert(trainer));

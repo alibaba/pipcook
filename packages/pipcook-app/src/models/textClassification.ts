@@ -1,5 +1,5 @@
 
-import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip} from '@pipcook/pipcook-core';
+import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy} from '@pipcook/pipcook-core';
 
 import textClassDataCollect from '@pipcook/pipcook-plugins-text-class-data-collect';
 import textClassDataAccess from '@pipcook/pipcook-plugins-text-csv-data-access';
@@ -25,7 +25,7 @@ export default class TextClassification {
     }
   }
 
-  _train(dataSource: string, trainInfo: any) {
+  _train(dataSource: string) {
     const dataCollect = DataCollect(textClassDataCollect, {
       url: dataSource
     })
@@ -44,7 +44,7 @@ export default class TextClassification {
   async train(dataSource: string, trainInfo: any, 
     predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
     
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
+    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource);
 
     const modelDeploy = ModelDeploy(textClassLocalModelDeploy)
     
@@ -59,7 +59,7 @@ export default class TextClassification {
   async trainAndEasDeploy(dataSource: string, trainInfo: any, easConfig: EasConfigI,
      predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
 
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
+    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource);
 
     const modelDeploy = ModelDeploy(textClassEasDeploy, getEasParam(easConfig));
     

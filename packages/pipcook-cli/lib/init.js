@@ -1,11 +1,9 @@
-const chalk = require('chalk');
 const fse = require('fs-extra');
 const childProcess = require('child_process');
 const ora = require('ora');
 const path = require('path');
-let {dependencies, pipcookLogName} = require('./config');
+let {pipcookLogName} = require('./config');
 const spinner = ora();
-const request = require('request');
 
 /**
  * install all dependencies of pipcook into working dir
@@ -62,40 +60,5 @@ const init = async (cmdObj) => {
     fse.removeSync(dirname);
   }
 };
-
-function downloadConfig() {
-  try {
-    fse.ensureFileSync(path.join(__dirname, 'temp', 'config.js'))
-    return new Promise((resolve, reject) => {
-      const filename = path.join(__dirname, 'temp', 'config.js');
-      const file = fse.createWriteStream(filename);
-      let receivedBytes = 0
-      request.get('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/assets/config.js')
-        .on('response', (response) => {
-          // TODO(yorkie): remove the following unused variable.
-          const totalBytes = response.headers['content-length'];
-        })
-        .on('data', (chunk) => {
-          receivedBytes += chunk.length;
-        })
-        .pipe(file)
-        .on('error', (err) => {
-          fse.unlink(filename);
-          reject(err);
-        });
-    
-      file.on('finish', () => {
-        resolve();
-      });
-    
-      file.on('error', (err) => {
-        fse.unlink(filename);
-        reject(err);
-      });
-    })
-  } catch (err) {
-    throw new Error('download error');
-  }
-}
 
 module.exports = init;

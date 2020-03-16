@@ -6,7 +6,6 @@ import {ModelLoadType, PipcookModel, ModelLoadArgsType, getModelDir, UniformTfSa
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import {Python} from '@pipcook/pipcook-python-node';
-import * as fs from 'fs';
 import * as path from 'path';
 /**
  * assertion test
@@ -38,7 +37,6 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
   let classifier: any;
 
   await Python.scope('bayes_text_classification', async (python: any) => {
-    const _ = python.nA;
     python.install('jieba', {
       source: 'https://pypi.tuna.tsinghua.edu.cn/simple'
     });

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ImageUploader from 'react-images-upload';
 import './index.scss';
 import { Loading } from '@alifd/next';
+
 const axios = require('axios');
 
 export default class ObjectDetection extends Component {
@@ -10,7 +11,7 @@ export default class ObjectDetection extends Component {
     predictionResult: null,
     loading: false,
     image: null,
-    lines: []
+    lines: [],
   }
 
   onDrop = async (value) => {
@@ -23,10 +24,10 @@ export default class ObjectDetection extends Component {
     let base64 = await toBase64(value[value.length - 1]);
     base64 = base64.replace(/data:.*base64,/, '');
     this.setState({
-      loading: true
-    })
+      loading: true,
+    });
     axios.post('/predict', {
-      data: [base64]
+      data: [base64],
     })
     .then((response) => {
       const result = response.data.result;
@@ -36,7 +37,7 @@ export default class ObjectDetection extends Component {
         const lines = [];
         result.forEach((item) => {
           const {size, object} = item;
-          const {name, bndbox} = object;
+          const {bndbox} = object;
           const xmin = bndbox.xmin / (size[0] / image.width);
           const xmax = bndbox.xmax / (size[0] / image.width);
           const ymin = bndbox.ymin / (size[1] / image.height);
@@ -51,14 +52,14 @@ export default class ObjectDetection extends Component {
       this.setState({
         loading: false,
         predictionResult: result,
-        image: base64
-      })
+        image: base64,
+      });
     })
     .catch((error) => {
       console.log(error);
       this.setState({
-        loading: false
-      })
+        loading: false,
+      });
     });
   };
 
@@ -69,13 +70,13 @@ export default class ObjectDetection extends Component {
       <div className="object-detection">
         <Loading tip="Loading..." visible={loading}>
           <ImageUploader
-            withIcon={true}
+            withIcon
             buttonText='Choose image'
             onChange={this.onDrop}
             imgExtension={['.jpg']}
             label="Choose an image to predict"
             maxFileSize={1000000}
-            singleImage={true}
+            singleImage
           />
           {
             <div className="result">
@@ -84,10 +85,10 @@ export default class ObjectDetection extends Component {
           }
           {
             image && <div className="image-wrapper">
-              <img src={`data:image/jpeg;base64,${image}`} />
+              <img src={`data:image/jpeg;base64,${image}`} alt="predict"/>
               {
-                lines.map((line, index) => {
-                  <div className="lines" style={{x: line[0], y: line[1], width: line[2] - line[0], height: line[3] - line[1]}} />
+                lines.map((line) => {
+                  return <div className="lines" style={{x: line[0], y: line[1], width: line[2] - line[0], height: line[3] - line[1]}} />;
                 })
               }
             </div>

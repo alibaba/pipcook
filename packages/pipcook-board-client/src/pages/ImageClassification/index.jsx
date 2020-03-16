@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import ImageUploader from 'react-images-upload';
 import './index.scss';
 import { Loading } from '@alifd/next';
+
 const axios = require('axios');
 
 export default class ImageClassification extends Component {
 
   state = {
     predictionResult: null,
-    loading: false
+    loading: false,
   }
 
   onDrop = async (value) => {
@@ -21,23 +22,23 @@ export default class ImageClassification extends Component {
     let base64 = await toBase64(value[value.length - 1]);
     base64 = base64.replace(/data:.*base64,/, '');
     this.setState({
-      loading: true
-    })
+      loading: true,
+    });
     axios.post('/predict', {
-      data: [base64]
+      data: [base64],
     })
     .then((response) => {
       const result = response.data.result;
       this.setState({
         loading: false,
-        predictionResult: result
-      })
+        predictionResult: result,
+      });
     })
     .catch((error) => {
       console.log(error);
       this.setState({
-        loading: false
-      })
+        loading: false,
+      });
     });
   };
 
@@ -48,19 +49,17 @@ export default class ImageClassification extends Component {
       <div className="image-classificaiton">
         <Loading tip="Loading..." visible={loading}>
           <ImageUploader
-            withIcon={true}
+            withIcon
             buttonText='Choose image'
             onChange={this.onDrop}
             imgExtension={['.jpg']}
             label="Choose an image to predict"
             maxFileSize={1000000}
-            singleImage={true}
+            singleImage
           />
-          {
-            <div className="result">
+          <div className="result">
               The image you upload is {predictionResult}
             </div>
-          }
         </Loading>
       </div>
     );
