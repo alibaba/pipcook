@@ -118,7 +118,7 @@ export default class ImageClassification {
       await downloadZip(path.join(modelUrl, 'weights.bin'), path.join(tempModelPath, 'weights.bin'));
       await downloadZip(labelJsonUrl, labelJsonPath);
       const valueMap = require(labelJsonPath);
-      const modelDeploy = await imageClassEasDeploy({
+      await imageClassEasDeploy({
         metaData: {
           label: {
             valueMap

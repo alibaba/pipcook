@@ -6,7 +6,6 @@ import * as path from 'path';
 
 const fs = require('fs-extra');
 const xml2js = require('xml2js');
-const DecompressZip = require('decompress-zip');
 const _cliProgress = require('cli-progress');
 const request = require('request');
 const si = require('systeminformation');

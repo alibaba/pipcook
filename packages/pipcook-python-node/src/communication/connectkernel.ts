@@ -1,8 +1,6 @@
 import * as childProcess from 'child_process';
 import * as path from 'path';
 const fs = require('fs-extra');
-const ora = require('ora');
-const spinner = ora();
 const kill = require('kill-port');
 const commandExistsSync = require('command-exists').sync;
 
@@ -56,7 +54,7 @@ export function startKernel(shell_port: number, iopub_port: number) {
       console.error(data.toString());
     });
     
-    output.on('close', (code) => {
+    output.on('close', () => {
       // start ipython kernel with specific port
       const child = childProcess.spawn(`. ${path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate')} \\
       && ipython kernel --IPKernelApp.connection_file=${tempJsonPath}`, [], {

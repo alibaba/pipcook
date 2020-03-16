@@ -3,17 +3,18 @@ import { Nav } from '@alifd/next';
 import Home from '../Home';
 import Model from '../Model';
 import Dataset from '../Dataset';
-import Log from '../Log'
+import Log from '../Log';
 import Status from '../Status';
-const { Item, SubNav } = Nav;
 import './index.scss';
+
+const { Item } = Nav;
 
 const header = <span className="header">pipcook</span>;
 
 export default class Dashboard extends Component {
 
   state = {
-    selectedKeys: ['home']
+    selectedKeys: ['home'],
   }
 
   select = (selectedKeys) => {

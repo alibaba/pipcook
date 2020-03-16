@@ -1,5 +1,4 @@
 import {ArgsType, ModelDeployType, downloadZip, unZipData, getModelDir, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
-import {Python} from '@pipcook/pipcook-python-node';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
@@ -7,7 +6,6 @@ import * as fs from 'fs-extra';
 const OSS = require('ali-oss');
 const shell = require('shelljs');
 const uuidv1 = require('uuid/v1');
-const glob = require('glob-promise');
 
 
 const textClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {

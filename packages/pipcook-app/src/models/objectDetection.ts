@@ -88,7 +88,7 @@ export default class ObjectDetection {
       await downloadZip(modelUrl, modelPath);
       await downloadZip(labelJsonUrl, labelJsonPath);
       const valueMap = require(labelJsonPath);
-      const modelDeploy = await easModelDeploy({
+      await easModelDeploy({
         metaData: {
           label: {
             valueMap

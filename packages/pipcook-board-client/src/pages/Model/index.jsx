@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-const axios = require('axios');
 import IceNotification from '@icedesign/notification';
 import { Table } from '@alifd/next';
+
+const axios = require('axios');
 
 export default class Model extends Component {
 
   state = {
-    models: []
+    models: [],
   }
+
   componentDidMount = async () => {
     axios.get('/models')
       .then((response) => {
@@ -17,16 +19,16 @@ export default class Model extends Component {
            ...item,
            startTime: new Date(item.startTime).toLocaleString(), 
            endTime: new Date(item.endTime).toLocaleString(),
-          }
-        })
+          };
+        });
         this.setState({ models: result});
       })
       .catch((err) => {
         IceNotification.error({
           message: 'Error',
-          description: JSON.stringify(err)
-        })
-      })
+          description: JSON.stringify(err),
+        });
+      });
   }
 
   render() {

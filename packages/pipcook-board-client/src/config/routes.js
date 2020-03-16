@@ -1,9 +1,10 @@
 import BasicLayout from '@/layouts/BasicLayout';
 import Dashboard from '@/pages/Dashboard';
 import NotFound from '@/pages/NotFound';
-import ImageClassification from '@/pages/ImageClassification'
+import ImageClassification from '@/pages/ImageClassification';
 import TextClassification from '@/pages/TextClassification';
 import ObjectDetection from '@/pages/ObjectDetection';
+
 const routerConfig = [
   {
     path: '/',
@@ -20,15 +21,15 @@ const routerConfig = [
       },
       {
         path: '/image-classification',
-        component: ImageClassification
+        component: ImageClassification,
       },
       {
         path: 'text-classification',
-        component: TextClassification
+        component: TextClassification,
       },
       {
         path: '/object-detection',
-        component: ObjectDetection
+        component: ObjectDetection,
       },
       {
         component: NotFound,
