@@ -27,7 +27,7 @@ export function getServer() {
  * @param fastify : fastify server instance
  */
 export function startServer(fastify: any) {
-  fastify.listen(7778, '0.0.0.0' ,function (err: Error) {
+  fastify.listen(7778, '0.0.0.0', function (err: Error) {
     if (err) {
       fastify.log.error(err)
     }
