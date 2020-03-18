@@ -8,7 +8,7 @@ const spinner = ora();
  */
 const devPlugin = (cmdObj) => {
   const pluginType = cmdObj && cmdObj[0];
-  const projectName = cmdObj && cmdObj[1];
+  let projectName = cmdObj && cmdObj[1];
 
   if (!pluginType) {
     console.log('Please provide a plugin type');
