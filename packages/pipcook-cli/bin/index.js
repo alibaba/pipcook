@@ -59,7 +59,6 @@ program
   .option('-n, --name', 'project name')
   .description('initialize plugin development environment')
   .action((dir, cmdObj) => {
-    console.log(cmdObj)
     devPlugin(cmdObj);
   });
 
