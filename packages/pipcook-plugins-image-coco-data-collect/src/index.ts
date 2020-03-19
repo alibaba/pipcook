@@ -3,65 +3,29 @@
  * the data is conform to expectation.
  */
 
-import {OriginSampleData, ArgsType, unZipData, download, getDatasetDir, createAnnotationFromJson, DataCollectType} from '@pipcook/pipcook-core';
+import {ArgsType, unZipData, download, createAnnotationFromJson, DataCollectType} from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as assert from 'assert';
-const fs = require('fs-extra');
+import * as fs from 'fs-extra';
 
-const shuffle = (a: any[]) => {
-  for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
-  let {
-    url='',
-    validationSplit=0,
-    testSplit=0,
-    annotationFileName='annotation.json'
-  } = args || {};
-  assert.ok(url, 'Please specify a url of zip of your dataset');
-  const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
-  const extention = fileName.split('.');
-  if (extention[extention.length - 1] !== 'zip') {
-    throw new Error('the file must be zip file');
-  }
-  const datasetName = extention[0];
-
-  const saveDir = path.join(getDatasetDir(), datasetName);
-  fs.removeSync(saveDir);
-  fs.ensureDirSync(saveDir);
-
-  // local file
-  if (/^file:\/\/.*/.test(url)) {
-    url = url.substring(7);
-  } else {
-    const targetPath = path.join(saveDir, Date.now() + '.zip');
-    console.log('downloading dataset ...')
-    await download(url, targetPath);
-    url = targetPath;
-  }
-  console.log('unzip and collecting data...');
-  await unZipData(url, saveDir);
-  const imagePaths = await glob(path.join(saveDir, 'images' ,'*.+(jpg|jpeg|png)'));
-  shuffle(imagePaths);
+const createDataset = async (type: string, dataDir: string) => {
+  const imagePaths = await glob(path.join(dataDir, 'coco', type, '*.+(jpg|jpeg|png)'));
   const countNumber = imagePaths.length;
   console.log('create annotation file...');
-  const typeSet = new Set<string>();
-  const annotation = require(path.join(saveDir, annotationFileName));
+  const annotation = fs.readJSONSync(path.join(dataDir, 'coco', type, 'annotation.json'))
   for (let i = 0; i < countNumber; i++) {
     const imagePath = imagePaths[i];
     const imagePathSplit = imagePath.split(path.sep);
     const fileName = imagePathSplit[imagePathSplit.length - 1];
     const cocoImage = annotation.images.find((e: any) => e.file_name == fileName);
+    if (!cocoImage) {
+      continue;
+    }
     const currentAnnotation: any = {
       annotation: {
         folder: [
-          path.join(saveDir, 'images')
+          path.join(dataDir, type)
         ],
         filename: [
           cocoImage.file_name
@@ -101,34 +65,53 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
           }
         ]
       };
-    })
-    if (i >= countNumber * (testSplit + validationSplit)) {
-      typeSet.add('train');
-      createAnnotationFromJson(path.join(saveDir, 'annotations', 'train' ), currentAnnotation);
-    } else if (validationSplit > 0 && i >= countNumber * validationSplit) {
-      typeSet.add('validation');
-      createAnnotationFromJson(path.join(saveDir ,'annotations', 'validation') ,currentAnnotation);
-    } else {
-      typeSet.add('test');
-      createAnnotationFromJson(path.join(saveDir ,'annotations', 'test') ,currentAnnotation);
-    }
+    });
+    createAnnotationFromJson(path.join(dataDir, type), currentAnnotation);
+    fs.moveSync(imagePath, path.join(dataDir, type, fileName));
+  }
+}
+
+const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
+  let {
+    url='',
+    dataDir
+  } = args;
+
+  assert.ok(url, 'Please specify a url of zip of your dataset');
+  const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
+  const extention = fileName.split('.');
+  assert.ok(extention[extention.length - 1] === 'zip', 'the file must be zip file')
+
+  if (/^file:\/\/.*/.test(url)) {
+    url = url.substring(7);
+  } else {
+    const targetPath = path.join(dataDir, 'temp.zip');
+    console.log('downloading dataset ...')
+    await download(url, targetPath);
+    url = targetPath;
   }
 
-  if (!typeSet.has('train')) {
-    throw new Error('There is no train data. Please check the folder structure');
+  const saveDir = path.join(dataDir, 'coco');
+  console.log('unzip and collecting data...');
+  await unZipData(url, saveDir);
+
+  const trainAnnotation = path.join(dataDir, 'coco', 'train', 'annotation.json');
+  if (fs.existsSync(trainAnnotation)) {
+    await createDataset('train', dataDir);
   }
-  const result: OriginSampleData = {
-    trainDataPath: path.join(saveDir, 'annotations', 'train'),
+  if (fs.existsSync(path.join(dataDir, 'coco', 'validation', 'annotation.json'))) {
+    await createDataset('validation', dataDir);
+  }
+  if (fs.existsSync(path.join(dataDir, 'coco', 'test', 'annotation.json'))) {
+    await createDataset('test', dataDir);
   }
 
-  if (typeSet.has('validation')) {
-    result.validationDataPath = path.join(saveDir, 'annotations', 'validation');
+  try {
+    fs.removeSync(saveDir);
+    fs.removeSync(url);
+  } catch (err) {
+    console.log('something is wrong when cleaning temp files');
   }
-  if (typeSet.has('test')) {
-    result.testDataPath = path.join(saveDir, 'annotations', 'test');
-  }
-
-  return result;
 }
 
 export default imageDetectionDataCollect;

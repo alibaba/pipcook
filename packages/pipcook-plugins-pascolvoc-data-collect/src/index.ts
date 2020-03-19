@@ -1,20 +1,15 @@
-/**
- * @file For plugin to collect test classification data
- */
-import {DataCollectType, unZipData, ArgsType, download} from '@pipcook/pipcook-core';
+import {ArgsType, unZipData, download, DataCollectType} from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
+import * as fs from 'fs-extra';
 
-/**
- * collect csv data
- */
-const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
+const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
   let {
     url='',
     dataDir
   } = args;
 
-  assert.ok(url, 'Please specify a url of zip of your data');
+  assert.ok(url, 'Please specify a url of zip of your dataset');
 
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
   const extention = fileName.split('.');
@@ -32,10 +27,12 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
 
   console.log('unzip and collecting data...');
   await unZipData(url, dataDir);
+
+  try {
+    fs.removeSync(url);
+  } catch (err) {
+    console.log('something is wrong when cleaning temp files');
+  }
 }
 
-export default textClassDataCollect;
-
-
-
-
+export default imageDetectionDataCollect;

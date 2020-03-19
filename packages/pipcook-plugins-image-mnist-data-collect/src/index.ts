@@ -1,43 +1,43 @@
 /**
  * @file For plugin to collect mnist data
  */
-import {DataCollectType, OriginSampleData, ArgsType, createAnnotationFile, getDatasetDir} from '@pipcook/pipcook-core';
+import {DataCollectType, ArgsType, createAnnotationFile} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 import * as path from 'path';
-const fs = require('fs-extra')
-const _cliProgress = require('cli-progress');
+import _cliProgress from 'cli-progress';
+
 const mnist = require('mnist');
 
 /**
  * collect mnist data
  */
-const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
+const imageMnistDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
   const {
-    trainingCount=8000,
-    testCount = 500
-  } = args || {};
-  const savePath = getDatasetDir();
-  const set = mnist.set(trainingCount, testCount);
+    trainCount=8000,
+    testCount = 500,
+    dataDir
+  } = args;
+
+  const set = mnist.set(trainCount, testCount);
   const trainingSet = set.training;
   const testSet = set.test;
+
   const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
   console.log('collecting training data ...');
-  bar1.start(trainingCount, 0);
-  const saveDir = path.join(savePath, 'mnist');
-  fs.removeSync(saveDir);
+  bar1.start(trainCount, 0);
+
   for (let i = 0; i < trainingSet.length; i++) {
     bar1.update(i);
     const trainingSample = trainingSet[i];
     const input = (trainingSample.input).map((x: any) => x * 255);
     const output = trainingSample.output;
-    const imageDir = path.join(saveDir, 'images');
-    const annotationDir = path.join(saveDir, 'annotations', 'train');
-    createAnnotationFile(annotationDir, `trainsample${i}.jpg`, imageDir, String(output.indexOf(1)))
-    fs.ensureDirSync(imageDir);
+    const trainDir = path.join(dataDir, 'train');
+    const imageName = `trainsample${i}.jpg`;
+    createAnnotationFile(trainDir, imageName, trainDir, String(output.indexOf(1)));
     const image = await tf.node.encodeJpeg(tf.tensor3d(input, [28, 28, 1], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
-    await jimpImage.write(path.join(imageDir, `trainsample${i}.jpg`));
+    await jimpImage.write(path.join(trainDir, imageName));
   }
   bar1.stop();
 
@@ -49,23 +49,14 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
     const trainingSample = testSet[i];
     const input = (trainingSample.input).map((x: any) => x * 255);
     const output = trainingSample.output;
-    const imageDir = path.join(saveDir, 'images');
-    const annotationDir = path.join(saveDir, 'annotations', 'test');
-    createAnnotationFile(annotationDir, `testsample${i}.jpg`, imageDir, String(output.indexOf(1)))
-    fs.ensureDirSync(imageDir);
+    const testDir = path.join(dataDir, 'test');
+    const imageName = `trainsample${i}.jpg`;
+    createAnnotationFile(testDir, imageName, testDir, String(output.indexOf(1)))
     const image = await tf.node.encodeJpeg(tf.tensor3d(input, [28, 28, 1], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
-    await jimpImage.write(path.join(imageDir, `testsample${i}.jpg`));
+    await jimpImage.write(path.join(testDir, imageName));
   }
   bar2.stop();
-
-
-  const result: OriginSampleData = {
-    trainDataPath: path.join(saveDir, 'annotations', 'train'),
-    testDataPath: path.join(saveDir, 'annotations', 'test'),
-  }
-  
-  return result;
 }
 
 export default imageMnistDataCollect;

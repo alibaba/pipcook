@@ -21,7 +21,6 @@ const extract = require('extract-zip')
  * @param category : image classification category name
  */
 export function createAnnotationFile(annotationDir: string, filename: string, url: string, category: string) {
-  fs.ensureDirSync(annotationDir);
   const json = {
     annotation: {
       filename: [filename],

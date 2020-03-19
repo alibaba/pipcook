@@ -1,11 +1,10 @@
-import * as tf from '@tensorflow/tfjs-node-gpu';
 import {MetaData, Statistic} from './other';
 
 export interface UniformSampleData {
-  trainData: any;
-  validateData?: any;
-  testData?: any;
-  metaData: MetaData;
+  trainData: string;
+  validationData?: string;
+  testData?: string;
+  metaData?: MetaData;
   dataStatistics?: Statistic[];
   validationResult?: {
     result: boolean;
@@ -13,17 +12,19 @@ export interface UniformSampleData {
   };
 }
 
-export interface UniformTfSampleData extends UniformSampleData {
-  trainData: tf.data.Dataset<{xs: tf.Tensor<any>; ys?: tf.Tensor<any>}>;
-  validateData?: tf.data.Dataset<{xs: tf.Tensor<any>; ys?: tf.Tensor<any>}>;
-  testData?: tf.data.Dataset<{xs: tf.Tensor<any>; ys?: tf.Tensor<any>}>;
+export interface PascolVocSampleData extends UniformSampleData {
 }
 
-export interface UniformGeneralSampleData extends UniformSampleData {
-  trainData: string;
-  validateData?: string;
-  testData?: string;
+export interface CocoSampleData extends UniformSampleData {
+
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface InsertParams {}
+export interface CsvSampleData extends UniformSampleData {
+
+}
+
+export interface InsertParams {
+  pipelineId: string;
+  modelDir: string;
+  dataDir: string;
+}

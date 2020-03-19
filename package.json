@@ -23,6 +23,7 @@
     "typedoc": "typedoc"
   },
   "dependencies": {
+    "@tensorflow/tfjs-node-gpu": "^1.7.0",
     "better-opn": "^1.0.0"
   }
 }

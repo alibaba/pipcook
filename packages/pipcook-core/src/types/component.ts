@@ -5,7 +5,7 @@ import {PipObject} from './other';
 import {Subscribable} from 'rxjs';
 
 interface ObserverFunc {
-  (data: UniformSampleData, model: PipcookModel | PipcookModel[] |null, insertParams: InsertParams): Subscribable<any>;
+  (data: UniformSampleData, model: PipcookModel |null, insertParams: InsertParams): Subscribable<any>;
 }
 
 type ResultType = 

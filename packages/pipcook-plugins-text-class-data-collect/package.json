@@ -16,9 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.4",
-    "csv-parser": "^2.3.2",
-    "fs-extra": "^8.1.0"
+    "@pipcook/pipcook-core": "^0.5.4"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {

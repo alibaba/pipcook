@@ -44,20 +44,16 @@ export async function assignLatestResult(updatedType: string, result: any, self:
       break;
     case MODELTOSAVE:
       self.latestModel = result;
-      if (Array.isArray(result) && result.length > 0) {
-        result = result[0];
-      }
-      await result.save(path.join(self.logDir as string, 'model'));
       if (saveModelCallback) {
         const valueMap = 
         (self.latestSampleData && self.latestSampleData.metaData 
-          && self.latestSampleData.metaData.label && self.latestSampleData.metaData.label.valueMap) || {};
+          && self.latestSampleData.metaData.label && self.latestSampleData.metaData.labelMap) || {};
         fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
         await saveModelCallback(path.join(self.logDir as string, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
       } 
       break;
     default:
-      throw new Error('Returned Data Type is not recognized');
+      break;
   }
 }
 

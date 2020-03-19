@@ -1,6 +1,6 @@
 {
-  "name": "@pipcook/pipcook-plugins-image-mnist-data-collect",
-  "version": "0.5.4",
+  "name": "@pipcook/pipcook-plugins-pytorch-common-model-load",
+  "version": "0.5.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -17,10 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.4",
-    "@tensorflow/tfjs-node-gpu": "^1.7.0",
-    "cli-progress": "^3.4.0",
-    "jimp": "^0.9.0",
-    "mnist": "^1.1.0"
+    "@pipcook/boa": "^0.2.0"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {

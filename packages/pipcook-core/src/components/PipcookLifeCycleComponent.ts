@@ -5,10 +5,11 @@
 
 import {PipcookLifeCycleComponent, PipcookComponentResult} from '../types/component';
 import {PipcookPlugin, DataCollectType, DataAccessType, DataProcessType, ModelLoadType, 
-  ModelTrainType, ModelEvaluateType, ModelDeployType} from '../types/plugins';
+  ModelTrainType, ModelEvaluateType, ModelDeployType, saveModelFunction} from '../types/plugins';
 import {DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELTRAIN, MODELEVALUATE, MODELDEPLOY} from '../constants/plugins';
 import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA} from '../constants/other';
 import { from } from 'rxjs';
+import * as path from 'path';
 
 
 /**
@@ -96,7 +97,12 @@ export const ModelLoad: PipcookLifeCycleComponent = (plugin: ModelLoadType, para
 export const ModelTrain: PipcookLifeCycleComponent = (plugin: ModelTrainType, params?: any) => {
   const result = produceResultFactory(MODELTRAIN, plugin, params);
   result.observer = (data: any, model, insertParams) => {
-    return from(plugin(data, model, {...params, ...insertParams}));
+    return from(plugin(data, model, {
+      ...params, ...insertParams, 
+      saveModel: async (callback: Function) => {
+        await callback(path.join(process.cwd(), insertParams.pipelineId, 'model'));
+      }
+    }));
   }
   result.returnType = MODELTOSAVE;
   return result;

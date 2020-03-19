@@ -37,6 +37,7 @@ export default class Python {
     statements.forEach((statement: string) => {
       codes += statement + '\n';
     });
+    console.log(statements);
     const result = await Executor.execute(python.scope, codes, user_expressions);
     python.statements.splice(0, python.statements.length);
     return result;

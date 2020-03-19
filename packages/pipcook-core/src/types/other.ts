@@ -1,19 +1,15 @@
 import {DataType} from '@tensorflow/tfjs-node-gpu';
 
 export interface DataDescriptor {
-  name: string;
-  type: DataType;
-  shape: number[];
-  possibleValues?: string[] | number[];
-  valueMap?: any;
+  name?: string;
+  type?: DataType;
+  shape?: number[];
 }
 
 export interface MetaData {
-  feature: DataDescriptor;
-  label: DataDescriptor;
-  trainSize?: number;
-  validationSize?: number;
-  testSize?: number;
+  feature?: DataDescriptor;
+  label?: DataDescriptor;
+  labelMap?: {[key: string]: number}
 }
 
 export interface Statistic {

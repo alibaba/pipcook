@@ -12,7 +12,8 @@ import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
 /**
- * collect the data either from remote url or local file system. It expects a zip 
+ * This is downloader for image classification dataset. 
+ * The plugin collects the data either from remote url or local file system. It expects a zip 
  * which contains the structure of traditional iamge classification data folder.
  * 
  * The structure should be:
@@ -24,15 +25,15 @@ import { v1 as uuidv1 } from 'uuid';
  *  - category2-name
  *  - ...
  * - test (optional)
- * - validate (optional)
+ * - validation (optional)
  * 
  * @param url path of the data, if it comes from local file, please add file:// as prefix
  */
-const imageClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<void> => {
+const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
   let {
     url='',
     dataDir
-  } = args || {};
+  } = args;
 
   assert.ok(url, 'Please specify the url of your dataset');
 
@@ -54,7 +55,6 @@ const imageClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<
   console.log('unzip and collecting data...');
   await unZipData(url, imageDir);
   const imagePaths = await glob(path.join(imageDir, '+(train|validation|test)', '*', '*.+(jpg|jpeg|png)'));
-  const typeSet = new Set<string>();
   console.log('create annotation file...');
   imagePaths.forEach((imagePath: string) => {
     const splitString = imagePath.split(path.sep);
@@ -63,9 +63,15 @@ const imageClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<
     const imageName = uuidv1() + splitString[splitString.length -1];
     const annotationDir = path.join(dataDir, trainType);
     createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
-    typeSet.add(trainType);
-    fs.moveSync(imagePath, annotationDir, { overwrite: true });
+    fs.moveSync(imagePath, path.join(annotationDir, imageName), { overwrite: true });
   });
+
+  try {
+    fs.removeSync(url);
+    fs.removeSync(imageDir);
+  } catch (err) {
+    console.log('something is wrong when cleaning temp files');
+  }
 }
 
 export default imageClassDataCollect;
