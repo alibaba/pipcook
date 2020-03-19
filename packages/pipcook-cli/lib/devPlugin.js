@@ -15,12 +15,20 @@ const devPlugin = (cmdObj) => {
     return;
   }
 
-  if (!projectName) {
-    projectName = 'template-plugin';
-  }
-
   let dirname;
   try {
+    const typeFiles = fse.readdirSync(path.join(__dirname, '../assets/pluginPackage/src'));
+    const allowedTypes = typeFiles.map(filename => filename.replace(/(.*\/)*([^.]+).*/ig,"$2"));
+    if (allowedTypes.indexOf(pluginType) < 0) {
+      console.log(`Unsupported plugin type: ${pluginType}.\n` +
+        `The type of plugin must be one of: \n{ ${allowedTypes.join(', ')} }`);
+      return;
+    }
+
+    if (!projectName) {
+      projectName = 'template-plugin';
+    }
+
     dirname = path.join(process.cwd(), projectName);
     if (fse.existsSync(dirname)) {
       spinner.fail(`a directory or file called ${projectName} already exists. Please use a new working directory`);
@@ -40,7 +48,6 @@ const devPlugin = (cmdObj) => {
     console.error(e);
     fse.removeSync(dirname);
   }
-  
 };
 
 module.exports = devPlugin;
