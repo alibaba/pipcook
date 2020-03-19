@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -f package-lock.json",
     "compile": "tsc -b tsconfig.json"
   },
   "author": "",

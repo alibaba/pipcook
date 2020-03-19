@@ -10,14 +10,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -f package-lock.json",
     "compile": "tsc -b tsconfig.json"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.4",
-    "@tensorflow/tfjs-node-gpu": "x.x.x",
+    "@tensorflow/tfjs-node-gpu": "1.7.0",
     "ali-oss": "^6.4.0",
     "fs-extra": "^8.1.0",
     "shelljs": "0.8.3",
