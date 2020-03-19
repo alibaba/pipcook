@@ -56,6 +56,7 @@ program
 program
   .command('plugin-dev')
   .option('-t, --type', 'plugin type')
+  .option('-n, --name', 'project name')
   .description('initialize plugin development environment')
   .action((dir, cmdObj) => {
     devPlugin(cmdObj);
