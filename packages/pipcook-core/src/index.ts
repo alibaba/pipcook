@@ -10,13 +10,7 @@ export {createAnnotationFile, parseAnnotation, unZipData, downloadZip, getOsInfo
   getDatasetDir, createAnnotationFromJson, getMetadata, getModelDir, convertPascol2CocoFileOutput, compressTarFile } from './utils/publicUtils';
 export {startBoard} from './board/board';
 export {PipcookComponentResult} from './types/component';
-export {
-  DATACOLLECT,
-  DATAACCESS,
-  DATAPROCESS,
-  MODELLOAD,
-  MODELTRAIN,
-  MODELEVALUATE,
-  MODELDEPLOY,
-  ONLINETRAIN
-} from './constants/plugins';
+import {PLUGINS} from './constants/plugins';
+export const constants = {
+  PLUGINS
+};
