@@ -1,5 +1,6 @@
 node_modules
 .vscode/
-tsconfig.tsbuildinfopipcook_env
+tsconfig.tsbuildinfo
+pipcook_env
 .temp
 
