@@ -10,3 +10,4 @@ export {createAnnotationFile, parseAnnotation, unZipData, downloadZip, getOsInfo
   getDatasetDir, createAnnotationFromJson, getMetadata, getModelDir, convertPascol2CocoFileOutput, compressTarFile } from './utils/publicUtils';
 export {startBoard} from './board/board';
 export {PipcookComponentResult} from './types/component';
+export {PLUGINS} from './constants/plugins';
