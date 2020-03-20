@@ -1,0 +1,29 @@
+{
+  "name": "@pipcook/pipcook-plugins-bayesian-classifier-model-train",
+  "version": "0.5.4",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -f package-lock.json",
+    "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pipcook/pipcook-core": "^0.5.4",
+    "@pipcook/pipcook-python-node": "^0.5.3",
+    "@tensorflow/tfjs-node-gpu": "1.7.0"
+  },
+  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
+  "devDependencies": {
+    "@types/fs-extra": "^8.1.0",
+    "@types/jasmine": "^3.5.7",
+    "nyc": "14.1.1"
+  }
+}
