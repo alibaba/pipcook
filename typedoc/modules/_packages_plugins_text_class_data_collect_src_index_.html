@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;packages/pipcook-plugins-image-detection-data-collect/src/index&quot; | Pipcook</title>
+	<title>&quot;packages/plugins/text-class-data-collect/src/index&quot; | Pipcook</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="_packages_pipcook_plugins_image_detection_data_collect_src_index_.html">&quot;packages/pipcook-plugins-image-detection-data-collect/src/index&quot;</a>
+					<a href="_packages_plugins_text_class_data_collect_src_index_.html">&quot;packages/plugins/text-class-data-collect/src/index&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;packages/pipcook-plugins-image-detection-data-collect/src/index&quot;</h1>
+			<h1>External module &quot;packages/plugins/text-class-data-collect/src/index&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -71,14 +71,15 @@
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_packages_pipcook_plugins_image_detection_data_collect_src_index_.html#fs" class="tsd-kind-icon">fs</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_packages_plugins_text_class_data_collect_src_index_.html#csv" class="tsd-kind-icon">csv</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_packages_plugins_text_class_data_collect_src_index_.html#fs" class="tsd-kind-icon">fs</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_packages_pipcook_plugins_image_detection_data_collect_src_index_.html#imagedetectiondatacollect" class="tsd-kind-icon">image<wbr>Detection<wbr>Data<wbr>Collect</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_packages_pipcook_plugins_image_detection_data_collect_src_index_.html#shuffle" class="tsd-kind-icon">shuffle</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_packages_plugins_text_class_data_collect_src_index_.html#textclassdatacollect" class="tsd-kind-icon">text<wbr>Class<wbr>Data<wbr>Collect</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_packages_plugins_text_class_data_collect_src_index_.html#transformcsv" class="tsd-kind-icon">transform<wbr>Csv</a></li>
 							</ul>
 						</section>
 					</div>
@@ -87,12 +88,22 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="csv" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> csv</h3>
+					<div class="tsd-signature tsd-kind-icon">csv<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;require(&#x27;csv-parser&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/225037d/packages/plugins/text-class-data-collect/src/index.ts#L8">packages/plugins/text-class-data-collect/src/index.ts:8</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="fs" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> fs</h3>
 					<div class="tsd-signature tsd-kind-icon">fs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;require(&#x27;fs-extra&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/9f88042/packages/pipcook-plugins-image-detection-data-collect/src/index.ts#L10">packages/pipcook-plugins-image-detection-data-collect/src/index.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/225037d/packages/plugins/text-class-data-collect/src/index.ts#L7">packages/plugins/text-class-data-collect/src/index.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -100,18 +111,23 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="imagedetectiondatacollect" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> image<wbr>Detection<wbr>Data<wbr>Collect</h3>
+					<a name="textclassdatacollect" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> text<wbr>Class<wbr>Data<wbr>Collect</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">image<wbr>Detection<wbr>Data<wbr>Collect<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArgsType</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">OriginSampleData</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">text<wbr>Class<wbr>Data<wbr>Collect<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ArgsType</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">OriginSampleData</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/9f88042/packages/pipcook-plugins-image-detection-data-collect/src/index.ts#L20">packages/pipcook-plugins-image-detection-data-collect/src/index.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/225037d/packages/plugins/text-class-data-collect/src/index.ts#L36">packages/plugins/text-class-data-collect/src/index.ts:36</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>collect csv data</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -123,25 +139,25 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="shuffle" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> shuffle</h3>
+					<a name="transformcsv" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> transform<wbr>Csv</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">shuffle<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">transform<wbr>Csv<span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/9f88042/packages/pipcook-plugins-image-detection-data-collect/src/index.ts#L12">packages/pipcook-plugins-image-detection-data-collect/src/index.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/225037d/packages/plugins/text-class-data-collect/src/index.ts#L10">packages/plugins/text-class-data-collect/src/index.ts:10</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>a: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>result: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -154,20 +170,23 @@
 						<a href="../index.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="_packages_pipcook_plugins_image_detection_data_collect_src_index_.html">&quot;packages/pipcook-<wbr>plugins-<wbr>image-<wbr>detection-<wbr>data-<wbr>collect/src/index&quot;</a>
+						<a href="_packages_plugins_text_class_data_collect_src_index_.html">&quot;packages/plugins/text-<wbr>class-<wbr>data-<wbr>collect/src/index&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_packages_pipcook_plugins_image_detection_data_collect_src_index_.html#fs" class="tsd-kind-icon">fs</a>
+						<a href="_packages_plugins_text_class_data_collect_src_index_.html#csv" class="tsd-kind-icon">csv</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_packages_plugins_text_class_data_collect_src_index_.html#fs" class="tsd-kind-icon">fs</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_packages_pipcook_plugins_image_detection_data_collect_src_index_.html#imagedetectiondatacollect" class="tsd-kind-icon">image<wbr>Detection<wbr>Data<wbr>Collect</a>
+						<a href="_packages_plugins_text_class_data_collect_src_index_.html#textclassdatacollect" class="tsd-kind-icon">text<wbr>Class<wbr>Data<wbr>Collect</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_packages_pipcook_plugins_image_detection_data_collect_src_index_.html#shuffle" class="tsd-kind-icon">shuffle</a>
+						<a href="_packages_plugins_text_class_data_collect_src_index_.html#transformcsv" class="tsd-kind-icon">transform<wbr>Csv</a>
 					</li>
 				</ul>
 			</nav>
