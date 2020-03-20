@@ -25,22 +25,22 @@ export default class Logger {
   protected static error: LoggerFunction = createLogger('error', LoggerColor.RED);
 
   public static logStartExecution(pipline: PipcookRunner) {
-    this.log(`start execution: \npipeline id: ${pipline.pipelineId}`);
+    Logger.log(`start execution: \npipeline id: ${pipline.pipelineId}`);
   }
   public static logCurrentExecution(component: PipcookComponentResult, type = 'normal') {
     let msg = `current execution component: ${component.type}`;
     if (type === 'merge') {
       msg = 'in merge, ' + msg;
     }
-    this.info(msg);
+    Logger.info(msg);
   }
   public static logError(errmsg: string | Error) {
     if (errmsg instanceof Error)
       errmsg = errmsg.stack;
-    return this.error(errmsg);
+    return Logger.error(errmsg);
   }
   public static logComplete() {
-    return this.log('Pipline is completed.');
+    return Logger.log('Pipline is completed.');
   }
 }
 
