@@ -18,9 +18,7 @@ const devPlugin = (cmdObj) => {
   }
 
   if (constants.PLUGINS.indexOf(pluginType) < 0) {
-    console.warn(chalk.red(`Unsupported plugin type: "${pluginType}"`));
-    console.warn(chalk.yellow('The type of plugin must be one of: '));
-    console.warn(chalk.yellow(`{ \n  ${constants.PLUGINS.join(',\n  ')}\n}`));
+    console.warn(chalk.red(`Unsupported plugin type: "${pluginType}", it must be one of: \n${constants.PLUGINS.join(',\n')}`));
     return;
   }
 
