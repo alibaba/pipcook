@@ -3,6 +3,9 @@ const childProcess = require('child_process');
 const ora = require('ora');
 const path = require('path');
 const glob = require('glob-promise');
+const commandExistsSync = require('command-exists').sync;
+const inquirer = require('inquirer');
+
 let {pipcookLogName} = require('./config');
 const spinner = ora();
 
@@ -13,7 +16,34 @@ const init = async (cmdObj) => {
   let client = 'npm';
   if (cmdObj && cmdObj[0]) {
     client = cmdObj[0];
+  } else {
+    const clientChoices = [];
+    if (commandExistsSync('npm')) {
+      clientChoices.push('npm');
+    }
+    if (commandExistsSync('cnpm')) {
+      clientChoices.push('cnpm');
+    }
+    if (commandExistsSync('tnpm')) {
+      clientChoices.push('tnpm');
+    }
+    spinner.fail(`no npm client detected`);
+    if (clientChoices.length > 0) {
+      const answer = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'client',
+          message: 'which client do you want to use?',
+          choices: clientChoices
+        },
+      ]);
+      client = answers.client;
+    } else {
+      spinner.fail(`no npm client detected`);
+      return;
+    }
   }
+
   let dirname;
   try {
     dirname = process.cwd();
@@ -37,13 +67,15 @@ const init = async (cmdObj) => {
     });
 
     spinner.start(`installing pipcook core...`);
-    childProcess.execSync(`${client} link @pipcook/pipcook-app`, {
+    childProcess.execSync(`${client} install @pipcook/pipcook-app --save`, {
       cwd: dirname,
+      stdio: 'inherit'
     });
     spinner.succeed(`install pipcook core successfully`);
     spinner.start(`installing pipcook board`);
     childProcess.execSync(`${client} install`, {
       cwd: path.join(dirname, '.server'),
+      stdio: 'inherit'
     });
     spinner.succeed(`install pipcook board successfully`);
   } catch (error) {
