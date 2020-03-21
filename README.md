@@ -67,7 +67,7 @@ $ npm install -g @pipcook/pipcook-cli
 
 Initialize a project:
 
-```shell
+```sh
 $ mkdir pipcook-example && cd pipcook-example
 $ pipcook init
 $ cd pipcook-project
@@ -87,44 +87,48 @@ In this reposiory, We have prepared several examples, some of they are:
 See [here](./example) for complete list, and it's easy and quick to run these examples. For example, to do a minst 
 image classification, just run the following to start the pipeline:
 
-```shell
+```sh
 $ node examples/pipcook-app-example/pipcook-imageclass-app-test.js
 ```
 
 ## Documentation
 
-Please refer to [中文](https://alibaba.github.io/pipcook/doc/pipcook%20%E6%98%AF%E4%BB%80%E4%B9%88-zh)｜ [English](https://alibaba.github.io/pipcook/doc/What%20is%20Pipcook%3F-en)
+Please refer to [English](docs/) | [中文](docs/zh-cn/)
 
 ## Developers
 
 Clone this repository:
 
-```shell
+```sh
 $ git clone git@github.com:alibaba/pipcook.git
 ```
 
 Install [lerna][] and [TypeScript][], and check:
 
-```shell
+```sh
 $ lerna -v
 $ tsc -v
 ```
 
 or install via [npm][]:
 
-```shell
+```sh
 $ npm install
 ```
 
 After the above, now build the project:
 
-```shell
+```sh
 $ npm run build
 ```
 
-- Developer Documentation [中文](https://alibaba.github.io/pipcook/doc/%E5%BC%80%E5%8F%91%E8%80%85%E6%89%8B%E5%86%8C-zh) ｜ [English](https://alibaba.github.io/pipcook/doc/developer%20guide-en)
+- Developer Documentation [English](docs/tutorials/developer-guide.md) | [中文](docs/zh-cn/tutorials/developer-guide.md)
 - [Project Guide](./docs/meta/PROJECT_GUIDE.md)
 - [Roadmap, 2020](https://github.com/alibaba/pipcook/issues/30)
+
+## Community
+
+<img width="200" src="./community_qrcode.png">
 
 ## License
 

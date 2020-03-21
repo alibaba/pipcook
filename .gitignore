@@ -14,3 +14,6 @@ detectron2
 test
 .temp1
 pipcook-output/
+docs/typedoc
+.eslintcache
+packages/pipcook-board-client/build

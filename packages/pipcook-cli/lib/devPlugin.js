@@ -8,17 +8,22 @@ const spinner = ora();
  */
 const devPlugin = (cmdObj) => {
   const pluginType = cmdObj && cmdObj[0];
+  let projectName = cmdObj && cmdObj[1];
 
   if (!pluginType) {
     console.log('Please provide a plugin type');
     return;
   }
 
+  if (!projectName) {
+    projectName = 'template-plugin';
+  }
+
   let dirname;
   try {
-    dirname = path.join(process.cwd(), 'template-plugin');
+    dirname = path.join(process.cwd(), projectName);
     if (fse.existsSync(dirname)) {
-      spinner.fail(`a directory or file called 'template-plugin' already exists. Please use a new working directory`);
+      spinner.fail(`a directory or file called ${projectName} already exists. Please use a new working directory`);
       return;
     }
     fse.ensureDirSync(path.join(dirname, 'src'));

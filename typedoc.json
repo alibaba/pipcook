@@ -1,12 +1,13 @@
 {
   "name": "Pipcook",
   "mode": "modules",
-  "out": "doc",
+  "out": "docs/typedoc",
   "theme": "default",
   "ignoreCompilerErrors": "false",
   "preserveConstEnums": "true",
-  "exclude": "*.spec.ts",
+  "exclude": "*_test.ts",
   "stripInternal": "false",
   "excludeExternals": "true",
-  "plugin": "typedoc-plugin-markdown"
+  "readme": "none",
+  "categorizeByGroup": "true"
 }
