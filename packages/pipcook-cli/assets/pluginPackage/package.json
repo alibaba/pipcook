@@ -17,6 +17,6 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "x.x.x",
-    "@tensorflow/tfjs-node-gpu": "x.x.x"
+    "@tensorflow/tfjs-node-gpu": "1.7.0"
   }
 }
