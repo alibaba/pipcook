@@ -126,6 +126,10 @@ $ npm run build
 - [Project Guide](./docs/meta/PROJECT_GUIDE.md)
 - [Roadmap, 2020](https://github.com/alibaba/pipcook/issues/30)
 
+## Community
+
+<img width="200" src="./community_qrcode.png">
+
 ## License
 
 [Apache 2.0](./LICENSE)
