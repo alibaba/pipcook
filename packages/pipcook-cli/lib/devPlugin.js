@@ -1,7 +1,9 @@
 const fse = require('fs-extra');
 const ora = require('ora');
+const chalk = require('chalk');
 const path = require('path');
 const spinner = ora();
+const { constants } = require('@pipcook/pipcook-core');
 
 /**
  * prepare a working dir for developer to develop plugins
@@ -15,20 +17,19 @@ const devPlugin = (cmdObj) => {
     return;
   }
 
+  if (constants.PLUGINS.indexOf(pluginType) < 0) {
+    console.warn(chalk.red(`Unsupported plugin type: "${pluginType}"`));
+    console.warn(chalk.yellow('The type of plugin must be one of: '));
+    console.warn(chalk.yellow(`{ \n  ${constants.PLUGINS.join(',\n  ')}\n}`));
+    return;
+  }
+
+  if (!projectName) {
+    projectName = 'template-plugin';
+  }
+
   let dirname;
   try {
-    const typeFiles = fse.readdirSync(path.join(__dirname, '../assets/pluginPackage/src'));
-    const allowedTypes = typeFiles.map(filename => filename.replace(/(.*\/)*([^.]+).*/ig,"$2"));
-    if (allowedTypes.indexOf(pluginType) < 0) {
-      console.log(`Unsupported plugin type: ${pluginType}.\n` +
-        `The type of plugin must be one of: \n{ ${allowedTypes.join(', ')} }`);
-      return;
-    }
-
-    if (!projectName) {
-      projectName = 'template-plugin';
-    }
-
     dirname = path.join(process.cwd(), projectName);
     if (fse.existsSync(dirname)) {
       spinner.fail(`a directory or file called ${projectName} already exists. Please use a new working directory`);
