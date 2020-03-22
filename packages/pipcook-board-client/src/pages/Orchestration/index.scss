@@ -1,0 +1,29 @@
+
+.orchestration {
+  padding: 45px 15px 15px 0;
+
+  display: flex;
+  flex-direction: row;
+
+  .init-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+
+    .init-message {
+      font-size: 20px;
+      margin-bottom: 50px;
+    }
+
+    .init-output {
+      margin-top: 100px;
+      height: 300px;
+      width: 500px;
+      padding: 10px;
+    }
+  }
+}

@@ -35,7 +35,7 @@ export default class Model extends Component {
   render() {
     const {models} = this.state;
     return (
-      <div className="home">
+      <div className="model">
         <Table dataSource={models}>
           <Table.Column title="Model Id" dataIndex="modelId"/>
           <Table.Column title="Test Evaluation" dataIndex="evaluation"/>

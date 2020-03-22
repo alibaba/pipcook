@@ -2,7 +2,6 @@ const chalk = require('chalk');
 const fse = require('fs-extra');
 const ora = require('ora');
 const childProcess = require('child_process');
-const opn = require('better-opn');
 const path = require('path');
 
 const spinner = ora();
@@ -36,9 +35,7 @@ module.exports = (type, pluginName) => {
         cwd: process.cwd(),
         stdio: 'inherit'
       });
-  
-      opn('http://127.0.0.1:7001/public/index.html');
-  
+    
     } catch (e) {
       console.error(chalk.red(e));
     }
