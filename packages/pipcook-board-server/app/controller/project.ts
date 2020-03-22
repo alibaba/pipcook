@@ -9,7 +9,6 @@ import { successRes, failRes } from '../utils/index';
 import { PLUGIN_TYPES } from '../utils/constants';
 import { generateCode } from '../utils/codes';
 
-const LOG_PATH = path.join(__dirname, '..', 'temp', 'log.txt');
 const workingDir = path.join(process.cwd(), '..');
 
 export default class ProjectController extends Controller {
@@ -61,10 +60,7 @@ export default class ProjectController extends Controller {
   public async init() {
     const { ctx } = this;
     try {
-      fs.removeSync(LOG_PATH);
-      shell.exec(`cd ${workingDir} && pipcook init &> ${LOG_PATH}`, code => {
-        fs.appendFileSync(LOG_PATH, '__pipcook_exit_code:' + code);
-      });
+      shell.exec(`cd ${workingDir} && pipcook init`, {async:true});
       return successRes(ctx, {});
     } catch (err) {
       return failRes(ctx, {
@@ -72,13 +68,7 @@ export default class ProjectController extends Controller {
       });
     }
   }
-
-  public async pipExecResult() {
-    const { ctx } = this;
-    const log = fs.readFileSync(LOG_PATH);
-    return successRes(ctx, { status: true, stdout: log.toString() });
-  }
-
+  
   public async pipeline() {
     const { ctx } = this;
     try {
@@ -88,10 +78,7 @@ export default class ProjectController extends Controller {
       const filePath = path.join(__dirname, '..', 'temp', fileName);
       fs.outputFileSync(filePath, generatedCodes);
 
-      fs.removeSync(LOG_PATH);
-      shell.exec(`cd ${workingDir} && node ${filePath} &> ${LOG_PATH}`, code => {
-        fs.appendFileSync(LOG_PATH, '__pipcook_exit_code:' + code);
-      });
+      shell.exec(`cd ${workingDir} && node ${filePath}`, {async:true});
 
       return successRes(ctx, {});
     } catch (err) {

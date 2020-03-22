@@ -22,11 +22,16 @@
     "clean": "ets clean"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^1.7.0",
+    "axios": "^0.19.2",
+    "better-opn": "^1.0.0",
     "egg": "^2.6.1",
     "egg-scripts": "^2.6.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
+    "jimp": "^0.9.6",
+    "request": "^2.88.2",
     "shelljs": "^0.8.3",
     "uuid": "^7.0.2"
   },
