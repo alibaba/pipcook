@@ -22,3 +22,17 @@ export function messageWarning (message) {
     hasMask: true,
   });
 }
+
+export function messageLoading (message) {
+  Message.show({
+    type: 'loading',
+    title: 'loading',
+    content: message,
+    hasMask: true,
+    duration: 0,
+  });
+}
+
+export function messageHide () {
+  Message.hide();
+}

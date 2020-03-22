@@ -6,7 +6,7 @@ const glob = require('glob-promise');
 const commandExistsSync = require('command-exists').sync;
 const inquirer = require('inquirer');
 
-let {pipcookLogName} = require('./config');
+const {dependencies, pipcookLogName} = require('./config');
 const spinner = ora();
 
 /**
@@ -37,7 +37,7 @@ const init = async (cmdObj) => {
           choices: clientChoices
         },
       ]);
-      client = answers.client;
+      client = answer.client;
     } else {
       spinner.fail(`no npm client detected`);
       return;
@@ -66,12 +66,16 @@ const init = async (cmdObj) => {
       cwd: dirname,
     });
 
-    spinner.start(`installing pipcook core...`);
-    childProcess.execSync(`${client} install @pipcook/pipcook-app --save`, {
-      cwd: dirname,
-      stdio: 'inherit'
-    });
+    spinner.start(`installing pipcook`);
+
+    for (const item of dependencies) {
+      childProcess.execSync(`${client} install ${item} --save`, {
+        cwd: dirname,
+        stdio: 'inherit'
+      });
+    }
     spinner.succeed(`install pipcook core successfully`);
+
     spinner.start(`installing pipcook board`);
     childProcess.execSync(`${client} install`, {
       cwd: path.join(dirname, '.server'),

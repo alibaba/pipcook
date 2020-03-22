@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Nav } from '@alifd/next';
 
-import Home from '../Home';
+import Orchestration from '../Orchestration';
 import Model from '../Model';
 import Dataset from '../Dataset';
 import Log from '../Log';
+import Home from '../Home';
 import './index.scss';
 
 const { Item } = Nav;
@@ -43,13 +44,13 @@ export default class Dashboard extends Component {
     if (customPluginPath) {
       customPluginPath = customPluginPath.pluginPath;
     }
-    console.log(customPluginPath);
     return (
       <div className="dashboard">
         <Nav className="basic-nav" onSelect={this.select} direction="hoz" type="primary" header={header} selectedKeys={selectedKeys} triggerType="hover">
           <Item key="home">Home</Item>
-          <Item key="log">Logs</Item>
+          <Item key="jobs">Jobs</Item>
           <Item key="model">Models</Item>
+          {/* <Item key="orchestration">Orchestration</Item>        */}
           {
             pluginList.map((plugin) => (
               <Item key={plugin.pluginName}>{plugin.pluginName}</Item>
@@ -60,7 +61,9 @@ export default class Dashboard extends Component {
           {!customPluginPath && selectedKey === 'home' && <Home />}
           {!customPluginPath && selectedKey === 'model' && <Model />}
           {!customPluginPath && selectedKey === 'dataset' && <Dataset />}
-          {!customPluginPath && selectedKey === 'log' && <Log />}
+          {!customPluginPath && selectedKey === 'jobs' && <Log />}
+          {!customPluginPath && selectedKey === 'orchestration' && <Orchestration />}
+          {}
           {
             customPluginPath && <iframe src={customPluginPath} className="plugin-iframe" title={selectedKey} />
           }

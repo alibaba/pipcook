@@ -49,7 +49,7 @@ export default class Log extends Component {
   render() {
     const {data} = this.state;
     return (
-      <div className="home">
+      <div className="log">
         <Table dataSource={data}>
           <Table.Column title="Pipeline Id" dataIndex="pipelineId" />
           <Table.Column title="Pipeline Versiom" dataIndex="pipelineVersion" />
