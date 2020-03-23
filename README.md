@@ -129,6 +129,7 @@ $ npm run build
 ## Community
 
 <img width="200" src="./community_qrcode.png">
+
 > Download DingTalk (an all-in-one free communication and collaboration platform) here: [English](https://www.dingtalk.com/static/en/download) | [中文](https://page.dingtalk.com/wow/dingtalk/act/download)
 
 ## License
