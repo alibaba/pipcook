@@ -35,7 +35,7 @@ At this time, all the relevant environments needed for pipcook have been install
 We have prepared severaal samples for you in the examples folder. You can run them directly to start a machine learning project pipeline. For example, you can run this file quickly to recognize MNIST  numbers. To start this training, you only need a simple command.
 
 ```sh
-$ node examples/pipeline-example/pipeline-mnist-image-classfication.js
+$ node examples/pipeline/pipeline-mnist-image-classfication.js
 ```
 
 ### Docker (GPU recommended mode)
@@ -66,7 +66,7 @@ We have prepared several sample files for you in the examples folder. You can ru
 
 ```sh
 $ cd pipcook-project
-$ node examples/pipeline-example/pipeline-mnist-image-classfication.js
+$ node examples/pipeline/pipeline-mnist-image-classfication.js
 ```
 
 ### After Training

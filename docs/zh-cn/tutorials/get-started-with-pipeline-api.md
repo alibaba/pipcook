@@ -31,7 +31,7 @@ $ cd pipcook-project
 此时，Pipcook 所有需要的相关的环境已经安装完毕，此外，还会为您生成一些 Pipcook 工程的样例文件，在生成的项目空间里，我们在 examples 文件夹里为您准备了几个样例文件， 您可以直接运行他们去开始一个机器学习工程 pipeline. 例如，您可以快速运行这个文件进行一次 mnist 手写数字的识别，想要开始这个训练，您只需要一个简单的命令
 
 ```sh
-$ node examples/pipeline-example/pipeline-mnist-image-classification.js
+$ node examples/pipeline/pipeline-mnist-image-classification.js
 ```
 
 想要尝试更多？我们还有另外的样例文件 pipeline-databinding-image-classification.js, pipeline-object-detection.js, 这是用于 Imgcook 真实生产环境中的字段绑定图片分类模型的训练管道 和 组件识别的目标检测训练管道，您也可以尝试运行这两个文件 （在没有 GPU 的环境中训练可能需要更长的时间）
@@ -57,7 +57,7 @@ $ docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1
 ```sh
 $ pipcook init
 $ cd pipcook-project
-$ node examples/pipeline-example/pipeline-mnist-image-classification.js
+$ node examples/pipeline/pipeline-mnist-image-classification.js
 ```
 ### 训练完成
 

@@ -88,7 +88,7 @@ In this reposiory, We have prepared several examples, some of they are:
 - [pipeline-mnist-image-classification][]: pipeline for classific Mnist image classification problem.
 - [pipeline-databinding-image-classification][]: pipeline example to train the iamge classification task which is 
   to classifify [imgcook](https://www.imgcook.com/) databinding pictures.
-- [pipeline-object-detection](example/pipeline/pipeline-object-detection.js): pipeline example to train object detection task which is for component recognition 
+- [pipeline-object-detection][]: pipeline example to train object detection task which is for component recognition 
   used by imgcook.
 - [python-keras][]: example to use Python Keras library to train deep leraning network in js syntax and runtime.
 
@@ -96,7 +96,7 @@ See [here](./example) for complete list, and it's easy and quick to run these ex
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ node examples/pipeline-example/pipeline-mnist-image-classification.js
+$ node examples/pipeline/pipeline-mnist-image-classification.js
 ```
 
 ## Documentation
@@ -156,7 +156,7 @@ $ npm run build
 [npm]: https://npmjs.com/
 [Python]: https://www.python.org/
 [machine-learning application APIs]: https://github.com/alibaba/pipcook/issues/33
-[pipeline-mnist-image-classification]: example/pipeline-example/pipeline-mnist-image-classification.js
-[pipeline-databinding-image-classification]: example/pipeline-example/pipeline-databinding-image-classification.js
-[pipeline-object-detection]: example/pipeline-example/pipeline-object-detection.js
-[python-keras]: example/python-nodejs-example/python-keras.js
+[pipeline-mnist-image-classification]: example/pipeline/pipeline-mnist-image-classification.js
+[pipeline-databinding-image-classification]: example/pipeline/pipeline-databinding-image-classification.js
+[pipeline-object-detection]: example/pipeline/pipeline-object-detection.js
+[python-keras]: example/python-nodejs/python-keras.js
