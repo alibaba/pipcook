@@ -9,3 +9,7 @@ export {PipcookRunner} from './core/core';
 export {createAnnotationFile, parseAnnotation, unZipData, downloadZip, getOsInfo, transformCsv,
   getDatasetDir, createAnnotationFromJson, getMetadata, getModelDir, convertPascol2CocoFileOutput, compressTarFile } from './utils/publicUtils';
 export {PipcookComponentResult} from './types/component';
+import {PLUGINS} from './constants/plugins';
+export const constants = {
+  PLUGINS
+};
