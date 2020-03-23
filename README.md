@@ -70,25 +70,31 @@ Initialize a project:
 ```sh
 $ mkdir pipcook-example && cd pipcook-example
 $ pipcook init
-$ cd pipcook-project
 ```
+
+### Show Cases
+If you are wondering what you can do in pipcook and where you can check your training logs and models, you could run pipboard first.
+```sh
+$ pipcook board
+```
+you will see a web page prompt in your browser. Now you can have a look at MNIST showcase on the home page and play around there. If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the example below.
 
 ### Examples
 
 In this reposiory, We have prepared several examples, some of they are:
 
-- [pipeline-mnist-image-classification][]: pipeline for classific Mnist image classification problem.
-- [pipeline-databinding-image-classification][]: pipeline example to train the iamge classification task which is 
+- [pipeline-mnist-image-classification][example/pipeline-example/pipeline-mnist-image-classification.js]: pipeline for classific Mnist image classification problem.
+- [pipeline-databinding-image-classification][example/pipeline-example/pipeline-databinding-image-classification.js]: pipeline example to train the iamge classification task which is 
   to classifify [imgcook](https://www.imgcook.com/) databinding pictures.
-- [pipeline-object-detection][]: pipeline example to train object detection task which is for component recognition 
+- [pipeline-object-detection][example/pipeline-example/pipeline-object-detection.js]: pipeline example to train object detection task which is for component recognition 
   used by imgcook.
-- [python-keras][]: example to use Python Keras library to train deep leraning network in js syntax and runtime.
+- [python-keras][example/python-nodejs-example/python-keras.js]: example to use Python Keras library to train deep leraning network in js syntax and runtime.
 
-See [here](./example) for complete list, and it's easy and quick to run these examples. For example, to do a minst 
+See [here](./example) for complete list, and it's easy and quick to run these examples. For example, to do a MNIST 
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ node examples/pipcook-app-example/pipcook-imageclass-app-test.js
+$ node examples/pipeline-example/pipeline-mnist-image-classification.js
 ```
 
 ## Documentation
