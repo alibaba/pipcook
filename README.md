@@ -72,23 +72,25 @@ $ mkdir pipcook-example && cd pipcook-example
 $ pipcook init
 ```
 
-### Show Cases
-If you are wondering what you can do in pipcook and where you can check your training logs and models, you could run pipboard first.
+### Playground
+If you are wondering what you can do in [Pipcook][] and where you can check your training logs and models, you could start from Pipboard
+
 ```sh
 $ pipcook board
 ```
-you will see a web page prompt in your browser. Now you can have a look at MNIST showcase on the home page and play around there. If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the example below.
+
+You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the examples below.
 
 ### Examples
 
 In this reposiory, We have prepared several examples, some of they are:
 
-- [pipeline-mnist-image-classification](example/pipeline-example/pipeline-mnist-image-classification.js): pipeline for classific Mnist image classification problem.
-- [pipeline-databinding-image-classification](example/pipeline-example/pipeline-databinding-image-classification.js): pipeline example to train the iamge classification task which is 
+- [pipeline-mnist-image-classification][]: pipeline for classific Mnist image classification problem.
+- [pipeline-databinding-image-classification][]: pipeline example to train the iamge classification task which is 
   to classifify [imgcook](https://www.imgcook.com/) databinding pictures.
-- [pipeline-object-detection](example/pipeline-example/pipeline-object-detection.js): pipeline example to train object detection task which is for component recognition 
+- [pipeline-object-detection](example/pipeline/pipeline-object-detection.js): pipeline example to train object detection task which is for component recognition 
   used by imgcook.
-- [python-keras](example/python-nodejs-example/python-keras.js): example to use Python Keras library to train deep leraning network in js syntax and runtime.
+- [python-keras][]: example to use Python Keras library to train deep leraning network in js syntax and runtime.
 
 See [here](./example) for complete list, and it's easy and quick to run these examples. For example, to do a MNIST 
 image classification, just run the following to start the pipeline:
@@ -135,11 +137,13 @@ $ npm run build
 ## Community
 
 #### IRC
+
 <img width="200" src="./community_qrcode.png">
 
 > Download DingTalk (an all-in-one free communication and collaboration platform) here: [English](https://www.dingtalk.com/static/en/download) | [中文](https://page.dingtalk.com/wow/dingtalk/act/download)
 
 #### Who's using it
+
 <a href="https://www.imgcook.com"><img height="40" src="https://img.alicdn.com/tfs/TB1lle4yQzoK1RjSZFlXXai4VXa-200-64.png"></a>
 ## License
 

@@ -14,7 +14,7 @@ const mnist = require('mnist');
  */
 const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
   const {
-    trainingCount=8000,
+    trainingCount = 8000,
     testCount = 500
   } = args || {};
   const savePath = getDatasetDir();

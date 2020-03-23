@@ -85,7 +85,7 @@ $ pipcook board
 
 ```ts
 const dataCollect = DataCollect(imageMnistDataCollection, {
-  trainingCount:8000,
+  trainingCount: 8000,
   testCount: 2000
 });
 ```
@@ -132,8 +132,8 @@ const modelEvaluate = ModelEvaluate(classModelEvalute);
 现在我们对于机器学习生命周期的每一步的环节就已经编写完成啦，下面我们要将每一个插件传入给 Pipcook runner，并告诉 Pipcook 启动一个 runner 去开始训练流程，如下所示
 
 ```
-const runner = new PipcookRunner()
-runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate])
+const runner = new PipcookRunner();
+runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate]);
 ```
 
 现在我们已经编写好了一个 Pipcook 工程，之后您就可以启动一个 Pipcook 工程了。

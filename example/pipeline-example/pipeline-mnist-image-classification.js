@@ -31,7 +31,7 @@ let imageClassLocalModelDeploy = require('@pipcook/pipcook-plugins-image-class-l
 async function startPipeline() {
   // collect mnist data
   const dataCollect = DataCollect(imageMnistDataCollection, {
-    trainingCount:8000,
+    trainingCount: 8000,
     testCount: 2000
   });
   

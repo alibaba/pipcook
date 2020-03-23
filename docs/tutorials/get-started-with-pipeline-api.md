@@ -95,7 +95,7 @@ At first, we need to collect these  images. In this scenario, we provide the dat
 
 ```js
 const dataCollect = DataCollect(imageMnistDataCollection, {
-  trainingCount:8000,
+  trainingCount: 8000,
   testCount: 2000
 });
 ```
@@ -146,8 +146,8 @@ const modelEvaluate = ModelEvaluate(classModelEvalute);
 Now we have completed every step of the machine learning life cycle, let's pass each plugin to pipcook runner, and tell pipcook to start a runner to begin the training process, as shown below.
 
 ```
-const runner = new PipcookRunner()
-runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate])
+const runner = new PipcookRunner();
+runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate]);
 ```
 
 Now we have completed a pipcook project and you can start it.

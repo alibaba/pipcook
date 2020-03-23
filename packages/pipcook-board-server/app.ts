@@ -1,5 +1,5 @@
 
-const opn = require('better-opn');
+import * as opn from 'opn';
 
 class AppBootHook {
   app!: any;
