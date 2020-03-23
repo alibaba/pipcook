@@ -1,7 +1,9 @@
 const fse = require('fs-extra');
 const ora = require('ora');
+const chalk = require('chalk');
 const path = require('path');
 const spinner = ora();
+const { constants } = require('@pipcook/pipcook-core');
 
 /**
  * prepare a working dir for developer to develop plugins
@@ -12,6 +14,11 @@ const devPlugin = (cmdObj) => {
 
   if (!pluginType) {
     console.log('Please provide a plugin type');
+    return;
+  }
+
+  if (constants.PLUGINS.indexOf(pluginType) < 0) {
+    console.warn(chalk.red(`Unsupported plugin type: "${pluginType}", it must be one of: \n${constants.PLUGINS.join(',\n')}`));
     return;
   }
 
@@ -40,7 +47,6 @@ const devPlugin = (cmdObj) => {
     console.error(e);
     fse.removeSync(dirname);
   }
-  
 };
 
 module.exports = devPlugin;
