@@ -128,8 +128,13 @@ $ npm run build
 
 ## Community
 
+#### IRC
 <img width="200" src="./community_qrcode.png">
 
+> Download DingTalk (an all-in-one free communication and collaboration platform) here: [English](https://www.dingtalk.com/static/en/download) | [中文](https://page.dingtalk.com/wow/dingtalk/act/download)
+
+#### Who's using it
+<a href="https://www.imgcook.com"><img height="40" src="https://img.alicdn.com/tfs/TB1lle4yQzoK1RjSZFlXXai4VXa-200-64.png"></a>
 ## License
 
 [Apache 2.0](./LICENSE)
