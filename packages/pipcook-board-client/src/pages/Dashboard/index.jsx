@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Nav } from '@alifd/next';
 
-import Orchestration from '../Orchestration';
 import Model from '../Model';
 import Dataset from '../Dataset';
 import Log from '../Log';

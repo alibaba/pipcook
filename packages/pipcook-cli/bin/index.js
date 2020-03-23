@@ -49,10 +49,8 @@ program
 
 program
   .command('board')
-  .option('-p, --plugin', 'customized ui plugin')
-  .description('Start Pipcook Board')
-  .action((stop, cmdObj) => {
-    board(stop, cmdObj.plugin);
+  .action(() => {
+    board();
   });
 
 program
