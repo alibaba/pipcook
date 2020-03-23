@@ -49,9 +49,8 @@ program
 
 program
   .command('board')
-  .action(() => {
-    board();
-  });
+  .description('start pipcook board')
+  .action(board);
 
 program
   .command('plugin-dev')

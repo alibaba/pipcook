@@ -17,3 +17,5 @@ pipcook-output/
 docs/typedoc
 .eslintcache
 packages/pipcook-board-client/build
+.eslintcache
+packages/pipcook-cli/assets/server

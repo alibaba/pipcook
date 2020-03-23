@@ -77,25 +77,5 @@
     line-height: 20px;
     text-align: left;
   }
-  
-  .thirdPartyLink {
-    display: inline-block;
-    color: #B58761!important;
-    font-size: 14px;
-    margin-top: -10px;
-    border-radius: 4px;
-    -webkit-transition: all 0.2s linear;
-    transition: all 0.2s linear;
-    width: 210px;
-    height: 87px;
-    background-image: url(https://gw.alicdn.com/tfs/TB1lQQ2nebviK0jSZFNXXaApXXa-410-194.png);
-    background-size: contain;
-    text-indent: -9999px;
-    background-repeat: no-repeat;
-    background-position: center;
-    &.active {
-      text-decoration: none;
-    }
-  }  
 }
 

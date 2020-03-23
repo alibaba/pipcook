@@ -23,7 +23,7 @@ export default (appInfo: EggAppInfo) => {
   };
 
   config.static = {
-    prefix: '/public/',
+    prefix: '/',
     dir: path.join(appInfo.baseDir, 'app/public'),
   };
 

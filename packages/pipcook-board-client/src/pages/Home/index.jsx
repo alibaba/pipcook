@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from '@alifd/next';
 
 import './index.scss';
 
@@ -43,9 +44,7 @@ export default class Orchestration extends Component {
                 <p className="thirdPartyDesc">
                   {item.description}
                 </p>
-                <a className="thirdPartyLink" href={item.url}>
-                  立即使用
-                </a>
+                <Button type="primary" size="large">Try Here</Button>
               </div>
             );
           })}
