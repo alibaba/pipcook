@@ -49,7 +49,7 @@ program
 
 program
   .command('board')
-  .description('start pipcook board')
+  .description('Start Pipcook Board')
   .action(board);
 
 program
