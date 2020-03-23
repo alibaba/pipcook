@@ -14,7 +14,7 @@ const header = <span className="header">pipcook</span>;
 export default class Dashboard extends Component {
 
   state = {
-    selectedKeys: ['home']
+    selectedKeys: ['home'],
   }
 
   select = (selectedKeys) => {

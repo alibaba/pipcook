@@ -4,28 +4,28 @@ import axios from 'axios';
 import { Button } from '@alifd/next';
 
 import { messageSuccess, messageError } from '../../../utils/message';
-import './index.scss'
+import './index.scss';
 
 export default class Mnist extends Component {
 
   state = {
-    image: ''
+    image: '',
   }
 
   onChange = (value) => {
     this.setState({
-      image: value.canvas.drawing.toDataURL()
+      image: value.canvas.drawing.toDataURL(),
     });
   }
 
   predict = async () => {
     try {
       let response = await axios.post('/showcase/mnist', {
-        image: this.state.image
+        image: this.state.image,
       });
       response = response.data;
       if (response.status) {
-        messageSuccess(`I guess the digit you draw is ${response.result}`)
+        messageSuccess(`I guess the digit you draw is ${response.result}`);
       } else {
         messageError(response.msg);
       }

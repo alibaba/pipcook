@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { messageLoading, messageHide } from '../../../utils/message';
 import axios from 'axios';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 
+import { messageLoading, messageHide } from '../../../utils/message';
 import './index.scss';
 import'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/javascript/javascript';
 
 async function createImage(url) {
-  const prom = new Promise((resolve, reject) => {
+  const prom = new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'Anonymous';
     img.onload = function () {
@@ -20,10 +20,10 @@ async function createImage(url) {
       ctx.drawImage(this, 0, 0);
       const dataURL = canvas.toDataURL('image/jpeg', 1.0);
       resolve(dataURL);
-    }
+    };
     img.src = url;
   });
-  let base64 = await prom;
+  const base64 = await prom;
   return base64;
 }
 
@@ -31,77 +31,75 @@ export default class AssetsClassification extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      predictLoading: false,
       imageResult: {},
       imageList: [
         {
           url:
             'https://gw.alicdn.com/tfs/TB1ekuMhQY2gK0jSZFgXXc5OFXa-400-400.jpg',
           width: 100,
-          height: 100
+          height: 100,
         },
         {
           url:
             'https://gw.alicdn.com/tfs/TB1xQqNhNv1gK0jSZFFXXb0sXXa-256-256.jpg',
           width: 100,
-          height: 100
+          height: 100,
         },
         {
           url:
             'https://gw.alicdn.com/tfs/TB1lV9OhQT2gK0jSZPcXXcKkpXa-200-200.jpg',
           width: 100,
-          height: 100
+          height: 100,
         },
         {
           url:
             'https://gw.alicdn.com/tfs/TB1vbWJhFY7gK0jSZKzXXaikpXa-400-400.jpg',
           width: 100,
-          height: 100
+          height: 100,
         },
         {
           url:
             'https://gw.alicdn.com/tfs/TB1WkOLhNn1gK0jSZKPXXXvUXXa-800-800.jpg',
           width: 100,
-          height: 100
+          height: 100,
         },
         {
           url:
             'https://gw.alicdn.com/tfs/TB1gUaJhKT2gK0jSZFvXXXnFXXa-732-331.jpg',
           width: 100,
-          height: 50
+          height: 50,
         },
         {
           url:
             'https://gw.alicdn.com/tfs/TB17yuKhUY1gK0jSZFMXXaWcVXa-800-800.jpg',
           width: 100,
-          height: 100
+          height: 100,
         },
         {
           url:
             'https://img.alicdn.com/tfs/TB1v6gPcQL0gK0jSZFAXXcA9pXa-64-26.png',
           width: 32,
-          height: 13
-        }
-      ]
+          height: 13,
+        },
+      ],
     };
   }
-  componentDidMount() {}
 
   onPredict = async image => {
     messageLoading('Please give us some time to predict the result ...');
     let response = await axios.post('/showcase/asset-classification', {
-      image
-    })
+      image,
+    });
     response = response.data;
     console.log(response);
     this.setState({
-      imageResult: response
+      imageResult: response,
     });
     messageHide();
   };
 
   onClickImg = async item => {
-    let base64 = await createImage(item);
+    const base64 = await createImage(item);
     this.onPredict(base64);
   };
 
@@ -124,14 +122,13 @@ export default class AssetsClassification extends Component {
 
   render() {
     const { imageResult, imageList } = this.state;
-    console.log(imageResult)
     const imageResultValue =
       (imageResult && JSON.stringify(imageResult, null, 2)) || '';
     return (
       <div className="asset-classification">
         <div className="experienceInner">
           <h3 className="pageTitle">Front-end Assets Classification for Taobao</h3>
-          <p className="pageDescription"></p>
+          <p className="pageDescription" />
           <div style={{ display: 'flex', flexDirection: 'space-between' }}>
             <div className="content-item">
               <h4 className="label">Origin Image</h4>
@@ -149,6 +146,7 @@ export default class AssetsClassification extends Component {
                         src={item.url}
                         width={item.width}
                         height={item.height}
+                        alt="item"
                       />
                     </div>
                   );
@@ -178,7 +176,7 @@ export default class AssetsClassification extends Component {
                   mode: 'javascript',
                   theme: 'material',
                   lineNumbers: true,
-                  readOnly: true
+                  readOnly: true,
                 }}
               />
             </div>

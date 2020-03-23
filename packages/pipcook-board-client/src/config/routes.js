@@ -10,13 +10,13 @@ const routerConfig = [
     children: [
       {
         path: '/mnist',
-        component: Mnist
+        component: Mnist,
       },
       {
         path: '/assets-classification',
-        component: AssetsClassification
-      }
-    ]
+        component: AssetsClassification,
+      },
+    ],
   },
   {
     path: '/',
