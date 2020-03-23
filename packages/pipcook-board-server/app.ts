@@ -1,5 +1,5 @@
 
-import opn from 'better-opn';
+const opn = require('better-opn');
 
 class AppBootHook {
   app!: any;
@@ -9,7 +9,7 @@ class AppBootHook {
   }
 
   async serverDidReady() {
-    opn('http://127.0.0.1:7001/public/index.html');
+    opn('http://127.0.0.1:7001/index.html');
   }
 }
 

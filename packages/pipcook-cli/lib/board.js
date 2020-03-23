@@ -8,7 +8,7 @@ const spinner = ora();
 
 module.exports = () => {
     try {
-      if (!fse.existsSync(process.cwd(), '.server')) {
+      if (!fse.existsSync(path.join(process.cwd(), '.server'))) {
         spinner.fail('Please init the project firstly');
         return;
       }

@@ -54,7 +54,6 @@ export default class Log extends Component {
           <Table.Column title="Pipeline Id" dataIndex="pipelineId" />
           <Table.Column title="Pipeline Versiom" dataIndex="pipelineVersion" />
           <Table.Column title="Test Evaluation" dataIndex="evaluation"/>
-          <Table.Column title="Type" dataIndex="type"/>
           <Table.Column title="Plugins Status" cell={(value, index, record) => <Button onClick={() => this.showModal(record, 0)}>Expand</Button>}/>
           <Table.Column title="Dataset" cell={(value, index, record) => <Button onClick={() => this.showModal(record, 1)}>Expand</Button>}/>
           <Table.Column title="Start Time" dataIndex="startTime"/>
