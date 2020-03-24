@@ -31,7 +31,7 @@ $ cd pipcook-project
 此时，Pipcook 所有需要的相关的环境已经安装完毕，此外，还会为您生成一些 Pipcook 工程的样例文件，在生成的项目空间里，我们在 examples 文件夹里为您准备了几个样例文件， 您可以直接运行他们去开始一个机器学习工程 pipeline. 例如，您可以快速运行这个文件进行一次 mnist 手写数字的识别，想要开始这个训练，您只需要一个简单的命令
 
 ```sh
-$ node examples/pipeline-example/pipeline-mnist-image-classification.js
+$ node examples/pipeline/pipeline-mnist-image-classification.js
 ```
 
 想要尝试更多？我们还有另外的样例文件 pipeline-databinding-image-classification.js, pipeline-object-detection.js, 这是用于 Imgcook 真实生产环境中的字段绑定图片分类模型的训练管道 和 组件识别的目标检测训练管道，您也可以尝试运行这两个文件 （在没有 GPU 的环境中训练可能需要更长的时间）
@@ -57,7 +57,7 @@ $ docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1
 ```sh
 $ pipcook init
 $ cd pipcook-project
-$ node examples/pipeline-example/pipeline-mnist-image-classification.js
+$ node examples/pipeline/pipeline-mnist-image-classification.js
 ```
 ### 训练完成
 
@@ -85,7 +85,7 @@ $ pipcook board
 
 ```ts
 const dataCollect = DataCollect(imageMnistDataCollection, {
-  trainingCount:8000,
+  trainingCount: 8000,
   testCount: 2000
 });
 ```
@@ -131,11 +131,9 @@ const modelEvaluate = ModelEvaluate(classModelEvalute);
 
 现在我们对于机器学习生命周期的每一步的环节就已经编写完成啦，下面我们要将每一个插件传入给 Pipcook runner，并告诉 Pipcook 启动一个 runner 去开始训练流程，如下所示
 
-```ts
-const runner = new PipcookRunner('test1', {
-  predictServer: true
-})
-runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate])
+```
+const runner = new PipcookRunner();
+runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate]);
 ```
 
 现在我们已经编写好了一个 Pipcook 工程，之后您就可以启动一个 Pipcook 工程了。

@@ -35,7 +35,7 @@ At this time, all the relevant environments needed for pipcook have been install
 We have prepared severaal samples for you in the examples folder. You can run them directly to start a machine learning project pipeline. For example, you can run this file quickly to recognize MNIST  numbers. To start this training, you only need a simple command.
 
 ```sh
-$ node examples/pipeline-example/pipeline-mnist-image-classfication.js
+$ node examples/pipeline/pipeline-mnist-image-classfication.js
 ```
 
 ### Docker (GPU recommended mode)
@@ -66,7 +66,7 @@ We have prepared several sample files for you in the examples folder. You can ru
 
 ```sh
 $ cd pipcook-project
-$ node examples/pipeline-example/pipeline-mnist-image-classfication.js
+$ node examples/pipeline/pipeline-mnist-image-classfication.js
 ```
 
 ### After Training
@@ -95,7 +95,7 @@ At first, we need to collect these  images. In this scenario, we provide the dat
 
 ```js
 const dataCollect = DataCollect(imageMnistDataCollection, {
-  trainingCount:8000,
+  trainingCount: 8000,
   testCount: 2000
 });
 ```
@@ -145,10 +145,8 @@ const modelEvaluate = ModelEvaluate(classModelEvalute);
 
 Now we have completed every step of the machine learning life cycle, let's pass each plugin to pipcook runner, and tell pipcook to start a runner to begin the training process, as shown below.
 
-```js
-const runner = new PipcookRunner('test1', {
-  predictServer: true
-});
+```
+const runner = new PipcookRunner();
 runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate]);
 ```
 
