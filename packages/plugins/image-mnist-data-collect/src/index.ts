@@ -14,7 +14,7 @@ const mnist = require('mnist');
  */
 const imageMnistDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
   const {
-    trainCount=8000,
+    trainCount = 8000,
     testCount = 500,
     dataDir
   } = args;

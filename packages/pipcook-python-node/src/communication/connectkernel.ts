@@ -33,10 +33,6 @@ export function startKernel(shell_port: number, iopub_port: number) {
     let pipCommand = 'pip';
     if (commandExistsSync('pip3')) {
       pipCommand = 'pip3';
-    } else if (commandExistsSync('pip3.6')) {
-      pipCommand = 'pip3.6';
-    } else if (commandExistsSync('pip3.7')) {
-      pipCommand = 'pip3.7';
     }
 
     // install virtualenv if it does not exist and meanwhile install ipython

@@ -3,7 +3,10 @@ const childProcess = require('child_process');
 const ora = require('ora');
 const path = require('path');
 const glob = require('glob-promise');
-let {pipcookLogName} = require('./config');
+const commandExistsSync = require('command-exists').sync;
+const inquirer = require('inquirer');
+
+const {dependencies, pipcookLogName} = require('./config');
 const spinner = ora();
 
 /**
@@ -13,7 +16,34 @@ const init = async (cmdObj) => {
   let client = 'npm';
   if (cmdObj && cmdObj[0]) {
     client = cmdObj[0];
+  } else {
+    const clientChoices = [];
+    if (commandExistsSync('npm')) {
+      clientChoices.push('npm');
+    }
+    if (commandExistsSync('cnpm')) {
+      clientChoices.push('cnpm');
+    }
+    if (commandExistsSync('tnpm')) {
+      clientChoices.push('tnpm');
+    }
+    spinner.fail(`no npm client detected`);
+    if (clientChoices.length > 0) {
+      const answer = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'client',
+          message: 'which client do you want to use?',
+          choices: clientChoices
+        },
+      ]);
+      client = answer.client;
+    } else {
+      spinner.fail(`no npm client detected`);
+      return;
+    }
   }
+
   let dirname;
   try {
     dirname = process.cwd();
@@ -36,14 +66,20 @@ const init = async (cmdObj) => {
       cwd: dirname,
     });
 
-    spinner.start(`installing pipcook core...`);
-    childProcess.execSync(`${client} link @pipcook/pipcook-app`, {
-      cwd: dirname,
-    });
+    spinner.start(`installing pipcook`);
+
+    for (const item of dependencies) {
+      childProcess.execSync(`${client} install ${item} --save`, {
+        cwd: dirname,
+        stdio: 'inherit'
+      });
+    }
     spinner.succeed(`install pipcook core successfully`);
+
     spinner.start(`installing pipcook board`);
     childProcess.execSync(`${client} install`, {
       cwd: path.join(dirname, '.server'),
+      stdio: 'inherit'
     });
     spinner.succeed(`install pipcook board successfully`);
   } catch (error) {

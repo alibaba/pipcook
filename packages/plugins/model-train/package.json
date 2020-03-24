@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/pipcook-plugins-pascolvoc-data-collect",
+  "name": "@pipcook/pipcook-plugins-pascolvoc-pytorch-class-model-train",
   "version": "0.5.0",
   "description": "",
   "main": "dist/index",
@@ -10,18 +10,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -f package-lock.json",
     "compile": "tsc -b tsconfig.json"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD:packages/plugins/pascolvoc-data-collect/package.json
-    "@pipcook/pipcook-core": "^0.5.4"
-=======
+    "@pipcook/boa": "^0.2.0",
     "@pipcook/pipcook-core": "^0.5.4",
+    "@tensorflow-models/mobilenet": "^2.0.4",
     "@tensorflow/tfjs-node-gpu": "1.7.0"
->>>>>>> 6b8c1e2e1bdf1a3c2311831744682bf9805a9a71:packages/plugins/model-evaluate/package.json
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {
