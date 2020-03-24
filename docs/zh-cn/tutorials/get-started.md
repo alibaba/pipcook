@@ -33,7 +33,7 @@ $ cd pipcook-project
 此时，Pipcook 所有需要的相关的环境已经安装完毕，此外，还会为您生成一些 Pipcook 工程的样例文件<br />在生成的项目空间里，我们在 examples/pipcook-app 文件夹里为您准备了两个样例文件， 您可以直接运行他们去开始一个机器学习工程 pipeline. 例如，您可以快速进行一次图片分类识别，想要开始这个训练，您只需要一个简单的命令
 
 ```sh
-$ node examples/pipcook-app-example/pipcook-imageclass-app-test.js
+$ node examples/pipcook-app/pipcook-imageclass-app-test.js
 ```
 
 ### Docker 方式 (GPU 推荐方式)
@@ -56,7 +56,7 @@ $ docker run -it -v ${local_workspace}:/home/workspace -p 7778:7778 --shm-size=1
 ```sh
 $ pipcook init
 $ cd pipcook-project
-$ node examples/pipcook-app-example/pipcook-imageclass-app-test.js
+$ node examples/pipcook-app/pipcook-imageclass-app-test.js
 ```
 ## API 介绍
 

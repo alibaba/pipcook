@@ -57,9 +57,7 @@ async function startPipeline() {
   // deploy into local
   const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
 
-  const runner = new PipcookRunner({
-    predictServer: true
-  });
+  const runner = new PipcookRunner();
 
   runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy])
 }

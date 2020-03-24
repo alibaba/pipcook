@@ -18,7 +18,7 @@ Data Collect
 
 ```
 const dataCollect = DataCollect(imageMnistDataCollection, {
-  trainingCount:2000,
+  trainingCount: 2000,
   testCount: 500
 });
 ```

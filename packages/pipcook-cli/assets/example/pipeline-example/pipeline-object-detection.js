@@ -46,9 +46,7 @@ async function startPipeline() {
 
   const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
 
-  const runner = new PipcookRunner( {
-    predictServer: true
-  });
+  const runner = new PipcookRunner();
 
   runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate])
 

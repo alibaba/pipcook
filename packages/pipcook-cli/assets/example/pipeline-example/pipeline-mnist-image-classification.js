@@ -31,8 +31,8 @@ let imageClassLocalModelDeploy = require('@pipcook/pipcook-plugins-image-class-l
 async function startPipeline() {
   // collect mnist data
   const dataCollect = DataCollect(imageMnistDataCollection, {
-    trainingCount:200,
-    testCount: 200
+    trainingCount: 8000,
+    testCount: 2000
   });
   
   // access mnist data into our specifiction
@@ -55,9 +55,7 @@ async function startPipeline() {
   // deploy to local
   const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
 
-  const runner = new PipcookRunner({
-    predictServer: true
-  });
+  const runner = new PipcookRunner();
 
   runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy])
 }
