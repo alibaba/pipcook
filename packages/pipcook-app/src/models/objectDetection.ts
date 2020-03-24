@@ -71,9 +71,7 @@ export default class ObjectDetection {
 
     const modelDeploy = ModelDeploy(detectronLocalDeploy)
     
-    const runner = new PipcookRunner({
-      predictServer
-    });
+    const runner = new PipcookRunner();
 
     runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
     
@@ -112,9 +110,7 @@ export default class ObjectDetection {
 
     const modelDeploy = ModelDeploy(easModelDeploy, getEasParam(easConfig));
     
-    const runner = new PipcookRunner({
-      predictServer
-    });
+    const runner = new PipcookRunner();
 
     runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
     

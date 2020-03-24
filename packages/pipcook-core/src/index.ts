@@ -8,7 +8,6 @@ export {DataCollect, DataAccess, DataProcess, ModelLoad, ModelTrain, ModelEvalua
 export {PipcookRunner} from './core/core';
 export {createAnnotationFile, parseAnnotation, unZipData, downloadZip, getOsInfo, transformCsv,
   getDatasetDir, createAnnotationFromJson, getMetadata, getModelDir, convertPascol2CocoFileOutput, compressTarFile } from './utils/publicUtils';
-export {startBoard} from './board/board';
 export {PipcookComponentResult} from './types/component';
 import {PLUGINS} from './constants/plugins';
 export const constants = {

@@ -47,7 +47,6 @@ program
   .description('Print out Pipcook log')
   .action(log);
 
-// start pipcook board
 program
   .command('board')
   .description('Start Pipcook Board')

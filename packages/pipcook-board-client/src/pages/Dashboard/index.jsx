@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Nav } from '@alifd/next';
-import Home from '../Home';
+
 import Model from '../Model';
 import Dataset from '../Dataset';
 import Log from '../Log';
-import Status from '../Status';
+import Home from '../Home';
 import './index.scss';
 
 const { Item } = Nav;
@@ -27,18 +27,15 @@ export default class Dashboard extends Component {
     return (
       <div className="dashboard">
         <Nav className="basic-nav" onSelect={this.select} direction="hoz" type="primary" header={header} selectedKeys={selectedKeys} triggerType="hover">
-        <Item key="home">Home</Item>
-        <Item key="status">Jobs</Item>
-        <Item key="model">Models</Item>
-        <Item key="dataset">DataSets</Item>
-        <Item key="log">Logs</Item>
-      </Nav>
+          <Item key="home">Home</Item>
+          <Item key="jobs">Jobs</Item>
+          <Item key="model">Models</Item>
+        </Nav>
         <div className="content">
           {selectedKey === 'home' && <Home />}
           {selectedKey === 'model' && <Model />}
           {selectedKey === 'dataset' && <Dataset />}
-          {selectedKey === 'log' && <Log />}
-          {selectedKey === 'status' && <Status />}
+          {selectedKey === 'jobs' && <Log />}
         </div>
       </div>
       
