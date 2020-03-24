@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-image-class-data-collect",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.5",
+    "@pipcook/pipcook-core": "^0.5.6",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "cli-progress": "^3.4.0",
     "fs-extra": "^8.1.0",

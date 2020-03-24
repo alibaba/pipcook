@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-model-train",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.5",
+    "@pipcook/pipcook-core": "^0.5.6",
     "@tensorflow-models/mobilenet": "^2.0.4",
     "@tensorflow/tfjs-node-gpu": "1.7.0"
   },
