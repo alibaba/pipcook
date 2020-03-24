@@ -1,5 +1,6 @@
 {
   "name": "@pipcook/pipcook-board-client",
+  "private": true,
   "version": "0.5.3",
   "description": "board for pipcook",
   "dependencies": {
