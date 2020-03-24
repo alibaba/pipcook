@@ -1,0 +1,81 @@
+.home {
+  background-color: black;
+  min-height: 100vh;
+  padding-left: 40px;
+  padding-right: 40px;
+
+  .pipcook-log {
+    padding-top: 30px;
+    font-size: 28px;
+    color: white;
+  }
+
+  .home-title {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 60px;
+  }
+
+  .card-wrapper {
+    display: flex;
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .card-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    width: 270px;
+    height: 430px;
+    margin: 0 80px;
+    background-image: linear-gradient(to bottom, #EFF4FF, #FFFFFF);
+    border-radius: 2px 2px 0 0;
+    -webkit-transition: -webkit-transform 0.2s linear;
+    transition: transform 0.2s linear, \n-webkit-transform 0.2s linear;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    &:hover {
+      text-decoration: none;
+      transform: translateY(-20px);
+      box-shadow: 0 0 41px rgba(0, 0, 0, 0.09);
+    }
+  }
+  
+  .thirdPartyDetailItemFirst {
+    margin-left: 0;
+  }
+  
+  .thirdPartyDetailItemLast {
+    margin-right: 0;
+  }
+  
+  .card-img {
+    width: 268px;
+    height: 180px;
+    border: 0;
+    border-radius: 2px 2px 0 0;
+  }
+  
+  .card-title {
+    padding: 0 10px 0 10px;
+    margin-top: 20px;
+    color: #333;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .thirdPartyDesc {
+    height: 80px;
+    margin: 14px 15px 0;
+    color: #333;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: left;
+  }
+}
+
