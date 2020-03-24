@@ -81,10 +81,6 @@ $ pipcook board
 
 You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the examples below.
 
-### Examples
-
-In this reposiory, We have prepared several examples, some of they are:
-
 - [pipeline-mnist-image-classification][]: pipeline for classific Mnist image classification problem.
 - [pipeline-databinding-image-classification][]: pipeline example to train the iamge classification task which is 
   to classifify [imgcook](https://www.imgcook.com/) databinding pictures.
