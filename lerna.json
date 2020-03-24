@@ -1,6 +1,9 @@
 {
   "packages": [
-    "packages/*",
+    "packages/pipcook-app",
+    "packages/pipcook-cli",
+    "packages/pipcook-core",
+    "packages/pipcook-python-node",
     "packages/plugins/*"
   ],
   "version": "independent",
