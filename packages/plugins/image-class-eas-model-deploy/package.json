@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-image-class-eas-deploy",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.4",
-    "@pipcook/pipcook-python-node": "^0.5.3",
+    "@pipcook/pipcook-core": "^0.5.5",
+    "@pipcook/pipcook-python-node": "^0.5.4",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "ali-oss": "^6.4.0",
     "fs-extra": "^8.1.0",

@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-plugins-model-evaluate",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.4",
+    "@pipcook/pipcook-core": "^0.5.5",
     "@tensorflow/tfjs-node-gpu": "1.7.0"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
