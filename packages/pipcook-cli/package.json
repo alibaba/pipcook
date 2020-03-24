@@ -29,7 +29,7 @@
     "semver": "^6.3.0",
     "yaml": "^1.7.2"
   },
-  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
+  "gitHead": "738407ac3f71f422b7cd26f13050d713684921c6",
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
     "nyc": "14.1.1"

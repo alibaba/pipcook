@@ -24,7 +24,7 @@
     "ora": "^4.0.3",
     "zeromq": "^6.0.0-beta.5"
   },
-  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
+  "gitHead": "738407ac3f71f422b7cd26f13050d713684921c6",
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
     "@types/node": "^13.9.0",
