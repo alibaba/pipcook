@@ -28,7 +28,7 @@ A plugin consists of the following parts:
 The Pipcook's CLI provides a convenient way to initialize the plugin development workspace. You only need to run the following command:
 
 ```sh
-$ pipcook plugin-dev -t <plugin type>
+$ pipcook plugin-dev -t <plugin type> [-n <plugin name, default: template-plugin>]
 $ cd template-plugin
 $ npm install
 ```
