@@ -28,7 +28,7 @@ pipcook 非常欢迎开发者为我们贡献插件从而扩展 pipcook 的功能
 [pipcook-cli][] 工具提供了方便的初始化插件开发工作空间的方式，您只需运行如下命令
 
 ```sh
-$ pipcook plugin-dev -t <插件类型>
+$ pipcook plugin-dev -t <插件类型> [-n <插件名称，默认值：template-plugin>]
 $ cd template-plugin
 $ npm install
 ```
