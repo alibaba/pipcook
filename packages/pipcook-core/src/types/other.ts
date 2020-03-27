@@ -1,17 +1,5 @@
 import {DataType} from '@tensorflow/tfjs-node-gpu';
 
-export interface DataDescriptor {
-  name?: string;
-  type?: DataType;
-  shape?: number[];
-}
-
-export interface MetaData {
-  feature?: DataDescriptor;
-  label?: DataDescriptor;
-  labelMap?: {[key: string]: number}
-}
-
 export interface Statistic {
   metricName: string;
   metricValue: number;

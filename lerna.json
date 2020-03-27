@@ -1,10 +1,13 @@
 {
   "packages": [
-    "packages/*",
-    "packages/plugins/*"
+    "packages/pipcook-app",
+    "packages/pipcook-cli",
+    "packages/pipcook-core",
+    "packages/boa",
+    "packages/plugins/**/*"
   ],
   "version": "independent",
-  "npmClient": "npm",
+  "npmClient": "tnpm",
   "command": {
     "bootstrap": {
       "hoist": true

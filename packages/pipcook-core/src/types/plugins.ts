@@ -1,5 +1,5 @@
 
-import {UniformSampleData} from './data';
+import {UniDataset} from './data/data';
 import {PipcookModel} from './model';
 import {EvaluateResult} from './other';
 
@@ -36,23 +36,23 @@ export interface DataCollectType extends PipcookPlugin {
 }
 
 export interface DataAccessType extends PipcookPlugin {
-  (args: ArgsType): Promise<UniformSampleData>;
+  (args: ArgsType): Promise<UniDataset>;
 }
 
 export interface DataProcessType extends PipcookPlugin {
-  (data: UniformSampleData, args: ArgsType): Promise<UniformSampleData>;
+  (data: UniDataset, args: ArgsType): Promise<UniDataset>;
 }
 
 export interface ModelLoadType extends PipcookPlugin {
-  (data: UniformSampleData, args: ModelLoadArgsType): Promise<PipcookModel>;
+  (data: UniDataset, args: ModelLoadArgsType): Promise<PipcookModel>;
 }
 
 export interface ModelTrainType extends PipcookPlugin {
-  (data: UniformSampleData, model: PipcookModel, args: ModelTrainArgsType): Promise<PipcookModel>;
+  (data: UniDataset, model: PipcookModel, args: ModelTrainArgsType): Promise<PipcookModel>;
 }
 
 export interface ModelEvaluateType extends PipcookPlugin {
-  (data: UniformSampleData, model: PipcookModel, args: ArgsType): Promise<EvaluateResult>;
+  (data: UniDataset, model: PipcookModel, args: ArgsType): Promise<EvaluateResult>;
 }
 
 export interface ModelDeployType extends PipcookPlugin {

@@ -1,0 +1,29 @@
+{
+  "name": "@pipcook/pipcook-plugins-model-train",
+  "version": "0.5.0",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -f package-lock.json",
+    "compile": "tsc -b tsconfig.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pipcook/boa": "^0.2.0",
+    "@pipcook/pipcook-core": "^0.5.4",
+    "@tensorflow-models/mobilenet": "^2.0.4",
+    "@tensorflow/tfjs-node-gpu": "1.7.0"
+  },
+  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
+  "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "nyc": "14.1.1"
+  }
+}

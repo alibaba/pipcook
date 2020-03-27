@@ -1,11 +1,18 @@
 import {PipcookPlugin} from './plugins';
 import {PipcookModel} from './model'
-import {UniformSampleData, InsertParams} from './data';
+import {UniDataset} from './data/data';
 import {PipObject} from './other';
 import {Subscribable} from 'rxjs';
 
+
+export interface InsertParams {
+  pipelineId: string;
+  modelDir: string;
+  dataDir: string;
+}
+
 interface ObserverFunc {
-  (data: UniformSampleData, model: PipcookModel |null, insertParams: InsertParams): Subscribable<any>;
+  (data: UniDataset, model: PipcookModel |null, insertParams: InsertParams): Subscribable<any>;
 }
 
 type ResultType = 

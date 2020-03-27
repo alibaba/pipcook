@@ -9,7 +9,7 @@ const uuidv1 = require('uuid/v1');
 
 import config from '../config';
 import {PipcookComponentResult} from '../types/component';
-import {UniformSampleData} from '../types/data';
+import {UniDataset} from '../types/data/data';
 import {PipcookModel} from '../types/model';
 import {DeploymentResult, EvaluateResult} from '../types/other';
 import {getLog, createPipeline, assignLatestResult, linkComponents, assignFailures} from './core-helper';
@@ -50,7 +50,7 @@ export class PipcookRunner {
   pipelineVersion: string = config.version;
   logDir: string|null = null;
   pipelineId: string|null = null;
-  latestSampleData: UniformSampleData |null = null;
+  latestSampleData: UniDataset |null = null;
   latestModel: PipcookModel |null = null;
   latestEvaluateResult: EvaluateResult | null = null;
   latestDeploymentResult: DeploymentResult | null = null;

@@ -203,14 +203,17 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
     const file = files[i];
 
     const xmlJson = await parseAnnotation(file);
-    cocoJson.images.push({
+    const imageItem: any = {
       license: 1,
       file_name: xmlJson.annotation.filename[0],
       coco_url: xmlJson.annotation.folder[0],
-      height: parseInt(xmlJson.annotation.size[0].height[0]),
-      width: parseInt(xmlJson.annotation.size[0].width[0]),
       id: i+1
-    });
+    }
+    if (xmlJson.annotation.size && xmlJson.annotation.size[0]) {
+      imageItem.width = parseInt(xmlJson.annotation.size[0].width[0]);
+      imageItem.height = parseInt(xmlJson.annotation.size[0].height[0]);
+    }
+    cocoJson.images.push(imageItem);
     if (!(xmlJson.annotation && xmlJson.annotation.object && xmlJson.annotation.object.length > 0)) {
       continue;
     }
@@ -228,17 +231,20 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
           supercategory: name
         });
       }
-      const width = parseInt(item.bndbox[0].xmax[0]) - parseInt(item.bndbox[0].xmin[0]);
-      const height = parseInt(item.bndbox[0].ymax[0]) - parseInt(item.bndbox[0].ymin[0])
-      cocoJson.annotations.push({
+      const cocoItem: any = {
         id: cocoJson.annotations.length + 1,
         image_id: i,
         category_id: id,
         segmentation: [],
         iscrowd: 0,
-        area: Number(width * height),
-        bbox: [parseInt(item.bndbox[0].xmin[0]), parseInt(item.bndbox[0].ymin[0]), width, height ]
-      })
+      };
+      if (item.bndbox && item.bndbox[0]) {
+        const width = parseInt(item.bndbox[0].xmax[0]) - parseInt(item.bndbox[0].xmin[0]);
+        const height = parseInt(item.bndbox[0].ymax[0]) - parseInt(item.bndbox[0].ymin[0]);
+        cocoItem.bndbox = [parseInt(item.bndbox[0].xmin[0]), parseInt(item.bndbox[0].ymin[0]), width, height];
+        cocoItem.area = Number(width * height);
+      }
+      cocoJson.annotations.push(cocoItem);
     })
   }
   fs.outputJSONSync(targetPath, cocoJson)
