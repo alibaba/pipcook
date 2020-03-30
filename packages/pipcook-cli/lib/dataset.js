@@ -30,9 +30,9 @@ const dataset = async (cmdObj) => {
       },
       images: [],
       licenses: [{
-      url: "http:\/\/creativecommons.org\/licenses\/by-nc-sa\/2.0\/",
-      id: 1,
-      name: "Attribution-NonCommercial-ShareAlike License",
+        url: "http:\/\/creativecommons.org\/licenses\/by-nc-sa\/2.0\/",
+        id: 1,
+        name: "Attribution-NonCommercial-ShareAlike License",
       }],
       annotations: [],
       categories: [],
@@ -108,7 +108,6 @@ const dataset = async (cmdObj) => {
 
     fse.outputJSONSync(path.join(process.cwd(), 'merge-data', 'annotation.json'), newJson);
   }
-  
 };
 
 module.exports = dataset;

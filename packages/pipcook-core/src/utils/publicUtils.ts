@@ -87,9 +87,9 @@ export function downloadZip(url: string, fileName: string) {
       })
       .pipe(file)
       .on('error', (err: Error) => {
-          fs.unlink(fileName);
-          bar1.stop();
-          reject(err);
+        fs.unlink(fileName);
+        bar1.stop();
+        reject(err);
       });
   
     file.on('finish', () => {
@@ -107,16 +107,16 @@ export function downloadZip(url: string, fileName: string) {
 
 export function compressTarFile(sourcePath: string, targetPath: string) {
   return new Promise((resolve, reject) => {
-      targz.compress({
-        src: sourcePath,
-        dest: targetPath
-      }, (err: Error) => {
-          if(err) {
-              reject(err);
-          } else {
-              resolve();
-          }
-      });
+    targz.compress({
+      src: sourcePath,
+      dest: targetPath
+    }, (err: Error) => {
+      if(err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
   })
 }
 

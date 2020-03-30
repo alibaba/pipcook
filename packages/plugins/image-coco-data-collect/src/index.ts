@@ -11,8 +11,8 @@ const fs = require('fs-extra');
 
 const shuffle = (a: any[]) => {
   for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 }
@@ -79,7 +79,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
         segmented: [
           0
         ],
-     }
+      }
     }
     const objects = annotation.annotations.filter((e: any) => e.image_id == cocoImage.id);
     currentAnnotation.annotation.object = objects.map((object: any) => {

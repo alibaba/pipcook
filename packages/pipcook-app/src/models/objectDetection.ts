@@ -104,7 +104,7 @@ export default class ObjectDetection {
   }
 
   async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI,
-     predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
+    predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
 
     const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = await this._train(dataSource, trainInfo);
 

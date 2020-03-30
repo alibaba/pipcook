@@ -55,7 +55,7 @@ export default class TextClassification {
   }
 
   async trainAndEasDeploy(dataSource: string, trainInfo: any, easConfig: EasConfigI,
-     predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
+    predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
 
     const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource);
 

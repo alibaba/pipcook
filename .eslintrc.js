@@ -26,6 +26,7 @@ module.exports = {
       {
         'before': false, 'after': true
       }
-    ]
+    ],
+    'indent': [ 'error', 2 ]
   },
 };

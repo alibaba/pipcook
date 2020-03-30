@@ -14,6 +14,6 @@ const bayesianModelEvaluate: ModelEvaluateType
     return {
       accuracy: result
     }
-}
+  }
 
 export default bayesianModelEvaluate;

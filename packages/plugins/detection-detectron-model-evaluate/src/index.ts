@@ -35,6 +35,6 @@ const imageDetectronModelTrain: ModelEvaluateType =
     return {
       result: evaluationResult
     };
-}
+  }
 
 export default imageDetectronModelTrain;

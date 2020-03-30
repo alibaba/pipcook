@@ -93,25 +93,25 @@ export default class Executor {
    */
   static handleSubscriberMsg = (socketSubscriber: zmq.Subscriber) => {
     socketSubscriber.receive()
-    .then((msg: Buffer[]) => {
-      msg.forEach((item) => {
-        let json = null;
-        try {
-          json = JSON.parse(item.toString());
-        } catch (err) {
-          json = {};
-        }
-        if (json.name === 'stdout') {
-          console.log('[PYTHON: ]', json.text);
-        } else if (json.name === 'stderr') {
-          console.log('[PYTHON: ]', json.text);
-        }
+      .then((msg: Buffer[]) => {
+        msg.forEach((item) => {
+          let json = null;
+          try {
+            json = JSON.parse(item.toString());
+          } catch (err) {
+            json = {};
+          }
+          if (json.name === 'stdout') {
+            console.log('[PYTHON: ]', json.text);
+          } else if (json.name === 'stderr') {
+            console.log('[PYTHON: ]', json.text);
+          }
+        });
+        Executor.handleSubscriberMsg(socketSubscriber);
+      })
+      .catch(() => {
+        Executor.handleSubscriberMsg(socketSubscriber)
       });
-      Executor.handleSubscriberMsg(socketSubscriber);
-    })
-    .catch(() => {
-      Executor.handleSubscriberMsg(socketSubscriber)
-    });
   }
 
   /**
@@ -119,43 +119,43 @@ export default class Executor {
    */
   static handleDealerMsg = (socketDealer: zmq.Dealer, session: Session) => {
     socketDealer.receive()
-    .then((msg) => {
-      const message: any = {};
-      msg.forEach((item) => {
-        try {
-          const json = JSON.parse(item.toString());
-          if (json.msg_type === 'execute_request') {
-            message.requestId = json.msg_id;
-          }
-          if (json.msg_type === 'execute_reply') {
-            message.responseId = json.msg_id;
-          }
-          if (json.status && json.execution_count !== undefined) {
-            if (json.status === 'ok') {
-              message.status = true;
-              if (json.user_expressions) {
-                for (const key in json.user_expressions) {
-                  if (json.user_expressions[key].status === 'ok') {
-                    message[key] = json.user_expressions[key].data['text/plain'];
-                  }
-                  
-                }
-              }
-            } else {
-              message.status = false;
-              message.traceback = json.traceback;
+      .then((msg) => {
+        const message: any = {};
+        msg.forEach((item) => {
+          try {
+            const json = JSON.parse(item.toString());
+            if (json.msg_type === 'execute_request') {
+              message.requestId = json.msg_id;
             }
+            if (json.msg_type === 'execute_reply') {
+              message.responseId = json.msg_id;
+            }
+            if (json.status && json.execution_count !== undefined) {
+              if (json.status === 'ok') {
+                message.status = true;
+                if (json.user_expressions) {
+                  for (const key in json.user_expressions) {
+                    if (json.user_expressions[key].status === 'ok') {
+                      message[key] = json.user_expressions[key].data['text/plain'];
+                    }
+                    
+                  }
+                }
+              } else {
+                message.status = false;
+                message.traceback = json.traceback;
+              }
+            }
+          } catch (err) {
+            // TODO: how to handle with this error?
           }
-        } catch (err) {
-          // TODO: how to handle with this error?
-        }
+        });
+        session.dealerMsg = message;
+        Executor.handleDealerMsg(socketDealer, session);
+      })
+      .catch((err) => {
+        console.error(err);
       });
-      session.dealerMsg = message;
-      Executor.handleDealerMsg(socketDealer, session);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
   }
 
   /**

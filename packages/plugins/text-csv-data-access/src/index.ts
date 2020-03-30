@@ -60,8 +60,8 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
   } = args || {};
 
   const trainDataFlows: any = [], 
-  validationDataFlows: any = [], 
-  testDataFlows: any = [];
+    validationDataFlows: any = [], 
+    testDataFlows: any = [];
 
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];

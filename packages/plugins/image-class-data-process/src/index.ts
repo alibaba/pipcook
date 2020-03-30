@@ -59,7 +59,7 @@ const imageClassDataProcess: DataProcessType = async (data: UniformTfSampleData,
   };
 
   if (validationData) {
-     const transformValidationData = validationData.mapAsync(async (processingData: any) => {
+    const transformValidationData = validationData.mapAsync(async (processingData: any) => {
       return await processImage(processingData, rotationRange, brightnessRange, normalization, metaData);
     });
     result.validationData = transformValidationData;
