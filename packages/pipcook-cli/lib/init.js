@@ -85,6 +85,7 @@ const init = async (cmdObj) => {
   } catch (error) {
     spinner.fail(`install ${error} error`);
     childProcess.execSync(`rm -r ${path.join(dirname, '*')}`);
+    childProcess.execSync(`rm -r ${path.join(dirname, '.server')}`);
   }
 };
 
