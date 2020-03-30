@@ -63,7 +63,7 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
   const {
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
-    metrics = ['accuracy'],
+    metrics = [ 'accuracy' ],
     modelId='',
     isFreeze=true
   } = args || {};
@@ -72,7 +72,7 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
   if (!modelId) {
     assertionTest(data);
     inputShape = data.metaData.feature.shape;
-    outputShape = data.metaData.label.shape || [0];
+    outputShape = data.metaData.label.shape || [ 0 ];
   }
 
   let model: tf.Sequential | tf.LayersModel | null = null;
@@ -81,7 +81,7 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
     const metaData = getMetadata(modelId);
     data = {metaData} as UniformTfSampleData;
   } else {
-    const trainableLayers = ['denseModified', 'conv_pw_13_bn', 'conv_pw_13', 'conv_dw_13_bn', 'conv _dw_13'];
+    const trainableLayers = [ 'denseModified', 'conv_pw_13_bn', 'conv_pw_13', 'conv_dw_13_bn', 'conv _dw_13' ];
     const mobilenet = await
     tf.loadLayersModel('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/models/mobilenet/model.json');
     const newInputLayer = tf.input({shape: inputShape});

@@ -25,7 +25,7 @@ async function getDataset(url: string, hasHeader: boolean, delimiter: string): P
   const dataset: tf.data.CSVDataset = tf.data.csv(
     'file://' + url, {
       hasHeader,
-      columnNames: ['data', 'label'],
+      columnNames: [ 'data', 'label' ],
       columnConfigs: {
         label: {
           isLabel: true
@@ -37,8 +37,8 @@ async function getDataset(url: string, hasHeader: boolean, delimiter: string): P
   const datasetArray: any[] = [];
   await dataset.forEachAsync((e: any) => {
     datasetArray.push({
-      xs: tf.tensor1d([e.xs.data], 'string'),
-      ys: tf.tensor1d([e.ys.label], 'string')
+      xs: tf.tensor1d([ e.xs.data ], 'string'),
+      ys: tf.tensor1d([ e.ys.label ], 'string')
     })
   })
   return tf.data.array(datasetArray);
@@ -51,7 +51,7 @@ async function getDataset(url: string, hasHeader: boolean, delimiter: string): P
  */
 const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformSampleData> => {
   if (!Array.isArray(data)) {
-    data = [data];
+    data = [ data ];
   }
 
   const { 
@@ -89,12 +89,12 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
         {
           name: 'xs',
           type: 'string',
-          shape: [1]
+          shape: [ 1 ]
         },
       label: {
         name: 'ys',
         type: 'string',
-        shape: [1]
+        shape: [ 1 ]
       },
     }
   };

@@ -34,11 +34,11 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
     await python.reconnect();
 
-    const [register_coco_instances] = python.fromImport('detectron2.data.datasets', ['register_coco_instances']);
-    const [DefaultTrainer] = python.fromImport('detectron2.engine', ['DefaultTrainer', 'hooks']);
-    const [get_cfg] = python.fromImport('detectron2.config', ['get_cfg']);
+    const [ register_coco_instances ] = python.fromImport('detectron2.data.datasets', [ 'register_coco_instances' ]);
+    const [ DefaultTrainer ] = python.fromImport('detectron2.engine', [ 'DefaultTrainer', 'hooks' ]);
+    const [ get_cfg ] = python.fromImport('detectron2.config', [ 'get_cfg' ]);
     const os = python.import('os');
-    const [setup_logger] = python.fromImport('detectron2.utils.logger', ['setup_logger']);
+    const [ setup_logger ] = python.fromImport('detectron2.utils.logger', [ 'setup_logger' ]);
 
     setup_logger()
 
@@ -56,13 +56,13 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     cfg = get_cfg();
     cfg.merge_from_file(path.join(__dirname, 'config', 'faster_rcnn_R_50_C4_3x.yaml'));
     if (data.trainData) {
-      cfg.DATASETS.TRAIN = python.createList(["train_dataset"]);
+      cfg.DATASETS.TRAIN = python.createList([ "train_dataset" ]);
     }
     
     if (validationJson && validationJson.annotations && validationJson.annotations.length > 0) {
-      cfg.DATASETS.TEST = python.createList(['val_dataset']);
+      cfg.DATASETS.TEST = python.createList([ 'val_dataset' ]);
     } else {
-      cfg.DATASETS.TEST = python.createList(['train_dataset']);
+      cfg.DATASETS.TEST = python.createList([ 'train_dataset' ]);
     }
 
     cfg.DATALOADER.NUM_WORKERS = numWorkers;
@@ -101,7 +101,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
   let config: any;
   await Python.scope('detectron_prediction', async (python: any) => {
     torch = python.import('torch');
-    const [get_cfg] = python.fromImport('detectron2.config', ['get_cfg']);
+    const [ get_cfg ] = python.fromImport('detectron2.config', [ 'get_cfg' ]);
 
     config = get_cfg();
     config.merge_from_file(path.join(__dirname, 'config', 'faster_rcnn_R_50_C4_3x.yaml'));
@@ -120,7 +120,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
   return {
     model: trainer,
     type: 'object detection',
-    inputShape: [-1, -1, 3],
+    inputShape: [ -1, -1, 3 ],
     outputShape: [],
     inputType: 'float32',
     outputType: 'int32',
@@ -132,7 +132,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     predict: async function (inputData: string[]) {
       let prediction: any;
       await Python.scope('detectron_prediction', async (python: any) => {
-        const [DefaultPredictor] = python.fromImport('detectron2.engine.defaults', ['DefaultPredictor']);
+        const [ DefaultPredictor ] = python.fromImport('detectron2.engine.defaults', [ 'DefaultPredictor' ]);
         const predictor = DefaultPredictor(config);
         const cv2 = python.import('cv2');
         const numpy = python.import('numpy');

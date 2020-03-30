@@ -12,7 +12,7 @@ const fs = require('fs-extra');
 const shuffle = (a: any[]) => {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+    [ a[i], a[j] ] = [ a[j], a[i] ];
   }
   return a;
 }
@@ -27,7 +27,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
   assert.ok(url, 'Please specify a url of zip of your dataset');
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
   const extention = fileName.split('.');
-  if (extention[extention.length - 1] !== 'zip') {
+  if (extention[ extention.length - 1 ] !== 'zip') {
     throw new Error('the file must be zip file');
   }
   const datasetName = extention[0];
@@ -88,16 +88,16 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
         object.category_name = category;
       }
       return {
-        name: [object.category_name],
-        pose: ["Unspecified"],
-        truncated: ["0"],
-        difficult: ["0"],
+        name: [ object.category_name ],
+        pose: [ "Unspecified" ],
+        truncated: [ "0" ],
+        difficult: [ "0" ],
         bndbox: [
           {
-            xmin: [object.bbox[0]],
-            ymin: [object.bbox[1]],
-            xmax: [object.bbox[0] + object.bbox[2]],
-            ymax: [object.bbox[1] + object.bbox[3]]
+            xmin: [ object.bbox[ 0 ] ],
+            ymin: [ object.bbox[ 1 ] ],
+            xmax: [ object.bbox[ 0 ] + object.bbox[ 2 ] ],
+            ymax: [ object.bbox[ 1 ] + object.bbox[ 3 ] ]
           }
         ]
       };

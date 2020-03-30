@@ -80,16 +80,16 @@ const getLabelMap = async (data: OriginSampleData[]) => {
  */
 const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformTfSampleData> => {
   if (!Array.isArray(data)) {
-    data = [data];
+    data = [ data ];
   }
-  const {imgSize=[224, 224]} = args || {};
+  const {imgSize=[ 224, 224 ]} = args || {};
 
   const oneHotMap = await getLabelMap(data);
 
   const trainDataFlows: any[]=[], validationDataFlows: any[]=[], testDataFlows: any[]=[]
   
   for (let i = 0; i < data.length; i++) {
-    const dataSample = data[i];
+    const dataSample = data[ i ];
     const {trainDataPath, validationDataPath, testDataPath} = dataSample;  
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
     await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, trainDataFlows, 'train data');
@@ -110,12 +110,12 @@ const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[]
         {
           name: 'xs',
           type: 'float32',
-          shape: [imgSize[0], imgSize[1], 3]
+          shape: [ imgSize[ 0 ], imgSize[ 1 ], 3 ]
         },
       label: {
         name: 'ys',
         type: 'int32',
-        shape: [1, Object.keys(oneHotMap).length],
+        shape: [ 1, Object.keys(oneHotMap).length ],
         valueMap: oneHotMap
       },
     }

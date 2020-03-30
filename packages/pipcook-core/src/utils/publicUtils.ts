@@ -24,11 +24,11 @@ export function createAnnotationFile(annotationDir: string, filename: string, ur
   fs.ensureDirSync(annotationDir);
   const json = {
     annotation: {
-      filename: [filename],
-      folder: [url],
+      filename: [ filename ],
+      folder: [ url ],
       object: [
         {
-          name: [category]
+          name: [ category ]
         }
       ]
     }
@@ -198,11 +198,13 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
       "date_created": "2015-01-27 09:11:52.357475"
     },
     images: [],
-    licenses: [{
-      "url": "http:\/\/creativecommons.org\/licenses\/by-nc-sa\/2.0\/",
-      "id": 1,
-      "name": "Attribution-NonCommercial-ShareAlike License"
-    }],
+    licenses: [
+      {
+        "url": "http:\/\/creativecommons.org\/licenses\/by-nc-sa\/2.0\/",
+        "id": 1,
+        "name": "Attribution-NonCommercial-ShareAlike License"
+      }
+    ],
     annotations: [],
     categories: []
   };
@@ -245,7 +247,7 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
         segmentation: [],
         iscrowd: 0,
         area: Number(width * height),
-        bbox: [parseInt(item.bndbox[0].xmin[0]), parseInt(item.bndbox[0].ymin[0]), width, height ]
+        bbox: [ parseInt(item.bndbox[0].xmin[0]), parseInt(item.bndbox[0].ymin[0]), width, height ]
       })
     })
   }

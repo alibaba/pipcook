@@ -30,9 +30,9 @@ const start = async (fileName) => {
       fileName = 'index.js';
     }
 
-    const child = childProcess.spawn(`node`, [fileName], {
+    const child = childProcess.spawn(`node`, [ fileName ], {
       cwd: currentDir,
-      customFds: [0, 1, 2]
+      customFds: [ 0, 1, 2 ]
     });
     child.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
     child.stderr.on('data', function (data) {   spinner.fail(`run error: ${data.toString()}`);});

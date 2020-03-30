@@ -56,9 +56,9 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
   const result: PipcookModel = {
     model: classifier,
     type: 'text classification',
-    inputShape: [1],
+    inputShape: [ 1 ],
     inputType: 'string',
-    outputShape: [1],
+    outputShape: [ 1 ],
     outputType: 'string',
     extraParams: {
       mode

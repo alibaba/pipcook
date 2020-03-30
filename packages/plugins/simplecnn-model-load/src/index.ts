@@ -20,7 +20,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
   const {
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
-    metrics = ['accuracy'],
+    metrics = [ 'accuracy' ],
     modelId=''
   } = args || {};
 
@@ -52,7 +52,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
       activation: 'relu',
       kernelInitializer: 'glorotUniform',
     }));
-    model.add(tf.layers.maxPooling2d({poolSize: [2, 2]}));
+    model.add(tf.layers.maxPooling2d({poolSize: [ 2, 2 ]}));
     model.add(tf.layers.dropout({rate: 0.25}));
     model.add(tf.layers.conv2d({
       filters: 64,
@@ -67,7 +67,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
       activation: 'relu',
       kernelInitializer: 'glorotUniform'
     }));
-    model.add(tf.layers.maxPooling2d({poolSize: [2, 2]}));
+    model.add(tf.layers.maxPooling2d({poolSize: [ 2, 2 ]}));
     model.add(tf.layers.dropout({rate: 0.25}));
     model.add(tf.layers.flatten());
     model.add(tf.layers.dense({units: 512, activation: 'relu', kernelInitializer: 'glorotUniform'}));

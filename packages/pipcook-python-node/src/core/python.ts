@@ -325,7 +325,7 @@ export default class Python {
     this.statements = [];
     execution();
     const ifStatements = this.statements.map((ele: string) => '\t'+ele);
-    this.statements = [...statementsTemp, ...ifStatements];
+    this.statements = [ ...statementsTemp, ...ifStatements ];
   }
 
   /**

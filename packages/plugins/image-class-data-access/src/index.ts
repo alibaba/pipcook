@@ -85,12 +85,12 @@ const getLabelMap = async (data: OriginSampleData[]) => {
  */
 const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformTfSampleData> => {
   if (!Array.isArray(data)) {
-    data = [data];
+    data = [ data ];
   }
 
   const oneHotMap = await getLabelMap(data);
 
-  const {imgSize=[128, 128]} = args || {};
+  const {imgSize=[ 128, 128 ]} = args || {};
 
   let trainDataFlows: any, validationDataFlows: any, testDataFlows: any;
   
@@ -118,12 +118,12 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
         {
           name: 'xs',
           type: 'float32',
-          shape: [imgSize[0], imgSize[1], 3]
+          shape: [ imgSize[0], imgSize[1], 3 ]
         },
       label: {
         name: 'ys',
         type: 'int32',
-        shape: [1, Object.keys(oneHotMap).length],
+        shape: [ 1, Object.keys(oneHotMap).length ],
         valueMap: oneHotMap
       },
     }

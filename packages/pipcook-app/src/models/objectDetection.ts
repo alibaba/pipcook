@@ -73,7 +73,7 @@ export default class ObjectDetection {
     
     const runner = new PipcookRunner();
 
-    runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
+    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
     
   }
 
@@ -112,7 +112,7 @@ export default class ObjectDetection {
     
     const runner = new PipcookRunner();
 
-    runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
+    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
     
   }
 }

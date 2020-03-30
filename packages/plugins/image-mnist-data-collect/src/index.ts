@@ -35,7 +35,7 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
     const annotationDir = path.join(saveDir, 'annotations', 'train');
     createAnnotationFile(annotationDir, `trainsample${i}.jpg`, imageDir, String(output.indexOf(1)))
     fs.ensureDirSync(imageDir);
-    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [28, 28, 1], 'int32'));
+    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [ 28, 28, 1 ], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
     await jimpImage.write(path.join(imageDir, `trainsample${i}.jpg`));
   }
@@ -53,7 +53,7 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
     const annotationDir = path.join(saveDir, 'annotations', 'test');
     createAnnotationFile(annotationDir, `testsample${i}.jpg`, imageDir, String(output.indexOf(1)))
     fs.ensureDirSync(imageDir);
-    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [28, 28, 1], 'int32'));
+    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [ 28, 28, 1 ], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
     await jimpImage.write(path.join(imageDir, `testsample${i}.jpg`));
   }

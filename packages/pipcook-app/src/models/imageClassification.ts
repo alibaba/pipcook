@@ -91,7 +91,7 @@ export default class ImageClassification {
     const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
 
     const runner = new PipcookRunner();  
-    await runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
+    await runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
   }
 
   async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI, predictServer=false, 
@@ -101,7 +101,7 @@ export default class ImageClassification {
     const modelDeploy = ModelDeploy(imageClassEasDeploy, getEasParam(easConfig));
 
     const runner = new PipcookRunner();  
-    await runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
+    await runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
   }
 
   async deployEasByUrl(modelUrl: string, labelJsonUrl: string, easConfig: EasConfigI) {

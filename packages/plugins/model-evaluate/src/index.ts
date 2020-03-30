@@ -46,12 +46,12 @@ const ModelEvalute: ModelEvaluateType = async (data: UniformTfSampleData, model:
       });
   
       if (!Array.isArray(evaluateResult)) {
-        evaluateResult = [evaluateResult];
+        evaluateResult = [ evaluateResult ];
       }
   
-      let metrics = ['loss'];
+      let metrics = [ 'loss' ];
       if (model.metrics) {
-        metrics = [...metrics, ...model.metrics];
+        metrics = [ ...metrics, ...model.metrics ];
       }
       const result: any = {};
       metrics.forEach((metric, index) => {

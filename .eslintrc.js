@@ -30,6 +30,7 @@ module.exports = {
     'indent': [ 'error', 2 ],
     'keyword-spacing': [
       'error', { 'before': true }
-    ]
+    ],
+    'array-bracket-spacing': [ 'error', 'always' ]
   }
 };
