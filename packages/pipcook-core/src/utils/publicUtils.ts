@@ -111,7 +111,7 @@ export function compressTarFile(sourcePath: string, targetPath: string) {
       src: sourcePath,
       dest: targetPath
     }, (err: Error) => {
-      if(err) {
+      if (err) {
         reject(err);
       } else {
         resolve();

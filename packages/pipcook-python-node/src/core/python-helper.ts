@@ -15,7 +15,7 @@ export function conversion(target: any) {
       }
     }
     return args.slice(0, args.length - 1);
-  } else if(typeof target === 'number') {
+  } else if (typeof target === 'number') {
     return target;
   } else if ((typeof target === 'string' || target instanceof String)) {
     return '"' + target + '"';

@@ -27,6 +27,9 @@ module.exports = {
         'before': false, 'after': true
       }
     ],
-    'indent': [ 'error', 2 ]
-  },
+    'indent': [ 'error', 2 ],
+    'keyword-spacing': [
+      'error', { 'before': true }
+    ]
+  }
 };
