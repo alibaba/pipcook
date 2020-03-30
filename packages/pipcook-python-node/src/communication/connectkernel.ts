@@ -22,7 +22,7 @@ export function startKernel(shell_port: number, iopub_port: number) {
       "kernel_name": ""
     }
   `
-  const tempJsonPath = path.join(process.cwd(), '.temp', 'node-python' ,Date.now().toString(), 'ipker.json');
+  const tempJsonPath = path.join(process.cwd(), '.temp', 'node-python', Date.now().toString(), 'ipker.json');
   fs.outputFileSync(tempJsonPath, tempJson);
   return new Promise((resolve, reject) => {
     const venvDir = fs.pathExistsSync(path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate'));

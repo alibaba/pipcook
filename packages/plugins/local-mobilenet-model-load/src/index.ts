@@ -82,7 +82,7 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
       const metaData = getMetadata(modelId);
       data = {metaData} as UniformTfSampleData;
     } else {
-      const trainableLayers = ['denseModified','conv_pw_13_bn','conv_pw_13','conv_dw_13_bn','conv _dw_13'];
+      const trainableLayers = ['denseModified', 'conv_pw_13_bn', 'conv_pw_13', 'conv_dw_13_bn', 'conv _dw_13'];
       const mobilenet = await
         tf.loadLayersModel('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/models/mobilenet/model.json');
       const newInputLayer = tf.input({shape: inputShape});

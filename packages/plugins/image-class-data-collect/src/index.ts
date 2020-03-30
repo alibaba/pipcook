@@ -51,7 +51,7 @@ const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Pr
     const trainType = splitString[splitString.length - 3];
     const category = splitString[splitString.length - 2];
     const imageName = uuidv1() + splitString[splitString.length -1];
-    const annotationDir = path.join(saveDir, 'annotations' ,trainType);
+    const annotationDir = path.join(saveDir, 'annotations', trainType);
     createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
     typeSet.add(trainType);
     fs.moveSync(imagePath, path.join(saveDir, 'images', imageName), { overwrite: true });

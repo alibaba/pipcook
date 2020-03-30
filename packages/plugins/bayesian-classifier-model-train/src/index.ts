@@ -53,7 +53,7 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampl
     const words_dict = python.runRaw('words_dict');
     const TextFeatures = python.runRaw('TextFeatures');
 
-    text_list = TextProcessing(rawData, rawClass,_({test_size: 0.2}))
+    text_list = TextProcessing(rawData, rawClass, _({test_size: 0.2}))
     let stopwords_file: any;
     let stoppath = '';
     if (mode === 'en') {

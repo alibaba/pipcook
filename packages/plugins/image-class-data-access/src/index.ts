@@ -123,7 +123,7 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
       label: {
         name: 'ys',
         type: 'int32',
-        shape: [1,Object.keys(oneHotMap).length],
+        shape: [1, Object.keys(oneHotMap).length],
         valueMap: oneHotMap
       },
     }

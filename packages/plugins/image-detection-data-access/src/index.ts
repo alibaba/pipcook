@@ -115,7 +115,7 @@ const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[]
       label: {
         name: 'ys',
         type: 'int32',
-        shape: [1,Object.keys(oneHotMap).length],
+        shape: [1, Object.keys(oneHotMap).length],
         valueMap: oneHotMap
       },
     }

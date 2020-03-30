@@ -9,7 +9,7 @@ const glob = require('glob-promise');
 const log = async () => {
   const logDir = path.join(process.cwd(), pipcookLogName);
   try {
-    const files = await glob(path.join(logDir, '*' ,'log.json'));
+    const files = await glob(path.join(logDir, '*', 'log.json'));
     const jsonObject = files.map((file) => {
       try {
         const json = fse.readFileSync(file);

@@ -20,6 +20,12 @@ module.exports = {
       {
         'functions': false,
       }
+    ],
+    'comma-spacing': [
+      'error',
+      {
+        'before': false, 'after': true
+      }
     ]
   },
 };

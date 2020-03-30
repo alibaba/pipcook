@@ -45,12 +45,12 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     const validationData = data.validationData || data.testData;
     
     if (data.trainData) {
-      register_coco_instances("train_dataset", {}, data.trainData, path.join(data.trainData, '..', '..' , 'images'))
+      register_coco_instances("train_dataset", {}, data.trainData, path.join(data.trainData, '..', '..', 'images'))
     }
     
     const validationJson = validationData && require(validationData);
     if (validationJson && validationJson.annotations && validationJson.annotations.length > 0) {
-      register_coco_instances("val_dataset", {}, validationData, path.join(validationData, '..', '..' , 'images'))
+      register_coco_instances("val_dataset", {}, validationData, path.join(validationData, '..', '..', 'images'))
     }
 
     cfg = get_cfg();

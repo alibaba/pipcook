@@ -180,7 +180,7 @@ export default class Executor {
     };
 
     session.socketDealer.send(
-      ["","<IDS|MSG>","", 
+      [ "", "<IDS|MSG>", "",
         JSON.stringify(header), 
         JSON.stringify(parent_header), 
         JSON.stringify(metadata), 

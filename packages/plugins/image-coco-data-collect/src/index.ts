@@ -47,7 +47,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
   }
   console.log('unzip and collecting data...');
   await unZipData(url, saveDir);
-  const imagePaths = await glob(path.join(saveDir, 'images' ,'*.+(jpg|jpeg|png)'));
+  const imagePaths = await glob(path.join(saveDir, 'images', '*.+(jpg|jpeg|png)'));
   shuffle(imagePaths);
   const countNumber = imagePaths.length;
   console.log('create annotation file...');
@@ -107,10 +107,10 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
       createAnnotationFromJson(path.join(saveDir, 'annotations', 'train' ), currentAnnotation);
     } else if (validationSplit > 0 && i >= countNumber * validationSplit) {
       typeSet.add('validation');
-      createAnnotationFromJson(path.join(saveDir ,'annotations', 'validation') ,currentAnnotation);
+      createAnnotationFromJson(path.join(saveDir, 'annotations', 'validation'), currentAnnotation);
     } else {
       typeSet.add('test');
-      createAnnotationFromJson(path.join(saveDir ,'annotations', 'test') ,currentAnnotation);
+      createAnnotationFromJson(path.join(saveDir, 'annotations', 'test'), currentAnnotation);
     }
   }
 
