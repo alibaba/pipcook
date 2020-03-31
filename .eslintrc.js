@@ -43,5 +43,7 @@ module.exports = {
     'arrow-parens': ['error', 'always'],
     'arrow-spacing': [ 'error', { before: true, after: true } ],
     'block-spacing': 'error',
+    'brace-style': [ 'error', '1tbs', { allowSingleLine: true } ],
+    'comma-style': 'error'
   }
 };
