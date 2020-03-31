@@ -38,6 +38,8 @@ module.exports = {
     'eol-last': [ 'error', 'always' ],
     'comma-dangle': [ 'error', 'never' ],
     'no-multi-spaces': 'error',
-    'no-multiple-empty-lines': 'error'
+    'no-multiple-empty-lines': 'error',
+    'no-irregular-whitespace': 'error',
+    'arrow-parens': ['error', 'always']
   }
 };

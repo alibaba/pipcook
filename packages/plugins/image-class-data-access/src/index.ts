@@ -55,7 +55,7 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
 
 /**
  * merge all possible values of labels. Get the map between label and numeric value
- * @param data 
+ * @param data
  */
 const getLabelMap = async (data: OriginSampleData[]) => {
   const labelSet = new Set<string>();

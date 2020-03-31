@@ -1,7 +1,7 @@
 Error.stackTraceLimit = Infinity;
 const jasmineCtor = require('jasmine');
 
-process.on('unhandledRejection', e => {
+process.on('unhandledRejection', (e) => {
   throw e;
 });
 
