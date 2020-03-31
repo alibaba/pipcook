@@ -78,7 +78,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
         ],
         segmented: [
           0
-        ],
+        ]
       }
     };
     const objects = annotation.annotations.filter((e: any) => e.image_id == cocoImage.id);
@@ -118,7 +118,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
     throw new Error('There is no train data. Please check the folder structure');
   }
   const result: OriginSampleData = {
-    trainDataPath: path.join(saveDir, 'annotations', 'train'),
+    trainDataPath: path.join(saveDir, 'annotations', 'train')
   };
 
   if (typeSet.has('validation')) {

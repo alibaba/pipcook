@@ -125,7 +125,7 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
         type: 'int32',
         shape: [ 1, Object.keys(oneHotMap).length ],
         valueMap: oneHotMap
-      },
+      }
     }
   };
   if (validationDataFlows && validationDataFlows.size > 0) {

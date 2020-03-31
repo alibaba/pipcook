@@ -51,7 +51,7 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
         type: 'int32',
         shape: [],
         valueMap: oneHotMap
-      },
+      }
     }
   };
 

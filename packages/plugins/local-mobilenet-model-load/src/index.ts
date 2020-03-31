@@ -135,7 +135,7 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
         return predictResult;
       });
       return result; 
-    },
+    }
   };
 };
 

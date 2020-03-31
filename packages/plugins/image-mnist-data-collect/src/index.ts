@@ -62,7 +62,7 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
 
   const result: OriginSampleData = {
     trainDataPath: path.join(saveDir, 'annotations', 'train'),
-    testDataPath: path.join(saveDir, 'annotations', 'test'),
+    testDataPath: path.join(saveDir, 'annotations', 'test')
   };
   
   return result;

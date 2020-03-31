@@ -20,7 +20,7 @@ const log = async () => {
           pipelineId: jsonObj.pipelineId,
           success: jsonObj.error ? 'no' : 'yes',
           evaluation: jsonObj.latestEvaluateResult ? JSON.stringify(jsonObj.latestEvaluateResult) : '',
-          time: timestamp,
+          time: timestamp
         };
       } catch (e) {
         return false;

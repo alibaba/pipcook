@@ -74,7 +74,7 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampl
     model: classifier,
     extraParams: {
       feature_list,
-      text_list,
+      text_list
     },
     save: async function(modelPath: string) {
       await Python.scope('bayes_text_classification', async (python: any) => {
@@ -83,7 +83,7 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampl
         const save_all_words_list = python.runRaw('save_all_words_list');
         save_all_words_list(feature_words, path.join(modelPath, 'feature_words.pkl'));
       });
-    },
+    }
   };
 };
 

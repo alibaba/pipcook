@@ -66,7 +66,7 @@ const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDa
       cpu: cpus,
       memory: memory,
       "rpc.keepalive": 60000,
-      region: "shanghai", 
+      region: "shanghai" 
     };
 
     if (gpu) {

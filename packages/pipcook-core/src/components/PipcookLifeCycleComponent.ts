@@ -24,7 +24,7 @@ function produceResultFactory(type: 'dataCollect' | 'dataAccess' | 'dataProcess'
     plugin,
     previousComponent: null,
     status: 'not execute',
-    returnType: 'not set',
+    returnType: 'not set'
   };
   if (params) {
     result.params = params;

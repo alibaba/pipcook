@@ -48,7 +48,7 @@ const textClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDat
       cpu: cpus,
       memory: memory,
       "rpc.keepalive": 60000,
-      region: "shanghai", 
+      region: "shanghai" 
     };
 
     if (gpu) {

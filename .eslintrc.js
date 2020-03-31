@@ -35,6 +35,7 @@ module.exports = {
     'space-infix-ops': 'error',
     'object-curly-spacing': [ 'error', 'always' ],
     'semi': [ 'error', 'always' ],
-    'eol-last': [ 'error', 'always' ]
+    'eol-last': [ 'error', 'always' ],
+    'comma-dangle': [ 'error', 'never' ]
   }
 };

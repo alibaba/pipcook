@@ -50,7 +50,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
       filters: 32,
       kernelSize: 3,
       activation: 'relu',
-      kernelInitializer: 'glorotUniform',
+      kernelInitializer: 'glorotUniform'
     }));
     model.add(tf.layers.maxPooling2d({ poolSize: [ 2, 2 ] }));
     model.add(tf.layers.dropout({ rate: 0.25 }));
@@ -78,7 +78,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
   (model as tf.Sequential).compile({
     optimizer,
     loss,
-    metrics,
+    metrics
   });
   
   const result: PipcookModel = {
@@ -117,7 +117,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
         return predictResult;
       });
       return result; 
-    },
+    }
   };
 
   return result;

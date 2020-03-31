@@ -56,7 +56,7 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
 
   const { 
     hasHeader = false,
-    delimiter = ',',
+    delimiter = ','
   } = args || {};
 
   const trainDataFlows: any = [], 
@@ -95,7 +95,7 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
         name: 'ys',
         type: 'string',
         shape: [ 1 ]
-      },
+      }
     }
   };
   if (validationDataFlows.length > 0) {

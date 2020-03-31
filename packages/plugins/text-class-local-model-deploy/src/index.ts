@@ -20,7 +20,7 @@ const textClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, model
     }
 
     let result: any = {
-      trainDataPath: path.join(trainDataPath, 'train.csv'),
+      trainDataPath: path.join(trainDataPath, 'train.csv')
     };
 
     const dataAccessPlugin = dataAccess.plugin as DataAccessType;

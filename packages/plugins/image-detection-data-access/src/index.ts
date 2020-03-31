@@ -117,7 +117,7 @@ const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[]
         type: 'int32',
         shape: [ 1, Object.keys(oneHotMap).length ],
         valueMap: oneHotMap
-      },
+      }
     }
   };
   if (validationDataFlows.length > 0) {

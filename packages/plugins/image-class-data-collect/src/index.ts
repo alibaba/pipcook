@@ -17,7 +17,7 @@ const uuidv1 = require('uuid/v1');
  */
 const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
   let {
-    url = '',
+    url = ''
   } = args || {};
   assert.ok(url, 'Please specify a url of zip of your dataset');
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
@@ -61,7 +61,7 @@ const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Pr
     throw new Error('There is no train data. Please check the folder structure');
   }
   const result: OriginSampleData = {
-    trainDataPath: path.join(saveDir, 'annotations', 'train'),
+    trainDataPath: path.join(saveDir, 'annotations', 'train')
   };
   if (typeSet.has('validation')) {
     result.validationDataPath = path.join(saveDir, 'annotations', 'validation');

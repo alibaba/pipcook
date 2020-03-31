@@ -79,7 +79,7 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
         prediction = await python.evaluate(prediction);
       });
       return prediction;
-    }, 
+    } 
   };
   return result;
 };

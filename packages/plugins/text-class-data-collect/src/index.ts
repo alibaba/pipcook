@@ -114,7 +114,7 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
     throw new Error('There is no train data. Please check the folder structure');
   }
   const result: OriginSampleData = {
-    trainDataPath,
+    trainDataPath
   };
 
   if (typeSet.has('validation')) {

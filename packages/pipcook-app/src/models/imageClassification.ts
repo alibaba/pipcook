@@ -49,7 +49,7 @@ export default class ImageClassification {
     });
 
     const dataAccess = DataAccess(imageClassDataAccess, {
-      imgSize: this.metaData.imageSize,
+      imgSize: this.metaData.imageSize
     });
 
     let modelLoad: any;
@@ -67,13 +67,13 @@ export default class ImageClassification {
         isFreeze: trainInfo.freeze,
         optimizer: this.metaData.optimizer,
         loss: this.metaData.loss,
-        metrics: this.metaData.metrics,
+        metrics: this.metaData.metrics
       });      
     } else if (this.model.toLowerCase() === 'simplecnn') {
       modelLoad = ModelLoad(simpleCnnModelLoad, {
         optimizer: this.metaData.optimizer,
         loss: this.metaData.loss,
-        metrics: this.metaData.metrics,
+        metrics: this.metaData.metrics
       });
     } else {
       console.error('the model name can only be mobilenet or simplecnn!');

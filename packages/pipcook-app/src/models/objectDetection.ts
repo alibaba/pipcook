@@ -54,7 +54,7 @@ export default class ObjectDetection {
       maxIter: this.metaData.maxIter,
       baseLearningRate: this.metaData.baseLearningRate,
       numWorkers: this.metaData.numWorkers,
-      numGpus: this.metaData.numGpus,
+      numGpus: this.metaData.numGpus
     });
 
     const modelTrain = ModelTrain(detectronModelTrain);
