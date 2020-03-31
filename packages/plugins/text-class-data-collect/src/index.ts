@@ -129,7 +129,3 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
 };
 
 export default textClassDataCollect;
-
-
-
-

@@ -69,7 +69,3 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
 };
 
 export default imageMnistDataCollect;
-
-
-
-

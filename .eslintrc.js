@@ -37,6 +37,7 @@ module.exports = {
     'semi': [ 'error', 'always' ],
     'eol-last': [ 'error', 'always' ],
     'comma-dangle': [ 'error', 'never' ],
-    'no-multi-spaces': 'error'
+    'no-multi-spaces': 'error',
+    'no-multiple-empty-lines': 'error'
   }
 };

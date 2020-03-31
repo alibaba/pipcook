@@ -135,9 +135,6 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
     result.testData = testDataFlows;
   }
 
-
-  
-  
   return result;
 };
 
