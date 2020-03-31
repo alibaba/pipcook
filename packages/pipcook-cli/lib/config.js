@@ -31,4 +31,4 @@ module.exports = {
     "@pipcook/pipcook-app",
   ],
   pipcookLogName: 'pipcook-output'
-}
+};

@@ -7,7 +7,7 @@ import { Session } from '../types/python-object';
 import { startKernel } from '../communication/connectkernel';
 
 const nodeCleanup = require('node-cleanup');
-const kernel = require('./ipker.json')
+const kernel = require('./ipker.json');
 
 /**
  * Executor class: responsible for handling sessions and ipython and exeucting python statements.
@@ -79,7 +79,7 @@ export default class Executor {
       ioPort: Executor.latestIoPort,
       shellPort: Executor.latestShellPort,
       kernel
-    }
+    };
     Executor.latestIoPort++;
     Executor.latestShellPort++;
     Executor.sessions.push(session);
@@ -110,7 +110,7 @@ export default class Executor {
         Executor.handleSubscriberMsg(socketSubscriber);
       })
       .catch(() => {
-        Executor.handleSubscriberMsg(socketSubscriber)
+        Executor.handleSubscriberMsg(socketSubscriber);
       });
   }
 
@@ -197,8 +197,8 @@ export default class Executor {
           } else {
             if (Array.isArray(session.dealerMsg.traceback)) {
               session.dealerMsg.traceback.forEach((item: string) => {
-                console.error(item)
-              })
+                console.error(item);
+              });
             } else {
               console.error('[PYTHON: ]', session.dealerMsg.traceback);
             }
@@ -207,6 +207,6 @@ export default class Executor {
           }
         }
       }, 1);
-    })
+    });
   }
 }

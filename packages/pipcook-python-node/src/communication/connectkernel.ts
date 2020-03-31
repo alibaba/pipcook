@@ -21,7 +21,7 @@ export function startKernel(shell_port: number, iopub_port: number) {
       "signature_scheme": "hmac-sha256",
       "kernel_name": ""
     }
-  `
+  `;
   const tempJsonPath = path.join(process.cwd(), '.temp', 'node-python', Date.now().toString(), 'ipker.json');
   fs.outputFileSync(tempJsonPath, tempJson);
   return new Promise((resolve, reject) => {
@@ -40,7 +40,7 @@ export function startKernel(shell_port: number, iopub_port: number) {
       . ${path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate')} && pip install ipykernel==5.1.3 && kill $(lsof -t -i:${shell_port}) && kill $(lsof -t -i:${iopub_port}) `, [], {
       shell: true,
       cwd: process.cwd(),
-    })
+    });
     
     output.stdout.on('data', (data) => {
       console.log(data.toString());
@@ -77,13 +77,13 @@ export function startKernel(shell_port: number, iopub_port: number) {
       child.on('close', (code) => {
         reject(code);
         fs.removeSync(tempJsonPath);
-      })
+      });
     });
 
     // timeout after 15 mins
     setTimeout(() => {
-      reject(new Error('timeout'))
-    }, 900000)
-  })
+      reject(new Error('timeout'));
+    }, 900000);
+  });
   
 } 

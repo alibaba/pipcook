@@ -33,6 +33,7 @@ module.exports = {
     ],
     'array-bracket-spacing': [ 'error', 'always' ],
     'space-infix-ops': 'error',
-    'object-curly-spacing': [ 'error', 'always' ]
+    'object-curly-spacing': [ 'error', 'always' ],
+    'semi': ['error', 'always']
   }
 };

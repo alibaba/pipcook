@@ -10,7 +10,7 @@ const _cliProgress = require('cli-progress');
 const request = require('request');
 const si = require('systeminformation');
 const targz = require('targz');
-const extract = require('extract-zip')
+const extract = require('extract-zip');
 
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
@@ -71,11 +71,11 @@ export async function parseAnnotation(filename: string) {
  * @param: full path of file that will be stored
  */
 export function downloadZip(url: string, fileName: string) {
-  fs.ensureFileSync(fileName)
+  fs.ensureFileSync(fileName);
   return new Promise((resolve, reject) => {
     const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
     const file = fs.createWriteStream(fileName);
-    let receivedBytes = 0
+    let receivedBytes = 0;
     request.get(url)
       .on('response', (response: any) => {
         const totalBytes = response.headers['content-length'];
@@ -102,7 +102,7 @@ export function downloadZip(url: string, fileName: string) {
       bar1.stop();
       reject(err);
     });
-  })
+  });
 }
 
 export function compressTarFile(sourcePath: string, targetPath: string) {
@@ -117,7 +117,7 @@ export function compressTarFile(sourcePath: string, targetPath: string) {
         resolve();
       }
     });
-  })
+  });
 }
 
 /**
@@ -141,7 +141,7 @@ export function unZipData(filePath: string, targetPath: string) {
  * get pipcook dataset directory path
  */
 export function getDatasetDir() {
-  return path.join(process.cwd(), 'pipcook-output', 'datasets')
+  return path.join(process.cwd(), 'pipcook-output', 'datasets');
 }
 
 /**
@@ -158,7 +158,7 @@ export function getModelDir(modelId: string) {
 
 export function getMetadata(modelId: string) {
   const json = require(path.join(process.cwd(), 'pipcook-output', modelId, `log.json`));
-  return json && json.latestSampleData && json.latestSampleData.metaData
+  return json && json.latestSampleData && json.latestSampleData.metaData;
 }
 
 /**
@@ -239,7 +239,7 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
         });
       }
       const width = parseInt(item.bndbox[0].xmax[0]) - parseInt(item.bndbox[0].xmin[0]);
-      const height = parseInt(item.bndbox[0].ymax[0]) - parseInt(item.bndbox[0].ymin[0])
+      const height = parseInt(item.bndbox[0].ymax[0]) - parseInt(item.bndbox[0].ymin[0]);
       cocoJson.annotations.push({
         id: cocoJson.annotations.length + 1,
         image_id: i,
@@ -248,10 +248,10 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
         iscrowd: 0,
         area: Number(width * height),
         bbox: [ parseInt(item.bndbox[0].xmin[0]), parseInt(item.bndbox[0].ymin[0]), width, height ]
-      })
-    })
+      });
+    });
   }
-  fs.outputJSONSync(targetPath, cocoJson)
+  fs.outputJSONSync(targetPath, cocoJson);
 }
 
 /**
@@ -276,5 +276,5 @@ export function getOsInfo() {
       }
     });
 
-  })
+  });
 }

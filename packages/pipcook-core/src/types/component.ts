@@ -1,5 +1,5 @@
 import { PipcookPlugin } from './plugins';
-import { PipcookModel } from './model'
+import { PipcookModel } from './model';
 import { OriginSampleData, UniformSampleData, InsertParams } from './data';
 import { PipObject } from './other';
 import { Subscribable } from 'rxjs';

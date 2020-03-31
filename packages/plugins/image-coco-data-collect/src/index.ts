@@ -15,7 +15,7 @@ const shuffle = (a: any[]) => {
     [ a[i], a[j] ] = [ a[j], a[i] ];
   }
   return a;
-}
+};
 
 const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
   let {
@@ -41,7 +41,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
     url = url.substring(7);
   } else {
     const targetPath = path.join(saveDir, Date.now() + '.zip');
-    console.log('downloading dataset ...')
+    console.log('downloading dataset ...');
     await downloadZip(url, targetPath);
     url = targetPath;
   }
@@ -80,7 +80,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
           0
         ],
       }
-    }
+    };
     const objects = annotation.annotations.filter((e: any) => e.image_id == cocoImage.id);
     currentAnnotation.annotation.object = objects.map((object: any) => {
       if (!object.category_name) {
@@ -101,7 +101,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
           }
         ]
       };
-    })
+    });
     if (i >= countNumber * (testSplit + validationSplit)) {
       typeSet.add('train');
       createAnnotationFromJson(path.join(saveDir, 'annotations', 'train' ), currentAnnotation);
@@ -119,7 +119,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
   }
   const result: OriginSampleData = {
     trainDataPath: path.join(saveDir, 'annotations', 'train'),
-  }
+  };
 
   if (typeSet.has('validation')) {
     result.validationDataPath = path.join(saveDir, 'annotations', 'validation');
@@ -129,6 +129,6 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
   }
 
   return result;
-}
+};
 
 export default imageDetectionDataCollect;

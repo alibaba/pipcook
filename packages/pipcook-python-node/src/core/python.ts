@@ -66,7 +66,7 @@ export default class Python {
     return {
       ...arg,
       __pipcook__args: true
-    }
+    };
   }
 
   /** */
@@ -134,7 +134,7 @@ export default class Python {
       this.statements.push(`from ${packageName} import ${item} as ${identifier}`); 
       const pythonObject = getObject(identifier, this.statements);
       objects.push(pythonObject);
-    })
+    });
     return objects;
   }
 
@@ -416,13 +416,13 @@ export default class Python {
       const res = {
         type: result.type,
         value: eval(result.value)
-      }
+      };
       return res;
     } catch (err) {
       return {
         type: result.type,
         value: result.value
-      }
+      };
     }
   }
 

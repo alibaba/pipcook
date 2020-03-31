@@ -18,7 +18,7 @@ const checkValidProject = (dir) => {
     return false;
   }
   return true;
-}
+};
 
 const start = async (fileName) => {
   try {

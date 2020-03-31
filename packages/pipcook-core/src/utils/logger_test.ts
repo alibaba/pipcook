@@ -15,12 +15,12 @@ describe('logger', () => {
     };
     logger.logCurrentExecution(compRes as PipcookComponentResult);
     logger.logCurrentExecution(compRes as PipcookComponentResult, 'merge');
-  })
+  });
   it('should log "error"', () => {
     logger.logError('temp error message');
     logger.logError(new Error('temp error'));
   });
   it('should log "complete"', () => {
-    logger.logComplete()
+    logger.logComplete();
   });
 });

@@ -41,10 +41,10 @@ export const DataCollect: PipcookLifeCycleComponent = (plugin: DataCollectType, 
   const result = produceResultFactory(DATACOLLECT, plugin, params);
   result.observer = (data, model, insertParams) => {
     return from(plugin({ ...params, ...insertParams }));
-  }
+  };
   result.returnType = ORIGINDATA;
   return result;
-}
+};
 
 /**
  * Data-Access Plugin's Component
@@ -58,7 +58,7 @@ export const DataAccess: PipcookLifeCycleComponent = (plugin: DataAccessType, pa
   };
   result.returnType = DATA;
   return result;
-}
+};
 
 /**
  * Data-Process Plugin's Component
@@ -72,7 +72,7 @@ export const DataProcess: PipcookLifeCycleComponent = (plugin: DataProcessType, 
   };
   result.returnType = DATA;
   return result;
-}
+};
 
 /**
  * Model-Load Plugin Component
@@ -83,10 +83,10 @@ export const ModelLoad: PipcookLifeCycleComponent = (plugin: ModelLoadType, para
   const result = produceResultFactory(MODELLOAD, plugin, params);
   result.observer = (data: any, model, insertParams) => {
     return from(plugin(data, { ...params, ...insertParams }));
-  }
+  };
   result.returnType = MODEL;
   return result;
-}
+};
 
 /**
  * Model-Train Plugin Component
@@ -97,10 +97,10 @@ export const ModelTrain: PipcookLifeCycleComponent = (plugin: ModelTrainType, pa
   const result = produceResultFactory(MODELTRAIN, plugin, params);
   result.observer = (data: any, model, insertParams) => {
     return from(plugin(data, model, { ...params, ...insertParams }));
-  }
+  };
   result.returnType = MODELTOSAVE;
   return result;
-}
+};
 
 /**
  * Model-Evaluate Plugin Component
@@ -114,7 +114,7 @@ export const ModelEvaluate: PipcookLifeCycleComponent = (plugin: ModelEvaluateTy
   };
   result.returnType = EVALUATE;
   return result;
-}
+};
 
 /**
  * Model-Deploy Plugin Component
@@ -128,5 +128,5 @@ export const ModelDeploy: PipcookLifeCycleComponent = (plugin: ModelDeployType, 
   };
   result.returnType = DEPLOYMENT;
   return result;
-}
+};
 

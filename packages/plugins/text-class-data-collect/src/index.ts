@@ -4,8 +4,8 @@
 import { DataCollectType, OriginSampleData, ArgsType, getDatasetDir, downloadZip } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
-const fs = require('fs-extra')
-const csv = require('csv-parser')
+const fs = require('fs-extra');
+const csv = require('csv-parser');
 
 const transformCsv = (result: any) => {
   const texts = [];
@@ -28,7 +28,7 @@ const transformCsv = (result: any) => {
     texts.push(text);
   }
   return texts.join(',');
-}
+};
 
 /**
  * collect csv data
@@ -61,7 +61,7 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
     url = url.substring(7);
   } else {
     const targetPath = path.join(saveDir, fileName);
-    console.log('downloading dataset ...')
+    console.log('downloading dataset ...');
     await downloadZip(url, targetPath);
     url = targetPath;
   }
@@ -105,7 +105,7 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
         }
         resolve({ trainDataPath, validationDataPath, testDataPath, typeSet });
       });
-  })
+  });
 
   
   const { trainDataPath, validationDataPath, testDataPath, typeSet } = await promise;
@@ -115,7 +115,7 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
   }
   const result: OriginSampleData = {
     trainDataPath,
-  }
+  };
 
   if (typeSet.has('validation')) {
     result.validationDataPath = validationDataPath;
@@ -126,7 +126,7 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
 
   
   return result;
-}
+};
 
 export default textClassDataCollect;
 

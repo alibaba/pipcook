@@ -26,15 +26,15 @@ const imageDetectronModelTrain: ModelEvaluateType =
 
       const evaluator = COCOEvaluator("val_dataset", cfg, false, _({ output_dir: path.join(model.extraParams.modelPath, '..') }));
       
-      const val_loader = build_detection_test_loader(cfg, "val_dataset")
+      const val_loader = build_detection_test_loader(cfg, "val_dataset");
 
-      const val_result = inference_on_dataset(trainer.model, val_loader, evaluator)
+      const val_result = inference_on_dataset(trainer.model, val_loader, evaluator);
 
       evaluationResult = await python.evaluate(val_result);
     });
     return {
       result: evaluationResult
     };
-  }
+  };
 
 export default imageDetectronModelTrain;

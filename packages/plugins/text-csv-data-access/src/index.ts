@@ -13,7 +13,7 @@ const concatenateDataFlows = (dataFlows: tf.data.Dataset<any>[]) => {
     uniformData = uniformData.concatenate(dataFlows[i]);
   }
   return uniformData;
-}
+};
 
 /**
  * 
@@ -39,8 +39,8 @@ async function getDataset(url: string, hasHeader: boolean, delimiter: string): P
     datasetArray.push({
       xs: tf.tensor1d([ e.xs.data ], 'string'),
       ys: tf.tensor1d([ e.ys.label ], 'string')
-    })
-  })
+    });
+  });
   return tf.data.array(datasetArray);
 }
 
@@ -108,6 +108,6 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
   }
   
   return result;
-}
+};
 
 export default textClassDataAccess;

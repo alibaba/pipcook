@@ -38,18 +38,18 @@ const textClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDat
   const client = OSS(ossConfig);
   try {
     // get detectron env
-    const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/text-classification/'
-    const zipPath = path.join(packagePath, easName, 'ENV.zip')
+    const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/text-classification/';
+    const zipPath = path.join(packagePath, easName, 'ENV.zip');
     await downloadZip(envUrl + envPackName, zipPath);
-    await unZipData(zipPath, path.join(packagePath, easName, 'ENV'))
-    fs.removeSync(zipPath)
+    await unZipData(zipPath, path.join(packagePath, easName, 'ENV'));
+    fs.removeSync(zipPath);
     // write app.json
     const metadata: any = {
       cpu: cpus,
       memory: memory,
       "rpc.keepalive": 60000,
       region: "shanghai", 
-    }
+    };
 
     if (gpu) {
       metadata.gpu = gpu;
@@ -65,7 +65,7 @@ const textClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDat
       name: easName,
       generate_token: "true",
       metadata
-    }
+    };
     fs.outputFileSync(path.join(packagePath, easName, 'app.json'), JSON.stringify(app));
 
     // copy model
@@ -75,7 +75,7 @@ const textClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDat
     const stopwordsPath = path.join(getModelDir(pipelineId), 'stopwords.txt');
     fs.copySync(stopwordsPath, path.join(packagePath, easName, 'model', 'stopwords.txt'));
 
-    const featurePath = path.join(getModelDir(pipelineId), 'feature_words.pkl')
+    const featurePath = path.join(getModelDir(pipelineId), 'feature_words.pkl');
     fs.copySync(featurePath, path.join(packagePath, easName, 'model', 'feature_words.pkl'));
 
     // copy app.py
@@ -112,7 +112,7 @@ const textClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDat
       // TODO: catch err?
     }
   }
-}
+};
 
 export default textClassEasDeploy;
 

@@ -74,10 +74,10 @@ export async function assignLatestResult(updatedType: string, result: any, self:
 export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal', saveModelCallback?: Function) {
   const firstComponent = components[0];
   firstComponent.status = 'running';
-  logCurrentExecution(firstComponent, logType)
+  logCurrentExecution(firstComponent, logType);
   const insertParams = {
     pipelineId: self.pipelineId
-  }
+  };
   const firstObservable = firstComponent.observer(self.latestOriginSampleData, self.latestModel, insertParams) as Observable<any>;
   self.updatedType = firstComponent.returnType;
 
@@ -99,7 +99,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
             }
             
           })
-        )  
+        );  
       });
       flatMapArray.push(flatMapObject);
     })(components[i], assignLatestResult, self.updatedType, self, flatMapArray);
@@ -140,10 +140,10 @@ export function assignFailures(components: PipcookComponentResult[]) {
           if (component.status === 'running') {
             component.status = 'failure';
           }
-        })
-      })
+        });
+      });
     }
-  })
+  });
 }
 
 /**
@@ -167,6 +167,6 @@ export async function runPredict(runner: PipcookRunner, request: any) {
   return {
     status: true,
     result: result
-  }
+  };
 }
 

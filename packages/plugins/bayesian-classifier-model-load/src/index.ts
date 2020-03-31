@@ -16,7 +16,7 @@ const assertionTest = (data: UniformTfSampleData) => {
     && data.metaData.feature.shape.length === 1, 'feature should only have one dimension which is the feature name');
   assert.ok(data.metaData.label && data.metaData.label.shape 
     && data.metaData.label.shape.length === 1, 'Label should only have one dimension which is the label name');
-}
+};
 
 /**
  * Pipcook Plugin: bayes classifier model
@@ -43,8 +43,8 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
 
     await python.reconnect();
     python.executePythonFile(path.join(__dirname, 'assets', 'script.py'));
-    const loadModel = python.runRaw('loadModel')
-    const getBayesModel = python.runRaw('getBayesModel')
+    const loadModel = python.runRaw('loadModel');
+    const getBayesModel = python.runRaw('getBayesModel');
     if (modelId) {
       classifier = loadModel(path.join(getModelDir(modelId), 'model.pkl'));
     } else {
@@ -65,8 +65,8 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
     },
     save: async function(modelPath: string) {
       await Python.scope('bayes_text_classification', async (python: any) => {
-        const saveModel = python.runRaw('saveModel')
-        saveModel(this.model, path.join(modelPath, 'model.pkl'))
+        const saveModel = python.runRaw('saveModel');
+        saveModel(this.model, path.join(modelPath, 'model.pkl'));
       });
     },
     predict: async function(data: tf.Tensor<any>) {
@@ -74,14 +74,14 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleD
       let prediction: any;
       await Python.scope('bayes_text_classification', async (python: any) => {
         const processPredictData = python.runRaw('processPredictData');
-        const processData = processPredictData(predictData, path.join(getModelDir(pipelineId), 'feature_words.pkl'), path.join(getModelDir(pipelineId), 'stopwords.txt'))
-        prediction = this.model.predict(processData)
+        const processData = processPredictData(predictData, path.join(getModelDir(pipelineId), 'feature_words.pkl'), path.join(getModelDir(pipelineId), 'stopwords.txt'));
+        prediction = this.model.predict(processData);
         prediction = await python.evaluate(prediction);
       });
       return prediction;
     }, 
-  }
+  };
   return result;
-}
+};
 
 export default bayesianClassifierModelLoad;

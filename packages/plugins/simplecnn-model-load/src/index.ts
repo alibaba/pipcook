@@ -14,7 +14,7 @@ const assertionTest = (data: UniformTfSampleData) => {
   assert.ok(data.metaData.feature, 'Image feature is missing');
   assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 2d or 3d');
   assert.ok(data.metaData.label.shape && data.metaData.label.shape.length == 2, 'The label vector should be a one hot vector');
-}
+};
 
 const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args?: any): Promise<PipcookModel> => {
   const {
@@ -115,12 +115,12 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
           return index;
         }
         return predictResult;
-      })
+      });
       return result; 
     },
   };
 
   return result;
-}
+};
 
 export default simpleCnnModelLoad;

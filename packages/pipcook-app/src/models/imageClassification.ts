@@ -10,7 +10,7 @@ import imageClassDataCollect from '@pipcook/pipcook-plugins-image-class-data-col
 import imageClassLocalModelDeploy from '@pipcook/pipcook-plugins-image-class-local-model-deploy';
 import simpleCnnModelLoad from '@pipcook/pipcook-plugins-simple-cnn-model-load';
 import imageClassEasDeploy from '@pipcook/pipcook-plugins-image-class-eas-deploy';
-import * as path from 'path'
+import * as path from 'path';
 import * as fs from 'fs-extra';
 
 import { getEasParam, EasConfigI } from '../utils/utils';
@@ -80,7 +80,7 @@ export default class ImageClassification {
       return;
     }
 
-    return { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate }
+    return { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate };
   }
 
   async train(dataSource: string, trainInfo: TrainInfoI, predictServer = false, 
@@ -91,7 +91,7 @@ export default class ImageClassification {
     const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
 
     const runner = new PipcookRunner();  
-    await runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
+    await runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
   }
 
   async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI, predictServer = false, 
@@ -101,7 +101,7 @@ export default class ImageClassification {
     const modelDeploy = ModelDeploy(imageClassEasDeploy, getEasParam(easConfig));
 
     const runner = new PipcookRunner();  
-    await runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
+    await runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
   }
 
   async deployEasByUrl(modelUrl: string, labelJsonUrl: string, easConfig: EasConfigI) {

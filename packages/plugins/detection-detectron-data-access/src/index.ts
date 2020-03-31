@@ -34,8 +34,8 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
   const categories = trainJsonContent.categories;
   const oneHotMap: any = {};
   categories.forEach((category: any) => {
-    oneHotMap[category.name] = category.id
-  })
+    oneHotMap[category.name] = category.id;
+  });
   
   const result: UniformGeneralSampleData = {
     trainData: path.join(trainDataPath, '..', 'train.json'),
@@ -63,6 +63,6 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
   }
 
   return result;
-}
+};
 
 export default imageDetectronDataAccess;

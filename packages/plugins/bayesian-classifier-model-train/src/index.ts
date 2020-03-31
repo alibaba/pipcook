@@ -20,7 +20,7 @@ const assertionTest = (data: UniformTfSampleData, trainData: tf.data.Dataset<{ x
   assert.ok(metaData.feature && metaData.label.name, 'data should have feature');
   assert.ok(metaData.label && metaData.label.name, 'data should have label');
   assert.ok(trainData != null, 'The train data cannot be empty');
-}
+};
 
 /**
  * 
@@ -53,7 +53,7 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampl
     const words_dict = python.runRaw('words_dict');
     const TextFeatures = python.runRaw('TextFeatures');
 
-    text_list = TextProcessing(rawData, rawClass, _({ test_size: 0.2 }))
+    text_list = TextProcessing(rawData, rawClass, _({ test_size: 0.2 }));
     let stopwords_file: any;
     let stoppath = '';
     if (mode === 'en') {
@@ -62,11 +62,11 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampl
       stoppath = path.join(__dirname, 'assets', 'stopwords_cn.txt');
     }
     stopwords_file = python.createString(stoppath);
-    fs.copyFileSync(stoppath, path.join(getModelDir(pipelineId), 'stopwords.txt'))
-    const stopwords_set = MakeWordsSet(stopwords_file)
-    feature_words = words_dict(text_list[0], stopwords_set)
-    feature_list = TextFeatures(text_list[1], text_list[2], feature_words)
-    classifier.fit(feature_list[0], text_list[3])
+    fs.copyFileSync(stoppath, path.join(getModelDir(pipelineId), 'stopwords.txt'));
+    const stopwords_set = MakeWordsSet(stopwords_file);
+    feature_words = words_dict(text_list[0], stopwords_set);
+    feature_list = TextFeatures(text_list[1], text_list[2], feature_words);
+    classifier.fit(feature_list[0], text_list[3]);
   });
 
   return {
@@ -78,14 +78,14 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampl
     },
     save: async function(modelPath: string) {
       await Python.scope('bayes_text_classification', async (python: any) => {
-        const saveModel = python.runRaw('saveModel')
+        const saveModel = python.runRaw('saveModel');
         saveModel(this.model, path.join(modelPath, 'model.pkl'));
         const save_all_words_list = python.runRaw('save_all_words_list');
-        save_all_words_list(feature_words, path.join(modelPath, 'feature_words.pkl'))
+        save_all_words_list(feature_words, path.join(modelPath, 'feature_words.pkl'));
       });
     },
-  }
-}
+  };
+};
 
 export default bayesianClassifierModelTrain;
 

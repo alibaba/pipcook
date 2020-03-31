@@ -102,7 +102,7 @@ const dataset = async (cmdObj) => {
           let imageName = image.split(path.sep);
           imageName = imageName[imageName.length - 1];
           fse.copySync(image, path.join(process.cwd(), 'merge-data', 'images', imageName));
-        })
+        });
       } finally {
         // TODO(yorkie): remove the try-catch block.
       } 

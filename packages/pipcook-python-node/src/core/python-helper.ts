@@ -11,7 +11,7 @@ export function conversion(target: any) {
     let args = '';
     for (const key in target) {
       if (key !== '__pipcook__args') {
-        args += `${key}=${conversion(target[key])},`
+        args += `${key}=${conversion(target[key])},`;
       }
     }
     return args.slice(0, args.length - 1);
@@ -21,24 +21,24 @@ export function conversion(target: any) {
     return '"' + target + '"';
   } else if (typeof target === 'boolean') {
     if (target) {
-      return 'True'
+      return 'True';
     } else {
-      return 'False'
+      return 'False';
     }
   } else if (target === null || target === undefined) {
-    return 'None'
+    return 'None';
   } else if (target.__pipcook__identifier) {
     return target.__pipcook__identifier;
   } else if (Array.isArray(target)) {
     let result = '(';
     target.forEach((item: any) => {
       result += `${conversion(item)},`;
-    })
+    });
     result = result.slice(0, result.length - 1);
     result += ')';
     return result;
   } else {
-    return JSON.stringify(target)
+    return JSON.stringify(target);
   }
 }
 

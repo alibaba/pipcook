@@ -20,7 +20,7 @@ const imageClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, mode
 
     let result: any = {
       trainDataPath: path.join(trainDataPath, 'annotations', 'train'),
-    }
+    };
 
     const dataAccessPlugin = dataAccess.plugin as DataAccessType;
     result = await dataAccessPlugin(result, dataAccess.params);
@@ -41,7 +41,7 @@ const imageClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, mode
     fs.removeSync(trainDataPath);
   }
   
-}
+};
 
 export default imageClassLocalModelDeploy;
 

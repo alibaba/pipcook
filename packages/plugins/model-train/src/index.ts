@@ -36,7 +36,7 @@ const ModelTrain: ModelTrainType = async (data: UniformTfSampleData, model: Pipc
     const trainConfig: any = {
       epochs: epochs,
       batchesPerEpoch: parseInt(String(data.trainData.size / batchSize))
-    }
+    };
 
     if (validationData) {
       const validateDs = validationData.batch(batchSize);
@@ -55,12 +55,12 @@ const ModelTrain: ModelTrainType = async (data: UniformTfSampleData, model: Pipc
       outputType: 'int32',
       save: model.save,
       predict: model.predict,
-    }
+    };
     return result;
   } catch (err) {
     console.log('[ERROR] model trainer', err);
     throw err;
   }
-}
+};
 
 export default ModelTrain;

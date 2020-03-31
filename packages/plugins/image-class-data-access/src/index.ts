@@ -48,10 +48,10 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
         ys: ys
       }
     ));
-  })
+  });
   bar1.stop();
   return dataset;
-}
+};
 
 /**
  * merge all possible values of labels. Get the map between label and numeric value
@@ -75,7 +75,7 @@ const getLabelMap = async (data: OriginSampleData[]) => {
     oneHotMap[label] = index;
   });
   return oneHotMap;
-}
+};
 
 /**
  * The plugin used to access data from different sources. It will detect all possible values of labels and 
@@ -97,7 +97,7 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];
     const { trainDataPath, validationDataPath, testDataPath } = dataSample;  
-    const imagePath = path.join(trainDataPath, '..', '..', 'images')
+    const imagePath = path.join(trainDataPath, '..', '..', 'images');
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
     trainDataFlows = await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, 'train data', imagePath);
     if (validationDataPath) {
@@ -139,6 +139,6 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
   
   
   return result;
-}
+};
 
 export default imageClassDataAccess;

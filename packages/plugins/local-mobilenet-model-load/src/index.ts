@@ -24,7 +24,7 @@ const freezeModelLayers = (trainableLayers: string[], mobilenetModified: tf.Laye
     }
   }
   return mobilenetModified;
-}
+};
 
 /**
  * assertion test
@@ -34,7 +34,7 @@ const assertionTest = (data: UniformTfSampleData) => {
   assert.ok(data.metaData.feature, 'Image feature is missing');
   assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 2d or 3d');
   assert.ok(data.metaData.label.shape && data.metaData.label.shape.length == 2, 'The label vector should be a one hot vector');
-}
+};
 
 /**
  * Delete original input layer and original output layer. 
@@ -53,7 +53,7 @@ const applyModel = (inputLayer: tf.SymbolicTensor, originModel: tf.LayersModel) 
     }
   }
   return currentLayer;
-}
+};
 
 /**
  *  main function of the operator: load the mobilenet model
@@ -133,10 +133,10 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
           return index;
         }
         return predictResult;
-      })
+      });
       return result; 
     },
-  }
-}
+  };
+};
 
 export default localMobileNetModelLoad;

@@ -36,7 +36,7 @@ const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Pr
     url = url.substring(7);
   } else {
     const targetPath = path.join(saveDir, Date.now() + '.zip');
-    console.log('downloading dataset ...')
+    console.log('downloading dataset ...');
     await downloadZip(url, targetPath);
     url = targetPath;
   }
@@ -62,7 +62,7 @@ const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Pr
   }
   const result: OriginSampleData = {
     trainDataPath: path.join(saveDir, 'annotations', 'train'),
-  }
+  };
   if (typeSet.has('validation')) {
     result.validationDataPath = path.join(saveDir, 'annotations', 'validation');
   }
@@ -70,6 +70,6 @@ const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Pr
     result.testDataPath = path.join(saveDir, 'annotations', 'test');
   }
   return result;
-}
+};
 
 export default imageClassRemoteDataCollect;

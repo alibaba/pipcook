@@ -7,7 +7,7 @@ import bayesianClassiferModelLoader from '@pipcook/pipcook-plugins-bayesian-clas
 import bayesianClassifierModelTrain from '@pipcook/pipcook-plugins-bayesian-classifier-model-train';
 import classModelEvalute from '@pipcook/pipcook-plugins-bayesian-classifier-model-evaluate';
 import textClassLocalModelDeploy from '@pipcook/pipcook-plugins-text-class-local-model-deploy';
-import textClassEasDeploy from '@pipcook/pipcook-plugins-bayesian-classifier-model-eas-deploy'
+import textClassEasDeploy from '@pipcook/pipcook-plugins-bayesian-classifier-model-eas-deploy';
 
 import { getEasParam, EasConfigI } from '../utils/utils';
 
@@ -28,7 +28,7 @@ export default class TextClassification {
   _train(dataSource: string) {
     const dataCollect = DataCollect(textClassDataCollect, {
       url: dataSource
-    })
+    });
   
     const dataAccess = DataAccess(textClassDataAccess);
   
@@ -46,11 +46,11 @@ export default class TextClassification {
     
     const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = this._train(dataSource);
 
-    const modelDeploy = ModelDeploy(textClassLocalModelDeploy)
+    const modelDeploy = ModelDeploy(textClassLocalModelDeploy);
     
     const runner = new PipcookRunner();
 
-    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
+    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
     
   }
 
@@ -63,7 +63,7 @@ export default class TextClassification {
     
     const runner = new PipcookRunner();
 
-    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
+    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
     
   }
 }

@@ -7,9 +7,9 @@ import detectronModelLoad from '@pipcook/pipcook-plugins-detection-detectron-mod
 import detectronModelTrain from '@pipcook/pipcook-plugins-detection-detectron-model-train';
 import detectronModelEvaluate from '@pipcook/pipcook-plugins-detection-detectron-model-evaluate';
 import easModelDeploy from '@pipcook/pipcook-plugins-detection-detectron-eas-model-deploy';
-import detectronLocalDeploy from '@pipcook/pipcook-plugins-detection-detectron-model-deploy'
+import detectronLocalDeploy from '@pipcook/pipcook-plugins-detection-detectron-model-deploy';
 import * as fs from 'fs-extra';
-import * as path from 'path'
+import * as path from 'path';
 
 import { getEasParam, EasConfigI } from '../utils/utils';
 
@@ -69,11 +69,11 @@ export default class ObjectDetection {
     
     const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = await this._train(dataSource, trainInfo);
 
-    const modelDeploy = ModelDeploy(detectronLocalDeploy)
+    const modelDeploy = ModelDeploy(detectronLocalDeploy);
     
     const runner = new PipcookRunner();
 
-    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
+    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
     
   }
 
@@ -112,7 +112,7 @@ export default class ObjectDetection {
     
     const runner = new PipcookRunner();
 
-    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
+    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
     
   }
 }

@@ -24,7 +24,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (dataHolder: any, m
     fs.removeSync(trainDataPath);
   }
   
-}
+};
 
 export default detectionDetectronModelDeploy;
 

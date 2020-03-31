@@ -20,8 +20,8 @@ const imageDetectronModelTrain: ModelTrainType = async (data: UniformGeneralSamp
     predict: model.predict,
     config: model.config,
     extraParams: model.extraParams
-  }
+  };
   return result;
-}
+};
 
 export default imageDetectronModelTrain;

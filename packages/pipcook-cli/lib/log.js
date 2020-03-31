@@ -21,11 +21,11 @@ const log = async () => {
           success: jsonObj.error ? 'no' : 'yes',
           evaluation: jsonObj.latestEvaluateResult ? JSON.stringify(jsonObj.latestEvaluateResult) : '',
           time: timestamp,
-        }
+        };
       } catch (e) {
-        return false
+        return false;
       }
-    })
+    });
     console.table(jsonObject);
   } catch (error) {
     console.log(

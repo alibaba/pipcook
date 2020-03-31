@@ -27,7 +27,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     const _ = python.nA;
     python.runshell('pip install torch torchvision --no-cache-dir ');
     python.runshell('pip install opencv-python --no-cache-dir ');
-    python.runshell(`pip install -U 'git+https://github.com/facebookresearch/fvcore' --no-cache-dir `)
+    python.runshell(`pip install -U 'git+https://github.com/facebookresearch/fvcore' --no-cache-dir `);
     python.runshell('pip install cython --no-cache-dir ');
     python.runshell(`pip install 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI' --no-cache-dir `);
     python.runshell(`pip install 'git+https://github.com/facebookresearch/detectron2.git' --no-cache-dir `);
@@ -40,17 +40,17 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     const os = python.import('os');
     const [ setup_logger ] = python.fromImport('detectron2.utils.logger', [ 'setup_logger' ]);
 
-    setup_logger()
+    setup_logger();
 
     const validationData = data.validationData || data.testData;
     
     if (data.trainData) {
-      register_coco_instances("train_dataset", {}, data.trainData, path.join(data.trainData, '..', '..', 'images'))
+      register_coco_instances("train_dataset", {}, data.trainData, path.join(data.trainData, '..', '..', 'images'));
     }
     
     const validationJson = validationData && require(validationData);
     if (validationJson && validationJson.annotations && validationJson.annotations.length > 0) {
-      register_coco_instances("val_dataset", {}, validationData, path.join(validationData, '..', '..', 'images'))
+      register_coco_instances("val_dataset", {}, validationData, path.join(validationData, '..', '..', 'images'));
     }
 
     cfg = get_cfg();
@@ -115,7 +115,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
     if (device === 'cpu') {
       config.MODEL.DEVICE = device;
     }  
-  })
+  });
 
   return {
     model: trainer,
@@ -137,14 +137,14 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
         const cv2 = python.import('cv2');
         const numpy = python.import('numpy');
         const images = inputData.map((data: string) => {
-          return cv2.imread(data)
-        })
+          return cv2.imread(data);
+        });
         const img = numpy.array(images);
-        const out = predictor(img)
-        const ins = python.runRaw(`${Python.convert(out)}['instances'].to(${Python.convert(torch)}.device('cpu'))`)
-        const boxes = ins.pred_boxes.tensor.numpy()
-        const scores = ins.scores.numpy()
-        const classes = ins.pred_classes.numpy()
+        const out = predictor(img);
+        const ins = python.runRaw(`${Python.convert(out)}['instances'].to(${Python.convert(torch)}.device('cpu'))`);
+        const boxes = ins.pred_boxes.tensor.numpy();
+        const scores = ins.scores.numpy();
+        const classes = ins.pred_classes.numpy();
 
         const preds = python.runRaw(`
           [{
@@ -170,7 +170,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
       detectronConfigPath: path.join(__dirname, 'config'),
       modelPath: modelId ? path.join(getModelDir(modelId), 'model_final.pth') : path.join(process.cwd(), '.temp', pipelineId, 'output', 'model_final.pth')
     }
-  }
-}
+  };
+};
 
 export default imageDetectionModelLoad;

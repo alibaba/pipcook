@@ -25,14 +25,14 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
     const imageArray = new Uint8Array(trainImageBuffer);
     const target = [];
     jsonData.annotation.object.forEach((item: any) => {
-      target.push(oneHotMap[item.name[0]])
-      target.push(parseFloat(item.bndbox[0].xmin[0]) * xratio )
-      target.push(parseFloat(item.bndbox[0].xmax[0]) * xratio ) 
-      target.push(parseFloat(item.bndbox[0].ymin[0]) * yratio ) 
-      target.push(parseFloat(item.bndbox[0].ymax[0]) * yratio ) 
+      target.push(oneHotMap[item.name[0]]);
+      target.push(parseFloat(item.bndbox[0].xmin[0]) * xratio );
+      target.push(parseFloat(item.bndbox[0].xmax[0]) * xratio ); 
+      target.push(parseFloat(item.bndbox[0].ymin[0]) * yratio ); 
+      target.push(parseFloat(item.bndbox[0].ymax[0]) * yratio ); 
     });
     for (let ii = jsonData.annotation.object.length; ii < 10; ii++) {
-      target.push(-1)
+      target.push(-1);
       for (let jj = 0; jj < 4; jj++) {
         target.push(0);
       }
@@ -40,10 +40,10 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
     dataFlows.push({
       xs: tf.cast(tf.node.decodeImage(imageArray, 3), 'float32'),
       ys: tf.tensor1d(target)
-    })
+    });
   }
   bar1.stop();
-}
+};
 
 /**
  * merge all possible values of labels. Get the map between label and numeric value
@@ -60,7 +60,7 @@ const getLabelMap = async (data: OriginSampleData[]) => {
       const imageData: any = await parseAnnotation(fileName);
       imageData.annotation.object.forEach((item: any) => {
         labelSet.add(item.name[0]);
-      })
+      });
       
     }
   }
@@ -70,7 +70,7 @@ const getLabelMap = async (data: OriginSampleData[]) => {
     oneHotMap[label] = index;
   });
   return oneHotMap;
-}
+};
 
 /**
  * The plugin used to access data from different sources. It will detect all possible values of labels and 
@@ -86,7 +86,7 @@ const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[]
 
   const oneHotMap = await getLabelMap(data);
 
-  const trainDataFlows: any[] = [], validationDataFlows: any[] = [], testDataFlows: any[] = []
+  const trainDataFlows: any[] = [], validationDataFlows: any[] = [], testDataFlows: any[] = [];
   
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[ i ];
@@ -128,6 +128,6 @@ const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[]
   }
   
   return result;
-}
+};
 
 export default imageDetectionDataAccess;

@@ -37,17 +37,17 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
   const client = OSS(ossConfig);
   try {
     // get detectron env
-    const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/'
-    const zipPath = path.join(packagePath, easName, 'ENV.zip')
+    const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/';
+    const zipPath = path.join(packagePath, easName, 'ENV.zip');
     await downloadZip(envUrl + envPackName, zipPath);
-    await unZipData(zipPath, path.join(packagePath, easName))
-    fs.removeSync(zipPath)
+    await unZipData(zipPath, path.join(packagePath, easName));
+    fs.removeSync(zipPath);
     // write app.json
     const metadata: any = {
       cpu: cpus,
       memory: memory,
       "rpc.keepalive": 60000
-    }
+    };
 
     if (gpu) {
       metadata.gpu = gpu;
@@ -63,10 +63,10 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
       name: easName,
       generate_token: "true",
       metadata
-    }
+    };
     fs.outputFileSync(path.join(packagePath, easName, 'app.json'), JSON.stringify(app));
     // copy config
-    const configPath = model.extraParams.detectronConfigPath
+    const configPath = model.extraParams.detectronConfigPath;
     fs.copySync(configPath, path.join(packagePath, easName, 'config'));
 
     // copy model
@@ -108,7 +108,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
       // TODO: cache error?
     }
   }
-}
+};
 
 export default detectionDetectronModelDeploy;
 
