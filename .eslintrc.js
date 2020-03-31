@@ -32,6 +32,7 @@ module.exports = {
       'error', { 'before': true }
     ],
     'array-bracket-spacing': [ 'error', 'always' ],
-    'space-infix-ops': 'error'
+    'space-infix-ops': 'error',
+    'object-curly-spacing': [ 'error', 'always' ]
   }
 };

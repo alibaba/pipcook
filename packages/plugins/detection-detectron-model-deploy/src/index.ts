@@ -1,4 +1,4 @@
-import {ArgsType, ModelDeployType, downloadZip} from '@pipcook/pipcook-core';
+import { ArgsType, ModelDeployType, downloadZip } from '@pipcook/pipcook-core';
 import * as path from 'path';
 const uuidv1 = require('uuid/v1');
 const fs = require('fs-extra');

@@ -1,7 +1,7 @@
 /**
  * @file This is for plugin to evaluate  model.
  */
-import {PipcookModel, UniformTfSampleData, ArgsType, ModelEvaluateType, EvaluateResult} from '@pipcook/pipcook-core';
+import { PipcookModel, UniformTfSampleData, ArgsType, ModelEvaluateType, EvaluateResult } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 

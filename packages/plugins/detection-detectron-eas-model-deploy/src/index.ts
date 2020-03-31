@@ -1,4 +1,4 @@
-import {ArgsType, ModelDeployType, downloadZip, unZipData, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
+import { ArgsType, ModelDeployType, downloadZip, unZipData, compressTarFile, UniformGeneralSampleData, PipcookModel } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 
@@ -84,7 +84,7 @@ const detectionDetectronModelDeploy: ModelDeployType = async (data: UniformGener
 
     // upload to oss
     
-    await client.put(path.join(ossDir, easName + '.tar.gz'), path.join(packagePath, easName + '.tar.gz'), {timeout: 60000000});
+    await client.put(path.join(ossDir, easName + '.tar.gz'), path.join(packagePath, easName + '.tar.gz'), { timeout: 60000000 });
 
     // create service
     if (!eascmd) {

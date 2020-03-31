@@ -1,7 +1,7 @@
 /**
  * @file For plugin to collect mnist data
  */
-import {DataCollectType, OriginSampleData, ArgsType, createAnnotationFile, getDatasetDir} from '@pipcook/pipcook-core';
+import { DataCollectType, OriginSampleData, ArgsType, createAnnotationFile, getDatasetDir } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 import * as path from 'path';

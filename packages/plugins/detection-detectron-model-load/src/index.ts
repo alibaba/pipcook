@@ -1,5 +1,5 @@
-import {ModelLoadType, PipcookModel, UniformGeneralSampleData, getModelDir, getMetadata} from '@pipcook/pipcook-core';
-import {Python} from '@pipcook/pipcook-python-node';
+import { ModelLoadType, PipcookModel, UniformGeneralSampleData, getModelDir, getMetadata } from '@pipcook/pipcook-core';
+import { Python } from '@pipcook/pipcook-python-node';
 import * as path from 'path';
 
 const fs = require('fs-extra');
@@ -20,7 +20,7 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
   if (modelId) {
     const metaData = getMetadata(modelId);
-    data = {...data, metaData} as UniformGeneralSampleData;
+    data = { ...data, metaData } as UniformGeneralSampleData;
   }
   
   await Python.scope('detectron', async (python: any) => {
@@ -85,13 +85,13 @@ const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSample
 
     cfg.OUTPUT_DIR = path.join(process.cwd(), '.temp', pipelineId, 'output');
     
-    os.makedirs(cfg.OUTPUT_DIR, _({"exist_ok": true}));
+    os.makedirs(cfg.OUTPUT_DIR, _({ "exist_ok": true }));
     if (data.trainData) {
       trainer = DefaultTrainer(cfg);
       if (modelId) {
-        trainer.resume_or_load(_({"resume": true}));
+        trainer.resume_or_load(_({ "resume": true }));
       } else {
-        trainer.resume_or_load(_({"resume": false}));
+        trainer.resume_or_load(_({ "resume": false }));
       }
     }
   });

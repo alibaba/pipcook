@@ -8,12 +8,12 @@ import * as path from 'path';
 const uuidv1 = require('uuid/v1');
 
 import config from '../config';
-import {PipcookComponentResult} from '../types/component';
-import {OriginSampleData, UniformSampleData} from '../types/data';
-import {PipcookModel} from '../types/model';
-import {DeploymentResult, EvaluateResult} from '../types/other';
-import {getLog, createPipeline, assignLatestResult, linkComponents, assignFailures} from './core-helper';
-import {logStartExecution, logError, logComplete} from '../utils/logger';
+import { PipcookComponentResult } from '../types/component';
+import { OriginSampleData, UniformSampleData } from '../types/data';
+import { PipcookModel } from '../types/model';
+import { DeploymentResult, EvaluateResult } from '../types/other';
+import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './core-helper';
+import { logStartExecution, logError, logComplete } from '../utils/logger';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();

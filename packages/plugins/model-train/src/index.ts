@@ -2,7 +2,7 @@
  * plugin to train model
  */
 
-import {PipcookModel, UniformTfSampleData, ArgsType, ModelTrainType} from '@pipcook/pipcook-core';
+import { PipcookModel, UniformTfSampleData, ArgsType, ModelTrainType } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 
 /**

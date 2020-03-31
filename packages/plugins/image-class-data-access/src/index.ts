@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import { UniformTfSampleData, OriginSampleData, ArgsType, parseAnnotation, DataAccessType} from '@pipcook/pipcook-core';
+import { UniformTfSampleData, OriginSampleData, ArgsType, parseAnnotation, DataAccessType } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 import glob from 'glob-promise';
@@ -41,7 +41,7 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
   }
   dataFlows = tf.data.array(dataFlows);
   const dataset = dataFlows.map((data: any) => {
-    const {xs, ys} = data;
+    const { xs, ys } = data;
     return tf.tidy(() => (
       {
         xs: tf.tidy(() => tf.cast(tf.node.decodeImage(xs, 3), 'float32')),
@@ -61,7 +61,7 @@ const getLabelMap = async (data: OriginSampleData[]) => {
   const labelSet = new Set<string>();
   for (let i = 0; i < data.length; i++) {
     const dataItem = data[i];
-    const {trainDataPath} = dataItem;
+    const { trainDataPath } = dataItem;
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
     for (let j = 0; j < trainFileNames.length; j++) {
       const fileName = trainFileNames[j];
@@ -90,13 +90,13 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
 
   const oneHotMap = await getLabelMap(data);
 
-  const {imgSize = [ 128, 128 ]} = args || {};
+  const { imgSize = [ 128, 128 ] } = args || {};
 
   let trainDataFlows: any, validationDataFlows: any, testDataFlows: any;
   
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];
-    const {trainDataPath, validationDataPath, testDataPath} = dataSample;  
+    const { trainDataPath, validationDataPath, testDataPath } = dataSample;  
     const imagePath = path.join(trainDataPath, '..', '..', 'images')
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
     trainDataFlows = await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, 'train data', imagePath);

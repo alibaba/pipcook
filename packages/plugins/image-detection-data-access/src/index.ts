@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import { UniformTfSampleData, OriginSampleData, ArgsType, parseAnnotation, DataAccessType} from '@pipcook/pipcook-core';
+import { UniformTfSampleData, OriginSampleData, ArgsType, parseAnnotation, DataAccessType } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 import glob from 'glob-promise';
@@ -53,7 +53,7 @@ const getLabelMap = async (data: OriginSampleData[]) => {
   const labelSet = new Set<string>();
   for (let i = 0; i < data.length; i++) {
     const dataItem = data[i];
-    const {trainDataPath} = dataItem;
+    const { trainDataPath } = dataItem;
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
     for (let j = 0; j < trainFileNames.length; j++) {
       const fileName = trainFileNames[j];
@@ -82,7 +82,7 @@ const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[]
   if (!Array.isArray(data)) {
     data = [ data ];
   }
-  const {imgSize = [ 224, 224 ]} = args || {};
+  const { imgSize = [ 224, 224 ] } = args || {};
 
   const oneHotMap = await getLabelMap(data);
 
@@ -90,7 +90,7 @@ const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[]
   
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[ i ];
-    const {trainDataPath, validationDataPath, testDataPath} = dataSample;  
+    const { trainDataPath, validationDataPath, testDataPath } = dataSample;  
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
     await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, trainDataFlows, 'train data');
     if (validationDataPath) {

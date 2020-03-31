@@ -1,4 +1,4 @@
-import {DataType} from '@tensorflow/tfjs-node-gpu';
+import { DataType } from '@tensorflow/tfjs-node-gpu';
 
 export interface DataDescriptor {
   name: string;

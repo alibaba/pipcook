@@ -1,4 +1,4 @@
-import {ArgsType, ModelDeployType, downloadZip, unZipData, getModelDir, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
+import { ArgsType, ModelDeployType, downloadZip, unZipData, getModelDir, compressTarFile, UniformGeneralSampleData, PipcookModel } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
@@ -87,7 +87,7 @@ const textClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDat
 
     // upload to oss
     
-    await client.put(path.join(ossDir, easName + '.tar.gz'), path.join(packagePath, easName + '.tar.gz'), {timeout: 60000000});
+    await client.put(path.join(ossDir, easName + '.tar.gz'), path.join(packagePath, easName + '.tar.gz'), { timeout: 60000000 });
 
     // create service
     if (!eascmd) {

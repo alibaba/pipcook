@@ -1,7 +1,7 @@
 /**
  * @file This is the main file for plugin used to pre-process the image classification data. It supports randomly rotate, brightness, normalize data.
  */
-import {DataProcessType, UniformTfSampleData, MetaData, ArgsType} from '@pipcook/pipcook-core'
+import { DataProcessType, UniformTfSampleData, MetaData, ArgsType } from '@pipcook/pipcook-core'
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import Jimp from 'jimp';
@@ -45,7 +45,7 @@ const imageClassDataProcess: DataProcessType = async (data: UniformTfSampleData,
     rotationRange = args.rotationRange;
     brightnessRange = args.brightnessRange;
   }
-  const {trainData, validationData, testData, metaData} = data;
+  const { trainData, validationData, testData, metaData } = data;
   assert.ok(metaData.feature, 'Image data should have feature');
   assert.ok(metaData.label && metaData.label.name, 'Image data should have label');
   assert.ok(trainData != null, 'The train data cannot be empty');

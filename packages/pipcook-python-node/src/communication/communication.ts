@@ -3,8 +3,8 @@
  */
 
 import * as zmq from 'zeromq';
-import {Session} from '../types/python-object';
-import {startKernel} from '../communication/connectkernel';
+import { Session } from '../types/python-object';
+import { startKernel } from '../communication/connectkernel';
 
 const nodeCleanup = require('node-cleanup');
 const kernel = require('./ipker.json')

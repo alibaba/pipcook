@@ -127,7 +127,7 @@ export function compressTarFile(sourcePath: string, targetPath: string) {
  */
 export function unZipData(filePath: string, targetPath: string) {
   return new Promise((resolve, reject) => {
-    extract(filePath, {dir: targetPath}, function (err: Error) {
+    extract(filePath, { dir: targetPath }, function (err: Error) {
       if (err) {
         reject(err);
       } else {

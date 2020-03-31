@@ -2,10 +2,10 @@
  * @file This is for the plugin to load Bayes Classifier model.
  */
 
-import {ModelLoadType, PipcookModel, ModelLoadArgsType, getModelDir, UniformTfSampleData} from '@pipcook/pipcook-core';
+import { ModelLoadType, PipcookModel, ModelLoadArgsType, getModelDir, UniformTfSampleData } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
-import {Python} from '@pipcook/pipcook-python-node';
+import { Python } from '@pipcook/pipcook-python-node';
 import * as path from 'path';
 /**
  * assertion test

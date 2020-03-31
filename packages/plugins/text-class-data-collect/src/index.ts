@@ -1,7 +1,7 @@
 /**
  * @file For plugin to collect test classification data
  */
-import {DataCollectType, OriginSampleData, ArgsType, getDatasetDir, downloadZip} from '@pipcook/pipcook-core';
+import { DataCollectType, OriginSampleData, ArgsType, getDatasetDir, downloadZip } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 const fs = require('fs-extra')
@@ -73,7 +73,7 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
     const testData: string[] = [];
     const typeSet = new Set<string>();
     fs.createReadStream(url)
-      .pipe(csv({headers: hasHeader, separator: delimiter}))
+      .pipe(csv({ headers: hasHeader, separator: delimiter }))
       .on('data', (data: any) => results.push(data))
       .on('error', (err: Error) => reject(err))
       .on('end', () => {
@@ -103,12 +103,12 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
         if (typeSet.has('test')) {
           fs.outputFileSync(testDataPath, testData.join('\n'));
         }
-        resolve({trainDataPath, validationDataPath, testDataPath, typeSet});
+        resolve({ trainDataPath, validationDataPath, testDataPath, typeSet });
       });
   })
 
   
-  const {trainDataPath, validationDataPath, testDataPath, typeSet} = await promise;
+  const { trainDataPath, validationDataPath, testDataPath, typeSet } = await promise;
   
   if (!typeSet.has('train')) {
     throw new Error('There is no train data. Please check the folder structure');

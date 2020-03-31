@@ -1,12 +1,12 @@
 /**
  * @file this is for Pipcook plugin to train Bayes Classifier.
  */
-import {ModelTrainType, PipcookModel, UniformTfSampleData, MetaData, ArgsType, getModelDir} from '@pipcook/pipcook-core';
+import { ModelTrainType, PipcookModel, UniformTfSampleData, MetaData, ArgsType, getModelDir } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
 import * as fs from 'fs';
-import {Python} from '@pipcook/pipcook-python-node';
+import { Python } from '@pipcook/pipcook-python-node';
 
 /**
  * assertion test
@@ -29,11 +29,11 @@ const assertionTest = (data: UniformTfSampleData, trainData: tf.data.Dataset<{ x
  */
 const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampleData, model: PipcookModel, args?: ArgsType): Promise<PipcookModel> => {
   const { pipelineId } = args || {};
-  const {trainData, metaData} = data;
+  const { trainData, metaData } = data;
   assertionTest(data, trainData, metaData);
   
   const classifier = model.model;
-  const {mode} = model.extraParams;
+  const { mode } = model.extraParams;
   
   const rawData: any[] = [];
   const rawClass: any[] = [];
@@ -53,7 +53,7 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: UniformTfSampl
     const words_dict = python.runRaw('words_dict');
     const TextFeatures = python.runRaw('TextFeatures');
 
-    text_list = TextProcessing(rawData, rawClass, _({test_size: 0.2}))
+    text_list = TextProcessing(rawData, rawClass, _({ test_size: 0.2 }))
     let stopwords_file: any;
     let stoppath = '';
     if (mode === 'en') {

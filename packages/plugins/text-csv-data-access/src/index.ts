@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import {UniformSampleData, OriginSampleData, ArgsType, DataAccessType} from '@pipcook/pipcook-core';
+import { UniformSampleData, OriginSampleData, ArgsType, DataAccessType } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 
@@ -65,7 +65,7 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
 
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];
-    const {trainDataPath, validationDataPath, testDataPath} = dataSample;
+    const { trainDataPath, validationDataPath, testDataPath } = dataSample;
     const trainData: tf.data.Dataset<any> = await getDataset(trainDataPath, hasHeader, delimiter);
     trainDataFlows.push(trainData);
     let validationData: tf.data.Dataset<any>;

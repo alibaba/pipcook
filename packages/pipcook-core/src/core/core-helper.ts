@@ -4,14 +4,14 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
-import {PipcookRunner} from './core'; 
-import {PipcookComponentResult} from '../types/component';
-import {ModelDeployType} from '../types/plugins';
-import {logCurrentExecution} from '../utils/logger';
-import {Observable, from} from 'rxjs';
-import {flatMap} from 'rxjs/operators';
-import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA} from '../constants/other';
-import {DATAACCESS} from '../constants/plugins';
+import { PipcookRunner } from './core'; 
+import { PipcookComponentResult } from '../types/component';
+import { ModelDeployType } from '../types/plugins';
+import { logCurrentExecution } from '../utils/logger';
+import { Observable, from } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA } from '../constants/other';
+import { DATAACCESS } from '../constants/plugins';
 
 /**
  * Retreive relative logs required to be stored.
@@ -151,8 +151,8 @@ export function assignFailures(components: PipcookComponentResult[]) {
  * The function will be called after the pipeline is finished and predictServer parameter is true
  */
 export async function runPredict(runner: PipcookRunner, request: any) {
-  const {components, latestModel} = runner;
-  const {data} = request.body;
+  const { components, latestModel } = runner;
+  const { data } = request.body;
 
   // we need to find out the dataAccess and dataProcess component 
   // since the prediction data needs to be processed by these two steps

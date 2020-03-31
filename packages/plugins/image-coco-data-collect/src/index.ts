@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import {OriginSampleData, ArgsType, unZipData, downloadZip, getDatasetDir, createAnnotationFromJson, DataCollectType} from '@pipcook/pipcook-core';
+import { OriginSampleData, ArgsType, unZipData, downloadZip, getDatasetDir, createAnnotationFromJson, DataCollectType } from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as assert from 'assert';

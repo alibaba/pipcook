@@ -1,4 +1,4 @@
-import {DataProcessType, ArgsType, ModelDeployType, downloadZip, createAnnotationFile, DataAccessType} from '@pipcook/pipcook-core';
+import { DataProcessType, ArgsType, ModelDeployType, downloadZip, createAnnotationFile, DataAccessType } from '@pipcook/pipcook-core';
 import * as path from 'path';
 const uuidv1 = require('uuid/v1');
 const fs = require('fs-extra');

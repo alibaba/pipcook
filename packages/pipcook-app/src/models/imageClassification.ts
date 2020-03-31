@@ -1,7 +1,7 @@
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
 
-import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip} from '@pipcook/pipcook-core';
+import { DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip } from '@pipcook/pipcook-core';
 import imageClassDataAccess from '@pipcook/pipcook-plugins-image-class-data-access';
 import mobileNetLoad from '@pipcook/pipcook-plugins-local-mobilenet-model-load';
 import modelTrainPlugin from '@pipcook/pipcook-plugins-model-train';
@@ -80,13 +80,13 @@ export default class ImageClassification {
       return;
     }
 
-    return {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate}
+    return { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate }
   }
 
   async train(dataSource: string, trainInfo: TrainInfoI, predictServer = false, 
     successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
     
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
+    const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = this._train(dataSource, trainInfo);
 
     const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
 
@@ -96,7 +96,7 @@ export default class ImageClassification {
 
   async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI, predictServer = false, 
     successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
+    const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = this._train(dataSource, trainInfo);
 
     const modelDeploy = ModelDeploy(imageClassEasDeploy, getEasParam(easConfig));
 

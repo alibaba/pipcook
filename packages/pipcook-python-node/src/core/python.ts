@@ -411,7 +411,7 @@ export default class Python {
   evaluate = async (object: PythonObject) => {
     this.statements.push(`${object.__pipcook__identifier}`);
     const result: any = 
-      await Python.constructPythonStatements(this, {type: `type(${object.__pipcook__identifier})`, value: `${object.__pipcook__identifier}`});
+      await Python.constructPythonStatements(this, { type: `type(${object.__pipcook__identifier})`, value: `${object.__pipcook__identifier}` });
     try {
       const res = {
         type: result.type,

@@ -6,7 +6,7 @@ const glob = require('glob-promise');
 const commandExistsSync = require('command-exists').sync;
 const inquirer = require('inquirer');
 
-const {dependencies, pipcookLogName} = require('./config');
+const { dependencies, pipcookLogName } = require('./config');
 const spinner = ora();
 
 /**

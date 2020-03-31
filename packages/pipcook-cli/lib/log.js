@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const fse = require('fs-extra');
 const path = require('path');
-const {pipcookLogName} = require('./config');
+const { pipcookLogName } = require('./config');
 const glob = require('glob-promise');
 /**
  * install all dependencies of pipcook into working dir

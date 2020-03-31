@@ -1,4 +1,4 @@
-import {PythonObject} from '../types/python-object';
+import { PythonObject } from '../types/python-object';
 
 /**
  * conversion of basic types and objects

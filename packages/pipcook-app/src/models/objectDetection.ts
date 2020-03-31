@@ -1,5 +1,5 @@
 
-import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip} from '@pipcook/pipcook-core';
+import { DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip } from '@pipcook/pipcook-core';
 
 import imageCocoDataCollect from '@pipcook/pipcook-plugins-image-coco-data-collect';
 import imageDetectronAccess from '@pipcook/pipcook-plugins-detection-detectron-data-access';
@@ -61,13 +61,13 @@ export default class ObjectDetection {
 
     const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
 
-    return {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate};
+    return { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate };
   }
 
   async train(dataSource: string, trainInfo: TrainInfoI, 
     predictServer = false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
     
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = await this._train(dataSource, trainInfo);
+    const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = await this._train(dataSource, trainInfo);
 
     const modelDeploy = ModelDeploy(detectronLocalDeploy)
     
@@ -106,7 +106,7 @@ export default class ObjectDetection {
   async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI,
     predictServer = false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
 
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = await this._train(dataSource, trainInfo);
+    const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = await this._train(dataSource, trainInfo);
 
     const modelDeploy = ModelDeploy(easModelDeploy, getEasParam(easConfig));
     

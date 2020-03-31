@@ -1,6 +1,6 @@
 import logger from './logger';
-import {PipcookRunner} from '../core/core';
-import {PipcookComponentResult} from '../types/component';
+import { PipcookRunner } from '../core/core';
+import { PipcookComponentResult } from '../types/component';
 
 describe('logger', () => {
   it('should log "start"', () => {

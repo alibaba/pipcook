@@ -3,7 +3,7 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import {ModelLoadType, PipcookModel, UniformTfSampleData, getModelDir, getMetadata} from '@pipcook/pipcook-core';
+import { ModelLoadType, PipcookModel, UniformTfSampleData, getModelDir, getMetadata } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -79,15 +79,15 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
   if (modelId) {
     model = (await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json'))) as tf.Sequential;
     const metaData = getMetadata(modelId);
-    data = {metaData} as UniformTfSampleData;
+    data = { metaData } as UniformTfSampleData;
   } else {
     const trainableLayers = [ 'denseModified', 'conv_pw_13_bn', 'conv_pw_13', 'conv_dw_13_bn', 'conv _dw_13' ];
     const mobilenet = await
     tf.loadLayersModel('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/models/mobilenet/model.json');
-    const newInputLayer = tf.input({shape: inputShape});
+    const newInputLayer = tf.input({ shape: inputShape });
     const output = applyModel(newInputLayer, mobilenet);
-    const predictions = tf.layers.dense({units: outputShape[1],  activation: 'softmax', name: 'denseModified'}).apply(output) as tf.SymbolicTensor;
-    let mobilenetModified = tf.model({inputs: newInputLayer, outputs: predictions, name: 'modelModified' });
+    const predictions = tf.layers.dense({ units: outputShape[1],  activation: 'softmax', name: 'denseModified' }).apply(output) as tf.SymbolicTensor;
+    let mobilenetModified = tf.model({ inputs: newInputLayer, outputs: predictions, name: 'modelModified' });
     if (isFreeze) {
       mobilenetModified = freezeModelLayers(trainableLayers, mobilenetModified);
     }

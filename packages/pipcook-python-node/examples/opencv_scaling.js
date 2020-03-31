@@ -1,4 +1,4 @@
-const {Python} = require('../dist/index');
+const { Python } = require('../dist/index');
 
 async function train () {
   await Python.scope('test1', (python) => {
@@ -10,9 +10,9 @@ async function train () {
     const requests = python.import('requests');
 
     const url = python.createString('https://img.alicdn.com/tfs/TB1Ha0tnbr1gK0jSZFDXXb9yVXa-192-60.png', true);
-    const resp = requests.get(url, _({stream: true})).raw
+    const resp = requests.get(url, _({ stream: true })).raw
 
-    let image = np.asarray(python.buildin('bytearray', resp.read()), _({dtype: 'uint8'}));
+    let image = np.asarray(python.buildin('bytearray', resp.read()), _({ dtype: 'uint8' }));
     image = cv2.imdecode(image, cv2.IMREAD_COLOR);
 
 

@@ -1,5 +1,5 @@
-import {ModelEvaluateType, PipcookModel, UniformTfSampleData, EvaluateResult} from '@pipcook/pipcook-core';
-import {Python} from '@pipcook/pipcook-python-node';
+import { ModelEvaluateType, PipcookModel, UniformTfSampleData, EvaluateResult } from '@pipcook/pipcook-core';
+import { Python } from '@pipcook/pipcook-python-node';
 
 const bayesianModelEvaluate: ModelEvaluateType 
   = async (data: UniformTfSampleData, model: PipcookModel): Promise<EvaluateResult> => {

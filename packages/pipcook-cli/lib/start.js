@@ -3,7 +3,7 @@ const fse = require('fs-extra');
 const childProcess = require('child_process');
 const ora = require('ora');
 const path = require('path');
-const {pipcookLogName} = require('./config');
+const { pipcookLogName } = require('./config');
 const spinner = ora();
 
 
