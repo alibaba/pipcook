@@ -6,12 +6,12 @@ const fs = require('fs-extra');
 
 const imageDetectionModelLoad: ModelLoadType = async (data: UniformGeneralSampleData, args?: any): Promise<PipcookModel> => {
   const {
-    device='cpu',
-    modelId='',
-    baseLearningRate=0.00025,
-    numWorkers=4,
-    maxIter=100000,
-    numGpus=2,
+    device = 'cpu',
+    modelId = '',
+    baseLearningRate = 0.00025,
+    numWorkers = 4,
+    maxIter = 100000,
+    numGpus = 2,
     pipelineId
   } = args || {};
 

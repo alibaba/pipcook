@@ -90,7 +90,7 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
 
   const oneHotMap = await getLabelMap(data);
 
-  const {imgSize=[ 128, 128 ]} = args || {};
+  const {imgSize = [ 128, 128 ]} = args || {};
 
   let trainDataFlows: any, validationDataFlows: any, testDataFlows: any;
   

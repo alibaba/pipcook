@@ -10,11 +10,11 @@ const uuidv1 = require('uuid/v1');
 
 const textClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {
   let {
-    easName='',
-    cpus=2, 
-    memory=4000, 
-    ossConfig={}, 
-    ossDir='', 
+    easName = '',
+    cpus = 2, 
+    memory = 4000, 
+    ossConfig = {}, 
+    ossDir = '', 
     gpu, 
     resource, 
     eascmd, 
@@ -59,7 +59,7 @@ const textClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDat
     }
 
     const app = {
-      processor_path: 'http://' + ossConfig.bucket +'.'+ossConfig.region+'.aliyuncs.com/'+ossDir+'/'+easName+'.tar.gz',
+      processor_path: 'http://' + ossConfig.bucket + '.' + ossConfig.region + '.aliyuncs.com/' + ossDir + '/' + easName + '.tar.gz',
       processor_entry: './app.py',
       processor_type: "python",
       name: easName,

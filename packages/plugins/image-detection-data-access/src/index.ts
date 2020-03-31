@@ -82,11 +82,11 @@ const imageDetectionDataAccess: DataAccessType = async (data: OriginSampleData[]
   if (!Array.isArray(data)) {
     data = [ data ];
   }
-  const {imgSize=[ 224, 224 ]} = args || {};
+  const {imgSize = [ 224, 224 ]} = args || {};
 
   const oneHotMap = await getLabelMap(data);
 
-  const trainDataFlows: any[]=[], validationDataFlows: any[]=[], testDataFlows: any[]=[]
+  const trainDataFlows: any[] = [], validationDataFlows: any[] = [], testDataFlows: any[] = []
   
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[ i ];

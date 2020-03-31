@@ -36,11 +36,11 @@ const transformCsv = (result: any) => {
 const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
 
   let {
-    hasHeader=false,
-    delimiter=',',
-    url='',
-    validationSplit=0,
-    testSplit=0
+    hasHeader = false,
+    delimiter = ',',
+    url = '',
+    validationSplit = 0,
+    testSplit = 0
   } = args || {};
 
   assert.ok(url, 'Please specify a url of zip of your data');

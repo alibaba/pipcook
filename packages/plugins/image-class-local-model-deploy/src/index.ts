@@ -13,7 +13,7 @@ const imageClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, mode
   const trainDataPath = path.join(process.cwd(), '.temp', uuidv1());
   try {
     for (let i = 0; i < data.length; i++) {
-      const picName = uuidv1()+'.png'; 
+      const picName = uuidv1() + '.png'; 
       await downloadZip(data[i], path.join(trainDataPath, 'images', picName));
       createAnnotationFile(path.join(trainDataPath, 'annotations', 'train'), picName, picName, 'not set');
     }

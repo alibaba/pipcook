@@ -17,7 +17,7 @@ const uuidv1 = require('uuid/v1');
  */
 const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
   let {
-    url='',
+    url = '',
   } = args || {};
   assert.ok(url, 'Please specify a url of zip of your dataset');
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
@@ -50,7 +50,7 @@ const imageClassRemoteDataCollect: DataCollectType = async (args?: ArgsType): Pr
     const splitString = imagePath.split(path.sep);
     const trainType = splitString[splitString.length - 3];
     const category = splitString[splitString.length - 2];
-    const imageName = uuidv1() + splitString[splitString.length -1];
+    const imageName = uuidv1() + splitString[splitString.length - 1];
     const annotationDir = path.join(saveDir, 'annotations', trainType);
     createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
     typeSet.add(trainType);

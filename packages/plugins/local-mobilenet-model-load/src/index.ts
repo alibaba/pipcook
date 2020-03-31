@@ -64,8 +64,8 @@ const localMobileNetModelLoad: ModelLoadType = async (data: UniformTfSampleData,
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
     metrics = [ 'accuracy' ],
-    modelId='',
-    isFreeze=true
+    modelId = '',
+    isFreeze = true
   } = args || {};
 
   let inputShape, outputShape: number[];

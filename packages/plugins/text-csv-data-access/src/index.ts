@@ -55,8 +55,8 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
   }
 
   const { 
-    hasHeader=false,
-    delimiter=',',
+    hasHeader = false,
+    delimiter = ',',
   } = args || {};
 
   const trainDataFlows: any = [], 

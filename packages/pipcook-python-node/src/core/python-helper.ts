@@ -25,7 +25,7 @@ export function conversion(target: any) {
     } else {
       return 'False'
     }
-  } else if (target === null || target=== undefined) {
+  } else if (target === null || target === undefined) {
     return 'None'
   } else if (target.__pipcook__identifier) {
     return target.__pipcook__identifier;

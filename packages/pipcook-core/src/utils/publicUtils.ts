@@ -219,7 +219,7 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
       coco_url: xmlJson.annotation.folder[0],
       height: parseInt(xmlJson.annotation.size[0].height[0]),
       width: parseInt(xmlJson.annotation.size[0].width[0]),
-      id: i+1
+      id: i + 1
     });
     if (!(xmlJson.annotation && xmlJson.annotation.object && xmlJson.annotation.object.length > 0)) {
       continue;

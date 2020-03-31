@@ -19,10 +19,10 @@ const shuffle = (a: any[]) => {
 
 const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
   let {
-    url='',
-    validationSplit=0,
-    testSplit=0,
-    annotationFileName='annotation.json'
+    url = '',
+    validationSplit = 0,
+    testSplit = 0,
+    annotationFileName = 'annotation.json'
   } = args || {};
   assert.ok(url, 'Please specify a url of zip of your dataset');
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];

@@ -83,7 +83,7 @@ export default class ImageClassification {
     return {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate}
   }
 
-  async train(dataSource: string, trainInfo: TrainInfoI, predictServer=false, 
+  async train(dataSource: string, trainInfo: TrainInfoI, predictServer = false, 
     successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
     
     const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
@@ -94,7 +94,7 @@ export default class ImageClassification {
     await runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback)
   }
 
-  async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI, predictServer=false, 
+  async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI, predictServer = false, 
     successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
     const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
 

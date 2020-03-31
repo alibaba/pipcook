@@ -19,9 +19,9 @@ const shuffle = (a: any[]) => {
 
 const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
   let {
-    url='',
-    validationSplit=0,
-    testSplit=0
+    url = '',
+    validationSplit = 0,
+    testSplit = 0
   } = args || {};
   assert.ok(url, 'Please specify a url of zip of your dataset');
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
@@ -56,7 +56,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
     const imagePathSplit = imagePath.split(path.sep);
     const fileNameSplit = imagePathSplit[imagePathSplit.length - 1].split('.');
     const fileName = fileNameSplit.slice(0, fileNameSplit.length - 1).join('.');
-    const annotation = await parseAnnotation(path.join(saveDir, 'annotations', fileName+'.xml'));
+    const annotation = await parseAnnotation(path.join(saveDir, 'annotations', fileName + '.xml'));
     annotation.annotation.folder[0] = imagePathSplit.slice(0, imagePathSplit.length - 1).join(path.sep);
     console.log(JSON.stringify(annotation));
     if (i >= countNumber * (testSplit + validationSplit)) {
@@ -69,7 +69,7 @@ const imageDetectionDataCollect: DataCollectType = async (args?: ArgsType): Prom
       typeSet.add('test');
       createAnnotationFromJson(path.join(saveDir, 'annotations', 'test'), annotation);
     }
-    fs.removeSync(path.join(saveDir, 'annotations', fileName+'.xml'))
+    fs.removeSync(path.join(saveDir, 'annotations', fileName + '.xml'))
   }
 
   if (!typeSet.has('train')) {

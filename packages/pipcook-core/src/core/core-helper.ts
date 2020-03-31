@@ -71,7 +71,7 @@ export async function assignLatestResult(updatedType: string, result: any, self:
  * @param components: EscherComponent 
  * @param self: the pipeline subject
  */
-export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType='normal', saveModelCallback?: Function) {
+export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal', saveModelCallback?: Function) {
   const firstComponent = components[0];
   firstComponent.status = 'running';
   logCurrentExecution(firstComponent, logType)
@@ -120,7 +120,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
  */
 export function linkComponents(components: PipcookComponentResult[]) {
   for (let i = 1; i < components.length; i++) {
-    components[i].previousComponent = components[i-1];
+    components[i].previousComponent = components[i - 1];
   }
 }
 

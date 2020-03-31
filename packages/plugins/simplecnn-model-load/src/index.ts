@@ -21,7 +21,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: UniformTfSampleData, args
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
     metrics = [ 'accuracy' ],
-    modelId=''
+    modelId = ''
   } = args || {};
 
   let inputShape, outputShape: number[];

@@ -105,9 +105,9 @@ export default class Python {
    */
   install = (packageName: string, options?: InstallOptionsI) => {
     const {
-      version='', source=''
+      version = '', source = ''
     } = options || {};
-    this.statements.push(`!pip install ${packageName}${version ? '=='+version : ''} ${source ? ('-i ' + source) : ''}`);
+    this.statements.push(`!pip install ${packageName}${version ? '==' + version : ''} ${source ? ('-i ' + source) : ''}`);
   }
 
   /**
@@ -151,7 +151,7 @@ export default class Python {
   /**
    * create python string
    */
-  createString = (string: string, isRaw=false) => {
+  createString = (string: string, isRaw = false) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${isRaw ? 'r' : ''}'${string}'`);
     const pythonObject = getObject(identifier, this.statements);
@@ -324,7 +324,7 @@ export default class Python {
     const statementsTemp = this.statements;
     this.statements = [];
     execution();
-    const ifStatements = this.statements.map((ele: string) => '\t'+ele);
+    const ifStatements = this.statements.map((ele: string) => '\t' + ele);
     this.statements = [ ...statementsTemp, ...ifStatements ];
   }
 

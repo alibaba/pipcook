@@ -31,6 +31,7 @@ module.exports = {
     'keyword-spacing': [
       'error', { 'before': true }
     ],
-    'array-bracket-spacing': [ 'error', 'always' ]
+    'array-bracket-spacing': [ 'error', 'always' ],
+    'space-infix-ops': 'error'
   }
 };

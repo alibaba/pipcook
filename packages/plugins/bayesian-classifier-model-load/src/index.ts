@@ -25,8 +25,8 @@ const assertionTest = (data: UniformTfSampleData) => {
  */
 const bayesianClassifierModelLoad: ModelLoadType = async (data: UniformTfSampleData, args?: ModelLoadArgsType): Promise<PipcookModel> => {
   const {
-    modelId='',
-    mode='cn',
+    modelId = '',
+    mode = 'cn',
     pipelineId
   } = args || {} as ModelLoadArgsType;
   
