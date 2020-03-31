@@ -51,7 +51,7 @@ export class PipcookRunner {
   pipelineVersion: string = config.version;
   logDir: string|null = null;
   pipelineId: string|null = null;
-  latestOriginSampleData:  OriginSampleData | OriginSampleData[] |null = null;
+  latestOriginSampleData: OriginSampleData | OriginSampleData[] |null = null;
   latestSampleData: UniformSampleData |null = null;
   latestModel: PipcookModel | PipcookModel[] |null = null;
   latestEvaluateResult: EvaluateResult | null = null;

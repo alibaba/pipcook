@@ -10,13 +10,13 @@ interface ObserverFunc {
 }
 
 type ResultType = 
-  'dataCollect'   | 
-  'dataAccess'    | 
-  'dataProcess'   | 
-  'modelLoad'     | 
-  'modelTrain'    |
+  'dataCollect' | 
+  'dataAccess' | 
+  'dataProcess' | 
+  'modelLoad' | 
+  'modelTrain' |
   'modelEvaluate' |
-  'modelDeploy'   ;
+  'modelDeploy' ;
 
 export interface PipcookComponentResult {
   type: ResultType;

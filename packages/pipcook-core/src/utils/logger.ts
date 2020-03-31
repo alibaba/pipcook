@@ -8,8 +8,8 @@ import { PipcookComponentResult } from '../types/component';
 
 enum LoggerColor {
   GREEN = 'green',
-  CYAN  = 'cyan',
-  RED   = 'red',
+  CYAN = 'cyan',
+  RED = 'red',
 }
 
 type LoggerFunction = (input: string) => void;

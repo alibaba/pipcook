@@ -85,7 +85,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
   self.currentIndex = 0;
   for (let i = 1; i < components.length; i++) {
     // rxjs pipe: serialize all components
-    (function execute(component, assignLatestResult, updatedType, self, flatMapArray)  {
+    (function execute(component, assignLatestResult, updatedType, self, flatMapArray) {
       const flatMapObject = flatMap((result) => {
         component.previousComponent.status = 'success';
         self.currentIndex++;

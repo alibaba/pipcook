@@ -97,7 +97,7 @@ export default class ObjectDetection {
           modelPath,
           detectronConfigPath: path.join(__dirname, '..', 'assets', 'config')
         }
-      },  getEasParam(easConfig));
+      }, getEasParam(easConfig));
     } finally {
       fs.removeSync(tempPth);
     }

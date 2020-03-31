@@ -64,7 +64,7 @@ const getLabelMap = async (data: OriginSampleData[]) => {
       
     }
   }
-  const labelArray =  Array.from(labelSet);
+  const labelArray = Array.from(labelSet);
   const oneHotMap: any = {};
   labelArray.forEach((label: any, index: number) => {
     oneHotMap[label] = index;
