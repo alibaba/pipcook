@@ -1,4 +1,4 @@
-import {ModelLoadType, VocDataset, getModelDir, tfJsLayersModel, ModelLoadArgsType} from '@pipcook/pipcook-core';
+import {ModelLoadType, getModelDir, ImageDataset, ModelLoadArgsType, TfJsLayersModel} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -7,10 +7,9 @@ import * as path from 'path';
  * assertion test
  * @param data 
  */
-const assertionTest = (data: VocDataset) => {
+const assertionTest = (data: ImageDataset) => {
   assert.ok(data.metaData.feature, 'Image feature is missing');
   assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 3d');
-  assert.ok(data.metaData.label.shape && data.metaData.label.shape.length == 2, 'The label vector should be a one hot vector');
 }
 
 /**
@@ -23,22 +22,23 @@ const assertionTest = (data: VocDataset) => {
  * @param modelId (string)[optional] if you want to load a model from previously trained pipcook pipeline, give the pipeline id here
  * @param modelPath (string)[optional] if you want to load a model from a local file path, give the path here
  */
-const simpleCnnModelLoad: ModelLoadType = async (data: VocDataset, args: ModelLoadArgsType): Promise<tfJsLayersModel> => {
-  const {
+const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: ModelLoadArgsType): Promise<TfJsLayersModel> => {
+  let {
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
     metrics = ['accuracy'],
-    modelId='',
-    modelPath='',
+    modelId,
+    modelPath,
+    outputShape
   } = args;
   
-  let inputShape, outputShape: number[];
+  let inputShape: number[];
 
   // create a new model
   if (!modelId && !modelPath) {
     assertionTest(data);
     inputShape = data.metaData.feature.shape;
-    outputShape = data.metaData.label.shape;
+    outputShape = Object.keys(data.metaData.labelMap).length;
   }
   
   let model: tf.LayersModel | null = null;
@@ -83,7 +83,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: VocDataset, args: ModelLo
     localModel.add(tf.layers.flatten());
     localModel.add(tf.layers.dense({units: 512, activation: 'relu', kernelInitializer: 'glorotUniform'}));
     localModel.add(tf.layers.dropout({rate: 0.5}));
-    localModel.add(tf.layers.dense({units: outputShape[1], activation: 'softmax', kernelInitializer: 'glorotUniform'}));
+    localModel.add(tf.layers.dense({units: outputShape, activation: 'softmax', kernelInitializer: 'glorotUniform'}));
 
     model = localModel as tf.LayersModel;
   }
@@ -94,7 +94,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: VocDataset, args: ModelLo
     metrics,
   });
   
-  const result: tfJsLayersModel = {
+  const result: TfJsLayersModel = {
     model,
     metrics: metrics,
     predict: function (inputData: tf.Tensor<any>) {

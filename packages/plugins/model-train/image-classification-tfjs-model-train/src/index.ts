@@ -1,34 +1,26 @@
-import {VocDataset, ModelTrainType, TfJsLayersModel, ModelTrainArgsType, parseAnnotation} from '@pipcook/pipcook-core';
+import {ImageDataset, ModelTrainType, TfJsLayersModel, ModelTrainArgsType, parseAnnotation, ImageDataLoader} from '@pipcook/pipcook-core';
 
-import * as path from 'path';
-import glob from 'glob-promise';
 import * as tf from '@tensorflow/tfjs-node-gpu';
-import cliProgress from 'cli-progress';
 import Jimp from 'jimp';
 
-async function createDataset(dataPaths: string[], dataDir: string, labelMap:  {
+async function createDataset(dataLoader: ImageDataLoader, labelMap: {
   [key: string]: number;
 }) {
   let dataFlows: any = [];
-  const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-  bar1.start(dataPaths.length, 0);
-  for (let i = 0; i < dataPaths.length; i++) {
-    bar1.update(i);
-    const dataJson = await parseAnnotation(dataPaths[i]);
-    let image = await Jimp.read(path.join(dataDir, dataJson.annotation.filename[0]));
+  const count = await dataLoader.len();
+  for (let i = 0; i < count; i++) {
+    const currentData = await dataLoader.getItem(i);
+    let image = await Jimp.read(currentData.data);
     const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
     const imageArray = new Uint8Array(trainImageBuffer);
-    let label: string = dataJson.annotation.object[0].name[0];
+    let label: number = currentData.label.categoryId;
     let ys: tf.Tensor<tf.Rank>;
-    if (Object.keys(labelMap).length > 1) {
-      ys = tf.tidy(() => tf.oneHot(tf.scalar(labelMap[label], 'int32'), Object.keys(labelMap).length));
-    }
+    ys = tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(labelMap).length));
     dataFlows.push(tf.tidy(() => ({
       xs: tf.tidy(() => tf.cast(tf.node.decodeImage(imageArray, 3), 'float32')),
       ys
     })));
   }
-  bar1.stop();
   return tf.data.array(dataFlows);
 }
 
@@ -40,7 +32,7 @@ async function createDataset(dataPaths: string[], dataDir: string, labelMap:  {
  * @param batchSize : need to specify batch size
  * @param optimizer : need to specify optimizer
  */
-const ModelTrain: ModelTrainType = async (data: VocDataset, model: TfJsLayersModel, args: ModelTrainArgsType): Promise<TfJsLayersModel> => {
+const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersModel, args: ModelTrainArgsType): Promise<TfJsLayersModel> => {
   try {
     const {
       epochs = 10,
@@ -48,26 +40,26 @@ const ModelTrain: ModelTrainType = async (data: VocDataset, model: TfJsLayersMod
       saveModel
     } = args;
 
-    const metaData = data.metaData;
+    const { trainLoader, validationLoader, testLoader, metaData } = data;
 
-    const trainData = await glob(path.join(data.trainData, '*.xml'));
+    const count = await trainLoader.len();
 
     const trainConfig: any = {
       epochs: epochs,
-      batchesPerEpoch: parseInt(String(trainData.length / batchSize))
+      batchesPerEpoch: parseInt(String(count / batchSize))
     }
 
     console.log('create train dataset');
-    const trainDataSet = await createDataset(trainData, data.trainData, metaData.labelMap);
+    const trainDataSet = await createDataset(trainLoader, metaData.labelMap);
     const ds = trainDataSet.repeat().batch(batchSize);
     let validationDataSet: tf.data.Dataset<tf.TensorContainer>;
-    if (data.validationData) {
-      const validationData = await glob(path.join(data.validationData, '*.xml'));
+    if (validationLoader) {
       console.log('create validation dataset');
-      validationDataSet = await createDataset(validationData, data.validationData, metaData.labelMap);
+      validationDataSet = await createDataset(validationLoader, metaData.labelMap);
+      const valCount = await validationLoader.len();
       const validateDs = validationDataSet.batch(batchSize);
       trainConfig.validationData = validateDs;
-      trainConfig.validationBatches = parseInt(String(validationData.length / batchSize));
+      trainConfig.validationBatches = parseInt(String(valCount / batchSize));
     }
 
     const trainModel = model.model;
