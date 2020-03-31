@@ -35,7 +35,7 @@ const start = async (fileName) => {
       customFds: [ 0, 1, 2 ]
     });
     child.stdout.on('data', function (data) { process.stdout.write(data.toString()); });
-    child.stderr.on('data', function (data) { spinner.fail(`run error: ${data.toString()}`);});
+    child.stderr.on('data', function (data) { spinner.fail(`run error: ${data.toString()}`); });
     child.on('close', function (code) { 
       console.log("Finished with code " + code);
     });
