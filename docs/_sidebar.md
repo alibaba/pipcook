@@ -7,7 +7,6 @@
   - [Get started with Pipeline API](/tutorials/get-started-with-pipeline-api)
   - [Develop a plugin](/tutorials/how-to-develop-a-plugin.md)
   - [Want to use Python](/tutorials/want-to-use-python.md)
-  - [Load a pre-trained model](/tutorials/load-a-pre-trained-model-in-pipcook)
 
 - Developers
 
