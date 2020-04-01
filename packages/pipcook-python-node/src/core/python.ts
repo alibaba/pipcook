@@ -66,7 +66,7 @@ export default class Python {
     return {
       ...arg,
       __pipcook__args: true
-    }
+    };
   }
 
   /** */
@@ -105,9 +105,9 @@ export default class Python {
    */
   install = (packageName: string, options?: InstallOptionsI) => {
     const {
-      version='', source=''
+      version = '', source = ''
     } = options || {};
-    this.statements.push(`!pip install ${packageName}${version ? '=='+version : ''} ${source ? ('-i ' + source) : ''}`);
+    this.statements.push(`!pip install ${packageName}${version ? '==' + version : ''} ${source ? ('-i ' + source) : ''}`);
   }
 
   /**
@@ -134,7 +134,7 @@ export default class Python {
       this.statements.push(`from ${packageName} import ${item} as ${identifier}`); 
       const pythonObject = getObject(identifier, this.statements);
       objects.push(pythonObject);
-    })
+    });
     return objects;
   }
 
@@ -151,7 +151,7 @@ export default class Python {
   /**
    * create python string
    */
-  createString = (string: string, isRaw=false) => {
+  createString = (string: string, isRaw = false) => {
     const identifier = getId();
     this.statements.push(`${identifier} = ${isRaw ? 'r' : ''}'${string}'`);
     const pythonObject = getObject(identifier, this.statements);
@@ -324,8 +324,8 @@ export default class Python {
     const statementsTemp = this.statements;
     this.statements = [];
     execution();
-    const ifStatements = this.statements.map((ele: string) => '\t'+ele);
-    this.statements = [...statementsTemp, ...ifStatements];
+    const ifStatements = this.statements.map((ele: string) => '\t' + ele);
+    this.statements = [ ...statementsTemp, ...ifStatements ];
   }
 
   /**
@@ -411,18 +411,18 @@ export default class Python {
   evaluate = async (object: PythonObject) => {
     this.statements.push(`${object.__pipcook__identifier}`);
     const result: any = 
-      await Python.constructPythonStatements(this, {type: `type(${object.__pipcook__identifier})`, value: `${object.__pipcook__identifier}`});
+      await Python.constructPythonStatements(this, { type: `type(${object.__pipcook__identifier})`, value: `${object.__pipcook__identifier}` });
     try {
       const res = {
         type: result.type,
         value: eval(result.value)
-      }
+      };
       return res;
     } catch (err) {
       return {
         type: result.type,
         value: result.value
-      }
+      };
     }
   }
 

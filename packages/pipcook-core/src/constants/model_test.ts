@@ -1,4 +1,4 @@
-import {IMAGE_CLASSIFICATION, OBJECT_DETECTION, TEXT_CLASSIFICATION} from './model';
+import { IMAGE_CLASSIFICATION, OBJECT_DETECTION, TEXT_CLASSIFICATION } from './model';
 
 describe('model constant', () => {
   it('should own some constants', () => {

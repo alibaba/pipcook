@@ -1,4 +1,4 @@
-import {transformCsv, DataProcessType, ArgsType, ModelDeployType, DataAccessType} from '@pipcook/pipcook-core';
+import { transformCsv, DataProcessType, ArgsType, ModelDeployType, DataAccessType } from '@pipcook/pipcook-core';
 import * as path from 'path';
 const uuidv1 = require('uuid/v1');
 const fs = require('fs-extra');
@@ -20,8 +20,8 @@ const textClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, model
     }
 
     let result: any = {
-      trainDataPath: path.join(trainDataPath, 'train.csv'),
-    }
+      trainDataPath: path.join(trainDataPath, 'train.csv')
+    };
 
     const dataAccessPlugin = dataAccess.plugin as DataAccessType;
     result = await dataAccessPlugin(result, dataAccess.params);
@@ -34,20 +34,20 @@ const textClassLocalModelDeploy: ModelDeployType = async (dataHolder: any, model
     const predictionPromise: any[] = [];
 
     await result.trainData.forEachAsync((e: any) => {
-      predictionPromise.push(model.predict(e.xs))
-    })
+      predictionPromise.push(model.predict(e.xs));
+    });
 
     const prediction: any[] = [];
     for (let i = 0; i < predictionPromise.length; i++){
       const currentPredict = await predictionPromise[i];
-      prediction.push(currentPredict)
+      prediction.push(currentPredict);
     }
     return prediction;
   } finally {
     fs.removeSync(trainDataPath);
   }
   
-}
+};
 
 export default textClassLocalModelDeploy;
 

@@ -1,11 +1,11 @@
 /**
  * @file For plugin to collect test classification data
  */
-import {DataCollectType, OriginSampleData, ArgsType, getDatasetDir, downloadZip} from '@pipcook/pipcook-core';
+import { DataCollectType, OriginSampleData, ArgsType, getDatasetDir, downloadZip } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
-const fs = require('fs-extra')
-const csv = require('csv-parser')
+const fs = require('fs-extra');
+const csv = require('csv-parser');
 
 const transformCsv = (result: any) => {
   const texts = [];
@@ -28,7 +28,7 @@ const transformCsv = (result: any) => {
     texts.push(text);
   }
   return texts.join(',');
-}
+};
 
 /**
  * collect csv data
@@ -36,11 +36,11 @@ const transformCsv = (result: any) => {
 const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<OriginSampleData> => {
 
   let {
-    hasHeader=false,
-    delimiter=',',
-    url='',
-    validationSplit=0,
-    testSplit=0
+    hasHeader = false,
+    delimiter = ',',
+    url = '',
+    validationSplit = 0,
+    testSplit = 0
   } = args || {};
 
   assert.ok(url, 'Please specify a url of zip of your data');
@@ -61,7 +61,7 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
     url = url.substring(7);
   } else {
     const targetPath = path.join(saveDir, fileName);
-    console.log('downloading dataset ...')
+    console.log('downloading dataset ...');
     await downloadZip(url, targetPath);
     url = targetPath;
   }
@@ -73,7 +73,7 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
     const testData: string[] = [];
     const typeSet = new Set<string>();
     fs.createReadStream(url)
-      .pipe(csv({headers: hasHeader, separator: delimiter}))
+      .pipe(csv({ headers: hasHeader, separator: delimiter }))
       .on('data', (data: any) => results.push(data))
       .on('error', (err: Error) => reject(err))
       .on('end', () => {
@@ -103,19 +103,19 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
         if (typeSet.has('test')) {
           fs.outputFileSync(testDataPath, testData.join('\n'));
         }
-        resolve({trainDataPath, validationDataPath, testDataPath, typeSet});
+        resolve({ trainDataPath, validationDataPath, testDataPath, typeSet });
       });
-  })
+  });
 
   
-  const {trainDataPath, validationDataPath, testDataPath, typeSet} = await promise;
+  const { trainDataPath, validationDataPath, testDataPath, typeSet } = await promise;
   
   if (!typeSet.has('train')) {
     throw new Error('There is no train data. Please check the folder structure');
   }
   const result: OriginSampleData = {
-    trainDataPath,
-  }
+    trainDataPath
+  };
 
   if (typeSet.has('validation')) {
     result.validationDataPath = validationDataPath;
@@ -126,10 +126,6 @@ const textClassDataCollect: DataCollectType = async (args?: ArgsType): Promise<O
 
   
   return result;
-}
+};
 
 export default textClassDataCollect;
-
-
-
-

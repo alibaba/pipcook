@@ -1,5 +1,5 @@
-import {ModelTrainType, PipcookModel, UniformGeneralSampleData} from '@pipcook/pipcook-core';
-import {Python} from '@pipcook/pipcook-python-node';
+import { ModelTrainType, PipcookModel, UniformGeneralSampleData } from '@pipcook/pipcook-core';
+import { Python } from '@pipcook/pipcook-python-node';
 
 const imageDetectronModelTrain: ModelTrainType = async (data: UniformGeneralSampleData, model: PipcookModel): Promise<PipcookModel> => {
   const trainer = model.model;
@@ -20,8 +20,8 @@ const imageDetectronModelTrain: ModelTrainType = async (data: UniformGeneralSamp
     predict: model.predict,
     config: model.config,
     extraParams: model.extraParams
-  }
+  };
   return result;
-}
+};
 
 export default imageDetectronModelTrain;

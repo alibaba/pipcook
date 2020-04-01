@@ -1,5 +1,5 @@
 
-import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip} from '@pipcook/pipcook-core';
+import { DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip } from '@pipcook/pipcook-core';
 
 import imageCocoDataCollect from '@pipcook/pipcook-plugins-image-coco-data-collect';
 import imageDetectronAccess from '@pipcook/pipcook-plugins-detection-detectron-data-access';
@@ -7,9 +7,9 @@ import detectronModelLoad from '@pipcook/pipcook-plugins-detection-detectron-mod
 import detectronModelTrain from '@pipcook/pipcook-plugins-detection-detectron-model-train';
 import detectronModelEvaluate from '@pipcook/pipcook-plugins-detection-detectron-model-evaluate';
 import easModelDeploy from '@pipcook/pipcook-plugins-detection-detectron-eas-model-deploy';
-import detectronLocalDeploy from '@pipcook/pipcook-plugins-detection-detectron-model-deploy'
+import detectronLocalDeploy from '@pipcook/pipcook-plugins-detection-detectron-model-deploy';
 import * as fs from 'fs-extra';
-import * as path from 'path'
+import * as path from 'path';
 
 import { getEasParam, EasConfigI } from '../utils/utils';
 
@@ -54,26 +54,26 @@ export default class ObjectDetection {
       maxIter: this.metaData.maxIter,
       baseLearningRate: this.metaData.baseLearningRate,
       numWorkers: this.metaData.numWorkers,
-      numGpus: this.metaData.numGpus,
+      numGpus: this.metaData.numGpus
     });
 
     const modelTrain = ModelTrain(detectronModelTrain);
 
     const modelEvaluate = ModelEvaluate(detectronModelEvaluate);
 
-    return {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate};
+    return { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate };
   }
 
   async train(dataSource: string, trainInfo: TrainInfoI, 
-    predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
+    predictServer = false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
     
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = await this._train(dataSource, trainInfo);
+    const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = await this._train(dataSource, trainInfo);
 
-    const modelDeploy = ModelDeploy(detectronLocalDeploy)
+    const modelDeploy = ModelDeploy(detectronLocalDeploy);
     
     const runner = new PipcookRunner();
 
-    runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
+    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
     
   }
 
@@ -97,22 +97,22 @@ export default class ObjectDetection {
           modelPath,
           detectronConfigPath: path.join(__dirname, '..', 'assets', 'config')
         }
-      },  getEasParam(easConfig));
+      }, getEasParam(easConfig));
     } finally {
       fs.removeSync(tempPth);
     }
   }
 
   async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI,
-     predictServer=false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
+    predictServer = false, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
 
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = await this._train(dataSource, trainInfo);
+    const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = await this._train(dataSource, trainInfo);
 
     const modelDeploy = ModelDeploy(easModelDeploy, getEasParam(easConfig));
     
     const runner = new PipcookRunner();
 
-    runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
+    runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
     
   }
 }

@@ -1,7 +1,7 @@
 /**
  * @file This is for plugin to evaluate  model.
  */
-import {PipcookModel, UniformTfSampleData, ArgsType, ModelEvaluateType, EvaluateResult} from '@pipcook/pipcook-core';
+import { PipcookModel, UniformTfSampleData, ArgsType, ModelEvaluateType, EvaluateResult } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 
@@ -39,19 +39,19 @@ const ModelEvalute: ModelEvaluateType = async (data: UniformTfSampleData, model:
     
     // just call evalute api if the model is tf-js modek
     if (model.model instanceof tf.LayersModel) {
-      batches = Math.ceil(Number(dataSize) / batchSize)
+      batches = Math.ceil(Number(dataSize) / batchSize);
       const ds = testData.repeat().batch(batchSize);
       let evaluateResult: any = await model.model.evaluateDataset(ds as tf.data.Dataset<{}>, {
         batches
       });
   
       if (!Array.isArray(evaluateResult)) {
-        evaluateResult = [evaluateResult];
+        evaluateResult = [ evaluateResult ];
       }
   
-      let metrics = ['loss'];
+      let metrics = [ 'loss' ];
       if (model.metrics) {
-        metrics = [...metrics, ...model.metrics];
+        metrics = [ ...metrics, ...model.metrics ];
       }
       const result: any = {};
       metrics.forEach((metric, index) => {
@@ -71,7 +71,7 @@ const ModelEvalute: ModelEvaluateType = async (data: UniformTfSampleData, model:
         trueY.push(nextBatchData.ys.dataSync());
         predictY.push(
           model.predict(nextBatchData.xs)
-        )
+        );
       }
       // const precision = tf.metrics.precision(tf.tensor(trueY), tf.tensor(predictY));
       // const recall = tf.metrics.recall(tf.tensor(trueY), tf.tensor(predictY));
@@ -88,11 +88,11 @@ const ModelEvalute: ModelEvaluateType = async (data: UniformTfSampleData, model:
         // precision: precision.dataSync()[0], 
         // recall: recall.dataSync()[0],
         accuracy: correctCount / totalCount
-      }
+      };
     }
   } 
   
   return {};
-}
+};
 
 export default ModelEvalute;

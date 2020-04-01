@@ -8,12 +8,12 @@ import * as path from 'path';
 const uuidv1 = require('uuid/v1');
 
 import config from '../config';
-import {PipcookComponentResult} from '../types/component';
-import {OriginSampleData, UniformSampleData} from '../types/data';
-import {PipcookModel} from '../types/model';
-import {DeploymentResult, EvaluateResult} from '../types/other';
-import {getLog, createPipeline, assignLatestResult, linkComponents, assignFailures} from './core-helper';
-import {logStartExecution, logError, logComplete} from '../utils/logger';
+import { PipcookComponentResult } from '../types/component';
+import { OriginSampleData, UniformSampleData } from '../types/data';
+import { PipcookModel } from '../types/model';
+import { DeploymentResult, EvaluateResult } from '../types/other';
+import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './core-helper';
+import { logStartExecution, logError, logComplete } from '../utils/logger';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -51,7 +51,7 @@ export class PipcookRunner {
   pipelineVersion: string = config.version;
   logDir: string|null = null;
   pipelineId: string|null = null;
-  latestOriginSampleData:  OriginSampleData | OriginSampleData[] |null = null;
+  latestOriginSampleData: OriginSampleData | OriginSampleData[] |null = null;
   latestSampleData: UniformSampleData |null = null;
   latestModel: PipcookModel | PipcookModel[] |null = null;
   latestEvaluateResult: EvaluateResult | null = null;
@@ -88,7 +88,7 @@ export class PipcookRunner {
   }
 
   init = async (components: PipcookComponentResult[]) => {
-    this.startTime = Date.now()
+    this.startTime = Date.now();
     logStartExecution(this);
     if (!components || components.length <= 0) {
       throw new Error('Please specify at least one plugin to run!');

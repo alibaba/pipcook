@@ -1,7 +1,7 @@
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
 
-import {DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip} from '@pipcook/pipcook-core';
+import { DataCollect, DataAccess, ModelLoad, ModelTrain, ModelEvaluate, PipcookRunner, ModelDeploy, downloadZip } from '@pipcook/pipcook-core';
 import imageClassDataAccess from '@pipcook/pipcook-plugins-image-class-data-access';
 import mobileNetLoad from '@pipcook/pipcook-plugins-local-mobilenet-model-load';
 import modelTrainPlugin from '@pipcook/pipcook-plugins-model-train';
@@ -10,7 +10,7 @@ import imageClassDataCollect from '@pipcook/pipcook-plugins-image-class-data-col
 import imageClassLocalModelDeploy from '@pipcook/pipcook-plugins-image-class-local-model-deploy';
 import simpleCnnModelLoad from '@pipcook/pipcook-plugins-simple-cnn-model-load';
 import imageClassEasDeploy from '@pipcook/pipcook-plugins-image-class-eas-deploy';
-import * as path from 'path'
+import * as path from 'path';
 import * as fs from 'fs-extra';
 
 import { getEasParam, EasConfigI } from '../utils/utils';
@@ -49,7 +49,7 @@ export default class ImageClassification {
     });
 
     const dataAccess = DataAccess(imageClassDataAccess, {
-      imgSize: this.metaData.imageSize,
+      imgSize: this.metaData.imageSize
     });
 
     let modelLoad: any;
@@ -67,41 +67,41 @@ export default class ImageClassification {
         isFreeze: trainInfo.freeze,
         optimizer: this.metaData.optimizer,
         loss: this.metaData.loss,
-        metrics: this.metaData.metrics,
+        metrics: this.metaData.metrics
       });      
     } else if (this.model.toLowerCase() === 'simplecnn') {
       modelLoad = ModelLoad(simpleCnnModelLoad, {
         optimizer: this.metaData.optimizer,
         loss: this.metaData.loss,
-        metrics: this.metaData.metrics,
+        metrics: this.metaData.metrics
       });
     } else {
       console.error('the model name can only be mobilenet or simplecnn!');
       return;
     }
 
-    return {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate}
+    return { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate };
   }
 
-  async train(dataSource: string, trainInfo: TrainInfoI, predictServer=false, 
+  async train(dataSource: string, trainInfo: TrainInfoI, predictServer = false, 
     successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
     
-    const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
+    const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = this._train(dataSource, trainInfo);
 
     const modelDeploy = ModelDeploy(imageClassLocalModelDeploy);
 
     const runner = new PipcookRunner();  
-    await runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
+    await runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
   }
 
-  async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI, predictServer=false, 
+  async trainAndEasDeploy(dataSource: string, trainInfo: TrainInfoI, easConfig: EasConfigI, predictServer = false, 
     successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) {
-      const {dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate} = this._train(dataSource, trainInfo);
+    const { dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate } = this._train(dataSource, trainInfo);
 
-      const modelDeploy = ModelDeploy(imageClassEasDeploy, getEasParam(easConfig));
-  
-      const runner = new PipcookRunner();  
-      await runner.run([dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy], successCallback, errorCallback, saveModelCallback)
+    const modelDeploy = ModelDeploy(imageClassEasDeploy, getEasParam(easConfig));
+
+    const runner = new PipcookRunner();  
+    await runner.run([ dataCollect, dataAccess, modelLoad, modelTrain, modelEvaluate, modelDeploy ], successCallback, errorCallback, saveModelCallback);
   }
 
   async deployEasByUrl(modelUrl: string, labelJsonUrl: string, easConfig: EasConfigI) {

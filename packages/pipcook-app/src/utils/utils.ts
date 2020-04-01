@@ -33,5 +33,5 @@ export function getEasParam(easConfig: EasConfigI) {
     envPackName: easConfig.envPackName,
     envScriptName: easConfig.envScriptName,
     updateOrCreate: easConfig.updateOrCreate
-  } 
+  }; 
 }

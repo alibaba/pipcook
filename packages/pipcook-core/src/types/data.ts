@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs-node-gpu';
-import {MetaData, Statistic} from './other';
+import { MetaData, Statistic } from './other';
 
 export interface OriginSampleData {
   trainDataPath: string;

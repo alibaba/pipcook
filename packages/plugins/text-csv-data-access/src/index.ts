@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import {UniformSampleData, OriginSampleData, ArgsType, DataAccessType} from '@pipcook/pipcook-core';
+import { UniformSampleData, OriginSampleData, ArgsType, DataAccessType } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 
@@ -13,7 +13,7 @@ const concatenateDataFlows = (dataFlows: tf.data.Dataset<any>[]) => {
     uniformData = uniformData.concatenate(dataFlows[i]);
   }
   return uniformData;
-}
+};
 
 /**
  * 
@@ -25,7 +25,7 @@ async function getDataset(url: string, hasHeader: boolean, delimiter: string): P
   const dataset: tf.data.CSVDataset = tf.data.csv(
     'file://' + url, {
       hasHeader,
-      columnNames: ['data', 'label'],
+      columnNames: [ 'data', 'label' ],
       columnConfigs: {
         label: {
           isLabel: true
@@ -37,10 +37,10 @@ async function getDataset(url: string, hasHeader: boolean, delimiter: string): P
   const datasetArray: any[] = [];
   await dataset.forEachAsync((e: any) => {
     datasetArray.push({
-      xs: tf.tensor1d([e.xs.data], 'string'),
-      ys: tf.tensor1d([e.ys.label], 'string')
-    })
-  })
+      xs: tf.tensor1d([ e.xs.data ], 'string'),
+      ys: tf.tensor1d([ e.ys.label ], 'string')
+    });
+  });
   return tf.data.array(datasetArray);
 }
 
@@ -51,21 +51,21 @@ async function getDataset(url: string, hasHeader: boolean, delimiter: string): P
  */
 const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformSampleData> => {
   if (!Array.isArray(data)) {
-    data = [data];
+    data = [ data ];
   }
 
   const { 
-    hasHeader=false,
-    delimiter=',',
+    hasHeader = false,
+    delimiter = ','
   } = args || {};
 
   const trainDataFlows: any = [], 
-  validationDataFlows: any = [], 
-  testDataFlows: any = [];
+    validationDataFlows: any = [], 
+    testDataFlows: any = [];
 
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];
-    const {trainDataPath, validationDataPath, testDataPath} = dataSample;
+    const { trainDataPath, validationDataPath, testDataPath } = dataSample;
     const trainData: tf.data.Dataset<any> = await getDataset(trainDataPath, hasHeader, delimiter);
     trainDataFlows.push(trainData);
     let validationData: tf.data.Dataset<any>;
@@ -89,13 +89,13 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
         {
           name: 'xs',
           type: 'string',
-          shape: [1]
+          shape: [ 1 ]
         },
       label: {
         name: 'ys',
         type: 'string',
-        shape: [1]
-      },
+        shape: [ 1 ]
+      }
     }
   };
   if (validationDataFlows.length > 0) {
@@ -108,6 +108,6 @@ const textClassDataAccess: DataAccessType = async (data: OriginSampleData[] | Or
   }
   
   return result;
-}
+};
 
 export default textClassDataAccess;

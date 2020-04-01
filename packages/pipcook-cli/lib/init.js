@@ -6,7 +6,7 @@ const glob = require('glob-promise');
 const commandExistsSync = require('command-exists').sync;
 const inquirer = require('inquirer');
 
-const {dependencies, pipcookLogName} = require('./config');
+const { dependencies, pipcookLogName } = require('./config');
 const spinner = ora();
 
 /**
@@ -35,7 +35,7 @@ const init = async (cmdObj) => {
           name: 'client',
           message: 'which client do you want to use?',
           choices: clientChoices
-        },
+        }
       ]);
       client = answer.client;
     } else {
@@ -63,7 +63,7 @@ const init = async (cmdObj) => {
  
     // init npm project
     childProcess.execSync(`${client} init -y`, {
-      cwd: dirname,
+      cwd: dirname
     });
 
     spinner.start(`installing pipcook`);

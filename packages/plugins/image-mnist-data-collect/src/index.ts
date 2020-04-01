@@ -1,11 +1,11 @@
 /**
  * @file For plugin to collect mnist data
  */
-import {DataCollectType, OriginSampleData, ArgsType, createAnnotationFile, getDatasetDir} from '@pipcook/pipcook-core';
+import { DataCollectType, OriginSampleData, ArgsType, createAnnotationFile, getDatasetDir } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 import * as path from 'path';
-const fs = require('fs-extra')
+const fs = require('fs-extra');
 const _cliProgress = require('cli-progress');
 const mnist = require('mnist');
 
@@ -33,9 +33,9 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
     const output = trainingSample.output;
     const imageDir = path.join(saveDir, 'images');
     const annotationDir = path.join(saveDir, 'annotations', 'train');
-    createAnnotationFile(annotationDir, `trainsample${i}.jpg`, imageDir, String(output.indexOf(1)))
+    createAnnotationFile(annotationDir, `trainsample${i}.jpg`, imageDir, String(output.indexOf(1)));
     fs.ensureDirSync(imageDir);
-    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [28, 28, 1], 'int32'));
+    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [ 28, 28, 1 ], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
     await jimpImage.write(path.join(imageDir, `trainsample${i}.jpg`));
   }
@@ -51,9 +51,9 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
     const output = trainingSample.output;
     const imageDir = path.join(saveDir, 'images');
     const annotationDir = path.join(saveDir, 'annotations', 'test');
-    createAnnotationFile(annotationDir, `testsample${i}.jpg`, imageDir, String(output.indexOf(1)))
+    createAnnotationFile(annotationDir, `testsample${i}.jpg`, imageDir, String(output.indexOf(1)));
     fs.ensureDirSync(imageDir);
-    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [28, 28, 1], 'int32'));
+    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [ 28, 28, 1 ], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
     await jimpImage.write(path.join(imageDir, `testsample${i}.jpg`));
   }
@@ -62,14 +62,10 @@ const imageMnistDataCollect: DataCollectType = async (args?: ArgsType): Promise<
 
   const result: OriginSampleData = {
     trainDataPath: path.join(saveDir, 'annotations', 'train'),
-    testDataPath: path.join(saveDir, 'annotations', 'test'),
-  }
+    testDataPath: path.join(saveDir, 'annotations', 'test')
+  };
   
   return result;
-}
+};
 
 export default imageMnistDataCollect;
-
-
-
-

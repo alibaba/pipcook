@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import { UniformGeneralSampleData, OriginSampleData, convertPascol2CocoFileOutput, DataAccessType} from '@pipcook/pipcook-core';
+import { UniformGeneralSampleData, OriginSampleData, convertPascol2CocoFileOutput, DataAccessType } from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 
@@ -13,7 +13,7 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
   }
 
 
-  const {trainDataPath, validationDataPath, testDataPath} = data as OriginSampleData;
+  const { trainDataPath, validationDataPath, testDataPath } = data as OriginSampleData;
   const trainFiles = await glob(path.join(trainDataPath, '*.xml'));
   let validationFiles: string[] = [];
 
@@ -34,8 +34,8 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
   const categories = trainJsonContent.categories;
   const oneHotMap: any = {};
   categories.forEach((category: any) => {
-    oneHotMap[category.name] = category.id
-  })
+    oneHotMap[category.name] = category.id;
+  });
   
   const result: UniformGeneralSampleData = {
     trainData: path.join(trainDataPath, '..', 'train.json'),
@@ -51,7 +51,7 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
         type: 'int32',
         shape: [],
         valueMap: oneHotMap
-      },
+      }
     }
   };
 
@@ -63,6 +63,6 @@ const imageDetectronDataAccess: DataAccessType = async (data: OriginSampleData[]
   }
 
   return result;
-}
+};
 
 export default imageDetectronDataAccess;
