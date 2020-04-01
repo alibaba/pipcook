@@ -62,7 +62,6 @@ After building a machine learning application, if you want to learn more about P
   - [Get started with command-line tools](./tutorials/get-started-with-cli.md)
   - [Developer Guide](./tutorials/developer-guide.md)
   - [How to develop a plugin](./tutorials/how-to-develop-a-plugin.md)
-  - [Load a pre-trained model in Pipcook](./tutorials/load-a-pre-trained-model-in-pipcook.md)
   - [Want to use Python?](./tutorials/want-to-use-python.md)
 
 - Specification
