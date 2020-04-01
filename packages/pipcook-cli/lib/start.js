@@ -3,7 +3,7 @@ const fse = require('fs-extra');
 const childProcess = require('child_process');
 const ora = require('ora');
 const path = require('path');
-const {pipcookLogName} = require('./config');
+const { pipcookLogName } = require('./config');
 const spinner = ora();
 
 
@@ -18,7 +18,7 @@ const checkValidProject = (dir) => {
     return false;
   }
   return true;
-}
+};
 
 const start = async (fileName) => {
   try {
@@ -30,14 +30,14 @@ const start = async (fileName) => {
       fileName = 'index.js';
     }
 
-    const child = childProcess.spawn(`node`, [fileName], {
+    const child = childProcess.spawn(`node`, [ fileName ], {
       cwd: currentDir,
-      customFds: [0,1,2]
+      customFds: [ 0, 1, 2 ]
     });
-    child.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
-    child.stderr.on('data', function (data) {   spinner.fail(`run error: ${data.toString()}`);});
+    child.stdout.on('data', function (data) { process.stdout.write(data.toString()); });
+    child.stderr.on('data', function (data) { spinner.fail(`run error: ${data.toString()}`); });
     child.on('close', function (code) { 
-        console.log("Finished with code " + code);
+      console.log("Finished with code " + code);
     });
     
   } catch (err) {

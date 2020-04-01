@@ -1,8 +1,8 @@
-import {PipcookPlugin} from './plugins';
-import {PipcookModel} from './model'
-import {OriginSampleData, UniformSampleData, InsertParams} from './data';
-import {PipObject} from './other';
-import {Subscribable} from 'rxjs';
+import { PipcookPlugin } from './plugins';
+import { PipcookModel } from './model';
+import { OriginSampleData, UniformSampleData, InsertParams } from './data';
+import { PipObject } from './other';
+import { Subscribable } from 'rxjs';
 
 interface ObserverFunc {
   (data: OriginSampleData | OriginSampleData[]| UniformSampleData | UniformSampleData[] | null, 
@@ -10,13 +10,13 @@ interface ObserverFunc {
 }
 
 type ResultType = 
-  'dataCollect'   | 
-  'dataAccess'    | 
-  'dataProcess'   | 
-  'modelLoad'     | 
-  'modelTrain'    |
+  'dataCollect' | 
+  'dataAccess' | 
+  'dataProcess' | 
+  'modelLoad' | 
+  'modelTrain' |
   'modelEvaluate' |
-  'modelDeploy'   ;
+  'modelDeploy' ;
 
 export interface PipcookComponentResult {
   type: ResultType;

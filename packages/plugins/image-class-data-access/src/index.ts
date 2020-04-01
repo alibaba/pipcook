@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import { UniformTfSampleData, OriginSampleData, ArgsType, parseAnnotation, DataAccessType} from '@pipcook/pipcook-core';
+import { UniformTfSampleData, OriginSampleData, ArgsType, parseAnnotation, DataAccessType } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 import glob from 'glob-promise';
@@ -41,27 +41,27 @@ const concatenateDataFlows = async (fileNames: string[], imgSize: number[], oneH
   }
   dataFlows = tf.data.array(dataFlows);
   const dataset = dataFlows.map((data: any) => {
-    const {xs, ys} = data;
+    const { xs, ys } = data;
     return tf.tidy(() => (
       {
         xs: tf.tidy(() => tf.cast(tf.node.decodeImage(xs, 3), 'float32')),
         ys: ys
       }
     ));
-  })
+  });
   bar1.stop();
   return dataset;
-}
+};
 
 /**
  * merge all possible values of labels. Get the map between label and numeric value
- * @param data 
+ * @param data
  */
 const getLabelMap = async (data: OriginSampleData[]) => {
   const labelSet = new Set<string>();
   for (let i = 0; i < data.length; i++) {
     const dataItem = data[i];
-    const {trainDataPath} = dataItem;
+    const { trainDataPath } = dataItem;
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
     for (let j = 0; j < trainFileNames.length; j++) {
       const fileName = trainFileNames[j];
@@ -69,13 +69,13 @@ const getLabelMap = async (data: OriginSampleData[]) => {
       labelSet.add(imageData.annotation.object[0].name[0]);
     }
   }
-  const labelArray =  Array.from(labelSet);
+  const labelArray = Array.from(labelSet);
   const oneHotMap: any = {};
   labelArray.forEach((label: any, index: number) => {
     oneHotMap[label] = index;
   });
   return oneHotMap;
-}
+};
 
 /**
  * The plugin used to access data from different sources. It will detect all possible values of labels and 
@@ -85,19 +85,19 @@ const getLabelMap = async (data: OriginSampleData[]) => {
  */
 const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | OriginSampleData, args?: ArgsType): Promise<UniformTfSampleData> => {
   if (!Array.isArray(data)) {
-    data = [data];
+    data = [ data ];
   }
 
   const oneHotMap = await getLabelMap(data);
 
-  const {imgSize=[128, 128]} = args || {};
+  const { imgSize = [ 128, 128 ] } = args || {};
 
   let trainDataFlows: any, validationDataFlows: any, testDataFlows: any;
   
   for (let i = 0; i < data.length; i++) {
     const dataSample = data[i];
-    const {trainDataPath, validationDataPath, testDataPath} = dataSample;  
-    const imagePath = path.join(trainDataPath, '..', '..', 'images')
+    const { trainDataPath, validationDataPath, testDataPath } = dataSample;  
+    const imagePath = path.join(trainDataPath, '..', '..', 'images');
     const trainFileNames: string[] = await glob(path.join(trainDataPath, '*.xml'));
     trainDataFlows = await concatenateDataFlows(trainFileNames, imgSize, oneHotMap, 'train data', imagePath);
     if (validationDataPath) {
@@ -118,14 +118,14 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
         {
           name: 'xs',
           type: 'float32',
-          shape: [imgSize[0], imgSize[1], 3]
+          shape: [ imgSize[0], imgSize[1], 3 ]
         },
       label: {
         name: 'ys',
         type: 'int32',
-        shape: [1,Object.keys(oneHotMap).length],
+        shape: [ 1, Object.keys(oneHotMap).length ],
         valueMap: oneHotMap
-      },
+      }
     }
   };
   if (validationDataFlows && validationDataFlows.size > 0) {
@@ -135,10 +135,7 @@ const imageClassDataAccess: DataAccessType = async (data: OriginSampleData[] | O
     result.testData = testDataFlows;
   }
 
-
-  
-  
   return result;
-}
+};
 
 export default imageClassDataAccess;

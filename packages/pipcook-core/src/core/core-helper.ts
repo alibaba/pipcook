@@ -4,14 +4,14 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
-import {PipcookRunner} from './core'; 
-import {PipcookComponentResult} from '../types/component';
-import {ModelDeployType} from '../types/plugins';
-import {logCurrentExecution} from '../utils/logger';
-import {Observable, from} from 'rxjs';
-import {flatMap} from 'rxjs/operators';
-import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA} from '../constants/other';
-import {DATAACCESS} from '../constants/plugins';
+import { PipcookRunner } from './core'; 
+import { PipcookComponentResult } from '../types/component';
+import { ModelDeployType } from '../types/plugins';
+import { logCurrentExecution } from '../utils/logger';
+import { Observable, from } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA } from '../constants/other';
+import { DATAACCESS } from '../constants/plugins';
 
 /**
  * Retreive relative logs required to be stored.
@@ -32,37 +32,37 @@ export function getLog(pipcookRunner: PipcookRunner): any {
  */
 export async function assignLatestResult(updatedType: string, result: any, self: PipcookRunner, saveModelCallback?: Function) {
   switch (updatedType) {
-    case DATA:
-      self.latestSampleData = result;
-      break;
-    case MODEL:
-      self.latestModel = result;
-      break;
-    case EVALUATE:
-      self.latestEvaluateResult = result;
-      break;
-    case DEPLOYMENT:
-      self.latestDeploymentResult = result;
-      break;
-    case ORIGINDATA:
-      self.latestOriginSampleData = result;
-      break;
-    case MODELTOSAVE:
-      self.latestModel = result;
-      if (Array.isArray(result) && result.length > 0) {
-        result = result[0];
-      }
-      await result.save(path.join(self.logDir as string, 'model'));
-      if (saveModelCallback) {
-        const valueMap = 
-        (self.latestSampleData && self.latestSampleData.metaData 
-          && self.latestSampleData.metaData.label && self.latestSampleData.metaData.label.valueMap) || {};
-        fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
-        await saveModelCallback(path.join(self.logDir as string, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
-      } 
-      break;
-    default:
-      throw new Error('Returned Data Type is not recognized');
+  case DATA:
+    self.latestSampleData = result;
+    break;
+  case MODEL:
+    self.latestModel = result;
+    break;
+  case EVALUATE:
+    self.latestEvaluateResult = result;
+    break;
+  case DEPLOYMENT:
+    self.latestDeploymentResult = result;
+    break;
+  case ORIGINDATA:
+    self.latestOriginSampleData = result;
+    break;
+  case MODELTOSAVE:
+    self.latestModel = result;
+    if (Array.isArray(result) && result.length > 0) {
+      result = result[0];
+    }
+    await result.save(path.join(self.logDir as string, 'model'));
+    if (saveModelCallback) {
+      const valueMap = 
+      (self.latestSampleData && self.latestSampleData.metaData 
+        && self.latestSampleData.metaData.label && self.latestSampleData.metaData.label.valueMap) || {};
+      fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
+      await saveModelCallback(path.join(self.logDir as string, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
+    } 
+    break;
+  default:
+    throw new Error('Returned Data Type is not recognized');
   }
 }
 
@@ -71,13 +71,13 @@ export async function assignLatestResult(updatedType: string, result: any, self:
  * @param components: EscherComponent 
  * @param self: the pipeline subject
  */
-export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType='normal', saveModelCallback?: Function) {
+export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal', saveModelCallback?: Function) {
   const firstComponent = components[0];
   firstComponent.status = 'running';
-  logCurrentExecution(firstComponent, logType)
+  logCurrentExecution(firstComponent, logType);
   const insertParams = {
     pipelineId: self.pipelineId
-  }
+  };
   const firstObservable = firstComponent.observer(self.latestOriginSampleData, self.latestModel, insertParams) as Observable<any>;
   self.updatedType = firstComponent.returnType;
 
@@ -85,7 +85,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
   self.currentIndex = 0;
   for (let i = 1; i < components.length; i++) {
     // rxjs pipe: serialize all components
-    (function execute(component, assignLatestResult, updatedType, self, flatMapArray)  {
+    (function execute(component, assignLatestResult, updatedType, self, flatMapArray) {
       const flatMapObject = flatMap((result) => {
         component.previousComponent.status = 'success';
         self.currentIndex++;
@@ -99,7 +99,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
             }
             
           })
-        )  
+        );  
       });
       flatMapArray.push(flatMapObject);
     })(components[i], assignLatestResult, self.updatedType, self, flatMapArray);
@@ -120,7 +120,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
  */
 export function linkComponents(components: PipcookComponentResult[]) {
   for (let i = 1; i < components.length; i++) {
-    components[i].previousComponent = components[i-1];
+    components[i].previousComponent = components[i - 1];
   }
 }
 
@@ -140,10 +140,10 @@ export function assignFailures(components: PipcookComponentResult[]) {
           if (component.status === 'running') {
             component.status = 'failure';
           }
-        })
-      })
+        });
+      });
     }
-  })
+  });
 }
 
 /**
@@ -151,8 +151,8 @@ export function assignFailures(components: PipcookComponentResult[]) {
  * The function will be called after the pipeline is finished and predictServer parameter is true
  */
 export async function runPredict(runner: PipcookRunner, request: any) {
-  const {components, latestModel} = runner;
-  const {data} = request.body;
+  const { components, latestModel } = runner;
+  const { data } = request.body;
 
   // we need to find out the dataAccess and dataProcess component 
   // since the prediction data needs to be processed by these two steps
@@ -167,6 +167,6 @@ export async function runPredict(runner: PipcookRunner, request: any) {
   return {
     status: true,
     result: result
-  }
+  };
 }
 

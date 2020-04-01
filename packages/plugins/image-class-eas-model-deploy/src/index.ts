@@ -1,5 +1,5 @@
-import {ArgsType, ModelDeployType, downloadZip, unZipData, getModelDir, compressTarFile, UniformGeneralSampleData, PipcookModel} from '@pipcook/pipcook-core';
-import {Python} from '@pipcook/pipcook-python-node';
+import { ArgsType, ModelDeployType, downloadZip, unZipData, getModelDir, compressTarFile, UniformGeneralSampleData, PipcookModel } from '@pipcook/pipcook-core';
+import { Python } from '@pipcook/pipcook-python-node';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
@@ -12,11 +12,11 @@ const glob = require('glob-promise');
 
 const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleData, model: PipcookModel, args: ArgsType): Promise<any> => {
   let {
-    easName='',
-    cpus=2, 
-    memory=4000, 
-    ossConfig={}, 
-    ossDir='', 
+    easName = '',
+    cpus = 2, 
+    memory = 4000, 
+    ossConfig = {}, 
+    ossDir = '', 
     gpu, 
     resource, 
     eascmd, 
@@ -56,18 +56,18 @@ const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDa
   const client = OSS(ossConfig);
   try {
     // get detectron env
-    const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/image-classification/'
-    const zipPath = path.join(packagePath, easName, 'ENV.zip')
+    const envUrl = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/eas-pack/image-classification/';
+    const zipPath = path.join(packagePath, easName, 'ENV.zip');
     await downloadZip(envUrl + envPackName, zipPath);
-    await unZipData(zipPath, path.join(packagePath, easName))
-    fs.removeSync(zipPath)
+    await unZipData(zipPath, path.join(packagePath, easName));
+    fs.removeSync(zipPath);
     // write app.json
     const metadata: any = {
       cpu: cpus,
       memory: memory,
       "rpc.keepalive": 60000,
-      region: "shanghai", 
-    }
+      region: "shanghai" 
+    };
 
     if (gpu) {
       metadata.gpu = gpu;
@@ -77,13 +77,13 @@ const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDa
     }
 
     const app = {
-      processor_path: 'http://' + ossConfig.bucket +'.'+ossConfig.region+'.aliyuncs.com/'+ossDir+'/'+easName+'.tar.gz',
+      processor_path: 'http://' + ossConfig.bucket + '.' + ossConfig.region + '.aliyuncs.com/' + ossDir + '/' + easName + '.tar.gz',
       processor_entry: './app.py',
       processor_type: "python",
       name: easName,
       generate_token: "true",
       metadata
-    }
+    };
     fs.outputFileSync(path.join(packagePath, easName, 'app.json'), JSON.stringify(app));
 
     // copy model
@@ -102,7 +102,7 @@ const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDa
 
     // upload to oss
     
-    await client.put(path.join(ossDir, easName + '.tar.gz'), path.join(packagePath, easName + '.tar.gz'), {timeout: 60000000});
+    await client.put(path.join(ossDir, easName + '.tar.gz'), path.join(packagePath, easName + '.tar.gz'), { timeout: 60000000 });
 
     // create service
     if (!eascmd) {
@@ -128,7 +128,7 @@ const imageClassEasDeploy: ModelDeployType = async (data: UniformGeneralSampleDa
     }
    
   }
-}
+};
 
 export default imageClassEasDeploy;
 

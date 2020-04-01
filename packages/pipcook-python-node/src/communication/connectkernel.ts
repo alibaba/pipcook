@@ -21,8 +21,8 @@ export function startKernel(shell_port: number, iopub_port: number) {
       "signature_scheme": "hmac-sha256",
       "kernel_name": ""
     }
-  `
-  const tempJsonPath = path.join(process.cwd(), '.temp', 'node-python' ,Date.now().toString(), 'ipker.json');
+  `;
+  const tempJsonPath = path.join(process.cwd(), '.temp', 'node-python', Date.now().toString(), 'ipker.json');
   fs.outputFileSync(tempJsonPath, tempJson);
   return new Promise((resolve, reject) => {
     const venvDir = fs.pathExistsSync(path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate'));
@@ -38,9 +38,9 @@ export function startKernel(shell_port: number, iopub_port: number) {
     // install virtualenv if it does not exist and meanwhile install ipython
     const output = childProcess.spawn(`${venvDir ? '' : `${pipCommand} install virtualenv && virtualenv pipcook_venv && \\`} 
       . ${path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate')} && pip install ipykernel==5.1.3 && kill $(lsof -t -i:${shell_port}) && kill $(lsof -t -i:${iopub_port}) `, [], {
-        shell: true,
-        cwd: process.cwd(),
-      })
+      shell: true,
+      cwd: process.cwd()
+    });
     
     output.stdout.on('data', (data) => {
       console.log(data.toString());
@@ -55,7 +55,7 @@ export function startKernel(shell_port: number, iopub_port: number) {
       const child = childProcess.spawn(`. ${path.join(process.cwd(), 'pipcook_venv', 'bin', 'activate')} \\
       && ipython kernel --IPKernelApp.connection_file=${tempJsonPath}`, [], {
         shell: true,
-        cwd: process.cwd(),
+        cwd: process.cwd()
       });
 
       child.stdout.on('data', (data) => {
@@ -77,13 +77,13 @@ export function startKernel(shell_port: number, iopub_port: number) {
       child.on('close', (code) => {
         reject(code);
         fs.removeSync(tempJsonPath);
-      })
+      });
     });
 
     // timeout after 15 mins
     setTimeout(() => {
-      reject(new Error('timeout'))
-    }, 900000)
-  })
+      reject(new Error('timeout'));
+    }, 900000);
+  });
   
 } 
