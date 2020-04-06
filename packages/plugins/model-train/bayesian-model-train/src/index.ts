@@ -1,15 +1,13 @@
 /**
  * @file this is for Pipcook plugin to train Bayes Classifier.
  */
-import { ModelTrainType, PipcookModel, CsvDataset, ModelTrainArgsType, getModelDir, CsvDataLoader, CsvMetaData } from '@pipcook/pipcook-core';
+import {ModelTrainType, PipcookModel, CsvDataset, ModelTrainArgsType, CsvDataLoader, CsvMetaData} from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Python } from '@pipcook/pipcook-python-node';
 
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
 sys.path.insert(0, '/Users/queyue/Documents/work/pipcook/pipcook/pipcook_venv/lib/python3.7/site-packages');
-sys.path.insert(0, path.join(__dirname, '..', 'assets'));
 
 const createDataset = async (dataLoader: CsvDataLoader, metaData: CsvMetaData) => {
   const rawData: any[] = [];
@@ -32,9 +30,14 @@ const createDataset = async (dataLoader: CsvDataLoader, metaData: CsvMetaData) =
  */
 const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, model: PipcookModel, args: ModelTrainArgsType): Promise<PipcookModel> => {
   const { 
-    pipelineId,
+    saveModel,
     mode = 'cn'
   } = args;
+
+  sys.path.insert(0, path.join(__dirname,  'assets'));
+  const module = boa.import('script');
+  const importlib = boa.import('importlib');
+  importlib.reload(module);
 
   const { trainLoader, metaData } = data;
   
@@ -42,8 +45,8 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   
   const {rawData, rawClass} = await createDataset(trainLoader, metaData);
 
-  const {TextProcessing, MakeWordsSet, words_dict, TextFeatures} = boa.import('script');
-  const text_list = TextProcessing(rawData, rawClass, boa.kwargs({ test_size: 0.2 }));
+  const {TextProcessing, MakeWordsSet, words_dict, TextFeatures, save_all_words_list, saveBayesModel} = boa.import('script');
+  const text_list = TextProcessing(rawData, rawClass);
 
   let stoppath = '';
   if (mode === 'en') {
@@ -54,8 +57,17 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
 
   const stopwords_set = MakeWordsSet(stoppath);
   const feature_words = words_dict(text_list[0], stopwords_set);
-  const feature_list = TextFeatures(text_list[1], text_list[2], feature_words);
-  classifier.fit(feature_list[0], text_list[3]);
+  const feature_list = TextFeatures(text_list[1], feature_words);
+  classifier.fit(feature_list, text_list[2]);
+
+  await saveModel(async (modelPath: string) => {
+    await fs.copyFileSync(stoppath, path.join(modelPath, 'stopwords.txt'));
+    save_all_words_list(feature_words, path.join(modelPath, 'feature_words.pkl'));
+    saveBayesModel(classifier, path.join(modelPath, 'model.pkl'));
+  });
+
+  return model;
+
 };
 
 export default bayesianClassifierModelTrain;

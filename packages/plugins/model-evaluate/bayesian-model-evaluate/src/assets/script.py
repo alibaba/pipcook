@@ -80,6 +80,10 @@ def processPredictData(data, all_words_list_path, stopwords_path):
 def save_all_words_list(feature_words, filepath):
     pickle.dump(feature_words, open(filepath, 'wb'))
 
+def get_all_words_list(filepath):
+    words = pickle.load(open(filepath, 'rb'))
+    return words
+
 def getBayesModel():
     classifier = MultinomialNB()
     return classifier

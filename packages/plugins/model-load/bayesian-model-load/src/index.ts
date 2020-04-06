@@ -9,7 +9,6 @@ import * as path from 'path';
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
 sys.path.insert(0, '/Users/queyue/Documents/work/pipcook/pipcook/pipcook_venv/lib/python3.7/site-packages');
-sys.path.insert(0, path.join(__dirname, '..', 'assets'));
 
 /**
  * assertion test
@@ -31,6 +30,8 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: CsvDataset, args
     modelPath = '',
     pipelineId
   } = args;
+
+  sys.path.insert(0, path.join(__dirname, 'assets'));
   
   const {loadModel, getBayesModel, processPredictData} = boa.import('script');
   let classifier: any;

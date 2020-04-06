@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugins-bayesian-model-train",
+  "name": "@pipcook/plugins-bayesian-model-evaluate",
   "version": "0.5.0",
   "description": "",
   "main": "dist/index",
