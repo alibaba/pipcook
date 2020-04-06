@@ -1,11 +1,8 @@
 import {ModelEvaluateType, PytorchModel, ArgsType, EvaluateResult, ImageDataLoader, ImageDataset} from '@pipcook/pipcook-core';
 
-import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as fs from 'fs';
 
 const boa = require('@pipcook/boa');
-const sys = boa.import('sys');
-sys.path.insert(0,'/Users/queyue/Documents/work/pipcook/pipcook/pipcook_venv/lib/python3.7/site-packages');
 
 const {enumerate, list, len, dict} = boa.builtins();
 const torch = boa.import('torch');

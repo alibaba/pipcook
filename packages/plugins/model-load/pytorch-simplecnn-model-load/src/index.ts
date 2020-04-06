@@ -4,7 +4,6 @@ import * as path from 'path';
 
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
-sys.path.insert(0,'/Users/queyue/Documents/work/pipcook/pipcook/pipcook_venv/lib/python3.7/site-packages');
 
 /** @ignore
  * assertion test

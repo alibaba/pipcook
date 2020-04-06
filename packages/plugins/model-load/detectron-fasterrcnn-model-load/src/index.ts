@@ -4,7 +4,6 @@ import * as assert from 'assert';
 
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
-sys.path.insert(0,'/Users/queyue/Documents/work/pipcook/pipcook/pipcook_venv/lib/python3.7/site-packages');
 
 const detectronModelLoad: ModelLoadType = async (data: CocoDataset, args: ModelLoadArgsType): Promise<PipcookModel> => {
   let {
