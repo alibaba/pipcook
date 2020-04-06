@@ -1,5 +1,5 @@
 
-import * as opn from 'opn';
+import * as opn from 'better-opn';
 
 class AppBootHook {
   app!: any;

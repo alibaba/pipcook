@@ -72,10 +72,10 @@ const getValidPair = async (dataPath: string, labelMap: {
         };
         if (object.bndbox) {
           label.bndbox = {
-            xmin: Number(object.bndbox.xmin[0]),
-            ymin: Number(object.bndbox.ymin[0]),
-            xmax: Number(object.bndbox.xmax[0]),
-            ymax: Number(object.bndbox.ymax[0])
+            xmin: Number(object.bndbox[0].xmin[0]),
+            ymin: Number(object.bndbox[0].ymin[0]),
+            xmax: Number(object.bndbox[0].xmax[0]),
+            ymax: Number(object.bndbox[0].ymax[0])
           }
         }
         pairs.push({

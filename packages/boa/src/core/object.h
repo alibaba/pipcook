@@ -8,7 +8,8 @@ using namespace Napi;
 
 namespace boa {
 
-class PythonObject : public ObjectWrap<PythonObject> {
+class PythonObject : public ObjectWrap<PythonObject>,
+                     pybind::detail::generic_type {
 public:
   static Object Init(Napi::Env env, Object exports);
   static Object NewInstance(Napi::Env env, pybind::object from);
@@ -20,6 +21,7 @@ private:
 
   Napi::Value Next(const CallbackInfo &);
   Napi::Value Invoke(const CallbackInfo &);
+  Napi::Value CreateClass(const CallbackInfo &);
   Napi::Value InstanceOf(const CallbackInfo &);
   Napi::Value IsCallable(const CallbackInfo &);
   Napi::Value IsIterator(const CallbackInfo &);
@@ -29,6 +31,7 @@ private:
   Napi::Value ToBigInt(const CallbackInfo &);
   Napi::Value ToPrimitive(const CallbackInfo &);
   Napi::Value ToString(const CallbackInfo &);
+  Napi::Value SetClassMethod(const CallbackInfo &);
   // Python magic methods
   Napi::Value Hash(const CallbackInfo &);
   Napi::Value HasAttr(const CallbackInfo &);
@@ -47,9 +50,9 @@ public:
   PyObject *Cast(Napi::Env, String);
   PyObject *Cast(Napi::Env, Boolean);
   PyObject *Cast(Napi::Env, Number);
-  PyObject *Cast(Napi::Env env, Function value, bool);
-  PyObject *Cast(Napi::Env env, Array value, bool);
-  PyObject *Cast(Napi::Env env, Object value, bool);
+  PyObject *Cast(Napi::Env, Function value, bool, bool);
+  PyObject *Cast(Napi::Env, Array value, bool);
+  PyObject *Cast(Napi::Env, Object value, bool);
   void Finalize(Napi::Env);
 
 private:

@@ -21,7 +21,7 @@ const processImage = async (loader: ImageDataLoader, resize: number[], normalize
     if (normalize) {
       image = image.normalize();
     }
-    await image.write(dataPath.data);
+    await image.writeAsync(dataPath.data);
   }
   bar1.stop();
 }

@@ -9,26 +9,28 @@ Napi::FunctionReference PythonObject::constructor;
 
 Object PythonObject::Init(Napi::Env env, Object exports) {
   Napi::HandleScope scope(env);
-  Napi::Function func =
-      DefineClass(env, "boa.Object",
-                  {
-                      InstanceMethod("next", &PythonObject::Next),
-                      InstanceMethod("invoke", &PythonObject::Invoke),
-                      InstanceMethod("isCallable", &PythonObject::IsCallable),
-                      InstanceMethod("isIterator", &PythonObject::IsIterator),
-                      InstanceMethod("isMapping", &PythonObject::IsMapping),
-                      InstanceMethod("isSequence", &PythonObject::IsSequence),
-                      InstanceMethod("toBigInt", &PythonObject::ToBigInt),
-                      InstanceMethod("toPrimitive", &PythonObject::ToPrimitive),
-                      InstanceMethod("toString", &PythonObject::ToString),
-                      // Python magic methods
-                      InstanceMethod("__hash__", &PythonObject::Hash),
-                      InstanceMethod("__hasattr__", &PythonObject::HasAttr),
-                      InstanceMethod("__getattr__", &PythonObject::GetAttr),
-                      InstanceMethod("__getitem__", &PythonObject::GetItem),
-                      InstanceMethod("__setattr__", &PythonObject::SetAttr),
-                      InstanceMethod("__setitem__", &PythonObject::SetItem),
-                  });
+  Napi::Function func = DefineClass(
+      env, "boa.Object",
+      {
+          InstanceMethod("next", &PythonObject::Next),
+          InstanceMethod("invoke", &PythonObject::Invoke),
+          InstanceMethod("createClass", &PythonObject::CreateClass),
+          InstanceMethod("isCallable", &PythonObject::IsCallable),
+          InstanceMethod("isIterator", &PythonObject::IsIterator),
+          InstanceMethod("isMapping", &PythonObject::IsMapping),
+          InstanceMethod("isSequence", &PythonObject::IsSequence),
+          InstanceMethod("toBigInt", &PythonObject::ToBigInt),
+          InstanceMethod("toPrimitive", &PythonObject::ToPrimitive),
+          InstanceMethod("toString", &PythonObject::ToString),
+          InstanceMethod("setClassMethod", &PythonObject::SetClassMethod),
+          // Python magic methods
+          InstanceMethod("__hash__", &PythonObject::Hash),
+          InstanceMethod("__hasattr__", &PythonObject::HasAttr),
+          InstanceMethod("__getattr__", &PythonObject::GetAttr),
+          InstanceMethod("__getitem__", &PythonObject::GetItem),
+          InstanceMethod("__setattr__", &PythonObject::SetAttr),
+          InstanceMethod("__setitem__", &PythonObject::SetItem),
+      });
 
   constructor = Persistent(func);
   constructor.SuppressDestruct();
@@ -132,6 +134,19 @@ Napi::Value PythonObject::Invoke(const CallbackInfo &info) {
   }
 }
 
+Napi::Value PythonObject::CreateClass(const CallbackInfo &info) {
+  std::string name = std::string(info[0].As<String>());
+  Object jbase = info[1].As<Object>().Get(NODE_PYTHON_HANDLE_NAME).As<Object>();
+  pybind::object base = ObjectWrap<PythonObject>::Unwrap(jbase)->value();
+  pybind::object type =
+      pybind::reinterpret_borrow<pybind::object>((PyObject *)&PyType_Type);
+  pybind::dict attrs;
+
+  // See https://docs.python.org/3.7/library/functions.html#type
+  auto mClass = type(name.c_str(), pybind::make_tuple(base), attrs);
+  return PythonObject::NewInstance(info.Env(), mClass);
+}
+
 Napi::Value PythonObject::IsCallable(const CallbackInfo &info) {
   int callable = PyCallable_Check(_self.ptr());
   return Number::New(info.Env(), callable);
@@ -233,6 +248,27 @@ Napi::Value PythonObject::GetAttr(const CallbackInfo &info) {
   }
 }
 
+Napi::Value PythonObject::SetAttr(const CallbackInfo &info) {
+  std::string nameStr = std::string(info[0].As<String>());
+  int r = PyObject_SetAttrString(_self.ptr(), nameStr.c_str(),
+                                 Cast(info.Env(), info[1]));
+  if (r == -1) {
+    PyErr_Clear();
+  }
+  return Number::New(info.Env(), r);
+}
+
+Napi::Value PythonObject::SetClassMethod(const CallbackInfo &info) {
+  std::string nameStr = std::string(info[0].As<String>());
+  int r = PyObject_SetAttrString(
+      _self.ptr(), nameStr.c_str(),
+      Cast(info.Env(), info[1].As<Function>(), false, true));
+  if (r == -1) {
+    PyErr_Clear();
+  }
+  return Number::New(info.Env(), r);
+}
+
 Napi::Value PythonObject::GetItem(const CallbackInfo &info) {
   pybind::object itemVal;
   try {
@@ -261,16 +297,6 @@ Napi::Value PythonObject::GetItem(const CallbackInfo &info) {
     Error::New(info.Env(), e.what()).ThrowAsJavaScriptException();
     return info.Env().Null();
   }
-}
-
-Napi::Value PythonObject::SetAttr(const CallbackInfo &info) {
-  std::string nameStr = std::string(info[0].As<String>());
-  int r = PyObject_SetAttrString(_self.ptr(), nameStr.c_str(),
-                                 Cast(info.Env(), info[1]));
-  if (r == -1) {
-    PyErr_Clear();
-  }
-  return Number::New(info.Env(), r);
 }
 
 Napi::Value PythonObject::SetItem(const CallbackInfo &info) {
@@ -346,9 +372,9 @@ PyObject *PythonObject::Cast(Napi::Env env, Number value) {
 }
 
 PyObject *PythonObject::Cast(Napi::Env env, Function value,
-                             bool finalizeFuncType) {
+                             bool finalizeFuncType, bool isClassMethod) {
   // FIXME(Yorkie): where to free this?
-  auto fn = new PythonFunction(env, value, this);
+  auto fn = new PythonFunction(env, value, this, isClassMethod);
   if (finalizeFuncType) {
     fn->addFinalizer();
   }
@@ -410,7 +436,7 @@ PyObject *PythonObject::Cast(Napi::Env env, Napi::Value value,
       return pybind::bytes(bytesVal.As<String>()).release().ptr();
     }
     if (value.IsFunction()) {
-      return Cast(env, value.As<Function>(), finalizeFuncType);
+      return Cast(env, value.As<Function>(), finalizeFuncType, false);
     }
     if (value.IsArray()) {
       // for JS array, just make a new list as the container.

@@ -13,13 +13,14 @@ namespace boa {
 
 class PythonFunction : public PythonReference {
 public:
-  PythonFunction(Napi::Env, Napi::Function, PythonObject *);
+  PythonFunction(Napi::Env, Napi::Function, PythonObject *, bool);
   static PyObject *Dispatcher(PyObject *self, PyObject *args_in,
                               PyObject *kwargs_in);
 
 private:
   Napi::Env env;
   Napi::FunctionReference jsref;
+  bool isClassMethod = false;
   /**
    * function object
    */

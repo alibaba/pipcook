@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = () => {
-  return function callable() {
+  return function PythonCallable() {
     throw TypeError('not implemented.');
   };
 };

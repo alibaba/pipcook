@@ -18,7 +18,7 @@
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.4",
     "@types/uuid": "^7.0.2",
-    "glob": "^7.1.5",
+    "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "uuid": "^7.0.2"
   },

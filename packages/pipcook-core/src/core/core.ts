@@ -14,6 +14,10 @@ import {PipcookModel} from '../types/model';
 import {DeploymentResult, EvaluateResult} from '../types/other';
 import {getLog, createPipeline, assignLatestResult, linkComponents, assignFailures} from './core-helper';
 import {logStartExecution, logError, logComplete} from '../utils/logger';
+import {PLUGINS} from '../constants/plugins';
+import {DataCollect, DataAccess, DataProcess, ModelLoad, ModelTrain, ModelEvaluate, ModelDeploy} from '../components/PipcookLifeCycleComponent';
+import {DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELTRAIN, MODELEVALUATE, MODELDEPLOY} from '../constants/plugins';
+import {RunConfigI} from '../types/config';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -140,5 +144,50 @@ export class PipcookRunner {
         await successCallback(this);
       }
     });
+  }
+
+  /**
+   * run config file
+   */
+  runConfig = async (configPath: string, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) => {
+    const config: RunConfigI = fs.readJsonSync(configPath);
+    const components: PipcookComponentResult[] = [];
+    PLUGINS.forEach((pluginType) => {
+      if (config.plugins[pluginType] && config.plugins[pluginType].package) {
+        const module = import(config.plugins[pluginType].package);
+        const version = 
+          fs.readJSONSync(path.join(require.resolve(config.plugins[pluginType].package), 
+            '..', '..', 'package.json')).version;
+        let factoryMethod: Function;
+
+        switch(pluginType) {
+          case DATACOLLECT:
+            factoryMethod = DataCollect;
+            break;
+          case DATAACCESS:
+            factoryMethod = DataAccess;
+            break;
+          case DATAPROCESS:
+            factoryMethod = DataProcess;
+            break;
+          case MODELLOAD:
+            factoryMethod = ModelLoad;
+            break;
+          case MODELTRAIN:
+            factoryMethod = ModelTrain;
+            break;
+          case MODELEVALUATE:
+            factoryMethod = ModelEvaluate;
+            break;
+          case MODELDEPLOY:
+            factoryMethod = ModelDeploy;
+            break;
+        }
+        const component = factoryMethod(module, config.plugins[pluginType].params || {});
+        component.version = version;
+        components.push(component);
+      }
+    });
+    this.run(components, successCallback, errorCallback, saveModelCallback);
   }
 }

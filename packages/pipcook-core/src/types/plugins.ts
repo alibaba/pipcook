@@ -56,5 +56,5 @@ export interface ModelEvaluateType extends PipcookPlugin {
 }
 
 export interface ModelDeployType extends PipcookPlugin {
-  (data: any, model: any, args: ArgsType): Promise<any>;
+  (data: UniDataset, model: PipcookModel, args: ArgsType): Promise<any>;
 }

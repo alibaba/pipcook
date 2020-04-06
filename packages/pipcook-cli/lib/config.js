@@ -1,7 +1,7 @@
 module.exports = {
   dependencies: [
     "@pipcook/pipcook-core",
-    "@pipcook/pipcook-python-node",
+    "@pipcook/boa",
     "@pipcook/pipcook-plugins-bayesian-classifier-model-eas-deploy",
     "@pipcook/pipcook-plugins-bayesian-classifier-model-evaluate",
     "@pipcook/pipcook-plugins-bayesian-classifier-model-load",

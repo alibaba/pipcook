@@ -1,20 +1,17 @@
-import {ModelTrainType, parseAnnotation, VocDataset, ModelTrainArgsType, PytorchModel} from '@pipcook/pipcook-core';
-import * as assert from 'assert';
+import {ModelTrainType, ImageDataset, ModelTrainArgsType, PytorchModel, ImageDataLoader} from '@pipcook/pipcook-core';
 import * as path from 'path';
-import glob from 'glob-promise';
 import * as fs from 'fs';
 
 const boa = require('@pipcook/boa');
+const sys = boa.import('sys');
+sys.path.insert(0,'/Users/queyue/Documents/work/pipcook/pipcook/pipcook_venv/lib/python3.7/site-packages');
 
-/** @ignore
- * assertion test
- * @param data 
- */
-const assertionTest = (data: VocDataset) => {
-  assert.ok(data.metaData.feature, 'Image feature is missing');
-  assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 3d');
-  assert.ok(data.metaData.label.shape && data.metaData.label.shape.length == 2, 'The label vector should be a one hot vector');
-}
+const {enumerate, list, len, dict} = boa.builtins();
+const torch = boa.import('torch');
+const {DataLoader, Dataset} = boa.import('torch.utils.data');
+const Image = boa.import('PIL.Image');
+const np = boa.import('numpy');
+const transforms = boa.import('torchvision.transforms');
 
 interface dataMap {
   fileName: string;
@@ -25,34 +22,33 @@ interface dataMap {
  * @ignore
  * create custom dataset
  */
-const getDataSet = async (boa: any, dataPath: string, labelMap: {
-  [key: string]: number;
-}) => {
-  const {Dataset} = boa.import('torch.utils.data.Dataset');
-  const torch = boa.import('torch');
-  const {list, len, dict} = boa.builtins();
-  const {Image} = boa.import('PIL');
-  const os = boa.import('os');
-  const np = boa.import('numpy');
-
-  const dataPaths = await glob(path.join(dataPath, '*.xml'));
+const getDataSet = async (dataLoader: ImageDataLoader) => {
   const data: dataMap[] = [];
 
-  for (let i = 0; i < dataPaths.length; i++) {
-    const dataJson = await parseAnnotation(dataPaths[i]);
-    const filePath = path.join(dataPath, dataJson.annotation.filename[0]);
-    if (fs.existsSync(filePath)) {
+  const count = await dataLoader.len();
+
+  for (let i = 0; i < count; i++) {
+    const currentData = await dataLoader.getItem(i);
+    if (fs.existsSync(currentData.data)) {
       data.push({
-        fileName: filePath,
-        className: labelMap[dataJson.annotation.object[0].name[0]]
+        fileName: currentData.data,
+        className: currentData.label.categoryId
       });
     }
   }
 
+  const transform = transforms.Compose(
+    [transforms.ToTensor()]
+  );
+
   class ImageClassificationData extends Dataset {
-    constructor() {
+    data: any;
+    transform: any;
+
+    constructor(transform: any) {
       super();
       this.data = list(data);
+      this.transform = transform;
     }
 
     __len__() {
@@ -65,7 +61,10 @@ const getDataSet = async (boa: any, dataPath: string, labelMap: {
       }
 
       const imageData = this.data[index];
-      const image = np.array(Image.open(imageData['fileName']));
+      let image = np.array(Image.open(imageData['fileName']));
+      if (this.transform) {
+        image = this.transform(image);
+      }
       const label = imageData['className'];
 
       return dict({
@@ -75,35 +74,37 @@ const getDataSet = async (boa: any, dataPath: string, labelMap: {
     }
   }
 
-  return new ImageClassificationData();
+  return new ImageClassificationData(transform);
 }
 
-const pytorchPascolVocModelTrain: ModelTrainType = 
-  async (data: VocDataset, model: PytorchModel, args: ModelTrainArgsType): Promise<PytorchModel> => {
+const modelTrain: ModelTrainType = 
+  async (data: ImageDataset, model: PytorchModel, args: ModelTrainArgsType): Promise<PytorchModel> => {
   const {
     epochs = 10,
     batchSize = 16,
-    saveModel
+    saveModel,
+    printEvery = 100
   } = args;
 
-  const torch = boa.import('torch');
-  const {DataLoader} = boa.import('torch.utils.data');
-  const {enumerate} = boa.builtins();
+  const { trainLoader, validationLoader } = data;
 
-  let device = 'cpu';
-  if (torch.cuda.is_available()) {
-    device = 'cuda:0';
+  let valDataLoader: any;
+  if (validationLoader) {
+    const val_dataset = await getDataSet(validationLoader);
+    valDataLoader = DataLoader(val_dataset,  boa.kwargs({
+      batch_size: batchSize
+    }));
   }
 
-  if (data.trainData) {
-    const train_dataset = await getDataSet(boa, data.trainData, data.metaData.labelMap);
+  if (trainLoader) {
+    const train_dataset = await getDataSet(trainLoader);
     const dataloader = DataLoader(train_dataset,  boa.kwargs({
       batch_size: batchSize
     }));
-    model.model.train();
     for (let i = 0; i < epochs; i++) {
+      model.model.train();
       let running_loss = 0;
-      enumerate(dataloader, 0).forEach((data: any, i: number) => {
+      enumerate(dataloader, 0).forEach((data: any, steps: number) => {
         let inputs = data['image'];
         let labels = data['label'];
 
@@ -115,13 +116,41 @@ const pytorchPascolVocModelTrain: ModelTrainType =
         model.optimizer.step()
 
         running_loss += loss.item()
-        if (i % 2000 == 1999) {
-          console.log(i + 1, running_loss / 2000);
+
+        if (steps % printEvery === 0) {
+          console.log(`[epoch ${i}, step ${steps}] training loss: ${running_loss / printEvery}`);
           running_loss = 0;
         }
-      }) 
+      });
+
+      if (valDataLoader) {
+        let test_loss = 0;
+        let accuracy = 0;
+        
+        model.model.eval();
+        enumerate(valDataLoader, 0).forEach((data: any, steps: number) => {
+          let inputs = data['image'];
+          let labels = data['label'];
+          const logps = model.model(inputs);
+          const batch_loss = model.criterion(logps, labels);
+          test_loss += batch_loss.item();
+          const ps = torch.exp(logps);
+          const [top_p, top_class] = ps.topk(1, boa.kwargs({dim: 1}));
+          const labelTensor = labels.view(...top_class.shape);
+          const equals = torch.eq(labelTensor, top_class);
+          accuracy +=
+                torch.mean(equals.type(torch.FloatTensor)).item();
+        });
+        console.log(`[epoch ${i}] validation loss: ${test_loss / len(valDataLoader)}, accuracy: ${accuracy / len(valDataLoader)}`);
+      }
     }
   }
+
+  await saveModel(async (modelPath: string) => {
+    await torch.save(model.model.state_dict(), path.join(modelPath, 'final.pth'));
+  });
+
+  return model;
 }
 
-export default pytorchPascolVocModelTrain;
+export default modelTrain;

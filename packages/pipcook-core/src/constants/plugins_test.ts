@@ -5,8 +5,7 @@ import {
   MODELLOAD,
   MODELTRAIN,
   MODELEVALUATE,
-  MODELDEPLOY,
-  ONLINETRAIN
+  MODELDEPLOY
 } from './plugins';
 
 describe('plugins constant', () => {
@@ -18,6 +17,5 @@ describe('plugins constant', () => {
     expect(MODELTRAIN).toEqual('modelTrain');
     expect(MODELEVALUATE).toEqual('modelEvaluate');
     expect(MODELDEPLOY).toEqual('modelDeploy');
-    expect(ONLINETRAIN).toEqual('onlineTrain');
   });
 });

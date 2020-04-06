@@ -6,7 +6,6 @@ export interface PipcookModel {
   metrics?: any;
   predict: any;
   config?: any;
-  extraParams?: any;
 }
 
 export interface TfJsLayersModel extends PipcookModel {

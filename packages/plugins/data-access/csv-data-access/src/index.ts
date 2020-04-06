@@ -73,16 +73,19 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
   }
 
   const loader = data.trainLoader || data.validationLoader || data.testLoader;
+
+
   if (loader) {
+    const data = await loader.getItem(0);
     featureNames.push(
-      ...Object.keys(loader.getItem(0).data)
+      ...Object.keys(data.data)
     );
   }
   
   const result: CsvDataset = {
     ...data,
     metaData: {
-      label: {
+      feature: {
         featureNames
       }
     }

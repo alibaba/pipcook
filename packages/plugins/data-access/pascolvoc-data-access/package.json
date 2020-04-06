@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/pipcook-plugins-pascolvoc-data-access",
+  "name": "@pipcook/plugins-pascolvoc-data-access",
   "version": "0.5.0",
   "description": "",
   "main": "dist/index",

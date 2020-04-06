@@ -3,6 +3,8 @@ import * as assert from 'assert';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
+const sys = boa.import('sys');
+sys.path.insert(0,'/Users/queyue/Documents/work/pipcook/pipcook/pipcook_venv/lib/python3.7/site-packages');
 
 /** @ignore
  * assertion test
@@ -53,13 +55,20 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
   class Net extends nn.Module {
     conv1: any;
     pool: any;
+    conv2: any;
+    fc1: any;
+    fc2: any;
+    fc3: any;
     constructor() {
       super();
-      this.conv1 = nn.Conv2d(3, 6, 5)
-      this.pool = nn.MaxPool2d(2, 2)
-      this.conv2 = nn.Conv2d(6, 16, 5)
-      this.fc2 = nn.Linear(120, 84)
-      this.fc3 = nn.Linear(84, outputShape[1])
+      this.conv1 = nn.Conv2d(3, 6, 5);
+      this.pool = nn.MaxPool2d(2, 2);
+      this.conv2 = nn.Conv2d(6, 16, 5);
+      const inputSize = 16 * Math.floor((Math.floor((inputShape[0] - 4) / 2) - 4) / 2) 
+      * Math.floor((Math.floor((inputShape[1] - 4) / 2) - 4) / 2);
+      this.fc1 = nn.Linear(inputSize, 120);
+      this.fc2 = nn.Linear(120, 84);
+      this.fc3 = nn.Linear(84, outputShape);
     }
   
   
@@ -74,7 +83,6 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
       return x
     }
   }
-  
   const net = new Net();
   net.to(device);
 

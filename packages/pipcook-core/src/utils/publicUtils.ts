@@ -3,14 +3,17 @@
  */
 
 import * as path from 'path';
+import * as fs from 'fs-extra';
+import _cliProgress from 'cli-progress';
+import * as tf from '@tensorflow/tfjs-node-gpu';
+import Jimp from 'jimp';
 
-const fs = require('fs-extra');
+
 const xml2js = require('xml2js');
-const _cliProgress = require('cli-progress');
 const request = require('request');
 const si = require('systeminformation');
 const targz = require('targz');
-const extract = require('extract-zip')
+const extract = require('extract-zip');
 
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
@@ -241,7 +244,7 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
       if (item.bndbox && item.bndbox[0]) {
         const width = parseInt(item.bndbox[0].xmax[0]) - parseInt(item.bndbox[0].xmin[0]);
         const height = parseInt(item.bndbox[0].ymax[0]) - parseInt(item.bndbox[0].ymin[0]);
-        cocoItem.bndbox = [parseInt(item.bndbox[0].xmin[0]), parseInt(item.bndbox[0].ymin[0]), width, height];
+        cocoItem.bbox = [parseInt(item.bndbox[0].xmin[0]), parseInt(item.bndbox[0].ymin[0]), width, height];
         cocoItem.area = Number(width * height);
       }
       cocoJson.annotations.push(cocoItem);
@@ -271,6 +274,24 @@ export function getOsInfo() {
         resolve('other');
       }
     });
-
   })
+}
+
+export async function base64ToTfjsTensor(input: string[]) {
+  const imageArray: number[] = [];
+  for (let index = 0; index < input.length; index++) {
+    let img = await Jimp.read(Buffer.from(input[index], 'base64'));
+    img = img.resize(256, 256);
+    await img.writeAsync('imageclass.jpg');
+    for (let i = 0; i < 256; i++) {
+      for (let j = 0; j < 256; j++) {
+        imageArray.push(Jimp.intToRGBA(img.getPixelColor(i, j)).r);
+        imageArray.push(Jimp.intToRGBA(img.getPixelColor(i, j)).g);
+        imageArray.push(Jimp.intToRGBA(img.getPixelColor(i, j)).b);
+      }
+    }
+  }
+
+  const tensorRes = tf.tensor4d(imageArray);
+  return tensorRes;
 }

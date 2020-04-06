@@ -33,6 +33,8 @@ export interface PipcookComponentResult {
   returnType: string;
   previousComponent: PipcookComponentResult | null;
   status: 'not execute' | 'running' | 'success' | 'failure';
+  package?: string;
+  version?: string;
 }
 
 export interface PipcookLifeCycleComponent {

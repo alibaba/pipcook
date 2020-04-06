@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugins-image-classification-data-collect",
+  "name": "@pipcook/plugins-image-classification-tfjs-model-evaluate",
   "version": "0.5.0",
   "description": "",
   "main": "dist/index",
@@ -17,15 +17,12 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.4",
-    "fs-extra": "^8.1.0",
-    "glob": "^7.1.6",
-    "glob-promise": "^3.4.0",
-    "uuid": "^7.0.2"
+    "@tensorflow/tfjs-node-gpu": "1.7.0",
+    "jimp": "^0.10.0"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
-    "@types/uuid": "^7.0.0",
     "nyc": "14.1.1"
   }
 }

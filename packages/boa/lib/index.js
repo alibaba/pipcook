@@ -12,15 +12,19 @@ const IterIdxForSeqSymbol = Symbol('The iteration index for sequence');
 // create the instance
 let pyInst = new native.Python(process.argv.slice(1));
 const globals = pyInst.globals();
-const builtins = _internalWrap(pyInst.builtins());
+const builtins = pyInst.builtins();
 const delegators = DelegatorLoader.load();
 
 function getTypeInfo(T) {
   const typeo = builtins.__getitem__('type').invoke(asHandleObject(T));
-  return {
-    module: typeo.__getattr__('__module__').toString(),
-    name: typeo.__getattr__('__name__').toString(),
-  };
+  const tinfo = { module: null, name: null };
+  if (typeo.__hasattr__('__module__')) {
+    tinfo.module = typeo.__getattr__('__module__').toString();
+  }
+  if (typeo.__hasattr__('__name__')) {
+    tinfo.name = typeo.__getattr__('__name__').toString();
+  }
+  return tinfo;
 }
 
 // shadow copy an object, and returns the new copied object.
@@ -126,8 +130,12 @@ function _internalWrap(T, src={}) {
       // proxy object, and move descriptors to the trap handler.
       configurable: true,
       writable: false,
-      value: function(fn, ...args) {
-        return fn.apply(this, args.map(wrap));
+      value: function(fn, isClassMethod, ...args) {
+        if (isClassMethod) {
+          return fn.apply(wrap(args[0]), args.slice(1).map(wrap));
+        } else {
+          return fn.apply(this, args.map(wrap));
+        }
       },
     },
     /**
@@ -239,7 +247,6 @@ function _internalWrap(T, src={}) {
         throw new TypeError('object is not iteratable or sequence.');
       },
     },
-    // The following are magic methods by Python
     /**
      * @method __hash__
      * @public
@@ -249,63 +256,6 @@ function _internalWrap(T, src={}) {
       enumerable: true,
       writable: false,
       value: () => T.__hash__(),
-    },
-    /**
-     * @method __hasattr__
-     * @param {string} name
-     * @private
-     */
-    __hasattr__: {
-      configurable: true,
-      enumerable: true,
-      writable: false,
-      value: n => T.__hasattr__(n),
-    },
-    /**
-     * @method __getattr__
-     * @param {string} name
-     * @private
-     */
-    __getattr__: {
-      configurable: true,
-      enumerable: true,
-      writable: false,
-      value: n => T.__getattr__(n),
-    },
-    /**
-     * @method __getitem__
-     * @param {string|number} key
-     * @private
-     */
-    __getitem__: {
-      configurable: true,
-      enumerable: true,
-      writable: false,
-      value: k => T.__getitem__(k),
-    },
-    /**
-     * @method __setattr__
-     * @param {string} name
-     * @param {object} value
-     * @private
-     */
-    __setattr__: {
-      configurable: true,
-      enumerable: true,
-      writable: false,
-      value: (n, v) => T.__setattr__(n, v),
-    },
-    /**
-     * @method __setitem__
-     * @param {string} key
-     * @param {object} value
-     * @private
-     */
-    __setitem__: {
-      configurable: true,
-      enumerable: true,
-      writable: false,
-      value: (k, v) => T.__setitem__(k, v),
     },
   });
 
@@ -338,16 +288,16 @@ function _internalWrap(T, src={}) {
         if (/^[0-9]+$/.test(name)) {
           debug('name is detected to be an index.');
           const n = parseInt(name, 10);
-          return wrap(target.__getitem__(n));
+          return wrap(T.__getitem__(n));
         }
-        if (target.__hasattr__(name)) {
+        if (T.__hasattr__(name)) {
           debug(`found "${name}" as python attr`);
-          return wrap(target.__getattr__(name));
+          return wrap(T.__getattr__(name));
         }
       }
 
       try {
-        const r = target.__getitem__(name);
+        const r = T.__getitem__(name);
         if (r != null) {
           debug(`found "${name.toString()}" as python item`);
           return wrap(r);
@@ -360,15 +310,15 @@ function _internalWrap(T, src={}) {
     'set'(target, name, value) {
       if (typeof name === 'string') {
         if (/^[0-9]+$/.test(name)) {
-          return target.__setitem__(parseInt(name, 10), value) !== -1;
+          return T.__setitem__(parseInt(name, 10), value) !== -1;
         }
-        if (target.__hasattr__(name)) {
-          return target.__setattr__(name, value) !== -1;
+        if (T.__hasattr__(name)) {
+          return T.__setattr__(name, value) !== -1;
         }
       }
-      let r = target.__setitem__(name, value);
+      let r = T.__setitem__(name, value);
       if (r === -1) {
-        r = target.__setattr__(name, value);
+        r = T.__setattr__(name, value);
       }
       return r !== -1;
     },
@@ -376,20 +326,20 @@ function _internalWrap(T, src={}) {
       return wrap(target.invoke(argumentsList));
     },
     'construct'(target, argumentsList, newClass) {
-      const obj = wrap(target.invoke(argumentsList));
-      // call Python's constructor function `__init__`.
-      // TODO(Yorkie): with arguments?
-      obj.__init__();
-
-      // register the declared methods & members
-      Object.getOwnPropertyNames(newClass.prototype)
-        .filter(name => {
-          return name !== 'constructor';
-        })
-        .forEach(name => {
-          obj.__setattr__(name, newClass.prototype[name]);
-        });
-      return obj;
+      if (newClass.name === 'PythonCallable') {
+        return wrap(target.invoke(argumentsList));
+      }
+      if (!newClass.prototype.$pyclass) {
+        const pyclass = T.createClass(newClass.name, target);
+        Object.getOwnPropertyNames(newClass.prototype)
+          .filter(name => name !== 'constructor' || name !== '__init__')
+          .forEach(name => {
+            pyclass.setClassMethod(name, newClass.prototype[name]);
+          });
+        newClass.prototype.$pyclass = wrap(pyclass);
+      }
+      // return the instance
+      return newClass.prototype.$pyclass.apply(null, argumentsList);
     },
   }));
 }
@@ -405,7 +355,7 @@ module.exports = {
    * Get the builtins
    * @method builtins
    */
-  'builtins': () => builtins,
+  'builtins': () => _internalWrap(builtins),
   /**
    * Create a bytes object.
    * @method bytes

@@ -70,6 +70,7 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
 
   assert.ok(extention[extention.length - 1] === 'zip', 'The dataset provided should be a zip file');
 
+  let isDownload = false;
   if (/^file:\/\/.*/.test(url)) {
     url = url.substring(7);
   } else {
@@ -77,6 +78,7 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
     console.log('downloading dataset ...')
     await download(url, targetPath);
     url = targetPath;
+    isDownload = true;
   }
 
   const imageDir = path.join(dataDir, 'images');
@@ -99,7 +101,9 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
     });
   });
 
-  fs.removeSync(url);
+  if (isDownload) {
+    fs.removeSync(url);
+  }
   fs.removeSync(imageDir);
 }
 

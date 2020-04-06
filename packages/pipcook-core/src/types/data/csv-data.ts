@@ -6,7 +6,7 @@ export interface CsvSample {
 }
 
 export interface CsvMetaData extends MetaData {
-  label: {
+  feature: {
     featureNames: string[];
   }
 }

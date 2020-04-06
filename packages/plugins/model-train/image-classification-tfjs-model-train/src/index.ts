@@ -1,4 +1,4 @@
-import {ImageDataset, ModelTrainType, TfJsLayersModel, ModelTrainArgsType, parseAnnotation, ImageDataLoader} from '@pipcook/pipcook-core';
+import {ImageDataset, ModelTrainType, TfJsLayersModel, ModelTrainArgsType, ImageDataLoader} from '@pipcook/pipcook-core';
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
@@ -40,7 +40,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
       saveModel
     } = args;
 
-    const { trainLoader, validationLoader, testLoader, metaData } = data;
+    const { trainLoader, validationLoader, metaData } = data;
 
     const count = await trainLoader.len();
 
@@ -52,7 +52,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
     console.log('create train dataset');
     const trainDataSet = await createDataset(trainLoader, metaData.labelMap);
     const ds = trainDataSet.repeat().batch(batchSize);
-    let validationDataSet: tf.data.Dataset<tf.TensorContainer>;
+    let validationDataSet: tf.data.Dataset<any>;
     if (validationLoader) {
       console.log('create validation dataset');
       validationDataSet = await createDataset(validationLoader, metaData.labelMap);
@@ -68,7 +68,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
 
     await saveModel(async (modelPath: string) => {
       await trainModel.save('file://' + modelPath);
-    })
+    });
 
     const result: TfJsLayersModel = {
       ...model,

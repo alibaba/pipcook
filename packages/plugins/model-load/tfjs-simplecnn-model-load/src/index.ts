@@ -1,4 +1,4 @@
-import {ModelLoadType, getModelDir, ImageDataset, ModelLoadArgsType, TfJsLayersModel} from '@pipcook/pipcook-core';
+import {ModelLoadType, getModelDir, ImageDataset, ModelLoadArgsType, TfJsLayersModel, getMetadata} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -40,7 +40,13 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
     inputShape = data.metaData.feature.shape;
     outputShape = Object.keys(data.metaData.labelMap).length;
   }
-  
+
+  if (modelId) {
+    outputShape = Object.keys(getMetadata(modelId).labelMap);
+  } else if (modelPath) {
+    assert.ok(!isNaN(outputShape), 'the output shape should be a number');
+  }
+
   let model: tf.LayersModel | null = null;
   // load from former pipcook trained model
   if (modelId) {
@@ -97,7 +103,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
   const result: TfJsLayersModel = {
     model,
     metrics: metrics,
-    predict: function (inputData: tf.Tensor<any>) {
+    predict: function (inputData: string[]) {
       const predictResultArray = this.model.predict(inputData)
       return predictResultArray;
     },

@@ -32,12 +32,12 @@ test('define a class extending python class', t => {
     }
   }
   const d = new EmptyDict();
-  t.equal(builtins.type(d).__name__, 'dict');
+  t.equal(builtins.type(d).__name__, 'EmptyDict');
   t.equal(d.foobar, 10);
   t.end();
 });
 
-test('define a class which is user-defined', t => {
+test('define a extended class with basic functions', t => {
   const pybasic = boa.import('tests.base.basic');
   class Foobar extends pybasic.Foobar {
     hellomsg(x) {
@@ -48,6 +48,30 @@ test('define a class which is user-defined', t => {
   t.equal(f.test, 'pythonworld');
   t.equal(f.ping('yorkie'), 'hello <yorkie> on pythonworld');
   t.equal(f.callfunc(x => x * 2), 233 * 2);
+  t.end();
+});
+
+test('define a class which overloads magic methods', t => {
+  const { len } = builtins;
+  const pybasic = boa.import('tests.base.basic');
+  class FoobarList extends pybasic.Foobar {
+    constructor() {
+      super();
+      // this is not an es6 array
+      this.list = [1, 3, 7];
+    }
+    __getitem__(n) {
+      return this.list[n];
+    }
+    __len__() {
+      return len(this.list);
+    }
+  }
+  const f = new FoobarList();
+  t.equal(f[0], 1);
+  t.equal(f[1], 3);
+  t.equal(f[2], 7);
+  t.equal(len(f), 3);
   t.end();
 });
 

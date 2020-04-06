@@ -16,6 +16,7 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
 
   assert.ok(extention[extention.length - 1] === 'zip', 'The dataset provided should be a zip file');
 
+  let isDownload = false;
   if (/^file:\/\/.*/.test(url)) {
     url = url.substring(7);
   } else {
@@ -23,15 +24,14 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
     console.log('downloading dataset ...')
     await download(url, targetPath);
     url = targetPath;
+    isDownload = true;
   }
 
   console.log('unzip and collecting data...');
   await unZipData(url, dataDir);
 
-  try {
+  if (isDownload) {
     fs.removeSync(url);
-  } catch (err) {
-    console.log('something is wrong when cleaning temp files');
   }
 }
 

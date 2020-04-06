@@ -5,15 +5,17 @@ export const MODELLOAD = 'modelLoad';
 export const MODELTRAIN = 'modelTrain';
 export const MODELEVALUATE = 'modelEvaluate';
 export const MODELDEPLOY = 'modelDeploy';
-export const ONLINETRAIN = 'onlineTrain';
 
-export const PLUGINS = [
+type PluginTypeI = 
+  'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelTrain' | 'modelEvaluate' | 'modelDeploy';
+
+
+export const PLUGINS: PluginTypeI[]= [
   DATACOLLECT,
   DATAACCESS,
   DATAPROCESS,
   MODELLOAD,
   MODELTRAIN,
   MODELEVALUATE,
-  MODELDEPLOY,
-  ONLINETRAIN
+  MODELDEPLOY
 ];
