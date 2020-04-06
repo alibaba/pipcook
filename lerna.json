@@ -4,7 +4,6 @@
     "packages/pipcook-cli",
     "packages/pipcook-core",
     "packages/pipcook-board-client",
-    "packages/boa",
     "packages/plugins/**/*"
   ],
   "version": "independent",
