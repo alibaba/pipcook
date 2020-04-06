@@ -18,7 +18,8 @@ import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE} from '../constants/other
 export function getLog(pipcookRunner: PipcookRunner): any {
   return {
     ...pipcookRunner,
-    latestModel: null
+    latestModel: null,
+    latestSampleData: null
   };
 }
 

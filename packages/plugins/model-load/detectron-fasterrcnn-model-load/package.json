@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugins-bayesian-model-train",
+  "name": "@pipcook/plugins-detectron-fasterrcnn-model-load",
   "version": "0.5.0",
   "description": "",
   "main": "dist/index",
@@ -11,14 +11,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
+    "compile": "tsc -b tsconfig.json && cp -r ./src/config ./dist/"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.2.0",
     "@pipcook/pipcook-core": "^0.5.4",
-    "fs-extra": "^9.0.0"
+    "fs-extra": "^8.1.0",
+    "@pipcook/boa": "^0.2.0"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {

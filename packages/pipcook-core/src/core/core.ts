@@ -154,7 +154,8 @@ export class PipcookRunner {
     const components: PipcookComponentResult[] = [];
     PLUGINS.forEach((pluginType) => {
       if (config.plugins[pluginType] && config.plugins[pluginType].package) {
-        const module = import(config.plugins[pluginType].package);
+        const module = require(config.plugins[pluginType].package).default;
+        console.log(module);
         const version = 
           fs.readJSONSync(path.join(require.resolve(config.plugins[pluginType].package), 
             '..', '..', 'package.json')).version;
@@ -185,6 +186,7 @@ export class PipcookRunner {
         }
         const component = factoryMethod(module, config.plugins[pluginType].params || {});
         component.version = version;
+        component.package = config.plugins[pluginType].package;
         components.push(component);
       }
     });

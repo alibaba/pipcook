@@ -3,7 +3,7 @@
  */
 import {ModelTrainType, PipcookModel, CsvDataset, ModelTrainArgsType, CsvDataLoader, CsvMetaData} from '@pipcook/pipcook-core';
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
@@ -61,7 +61,7 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   classifier.fit(feature_list, text_list[2]);
 
   await saveModel(async (modelPath: string) => {
-    await fs.copyFileSync(stoppath, path.join(modelPath, 'stopwords.txt'));
+    await fs.copySync(stoppath, path.join(modelPath, 'stopwords.txt'));
     save_all_words_list(feature_words, path.join(modelPath, 'feature_words.pkl'));
     saveBayesModel(classifier, path.join(modelPath, 'model.pkl'));
   });
