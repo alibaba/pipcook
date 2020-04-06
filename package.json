@@ -17,7 +17,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "build": "lerna run compile",
-    "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/pipcook-board-client lint",
+    "lint": "eslint . --ext .ts --ext .js --fix && lerna run --scope @pipcook/boa lint",
     "pretest": "npm run lint",
     "test": "lerna run --scope @pipcook/pipcook-core test",
     "typedoc": "typedoc"

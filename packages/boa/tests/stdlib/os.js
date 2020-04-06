@@ -1,4 +1,4 @@
-'use strict';
+
 
 const { test } = require('tap');
 const path = require('path');

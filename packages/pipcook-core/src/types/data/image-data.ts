@@ -4,14 +4,14 @@ export interface ImageLabel {
   name: string;
   categoryId: number;
   bndbox?: {
-    xmin: number,
-    ymin: number,
-    xmax: number,
-    ymax: number
-  }
+    xmin: number;
+    ymin: number;
+    xmax: number;
+    ymax: number;
+  };
 }
 export interface ImageMetaData extends MetaData {
-  labelMap: {[key: string]: number}
+  labelMap: {[key: string]: number};
 }
 
 export interface ImageSample {

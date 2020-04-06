@@ -9,3 +9,4 @@ packages/pipcook-core/src/assets
 packages/pipcook-cli/assets
 packages/pipcook-board-client
 packages/pipcook-board-server
+packages/boa

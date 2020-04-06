@@ -1,5 +1,3 @@
-import {DataType} from '@tensorflow/tfjs-node-gpu';
-
 export interface Statistic {
   metricName: string;
   metricValue: number;

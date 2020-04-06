@@ -1,4 +1,4 @@
-'use strict';
+
 
 function notEmpty(line) {
   return /^\s*$/.test(line) === false;

@@ -4,13 +4,13 @@ import {Statistic} from '../other';
 export interface DataDescriptor {
   type?: DataType;
   shape?: number[];
-  featureNames?: string[]
+  featureNames?: string[];
 }
 
 export interface MetaData {
   feature?: DataDescriptor;
   label?: DataDescriptor;
-  labelMap?: {[key: string]: number}
+  labelMap?: {[key: string]: number};
 }
 
 export interface Sample {

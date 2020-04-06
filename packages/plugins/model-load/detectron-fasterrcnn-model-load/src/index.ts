@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as assert from 'assert';
 
 const boa = require('@pipcook/boa');
-const sys = boa.import('sys');
 
 const detectronModelLoad: ModelLoadType = async (data: CocoDataset, args: ModelLoadArgsType): Promise<PipcookModel> => {
   let {

@@ -3,7 +3,6 @@ import * as assert from 'assert';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
-const sys = boa.import('sys');
 
 /** @ignore
  * assertion test

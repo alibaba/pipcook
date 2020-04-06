@@ -2,7 +2,6 @@ import { ModelTrainType, PipcookModel, CocoDataset, ModelTrainArgsType } from '@
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
-const sys = boa.import('sys');
 
 const detectronModelLoad: ModelTrainType = async (data: CocoDataset, model: PipcookModel, args: ModelTrainArgsType): Promise<PipcookModel> => {
   let {

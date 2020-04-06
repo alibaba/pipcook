@@ -5,7 +5,7 @@
 
 import {PipcookLifeCycleComponent, PipcookComponentResult} from '../types/component';
 import {PipcookPlugin, DataCollectType, DataAccessType, DataProcessType, ModelLoadType, 
-  ModelTrainType, ModelEvaluateType, ModelDeployType, saveModelFunction} from '../types/plugins';
+  ModelTrainType, ModelEvaluateType, ModelDeployType} from '../types/plugins';
 import {DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELTRAIN, MODELEVALUATE, MODELDEPLOY} from '../constants/plugins';
 import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA} from '../constants/other';
 import { from } from 'rxjs';

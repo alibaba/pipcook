@@ -19,12 +19,12 @@ export interface ModelLoadArgsType extends ArgsType {
   modelPath: string;
 }
 
-export interface saveModelFunction {
+export interface SaveModelFunction {
   (callback: Function): void;
 }
 
 export interface ModelTrainArgsType extends ArgsType {
-  saveModel: saveModelFunction;
+  saveModel: SaveModelFunction;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

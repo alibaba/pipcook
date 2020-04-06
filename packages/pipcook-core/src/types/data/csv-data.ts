@@ -8,7 +8,7 @@ export interface CsvSample {
 export interface CsvMetaData extends MetaData {
   feature: {
     featureNames: string[];
-  }
+  };
 }
 
 export interface CsvDataLoader extends DataLoader {

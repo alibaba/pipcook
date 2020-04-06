@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 const boa = require('@pipcook/boa');
-const sys = boa.import('sys');
 
 const {enumerate, list, len, dict} = boa.builtins();
 const torch = boa.import('torch');
@@ -12,7 +11,7 @@ const Image = boa.import('PIL.Image');
 const np = boa.import('numpy');
 const transforms = boa.import('torchvision.transforms');
 
-interface dataMap {
+interface Datamap {
   fileName: string;
   className: number;
 }
@@ -22,7 +21,7 @@ interface dataMap {
  * create custom dataset
  */
 const getDataSet = async (dataLoader: ImageDataLoader) => {
-  const data: dataMap[] = [];
+  const data: Datamap[] = [];
 
   const count = await dataLoader.len();
 
@@ -127,7 +126,7 @@ const modelTrain: ModelTrainType =
         let accuracy = 0;
         
         model.model.eval();
-        enumerate(valDataLoader, 0).forEach((data: any, steps: number) => {
+        enumerate(valDataLoader, 0).forEach((data: any) => {
           let inputs = data['image'];
           let labels = data['label'];
           const logps = model.model(inputs);

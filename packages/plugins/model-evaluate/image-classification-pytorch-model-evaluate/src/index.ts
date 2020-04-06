@@ -11,7 +11,7 @@ const Image = boa.import('PIL.Image');
 const np = boa.import('numpy');
 const transforms = boa.import('torchvision.transforms');
 
-interface dataMap {
+interface DataMap {
   fileName: string;
   className: number;
 }
@@ -21,7 +21,7 @@ interface dataMap {
  * create custom dataset
  */
 const getDataSet = async (dataLoader: ImageDataLoader) => {
-  const data: dataMap[] = [];
+  const data: DataMap[] = [];
 
   const count = await dataLoader.len();
 
@@ -100,7 +100,7 @@ const ModelEvalute: ModelEvaluateType =
     let accuracy = 0;
     
     model.model.eval();
-    enumerate(testDataLoader, 0).forEach((data: any, steps: number) => {
+    enumerate(testDataLoader, 0).forEach((data: any) => {
       let inputs = data['image'];
       let labels = data['label'];
       const logps = model.model(inputs);

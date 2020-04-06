@@ -2,7 +2,6 @@ import { ModelEvaluateType, PipcookModel, CocoDataset, ArgsType } from '@pipcook
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
-const sys = boa.import('sys');
 
 const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, model: PipcookModel, args: ArgsType): Promise<any> => {
   let {
