@@ -3,67 +3,61 @@
 This plug-in is used to train a model. The interface provides the ability to configure basic parameters of the training model, but these parameters should not be required, allows plug-in developers to define the appropriate hyper-parameters within the plug-in.
 
 ```ts
-interface PipcookPlugin {}
-
-interface ArgsType {
-  [key: string]: any;
+export interface DataDescriptor {
+  type?: DataType;
+  shape?: number[];
+  featureNames?: string[];
 }
 
-interface DataDescriptor {
-  name: string;
-  type: DataType;
-  shape: number[];
-  possibleValues?: string[] | number[];
-  valueMap?: any;
+export interface MetaData {
+  feature?: DataDescriptor;
+  label?: DataDescriptor;
+  labelMap?: {[key: string]: number};
 }
 
-interface metaData {
-  feature: DataDescriptor;
-  label: DataDescriptor;
-  trainSize?: number;
-  validationSize?: number;
-  testSize?: number;
+export interface Sample {
+  data: any;
+  label: any;
 }
 
-interface UniformSampleData{
-  trainData: any;
-  validationData?: any;
-  testData?: any;
-  metaData: metaData;
-  dataStatistics?: statistic[];
-  validationResult?: {
+export interface DataLoader {
+  len: () => Promise<number>;
+  getItem: (id: number) => Promise<Sample>;
+}
+
+export interface UniDataset {
+  metaData?: MetaData;
+  dataStatistics: Statistic[];
+  validationResult: {
     result: boolean;
-    message: string;
-  }
+    message?: string;
+  };
+  trainLoader?: DataLoader;
+  validationLoader?: DataLoader;
+  testLoader?: DataLoader;
+}
+
+export interface ArgsType {
+  pipelineId: string;
+  modelDir: string;
+  dataDir: string;
+  [key: string]: any;
 }
 
 export interface ModelLoadArgsType extends ArgsType {
   modelId: string;
-}
-
-export interface ModelLoadAndSaveFunction {
-  (modelPath: string): any
+  modelPath: string;
 }
 
 export interface PipcookModel {
   model: any;
-  type: 'text classification' | 'image classification' | 'object detection';
   metrics?: any;
-  inputShape?: number[];
-  inputType: string;
-  outputShape?: number[];
-  outputType: string;
-  history?: tf.History;
-  save: ModelLoadAndSaveFunction;
   predict: any;
-  modelName: string;
-  modelPath?: string;
   config?: any;
 }
 
-
 export interface ModelTrainType extends PipcookPlugin {
-  (data: UniformSampleData | UniformSampleData[], model: PipcookModel | PipcookModel[], args?: ArgsType): Promise<PipcookModel>
+  (data: UniDataset, model: PipcookModel, args: ModelTrainArgsType): Promise<PipcookModel>;
 }
 ```
 

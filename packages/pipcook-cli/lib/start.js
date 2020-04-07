@@ -9,10 +9,6 @@ const start = async (fileName) => {
     return;
   }
 
-  childProcess.execSync(`${client} init -y`, {
-    cwd: dirname
-  });
-
   const runner = new PipcookRunner();
   runner.runConfig(fileName);
 };

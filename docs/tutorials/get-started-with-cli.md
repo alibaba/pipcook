@@ -23,3 +23,9 @@ pipcook init -c cnpm
 ```sh
 $ pipcook board
 ```
+
+## Start pipeline by config file
+
+```sh
+$ pipcook run [config-file]
+```

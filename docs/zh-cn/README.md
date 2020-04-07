@@ -54,7 +54,6 @@ Pipcook 的核心是一条流水线（Pipeline）， 在这个流水线中，将
 在亲手搭建了一个机器学习项目之后，您是否想了解 Pipcook 的更多信息，您可以查看以下链接了解更多
 
 - 新手教程
-  - [新手入门——Pipeline](./tutorials/get-started-with-pipeline-api.md)
   - [新手入门——命令行工具](./tutorials/get-started-with-cli.md)
   - [如何开发一个插件](./tutorials/how-to-develop-a-plugin.md)
   - [如何在 Pipcook 中使用 Python](./tutorials/want-to-use-python.md)

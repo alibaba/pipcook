@@ -45,7 +45,7 @@ function ModelDeploy(plugin: PipcookPlugin, params: object);
 Pipcook plugins are divided into built-in, community and private. Each one is an independent npm package, and the required plugins need to be installed independently. For example, we need a model plugin loaded with `MobileNet`, we can use the following command in the project directory to install, **We will integrate the builtin plugins directly into a pipcook scaffold project. You do not need to install these builtin plugins separately.**
 
 ```sh
-$ npm install mobileNetModelLoad --save
+$ npm install @pipcook/plugins-tfjs-mobilenet-model-load --save
 ```
 
 ## Awesome Plugins
@@ -54,59 +54,42 @@ The following is a list of plugins in different types:
 
 ### DataCollect
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-collect](../plugins/%40pipcook-pipcook-plugins-image-class-data-collect.md) | Collect local or remote images and store them in pascol voc dataset format |
-| [@pipcook/pipcook-plugins-image-mnist-data-collect](../plugins/%40pipcook-pipcook-plugins-image-mnist-data-collect.md) | Mnist handwritten dataset collection, stored in pascol voc dataset format |
-| [@pipcook/pipcook-plugins-image-detection-data-collect](../plugins/%40pipcook-pipcook-plugins-image-detection-data-collect.md) | Collect local or remote target detection data and store them in pascol voc dataset format |
-| [@pipcook/pipcook-plugins-text-class-data-collect](../plugins/%40pipcook-pipcook-plugins-text-class-data-collect.md) | Collect local or remote data of this classification and store it in csv data format |
-| [@pipcook/pipcook-plugins-image-coco-data-collect](../plugins/%40pipcook-pipcook-plugins-image-coco-data-collect.md) | Collect local or remote object detection data in coco format and store it in pascol voc data format |
+@pipcook/plugins-csv-data-collect
+@pipcook/plugins-image-classification-data-collect
+@pipcook/plugins-mnist-data-collect
+@pipcook/plugins-object-detection-coco-data-collect
+@pipcook/plugins-object-detection-pascolvoc-data-collect
 
 
 ### DataAccess
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-access](../plugins/%40pipcook-pipcook-plugins-image-class-data-access.md) | Image classification data access |
-| [@pipcook/pipcook-plugins-text-csv-data-access](../plugins/%40pipcook-pipcook-plugins-text-csv-data-access.md) | Text classification data access |
-| [@pipcook/pipcook-plugins-image-detection-data-access](../plugins/%40pipcook-pipcook-plugins-image-detection-data-access.md) | Simple target detection data access based on tfjs |
-| [@pipcook/pipcook-plugins-detection-detectron-data-access](../plugins/%40pipcook-pipcook-plugins-detection-detectron-data-access.md) | Object detection model access based on detectron2 |
+@pipcook/plugins-coco-data-access
+@pipcook/plugins-csv-data-access
+@pipcook/plugins-pascolvoc-data-access
 
 ### DataProcess
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-process](../plugins/%40pipcook-pipcook-plugins-image-class-data-process.md) | Image classification data preprocessing |
-| [@pipcook/pipcook-plugins-text-class-data-process](../plugins/%40pipcook-pipcook-plugins-text-class-data-process.md) | Text Classification Data Word Segmentation preprocessing |
+@pipcook/plugins-image-data-process
 
 ### ModelLoad
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-local-mobilenet-model-load](../plugins/%40pipcook-pipcook-plugins-local-mobilenet-model-load.md) | MobileNet model loading |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-load](../plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-load.md) | Loading of Bayes classifier |
-| [@pipcook/pipcook-plugins-simple-cnn-model-load](../plugins/%40pipcook-pipcook-plugins-simple-cnn-model-load.md) | Simple CNN model loading |
-| [@pipcook/pipcook-plugins-detection-detectron-model-load](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-load.md) | Loading of object detection model based on detectron2 |
+@pipcook/plugins-bayesian-model-load
+@pipcook/plugins-detectron-fasterrcnn-model-load
+@pipcook/plugins-pytorch-simplecnn-model-load
+@pipcook/plugins-tfjs-mobilenet-model-load
+@pipcook/plugins-tfjs-simplecnn-model-load
 
 ### ModelTrain
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-model-train](../plugins/%40pipcook-pipcook-plugins-model-train.md) | General tfjs model training |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-train](../plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-train.md) | Bayes model training |
-| [@pipcook/pipcook-plugins-detection-detectron-model-train](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-train.md) | Target detection model training based on detectron2 |
+@pipcook/plugins-bayesian-model-train
+@pipcook/plugins-image-classification-pytorch-model-train
+@pipcook/plugins-image-classification-tfjs-model-train
+@pipcook/plugins-object-detection-detectron-model-train
 
 ### ModelEvaluate
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-class-model-evaluate](../plugins/%40pipcook-pipcook-plugins-class-model-evaluate.md) | Classification Model Evaluation |
-| [@pipcook/pipcook-plugins-detection-detectron-model-evaluate](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-evaluate.md) | Evaluation of target detection model based on detectron2 |
-
-### ModelDeploy
-
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-text-class-local-model-deploy](../plugins/%40pipcook-pipcook-plugins-text-class-local-model-deploy.md) | Text Classification local deployment |
-| [@pipcook/pipcook-plugins-image-class-local-model-deploy](../plugins/%40pipcook-pipcook-plugins-image-class-local-model-deploy.md) | Image classification local deployment |
-| [@pipcook/pipcook-plugins-detection-detectron-model-deploy](../plugins/%40pipcook-pipcook-plugins-detection-detectron-model-deploy.md) | Target Detection local deployment |
+@pipcook/plugins-image-data-process
+@pipcook/plugins-bayesian-model-evaluate
+@pipcook/plugins-image-classification-pytorch-model-evaluate
+@pipcook/plugins-image-classification-tfjs-model-evaluate
+@pipcook/plugins-object-detection-detectron-model-evaluate

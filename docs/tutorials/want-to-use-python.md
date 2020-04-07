@@ -1,369 +1,269 @@
-# Want To Use Python?
+# Boa (Python Bridge Layer)
+## Dependencies
 
-The purpose of Pipcook is to serve front-end engineers and promote the development of front-end intelligence. Therefore, Pipcook is developed using JavaScript (TypeScript), giving developers JS-based APIs and running in all pipelines in the JS environment. However, at the current stage in the fields of mathematics, data analysis, data processing, and machine learning, the ecology of python is more prosperous. Therefore, we developed pipcook-python-node, hoping to introduce the entire python ecology into Pipcook, and call the python class library in JavaScript, thereby expanding the capabilities of JavaScript.
+- Python 3
+- Node.js 12
+- Homebrew
+  - `brew --prefix` to be used to get Python's include and library.
 
-## Runtime
+## Get started
 
-python >= 3.6, you can run the command below to get python version
-
-```sh
-$ python --version
-```
-
-to get `pip` version
-
-```sh
-$ pip --version
-```
-
-In fact, when you use the pipcook-python-node api, we will automatically create a virtual environment in the current working directory, but in order to ensure the environment configuration is correct, you can also manually create a python virtual environment, you can run the following command in the current working directory
-
-```sh
-$ pip install virtualenv
-$ virtualenv --no-site-packages pipcook_venv
-```
-
-**We strongly recommend that you use our docker image to run pipcook, so that you no longer need to execute the above commands, and you don't need to worry about the environment, you can refer to the detailed docker information **[**here**](./get-started-with-pipeline-api.md)<br />**
-
-```sh
-$ docker pull pipcook/pipcook:version-0.4
-```
-
-## Example
-
-Here let us show you an example how you can use pipcook-python-node to take advantage of the python ecosystem. This example is about a deep learning training, showing how we use Keras (a well-known tensorflow-based python high-level deep learning framework) for deep convolutional network training in js. For better illustration, we will compare Do the same with python and js
-
-**Python**
-
-```py
-import numpy as np
-import keras
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-from keras.optimizers import SGD
-
-# Generate dummy data
-x_train = np.random.random((100, 100, 100, 3))
-y_train = keras.utils.to_categorical(np.random.randint(10, size=(100, 1)), num_classes=10)
-
-model = Sequential()
-model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(100, 100, 3)))
-
-model.add(Flatten())
-model.add(Dense(256, activation='relu'))
-model.add(Dense(10, activation='softmax'))
-
-sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-model.compile(loss='categorical_crossentropy', optimizer=sgd)
-
-model.fit(x_train, y_train, batch_size=32, epochs=10)
-```
-
-**pipcook-python-node(JavaScript)**
+Let's have a glance on how to call to Python's function:
 
 ```js
-Python.scope('test1', (python) => {
-  const _ = python.nA;
-  python.install('numpy');
-  python.install('keras');
-  python.install('tensorflow');
+const boa = require('boa');
+const os = boa.import('os');
+console.log(os.getpid()); // prints the pid from python.
 
-  const np = python.import('numpy');
-  const keras = python.import('keras');
-  const [Sequential] = python.fromImport('keras.models', ['Sequential']);
-  const [Dense, Dropout, Flatten] = python.fromImport(
-    'keras.layers', ['Dense', 'Dropout', 'Flatten']);
-  const [Conv2D, MaxPooling2D] = python.fromImport('keras.layers', ['Conv2D', 'MaxPooling2D']);
-  const [SGD] = python.fromImport('keras.optimizers', ['SGD']);
+// using keyword arguments namely `kwargs`
+os.makedirs('..', boa.kwargs({
+  mode: 0x777,
+  exist_ok: false,
+}));
 
-  const x_train = np.random.random([100, 100, 100, 3]);
-  const y_train = keras.utils.to_categorical(np.random.randint(10, _({size: [100, 1]})), _({num_classes: 10}));
+// using bult-in functions
+const { range, len } = boa.builtins();
+const list = range(0, 10); // create a range array
+console.log(len(list)); // 10
+console.log(list[2]); // 2
+```
 
-  const model = Sequential();
-  model.add(Conv2D(32, [3, 3], _({activation: 'relu', input_shape: [100, 100, 3]})));
-  model.add(Flatten());
-  model.add(Dense(256, _({activation: 'relu'})));
-  model.add(Dense(10, _({activation: 'softmax'})));
+## How to build
 
-  const sgd = SGD(_({
-    lr: 0.01,
-    decay: 1e-6,
-    momentum: 0.9,
-    nesterov: true
-  }));
-  model.compile(_({
-    loss: 'categorical_crossentropy',
-    optimizer:sgd
-  }));
-  model.fit(x_train, y_train, _({batch_size: 32, epochs: 1}));
+```bash
+# clone this project firstly.
+$ npm install
+$ npm run build
+```
+
+__Verify if the generated library is linked to correct Python version__
+
+When buidling finished, use `objdump -macho -dylibs-used ./build/Release/boa.node` to check if your linked libs are correct as:
+
+```bash
+/build/Release/boa.node:
+  /usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/Python (compatibility version 3.7.0, current version 3.7.0)
+  /usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 400.9.4)
+  /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1252.250.1)
+```
+
+## API Design Principle
+
+A Connection between 2 languages(ecosystems) has huge works to be done, even though this package is working only on the unilateral from Python to JavaScript. The most difficult part is that for developers, they need to understand the correspondence between the two languages and ecosystems. Therefore, a good design principle will make developers reduce learning costs.
+
+### `boa`
+
+`require('boa')` returns the root object, which will be your entry point to all Python functions, and it provides these methods:
+
+#### `.builtins()`
+
+Gets the Python's [built-in functions](https://docs.python.org/3/library/functions.html), for example:
+
+```js
+const { len, range } = boa.builtins();
+len([1, 2, 3]); // 3
+len(range(0, 10)); // 10
+```
+
+#### `.import(mod)`
+
+Imports a Python module in your current environment, the module includes:
+
+- system modules like `os`, `string` and `re`.
+- third-party modules like `numpy` and `request` via [pip](https://pip.pypa.io/en/stable/installing/).
+
+To call the function, you should pass a `mod` argument for the module that you want to import.
+
+```js
+const os = boa.import('os');
+const str = boa.import('string');
+const numpy = boa.import('numpy');
+```
+
+This returns an instance of [`PythonObjectWrapper`](#class-PythonObjectWrapper) or a JavaScript primitive value for some special cases.
+
+#### `.kwargs(map)`
+
+Creates a Python's keyword arguments, Python provides a way to map arguments with names:
+
+```python
+fs.open('./a-file-to-open', mode=0e777)
+```
+
+Correspondingly, this function is used to represent a keyword arguments, and the specific usage is very easy to understand:
+
+```js
+const fs = boa.import('fs');
+fs.open('./a-file-to-open', boa.kwargs({ mode: 0e777 }));
+```
+
+#### `.with(ctx, fn)`
+
+It's equivalent to the _with-statement_ in Python, this would be called with an object `ctx` that supports the context management protocol (that is, has `__enter__()` and `__exit__()` methods). And 2nd `fn` is corresponding to the execution block, A simple example is as follows:
+
+```js
+boa.with(localcontext(), (ctx) => {
+  // execution
+  // the ctx is localcontext().__enter().
 });
 ```
 
-From the comparison of the above two pieces of code, we can see that we try to make the most of the pipcook-python-node API as python as possible. Due to the differences between the two languages, the above two pieces of code are different as follows：
+#### `.eval(str)`
 
-- Because Python supports named arguments for functions and JS does not, so we use `python.nA`  instead. NA stands for named argument. As in the above code, we assign `python.nA`  to `_` , so we can use `model.add(Dense(256, _({activation: 'relu'))))`  instead of `model.add(Dense(256, activation='relu'))`
-- pipcook will use the pipcook_venv python virtual environment of the workspace. If it is detected that the current workspace does not have this virtual environment, we will create one. You can use our API: python.install to install the python library, or you can manually enter this virtual environment to install For more information about the python virtual environment, you can refer [here](https://virtualenv.pypa.io/en/latest/)
-- We provide API: python.import instead of the native import keyword
-- We will introduce more pipcook-python-node APIs later
-
-## API Introduction
-
-#### Python.scope(scopeName: string, callback: Function)
-
-- scopeName: scope is used to identify a python workspace. Each scope has its own independent execution environment. In pipcook-python-node, multiple workspaces can be defined simultaneously, corresponding to multiple ipython kernels.
-- callback: This callback function will pass an instance of the Python class to the user. This instance is bound to a workspace that can perform the corresponding operations and python code
-- Return: Promise <void>
-
-This function is a static method of the Python class. It returns a python instance for the user. After that, you can use various methods of the python instance to execute python commands.
-
-#### python.import(packageName: string)
-
-- PackageName: the name of the python library
-- Return: PythonObject
-
-This method is used to introduce the python package, which is equivalent to import xxx in python. The method returns a python object that we abstract and define in js.
-
-#### python.fromImport(packageName: stirng, importNames: string [])
-
-- PackageName: the name of the python library
-- importNames: the names to be loaded
-- Return: PythonObject []
-
-Similar to from ... import ..., the names of PythonObjects will be returned in the order of the importName array
-
-#### python.install(packageName: string, version ?: string)
-
-- PackageName: the name of the python library
-- version: version
-- Return: void
-
-This method is used to install python packages, which is equivalent to executing pip install xxx. If the version is not specified, the latest stable version will be installed. If you need to use more complex pip install, you can refer to the python.runshell command
-
-#### python.runshell(command: string)
-
-- Command: the shell command you want to execute
-- Return: void
-
-This method is used to execute commands in the shell and can be any command supported by the current system
-
-#### python.createNumber(number: number)
-
-- number: number
-- Return: PythonObject
-
-Create a PythonObject object representing the basic type-number in python. In fact, for basic types, it is also possible to directly pass the basic type of js into the function, because we will do some invisible conversion automatically, but we recommend that you use PythonObject To avoid some unexpected situations
-
-#### python.createString(string: string, isRaw ?: boolean)
-
-- string: string
-- IsRaw: whether to use raw strings, equivalent to r '.....' in python
-- Return: PythonObject
-
-Create a PythonObject object representing a primitive type in Python-a string
-
-#### python.createBoolean(value: boolean)
-
-- value: true or false
-- Return: PythonObject
-
-Create a PythonObject object representing a basic type-boolean in Python
-
-#### python.createNone()
-
-- Return: PythonObject
-
-Create a PythonObject object representing the basic type in Python-None
-
-#### python.createTuple(value: PythonObject [])
-
-- Value: an array of primitive types or an array of PyhtonObject
-- Return PythonObject
-
-Create a PythonObject object with basic types-tuples in Python
-
-#### python.createList(value: PythonObject [])
-
-- Value: an array of primitive types or an array of PyhtonObject
-- Return PythonObject
-- <br />
-
-Create a Basic Type in Python-List of PythonObject Objects
-
-#### python.createDictionary(value: object)
-
-- Value: object
-- Return PythonObject
-
-Currently only supports key, value is PythonObject or dictionary of basic type
-
-#### python.equal(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python comparison operator ==
-
-#### python.notEqual(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python comparison operator! =
-
-#### python.larger(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python comparison operator a> b
-
-#### python.smaller(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python comparison operator a <b
-
-#### python.largerEqual(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python comparison operator a> = b
-
-#### python.smallerEqual(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python comparison operator a <= b
-
-#### python.largerEqual(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python comparison operator a> = b
-
-#### python.and(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python logical operators a and b
-
-#### python.or(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python logical operators a or b
-
-#### python.not(object: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-- Return: PythonObject
-
-This method compares two python objects, which is equivalent to the python logical operator not
-
-#### python.if(condition: PythonObject, execution: Function)
-
-- Condition: condition of the if statement
-- execution: the contents of an if statement
-
-This method is equivalent to a conditional operation. When using pipcook-python-node, please use the if method provided by us instead of the js native if
-
-#### python.add(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-
-This method operates on two python objects, equivalent to a + b in python
-
-#### python.minus(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-
-This method operates on two python objects, equivalent to a-b in python
-
-#### python.multiply(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-
-This method operates on two python objects, equivalent to a * b in python
-
-#### python.divide(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-
-This method operates on two python objects, equivalent to a / b in python
-
-#### python.add(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-
-This method operates on two python objects, equivalent to a + b in python
-
-#### python.mod(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-
-This method operates on two python objects, equivalent to a% b in python
-
-#### python.pow(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-
-This method operates on two python objects, equivalent to a ** b in python
-
-#### python.floorDivide(object1: PythonObject, object2: PythonObject)
-
-- object1: PythonObject
-- object2: PythonObject
-
-This method operates on two python objects, equivalent to a // b in python
-
-#### python.runRaw(raw: string)
-
-- raw: the python statement to be executed
-- Return: PythonObject
-
-This method is used to execute native python statements. This method is not recommended. If you are sure that the API we provide at this stage cannot meet your requirements, you can use this method, mainly using Python.convert (PythonObject) escape, for example:
+Execute Python expression in the context specified, here is a simple call:
 
 ```js
-const number1 = python.createNumber(2)
-const number2 = python.createNumber(3)
-const result = pyhton.runRaw(`${Python.convert(number1)} + ${Python.convert(number2)}`);
+boa.eval('len([10, 20])');
+// 2
 ```
 
-#### python.evaluate(object: PythonObject)
+Alternatively, developers can use [tagged template literal][] to pass variables that have been defined in JavaScript:
 
-- object: PythonObject
-- Return: `{ type: string; value: string; }`
+```js
+const elem = np.array([[1, 2, 3], [4, 5, 6]], np.int32);
+boa.eval`${elem} + 100`;  // do matrix + operation
+boa.eval`len(${elem})`;   // equivalent to `len(elem)`
+```
 
-This method is used to return the value of the python object represented by the current PythonObject. The returned value includes the python object type and the value of the python object, both of which are string types. We will support custom converters in the future, which can be converted into js objects according to type and value
+For multi-line code, Python 3 does not provide a mechanism to return a value, so the `eval` function can only handle single-line Python expressions.
 
-#### python.createNumpyFromTf(tensor: tf.Tensor)
-• tensor: tf.Tensor: a tfjs tensor<br />• Return: PythonObject
+#### `.bytes(str)`
 
-Convert tfjs tensor in js to numpy object in python
+A shortcut to create a Python's bytes literal from JavaScript string, it's equivalent to `b'foobar'` in Python.
 
-#### python.reconnect()
-Refresh the ipython kernel. In some cases, if you execute some installation statements, you may need to rechain the kernel to take effect.
+```js
+const { bytes } = boa;
+bytes('foobar'); // "b'foobar'"
+```
+
+The `bytes(str)` function simply creates a plain object that is used to pass a string to a Python function as a bytes literal, but does not correspond to any Python object itself. Alternatively, you could use Python's [builtin class `bytes`](https://docs.python.org/3/library/stdtypes.html#bytes) for creating a real object:
+
+```js
+const { bytes } = boa.builtins();
+const foobar = Buffer.from('foobar');
+bytes.fromhex(foobar.toString('hex'));
+// "b'foobar'"
+```
+
+### Class `PythonObjectWrapper`
+
+This class represents a wrapper for the corresponding object in Python runtime, it must be returned only from [`boa`](#boa) methods like `boa.builtins` and `boa.import`.
+
+#### creation of instance
+
+In order for developers to use Python objects seamlessly, creating a [`PythonObjectWrapper`](#class-PythonObjectWrapper) requires some necessary steps.
+
+First, check the type of the Python object under instance. If it is one of the following types, it will be converted to the corresponding primitive type.
+
+| python type   | primitive    |
+|---------------|--------------|
+| `int`,`float` | `number`     |
+| `int64`       | `bigint`     |
+| `float64`     | `bigdecimal` |
+| `bool`        | `boolean`    |
+| `str`         | `string`     |
+| `NoneType`    | `null`       |
+
+If the type of the object that needs to be wrapped is not in the above primitive, a temporary object will be created, and methods and properties will be defined through `Object.defineProperties`.
+
+On an instance of [`PythonObjectWrapper`](#class-PythonObjectWrapper), developers can directly obtain values through the property way, just like using those in Python. This is because we use [ES6 Proxy][], so the last step, we created a `Proxy` Object, configured with 3 trap handlers, `get`, `set` and `apply`, and finally returns this proxy object.
+
+#### property accessor
+
+At [Python][] language, an object has _attr_ and _item_ accessors, and they use different expressions:
+
+- `x.y` is for _attr_ accessor
+- `m[n]` is for _item_ accessor
+
+Unfortunately, [ES6 Proxy][] does not distinguish the above things. Therefore, it's needed to define an algorithm to confirm their priority in a time of operation.
+
+- given a `name` variable which is passed by [ES6 Proxy][]'s `get` handler.
+- check the `name` property is owned by the JavaScript object via `.hasOwnProperty()`.
+  - return the property if it's truthy.
+- check the `name` property is owned by the object's class via `.constructor.prototype.hasOwnProperty()`.
+  - return the property if it's truthy.
+- check if `name` is a numeric representation.
+  - if it's truthy, call the internal method `.__getitem__(i)` for item accessor.
+  - otherwise
+    - try to access the _attr_ via the internal method `.__getattr__()`.
+      - if no exceptions, [create the new instance](#creation-of-instance) from the value and return.
+    - try to access the _item_ via the internal method `.__getitem__()`.
+      - if no exceptions, [create the new instance](#creation-of-instance) from the value and return.
+    - otherwise, return `undefined`.
+
+To better understand the algorithm above, let's look at some examples:
+
+```js
+const boa = require('boa');
+const { abs, tuple } = boa.builtins();
+
+{
+  console.log(abs(-100));  // 100
+  console.log(abs(100));   // 100
+}
+{
+  const re = boa.import('re');
+  const m = re.search('(?<=abc)def', 'abcdef');
+  console.log(m.group(0)); // 'def'
+}
+{
+  // make sure the `numpy` is in your current python env.
+  const np = boa.import('numpy');
+  const x0 = np.array([[1, 2, 3], [4, 5, 6]], np.int32);
+  const x1 = np.arange(15).reshape(3, 5);
+  const x2 = np.zeros(tuple([3, 4]));
+}
+```
+
+As mentioned above, in addition to dynamically obtaining objects from the [Python][] runtime, the class `PythonObjectWrapper` also defines the following public methods built into JavaScript.
+
+#### `.prototype.toString()`
+
+Returns a string for representing the object, internally it calls the CPython's [`PyObject_Str`](https://docs.python.org/3/c-api/object.html#c.PyObject_Str).
+
+```js
+console.log(boa.import('os').toString());
+// "<module 'os' from '/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/os.py'>"
+```
+
+#### `.prototype.slice(start, stop, step)`
+
+Returns a new wrapped slice object, it's equivalent to `s[start:stop:step]`. For example:
+
+```js
+const { range } = boa.builtins();
+const mlist = range(0, 10); // [0...10]
+const s = mlist.slice(2, 10, 1); // [2...10]
+```
+
+> Note: a new tc39 proposal [slice notation](https://github.com/tc39/proposal-slice-notation) attempts to add this kind of syntax, it'll be merged when it's land on v8 engine. Or try with `eval` in Python's syntax:
+>
+> ```js
+> boa.eval`${mlist}[0...10]`
+> boa.eval`${mlist}[1:10:2]`
+> ```
+
+#### `.prototype.__hash__()`
+
+Returns the hash value of this object, internally it calls the CPython's [`PyObject_Hash`](https://docs.python.org/3/c-api/object.html#c.PyObject_Hash).
+
+> __Magic methods__ there are some others like `__getitem__`, `__setitem__`, `__getattr__`, `__setattr__` which are used internally in this library, it's not recommended to actively use them at user-land.
+
+#### `.prototype[Symbol.toPrimitive](hint)`
+
+Returns a corresponding primitive value for this object, see [`Symbol.toPrimitive` on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive) for more details.
+
+## Tests
+
+To run the full tests:
+
+```bash
+$ npm test
+```
+
+See [./tests](./tests) for more testing details.
+
+[Python]: https://docs.python.org/3/
+[ES6 Proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+[tagged template literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Description
+
