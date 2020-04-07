@@ -18,8 +18,7 @@
     "tsc": "ets && tsc -p tsconfig.json",
     "ci": "npm run lint && npm run cov && npm run tsc",
     "autod": "autod",
-    "lint": "eslint . --ext .ts",
-    "clean": "ets clean"
+    "lint": "eslint . --ext .ts"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^1.7.0",
