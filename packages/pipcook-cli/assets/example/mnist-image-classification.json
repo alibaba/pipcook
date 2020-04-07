@@ -1,0 +1,30 @@
+{
+  "plugins": {
+    "dataCollect": {
+      "package": "@pipcook/plugins-mnist-data-collect",
+      "params": {
+        "trainingCount": 8000,
+        "testCount": 2000
+      }
+    },
+    "dataAccess": {
+      "package": "@pipcook/plugins-pascolvoc-data-access"
+    },
+    "modelLoad": {
+      "package": "@pipcook/plugins-image-data-process",
+      "params": {
+        "resize": [256,256]
+      }
+    },
+    "modelTrain": {
+      "package": "@pipcook/plugins-tfjs-simplecnn-model-load",
+      "params": {
+        "epochs": 15,
+        "batchSize": 16
+      }
+    },
+    "modelEvaluate": {
+      "package": "@pipcook/plugins-image-classification-tfjs-model-evaluate"
+    }
+  }
+}
