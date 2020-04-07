@@ -35,8 +35,8 @@ program
 
 // start the pipeline. Actually same as node xxx at current stage
 program
-  .command('start [fileName]')
-  .description('start pipeline in specified file or run index.js by default')
+  .command('run [fileName]')
+  .description('run pipeline with config file')
   .action((fileName) => {
     start(fileName);
   });

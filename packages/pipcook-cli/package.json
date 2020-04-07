@@ -27,7 +27,8 @@
     "ora": "^3.4.0",
     "request": "^2.88.2",
     "semver": "^6.3.0",
-    "yaml": "^1.7.2"
+    "yaml": "^1.7.2",
+    "@pipcook/pipcook-core": "^0.5.4"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {
