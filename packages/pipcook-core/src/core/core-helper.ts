@@ -62,10 +62,10 @@ export async function assignLatestResult(updatedType: string, result: any, self:
  * @param components: EscherComponent 
  * @param self: the pipeline subject
  */
-export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType='normal', saveModelCallback?: Function) {
+export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal', saveModelCallback?: Function) {
   const firstComponent = components[0];
   firstComponent.status = 'running';
-  logCurrentExecution(firstComponent, logType)
+  logCurrentExecution(firstComponent, logType);
   const insertParams = {
     pipelineId: self.pipelineId,
     modelDir: path.join(self.logDir, 'model'),
@@ -78,7 +78,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
   self.currentIndex = 0;
   for (let i = 1; i < components.length; i++) {
     // rxjs pipe: serialize all components
-    (function execute(component, assignLatestResult, updatedType, self, flatMapArray)  {
+    (function execute(component, assignLatestResult, updatedType, self, flatMapArray) {
       const flatMapObject = flatMap((result) => {
         component.previousComponent.status = 'success';
         self.currentIndex++;
@@ -87,7 +87,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
           flatMap(() => {
             return component.observer(self.latestSampleData, self.latestModel, insertParams);
           })
-        )  
+        );  
       });
       flatMapArray.push(flatMapObject);
     })(components[i], assignLatestResult, self.updatedType, self, flatMapArray);
@@ -108,7 +108,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
  */
 export function linkComponents(components: PipcookComponentResult[]) {
   for (let i = 1; i < components.length; i++) {
-    components[i].previousComponent = components[i-1];
+    components[i].previousComponent = components[i - 1];
   }
 }
 
@@ -128,9 +128,9 @@ export function assignFailures(components: PipcookComponentResult[]) {
           if (component.status === 'running') {
             component.status = 'failure';
           }
-        })
-      })
+        });
+      });
     }
-  })
+  });
 }
 

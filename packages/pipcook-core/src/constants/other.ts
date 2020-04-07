@@ -8,5 +8,5 @@ export const MODEL = 'model';
 export const EVALUATE = 'evaluate';
 export const DEPLOYMENT = 'deployment';
 export const MERGE = 'merge';
-export const MODELTOSAVE = 'modeltosave'
+export const MODELTOSAVE = 'modeltosave';
 export const ORIGINDATA = 'origindata';

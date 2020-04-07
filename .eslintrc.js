@@ -20,6 +20,30 @@ module.exports = {
       {
         'functions': false,
       }
-    ]
-  },
+    ],
+    'comma-spacing': [
+      'error',
+      {
+        'before': false, 'after': true
+      }
+    ],
+    'indent': [ 'error', 2 ],
+    'keyword-spacing': [
+      'error', { 'before': true }
+    ],
+    'array-bracket-spacing': [ 'error', 'always' ],
+    'space-infix-ops': 'error',
+    'object-curly-spacing': [ 'error', 'always' ],
+    'semi': [ 'error', 'always' ],
+    'eol-last': [ 'error', 'always' ],
+    'comma-dangle': [ 'error', 'never' ],
+    'no-multi-spaces': 'error',
+    'no-multiple-empty-lines': 'error',
+    'no-irregular-whitespace': 'error',
+    'arrow-parens': ['error', 'always'],
+    'arrow-spacing': [ 'error', { before: true, after: true } ],
+    'block-spacing': 'error',
+    'brace-style': [ 'error', '1tbs', { allowSingleLine: true } ],
+    'comma-style': 'error'
+  }
 };

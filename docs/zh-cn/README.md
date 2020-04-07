@@ -58,7 +58,6 @@ Pipcook 的核心是一条流水线（Pipeline）， 在这个流水线中，将
   - [新手入门——命令行工具](./tutorials/get-started-with-cli.md)
   - [如何开发一个插件](./tutorials/how-to-develop-a-plugin.md)
   - [如何在 Pipcook 中使用 Python](./tutorials/want-to-use-python.md)
-  - [如何使用一个之前就训练好的模型](./tutorials/load-a-pre-trained-model-in-pipcook.md)
 
 - 开发者
   - [开发者指南](./devel/developer-guide.md)

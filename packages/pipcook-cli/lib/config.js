@@ -28,7 +28,7 @@ module.exports = {
     "@pipcook/pipcook-plugins-text-class-data-collect",
     "@pipcook/pipcook-plugins-text-class-local-model-deploy",
     "@pipcook/pipcook-plugins-text-csv-data-access",
-    "@pipcook/pipcook-app",
+    "@pipcook/pipcook-app"
   ],
   pipcookLogName: 'pipcook-output'
-}
+};

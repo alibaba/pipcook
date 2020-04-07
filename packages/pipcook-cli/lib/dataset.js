@@ -26,16 +26,18 @@ const dataset = async (cmdObj) => {
         version: "1.0",
         year: 2014,
         contributor: "Microsoft COCO group",
-        date_created: "2015-01-27 09:11:52.357475",
+        date_created: "2015-01-27 09:11:52.357475"
       },
       images: [],
-      licenses: [{
-      url: "http:\/\/creativecommons.org\/licenses\/by-nc-sa\/2.0\/",
-      id: 1,
-      name: "Attribution-NonCommercial-ShareAlike License",
-      }],
+      licenses: [
+        {
+          url: "http:\/\/creativecommons.org\/licenses\/by-nc-sa\/2.0\/",
+          id: 1,
+          name: "Attribution-NonCommercial-ShareAlike License"
+        }
+      ],
       annotations: [],
-      categories: [],
+      categories: []
     };
 
     let imageNum = 1;
@@ -100,7 +102,7 @@ const dataset = async (cmdObj) => {
           let imageName = image.split(path.sep);
           imageName = imageName[imageName.length - 1];
           fse.copySync(image, path.join(process.cwd(), 'merge-data', 'images', imageName));
-        })
+        });
       } finally {
         // TODO(yorkie): remove the try-catch block.
       } 
@@ -108,7 +110,6 @@ const dataset = async (cmdObj) => {
 
     fse.outputJSONSync(path.join(process.cwd(), 'merge-data', 'annotation.json'), newJson);
   }
-  
 };
 
 module.exports = dataset;

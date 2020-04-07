@@ -91,7 +91,7 @@ export class PipcookRunner {
   }
 
   init = async (components: PipcookComponentResult[]) => {
-    this.startTime = Date.now()
+    this.startTime = Date.now();
     logStartExecution(this);
     if (!components || components.length <= 0) {
       throw new Error('Please specify at least one plugin to run!');
