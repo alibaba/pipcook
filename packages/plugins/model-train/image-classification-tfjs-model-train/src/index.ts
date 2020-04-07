@@ -1,4 +1,4 @@
-import {ImageDataset, ModelTrainType, TfJsLayersModel, ModelTrainArgsType, ImageDataLoader} from '@pipcook/pipcook-core';
+import { ImageDataset, ModelTrainType, TfJsLayersModel, ModelTrainArgsType, ImageDataLoader } from '@pipcook/pipcook-core';
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
@@ -47,7 +47,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
     const trainConfig: any = {
       epochs: epochs,
       batchesPerEpoch: parseInt(String(count / batchSize))
-    }
+    };
 
     console.log('create train dataset');
     const trainDataSet = await createDataset(trainLoader, metaData.labelMap);
@@ -73,12 +73,12 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
     const result: TfJsLayersModel = {
       ...model,
       model: trainModel
-    }
+    };
     return result;
   } catch (err) {
     console.log('[ERROR] model trainer', err);
     throw err;
   }
-}
+};
 
 export default ModelTrain;

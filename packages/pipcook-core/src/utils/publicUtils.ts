@@ -73,7 +73,7 @@ export async function parseAnnotation(filename: string) {
  * @param: full path of file that will be stored
  */
 export function download(url: string, fileName: string) {
-  fs.ensureFileSync(fileName)
+  fs.ensureFileSync(fileName);
   return new Promise((resolve, reject) => {
     const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
     const file = fs.createWriteStream(fileName);
@@ -212,8 +212,8 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
       license: 1,
       file_name: xmlJson.annotation.filename[0],
       coco_url: xmlJson.annotation.folder[0],
-      id: i+1
-    }
+      id: i + 1
+    };
     if (xmlJson.annotation.size && xmlJson.annotation.size[0]) {
       imageItem.width = parseInt(xmlJson.annotation.size[0].width[0]);
       imageItem.height = parseInt(xmlJson.annotation.size[0].height[0]);
@@ -241,16 +241,16 @@ export async function convertPascol2CocoFileOutput(files: string[], targetPath: 
         image_id: i,
         category_id: id,
         segmentation: [],
-        iscrowd: 0,
+        iscrowd: 0
       };
       if (item.bndbox && item.bndbox[0]) {
         const width = parseInt(item.bndbox[0].xmax[0]) - parseInt(item.bndbox[0].xmin[0]);
         const height = parseInt(item.bndbox[0].ymax[0]) - parseInt(item.bndbox[0].ymin[0]);
-        cocoItem.bbox = [parseInt(item.bndbox[0].xmin[0]), parseInt(item.bndbox[0].ymin[0]), width, height];
+        cocoItem.bbox = [ parseInt(item.bndbox[0].xmin[0]), parseInt(item.bndbox[0].ymin[0]), width, height ];
         cocoItem.area = Number(width * height);
       }
       cocoJson.annotations.push(cocoItem);
-    })
+    });
   }
   fs.outputJSONSync(targetPath, cocoJson);
 }
@@ -276,7 +276,7 @@ export function getOsInfo() {
         resolve('other');
       }
     });
-  })
+  });
 }
 
 export async function base64ToTfjsTensor(input: string[]) {

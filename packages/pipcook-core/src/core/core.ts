@@ -8,16 +8,16 @@ import * as path from 'path';
 const uuidv1 = require('uuid/v1');
 
 import config from '../config';
-import {PipcookComponentResult} from '../types/component';
-import {UniDataset} from '../types/data/data';
-import {PipcookModel} from '../types/model';
-import {DeploymentResult, EvaluateResult} from '../types/other';
-import {getLog, createPipeline, assignLatestResult, linkComponents, assignFailures} from './core-helper';
-import {logStartExecution, logError, logComplete} from '../utils/logger';
-import {PLUGINS} from '../constants/plugins';
-import {DataCollect, DataAccess, DataProcess, ModelLoad, ModelTrain, ModelEvaluate, ModelDeploy} from '../components/PipcookLifeCycleComponent';
-import {DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELTRAIN, MODELEVALUATE, MODELDEPLOY} from '../constants/plugins';
-import {RunConfigI} from '../types/config';
+import { PipcookComponentResult } from '../types/component';
+import { UniDataset } from '../types/data/data';
+import { PipcookModel } from '../types/model';
+import { DeploymentResult, EvaluateResult } from '../types/other';
+import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './core-helper';
+import { logStartExecution, logError, logComplete } from '../utils/logger';
+import { PLUGINS } from '../constants/plugins';
+import { DataCollect, DataAccess, DataProcess, ModelLoad, ModelTrain, ModelEvaluate, ModelDeploy } from '../components/PipcookLifeCycleComponent';
+import { DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELTRAIN, MODELEVALUATE, MODELDEPLOY } from '../constants/plugins';
+import { RunConfigI } from '../types/config';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -161,28 +161,28 @@ export class PipcookRunner {
             '..', '..', 'package.json')).version;
         let factoryMethod: Function;
 
-        switch(pluginType) {
-          case DATACOLLECT:
-            factoryMethod = DataCollect;
-            break;
-          case DATAACCESS:
-            factoryMethod = DataAccess;
-            break;
-          case DATAPROCESS:
-            factoryMethod = DataProcess;
-            break;
-          case MODELLOAD:
-            factoryMethod = ModelLoad;
-            break;
-          case MODELTRAIN:
-            factoryMethod = ModelTrain;
-            break;
-          case MODELEVALUATE:
-            factoryMethod = ModelEvaluate;
-            break;
-          case MODELDEPLOY:
-            factoryMethod = ModelDeploy;
-            break;
+        switch (pluginType) {
+        case DATACOLLECT:
+          factoryMethod = DataCollect;
+          break;
+        case DATAACCESS:
+          factoryMethod = DataAccess;
+          break;
+        case DATAPROCESS:
+          factoryMethod = DataProcess;
+          break;
+        case MODELLOAD:
+          factoryMethod = ModelLoad;
+          break;
+        case MODELTRAIN:
+          factoryMethod = ModelTrain;
+          break;
+        case MODELEVALUATE:
+          factoryMethod = ModelEvaluate;
+          break;
+        case MODELDEPLOY:
+          factoryMethod = ModelDeploy;
+          break;
         }
         const component = factoryMethod(module, config.plugins[pluginType].params || {});
         component.version = version;

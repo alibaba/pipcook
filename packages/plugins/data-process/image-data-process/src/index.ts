@@ -1,4 +1,4 @@
-import {DataProcessType, ImageDataset, ArgsType, ImageDataLoader} from '@pipcook/pipcook-core';
+import { DataProcessType, ImageDataset, ArgsType, ImageDataLoader } from '@pipcook/pipcook-core';
 
 import Jimp from 'jimp';
 import cliProgress from 'cli-progress';
@@ -24,7 +24,7 @@ const processImage = async (loader: ImageDataLoader, resize: number[], normalize
     await image.writeAsync(dataPath.data);
   }
   bar1.stop();
-}
+};
 
 /**
  * this is the data process plugin to process pasvoc format data. It supports resize the image and normalize the image
@@ -33,11 +33,11 @@ const processImage = async (loader: ImageDataLoader, resize: number[], normalize
  */
 const pascolVocDataProcess: DataProcessType = async (data: ImageDataset, args: ArgsType): Promise<ImageDataset> => {
   const {
-    resize = [256, 256],
+    resize = [ 256, 256 ],
     normalize = false
   } = args;
 
-  const {trainLoader, validationLoader, testLoader} = data;
+  const { trainLoader, validationLoader, testLoader } = data;
 
   if (trainLoader) {
     console.log('process train data');
@@ -57,10 +57,10 @@ const pascolVocDataProcess: DataProcessType = async (data: ImageDataset, args: A
   const result = data;
 
   result.metaData.feature = {
-    shape: [resize[0], resize[1], 3]
-  }
+    shape: [ resize[0], resize[1], 3 ]
+  };
 
   return result;
-}
+};
 
 export default pascolVocDataProcess;

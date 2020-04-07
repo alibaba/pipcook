@@ -1,4 +1,4 @@
-import {ImageDataset, ModelEvaluateType, TfJsLayersModel, ImageDataLoader, EvaluateResult} from '@pipcook/pipcook-core';
+import { ImageDataset, ModelEvaluateType, TfJsLayersModel, ImageDataLoader, EvaluateResult } from '@pipcook/pipcook-core';
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
@@ -34,39 +34,39 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
 const ModelEvalute: ModelEvaluateType = 
   async (data: ImageDataset, model: TfJsLayersModel): Promise<EvaluateResult> => {
   
-  let batchSize = 16;
+    let batchSize = 16;
 
-  const { testLoader, metaData } = data;
+    const { testLoader, metaData } = data;
 
-  // sample data must contain test data
-  if (testLoader) {
-    const count = await testLoader.len();
+    // sample data must contain test data
+    if (testLoader) {
+      const count = await testLoader.len();
 
-    const batches = parseInt(String(count / batchSize));
+      const batches = parseInt(String(count / batchSize));
 
-    const testDataSet = await createDataset(testLoader, metaData.labelMap);
+      const testDataSet = await createDataset(testLoader, metaData.labelMap);
 
-    const ds = testDataSet.repeat().batch(batchSize);
-    let evaluateResult: any = await model.model.evaluateDataset(ds as tf.data.Dataset<{}>, {
-      batches
-    });
+      const ds = testDataSet.repeat().batch(batchSize);
+      let evaluateResult: any = await model.model.evaluateDataset(ds as tf.data.Dataset<{}>, {
+        batches
+      });
 
-    if (!Array.isArray(evaluateResult)) {
-      evaluateResult = [evaluateResult];
-    }
+      if (!Array.isArray(evaluateResult)) {
+        evaluateResult = [ evaluateResult ];
+      }
 
-    let metrics = ['loss'];
-    if (model.metrics) {
-      metrics = [...metrics, ...model.metrics];
-    }
-    const result: any = {};
-    metrics.forEach((metric, index) => {
-      result[metric] = evaluateResult[index].dataSync();
-    });
-    return result;
-  } 
+      let metrics = [ 'loss' ];
+      if (model.metrics) {
+        metrics = [ ...metrics, ...model.metrics ];
+      }
+      const result: any = {};
+      metrics.forEach((metric, index) => {
+        result[metric] = evaluateResult[index].dataSync();
+      });
+      return result;
+    } 
   
-  return {};
-}
+    return {};
+  };
 
 export default ModelEvalute;

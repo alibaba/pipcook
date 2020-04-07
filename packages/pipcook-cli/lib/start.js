@@ -1,7 +1,7 @@
 const childProcess = require('child_process');
 const ora = require('ora');
 const spinner = ora();
-const {PipcookRunner} = require('@pipcook/pipcook-core');
+const { PipcookRunner } = require('@pipcook/pipcook-core');
 
 const start = async (fileName) => {
   if (!fileName) {

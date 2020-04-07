@@ -1,4 +1,4 @@
-import {ModelLoadType, ImageDataset, ModelLoadArgsType, PytorchModel, getMetadata, getModelDir} from '@pipcook/pipcook-core';
+import { ModelLoadType, ImageDataset, ModelLoadArgsType, PytorchModel, getMetadata, getModelDir } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as path from 'path';
 
@@ -11,15 +11,15 @@ const boa = require('@pipcook/boa');
 const assertionTest = (data: ImageDataset) => {
   assert.ok(data.metaData.feature, 'Image feature is missing');
   assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 3d');
-}
+};
 
 const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: ModelLoadArgsType): Promise<PytorchModel> => {
   let {
     modelId,
     modelPath,
     outputShape,
-    learningRate=0.001,
-    momentum=0.9
+    learningRate = 0.001,
+    momentum = 0.9
   } = args;
 
   let inputShape: number[];
@@ -28,7 +28,7 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
   if (!modelId && !modelPath) {
     assertionTest(data);
     inputShape = data.metaData.feature.shape;
-    outputShape = Object.keys(data.metaData.labelMap).length
+    outputShape = Object.keys(data.metaData.labelMap).length;
   }
 
   if (modelId) {
@@ -43,7 +43,7 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
   const F = boa.import('torch.nn.functional');
   const optim = boa.import('torch.optim');
   const torch = boa.import('torch');
-  const {list} = boa.builtins();
+  const { list } = boa.builtins();
 
   let device = 'cpu';
   if (torch.cuda.is_available()) {
@@ -71,23 +71,23 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
   
   
     forward(x: any) {
-      x = this.pool(F.relu(this.conv1(x)))
-      x = this.pool(F.relu(this.conv2(x)))
-      const size = list(x.size())
-      x = x.view(-1, size[1] * size[2] * size[3])
-      x = F.relu(this.fc1(x))
-      x = F.relu(this.fc2(x))
-      x = this.fc3(x)
-      return x
+      x = this.pool(F.relu(this.conv1(x)));
+      x = this.pool(F.relu(this.conv2(x)));
+      const size = list(x.size());
+      x = x.view(-1, size[1] * size[2] * size[3]);
+      x = F.relu(this.fc1(x));
+      x = F.relu(this.fc2(x));
+      x = this.fc3(x);
+      return x;
     }
   }
   const net = new Net();
   net.to(device);
 
   if (modelId) {
-    net.load_state_dict(torch.load(path.join(getModelDir(modelId), 'model.pth')))
+    net.load_state_dict(torch.load(path.join(getModelDir(modelId), 'model.pth')));
   } else if (modelPath) {
-    net.load_state_dict(torch.load(modelPath))
+    net.load_state_dict(torch.load(modelPath));
   }
   
   const criterion = nn.CrossEntropyLoss();
@@ -104,8 +104,8 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
       const outputs = this.model(images);
       return outputs;
     }
-  }
+  };
   return pipcookModel;
-}
+};
 
 export default pytorchCnnModelLoad;

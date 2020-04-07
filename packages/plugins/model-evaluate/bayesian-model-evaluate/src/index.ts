@@ -1,4 +1,4 @@
-import {ModelEvaluateType, PipcookModel, CsvDataset, EvaluateResult, CsvDataLoader, CsvMetaData, ArgsType} from '@pipcook/pipcook-core';
+import { ModelEvaluateType, PipcookModel, CsvDataset, EvaluateResult, CsvDataLoader, CsvMetaData, ArgsType } from '@pipcook/pipcook-core';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
@@ -15,8 +15,8 @@ const createDataset = async (dataLoader: CsvDataLoader, metaData: CsvMetaData) =
     rawClass.push(data.label);
   }
 
-  return {rawData, rawClass};
-}
+  return { rawData, rawClass };
+};
 
 const bayesianModelEvaluate: ModelEvaluateType 
   = async (data: CsvDataset, model: PipcookModel, args: ArgsType): Promise<EvaluateResult> => {
@@ -26,20 +26,20 @@ const bayesianModelEvaluate: ModelEvaluateType
     const importlib = boa.import('importlib');
     importlib.reload(module);
   
-    const {modelDir} = args;
-    const {testLoader, metaData} = data;
+    const { modelDir } = args;
+    const { testLoader, metaData } = data;
     const classifier = model.model;
 
-    const {rawData, rawClass} = await createDataset(testLoader, metaData);
-    const {TextProcessing, TextFeatures, get_all_words_list} = boa.import('script');
+    const { rawData, rawClass } = await createDataset(testLoader, metaData);
+    const { TextProcessing, TextFeatures, get_all_words_list } = boa.import('script');
     const text_list = TextProcessing(rawData, rawClass);
 
-    const feature_words = get_all_words_list(path.join(modelDir, 'feature_words.pkl'))
+    const feature_words = get_all_words_list(path.join(modelDir, 'feature_words.pkl'));
     const feature_list = TextFeatures(text_list[1], feature_words);
     const test_accuracy = classifier.score(feature_list, text_list[2]);
     return {
       accuracy: test_accuracy
-    }
+    };
   };
 
 export default bayesianModelEvaluate;

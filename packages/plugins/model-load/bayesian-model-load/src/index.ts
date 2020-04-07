@@ -14,7 +14,7 @@ const sys = boa.import('sys');
  * @param data 
  */
 const assertionTest = (data: CsvDataset) => {
-  assert.ok(data.metaData.feature && data.metaData.feature.featureNames.length === 1 , 
+  assert.ok(data.metaData.feature && data.metaData.feature.featureNames.length === 1, 
     'feature should only have one dimension which is the feature name');
 };
 
@@ -32,7 +32,7 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: CsvDataset, args
 
   sys.path.insert(0, path.join(__dirname, 'assets'));
   
-  const {loadModel, getBayesModel, processPredictData} = boa.import('script');
+  const { loadModel, getBayesModel, processPredictData } = boa.import('script');
   let classifier: any;
 
   if (!modelId && !modelPath) {
@@ -55,7 +55,7 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: CsvDataset, args
       const prediction = this.model.predict(processData);
       return prediction;
     }
-  }
+  };
   return pipcookModel;
 };
 

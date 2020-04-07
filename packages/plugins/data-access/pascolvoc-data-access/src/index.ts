@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import { ArgsType, parseAnnotation, DataAccessType, VocDataset, ImageDataLoader, ImageLabel} from '@pipcook/pipcook-core';
+import { ArgsType, parseAnnotation, DataAccessType, VocDataset, ImageDataLoader, ImageLabel } from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -28,7 +28,7 @@ class DataLoader implements ImageDataLoader {
     return {
       data: this.dataPairs[id].image,
       label: this.dataPairs[id].label
-    }
+    };
   }
 }
 
@@ -44,7 +44,7 @@ const getLabelMap = async (dataPath: string) => {
     const imageData: any = await parseAnnotation(fileName);
     imageData.annotation.object.forEach((object: any) => {
       labelSet.add(object.name[0]);
-    })
+    });
   }
   
   const labelArray = Array.from(labelSet);
@@ -53,7 +53,7 @@ const getLabelMap = async (dataPath: string) => {
     labelMap[label] = index;
   });
   return labelMap;
-}
+};
 
 const getValidPair = async (dataPath: string, labelMap: {
   [key: string]: number;
@@ -68,7 +68,7 @@ const getValidPair = async (dataPath: string, labelMap: {
       imageData.annotation.object.forEach((object: any) => {
         const label: ImageLabel = {
           name: object.name[0],
-          categoryId: labelMap[object.name[0]],
+          categoryId: labelMap[object.name[0]]
         };
         if (object.bndbox) {
           label.bndbox = {
@@ -76,7 +76,7 @@ const getValidPair = async (dataPath: string, labelMap: {
             xmax: Number(object.bndbox[0].xmax[0]),
             ymin: Number(object.bndbox[0].ymin[0]),
             ymax: Number(object.bndbox[0].ymax[0])
-          }
+          };
         }
         pairs.push({
           annotation: fileName,
@@ -87,7 +87,7 @@ const getValidPair = async (dataPath: string, labelMap: {
     }
   }
   return pairs;
-}
+};
 
 /**
  * The plugin used to access data from different sources. It will detect all possible values of labels and 
@@ -118,8 +118,8 @@ const pascolVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocD
     },
     trainXmlPaths: Array.from(new Set(trainPair.map((pair) => pair.annotation))),
     validationXmlPaths: Array.from(new Set(validationPair.map((pair) => pair.annotation))),
-    testXmlPaths: Array.from(new Set(testPair.map((pair) => pair.annotation))),
-  }
+    testXmlPaths: Array.from(new Set(testPair.map((pair) => pair.annotation)))
+  };
 
   if (trainPair.length > 0) {
     result.trainLoader = trainLoader;
@@ -132,6 +132,6 @@ const pascolVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocD
   }
   
   return result;
-}
+};
 
 export default pascolVocDataAccess;

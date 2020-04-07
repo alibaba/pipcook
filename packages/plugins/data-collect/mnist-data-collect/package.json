@@ -18,6 +18,7 @@
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.4",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
+    "@types/cli-progress": "^3.4.2",
     "cli-progress": "^3.6.0",
     "jimp": "^0.10.0",
     "mnist": "^1.1.0"

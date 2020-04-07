@@ -1,4 +1,4 @@
-import {DataLoader, UniDataset, MetaData} from './data';
+import { DataLoader, UniDataset, MetaData } from './data';
 
 export interface ImageLabel {
   name: string;

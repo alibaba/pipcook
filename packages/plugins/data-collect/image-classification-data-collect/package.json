@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.4",
+    "@types/fs-extra": "^8.1.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",

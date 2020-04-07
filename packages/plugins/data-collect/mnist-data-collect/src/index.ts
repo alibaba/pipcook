@@ -1,7 +1,7 @@
 /**
  * @file For plugin to collect mnist data
  */
-import {DataCollectType, ArgsType, createAnnotationFile} from '@pipcook/pipcook-core';
+import { DataCollectType, ArgsType, createAnnotationFile } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 import * as path from 'path';
@@ -35,7 +35,7 @@ const imageMnistDataCollect: DataCollectType = async (args: ArgsType): Promise<v
     const trainDir = path.join(dataDir, 'train');
     const imageName = `trainsample${i}.jpg`;
     createAnnotationFile(trainDir, imageName, trainDir, String(output.indexOf(1)));
-    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [28, 28, 1], 'int32'));
+    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [ 28, 28, 1 ], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
     await jimpImage.write(path.join(trainDir, imageName));
   }
@@ -51,12 +51,12 @@ const imageMnistDataCollect: DataCollectType = async (args: ArgsType): Promise<v
     const output = trainingSample.output;
     const testDir = path.join(dataDir, 'test');
     const imageName = `trainsample${i}.jpg`;
-    createAnnotationFile(testDir, imageName, testDir, String(output.indexOf(1)))
-    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [28, 28, 1], 'int32'));
+    createAnnotationFile(testDir, imageName, testDir, String(output.indexOf(1)));
+    const image = await tf.node.encodeJpeg(tf.tensor3d(input, [ 28, 28, 1 ], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
     await jimpImage.write(path.join(testDir, imageName));
   }
   bar2.stop();
-}
+};
 
 export default imageMnistDataCollect;

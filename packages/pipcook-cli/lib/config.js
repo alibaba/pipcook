@@ -24,7 +24,7 @@ module.exports = {
     "@pipcook/plugins-bayesian-model-train",
     "@pipcook/plugins-image-classification-pytorch-model-train",
     "@pipcook/plugins-image-classification-tfjs-model-train",
-    "@pipcook/plugins-object-detection-detectron-model-train",
+    "@pipcook/plugins-object-detection-detectron-model-train"
   ],
   pipcookLogName: 'pipcook-output'
 };

@@ -1,7 +1,7 @@
 /**
  * @file this is for Pipcook plugin to train Bayes Classifier.
  */
-import {ModelTrainType, PipcookModel, CsvDataset, ModelTrainArgsType, CsvDataLoader, CsvMetaData} from '@pipcook/pipcook-core';
+import { ModelTrainType, PipcookModel, CsvDataset, ModelTrainArgsType, CsvDataLoader, CsvMetaData } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
@@ -19,8 +19,8 @@ const createDataset = async (dataLoader: CsvDataLoader, metaData: CsvMetaData) =
     rawClass.push(data.label);
   }
 
-  return {rawData, rawClass};
-}
+  return { rawData, rawClass };
+};
 
 /**
  * 
@@ -33,7 +33,7 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
     mode = 'cn'
   } = args;
 
-  sys.path.insert(0, path.join(__dirname,  'assets'));
+  sys.path.insert(0, path.join(__dirname, 'assets'));
   const module = boa.import('script');
   const importlib = boa.import('importlib');
   importlib.reload(module);
@@ -42,9 +42,9 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   
   const classifier = model.model;
   
-  const {rawData, rawClass} = await createDataset(trainLoader, metaData);
+  const { rawData, rawClass } = await createDataset(trainLoader, metaData);
 
-  const {TextProcessing, MakeWordsSet, words_dict, TextFeatures, save_all_words_list, saveBayesModel} = boa.import('script');
+  const { TextProcessing, MakeWordsSet, words_dict, TextFeatures, save_all_words_list, saveBayesModel } = boa.import('script');
   const text_list = TextProcessing(rawData, rawClass);
 
   let stoppath = '';

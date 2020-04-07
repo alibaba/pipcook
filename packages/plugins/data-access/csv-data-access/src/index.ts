@@ -3,18 +3,18 @@
  * the data is conform to expectation.
  */
 
-import {CsvDataset, ArgsType, DataAccessType, CsvDataLoader, CsvSample} from '@pipcook/pipcook-core';
+import { CsvDataset, ArgsType, DataAccessType, CsvDataLoader, CsvSample } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
-import parse from 'csv-parse/lib/sync'
+import parse from 'csv-parse/lib/sync';
 
 class DataLoader implements CsvDataLoader {
   records!: CsvSample[];
 
   constructor(csvPath: string, labelColumn: string) {
     const records = parse(fs.readFileSync(csvPath), {
-      columns: true,
+      columns: true
     });
     this.records = records.map((record: any) => {  
       const label = record[labelColumn];
@@ -22,7 +22,7 @@ class DataLoader implements CsvDataLoader {
       return {
         label,
         data: record
-      }
+      };
     });
   }
 
@@ -55,8 +55,8 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
     },
     trainCsvPath: path.join(dataDir, 'train.csv'),
     validationCsvPath: path.join(dataDir, 'validation.csv'),
-    testCsvPath: path.join(dataDir, 'test.csv'),
-  }
+    testCsvPath: path.join(dataDir, 'test.csv')
+  };
 
   const featureNames: string[] = [];
   if (fs.existsSync(path.join(dataDir, 'train.csv'))) {
@@ -89,9 +89,9 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
         featureNames
       }
     }
-  }
+  };
 
   return result;
-}
+};
 
 export default csvDataAccess;

@@ -1,11 +1,11 @@
-import {ArgsType, unZipData, download, DataCollectType} from '@pipcook/pipcook-core';
+import { ArgsType, unZipData, download, DataCollectType } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
 
 const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
   let {
-    url='',
+    url = '',
     dataDir
   } = args;
 
@@ -21,7 +21,7 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
     url = url.substring(7);
   } else {
     const targetPath = path.join(dataDir, 'temp.zip');
-    console.log('downloading dataset ...')
+    console.log('downloading dataset ...');
     await download(url, targetPath);
     url = targetPath;
     isDownload = true;
@@ -33,6 +33,6 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
   if (isDownload) {
     fs.removeSync(url);
   }
-}
+};
 
 export default imageDetectionDataCollect;

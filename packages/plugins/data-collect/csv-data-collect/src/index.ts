@@ -1,7 +1,7 @@
 /**
  * @file For plugin to collect test classification data
  */
-import {DataCollectType, ArgsType, download, unZipData} from '@pipcook/pipcook-core';
+import { DataCollectType, ArgsType, download, unZipData } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
@@ -17,15 +17,15 @@ const writeCsvFile = (url: string): Promise<any[]> => {
     skip_lines_with_error: true
   });
   return records;
-}
+};
 
 /**
  * collect csv data
  */
 const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
   let {
-    url='',
-    dataDir,
+    url = '',
+    dataDir
   } = args;
 
   assert.ok(url, 'Please specify a url of zip of your data');
@@ -40,7 +40,7 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
     url = url.substring(7);
   } else {
     const targetPath = path.join(dataDir, uuidv1() + '.zip');
-    console.log('downloading dataset ...')
+    console.log('downloading dataset ...');
     await download(url, targetPath);
     url = targetPath;
     isDownload = true;
@@ -71,23 +71,21 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
   }
 
   if (trainData.length > 0) {
-    fs.outputFileSync(path.join(dataDir, 'train.csv'), stringify(trainData, {header: true}));
+    fs.outputFileSync(path.join(dataDir, 'train.csv'), stringify(trainData, { header: true }));
   }
   if (validationData.length > 0) {
-    fs.outputFileSync(path.join(dataDir, 'validation.csv'), stringify(validationData, {header: true}));
+    fs.outputFileSync(path.join(dataDir, 'validation.csv'), stringify(validationData, { header: true }));
   }
   if (testData.length > 0) {
-    fs.outputFileSync(path.join(dataDir, 'test.csv'), stringify(testData, {header: true}));
+    fs.outputFileSync(path.join(dataDir, 'test.csv'), stringify(testData, { header: true }));
   }
 
   fs.removeSync(tempDir);
   if (isDownload) {
     fs.removeSync(url);
   }
-}
+};
 
 export default textClassDataCollect;
-
-
 
 

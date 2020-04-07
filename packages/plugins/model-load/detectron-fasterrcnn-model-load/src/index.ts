@@ -18,17 +18,17 @@ const detectronModelLoad: ModelLoadType = async (data: CocoDataset, args: ModelL
 
   if (modelId) {
     const labelMap = getMetadata(modelId).label.labelMap;
-    numClasses = Object.keys(labelMap).length
+    numClasses = Object.keys(labelMap).length;
   } else if (modelPath) {
     assert.ok(!isNaN(numClasses), 'please give out the number of classes');
   } else {
     numClasses = Object.keys(data.metaData.labelMap).length;
   }
 
-  const {get_cfg} = boa.import('detectron2.config');
-  const {setup_logger} = boa.import('detectron2.utils.logger');
+  const { get_cfg } = boa.import('detectron2.config');
+  const { setup_logger } = boa.import('detectron2.utils.logger');
   const torch = boa.import('torch');
-  const {DefaultPredictor} = boa.import('detectron2.engine.defaults');
+  const { DefaultPredictor } = boa.import('detectron2.engine.defaults');
   const cv2 = boa.import('cv2');
   const numpy = boa.import('numpy');
 
@@ -75,9 +75,9 @@ const detectronModelLoad: ModelLoadType = async (data: CocoDataset, args: ModelL
         boxes,
         scores,
         classes
-      }
+      };
     }
-  }
+  };
   return pipcookModel;
 
 };

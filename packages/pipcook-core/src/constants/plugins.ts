@@ -10,7 +10,7 @@ type PluginTypeI =
   'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelTrain' | 'modelEvaluate' | 'modelDeploy';
 
 
-export const PLUGINS: PluginTypeI[]= [
+export const PLUGINS: PluginTypeI[] = [
   DATACOLLECT,
   DATAACCESS,
   DATAPROCESS,

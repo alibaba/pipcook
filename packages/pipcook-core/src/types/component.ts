@@ -1,8 +1,8 @@
-import {PipcookPlugin} from './plugins';
-import {PipcookModel} from './model'
-import {UniDataset} from './data/data';
-import {PipObject} from './other';
-import {Subscribable} from 'rxjs';
+import { PipcookPlugin } from './plugins';
+import { PipcookModel } from './model';
+import { UniDataset } from './data/data';
+import { PipObject } from './other';
+import { Subscribable } from 'rxjs';
 
 
 export interface InsertParams {

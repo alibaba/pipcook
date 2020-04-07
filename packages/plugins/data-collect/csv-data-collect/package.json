@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.4",
+    "@types/fs-extra": "^8.1.0",
     "@types/uuid": "^7.0.2",
     "csv-parse": "^4.8.8",
     "csv-stringify": "^5.3.6",

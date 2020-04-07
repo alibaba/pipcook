@@ -1,5 +1,5 @@
-import {DataType} from '@tensorflow/tfjs-node-gpu';
-import {Statistic} from '../other';
+import { DataType } from '@tensorflow/tfjs-node-gpu';
+import { Statistic } from '../other';
 
 export interface DataDescriptor {
   type?: DataType;

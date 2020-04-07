@@ -5,15 +5,15 @@ const boa = require('@pipcook/boa');
 
 const detectronModelLoad: ModelTrainType = async (data: CocoDataset, model: PipcookModel, args: ModelTrainArgsType): Promise<PipcookModel> => {
   let {
-    steps=100000,
+    steps = 100000,
     modelDir
   } = args;
 
   const os = boa.import('os');
-  const {DefaultTrainer} = boa.import('detectron2.engine');
+  const { DefaultTrainer } = boa.import('detectron2.engine');
 
-  const {register_coco_instances} = boa.import('detectron2.data.datasets');
-  const {trainLoader, validationLoader} = data;
+  const { register_coco_instances } = boa.import('detectron2.data.datasets');
+  const { trainLoader, validationLoader } = data;
   const cfg = model.config;
 
   if (trainLoader) {
@@ -36,7 +36,7 @@ const detectronModelLoad: ModelTrainType = async (data: CocoDataset, model: Pipc
     return {
       ...model,
       model: trainer
-    }
+    };
   }
 
   return model;

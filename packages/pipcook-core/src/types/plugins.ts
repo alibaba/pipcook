@@ -1,7 +1,7 @@
 
-import {UniDataset} from './data/data';
-import {PipcookModel} from './model';
-import {EvaluateResult} from './other';
+import { UniDataset } from './data/data';
+import { PipcookModel } from './model';
+import { EvaluateResult } from './other';
 
 export interface ArgsType {
   pipelineId: string;

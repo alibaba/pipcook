@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import {ArgsType, unZipData, download, createAnnotationFromJson, DataCollectType} from '@pipcook/pipcook-core';
+import { ArgsType, unZipData, download, createAnnotationFromJson, DataCollectType } from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as assert from 'assert';
@@ -12,54 +12,54 @@ import { v1 as uuidv1 } from 'uuid';
 
 const createAnnotation = (folder: string, fileName: string, width: number, height: number, objects: any, annotation: any) => {
   const currentAnnotation: any = {
-      annotation: {
-        folder: [
-          folder
-        ],
-        filename: [
-          fileName
-        ],
-        size: [
-          {
-            width: [
-              width
-            ],
-            height: [
-              height
-            ]
-          }
-        ],
-        segmented: [
-          0
-        ],
+    annotation: {
+      folder: [
+        folder
+      ],
+      filename: [
+        fileName
+      ],
+      size: [
+        {
+          width: [
+            width
+          ],
+          height: [
+            height
+          ]
+        }
+      ],
+      segmented: [
+        0
+      ]
     }
-  }
+  };
   currentAnnotation.annotation.object = objects.map((object: any) => {
     if (!object.category_name) {
       const category = annotation.categories.find((e: any) => e.id == object.category_id).name;
       object.category_name = category;
     }
     return {
-      name: [object.category_name],
-      pose: ["Unspecified"],
-      truncated: ["0"],
-      difficult: ["0"],
+      name: [ object.category_name ],
+      pose: [ "Unspecified" ],
+      truncated: [ "0" ],
+      difficult: [ "0" ],
       bndbox: [
         {
-          xmin: [object.bbox[0]],
-          ymin: [object.bbox[1]],
-          xmax: [object.bbox[0] + object.bbox[2]],
-          ymax: [object.bbox[1] + object.bbox[3]]
+          xmin: [ object.bbox[0] ],
+          ymin: [ object.bbox[1] ],
+          xmax: [ object.bbox[0] + object.bbox[2] ],
+          ymax: [ object.bbox[1] + object.bbox[3] ]
         }
       ]
     };
-  })
+  });
   createAnnotationFromJson(folder, currentAnnotation);
-}
+};
 
 const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
   let {
-    url='',
+    url = '',
     dataDir
   } = args;
 
@@ -75,7 +75,7 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
     url = url.substring(7);
   } else {
     const targetPath = path.join(dataDir, uuidv1() + '.zip');
-    console.log('downloading dataset ...')
+    console.log('downloading dataset ...');
     await download(url, targetPath);
     url = targetPath;
     isDownload = true;
@@ -105,6 +105,6 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
     fs.removeSync(url);
   }
   fs.removeSync(imageDir);
-}
+};
 
 export default imageDetectionDataCollect;

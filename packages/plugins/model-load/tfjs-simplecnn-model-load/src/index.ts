@@ -1,4 +1,4 @@
-import {ModelLoadType, getModelDir, ImageDataset, ModelLoadArgsType, TfJsLayersModel, getMetadata} from '@pipcook/pipcook-core';
+import { ModelLoadType, getModelDir, ImageDataset, ModelLoadArgsType, TfJsLayersModel, getMetadata } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -10,7 +10,7 @@ import * as path from 'path';
 const assertionTest = (data: ImageDataset) => {
   assert.ok(data.metaData.feature, 'Image feature is missing');
   assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 3d');
-}
+};
 
 /**
  * this is the plugin used to load a simple cnn model or load existing model.
@@ -26,7 +26,7 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
   let {
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
-    metrics = ['accuracy'],
+    metrics = [ 'accuracy' ],
     modelId,
     modelPath,
     outputShape
@@ -67,10 +67,10 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
       filters: 32,
       kernelSize: 3,
       activation: 'relu',
-      kernelInitializer: 'glorotUniform',
+      kernelInitializer: 'glorotUniform'
     }));
-    localModel.add(tf.layers.maxPooling2d({poolSize: [2, 2]}));
-    localModel.add(tf.layers.dropout({rate: 0.25}));
+    localModel.add(tf.layers.maxPooling2d({ poolSize: [ 2, 2 ] }));
+    localModel.add(tf.layers.dropout({ rate: 0.25 }));
     localModel.add(tf.layers.conv2d({
       filters: 64,
       kernelSize: 3,
@@ -84,12 +84,12 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
       activation: 'relu',
       kernelInitializer: 'glorotUniform'
     }));
-    localModel.add(tf.layers.maxPooling2d({poolSize: [2, 2]}));
-    localModel.add(tf.layers.dropout({rate: 0.25}));
+    localModel.add(tf.layers.maxPooling2d({ poolSize: [ 2, 2 ] }));
+    localModel.add(tf.layers.dropout({ rate: 0.25 }));
     localModel.add(tf.layers.flatten());
-    localModel.add(tf.layers.dense({units: 512, activation: 'relu', kernelInitializer: 'glorotUniform'}));
-    localModel.add(tf.layers.dropout({rate: 0.5}));
-    localModel.add(tf.layers.dense({units: outputShape, activation: 'softmax', kernelInitializer: 'glorotUniform'}));
+    localModel.add(tf.layers.dense({ units: 512, activation: 'relu', kernelInitializer: 'glorotUniform' }));
+    localModel.add(tf.layers.dropout({ rate: 0.5 }));
+    localModel.add(tf.layers.dense({ units: outputShape, activation: 'softmax', kernelInitializer: 'glorotUniform' }));
 
     model = localModel as tf.LayersModel;
   }
@@ -97,18 +97,18 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
   model.compile({
     optimizer,
     loss,
-    metrics,
+    metrics
   });
   
   const result: TfJsLayersModel = {
     model,
     metrics: metrics,
     predict: function (inputData: string[]) {
-      const predictResultArray = this.model.predict(inputData)
+      const predictResultArray = this.model.predict(inputData);
       return predictResultArray;
-    },
+    }
   };
   return result;
-}
+};
 
 export default simpleCnnModelLoad;

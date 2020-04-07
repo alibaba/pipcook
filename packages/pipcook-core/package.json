@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@tensorflow/tfjs-node-gpu": "1.7.0",
+    "@types/cli-progress": "^3.4.2",
     "@types/fs-extra": "^8.0.1",
     "better-opn": "^1.0.0",
     "chalk": "^3.0.0",

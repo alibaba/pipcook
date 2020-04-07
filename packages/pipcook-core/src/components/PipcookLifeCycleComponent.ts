@@ -55,7 +55,7 @@ export const DataCollect: PipcookLifeCycleComponent = (plugin: DataCollectType, 
 export const DataAccess: PipcookLifeCycleComponent = (plugin: DataAccessType, params?: any) => {
   const result = produceResultFactory(DATAACCESS, plugin, params);
   result.observer = (data: any, model, insertParams) => {
-    return from(plugin({...params, ...insertParams}));
+    return from(plugin({ ...params, ...insertParams }));
   };
   result.returnType = DATA;
   return result;
@@ -103,7 +103,7 @@ export const ModelTrain: PipcookLifeCycleComponent = (plugin: ModelTrainType, pa
         await callback(path.join(process.cwd(), 'pipcook-output', insertParams.pipelineId, 'model'));
       }
     }));
-  }
+  };
   result.returnType = MODELTOSAVE;
   return result;
 };

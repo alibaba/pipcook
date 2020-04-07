@@ -4,12 +4,12 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
-import {PipcookRunner} from './core'; 
-import {PipcookComponentResult} from '../types/component';
-import {logCurrentExecution} from '../utils/logger';
-import {Observable, from} from 'rxjs';
-import {flatMap} from 'rxjs/operators';
-import {DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE} from '../constants/other';
+import { PipcookRunner } from './core'; 
+import { PipcookComponentResult } from '../types/component';
+import { logCurrentExecution } from '../utils/logger';
+import { Observable, from } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE } from '../constants/other';
 
 /**
  * Retreive relative logs required to be stored.
@@ -30,30 +30,30 @@ export function getLog(pipcookRunner: PipcookRunner): any {
  */
 export async function assignLatestResult(updatedType: string, result: any, self: PipcookRunner, saveModelCallback?: Function) {
   switch (updatedType) {
-    case DATA:
-      self.latestSampleData = result;
-      break;
-    case MODEL:
-      self.latestModel = result;
-      break;
-    case EVALUATE:
-      self.latestEvaluateResult = result;
-      break;
-    case DEPLOYMENT:
-      self.latestDeploymentResult = result;
-      break;
-    case MODELTOSAVE:
-      self.latestModel = result;
-      if (saveModelCallback) {
-        const valueMap = 
+  case DATA:
+    self.latestSampleData = result;
+    break;
+  case MODEL:
+    self.latestModel = result;
+    break;
+  case EVALUATE:
+    self.latestEvaluateResult = result;
+    break;
+  case DEPLOYMENT:
+    self.latestDeploymentResult = result;
+    break;
+  case MODELTOSAVE:
+    self.latestModel = result;
+    if (saveModelCallback) {
+      const valueMap = 
         (self.latestSampleData && self.latestSampleData.metaData 
           && self.latestSampleData.metaData.label && self.latestSampleData.metaData.labelMap) || {};
-        fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
-        await saveModelCallback(path.join(self.logDir as string, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
-      } 
-      break;
-    default:
-      break;
+      fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
+      await saveModelCallback(path.join(self.logDir as string, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
+    } 
+    break;
+  default:
+    break;
   }
 }
 
@@ -69,8 +69,8 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
   const insertParams = {
     pipelineId: self.pipelineId,
     modelDir: path.join(self.logDir, 'model'),
-    dataDir: path.join(self.logDir, 'data'),
-  }
+    dataDir: path.join(self.logDir, 'data')
+  };
   const firstObservable = firstComponent.observer(null, self.latestModel, insertParams) as Observable<any>;
   self.updatedType = firstComponent.returnType;
 
