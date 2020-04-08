@@ -31,7 +31,7 @@ const processImage = async (loader: ImageDataLoader, resize: number[], normalize
  * @param resize =[256, 256][optional] resize all images to same size
  * @param normalize =false[optional] if normalize all images to have values between [0, 1]
  */
-const pascolVocDataProcess: DataProcessType = async (data: ImageDataset, args: ArgsType): Promise<ImageDataset> => {
+const pascalVocDataProcess: DataProcessType = async (data: ImageDataset, args: ArgsType): Promise<ImageDataset> => {
   const {
     resize = [ 256, 256 ],
     normalize = false
@@ -63,4 +63,4 @@ const pascolVocDataProcess: DataProcessType = async (data: ImageDataset, args: A
   return result;
 };
 
-export default pascolVocDataProcess;
+export default pascalVocDataProcess;

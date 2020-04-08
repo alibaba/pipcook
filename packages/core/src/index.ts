@@ -8,7 +8,7 @@ export { DataCollectType, DataAccessType, DataProcessType, ModelLoadType,
   ModelTrainType, ModelEvaluateType, ModelDeployType, ArgsType, ModelLoadArgsType, ModelArgsType, ModelTrainArgsType } from './types/plugins';
 export { PipcookRunner } from './core/core';
 export { createAnnotationFile, parseAnnotation, unZipData, download, getOsInfo, transformCsv,
-  createAnnotationFromJson, getMetadata, getModelDir, convertPascol2CocoFileOutput, compressTarFile } from './utils/publicUtils';
+  createAnnotationFromJson, getMetadata, getModelDir, convertPascal2CocoFileOutput, compressTarFile } from './utils/publicUtils';
 export { PipcookComponentResult } from './types/component';
 import { PLUGINS } from './constants/plugins';
 export const constants = {

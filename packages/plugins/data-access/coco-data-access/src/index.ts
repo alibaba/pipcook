@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import { ArgsType, parseAnnotation, DataAccessType, CocoDataset, ImageDataLoader, ImageLabel, convertPascol2CocoFileOutput } from '@pipcook/pipcook-core';
+import { ArgsType, parseAnnotation, DataAccessType, CocoDataset, ImageDataLoader, ImageLabel, convertPascal2CocoFileOutput } from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -87,7 +87,7 @@ const getValidPair = async (dataPath: string, labelMap: {
     }
   }
   if (pairs.length > 0) {
-    await convertPascol2CocoFileOutput(Array.from(new Set(pairs.map((pair) => pair.annotation))), 
+    await convertPascal2CocoFileOutput(Array.from(new Set(pairs.map((pair) => pair.annotation))), 
       path.join(dataPath, 'annotation.json'));
   }
   return pairs;

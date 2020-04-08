@@ -8,7 +8,7 @@
       }
     },
     "dataAccess": {
-      "package": "@pipcook/plugins-pascolvoc-data-access"
+      "package": "@pipcook/plugins-pascalvoc-data-access"
     },
     "dataProcess": {
       "package": "@pipcook/plugins-image-data-process",

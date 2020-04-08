@@ -58,14 +58,14 @@ The following is a list of plugins in different types:
 @pipcook/plugins-image-classification-data-collect
 @pipcook/plugins-mnist-data-collect
 @pipcook/plugins-object-detection-coco-data-collect
-@pipcook/plugins-object-detection-pascolvoc-data-collect
+@pipcook/plugins-object-detection-pascalvoc-data-collect
 
 
 ### DataAccess
 
 @pipcook/plugins-coco-data-access
 @pipcook/plugins-csv-data-access
-@pipcook/plugins-pascolvoc-data-access
+@pipcook/plugins-pascalvoc-data-access
 
 ### DataProcess
 

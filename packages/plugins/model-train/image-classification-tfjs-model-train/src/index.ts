@@ -25,7 +25,7 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
 }
 
 /**
- * this is plugin used to train tfjs model with pascol voc data format for image classification problem.
+ * this is plugin used to train tfjs model with pascal voc data format for image classification problem.
  * @param data : train data
  * @param model : model loaded before
  * @param epochs : need to specify epochs

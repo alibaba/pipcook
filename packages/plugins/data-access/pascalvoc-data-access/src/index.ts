@@ -93,7 +93,7 @@ const getValidPair = async (dataPath: string, labelMap: {
  * The plugin used to access data from different sources. It will detect all possible values of labels and 
  * merge them into numeric expressions.
  */
-const pascolVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocDataset> => {
+const pascalVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocDataset> => {
   const {
     dataDir
   } = args;
@@ -134,4 +134,4 @@ const pascolVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocD
   return result;
 };
 
-export default pascolVocDataAccess;
+export default pascalVocDataAccess;
