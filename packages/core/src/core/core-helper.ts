@@ -16,11 +16,17 @@ import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE } from '../constants/oth
  * @param pipcookRunner : The pipcookRunner object
  */
 export function getLog(pipcookRunner: PipcookRunner): any {
-  return {
+  const result: any = {
     ...pipcookRunner,
     latestModel: null,
     latestSampleData: null
   };
+
+  if (pipcookRunner.latestSampleData && pipcookRunner.latestSampleData.metaData) {
+    result.metaData = pipcookRunner.latestSampleData.metaData;
+  }
+  
+  return result;
 }
 
 /**

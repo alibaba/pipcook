@@ -1,6 +1,3 @@
-import * as tf from '@tensorflow/tfjs-node-gpu';
-
-
 export interface PipcookModel {
   model: any;
   metrics?: any;
@@ -8,9 +5,7 @@ export interface PipcookModel {
   config?: any;
 }
 
-export interface TfJsLayersModel extends PipcookModel {
-  model: tf.LayersModel;
-}
+export type TfJsLayersModel = PipcookModel
 
 export interface PytorchModel extends PipcookModel {
   criterion: any;

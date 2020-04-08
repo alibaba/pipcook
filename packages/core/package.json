@@ -11,12 +11,11 @@
     "test": "ts-node ../../run_tests.ts",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
+    "compile": "tsc -b tsconfig.json"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tensorflow/tfjs-node-gpu": "1.7.0",
     "@types/cli-progress": "^3.4.2",
     "@types/fs-extra": "^8.0.1",
     "better-opn": "^1.0.0",

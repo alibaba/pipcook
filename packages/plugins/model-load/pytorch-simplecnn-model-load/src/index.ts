@@ -3,6 +3,13 @@ import * as assert from 'assert';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
+const Image = boa.import('PIL.Image');
+const np = boa.import('numpy');
+const torch = boa.import('torch');
+const transforms = boa.import('torchvision.transforms');
+const transform = transforms.Compose(
+  [ transforms.ToTensor() ]
+);
 
 /** @ignore
  * assertion test
@@ -77,7 +84,7 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
       x = x.view(-1, size[1] * size[2] * size[3]);
       x = F.relu(this.fc1(x));
       x = F.relu(this.fc2(x));
-      x = this.fc3(x);
+      x = F.softmax(this.fc3(x));
       return x;
     }
   }
@@ -100,9 +107,15 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
     model: net,
     criterion,
     optimizer,
-    predict: function (images: any) {
-      const outputs = this.model(images);
-      return outputs;
+    predict: function (images: string[]) {
+      
+      const imgs = images.map((img) => {
+        let image = np.array(Image.open(img));
+        image = transform(image);
+        return image;
+      });
+      const outputs = this.model(torch.stack(imgs));
+      return outputs.tolist().toString();
     }
   };
   return pipcookModel;

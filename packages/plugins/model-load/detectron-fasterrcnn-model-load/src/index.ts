@@ -61,20 +61,22 @@ const detectronModelLoad: ModelLoadType = async (data: CocoDataset, args: ModelL
     model: null,
     config: cfg,
     predict: function (inputData: string[]) {
-      const predictor = DefaultPredictor(this.cfg);
-      const images = inputData.map((data: string) => {
-        return cv2.imread(data);
+      const predictor = DefaultPredictor(this.config);
+      const images: any[] = [];
+      inputData.forEach((data: string) => {
+        const cvImg = cv2.imread(data);
+        images.push(cvImg);
       });
-      const img = numpy.array(images);
+      const img = images[0];
       const out = predictor(img);
       const ins = out['instances'].to(torch.device('cpu'));
       const boxes = ins.pred_boxes.tensor.numpy();
       const scores = ins.scores.numpy();
       const classes = ins.pred_classes.numpy();
       return {
-        boxes,
-        scores,
-        classes
+        boxes: boxes.toString(),
+        scores: scores.toString(),
+        classes: classes.toString()
       };
     }
   };

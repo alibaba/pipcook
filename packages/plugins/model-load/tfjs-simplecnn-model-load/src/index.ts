@@ -2,6 +2,7 @@ import { ModelLoadType, getModelDir, ImageDataset, ModelLoadArgsType, TfJsLayers
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
+import Jimp from 'jimp';
 
 /** @ignore
  * assertion test
@@ -11,6 +12,10 @@ const assertionTest = (data: ImageDataset) => {
   assert.ok(data.metaData.feature, 'Image feature is missing');
   assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 3d');
 };
+
+function argMax(array: any) {
+  return [].map.call(array, (x: any, i: any) => [ x, i ]).reduce((r: any, a: any) => (a[0] > r[0] ? a : r))[1];
+}
 
 /**
  * this is the plugin used to load a simple cnn model or load existing model.
@@ -29,7 +34,8 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
     metrics = [ 'accuracy' ],
     modelId,
     modelPath,
-    outputShape
+    outputShape,
+    labelMap
   } = args;
   
   let inputShape: number[];
@@ -39,10 +45,12 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
     assertionTest(data);
     inputShape = data.metaData.feature.shape;
     outputShape = Object.keys(data.metaData.labelMap).length;
+    labelMap = data.metaData.labelMap;
   }
 
   if (modelId) {
     outputShape = Object.keys(getMetadata(modelId).labelMap);
+    labelMap = getMetadata(modelId).labelMap;
   } else if (modelPath) {
     assert.ok(!isNaN(outputShape), 'the output shape should be a number');
   }
@@ -103,9 +111,26 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
   const result: TfJsLayersModel = {
     model,
     metrics: metrics,
-    predict: function (inputData: string[]) {
-      const predictResultArray = this.model.predict(inputData);
-      return predictResultArray;
+    predict: async function (inputData: string[]) {
+      const prediction = [];
+      for (let i = 0; i < inputData.length; i++) {
+        const image = await Jimp.read(inputData[i]);
+        const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
+        const imageArray = new Uint8Array(trainImageBuffer);
+        const imgTensor = tf.node.decodeImage(imageArray, 3);
+        const predictResultArray = this.model.predict(imgTensor.expandDims(0));
+        const index = argMax(predictResultArray.dataSync());
+        if (labelMap) {
+          for (let key in labelMap) {
+            if (labelMap[key] === index) {
+              prediction.push(key);
+            }
+          }
+        } else {
+          prediction.push(predictResultArray);
+        }
+      } 
+      return prediction;
     }
   };
   return result;

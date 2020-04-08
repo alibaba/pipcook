@@ -1,7 +1,7 @@
 {
   "packages": [
-    "packages/pipcook-cli",
-    "packages/pipcook-core",
+    "packages/cli",
+    "packages/core",
     "packages/boa",
     "packages/plugins/**/*"
   ],

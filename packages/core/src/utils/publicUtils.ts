@@ -5,7 +5,6 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import _cliProgress from 'cli-progress';
-import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 
 
@@ -153,7 +152,7 @@ export function getModelDir(modelId: string) {
 
 export function getMetadata(modelId: string) {
   const json = require(path.join(process.cwd(), 'pipcook-output', modelId, `log.json`));
-  return json && json.latestSampleData && json.latestSampleData.metaData;
+  return json && json.metaData;
 }
 
 /**
@@ -277,23 +276,4 @@ export function getOsInfo() {
       }
     });
   });
-}
-
-export async function base64ToTfjsTensor(input: string[]) {
-  const imageArray: number[] = [];
-  for (let index = 0; index < input.length; index++) {
-    let img = await Jimp.read(Buffer.from(input[index], 'base64'));
-    img = img.resize(256, 256);
-    await img.writeAsync('imageclass.jpg');
-    for (let i = 0; i < 256; i++) {
-      for (let j = 0; j < 256; j++) {
-        imageArray.push(Jimp.intToRGBA(img.getPixelColor(i, j)).r);
-        imageArray.push(Jimp.intToRGBA(img.getPixelColor(i, j)).g);
-        imageArray.push(Jimp.intToRGBA(img.getPixelColor(i, j)).b);
-      }
-    }
-  }
-
-  const tensorRes = tf.tensor4d(imageArray);
-  return tensorRes;
 }

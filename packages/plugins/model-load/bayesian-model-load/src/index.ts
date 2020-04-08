@@ -50,9 +50,12 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: CsvDataset, args
   
   const pipcookModel: PipcookModel = {
     model: classifier,
-    predict: function (text: string) {
-      const processData = processPredictData(text, path.join(getModelDir(pipelineId), 'feature_words.pkl'), path.join(getModelDir(pipelineId), 'stopwords.txt'));
-      const prediction = this.model.predict(processData);
+    predict: function (texts: string[]) {
+      const prediction = texts.map((text) => {
+        const processData = processPredictData(text, path.join(getModelDir(pipelineId), 'feature_words.pkl'), path.join(getModelDir(pipelineId), 'stopwords.txt'));
+        const pred = this.model.predict(processData);
+        return pred.toString();
+      });
       return prediction;
     }
   };
