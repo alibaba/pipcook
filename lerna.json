@@ -8,9 +8,6 @@
   "version": "independent",
   "npmClient": "npm",
   "command": {
-    "bootstrap": {
-      "hoist": true
-    },
     "publishConfig": {
       "access": "public"
     }
