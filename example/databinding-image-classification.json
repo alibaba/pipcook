@@ -9,18 +9,19 @@
     "dataAccess": {
       "package": "@pipcook/plugins-pascolvoc-data-access"
     },
-    "modelLoad": {
+    "dataProcess": {
       "package": "@pipcook/plugins-image-data-process",
       "params": {
         "resize": [256,256]
       }
     },
+    "modelLoad": {
+      "package": "@pipcook/plugins-tfjs-mobilenet-model-load"
+    },
     "modelTrain": {
-      "package": "@pipcook/plugins-tfjs-simplecnn-model-load",
+      "package": "@pipcook/plugins-image-classification-tfjs-model-train",
       "params": {
-        "epochs": 30,
-        "batchSize": 16,
-        "isFreeze": false
+        "epochs": 15
       }
     },
     "modelEvaluate": {

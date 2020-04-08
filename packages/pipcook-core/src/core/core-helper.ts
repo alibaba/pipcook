@@ -37,6 +37,7 @@ export async function assignLatestResult(updatedType: string, result: any, self:
     self.latestModel = result;
     break;
   case EVALUATE:
+    console.log('evaluate result: ', result);
     self.latestEvaluateResult = result;
     break;
   case DEPLOYMENT:
