@@ -8,7 +8,7 @@
     "packages/plugins/**/*"
   ],
   "version": "independent",
-  "npmClient": "npm",
+  "npmClient": "tnpm",
   "command": {
     "publishConfig": {
       "access": "public"

@@ -1,7 +1,6 @@
 module.exports = {
   dependencies: [
     "@pipcook/boa",
-    "@pipcook/pipcook-board-client",
     "@pipcook/pipcook-core",
     "@pipcook/plugins-coco-data-access",
     "@pipcook/plugins-csv-data-access",

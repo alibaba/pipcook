@@ -44,6 +44,8 @@ const init = async (cmdObj) => {
     }
   }
 
+  const beta = cmdObj && cmdObj[0] === 'true';
+
   let dirname;
   try {
     dirname = process.cwd();
@@ -69,7 +71,7 @@ const init = async (cmdObj) => {
     spinner.start(`installing pipcook`);
 
     for (const item of dependencies) {
-      childProcess.execSync(`${client} install ${item} --save`, {
+      childProcess.execSync(`${client} install ${item}${beta ? '@beta' : ''} --save`, {
         cwd: dirname,
         stdio: 'inherit'
       });

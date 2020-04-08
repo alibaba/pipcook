@@ -28,6 +28,7 @@ program.version(pkg.version, '-v, --version').usage('<command> [options]');
 program
   .command('init')
   .option('-c, --client', 'npm client')
+  .option('--beta', 'pull beta version')
   .description('Init the Pipcook project')
   .action((dir, cmdObj) => {
     init(cmdObj);
