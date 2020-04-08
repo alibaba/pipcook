@@ -28,5 +28,5 @@ $ pipcook init
 At this point, all the relevant environments required by Pipcook have been installed. In addition, some examples  of the Pipcook project are generated for you.<br />You can directly run them to start a machine learning engineering pipeline. For example, you can quickly perform image classification recognition. To start this training, you only need a simple command
 
 ```sh
-$ pipcook run examples/mnist-image-classification.json
+$ pipcook run examples/pipelines/mnist-image-classification.json
 ```

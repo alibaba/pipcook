@@ -92,7 +92,7 @@ See [here](./example) for complete list, and it's easy and quick to run these ex
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ pipcook run examples/mnist-image-classification.json
+$ pipcook run examples/pipelines/mnist-image-classification.json
 ```
 
 ## Documentation
@@ -152,7 +152,7 @@ $ npm run build
 [npm]: https://npmjs.com/
 [Python]: https://www.python.org/
 [machine-learning application APIs]: https://github.com/alibaba/pipcook/issues/33
-[pipeline-mnist-image-classification]: example/mnist-image-classification.json
+[pipeline-mnist-image-classification]: example/pipelines/mnist-image-classification.json
 [pipeline-databinding-image-classification]: example/databinding-image-classification.json
 [pipeline-object-detection]: example/object-detection.json
 [pipeline-text-bayes-classification]: example/text-bayes-classification.json

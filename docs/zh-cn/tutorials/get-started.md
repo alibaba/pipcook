@@ -32,5 +32,5 @@ $ pipcook init
 此时，Pipcook 所有需要的相关的环境已经安装完毕，此外，还会为您生成一些 Pipcook 工程的样例文件<br />例如，您可以快速进行一次图片分类识别，想要开始这个训练，您只需要一个简单的命令
 
 ```sh
-$ pipcook run examples/mnist-image-classification.json
+$ pipcook run examples/pipelines/mnist-image-classification.json
 ```
