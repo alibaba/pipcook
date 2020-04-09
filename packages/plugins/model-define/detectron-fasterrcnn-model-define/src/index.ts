@@ -1,10 +1,10 @@
-import { ModelLoadType, PipcookModel, ModelLoadArgsType, getModelDir, getMetadata, CocoDataset } from '@pipcook/pipcook-core';
+import { ModelDefineType, UniModel, ModelDefineArgsType, getModelDir, getMetadata, CocoDataset } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 
 const boa = require('@pipcook/boa');
 
-const detectronModelLoad: ModelLoadType = async (data: CocoDataset, args: ModelLoadArgsType): Promise<PipcookModel> => {
+const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
     modelId = '',
     baseLearningRate = 0.00025,
@@ -22,7 +22,7 @@ const detectronModelLoad: ModelLoadType = async (data: CocoDataset, args: ModelL
   } else if (modelPath) {
     assert.ok(!isNaN(numClasses), 'please give out the number of classes');
   } else {
-    numClasses = Object.keys(data.metaData.labelMap).length;
+    numClasses = Object.keys(data.metadata.labelMap).length;
   }
 
   const { get_cfg } = boa.import('detectron2.config');
@@ -57,7 +57,7 @@ const detectronModelLoad: ModelLoadType = async (data: CocoDataset, args: ModelL
   cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128;
   cfg.MODEL.ROI_HEADS.NUM_CLASSES = numClasses;
 
-  const pipcookModel: PipcookModel = {
+  const pipcookModel: UniModel = {
     model: null,
     config: cfg,
     predict: function (inputData: string[]) {
@@ -84,4 +84,4 @@ const detectronModelLoad: ModelLoadType = async (data: CocoDataset, args: ModelL
 
 };
 
-export default detectronModelLoad;
+export default detectronModelDefine;

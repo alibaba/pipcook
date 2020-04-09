@@ -1,9 +1,9 @@
-import { ModelEvaluateType, PipcookModel, CocoDataset, ArgsType } from '@pipcook/pipcook-core';
+import { ModelEvaluateType, UniModel, CocoDataset, ArgsType } from '@pipcook/pipcook-core';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
 
-const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, model: PipcookModel, args: ArgsType): Promise<any> => {
+const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, model: UniModel, args: ArgsType): Promise<any> => {
   let {
     modelDir
   } = args;

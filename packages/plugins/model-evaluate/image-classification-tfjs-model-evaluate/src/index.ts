@@ -36,7 +36,7 @@ const ModelEvalute: ModelEvaluateType =
   
     let batchSize = 16;
 
-    const { testLoader, metaData } = data;
+    const { testLoader, metadata } = data;
 
     // sample data must contain test data
     if (testLoader) {
@@ -44,7 +44,7 @@ const ModelEvalute: ModelEvaluateType =
 
       const batches = parseInt(String(count / batchSize));
 
-      const testDataSet = await createDataset(testLoader, metaData.labelMap);
+      const testDataSet = await createDataset(testLoader, metadata.labelMap);
 
       const ds = testDataSet.repeat().batch(batchSize);
       let evaluateResult: any = await model.model.evaluateDataset(ds as tf.data.Dataset<{}>, {

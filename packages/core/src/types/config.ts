@@ -13,6 +13,7 @@ export interface RunConfigI {
     dataAccess?: RunConfigParam;
     dataProcess?: RunConfigParam;
     modelLoad?: RunConfigParam;
+    modelDefine?: RunConfigParam;
     modelTrain?: RunConfigParam;
     modelEvaluate?: RunConfigParam;
     modelDeploy?: RunConfigParam;

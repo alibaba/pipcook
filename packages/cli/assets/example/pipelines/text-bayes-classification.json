@@ -12,8 +12,8 @@
         "labelColumn": "output"
       }
     },
-    "modelLoad": {
-      "package": "@pipcook/plugins-bayesian-model-load"
+    "modelDefine": {
+      "package": "@pipcook/plugins-bayesian-model-define"
     },
     "modelTrain": {
       "package": "@pipcook/plugins-bayesian-model-train"

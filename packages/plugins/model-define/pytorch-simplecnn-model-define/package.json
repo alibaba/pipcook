@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugins-bayesian-model-load",
+  "name": "@pipcook/plugins-pytorch-simplecnn-model-define",
   "version": "0.5.0",
   "description": "",
   "main": "dist/index",
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
+    "compile": "tsc -b tsconfig.json"
   },
   "author": "",
   "license": "ISC",

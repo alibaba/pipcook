@@ -1,13 +1,13 @@
-export interface PipcookModel {
+export interface UniModel {
   model: any;
   metrics?: any;
   predict: any;
   config?: any;
 }
 
-export type TfJsLayersModel = PipcookModel
+export type TfJsLayersModel = UniModel
 
-export interface PytorchModel extends PipcookModel {
+export interface PytorchModel extends UniModel {
   criterion: any;
   optimizer: any;
 }

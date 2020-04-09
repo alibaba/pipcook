@@ -10,13 +10,13 @@ const uuidv1 = require('uuid/v1');
 import config from '../config';
 import { PipcookComponentResult } from '../types/component';
 import { UniDataset } from '../types/data/data';
-import { PipcookModel } from '../types/model';
+import { UniModel } from '../types/model';
 import { DeploymentResult, EvaluateResult } from '../types/other';
 import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './core-helper';
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
-import { DataCollect, DataAccess, DataProcess, ModelLoad, ModelTrain, ModelEvaluate, ModelDeploy } from '../components/PipcookLifeCycleComponent';
-import { DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELTRAIN, MODELEVALUATE, MODELDEPLOY } from '../constants/plugins';
+import { DataCollect, DataAccess, DataProcess, ModelLoad, ModelDefine, ModelTrain, ModelEvaluate, ModelDeploy } from '../components/PipcookLifeCycleComponent';
+import { DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELDEFINE, MODELTRAIN, MODELEVALUATE, MODELDEPLOY } from '../constants/plugins';
 import { RunConfigI } from '../types/config';
 
 const getCircularReplacer = () => {
@@ -55,7 +55,7 @@ export class PipcookRunner {
   logDir: string|null = null;
   pipelineId: string|null = null;
   latestSampleData: UniDataset |null = null;
-  latestModel: PipcookModel |null = null;
+  latestModel: UniModel |null = null;
   latestEvaluateResult: EvaluateResult | null = null;
   latestDeploymentResult: DeploymentResult | null = null;
 
@@ -173,6 +173,9 @@ export class PipcookRunner {
           break;
         case MODELLOAD:
           factoryMethod = ModelLoad;
+          break;
+        case MODELDEFINE:
+          factoryMethod = ModelDefine;
           break;
         case MODELTRAIN:
           factoryMethod = ModelTrain;

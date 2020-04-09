@@ -1,9 +1,9 @@
-import { ModelTrainType, PipcookModel, CocoDataset, ModelTrainArgsType } from '@pipcook/pipcook-core';
+import { ModelTrainType, UniModel, CocoDataset, ModelTrainArgsType } from '@pipcook/pipcook-core';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
 
-const detectronModelLoad: ModelTrainType = async (data: CocoDataset, model: PipcookModel, args: ModelTrainArgsType): Promise<PipcookModel> => {
+const detectronModelDefine: ModelTrainType = async (data: CocoDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
   let {
     steps = 100000,
     modelDir
@@ -42,4 +42,4 @@ const detectronModelLoad: ModelTrainType = async (data: CocoDataset, model: Pipc
   return model;
 };
 
-export default detectronModelLoad;
+export default detectronModelDefine;

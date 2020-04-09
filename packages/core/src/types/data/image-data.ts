@@ -1,4 +1,4 @@
-import { DataLoader, UniDataset, MetaData } from './data';
+import { DataLoader, UniDataset, Metadata } from './data';
 
 export interface ImageLabel {
   name: string;
@@ -10,7 +10,7 @@ export interface ImageLabel {
     ymax: number;
   };
 }
-export interface ImageMetaData extends MetaData {
+export interface ImageMetadata extends Metadata {
   labelMap: {[key: string]: number};
 }
 
@@ -24,7 +24,7 @@ export interface ImageDataLoader extends DataLoader {
 }
 
 export interface ImageDataset extends UniDataset {
-  metaData: ImageMetaData;
+  metadata: ImageMetadata;
   trainLoader?: ImageDataLoader;
   validationLoader?: ImageDataLoader;
   testLoader?: ImageDataLoader;

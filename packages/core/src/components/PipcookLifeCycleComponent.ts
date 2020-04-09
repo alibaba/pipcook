@@ -4,9 +4,9 @@
  */
 
 import { PipcookLifeCycleComponent, PipcookComponentResult } from '../types/component';
-import { PipcookPlugin, DataCollectType, DataAccessType, DataProcessType, ModelLoadType, 
+import { PipcookPlugin, DataCollectType, DataAccessType, DataProcessType, ModelLoadType, ModelDefineType,
   ModelTrainType, ModelEvaluateType, ModelDeployType } from '../types/plugins';
-import { DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELTRAIN, MODELEVALUATE, MODELDEPLOY } from '../constants/plugins';
+import { DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELDEFINE, MODELTRAIN, MODELEVALUATE, MODELDEPLOY } from '../constants/plugins';
 import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA } from '../constants/other';
 import { from } from 'rxjs';
 import * as path from 'path';
@@ -18,7 +18,7 @@ import * as path from 'path';
  * @param plugin: plugin
  * @param params: plugin's parameters
  */
-function produceResultFactory(type: 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelTrain' | 'modelEvaluate' | 'modelDeploy',
+function produceResultFactory(type: 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate' | 'modelDeploy',
   plugin: PipcookPlugin, params? : any): PipcookComponentResult {
   const result: PipcookComponentResult = {
     type, 
@@ -82,6 +82,20 @@ export const DataProcess: PipcookLifeCycleComponent = (plugin: DataProcessType, 
  */
 export const ModelLoad: PipcookLifeCycleComponent = (plugin: ModelLoadType, params?: any) => {
   const result = produceResultFactory(MODELLOAD, plugin, params);
+  result.observer = (data: any, model, insertParams) => {
+    return from(plugin(data, { ...params, ...insertParams }));
+  };
+  result.returnType = MODEL;
+  return result;
+};
+
+/**
+ * Model-Define Plugin Component
+ * @param plugin 
+ * @param params 
+ */
+export const ModelDefine: PipcookLifeCycleComponent = (plugin: ModelDefineType, params?: any) => {
+  const result = produceResultFactory(MODELDEFINE, plugin, params);
   result.observer = (data: any, model, insertParams) => {
     return from(plugin(data, { ...params, ...insertParams }));
   };

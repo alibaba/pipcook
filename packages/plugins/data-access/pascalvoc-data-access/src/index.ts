@@ -109,7 +109,7 @@ const pascalVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocD
   const testLoader = new DataLoader(testPair);
 
   const result: VocDataset = {
-    metaData: {
+    metadata: {
       labelMap
     },
     dataStatistics: [],

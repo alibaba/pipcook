@@ -1,13 +1,13 @@
-import { DataLoader, UniDataset, MetaData } from './data';
+import { DataLoader, UniDataset, Metadata } from './data';
 
 export interface CsvSample {
   data: any;
   label: any;
 }
 
-export interface CsvMetaData extends MetaData {
+export interface CsvMetadata extends Metadata {
   feature: {
-    featureNames: string[];
+    names: string[];
   };
 }
 
@@ -22,5 +22,5 @@ export interface CsvDataset extends UniDataset {
   trainLoader?: CsvDataLoader;
   validationLoader?: CsvDataLoader;
   testLoader?: CsvDataLoader;
-  metaData: CsvMetaData;
+  metadata: CsvMetadata;
 }

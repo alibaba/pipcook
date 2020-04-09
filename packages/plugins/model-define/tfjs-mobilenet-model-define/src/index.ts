@@ -3,7 +3,7 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelLoadType, ImageDataset, getModelDir, getMetadata, ModelLoadArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageDataset, getModelDir, getMetadata, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -32,8 +32,8 @@ const freezeModelLayers = (trainableLayers: string[], mobilenetModified: tf.Laye
  * @param data 
  */
 const assertionTest = (data: ImageDataset) => {
-  assert.ok(data.metaData.feature, 'Image feature is missing');
-  assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 3d');
+  assert.ok(data.metadata.feature, 'Image feature is missing');
+  assert.ok(data.metadata.feature.shape.length === 3, 'The size of an image must be 3d');
 };
 
 function argMax(array: any) {
@@ -64,7 +64,7 @@ const applyModel = (inputLayer: tf.SymbolicTensor, originModel: tf.LayersModel) 
  *  main function of the operator: load the mobilenet model
  * @param data sample data
  */
-const localMobileNetModelLoad: ModelLoadType = async (data: ImageDataset, args: ModelLoadArgsType): Promise<TfJsLayersModel> => {
+const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
   let {
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
@@ -80,9 +80,9 @@ const localMobileNetModelLoad: ModelLoadType = async (data: ImageDataset, args: 
 
   if (!modelId && !modelPath) {
     assertionTest(data);
-    inputShape = data.metaData.feature.shape;
-    outputShape = Object.keys(data.metaData.labelMap).length;
-    labelMap = data.metaData.labelMap;
+    inputShape = data.metadata.feature.shape;
+    outputShape = Object.keys(data.metadata.labelMap).length;
+    labelMap = data.metadata.labelMap;
     labelMap = getMetadata(modelId).labelMap;
   }
 
@@ -148,4 +148,4 @@ const localMobileNetModelLoad: ModelLoadType = async (data: ImageDataset, args: 
   return result;
 };
 
-export default localMobileNetModelLoad;
+export default localMobileNetModelDefine;

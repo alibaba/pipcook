@@ -2,7 +2,7 @@
  * @file This is for the plugin to load Bayes Classifier model.
  */
 
-import { ModelLoadType, PipcookModel, ModelLoadArgsType, getModelDir, CsvDataset } from '@pipcook/pipcook-core';
+import { ModelDefineType, UniModel, ModelDefineArgsType, getModelDir, CsvDataset } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as path from 'path';
 
@@ -14,7 +14,7 @@ const sys = boa.import('sys');
  * @param data 
  */
 const assertionTest = (data: CsvDataset) => {
-  assert.ok(data.metaData.feature && data.metaData.feature.featureNames.length === 1, 
+  assert.ok(data.metadata.feature && data.metadata.feature.names.length === 1, 
     'feature should only have one dimension which is the feature name');
 };
 
@@ -23,7 +23,7 @@ const assertionTest = (data: CsvDataset) => {
  * @param data Pipcook uniform sample data
  * @param args args. If the model path is provided, it will restore the model previously saved
  */
-const bayesianClassifierModelLoad: ModelLoadType = async (data: CsvDataset, args: ModelLoadArgsType): Promise<PipcookModel> => {
+const bayesianClassifierModelDefine: ModelDefineType = async (data: CsvDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   const {
     modelId = '',
     modelPath = '',
@@ -48,7 +48,7 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: CsvDataset, args
     classifier = loadModel(modelPath);
   }
   
-  const pipcookModel: PipcookModel = {
+  const pipcookModel: UniModel = {
     model: classifier,
     predict: function (texts: string[]) {
       const prediction = texts.map((text) => {
@@ -62,4 +62,4 @@ const bayesianClassifierModelLoad: ModelLoadType = async (data: CsvDataset, args
   return pipcookModel;
 };
 
-export default bayesianClassifierModelLoad;
+export default bayesianClassifierModelDefine;

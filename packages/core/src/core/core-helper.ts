@@ -22,8 +22,8 @@ export function getLog(pipcookRunner: PipcookRunner): any {
     latestSampleData: null
   };
 
-  if (pipcookRunner.latestSampleData && pipcookRunner.latestSampleData.metaData) {
-    result.metaData = pipcookRunner.latestSampleData.metaData;
+  if (pipcookRunner.latestSampleData && pipcookRunner.latestSampleData.metadata) {
+    result.metadata = pipcookRunner.latestSampleData.metadata;
   }
   
   return result;
@@ -53,8 +53,8 @@ export async function assignLatestResult(updatedType: string, result: any, self:
     self.latestModel = result;
     if (saveModelCallback) {
       const valueMap = 
-        (self.latestSampleData && self.latestSampleData.metaData 
-          && self.latestSampleData.metaData.label && self.latestSampleData.metaData.labelMap) || {};
+        (self.latestSampleData && self.latestSampleData.metadata 
+          && self.latestSampleData.metadata.label && self.latestSampleData.metadata.labelMap) || {};
       fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
       await saveModelCallback(path.join(self.logDir as string, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
     } 

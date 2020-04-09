@@ -1,21 +1,21 @@
 /**
  * @file this is for Pipcook plugin to train Bayes Classifier.
  */
-import { ModelTrainType, PipcookModel, CsvDataset, ModelTrainArgsType, CsvDataLoader, CsvMetaData } from '@pipcook/pipcook-core';
+import { ModelTrainType, UniModel, CsvDataset, ModelTrainArgsType, CsvDataLoader, CsvMetadata } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
 
-const createDataset = async (dataLoader: CsvDataLoader, metaData: CsvMetaData) => {
+const createDataset = async (dataLoader: CsvDataLoader, metadata: CsvMetadata) => {
   const rawData: any[] = [];
   const rawClass: any[] = [];
 
   const count = await dataLoader.len();
   for (let i = 0; i < count; i++) {
     const data = await dataLoader.getItem(i);
-    rawData.push(data.data[metaData.feature.featureNames[0]]);
+    rawData.push(data.data[metadata.feature.names[0]]);
     rawClass.push(data.label);
   }
 
@@ -27,7 +27,7 @@ const createDataset = async (dataLoader: CsvDataLoader, metaData: CsvMetaData) =
  * @param data Pipcook uniform data 
  * @param model Eshcer model
  */
-const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, model: PipcookModel, args: ModelTrainArgsType): Promise<PipcookModel> => {
+const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
   const { 
     saveModel,
     mode = 'cn'
@@ -38,11 +38,11 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   const importlib = boa.import('importlib');
   importlib.reload(module);
 
-  const { trainLoader, metaData } = data;
+  const { trainLoader, metadata } = data;
   
   const classifier = model.model;
   
-  const { rawData, rawClass } = await createDataset(trainLoader, metaData);
+  const { rawData, rawClass } = await createDataset(trainLoader, metadata);
 
   const { TextProcessing, MakeWordsSet, words_dict, TextFeatures, save_all_words_list, saveBayesModel } = boa.import('script');
   const text_list = TextProcessing(rawData, rawClass);

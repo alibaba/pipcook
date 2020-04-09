@@ -56,7 +56,7 @@ const pascalVocDataProcess: DataProcessType = async (data: ImageDataset, args: A
 
   const result = data;
 
-  result.metaData.feature = {
+  result.metadata.feature = {
     shape: [ resize[0], resize[1], 3 ]
   };
 

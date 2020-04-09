@@ -3,10 +3,10 @@ import { Statistic } from '../other';
 export interface DataDescriptor {
   type?: any;
   shape?: number[];
-  featureNames?: string[];
+  names?: string[];
 }
 
-export interface MetaData {
+export interface Metadata {
   feature?: DataDescriptor;
   label?: DataDescriptor;
   labelMap?: {[key: string]: number};
@@ -23,7 +23,7 @@ export interface DataLoader {
 }
 
 export interface UniDataset {
-  metaData?: MetaData;
+  metadata?: Metadata;
   dataStatistics: Statistic[];
   validationResult: {
     result: boolean;

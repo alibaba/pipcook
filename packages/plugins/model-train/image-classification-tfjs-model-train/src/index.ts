@@ -40,7 +40,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
       saveModel
     } = args;
 
-    const { trainLoader, validationLoader, metaData } = data;
+    const { trainLoader, validationLoader, metadata } = data;
 
     const count = await trainLoader.len();
 
@@ -50,12 +50,12 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
     };
 
     console.log('create train dataset');
-    const trainDataSet = await createDataset(trainLoader, metaData.labelMap);
+    const trainDataSet = await createDataset(trainLoader, metadata.labelMap);
     const ds = trainDataSet.repeat().batch(batchSize);
     let validationDataSet: tf.data.Dataset<any>;
     if (validationLoader) {
       console.log('create validation dataset');
-      validationDataSet = await createDataset(validationLoader, metaData.labelMap);
+      validationDataSet = await createDataset(validationLoader, metadata.labelMap);
       const valCount = await validationLoader.len();
       const validateDs = validationDataSet.batch(batchSize);
       trainConfig.validationData = validateDs;

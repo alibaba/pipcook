@@ -152,7 +152,7 @@ export function getModelDir(modelId: string) {
 
 export function getMetadata(modelId: string) {
   const json = require(path.join(process.cwd(), 'pipcook-output', modelId, `log.json`));
-  return json && json.metaData;
+  return json && json.metadata;
 }
 
 /**

@@ -1,4 +1,4 @@
-import { ModelLoadType, ImageDataset, ModelLoadArgsType, PytorchModel, getMetadata, getModelDir } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageDataset, ModelDefineArgsType, PytorchModel, getMetadata, getModelDir } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as path from 'path';
 
@@ -16,11 +16,11 @@ const transform = transforms.Compose(
  * @param data 
  */
 const assertionTest = (data: ImageDataset) => {
-  assert.ok(data.metaData.feature, 'Image feature is missing');
-  assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 3d');
+  assert.ok(data.metadata.feature, 'Image feature is missing');
+  assert.ok(data.metadata.feature.shape.length === 3, 'The size of an image must be 3d');
 };
 
-const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: ModelLoadArgsType): Promise<PytorchModel> => {
+const pytorchCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<PytorchModel> => {
   let {
     modelId,
     modelPath,
@@ -34,8 +34,8 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
   // create a new model
   if (!modelId && !modelPath) {
     assertionTest(data);
-    inputShape = data.metaData.feature.shape;
-    outputShape = Object.keys(data.metaData.labelMap).length;
+    inputShape = data.metadata.feature.shape;
+    outputShape = Object.keys(data.metadata.labelMap).length;
   }
 
   if (modelId) {
@@ -121,4 +121,4 @@ const pytorchCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Mode
   return pipcookModel;
 };
 
-export default pytorchCnnModelLoad;
+export default pytorchCnnModelDefine;

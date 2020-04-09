@@ -58,7 +58,7 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
     testCsvPath: path.join(dataDir, 'test.csv')
   };
 
-  const featureNames: string[] = [];
+  const names: string[] = [];
   if (fs.existsSync(path.join(dataDir, 'train.csv'))) {
     const dataLoader = new DataLoader(path.join(dataDir, 'train.csv'), labelColumn);
     data.trainLoader = dataLoader;
@@ -77,16 +77,16 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
 
   if (loader) {
     const data = await loader.getItem(0);
-    featureNames.push(
+    names.push(
       ...Object.keys(data.data)
     );
   }
   
   const result: CsvDataset = {
     ...data,
-    metaData: {
+    metadata: {
       feature: {
-        featureNames
+        names
       }
     }
   };

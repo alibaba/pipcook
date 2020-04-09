@@ -113,7 +113,7 @@ const cocoDataAccess: DataAccessType = async (args: ArgsType): Promise<CocoDatas
   const testLoader = new DataLoader(testPair);
 
   const result: CocoDataset = {
-    metaData: {
+    metadata: {
       labelMap
     },
     dataStatistics: [],

@@ -1,6 +1,6 @@
 
 import { UniDataset } from './data/data';
-import { PipcookModel } from './model';
+import { UniModel } from './model';
 import { EvaluateResult } from './other';
 
 export interface ArgsType {
@@ -14,7 +14,7 @@ export interface ModelArgsType extends ArgsType {
   train: boolean;
 }
 
-export interface ModelLoadArgsType extends ArgsType {
+export interface ModelDefineArgsType extends ArgsType {
   modelId: string;
   modelPath: string;
 }
@@ -44,17 +44,21 @@ export interface DataProcessType extends PipcookPlugin {
 }
 
 export interface ModelLoadType extends PipcookPlugin {
-  (data: UniDataset, args: ModelLoadArgsType): Promise<PipcookModel>;
+  (data: UniDataset, args: ModelDefineArgsType): Promise<UniModel>;
+}
+
+export interface ModelDefineType extends PipcookPlugin {
+  (data: UniDataset, args: ModelDefineArgsType): Promise<UniModel>;
 }
 
 export interface ModelTrainType extends PipcookPlugin {
-  (data: UniDataset, model: PipcookModel, args: ModelTrainArgsType): Promise<PipcookModel>;
+  (data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>;
 }
 
 export interface ModelEvaluateType extends PipcookPlugin {
-  (data: UniDataset, model: PipcookModel, args: ArgsType): Promise<EvaluateResult>;
+  (data: UniDataset, model: UniModel, args: ArgsType): Promise<EvaluateResult>;
 }
 
 export interface ModelDeployType extends PipcookPlugin {
-  (data: UniDataset, model: PipcookModel, args: ArgsType): Promise<any>;
+  (data: UniDataset, model: UniModel, args: ArgsType): Promise<any>;
 }

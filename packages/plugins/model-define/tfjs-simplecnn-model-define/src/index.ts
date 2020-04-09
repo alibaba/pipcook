@@ -1,4 +1,4 @@
-import { ModelLoadType, getModelDir, ImageDataset, ModelLoadArgsType, TfJsLayersModel, getMetadata } from '@pipcook/pipcook-core';
+import { ModelDefineType, getModelDir, ImageDataset, ModelDefineArgsType, TfJsLayersModel, getMetadata } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -9,8 +9,8 @@ import Jimp from 'jimp';
  * @param data 
  */
 const assertionTest = (data: ImageDataset) => {
-  assert.ok(data.metaData.feature, 'Image feature is missing');
-  assert.ok(data.metaData.feature.shape.length === 3, 'The size of an image must be 3d');
+  assert.ok(data.metadata.feature, 'Image feature is missing');
+  assert.ok(data.metadata.feature.shape.length === 3, 'The size of an image must be 3d');
 };
 
 function argMax(array: any) {
@@ -27,7 +27,7 @@ function argMax(array: any) {
  * @param modelId (string)[optional] if you want to load a model from previously trained pipcook pipeline, give the pipeline id here
  * @param modelPath (string)[optional] if you want to load a model from a local file path, give the path here
  */
-const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: ModelLoadArgsType): Promise<TfJsLayersModel> => {
+const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
   let {
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
@@ -43,9 +43,9 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
   // create a new model
   if (!modelId && !modelPath) {
     assertionTest(data);
-    inputShape = data.metaData.feature.shape;
-    outputShape = Object.keys(data.metaData.labelMap).length;
-    labelMap = data.metaData.labelMap;
+    inputShape = data.metadata.feature.shape;
+    outputShape = Object.keys(data.metadata.labelMap).length;
+    labelMap = data.metadata.labelMap;
   }
 
   if (modelId) {
@@ -136,4 +136,4 @@ const simpleCnnModelLoad: ModelLoadType = async (data: ImageDataset, args: Model
   return result;
 };
 
-export default simpleCnnModelLoad;
+export default simpleCnnModelDefine;

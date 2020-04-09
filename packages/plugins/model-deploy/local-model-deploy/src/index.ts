@@ -1,10 +1,10 @@
-import { UniDataset, ModelDeployType, PipcookModel, ArgsType } from '@pipcook/pipcook-core';
+import { UniDataset, ModelDeployType, UniModel, ArgsType } from '@pipcook/pipcook-core';
 import fastify from 'fastify';
 
 const server = fastify({ logger: false });
 
 const localModelDeploy: ModelDeployType = 
-  async (data: UniDataset, model: PipcookModel, args: ArgsType): Promise<any> => {
+  async (data: UniDataset, model: UniModel, args: ArgsType): Promise<any> => {
     server.post('/', async (req) => {
       const result = await model.predict(req.body.data);
       return {

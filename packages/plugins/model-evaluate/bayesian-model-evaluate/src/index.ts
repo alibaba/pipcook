@@ -1,17 +1,17 @@
-import { ModelEvaluateType, PipcookModel, CsvDataset, EvaluateResult, CsvDataLoader, CsvMetaData, ArgsType } from '@pipcook/pipcook-core';
+import { ModelEvaluateType, UniModel, CsvDataset, EvaluateResult, CsvDataLoader, CsvMetadata, ArgsType } from '@pipcook/pipcook-core';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
 
-const createDataset = async (dataLoader: CsvDataLoader, metaData: CsvMetaData) => {
+const createDataset = async (dataLoader: CsvDataLoader, metadata: CsvMetadata) => {
   const rawData: any[] = [];
   const rawClass: any[] = [];
 
   const count = await dataLoader.len();
   for (let i = 0; i < count; i++) {
     const data = await dataLoader.getItem(i);
-    rawData.push(data.data[metaData.feature.featureNames[0]]);
+    rawData.push(data.data[metadata.feature.names[0]]);
     rawClass.push(data.label);
   }
 
@@ -19,7 +19,7 @@ const createDataset = async (dataLoader: CsvDataLoader, metaData: CsvMetaData) =
 };
 
 const bayesianModelEvaluate: ModelEvaluateType 
-  = async (data: CsvDataset, model: PipcookModel, args: ArgsType): Promise<EvaluateResult> => {
+  = async (data: CsvDataset, model: UniModel, args: ArgsType): Promise<EvaluateResult> => {
 
     sys.path.insert(0, path.join(__dirname, 'assets'));
     const module = boa.import('script');
@@ -27,10 +27,10 @@ const bayesianModelEvaluate: ModelEvaluateType
     importlib.reload(module);
   
     const { modelDir } = args;
-    const { testLoader, metaData } = data;
+    const { testLoader, metadata } = data;
     const classifier = model.model;
 
-    const { rawData, rawClass } = await createDataset(testLoader, metaData);
+    const { rawData, rawClass } = await createDataset(testLoader, metadata);
     const { TextProcessing, TextFeatures, get_all_words_list } = boa.import('script');
     const text_list = TextProcessing(rawData, rawClass);
 
