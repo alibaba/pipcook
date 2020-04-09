@@ -1,13 +1,16 @@
 {
   "name": "Pipcook",
-  "mode": "modules",
+  "mode": "file",
   "out": "docs/typedoc",
   "theme": "default",
   "ignoreCompilerErrors": "false",
   "preserveConstEnums": "true",
-  "exclude": "*_test.ts",
+  "externalPattern": [
+    "**/assets/**/*.ts",
+    "**/*_test.ts"
+  ],
+  "entryPoint": "packages/core/src/index.ts",
   "stripInternal": "false",
   "excludeExternals": "true",
-  "readme": "none",
-  "categorizeByGroup": "true"
+  "readme": "none"
 }
