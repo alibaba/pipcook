@@ -1,0 +1,38 @@
+{
+  "name": "@pipcook/pipcook-cli",
+  "version": "0.5.14",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "pipcook": "./bin/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-opn": "^1.0.0",
+    "chalk": "^3.0.0",
+    "command-exists": "^1.2.8",
+    "commander": "^4.0.1",
+    "console.table": "^0.10.0",
+    "fs-extra": "^8.1.0",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0",
+    "inquirer": "^6.5.2",
+    "kubernetes-client": "^8.3.6",
+    "minimist": "^1.2.0",
+    "ora": "^3.4.0",
+    "request": "^2.88.2",
+    "semver": "^6.3.0",
+    "yaml": "^1.7.2",
+    "@pipcook/pipcook-core": "^0.5.4"
+  },
+  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
+  "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "nyc": "14.1.1"
+  }
+}

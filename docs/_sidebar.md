@@ -18,7 +18,7 @@
     - [DataCollect](/spec/plugin/0-data-collect.md)
     - [DataAccess](/spec/plugin/1-data-access.md)
     - [DataProcess](/spec/plugin/2-data-process.md)
-    - [ModelLoad](/spec/plugin/3-model-load.md)
+    - [ModelDefine](/spec/plugin/3-model-define.md)
     - [ModelTrain](/spec/plugin/4-model-train.md)
     - [ModelEvaluate](/spec/plugin/5-model-evaluate.md)
     - [ModelDeploy](/spec/plugin/6-model-deploy.md)

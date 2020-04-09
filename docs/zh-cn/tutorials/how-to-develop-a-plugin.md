@@ -11,7 +11,7 @@ pipcook 非常欢迎开发者为我们贡献插件从而扩展 pipcook 的功能
 - dataCollect
 - dataAccess
 - dataProcess
-- modelLoad
+- modelDefine
 - modelTrain
 - modelEvaluate
 - modelDeploy

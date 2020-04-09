@@ -39,11 +39,11 @@ interface UniformSampleData{
   }
 }
 
-export interface ModelLoadArgsType extends ArgsType {
+export interface ModelDefineArgsType extends ArgsType {
   modelId: string;
 }
 
-export interface ModelLoadAndSaveFunction {
+export interface ModelDefineAndSaveFunction {
   (modelPath: string): any
 }
 
@@ -56,7 +56,7 @@ export interface PipcookModel {
   outputShape?: number[];
   outputType: string;
   history?: tf.History;
-  save: ModelLoadAndSaveFunction;
+  save: ModelDefineAndSaveFunction;
   predict: any;
   modelName: string;
   modelPath?: string;

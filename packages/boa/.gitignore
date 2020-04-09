@@ -1,0 +1,10 @@
+build
+coverage
+node_modules
+.nyc_output
+.dataset
+.data
+.checkpoints
+
+**/__pycache__
+.idea/.DS_Store/**

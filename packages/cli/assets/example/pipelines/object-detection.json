@@ -1,0 +1,25 @@
+{
+  "plugins": {
+    "dataCollect": {
+      "package": "@pipcook/plugins-object-detection-coco-data-collect",
+      "params": {
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/autoLayoutGroupRecognition.zip"
+      }
+    },
+    "dataAccess": {
+      "package": "@pipcook/plugins-coco-data-access"
+    },
+    "modelDefine": {
+      "package": "@pipcook/plugins-detectron-fasterrcnn-model-define"
+    },
+    "modelTrain": {
+      "package": "@pipcook/plugins-object-detection-detectron-model-train",
+      "params": {
+        "steps": 100000
+      }
+    },
+    "modelEvaluate": {
+      "package": "@pipcook/plugins-object-detection-detectron-model-evaluate"
+    }
+  }
+}

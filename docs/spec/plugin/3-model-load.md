@@ -1,68 +1,63 @@
-# ModelLoad Plugin
+# ModelDefine Plugin
 
-The ModelLoad plug-in is used to load models. Because of the differences between js and python, tfjs uses json files to store Model data, while tfpy uses protobuf (Tensorflow SavedModel, Frozen Model, etc.) and keras uses. h5 save. During the pre-training of the model, we use the ModelLoader plug-in to ensure that the model format is uniform and can be loaded correctly. It is worth noting that ModelLoad should also allow loading from models previously trained by pipcook
+The ModelDefine plug-in is used to load models. Because of the differences between js and python, tfjs uses json files to store Model data, while tfpy uses protobuf (Tensorflow SavedModel, Frozen Model, etc.) and keras uses. h5 save. During the pre-training of the model, we use the ModelDefineer plug-in to ensure that the model format is uniform and can be loaded correctly. It is worth noting that ModelDefine should also allow loading from models previously trained by pipcook
 
 ```ts
-interface PipcookPlugin {}
+export interface DataDescriptor {
+  type?: DataType;
+  shape?: number[];
+  featureNames?: string[];
+}
 
-interface ArgsType {
+export interface MetaData {
+  feature?: DataDescriptor;
+  label?: DataDescriptor;
+  labelMap?: {[key: string]: number};
+}
+
+export interface Sample {
+  data: any;
+  label: any;
+}
+
+export interface DataLoader {
+  len: () => Promise<number>;
+  getItem: (id: number) => Promise<Sample>;
+}
+
+export interface UniDataset {
+  metaData?: MetaData;
+  dataStatistics: Statistic[];
+  validationResult: {
+    result: boolean;
+    message?: string;
+  };
+  trainLoader?: DataLoader;
+  validationLoader?: DataLoader;
+  testLoader?: DataLoader;
+}
+
+export interface ArgsType {
+  pipelineId: string;
+  modelDir: string;
+  dataDir: string;
   [key: string]: any;
 }
 
-interface DataDescriptor {
-  name: string;
-  type: DataType;
-  shape: number[];
-  possibleValues?: string[] | number[];
-  valueMap?: any;
-}
-
-interface metaData {
-  feature: DataDescriptor;
-  label: DataDescriptor;
-  trainSize?: number;
-  validationSize?: number;
-  testSize?: number;
-}
-
-interface UniformSampleData{
-  trainData: any;
-  validationData?: any;
-  testData?: any;
-  metaData: metaData;
-  dataStatistics?: statistic[];
-  validationResult?: {
-    result: boolean;
-    message: string;
-  }
-}
-
-export interface ModelLoadArgsType extends ArgsType {
+export interface ModelDefineArgsType extends ArgsType {
   modelId: string;
-}
-
-export interface ModelLoadAndSaveFunction {
-  (modelPath: string): any
+  modelPath: string;
 }
 
 export interface PipcookModel {
   model: any;
-  type: 'text classification' | 'image classification' | 'object detection';
   metrics?: any;
-  inputShape?: number[];
-  inputType: string;
-  outputShape?: number[];
-  outputType: string;
-  history?: tf.History;
-  save: ModelLoadAndSaveFunction;
   predict: any;
-  modelName: string;
-  modelPath?: string;
   config?: any;
 }
 
-interface ModelLoadType extends PipcookPlugin {
-  (data: UniformSampleData | UniformSampleData[], args?: ModelLoadArgsType): Promise<PipcookModel>
+export interface ModelDefineType extends PipcookPlugin {
+  (data: UniDataset, args: ModelDefineArgsType): Promise<PipcookModel>;
 }
 ```
 
