@@ -9,7 +9,7 @@ Pipcook 使用插件的形式来实现具体机器学习周期中的任务，这
 - DataCollect: 数据收集插件： 往往数据集是不一致的，分散的，通过此插件可以将不同来源的数据收集过来，并以统一的数据集格式存储, 有关 pipcook 要求的数据集标准，请参考这里
 - DataAccess: 数据接入插件： 此插件以期待的数据集格式将数据接入pipcook，同时，还会进行对样本的描述和验证，以确保我们运用了一个高质量的数据集
 - DataProcess: 数据处理插件：对数据进行处理工作
-- ModelLoad: 加载模型，此插件将模型加载到 pipeline 中，同时会抹平 keras，python tf 等模型的差异
+- ModelDefine: 用于定义模型，此插件将模型加载到 pipeline 中，同时会抹平 keras，python tf 等模型的差异
 - ModelTrain: 模型训练： 训练模型
 - ModelEvaluate: 评估模型
 - ModelDeploy: 部署模型
@@ -32,7 +32,7 @@ Pipcook 使用插件的形式来实现具体机器学习周期中的任务，这
 function DataCollect(plugin: EscherPlugin, params: object);
 function DataAccess(plugin: EscherPlugin, params: object);
 function DataProcess(plugin: EscherPlugin, params: object);
-function ModelLoad(plugin: EscherPlugin, params: object);
+function ModelDefine(plugin: EscherPlugin, params: object);
 function ModelTrain(plugin: EscherPlugin, params: object);
 function ModelEvaluate(plugin: EscherPlugin, params: object);
 function ModelDeploy(plugin: EscherPlugin, params: object);
@@ -43,7 +43,7 @@ function ModelDeploy(plugin: EscherPlugin, params: object);
 Pipcook 的插件分为内置插件和第三方插件，每个插件都是一个独立的 npm 包，对于所需的插件，需要独立安装，例如，我们需要一个载入 MobileNet 的模型插件，我们可以在工程目录中使用如下命令安装，**我们会将内置插件直接集成到一个 pipcook 脚手架工程里，您不需要单独安装这些内置插件**
 
 ```sh
-$ npm install mobileNetModelLoad --save
+$ npm install @pipcook/plugins-tfjs-mobilenet-model-define --save
 ```
 
 ## 插件列表
@@ -52,62 +52,39 @@ $ npm install mobileNetModelLoad --save
 
 ### DataCollect
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-data-collect-zh.md) | 将本地或者远程图片收集进来，储存为 PASCOL VOC 数据集格式 |
-| [@pipcook/pipcook-plugins-image-mnist-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-mnist-data-collect-zh.md) | Mnist 手写数据集收集，储存为 PASCOL VOC 数据集格式 |
-| [@pipcook/pipcook-plugins-image-detection-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-detection-data-collect-zh.md) | 将本地或者远程的目标检测数据收集进来，存储为 PASCOL VOC 数据集格式 |
-| [@pipcook/pipcook-plugins-text-class-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-class-data-collect-zh.md) | 将本地或者远程的分本分类的数据收集进来，存储为 csv 数据格式 |
-| [@pipcook/pipcook-plugins-image-coco-data-collect](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-coco-data-collect-zh.md) | 将本地或者远程的 coco format 的目标检测数据收集进来，存储为 PASCOL VOC 数据格式 |
+@pipcook/plugins-csv-data-collect
+@pipcook/plugins-image-classification-data-collect
+@pipcook/plugins-mnist-data-collect
+@pipcook/plugins-object-detection-coco-data-collect
+@pipcook/plugins-object-detection-pascalvoc-data-collect
+
 
 ### DataAccess
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-data-access-zh.md) | 图片分类数据接入 |
-| [@pipcook/pipcook-plugins-text-csv-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-csv-data-access-zh.md) | 文本分类数据接入 |
-| [@pipcook/pipcook-plugins-image-detection-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-detection-data-access-zh.md) | 基于 tfjs 的简单目标检测数据接入 |
-| [@pipcook/pipcook-plugins-detection-detectron-data-access](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-data-access-zh.md) | 基于 detectron2 的目标检测模型接入 |
-|  |  |
+@pipcook/plugins-coco-data-access
+@pipcook/plugins-csv-data-access
+@pipcook/plugins-pascalvoc-data-access
 
 ### DataProcess
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-image-class-data-process](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-data-process-zh.md) | 图片分类数据预处理 |
-| [@pipcook/pipcook-plugins-text-class-data-process](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-class-data-process-zh.md) | 文本分类数据分词预处理 |
+@pipcook/plugins-image-data-process
 
+### ModelDefine
 
-
-### Model Load
-
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-local-mobilenet-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-local-mobilenet-model-load-zh.md) | MobileNet 模型加载 |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-load-zh.md) | 贝叶斯分类器加载 |
-| [@pipcook/pipcook-plugins-simple-cnn-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-simple-cnn-model-load-zh.md) | 简单 CNN 模型加载 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-load](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-load-zh.md) | 基于 detectron2 的目标检测模型加载 |
+@pipcook/plugins-bayesian-model-define
+@pipcook/plugins-detectron-fasterrcnn-model-define
+@pipcook/plugins-tfjs-mobilenet-model-define
+@pipcook/plugins-tfjs-simplecnn-model-define
 
 ### ModelTrain
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-model-train](/zh-cn/plugins/%40pipcook-pipcook-plugins-model-train-zh.md) | 通用的 tfjs 模型训练 |
-| [@pipcook/pipcook-plugins-bayesian-classifier-model-train](/zh-cn/plugins/%40pipcook-pipcook-plugins-bayesian-classifier-model-train-zh.md) | 贝叶斯模型训练 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-train](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-train-zh.md) | 基于 detectron2 的目标检测模型训练 |
+@pipcook/plugins-bayesian-model-train
+@pipcook/plugins-image-classification-tfjs-model-train
+@pipcook/plugins-object-detection-detectron-model-train
 
 ### ModelEvaluate
 
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-class-model-evaluate](/zh-cn/plugins/%40pipcook-pipcook-plugins-class-model-evaluate-zh.md) | 分类模型评估 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-evaluate](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-evaluate-zh.md) | 基于 detectron2 的目标检测模型评估 |
-|  |  |
-
-### ModelDeploy
-
-| Name | Description |
-| --- | --- |
-| [@pipcook/pipcook-plugins-text-class-local-model-deploy](/zh-cn/plugins/%40pipcook-pipcook-plugins-text-class-local-model-deploy-zh.md) | 文本分类本地部署 |
-| [@pipcook/pipcook-plugins-image-class-local-model-deploy](/zh-cn/plugins/%40pipcook-pipcook-plugins-image-class-local-model-deploy-zh.md) | 图片分类本地部署 |
-| [@pipcook/pipcook-plugins-detection-detectron-model-deploy](/zh-cn/plugins/%40pipcook-pipcook-plugins-detection-detectron-model-deploy-zh.md) | 目标检测本地部署 |
+@pipcook/plugins-image-data-process
+@pipcook/plugins-bayesian-model-evaluate
+@pipcook/plugins-image-classification-tfjs-model-evaluate
+@pipcook/plugins-object-detection-detectron-model-evaluate

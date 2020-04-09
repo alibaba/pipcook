@@ -31,7 +31,7 @@ We have defined a set of interfaces for each plugin. Each type of plugin must be
 - [Data Collect](/spec/plugin/0-data-collect.md)
 - [Data Access](/spec/plugin/1-data-access.md)
 - [Data Process](/spec/plugin/2-data-process.md)
-- [Model Load](/spec/plugin/3-model-load.md)
+- [Model Load](/spec/plugin/3-model-define.md)
 - [Model Train](/spec/plugin/4-model-train.md)
 - [Model Evaluate](/spec/plugin/5-model-evaluate.md)
 - [Model Deploy](/spec/plugin/6-model-deploy.md)

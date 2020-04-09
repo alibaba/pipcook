@@ -3,70 +3,67 @@
 The Model Evaluate plug-in deeply analyzes the training results of the Model to help you understand how the Model performs on the test set.
 
 ```ts
-interface PipcookPlugin {}
+export interface DataDescriptor {
+  type?: DataType;
+  shape?: number[];
+  featureNames?: string[];
+}
 
-interface ArgsType {
+export interface MetaData {
+  feature?: DataDescriptor;
+  label?: DataDescriptor;
+  labelMap?: {[key: string]: number};
+}
+
+export interface Sample {
+  data: any;
+  label: any;
+}
+
+export interface DataLoader {
+  len: () => Promise<number>;
+  getItem: (id: number) => Promise<Sample>;
+}
+
+export interface UniDataset {
+  metaData?: MetaData;
+  dataStatistics: Statistic[];
+  validationResult: {
+    result: boolean;
+    message?: string;
+  };
+  trainLoader?: DataLoader;
+  validationLoader?: DataLoader;
+  testLoader?: DataLoader;
+}
+
+export interface ArgsType {
+  pipelineId: string;
+  modelDir: string;
+  dataDir: string;
   [key: string]: any;
 }
 
-interface DataDescriptor {
-  name: string;
-  type: DataType;
-  shape: number[];
-  possibleValues?: string[] | number[];
-  valueMap?: any;
-}
-
-interface metaData {
-  feature: DataDescriptor;
-  label: DataDescriptor;
-  trainSize?: number;
-  validationSize?: number;
-  testSize?: number;
-}
-
-interface UniformSampleData{
-  trainData: any;
-  validationData?: any;
-  testData?: any;
-  metaData: metaData;
-  dataStatistics?: statistic[];
-  validationResult?: {
-    result: boolean;
-    message: string;
-  }
-}
-
-export interface ModelLoadArgsType extends ArgsType {
+export interface ModelDefineArgsType extends ArgsType {
   modelId: string;
-}
-
-export interface ModelLoadAndSaveFunction {
-  (modelPath: string): any
+  modelPath: string;
 }
 
 export interface PipcookModel {
   model: any;
-  type: 'text classification' | 'image classification' | 'object detection';
   metrics?: any;
-  inputShape?: number[];
-  inputType: string;
-  outputShape?: number[];
-  outputType: string;
-  history?: tf.History;
-  save: ModelLoadAndSaveFunction;
   predict: any;
-  modelName: string;
-  modelPath?: string;
   config?: any;
 }
 
-interface EvaluateResult {
+export interface EvaluateResult {
   [key: string]: any;
 }
+
 export interface ModelEvaluateType extends PipcookPlugin {
-  (data: UniformSampleData | UniformSampleData[], model: PipcookModel | PipcookModel[], args?: ArgsType): Promise<EvaluateResult>
+  (data: UniDataset, model: PipcookModel, args: ArgsType): Promise<EvaluateResult>;
 }
+
 ```
 
 - Input: the model evaluation plug-in must contain the data of the test set and the corresponding trained models.
