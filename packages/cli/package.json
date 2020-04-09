@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "0.5.14",
+  "version": "0.5.15",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pipcook/pipcook-core": "^0.5.8",
     "better-opn": "^1.0.0",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
@@ -27,8 +28,7 @@
     "ora": "^3.4.0",
     "request": "^2.88.2",
     "semver": "^6.3.0",
-    "yaml": "^1.7.2",
-    "@pipcook/pipcook-core": "^0.5.4"
+    "yaml": "^1.7.2"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {
