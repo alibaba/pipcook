@@ -17,7 +17,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "build": "lerna run compile",
-    "lint": "eslint . --ext .ts --ext .js --fix",
+    "lint": "eslint . --ext .ts --ext .js",
     "pretest": "npm run lint",
     "test": "lerna run --scope @pipcook/pipcook-core test",
     "typedoc": "typedoc"
@@ -25,6 +25,5 @@
   "dependencies": {
     "@types/jasmine": "^3.5.10",
     "jasmine": "^3.5.0"
-  },
-  "__npminstall_done": false
+  }
 }
