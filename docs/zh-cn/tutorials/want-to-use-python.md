@@ -21,7 +21,6 @@ If you want to run our examples provided officially, make sure these packages ar
 - numpy
 - opencv
 - pillow
-- pytorch
 - jieba
 - scikit-learn
 - [detection2](https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md)

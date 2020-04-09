@@ -73,14 +73,12 @@ $ npm install @pipcook/plugins-tfjs-mobilenet-model-define --save
 
 @pipcook/plugins-bayesian-model-define
 @pipcook/plugins-detectron-fasterrcnn-model-define
-@pipcook/plugins-pytorch-simplecnn-model-define
 @pipcook/plugins-tfjs-mobilenet-model-define
 @pipcook/plugins-tfjs-simplecnn-model-define
 
 ### ModelTrain
 
 @pipcook/plugins-bayesian-model-train
-@pipcook/plugins-image-classification-pytorch-model-train
 @pipcook/plugins-image-classification-tfjs-model-train
 @pipcook/plugins-object-detection-detectron-model-train
 
@@ -88,6 +86,5 @@ $ npm install @pipcook/plugins-tfjs-mobilenet-model-define --save
 
 @pipcook/plugins-image-data-process
 @pipcook/plugins-bayesian-model-evaluate
-@pipcook/plugins-image-classification-pytorch-model-evaluate
 @pipcook/plugins-image-classification-tfjs-model-evaluate
 @pipcook/plugins-object-detection-detectron-model-evaluate
