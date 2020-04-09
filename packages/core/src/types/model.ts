@@ -6,8 +6,3 @@ export interface UniModel {
 }
 
 export type TfJsLayersModel = UniModel
-
-export interface PytorchModel extends UniModel {
-  criterion: any;
-  optimizer: any;
-}
