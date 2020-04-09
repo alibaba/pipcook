@@ -86,7 +86,7 @@ You will see a web page prompt in your browser, and there is a MNIST showcase on
   to classifify [imgcook](https://www.imgcook.com/) databinding pictures.
 - [pipeline-object-detection][]: pipeline example to train object detection task which is for component recognition 
   used by imgcook.
-- [python-keras][]: example to use Python Keras library to train deep leraning network in js syntax and runtime.
+- [pipeline-text-bayes-classification][]: pipeline example to train text classification task with bayes
 
 See [here](./example) for complete list, and it's easy and quick to run these examples. For example, to do a MNIST 
 image classification, just run the following to start the pipeline:
@@ -94,6 +94,9 @@ image classification, just run the following to start the pipeline:
 ```sh
 $ pipcook run examples/pipelines/mnist-image-classification.json
 ```
+
+__NOTICE__: the last two examples are using Boa (pipcook python bridge layer). 
+Before run them, you need to setup Python environment. See [here](docs/tutorials/want-to-use-python.md) for more information
 
 ## Documentation
 
@@ -153,6 +156,6 @@ $ npm run build
 [Python]: https://www.python.org/
 [machine-learning application APIs]: https://github.com/alibaba/pipcook/issues/33
 [pipeline-mnist-image-classification]: example/pipelines/mnist-image-classification.json
-[pipeline-databinding-image-classification]: example/databinding-image-classification.json
-[pipeline-object-detection]: example/object-detection.json
-[pipeline-text-bayes-classification]: example/text-bayes-classification.json
+[pipeline-databinding-image-classification]: example/pipelines/databinding-image-classification.json
+[pipeline-object-detection]: example/pipelines/object-detection.json
+[pipeline-text-bayes-classification]: example/pipelines/text-bayes-classification.json

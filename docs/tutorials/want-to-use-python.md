@@ -3,8 +3,28 @@
 
 - Python 3
 - Node.js 12
+- Mac OS (will support Linux very soon)
 - Homebrew
   - `brew --prefix` to be used to get Python's include and library.
+
+## Virtual Environment
+
+If you are using virtualenv or conda, you can just set up your system environment PYTHONPATH to point to your site-packages folder. For instance
+
+```sh
+$ export PYTHONPATH = /Users/venv/lib/python3.7/site-packages
+```
+
+## Dependencies
+
+If you want to run our examples provided officially, make sure these packages are installed
+- numpy
+- opencv
+- pillow
+- pytorch
+- jieba
+- scikit-learn
+- [detection2](https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md)
 
 ## Get started
 
