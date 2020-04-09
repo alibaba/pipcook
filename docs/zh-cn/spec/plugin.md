@@ -9,7 +9,7 @@ Pipcook 使用插件的形式来实现具体机器学习周期中的任务，这
 - DataCollect: 数据收集插件： 往往数据集是不一致的，分散的，通过此插件可以将不同来源的数据收集过来，并以统一的数据集格式存储, 有关 pipcook 要求的数据集标准，请参考这里
 - DataAccess: 数据接入插件： 此插件以期待的数据集格式将数据接入pipcook，同时，还会进行对样本的描述和验证，以确保我们运用了一个高质量的数据集
 - DataProcess: 数据处理插件：对数据进行处理工作
-- ModelDefine: 加载模型，此插件将模型加载到 pipeline 中，同时会抹平 keras，python tf 等模型的差异
+- ModelDefine: 用于定义模型，此插件将模型加载到 pipeline 中，同时会抹平 keras，python tf 等模型的差异
 - ModelTrain: 模型训练： 训练模型
 - ModelEvaluate: 评估模型
 - ModelDeploy: 部署模型
