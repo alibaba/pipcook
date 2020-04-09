@@ -58,7 +58,6 @@ Can't wait to start a [Pipcook][] project? Please see [get started](tutorials/ge
 After building a machine learning application, if you want to learn more about Pipcook, see the followings:
 
 - Tutorial
-  - [Get started with Pipeline API](./tutorials/get-started-with-pipeline-api.md)
   - [Get started with command-line tools](./tutorials/get-started-with-cli.md)
   - [Developer Guide](./tutorials/developer-guide.md)
   - [How to develop a plugin](./tutorials/how-to-develop-a-plugin.md)

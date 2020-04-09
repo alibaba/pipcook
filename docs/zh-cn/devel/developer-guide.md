@@ -32,7 +32,7 @@ $ pip --version
 - [Data Collect](/zh-cn/spec/plugin/0-data-collect.md)
 - [Data Access](/zh-cn/spec/plugin/1-data-access.md)
 - [Data Process](/zh-cn/spec/plugin/2-data-process.md)
-- [Model Load](/zh-cn/spec/plugin/3-model-load.md)
+- [Model Load](/zh-cn/spec/plugin/3-model-define.md)
 - [Model Train](/zh-cn/spec/plugin/4-model-train.md)
 - [Model Evaluate](/zh-cn/spec/plugin/5-model-evaluate.md)
 - [Model Deploy](/zh-cn/spec/plugin/6-model-deploy.md)

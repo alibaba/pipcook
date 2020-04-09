@@ -1,14 +1,13 @@
 {
   "packages": [
-    "packages/*",
-    "packages/plugins/*"
+    "packages/cli",
+    "packages/core",
+    "packages/boa",
+    "packages/plugins/**/*"
   ],
   "version": "independent",
   "npmClient": "npm",
   "command": {
-    "bootstrap": {
-      "hoist": true
-    },
     "publishConfig": {
       "access": "public"
     }

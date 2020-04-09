@@ -3,48 +3,49 @@
 This plugin is a data access plug-in, designed to connect datasets from different sources to pipcook. At the same time, you can perform certain data verification in this plug-in to ensure the quality of data access.
 
 ```ts
-interface PipcookPlugin {}
+export interface DataDescriptor {
+  type?: DataType;
+  shape?: number[];
+  featureNames?: string[];
+}
 
-interface ArgsType {
+export interface MetaData {
+  feature?: DataDescriptor;
+  label?: DataDescriptor;
+  labelMap?: {[key: string]: number};
+}
+
+export interface Sample {
+  data: any;
+  label: any;
+}
+
+export interface DataLoader {
+  len: () => Promise<number>;
+  getItem: (id: number) => Promise<Sample>;
+}
+
+export interface UniDataset {
+  metaData?: MetaData;
+  dataStatistics: Statistic[];
+  validationResult: {
+    result: boolean;
+    message?: string;
+  };
+  trainLoader?: DataLoader;
+  validationLoader?: DataLoader;
+  testLoader?: DataLoader;
+}
+
+export interface ArgsType {
+  pipelineId: string;
+  modelDir: string;
+  dataDir: string;
   [key: string]: any;
 }
 
-interface DataDescriptor {
-  name: string;
-  type: DataType;
-  shape: number[];
-  possibleValues?: string[] | number[];
-  valueMap?: any;
-}
-
-interface metaData {
-  feature: DataDescriptor;
-  label: DataDescriptor;
-  trainSize?: number;
-  validationSize?: number;
-  testSize?: number;
-}
-
-interface UniformSampleData{
-  trainData: any;
-  validationData?: any;
-  testData?: any;
-  metaData: metaData;
-  dataStatistics?: statistic[];
-  validationResult?: {
-    result: boolean;
-    message: string;
-  }
-}
-
-interface OriginSampleData {
-  trainDataPath: string;
-  testDataPath?: string;
-  validationDataPath?: string;
-}
-
-interface DataAccessType extends PipcookPlugin {
-  (data: OriginSampleData | OriginSampleData[], args?: ArgsType): Promise<UniformSampleData>
+export interface DataAccessType extends PipcookPlugin {
+  (args: ArgsType): Promise<UniDataset>;
 }
 ```
 

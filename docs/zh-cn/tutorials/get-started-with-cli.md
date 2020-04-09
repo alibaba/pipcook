@@ -26,3 +26,9 @@ $ pipcook board
 ```
 
 [pipcook-cli]: https://github.com/alibaba/pipcook/tree/master/packages/pipcook-cli
+
+## 启动流水线
+
+```sh
+$ pipcook run [config-file]
+```

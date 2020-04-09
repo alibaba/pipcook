@@ -55,7 +55,7 @@ Prepare the following on your machine:
 
 | Installer   | Version range |
 |-------------|---------------|
-| [Node.js][] | >= 10.16      |
+| [Node.js][] | >= 12     |
 | [Python][]  | >= 3.6        |
 | [npm][]     | >= 6.1        |
 
@@ -86,14 +86,17 @@ You will see a web page prompt in your browser, and there is a MNIST showcase on
   to classifify [imgcook](https://www.imgcook.com/) databinding pictures.
 - [pipeline-object-detection][]: pipeline example to train object detection task which is for component recognition 
   used by imgcook.
-- [python-keras][]: example to use Python Keras library to train deep leraning network in js syntax and runtime.
+- [pipeline-text-bayes-classification][]: pipeline example to train text classification task with bayes
 
 See [here](./example) for complete list, and it's easy and quick to run these examples. For example, to do a MNIST 
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ node examples/pipeline/pipeline-mnist-image-classification.js
+$ pipcook run examples/pipelines/mnist-image-classification.json
 ```
+
+__NOTICE__: the last two examples are using Boa (pipcook python bridge layer). 
+Before run them, you need to setup Python environment. See [here](docs/tutorials/want-to-use-python.md) for more information
 
 ## Documentation
 
@@ -152,7 +155,7 @@ $ npm run build
 [npm]: https://npmjs.com/
 [Python]: https://www.python.org/
 [machine-learning application APIs]: https://github.com/alibaba/pipcook/issues/33
-[pipeline-mnist-image-classification]: example/pipeline/pipeline-mnist-image-classification.js
-[pipeline-databinding-image-classification]: example/pipeline/pipeline-databinding-image-classification.js
-[pipeline-object-detection]: example/pipeline/pipeline-object-detection.js
-[python-keras]: example/python-nodejs/python-keras.js
+[pipeline-mnist-image-classification]: example/pipelines/mnist-image-classification.json
+[pipeline-databinding-image-classification]: example/pipelines/databinding-image-classification.json
+[pipeline-object-detection]: example/pipelines/object-detection.json
+[pipeline-text-bayes-classification]: example/pipelines/text-bayes-classification.json

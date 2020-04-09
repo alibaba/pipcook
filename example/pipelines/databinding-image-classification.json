@@ -1,0 +1,31 @@
+{
+  "plugins": {
+    "dataCollect": {
+      "package": "@pipcook/plugins-image-classification-data-collect",
+      "params": {
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/eCommerceImageClassification.zip"
+      }
+    },
+    "dataAccess": {
+      "package": "@pipcook/plugins-pascalvoc-data-access"
+    },
+    "dataProcess": {
+      "package": "@pipcook/plugins-image-data-process",
+      "params": {
+        "resize": [256,256]
+      }
+    },
+    "modelDefine": {
+      "package": "@pipcook/plugins-tfjs-mobilenet-model-define"
+    },
+    "modelTrain": {
+      "package": "@pipcook/plugins-image-classification-tfjs-model-train",
+      "params": {
+        "epochs": 15
+      }
+    },
+    "modelEvaluate": {
+      "package": "@pipcook/plugins-image-classification-tfjs-model-evaluate"
+    }
+  }
+}
