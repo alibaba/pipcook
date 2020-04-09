@@ -16,8 +16,8 @@
         "resize": [28,28]
       }
     },
-    "modelLoad": {
-      "package": "@pipcook/plugins-tfjs-simplecnn-model-load"
+    "modelDefine": {
+      "package": "@pipcook/plugins-tfjs-simplecnn-model-define"
     },
     "modelTrain": {
       "package": "@pipcook/plugins-image-classification-tfjs-model-train",

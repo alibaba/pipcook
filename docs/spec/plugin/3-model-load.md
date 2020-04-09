@@ -1,6 +1,6 @@
-# ModelLoad Plugin
+# ModelDefine Plugin
 
-The ModelLoad plug-in is used to load models. Because of the differences between js and python, tfjs uses json files to store Model data, while tfpy uses protobuf (Tensorflow SavedModel, Frozen Model, etc.) and keras uses. h5 save. During the pre-training of the model, we use the ModelLoader plug-in to ensure that the model format is uniform and can be loaded correctly. It is worth noting that ModelLoad should also allow loading from models previously trained by pipcook
+The ModelDefine plug-in is used to load models. Because of the differences between js and python, tfjs uses json files to store Model data, while tfpy uses protobuf (Tensorflow SavedModel, Frozen Model, etc.) and keras uses. h5 save. During the pre-training of the model, we use the ModelDefineer plug-in to ensure that the model format is uniform and can be loaded correctly. It is worth noting that ModelDefine should also allow loading from models previously trained by pipcook
 
 ```ts
 export interface DataDescriptor {
@@ -44,7 +44,7 @@ export interface ArgsType {
   [key: string]: any;
 }
 
-export interface ModelLoadArgsType extends ArgsType {
+export interface ModelDefineArgsType extends ArgsType {
   modelId: string;
   modelPath: string;
 }
@@ -56,8 +56,8 @@ export interface PipcookModel {
   config?: any;
 }
 
-export interface ModelLoadType extends PipcookPlugin {
-  (data: UniDataset, args: ModelLoadArgsType): Promise<PipcookModel>;
+export interface ModelDefineType extends PipcookPlugin {
+  (data: UniDataset, args: ModelDefineArgsType): Promise<PipcookModel>;
 }
 ```
 

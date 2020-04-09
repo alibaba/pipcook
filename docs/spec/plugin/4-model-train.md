@@ -44,7 +44,7 @@ export interface ArgsType {
   [key: string]: any;
 }
 
-export interface ModelLoadArgsType extends ArgsType {
+export interface ModelDefineArgsType extends ArgsType {
   modelId: string;
   modelPath: string;
 }

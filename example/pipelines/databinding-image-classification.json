@@ -15,8 +15,8 @@
         "resize": [256,256]
       }
     },
-    "modelLoad": {
-      "package": "@pipcook/plugins-tfjs-mobilenet-model-load"
+    "modelDefine": {
+      "package": "@pipcook/plugins-tfjs-mobilenet-model-define"
     },
     "modelTrain": {
       "package": "@pipcook/plugins-image-classification-tfjs-model-train",

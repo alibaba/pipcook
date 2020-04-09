@@ -11,7 +11,7 @@ We have defined seven types of machine learning lifecycle plugins:
 | [Data Collect](./plugin/0-data-collect.md) | data from different sources can be collected and stored in a unified dataset format, for more information about the dataset standards required by pipcook, see here. |
 | [Data Access](./plugin/1-data-access.md) | this plugin access data to pipcook in the expected dataset format. It also describes and verifies samples to ensure that a high-quality dataset is used. |
 | [Data Process](./plugin/2-data-process.md) | processing data |
-| [Model Load](./plugin/3-model-load.md) | this plugin loads the model into the pipeline and eliminates the differences between models such as `keras` and `tensorflow`. |
+| [Model Load](./plugin/3-model-define.md) | this plugin loads the model into the pipeline and eliminates the differences between models such as `keras` and `tensorflow`. |
 | [Model Train](./plugin/4-model-train.md) | train models |
 | [Model Evaluate](./plugin/5-model-evaluate.md) | evaluate a given model |
 | [Model Deploy](./plugin/6-model-deploy.md) | deploy a given model |
@@ -34,7 +34,7 @@ For each plugin, we need to pass it into the corresponding type of parsers for p
 function DataCollect(plugin: PipcookPlugin, params: object);
 function DataAccess(plugin: PipcookPlugin, params: object);
 function DataProcess(plugin: PipcookPlugin, params: object);
-function ModelLoad(plugin: PipcookPlugin, params: object);
+function ModelDefine(plugin: PipcookPlugin, params: object);
 function ModelTrain(plugin: PipcookPlugin, params: object);
 function ModelEvaluate(plugin: PipcookPlugin, params: object);
 function ModelDeploy(plugin: PipcookPlugin, params: object);
@@ -45,7 +45,7 @@ function ModelDeploy(plugin: PipcookPlugin, params: object);
 Pipcook plugins are divided into built-in, community and private. Each one is an independent npm package, and the required plugins need to be installed independently. For example, we need a model plugin loaded with `MobileNet`, we can use the following command in the project directory to install, **We will integrate the builtin plugins directly into a pipcook scaffold project. You do not need to install these builtin plugins separately.**
 
 ```sh
-$ npm install @pipcook/plugins-tfjs-mobilenet-model-load --save
+$ npm install @pipcook/plugins-tfjs-mobilenet-model-define --save
 ```
 
 ## Awesome Plugins
@@ -71,13 +71,13 @@ The following is a list of plugins in different types:
 
 @pipcook/plugins-image-data-process
 
-### ModelLoad
+### ModelDefine
 
-@pipcook/plugins-bayesian-model-load
-@pipcook/plugins-detectron-fasterrcnn-model-load
-@pipcook/plugins-pytorch-simplecnn-model-load
-@pipcook/plugins-tfjs-mobilenet-model-load
-@pipcook/plugins-tfjs-simplecnn-model-load
+@pipcook/plugins-bayesian-model-define
+@pipcook/plugins-detectron-fasterrcnn-model-define
+@pipcook/plugins-pytorch-simplecnn-model-define
+@pipcook/plugins-tfjs-mobilenet-model-define
+@pipcook/plugins-tfjs-simplecnn-model-define
 
 ### ModelTrain
 
