@@ -40,9 +40,9 @@
     "eslint": "eslint --cache --ext .js,.jsx ./",
     "stylelint": "stylelint ./**/*.scss",
     "clean": "rm -rf ./build",
-    "buildserver": "cd ../pipcook-board-server && npm run ci",
-    "buildstatic": "npm run buildserver && npm run build && rm -rf ../pipcook-board-server/app/public && mkdir ../pipcook-board-server/app/public && cp -r ./build/. ../pipcook-board-server/app/public",
-    "compile": "npm run buildstatic && rm -rf ../pipcook-cli/assets/server && mkdir ../pipcook-cli/assets/server && rsync -av --progress ../pipcook-board-server/. ../pipcook-cli/assets/server --exclude node_modules"
+    "buildserver": "cd ../pipboard-server && npm run ci",
+    "buildstatic": "npm run buildserver && npm run build && rm -rf ../pipboard-server/app/public && mkdir ../pipboard-server/app/public && cp -r ./build/. ../pipboard-server/app/public",
+    "compile": "npm run buildstatic && rm -rf ../cli/assets/server && mkdir ../cli/assets/server && rsync -av --progress ../pipboard-server/. ../cli/assets/server --exclude node_modules"
   },
   "engines": {
     "node": ">=8.0.0"

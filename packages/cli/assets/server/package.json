@@ -1,5 +1,5 @@
 {
-  "name": "pipcook-board-server",
+  "name": "@pipcook/pipcook-board-server",
   "version": "1.0.0",
   "description": "",
   "private": true,

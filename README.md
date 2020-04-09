@@ -55,7 +55,7 @@ Prepare the following on your machine:
 
 | Installer   | Version range |
 |-------------|---------------|
-| [Node.js][] | >= 10.16      |
+| [Node.js][] | >= 12     |
 | [Python][]  | >= 3.6        |
 | [npm][]     | >= 6.1        |
 
