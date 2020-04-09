@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-object-detection-detectron-model-evaluate",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.5.1",
-    "@pipcook/pipcook-core": "^0.5.8",
+    "@pipcook/boa": "^0.5.2",
+    "@pipcook/pipcook-core": "^0.5.9",
     "fs-extra": "^8.1.0"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
