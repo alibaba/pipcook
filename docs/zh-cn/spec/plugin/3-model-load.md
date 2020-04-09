@@ -1,6 +1,6 @@
 # ModelDefine 插件
 
-ModelDefine 插件是用来加载模型的，由于 js 和 python 的差别，tfjs 使用 json 文件来保存模型数据，而 tfpy 使用 protobuf (Tensorflow SavedModel, Frozen Model等)，keras 使用.h5 保存。在预训练模型时，为了保证模型格式统一并且能被正确的加载，我们使用 ModelDefineer 插件来处理。值得注意是，ModelDefine 应该还允许从 pipcook 之前训练过的模型中加载
+ModelDefine 插件是用来加载模型的，由于 js 和 python 的差别，tfjs 使用 json 文件来保存模型数据，而 tfpy 使用 protobuf (Tensorflow SavedModel, Frozen Model等)，keras 使用.h5 保存。在预训练模型时，为了保证模型格式统一并且能被正确的加载，我们使用 ModelDefine 插件来处理。值得注意是，ModelDefine 应该还允许从 pipcook 之前训练过的模型中加载
 
 ```
 interface PipcookPlugin {
