@@ -25,5 +25,8 @@
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
     "nyc": "14.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

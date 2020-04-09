@@ -28,5 +28,8 @@
     "@types/jasmine": "^3.5.7",
     "@types/uuid": "^7.0.0",
     "nyc": "14.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

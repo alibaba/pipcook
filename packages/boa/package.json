@@ -36,5 +36,8 @@
     "eslint": "^6.7.2",
     "nyc": "^14.1.1",
     "tap": "^14.10.5"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
