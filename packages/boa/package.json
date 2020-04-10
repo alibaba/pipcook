@@ -30,7 +30,7 @@
   "dependencies": {
     "bindings": "^1.5.0",
     "debug": "^4.1.1",
-    "node-addon-api": "nodejs/node-addon-api#master"
+    "node-addon-api": "nodejs/node-addon-api#e1a827ae295d4e426ab6c77272c3f3e87e31817c"
   },
   "devDependencies": {
     "codecov": "^3.6.5",
