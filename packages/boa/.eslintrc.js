@@ -298,7 +298,7 @@ module.exports = {
       "error",
       "always"
     ],
-    "strict": "error",
+    "strict": "off",
     "switch-colon-spacing": "error",
     "symbol-description": "error",
     "template-curly-spacing": [
