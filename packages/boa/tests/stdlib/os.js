@@ -15,7 +15,6 @@ test('os/process parameters', t => {
   console.log(`os.getegid() is ${os.getegid()}`);
   console.log(`os.geteuid() is ${os.geteuid()}`);
   console.log(`os.getgroups() is ${os.getgroups()}`);
-  console.log(`os.getlogin() is ${os.getlogin()}`);
   console.log(`os.getpid() is ${os.getpid()}`);
   t.end();
 });
