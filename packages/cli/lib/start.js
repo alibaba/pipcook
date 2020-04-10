@@ -1,7 +1,7 @@
-const childProcess = require('child_process');
+const fork = require('child_process').fork;
 const ora = require('ora');
 const spinner = ora();
-const { PipcookRunner } = require('@pipcook/pipcook-core');
+const path = require('path');
 
 const start = async (fileName) => {
   if (!fileName) {
@@ -9,8 +9,13 @@ const start = async (fileName) => {
     return;
   }
 
-  const runner = new PipcookRunner();
-  runner.runConfig(fileName);
+  const childProcess = fork(path.join(__dirname, 'runConfig.js'), {
+    cwd: process.cwd(),
+    env: {
+      NODE_PATH: path.join(process.cwd(), 'node_modules')
+    }
+  });
+  childProcess.send(fileName);
 };
 
 module.exports = start;
