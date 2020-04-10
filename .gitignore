@@ -19,3 +19,4 @@ docs/typedoc
 packages/pipboard-client/build
 .eslintcache
 packages/pipcook-cli/assets/server
+ENV

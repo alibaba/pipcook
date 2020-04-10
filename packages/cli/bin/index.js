@@ -10,11 +10,6 @@ const start = require('../lib/start');
 const devPlugin = require('../lib/devPlugin');
 const dataset = require('../lib/dataset');
 
-const path = require('path');
-
-process.env.NODE_PATH = path.join(process.cwd(), 'node_modules');
-require("module").Module._initPaths();
-
 // check node version
 if (!semver.gte(process.version, '10.0.0')) {
   console.log(
