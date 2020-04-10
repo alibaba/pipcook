@@ -20,7 +20,8 @@ module.exports = {
     "@pipcook/plugins-tfjs-simplecnn-model-define",
     "@pipcook/plugins-bayesian-model-train",
     "@pipcook/plugins-image-classification-tfjs-model-train",
-    "@pipcook/plugins-object-detection-detectron-model-train"
+    "@pipcook/plugins-object-detection-detectron-model-train",
+    "@pipcook/plugins-local-model-deploy"
   ],
   pipcookLogName: 'pipcook-output'
 };
