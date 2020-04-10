@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.9",
-    "better-opn": "^1.0.0",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
@@ -23,7 +22,6 @@
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "inquirer": "^6.5.2",
-    "kubernetes-client": "^8.3.6",
     "minimist": "^1.2.0",
     "ora": "^3.4.0",
     "request": "^2.88.2",

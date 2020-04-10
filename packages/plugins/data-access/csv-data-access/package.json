@@ -17,7 +17,9 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.9",
-    "csv-parse": "^4.8.8"
+    "csv-parse": "^4.8.8",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {

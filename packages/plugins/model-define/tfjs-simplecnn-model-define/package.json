@@ -17,7 +17,6 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.9",
-    "@tensorflow-models/mobilenet": "^2.0.4",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "jimp": "^0.10.0"
   },
