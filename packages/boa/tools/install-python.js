@@ -1,6 +1,7 @@
 'use strict';
 
 const { run, PLATFORM, ARCH } = require('./utils');
+const fs = require('fs');
 
 const CONDA_DOWNLOAD_PREFIX = 'https://repo.anaconda.com/miniconda';
 let CONDA_DOWNLOAD_NAME = 'Miniconda3-latest';
@@ -20,8 +21,12 @@ if (ARCH === 'x64') {
 }
 CONDA_DOWNLOAD_NAME = `${CONDA_DOWNLOAD_NAME}.sh`;
 
-// Start run the installation steps...
-run('rm', '-rf', '.miniconda');
-run(`curl ${CONDA_DOWNLOAD_PREFIX}/${CONDA_DOWNLOAD_NAME} > ${CONDA_DOWNLOAD_NAME}`);
-run('sh', `./${CONDA_DOWNLOAD_NAME}`, '-b -p .miniconda');
-run(`.miniconda/bin/pip`, 'install', '-r requirements.txt');
+if (!fs.existsSync(CONDA_DOWNLOAD_NAME)) {
+  run(`curl ${CONDA_DOWNLOAD_PREFIX}/${CONDA_DOWNLOAD_NAME} > ${CONDA_DOWNLOAD_NAME}`);
+}
+
+run('rm', '-rf .miniconda');
+run('sh', `./${CONDA_DOWNLOAD_NAME}`, '-f -b -p .miniconda');
+run('rm', '-rf .miniconda/lib/libstdc++.so*');
+run('rm', '-rf .miniconda/lib/libgcc_s.so*');
+run('.miniconda/bin/pip', 'install -r requirements.txt');
