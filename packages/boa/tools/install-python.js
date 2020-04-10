@@ -30,3 +30,4 @@ run('sh', `./${CONDA_DOWNLOAD_NAME}`, '-f -b -p .miniconda');
 run('rm', '-rf .miniconda/lib/libstdc++.so*');
 run('rm', '-rf .miniconda/lib/libgcc_s.so*');
 run('.miniconda/bin/pip', 'install -r requirements.txt');
+run('.miniconda/bin/conda', 'info -a');
