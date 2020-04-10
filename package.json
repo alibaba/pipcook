@@ -19,7 +19,7 @@
     "build": "lerna run compile",
     "lint": "eslint . --ext .ts --ext .js",
     "pretest": "npm run lint",
-    "test": "lerna run --scope @pipcook/pipcook-core test",
+    "test": "lerna run --scope @pipcook/pipcook-core --scope @pipcook/boa test",
     "typedoc": "typedoc"
   },
   "dependencies": {

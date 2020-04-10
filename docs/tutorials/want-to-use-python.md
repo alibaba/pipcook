@@ -3,7 +3,9 @@
 
 - Python 3
 - Node.js 12
-- Mac OS (will support Linux very soon)
+- Platforms
+  - MacOS
+  - Linux
 - Homebrew
   - `brew --prefix` to be used to get Python's include and library.
 
