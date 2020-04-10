@@ -3,10 +3,11 @@
     "packages/cli",
     "packages/core",
     "packages/boa",
+    "packages/plugin-api",
     "packages/plugins/**/*"
   ],
   "version": "independent",
-  "npmClient": "npm",
+  "npmClient": "tnpm",
   "command": {
     "publishConfig": {
       "access": "public"
