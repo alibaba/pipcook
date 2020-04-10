@@ -8,3 +8,6 @@ node_modules
 
 **/__pycache__
 .idea/.DS_Store/**
+
+.miniconda/
+Miniconda3-latest-MacOSX-x86_64.sh
