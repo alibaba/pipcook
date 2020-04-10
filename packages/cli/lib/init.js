@@ -27,7 +27,6 @@ const init = async (cmdObj) => {
     if (commandExistsSync('tnpm')) {
       clientChoices.push('tnpm');
     }
-    spinner.fail(`no npm client detected`);
     if (clientChoices.length > 0) {
       const answer = await inquirer.prompt([
         {
