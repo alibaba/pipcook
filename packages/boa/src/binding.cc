@@ -5,7 +5,7 @@
 #include <napi.h>
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
-	// Preload the Python library for resolving numpy tracky issue.
+  // Preload the Python library for resolving numpy tracky issue.
 #if defined(__APPLE__) || defined(__MACH__)
   dlopen("libpython3.7m.dylib", RTLD_LAZY | RTLD_GLOBAL);
 #elif defined(__linux__) || defined(__unix__)
