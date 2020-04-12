@@ -10,7 +10,6 @@ export const MODELDEPLOY = 'modelDeploy';
 type PluginTypeI = 
   'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate' | 'modelDeploy';
 
-
 export const PLUGINS: PluginTypeI[] = [
   DATACOLLECT,
   DATAACCESS,

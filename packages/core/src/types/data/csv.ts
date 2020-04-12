@@ -1,4 +1,4 @@
-import { DataLoader, UniDataset, Metadata } from './data';
+import { DataLoader, UniDataset, Metadata } from './common';
 
 export interface CsvSample {
   data: any;

@@ -5,19 +5,37 @@
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
-const uuidv1 = require('uuid/v1');
+import * as uuidv1 from 'uuid/v1';
 
 import config from '../config';
 import { PipcookComponentResult } from '../types/component';
-import { UniDataset } from '../types/data/data';
+import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
 import { DeploymentResult, EvaluateResult } from '../types/other';
-import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './core-helper';
+import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './helper';
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
-import { DataCollect, DataAccess, DataProcess, ModelLoad, ModelDefine, ModelTrain, ModelEvaluate, ModelDeploy } from '../components/PipcookLifeCycleComponent';
-import { DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELDEFINE, MODELTRAIN, MODELEVALUATE, MODELDEPLOY } from '../constants/plugins';
 import { RunConfigI } from '../types/config';
+import {
+  DataCollect,
+  DataAccess,
+  DataProcess,
+  ModelLoad,
+  ModelDefine,
+  ModelTrain,
+  ModelEvaluate,
+  ModelDeploy
+} from '../components/lifecycle';
+import {
+  DATACOLLECT,
+  DATAACCESS,
+  DATAPROCESS,
+  MODELLOAD,
+  MODELDEFINE,
+  MODELTRAIN,
+  MODELEVALUATE,
+  MODELDEPLOY
+} from '../constants/plugins';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();

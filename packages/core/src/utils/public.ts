@@ -7,7 +7,6 @@ import * as fs from 'fs-extra';
 import _cliProgress from 'cli-progress';
 import Jimp from 'jimp';
 
-
 const xml2js = require('xml2js');
 const request = require('request');
 const si = require('systeminformation');

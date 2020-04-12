@@ -3,14 +3,31 @@
  * Beside plugin, it will contain all related info required to run plugin.
  */
 
-import { PipcookLifeCycleComponent, PipcookComponentResult } from '../types/component';
-import { PipcookPlugin, DataCollectType, DataAccessType, DataProcessType, ModelLoadType, ModelDefineType,
-  ModelTrainType, ModelEvaluateType, ModelDeployType } from '../types/plugins';
-import { DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELDEFINE, MODELTRAIN, MODELEVALUATE, MODELDEPLOY } from '../constants/plugins';
-import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA } from '../constants/other';
-import { from } from 'rxjs';
 import * as path from 'path';
-
+import { from } from 'rxjs';
+import { PipcookLifeCycleComponent, PipcookComponentResult } from '../types/component';
+import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE, ORIGINDATA } from '../constants/other';
+import {
+  PipcookPlugin,
+  DataCollectType,
+  DataAccessType,
+  DataProcessType,
+  ModelLoadType,
+  ModelDefineType,
+  ModelTrainType,
+  ModelEvaluateType,
+  ModelDeployType
+} from '../types/plugins';
+import {
+  DATACOLLECT,
+  DATAACCESS,
+  DATAPROCESS,
+  MODELLOAD,
+  MODELDEFINE,
+  MODELTRAIN,
+  MODELEVALUATE,
+  MODELDEPLOY
+} from '../constants/plugins';
 
 /**
  * The is the factory function to produce Pipcook Component.

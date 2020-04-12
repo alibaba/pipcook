@@ -4,7 +4,7 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
-import { PipcookRunner } from './core'; 
+import { PipcookRunner } from './index';
 import { PipcookComponentResult } from '../types/component';
 import { logCurrentExecution } from '../utils/logger';
 import { Observable, from } from 'rxjs';
