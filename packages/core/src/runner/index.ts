@@ -5,7 +5,8 @@
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as uuidv1 from 'uuid/v1';
+// FIXME(Yorkie): use import.
+const uuidv1 = require('uuid/v1');
 
 import config from '../config';
 import { PipcookComponentResult } from '../types/component';
