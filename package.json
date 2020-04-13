@@ -10,6 +10,7 @@
     "docsify-cli": "^4.4.0",
     "eslint": "^6.6.0",
     "lerna": "^3.18.4",
+    "@lerna/bootstrap": "^3.18.4",
     "typedoc": "^0.15.4",
     "typedoc-plugin-lerna": "^0.1.0",
     "typescript": "^3.7.2"
