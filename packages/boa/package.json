@@ -4,12 +4,12 @@
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {
-    "preinstall": "node tools/install-python.js && node tools/install-requirements.js",
-    "install": "npm run build",
+    "apreinstall": "node tools/install-python.js && node tools/install-requirements.js",
+    "install": "node-gyp rebuild",
+    "postinstall": "node tools/debuginfo.js && npm run build",
     "test": "tap ./tests/**/*.js",
     "lint": "eslint . && ./clang-format.py",
     "build": "node-gyp configure && node-gyp build",
-    "postinstall": "node tools/debuginfo.js",
     "pretest": "npm run lint",
     "codecov": "nyc report --reporter=lcovonly && codecov",
     "htmlcov": "nyc report --reporter=html"

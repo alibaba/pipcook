@@ -12,8 +12,5 @@
       "access": "public"
     }
   },
-  "hoist": true,
-  "useGitVersion": true,
-  "useWorkspaces": false,
-  "gitVersionPrefix": "v"
+  "hoist": true
 }
