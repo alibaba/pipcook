@@ -3,7 +3,7 @@
  */
 
 import chalk from 'chalk';
-import { PipcookRunner } from '../core/core';
+import { PipcookRunner } from '../runner';
 import { PipcookComponentResult } from '../types/component';
 
 enum LoggerColor {

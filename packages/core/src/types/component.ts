@@ -1,9 +1,8 @@
 import { PipcookPlugin } from './plugins';
 import { UniModel } from './model';
-import { UniDataset } from './data/data';
+import { UniDataset } from './data/common';
 import { PipObject } from './other';
 import { Subscribable } from 'rxjs';
-
 
 export interface InsertParams {
   pipelineId: string;
