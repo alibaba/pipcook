@@ -1,35 +1,34 @@
 'use strict';
 
-const { run, PLATFORM, ARCH } = require('./utils');
+const { run, initAndGetCondaPath, PLATFORM, ARCH } = require('./utils');
 const fs = require('fs');
 const path = require('path');
 
 const CONDA_DOWNLOAD_PREFIX = 'https://repo.anaconda.com/miniconda';
-let CONDA_DOWNLOAD_NAME = 'Miniconda3-latest';
+const CONDA_LOCAL_PATH = initAndGetCondaPath();
+let condaDownloadName = 'Miniconda3-latest';
 
 if (PLATFORM === 'linux') {
-  CONDA_DOWNLOAD_NAME += '-Linux';
+  condaDownloadName += '-Linux';
 } else if (PLATFORM === 'darwin') {
-  CONDA_DOWNLOAD_NAME += '-MacOSX';
+  condaDownloadName += '-MacOSX';
 } else {
   throw new TypeError(`No support for your platform ${PLATFORM}`);
 }
 
 if (ARCH === 'x64') {
-  CONDA_DOWNLOAD_NAME += '-x86_64';
+  condaDownloadName += '-x86_64';
 } else if (PLATFORM !== 'darwin') {
-  CONDA_DOWNLOAD_NAME += '-x86';
+  condaDownloadName += '-x86';
 }
-CONDA_DOWNLOAD_NAME = `${CONDA_DOWNLOAD_NAME}.sh`;
+condaDownloadName = `${condaDownloadName}.sh`;
 
-if (!fs.existsSync(CONDA_DOWNLOAD_NAME)) {
-  run(`curl ${CONDA_DOWNLOAD_PREFIX}/${CONDA_DOWNLOAD_NAME} > ${CONDA_DOWNLOAD_NAME}`);
+if (!fs.existsSync(condaDownloadName)) {
+  run(`curl ${CONDA_DOWNLOAD_PREFIX}/${condaDownloadName} > ${condaDownloadName}`);
 }
-
-const CONDA_LOCAL_PATH = path.join(__dirname, '../.miniconda');
 
 run('rm', `-rf ${CONDA_LOCAL_PATH}`);
-run('sh', `./${CONDA_DOWNLOAD_NAME}`, `-f -b -p ${CONDA_LOCAL_PATH}`);
+run('sh', `./${condaDownloadName}`, `-f -b -p ${CONDA_LOCAL_PATH}`);
 run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libstdc++.so*`);
 run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libgcc_s.so*`);
 

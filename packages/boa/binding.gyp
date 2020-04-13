@@ -24,14 +24,14 @@
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
         "pybind11/include",
-        "<!@(pwd)/.miniconda/include/python3.7m",
+        "<!@(cat .CONDA_INSTALL_DIR)/include/python3.7m",
       ],
       "library_dirs": [
-        "<!@(pwd)/.miniconda/lib",
+        "<!@(cat .CONDA_INSTALL_DIR)/lib",
       ],
       "libraries": [
         "-lpython3.7m",
-        "-Wl,-rpath,'<!@(pwd)/.miniconda/lib'",
+        "-Wl,-rpath,'<!@(cat .CONDA_INSTALL_DIR)/lib'",
       ],
       "defines": [
         "NAPI_CPP_EXCEPTIONS",
