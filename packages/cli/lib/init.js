@@ -27,7 +27,9 @@ const init = async (cmdObj) => {
     if (commandExistsSync('tnpm')) {
       clientChoices.push('tnpm');
     }
-    if (clientChoices.length > 0) {
+    if (clientChoices.length === 1) {
+      client = clientChoices[0];
+    } else if (clientChoices.length > 1) {
       const answer = await inquirer.prompt([
         {
           type: 'list',
