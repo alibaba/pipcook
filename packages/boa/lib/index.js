@@ -1,6 +1,6 @@
-
-
+const fs = require('fs');
 const util = require('util');
+const path = require('path');
 const native = require('bindings')('boa');
 const debug = require('debug')('boa');
 const utils = require('./utils');
@@ -15,6 +15,9 @@ const globals = pyInst.globals();
 const builtins = pyInst.builtins();
 const delegators = DelegatorLoader.load();
 
+// reset some envs for Python
+setenv();
+
 function getTypeInfo(T) {
   const typeo = builtins.__getitem__('type').invoke(asHandleObject(T));
   const tinfo = { module: null, name: null };
@@ -25,6 +28,17 @@ function getTypeInfo(T) {
     tinfo.name = typeo.__getattr__('__name__').toString();
   }
   return tinfo;
+}
+
+function setenv() {
+  // read the conda path from the .CONDA_INSTALL_DIR
+  // eslint-disable-next-line no-sync
+  const condaPath = fs.readFileSync(
+    path.join(__dirname, '../.CONDA_INSTALL_DIR'), 'utf8');
+  const appendSysPath = pyInst.import('sys')
+    .__getattr__('path')
+    .__getattr__('append');
+  appendSysPath.invoke(path.join(condaPath, 'lib/python3.7/lib-dynload'));
 }
 
 // shadow copy an object, and returns the new copied object.

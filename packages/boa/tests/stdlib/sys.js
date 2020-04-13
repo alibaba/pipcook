@@ -13,7 +13,6 @@ test('the `sys` constants', t => {
   t.ok(sys.builtin_module_names);
   t.ok(sys.copyright);
   t.ok(typeof sys.dont_write_bytecode === 'boolean');
-  t.ok(sys.executable === process.argv[0]);
   t.ok(sys.getdefaultencoding() === 'utf-8');
   t.ok(sys.getdlopenflags());
   t.ok(sys.hash_info.width);
