@@ -186,7 +186,7 @@ def files_under(path, dirs_to_skip=[], file_filter=None):
 def check_tidy(src_dir, options=None):
     allowed_exts = ['.c', '.cc', '.cpp', '.h', '.hpp']
     skip_dirs = ['build',
-                 '.git', '.data', '.checkpoints', '.nyc_output',
+                 '.git', '.data', '.checkpoints', '.nyc_output', '.miniconda',
                  'node_modules', 'coverage', 'pybind11',
                  ]
     skip_files = []
