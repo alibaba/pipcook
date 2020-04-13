@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "preinstall": "node tools/install-python.js && node tools/install-requirements.js",
+    "install": "npm run build",
     "test": "tap ./tests/**/*.js",
     "lint": "eslint . && ./clang-format.py",
     "build": "node-gyp configure && node-gyp build",
@@ -31,7 +32,7 @@
   "dependencies": {
     "bindings": "^1.5.0",
     "debug": "^4.1.1",
-    "node-addon-api": "nodejs/node-addon-api#e1a827ae295d4e426ab6c77272c3f3e87e31817c"
+    "node-addon-api": "git://github.com/nodejs/node-addon-api.git#e1a827ae295d4e426ab6c77272c3f3e87e31817c"
   },
   "devDependencies": {
     "codecov": "^3.6.5",
