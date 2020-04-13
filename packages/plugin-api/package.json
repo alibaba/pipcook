@@ -13,8 +13,8 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Ricky Cao <ruikuncao@foxmail.com>",
+  "license": "MIT",
   "dependencies": {
     "@pipcook/boa": "^0.5.2",
     "@types/fs-extra": "^8.1.0",
