@@ -1,5 +1,5 @@
 
-import { UniDataset } from './data/data';
+import { UniDataset } from './data/common';
 import { UniModel } from './model';
 import { EvaluateResult } from './other';
 

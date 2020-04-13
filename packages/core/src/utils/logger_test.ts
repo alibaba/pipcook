@@ -1,5 +1,5 @@
 import logger from './logger';
-import { PipcookRunner } from '../core/core';
+import { PipcookRunner } from '../runner';
 import { PipcookComponentResult } from '../types/component';
 
 describe('logger', () => {
