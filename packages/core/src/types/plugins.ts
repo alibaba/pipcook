@@ -3,6 +3,8 @@ import { UniDataset } from './data/common';
 import { UniModel } from './model';
 import { EvaluateResult } from './other';
 
+export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate' | 'modelDeploy';
+
 export interface ArgsType {
   pipelineId: string;
   modelDir: string;
