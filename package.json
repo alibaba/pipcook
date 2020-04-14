@@ -10,12 +10,13 @@
     "docsify-cli": "^4.4.0",
     "eslint": "^6.6.0",
     "lerna": "^3.18.4",
+    "@lerna/bootstrap": "^3.18.4",
     "typedoc": "^0.15.4",
     "typedoc-plugin-lerna": "^0.1.0",
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap --nohoist=node-addon-api",
     "build": "lerna run compile",
     "lint": "eslint . --ext .ts --ext .js",
     "pretest": "npm run lint",
