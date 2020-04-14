@@ -178,7 +178,7 @@ export class PipcookRunner {
 
         let pluginModule, factoryMethod;
         try {
-          pluginModule = require(pluginName).default
+          pluginModule = require(pluginName).default;
         } catch (err) {
           pluginModule = require(path.join(process.cwd(), pluginName)).default;
         }
