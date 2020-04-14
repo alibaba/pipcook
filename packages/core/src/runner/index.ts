@@ -5,8 +5,7 @@
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
-// FIXME(Yorkie): use import.
-const uuidv1 = require('uuid/v1');
+import * as uuid from 'uuid';
 
 import config from '../config';
 import { PipcookComponentResult } from '../types/component';
@@ -92,7 +91,7 @@ export class PipcookRunner {
    * Constructor, user need to specify pipeline name when init
    */
   constructor() {
-    this.pipelineId = uuidv1();
+    this.pipelineId = uuid.v1();
     this.logDir = path.join(process.cwd(), 'pipcook-output', this.pipelineId);
     fs.ensureDirSync(this.logDir);
     fs.ensureDirSync(path.join(this.logDir, 'model'));

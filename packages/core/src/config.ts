@@ -1,8 +1,8 @@
 import { Config } from './types/config';
-const packageJson = require('../package.json');
 
 const config: Config = {
-  version: packageJson.version
+  // See https://docs.npmjs.com/misc/scripts#packagejson-vars
+  version: process.env.npm_package_version
 };
 
 export default config;

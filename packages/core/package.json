@@ -18,6 +18,7 @@
   "dependencies": {
     "@types/cli-progress": "^3.4.2",
     "@types/fs-extra": "^8.0.1",
+    "@types/uuid": "^7.0.2",
     "better-opn": "^1.0.0",
     "chalk": "^3.0.0",
     "cli-progress": "^3.6.0",
