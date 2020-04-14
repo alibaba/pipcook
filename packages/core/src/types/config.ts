@@ -1,3 +1,5 @@
+import { PluginTypeI } from './plugins';
+
 export interface Config {
   version: string;
 }
@@ -9,13 +11,6 @@ export interface RunConfigParam {
 
 export interface RunConfigI {
   plugins: {
-    dataCollect?: RunConfigParam;
-    dataAccess?: RunConfigParam;
-    dataProcess?: RunConfigParam;
-    modelLoad?: RunConfigParam;
-    modelDefine?: RunConfigParam;
-    modelTrain?: RunConfigParam;
-    modelEvaluate?: RunConfigParam;
-    modelDeploy?: RunConfigParam;
+    [key in PluginTypeI]: RunConfigParam;
   };
 }
