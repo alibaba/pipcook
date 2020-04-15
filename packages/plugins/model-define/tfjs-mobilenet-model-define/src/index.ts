@@ -83,7 +83,6 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
     inputShape = data.metadata.feature.shape;
     outputShape = Object.keys(data.metadata.labelMap).length;
     labelMap = data.metadata.labelMap;
-    labelMap = getMetadata(modelId).labelMap;
   }
 
   if (modelId) {
