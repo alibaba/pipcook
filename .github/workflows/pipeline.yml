@@ -1,6 +1,5 @@
 name: pipeline
 on:
-  push:
   schedule:
   - cron: "0 2 * * *"
 
