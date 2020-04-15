@@ -117,7 +117,7 @@ $ lerna -v
 $ tsc -v
 ```
 
-or install via [npm][]:
+install dependencies, e.g. via [npm][]:
 
 ```sh
 $ npm install
