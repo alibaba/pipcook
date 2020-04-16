@@ -1,14 +1,14 @@
 {
   "name": "@pipcook/plugin-api",
   "version": "0.5.0",
-  "description": "",
+  "description": "This is the plugin api for pipcook, including some low-level api of machine learning for developers",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
     "dist"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ts-node ../../run_tests.ts",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json"
@@ -22,6 +22,9 @@
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "jasmine": "^3.5.0",
+    "ts-node": "^8.6.2"
   },
   "publishConfig": {
     "access": "public"

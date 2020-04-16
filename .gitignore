@@ -22,3 +22,4 @@ ENV
 .miniconda
 .CONDA_INSTALL_DIR
 Miniconda*.sh
+.test

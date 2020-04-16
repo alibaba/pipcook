@@ -1,2 +1,3 @@
 export { shuffle, sample } from './datasets';
-export { gray } from './model';
+export { gray, resize, tokenize } from './model';
+export { averagePrecisionScore, averageRecallScore, meanAveragePrecision } from './validation';
