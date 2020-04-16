@@ -1,1 +1,9 @@
-numpy==1.17.4
+numpy==1.18.2
+matplotlib==3.2.1
+opencv-python
+pandas==1.0.3
+scipy==1.4.1
+scikit-learn
+Pillow==7.1.1
+nltk==3.5
+jieba==0.42.1
