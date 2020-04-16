@@ -20,3 +20,6 @@ packages/pipboard-client/build
 .eslintcache
 packages/pipcook-cli/assets/server
 ENV
+.miniconda
+.CONDA_INSTALL_DIR
+Miniconda*.sh
