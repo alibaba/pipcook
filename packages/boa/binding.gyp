@@ -24,9 +24,14 @@
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
         "pybind11/include",
+        "<!@(cat .CONDA_INSTALL_DIR)/include/python3.7m",
+      ],
+      "library_dirs": [
+        "<!@(cat .CONDA_INSTALL_DIR)/lib",
       ],
       "libraries": [
-        "-lpython3.7",
+        "-lpython3.7m",
+        "-Wl,-rpath,'<!@(cat .CONDA_INSTALL_DIR)/lib'",
       ],
       "defines": [
         "NAPI_CPP_EXCEPTIONS",
@@ -38,12 +43,6 @@
             "GCC_ENABLE_CPP_EXCEPTIONS": "YES",
             "GCC_ENABLE_CPP_RTTI": "YES",
           },
-          "include_dirs": [
-            "<!@(brew --prefix python@3)/Frameworks/Python.framework/Versions/3.7/include/python3.7m",
-          ],
-          "library_dirs": [
-            "<!@(brew --prefix python@3)/Frameworks/Python.framework/Versions/3.7/lib",
-          ],
         }],
       ],
     },

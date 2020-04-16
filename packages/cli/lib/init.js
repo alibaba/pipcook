@@ -6,7 +6,7 @@ const glob = require('glob-promise');
 const commandExistsSync = require('command-exists').sync;
 const inquirer = require('inquirer');
 
-const { dependencies, pipcookLogName } = require('./config');
+const { dependencies, pipcookLogName, optionalNpmClients } = require('./config');
 const spinner = ora();
 
 /**
@@ -16,16 +16,16 @@ const init = async (cmdObj) => {
   let client = 'npm';
   if (cmdObj && cmdObj[0]) {
     client = cmdObj[0];
+    if (!optionalNpmClients.includes(client)) {
+      spinner.fail(`Invalid npm client: ${client}.`);
+      return;
+    }
   } else {
     const clientChoices = [];
-    if (commandExistsSync('npm')) {
-      clientChoices.push('npm');
-    }
-    if (commandExistsSync('cnpm')) {
-      clientChoices.push('cnpm');
-    }
-    if (commandExistsSync('tnpm')) {
-      clientChoices.push('tnpm');
+    for (const npmClient of optionalNpmClients) {
+      if (commandExistsSync(npmClient)) {
+        clientChoices.push(npmClient);
+      }
     }
     if (clientChoices.length === 1) {
       client = clientChoices[0];

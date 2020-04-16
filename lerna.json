@@ -12,5 +12,6 @@
     "publishConfig": {
       "access": "public"
     }
-  }
+  },
+  "hoist": true
 }

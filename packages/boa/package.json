@@ -4,6 +4,7 @@
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {
+    "preinstall": "node tools/install-python.js && node tools/install-requirements.js",
     "test": "tap ./tests/**/*.js",
     "lint": "eslint . && ./clang-format.py",
     "build": "node-gyp configure && node-gyp build",
@@ -13,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/yorkie/node-pybind11.git"
+    "url": "git+ssh://git@github.com/alibaba/pipcook.git"
   },
   "keywords": [
     "python",
@@ -23,13 +24,13 @@
   "author": "Yorkie Liu <yorkiefixer@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yorkie/node-pybind11/issues"
+    "url": "https://github.com/alibaba/pipcook/issues"
   },
-  "homepage": "https://github.com/yorkie/node-pybind11#readme",
+  "homepage": "https://github.com/alibaba/pipcook#readme",
   "dependencies": {
     "bindings": "^1.5.0",
     "debug": "^4.1.1",
-    "node-addon-api": "nodejs/node-addon-api#master"
+    "node-addon-api": "git://github.com/nodejs/node-addon-api.git#e1a827ae295d4e426ab6c77272c3f3e87e31817c"
   },
   "devDependencies": {
     "codecov": "^3.6.5",

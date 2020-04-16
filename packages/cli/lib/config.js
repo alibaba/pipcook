@@ -23,5 +23,6 @@ module.exports = {
     "@pipcook/plugins-object-detection-detectron-model-train",
     "@pipcook/plugins-local-model-deploy"
   ],
-  pipcookLogName: 'pipcook-output'
+  pipcookLogName: 'pipcook-output',
+  optionalNpmClients: [ 'npm', 'cnpm', 'tnpm' ]
 };

@@ -1,9 +1,7 @@
-name: build
+name: pipeline
 on:
-  push:
-  pull_request:
-    branches:
-    - master
+  schedule:
+  - cron: "0 2 * * *"
 
 jobs:
   universal:
@@ -11,17 +9,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['10', '12']
-        os: [ubuntu-latest, macOS-latest]
+        node_version: ['12']
+        os: [ubuntu-latest]
     steps:
     - uses: actions/checkout@v1
     - name: Use Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node_version }}
-    - name: npm install, build and test
-      run: |
-        npm install
-        npm run build
-        npm test
-
+    - name: install
+      run: npm install
+    - name: compile
+      run: npm run build
+    - name: pipeline
+      run: npm run test:pipeline

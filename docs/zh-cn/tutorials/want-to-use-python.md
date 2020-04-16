@@ -1,11 +1,15 @@
 # Boa (Python Bridge Layer)
+
+Using Python functions seamlessly in Node.js, it delivers any Python module for Node.js developer in lower-cost to learn or use.
+
 ## Dependencies
 
-- Python 3
-- Node.js 12
-- Mac OS (will support Linux very soon)
-- Homebrew
-  - `brew --prefix` to be used to get Python's include and library.
+- Node.js 10, 12
+- Platforms
+  - MacOS
+  - Linux
+
+> Note: we integrate Python3.7 via conda, no necessary to install Python by yourself.
 
 ## Virtual Environment
 
@@ -14,16 +18,6 @@ If you are using virtualenv or conda, you can just set up your system environmen
 ```sh
 $ export PYTHONPATH = /Users/venv/lib/python3.7/site-packages
 ```
-
-## Dependencies
-
-If you want to run our examples provided officially, make sure these packages are installed
-- numpy
-- opencv
-- pillow
-- jieba
-- scikit-learn
-- [detection2](https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md)
 
 ## Get started
 

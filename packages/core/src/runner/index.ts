@@ -5,19 +5,37 @@
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
-const uuidv1 = require('uuid/v1');
+import * as uuid from 'uuid';
 
 import config from '../config';
 import { PipcookComponentResult } from '../types/component';
-import { UniDataset } from '../types/data/data';
+import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
 import { DeploymentResult, EvaluateResult } from '../types/other';
-import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './core-helper';
+import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './helper';
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
-import { DataCollect, DataAccess, DataProcess, ModelLoad, ModelDefine, ModelTrain, ModelEvaluate, ModelDeploy } from '../components/PipcookLifeCycleComponent';
-import { DATACOLLECT, DATAACCESS, DATAPROCESS, MODELLOAD, MODELDEFINE, MODELTRAIN, MODELEVALUATE, MODELDEPLOY } from '../constants/plugins';
 import { RunConfigI } from '../types/config';
+import {
+  DataCollect,
+  DataAccess,
+  DataProcess,
+  ModelLoad,
+  ModelDefine,
+  ModelTrain,
+  ModelEvaluate,
+  ModelDeploy
+} from '../components/lifecycle';
+import {
+  DATACOLLECT,
+  DATAACCESS,
+  DATAPROCESS,
+  MODELLOAD,
+  MODELDEFINE,
+  MODELTRAIN,
+  MODELEVALUATE,
+  MODELDEPLOY
+} from '../constants/plugins';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -73,7 +91,7 @@ export class PipcookRunner {
    * Constructor, user need to specify pipeline name when init
    */
   constructor() {
-    this.pipelineId = uuidv1();
+    this.pipelineId = uuid.v1();
     this.logDir = path.join(process.cwd(), 'pipcook-output', this.pipelineId);
     fs.ensureDirSync(this.logDir);
     fs.ensureDirSync(path.join(this.logDir, 'model'));
@@ -86,8 +104,8 @@ export class PipcookRunner {
    */
   savePipcook = async () => {
     // store Pipcook log
-    const json = JSON.stringify(getLog(this), getCircularReplacer());
-    fs.outputFileSync(path.join(this.logDir as string, 'log.json'), json);
+    const json = JSON.stringify(getLog(this), getCircularReplacer(), 2);
+    await fs.outputFile(path.join(this.logDir as string, 'log.json'), json);
   }
 
   init = async (components: PipcookComponentResult[]) => {
@@ -154,13 +172,16 @@ export class PipcookRunner {
     const components: PipcookComponentResult[] = [];
     PLUGINS.forEach((pluginType) => {
       if (config.plugins[pluginType] && config.plugins[pluginType].package) {
-        const module = require(config.plugins[pluginType].package).default;
-        console.log(module);
-        const version = 
-          fs.readJSONSync(path.join(require.resolve(config.plugins[pluginType].package), 
-            '..', '..', 'package.json')).version;
-        let factoryMethod: Function;
+        const pluginName = config.plugins[pluginType].package;
+        const params = config.plugins[pluginType].params || {};
+        const version = process.env.npm_package_version;
 
+        let pluginModule, factoryMethod;
+        try {
+          pluginModule = require(pluginName).default;
+        } catch (err) {
+          pluginModule = require(path.join(process.cwd(), pluginName)).default;
+        }
         switch (pluginType) {
         case DATACOLLECT:
           factoryMethod = DataCollect;
@@ -187,7 +208,7 @@ export class PipcookRunner {
           factoryMethod = ModelDeploy;
           break;
         }
-        const component = factoryMethod(module, config.plugins[pluginType].params || {});
+        const component = factoryMethod(pluginModule, params);
         component.version = version;
         component.package = config.plugins[pluginType].package;
         components.push(component);
