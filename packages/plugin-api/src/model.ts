@@ -6,7 +6,6 @@ const cv2 = boa.import('cv2');
 const { word_tokenize } = boa.import('nltk.tokenize');
 const nltk = boa.import('nltk');
 
-
 export function gray(src: string, dest: string) {
   fs.ensureDirSync(dest);
   const image = cv2.imread(src);
@@ -14,7 +13,7 @@ export function gray(src: string, dest: string) {
   cv2.imwrite(path.join(dest, path.basename(src)), gray);
 }
 
-export function resize(src: string, dest: string, dim: [number, number]) {
+export function resize(src: string, dest: string, dim: number[]) {
   fs.ensureDirSync(dest);
   const image = cv2.imread(src);
   const resized = cv2.resize(image, dim);
