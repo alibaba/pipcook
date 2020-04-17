@@ -4,7 +4,6 @@
 
   - [Get started](/tutorials/get-started.md)
   - [Get started with CLI](/tutorials/get-started-with-cli.md)
-  - [Get started with Pipeline API](/tutorials/get-started-with-pipeline-api)
   - [Develop a plugin](/tutorials/how-to-develop-a-plugin.md)
   - [Want to use Python](/tutorials/want-to-use-python.md)
 

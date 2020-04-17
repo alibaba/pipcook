@@ -1,0 +1,17 @@
+name: check markdown files
+on:
+  push:
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  markdown-link-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: gaurav-nelson/github-action-markdown-link-check@v1
+      with:
+        use-quiet-mode: 'no'
+        use-verbose-mode: 'yes'
+        folder-path: 'docs'

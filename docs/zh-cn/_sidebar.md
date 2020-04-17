@@ -4,7 +4,6 @@
 
   - [新手入门](/zh-cn/tutorials/get-started.md)
   - [新手入门——命令行工具](/zh-cn/tutorials/get-started-with-cli.md)
-  - [新手入门——Pipeline](/zh-cn/tutorials/get-started-with-pipeline-api)
   - [如何开发插件](/zh-cn/tutorials/how-to-develop-a-plugin.md)
   - [如何在 Pipcook 中使用 Python](/zh-cn/tutorials/want-to-use-python.md)
 
