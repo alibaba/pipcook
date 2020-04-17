@@ -161,7 +161,7 @@ $ git checkout -b pipcook-plugins-{name}-{type}
 
 #### Write your documents
 
-First, open the file [docs/spec/plugin.md](/spec/plugin.md), and update the following plugin list:
+First, open the file [docs/spec/plugin.md](../spec/plugin.md), and update the following plugin list:
 
 ![image.png](https://img.alicdn.com/tfs/TB14EscuG61gK0jSZFlXXXDKFXa-988-476.png)
 
