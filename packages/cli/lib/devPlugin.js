@@ -34,8 +34,6 @@ const devPlugin = (cmdObj) => {
       return;
     }
     fse.ensureDirSync(path.join(dirname, 'src'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', '.npmignore'), 
-      path.join(dirname, '.npmignore'));
     fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'package.json'), 
       path.join(dirname, 'package.json'));
     fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'tsconfig.json'), 

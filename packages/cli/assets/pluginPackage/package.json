@@ -4,9 +4,6 @@
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
@@ -16,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "x.x.x",
-    "@tensorflow/tfjs-node-gpu": "1.7.0"
+    "@pipcook/pipcook-core": "x.x.x"
   }
 }
