@@ -9,6 +9,7 @@ const board = require('../lib/board');
 const start = require('../lib/start');
 const devPlugin = require('../lib/devPlugin');
 const dataset = require('../lib/dataset');
+const childProcess = require('child_process');
 
 // check node version
 if (!semver.gte(process.version, '10.0.0')) {
@@ -68,6 +69,15 @@ program
   .description('type of action you want to do on dataset')
   .action((dir, cmdObj) => {
     dataset(cmdObj);
+  });
+
+program
+  .command('bip')
+  .description('boa packages installer')
+  .action(() => {
+    childProcess.execSync(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
+      cwd: process.cwd()
+    });
   });
 
 program.parse(process.argv);
