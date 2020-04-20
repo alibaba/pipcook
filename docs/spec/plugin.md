@@ -11,7 +11,7 @@ We have defined seven types of machine learning lifecycle plugins:
 | [Data Collect](./plugin/0-data-collect.md) | data from different sources can be collected and stored in a unified dataset format, for more information about the dataset standards required by pipcook, see here. |
 | [Data Access](./plugin/1-data-access.md) | this plugin access data to pipcook in the expected dataset format. It also describes and verifies samples to ensure that a high-quality dataset is used. |
 | [Data Process](./plugin/2-data-process.md) | processing data |
-| [Model Load](./plugin/3-model-define.md) | this plugin loads the model into the pipeline and eliminates the differences between models such as `keras` and `tensorflow`. |
+| [Model Define](./plugin/3-model-define.md) | this plugin loads the model into the pipeline and eliminates the differences between models such as `keras` and `tensorflow`. |
 | [Model Train](./plugin/4-model-train.md) | train models |
 | [Model Evaluate](./plugin/5-model-evaluate.md) | evaluate a given model |
 | [Model Deploy](./plugin/6-model-deploy.md) | deploy a given model |
