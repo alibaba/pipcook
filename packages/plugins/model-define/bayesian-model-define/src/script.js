@@ -51,7 +51,7 @@ function words_dict(all_words_list, stopwords_set = new Set()) {
   return feature_words;
 }
 
-function processPredictData(data, all_words_list_path, stopwords_path) {
+exports.processPredictData = function (data, all_words_list_path, stopwords_path) {
   const all_words_list = pickle.load(open(all_words_list_path, 'rb'));
   const word_cut = jieba.cut(data, boa.kwargs({
     cut_all: false
@@ -80,12 +80,12 @@ function processPredictData(data, all_words_list_path, stopwords_path) {
   });
 }
 
-function getBayesModel() {
+exports.getBayesModel = function () {
   const classifier = MultinomialNB();
   return classifier;
 }
 
-function loadModel(filepath) {
+exports.loadModel = function (filepath) {
   const classifier = pickle.load(open(filepath, 'rb'));
   return classifier;
 }
