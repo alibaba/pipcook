@@ -28,13 +28,13 @@ You can refer [here](../spec/plugin.md) for Plugin Specification.
 
 We have defined a set of interfaces for each plugin. Each type of plugin must be implemented strictly according to the interfaces. The detailed information is as follows:
 
-- [Data Collect](/spec/plugin/0-data-collect.md)
-- [Data Access](/spec/plugin/1-data-access.md)
-- [Data Process](/spec/plugin/2-data-process.md)
-- [Model Load](/spec/plugin/3-model-define.md)
-- [Model Train](/spec/plugin/4-model-train.md)
-- [Model Evaluate](/spec/plugin/5-model-evaluate.md)
-- [Model Deploy](/spec/plugin/6-model-deploy.md)
+- [Data Collect](../spec/plugin/0-data-collect.md)
+- [Data Access](../spec/plugin/1-data-access.md)
+- [Data Process](../spec/plugin/2-data-process.md)
+- [Model Load](../spec/plugin/3-model-define.md)
+- [Model Train](../spec/plugin/4-model-train.md)
+- [Model Evaluate](../spec/plugin/5-model-evaluate.md)
+- [Model Deploy](../spec/plugin/6-model-deploy.md)
 
 ## Dataset Specification
 
