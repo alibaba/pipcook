@@ -159,6 +159,3 @@ $ npm run build
 [pipeline-databinding-image-classification]: example/pipelines/databinding-image-classification.json
 [pipeline-object-detection]: example/pipelines/object-detection.json
 [pipeline-text-bayes-classification]: example/pipelines/text-bayes-classification.json
-
-
-#FB3434 #FF0033
