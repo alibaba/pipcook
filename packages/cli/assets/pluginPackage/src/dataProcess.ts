@@ -1,4 +1,4 @@
-import {DataProcessType, ArgsType, UniDataset} from '@pipcook/pipcook-core'
+import { DataProcessType, ArgsType, UniDataset } from '@pipcook/pipcook-core'
 
 const templateDataProcess: DataProcessType = async (data: UniDataset, args: ArgsType): Promise<UniDataset> => {
   return {} as UniDataset;
