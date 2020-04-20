@@ -161,7 +161,7 @@ $ git checkout -b pipcook-plugins-{name}-{type}
 
 ### 编写文档
 
-首先，打开文件 [docs/zh-cn/spec/plugin.md](/zh-cn/spec/plugin.md), 更新如下的插件列表：
+首先，打开文件 [docs/zh-cn/spec/plugin.md](../spec/plugin.md), 更新如下的插件列表：
 
 ![image.png](https://img.alicdn.com/tfs/TB14EscuG61gK0jSZFlXXXDKFXa-988-476.png)
 
@@ -179,4 +179,4 @@ $ git push
 
 在通过我们的审核之后，我们将会把您的文档添加进 Pipcook 的官方文档中，并且把您的代码合并到 master 分支中，并把您的插件发布至 Pipcook 的 npm 仓库，同时，您也将会成为 pipcook 开发者。
 
-[pipcook-cli]: https://github.com/alibaba/pipcook/tree/master/packages/pipcook-cli
+[pipcook-cli]: https://github.com/alibaba/pipcook/tree/master/packages/cli

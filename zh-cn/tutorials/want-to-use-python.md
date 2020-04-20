@@ -274,7 +274,7 @@ To run the full tests:
 $ npm test
 ```
 
-See [./tests](./tests) for more testing details.
+See [./tests](https://github.com/alibaba/pipcook/tree/master/packages/boa/tests) for more testing details.
 
 [Python]: https://docs.python.org/3/
 [ES6 Proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
