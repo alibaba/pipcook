@@ -27,12 +27,10 @@ if (!fs.existsSync(condaDownloadName)) {
   run(`curl ${CONDA_DOWNLOAD_PREFIX}/${condaDownloadName} > ${condaDownloadName}`);
 }
 
-if (!fs.existsSync(path.join(CONDA_LOCAL_PATH, 'bin', 'python'))) {
   run('rm', `-rf ${CONDA_LOCAL_PATH}`);
   run('sh', `./${condaDownloadName}`, `-f -b -p ${CONDA_LOCAL_PATH}`);
   run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libstdc++.so*`);
   run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libgcc_s.so*`);
-}
 
 // dump info
 run(`${CONDA_LOCAL_PATH}/bin/conda`, 'info -a');

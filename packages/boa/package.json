@@ -12,9 +12,6 @@
     "codecov": "nyc report --reporter=lcovonly && codecov",
     "htmlcov": "nyc report --reporter=html"
   },
-  "bin": {
-    "bip": "./tools/bip.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/alibaba/pipcook.git"
