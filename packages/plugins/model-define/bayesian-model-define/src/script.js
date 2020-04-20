@@ -68,7 +68,7 @@ function processPredictData(data, all_words_list_path, stopwords_path) {
         features.push(0);
       }
     }
-    
+
     return features;
   };
 
