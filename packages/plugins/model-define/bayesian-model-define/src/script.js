@@ -20,7 +20,9 @@ const readline = require('readline');
 function MakeWordsSet(words_file) {
   const words_set = new Set();
   const rs = fs.createReadStream(words_file);
-  const rl = readline.createInterface(rs);
+  const rl = readline.createInterface({
+    input: rs
+  });
   return new Promise((resolve, reject) => {
     rl.on('line', function (line) {
       const word = line.strip(); // TODO:
