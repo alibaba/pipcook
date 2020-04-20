@@ -23,7 +23,7 @@ function MakeWordsSet(words_file) {
   const rl = readline.createInterface({
     input: rs
   });
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     rl.on('line', function (line) {
       const word = line.strip(); // TODO:
       if (word.length > 0 && !words_set.has(word)) {
@@ -78,14 +78,14 @@ exports.processPredictData = function (data, all_words_list_path, stopwords_path
       return text_features(text, feature_words);
     });
   });
-}
+};
 
 exports.getBayesModel = function () {
   const classifier = MultinomialNB();
   return classifier;
-}
+};
 
 exports.loadModel = function (filepath) {
   const classifier = pickle.load(open(filepath, 'rb'));
   return classifier;
-}
+};
