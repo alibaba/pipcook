@@ -78,6 +78,6 @@ program
     childProcess.execSync(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
       cwd: process.cwd()
     });
-  })
+  });
 
 program.parse(process.argv);
