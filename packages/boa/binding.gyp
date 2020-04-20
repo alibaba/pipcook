@@ -36,6 +36,7 @@
       "defines": [
         "NAPI_CPP_EXCEPTIONS",
         "NAPI_EXPERIMENTAL",
+        "NAPI_VERSION=6",
       ],
       "conditions": [
         ['OS=="mac"', {
