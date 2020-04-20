@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+'use strict'
+
+const boa = require('@pipcook/boa');
+const { int } = boa.builtins();
+const argparse = boa.import('argparse');
+const sys = boa.import('sys');
+
+const commander = argparse.ArgumentParser();
+commander.add_argument('--foo', boa.kwargs({ action: 'store_const', 'const': 42 }));
+commander.add_argument('--num', boa.kwargs({
+  type: int,
+}));
+
+const r = commander.parse_args();
+console.log(r);

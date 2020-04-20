@@ -59,7 +59,7 @@ After building a machine learning application, if you want to learn more about P
 
 - Tutorial
   - [Get started with command-line tools](./tutorials/get-started-with-cli.md)
-  - [Developer Guide](./tutorials/developer-guide.md)
+  - [Developer Guide](./devel/developer-guide.md)
   - [How to develop a plugin](./tutorials/how-to-develop-a-plugin.md)
   - [Want to use Python?](./tutorials/want-to-use-python.md)
 
