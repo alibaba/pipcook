@@ -90,7 +90,8 @@ function words_dict(all_words_list: string[], stopwords_set = new Set<string>())
   return feature_words;
 }
 
-export const TextFeatures = function(train_data_list: (string | number)[] | (string | string[])[], feature_words: string[]) {
+export const TextFeatures = function(
+  train_data_list: ((string | number)[] | (string | string[])[]), feature_words: string[]) {
   function text_features(text: string, feature_words: string[]) {
     const text_words = new Set(text);
     const features = [];
