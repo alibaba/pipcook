@@ -11,6 +11,10 @@ const { open } = boa.builtins();
 const fs = require('fs');
 const readline = require('readline');
 
+function strip (str) {
+  return str.replace(/(^\s*)|(\s*$)/g, '');
+}
+
 function MakeWordsSet(words_file) {
   const words_set = new Set();
   const rs = fs.createReadStream(words_file);
@@ -19,7 +23,7 @@ function MakeWordsSet(words_file) {
   });
   return new Promise((resolve) => {
     rl.on('line', function (line) {
-      const word = line.strip(); // TODO:
+      const word = strip(line);
       if (word.length > 0 && !words_set.has(word)) {
         words_set.add(word);
       }
