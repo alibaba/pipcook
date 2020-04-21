@@ -3,6 +3,7 @@ import { UniModel } from './model';
 import { UniDataset } from './data/common';
 import { PipObject } from './other';
 import { Subscribable } from 'rxjs';
+import { IDeployInfo } from './other';
 
 export interface InsertParams {
   pipelineId: string;
@@ -30,7 +31,7 @@ export interface PipcookComponentResult {
   mergeComponents?: PipcookComponentResult[][];
   params?: PipObject;
   observer?: ObserverFunc;
-  returnType: string;
+  returnType?: string;
   previousComponent: PipcookComponentResult | null;
   status: 'not execute' | 'running' | 'success' | 'failure';
   package?: string;
@@ -39,4 +40,12 @@ export interface PipcookComponentResult {
 
 export interface PipcookLifeCycleComponent {
   (plugin: PipcookPlugin, params?: PipObject): PipcookComponentResult;
+}
+
+export interface PipcookModelDeployResult {
+  execute: Function;
+}
+
+export interface PipcookModelDeployComponent{
+  (deployInfo: IDeployInfo): Promise<PipcookModelDeployResult>;
 }

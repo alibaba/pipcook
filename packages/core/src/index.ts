@@ -24,7 +24,7 @@ export {
 } from './types/data/csv';
 
 export { UniModel, TfJsLayersModel } from './types/model';
-export { EvaluateResult } from './types/other';
+export { EvaluateResult, IDeployInfo } from './types/other';
 export { PipcookRunner } from './runner';
 export { PipcookComponentResult } from './types/component';
 export {

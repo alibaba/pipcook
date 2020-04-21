@@ -25,8 +25,7 @@ const assertionTest = (data: CsvDataset) => {
  */
 const bayesianClassifierModelDefine: ModelDefineType = async (data: CsvDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   const {
-    modelId = '',
-    modelPath = '',
+    recoverPath,
     pipelineId
   } = args;
 
@@ -35,17 +34,11 @@ const bayesianClassifierModelDefine: ModelDefineType = async (data: CsvDataset, 
   const { loadModel, getBayesModel, processPredictData } = boa.import('script');
   let classifier: any;
 
-  if (!modelId && !modelPath) {
+  if (!recoverPath) {
     assertionTest(data);
     classifier = getBayesModel();
-  }
-
-  if (modelId) {
-    classifier = loadModel(path.join(getModelDir(modelId), 'model.pkl'));
-  }
-
-  if (modelPath) {
-    classifier = loadModel(modelPath);
+  } else {
+    classifier = loadModel(path.join(recoverPath, 'model', 'model.pkl'));
   }
   
   const pipcookModel: UniModel = {

@@ -11,11 +11,12 @@ import config from '../config';
 import { PipcookComponentResult } from '../types/component';
 import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
-import { DeploymentResult, EvaluateResult } from '../types/other';
+import { DeploymentResult, EvaluateResult, IDeployInfo } from '../types/other';
 import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './helper';
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
 import { RunConfigI } from '../types/config';
+
 import {
   DataCollect,
   DataAccess,
@@ -183,30 +184,27 @@ export class PipcookRunner {
           pluginModule = require(path.join(process.cwd(), pluginName)).default;
         }
         switch (pluginType) {
-        case DATACOLLECT:
-          factoryMethod = DataCollect;
-          break;
-        case DATAACCESS:
-          factoryMethod = DataAccess;
-          break;
-        case DATAPROCESS:
-          factoryMethod = DataProcess;
-          break;
-        case MODELLOAD:
-          factoryMethod = ModelLoad;
-          break;
-        case MODELDEFINE:
-          factoryMethod = ModelDefine;
-          break;
-        case MODELTRAIN:
-          factoryMethod = ModelTrain;
-          break;
-        case MODELEVALUATE:
-          factoryMethod = ModelEvaluate;
-          break;
-        case MODELDEPLOY:
-          factoryMethod = ModelDeploy;
-          break;
+          case DATACOLLECT:
+            factoryMethod = DataCollect;
+            break;
+          case DATAACCESS:
+            factoryMethod = DataAccess;
+            break;
+          case DATAPROCESS:
+            factoryMethod = DataProcess;
+            break;
+          case MODELLOAD:
+            factoryMethod = ModelLoad;
+            break;
+          case MODELDEFINE:
+            factoryMethod = ModelDefine;
+            break;
+          case MODELTRAIN:
+            factoryMethod = ModelTrain;
+            break;
+          case MODELEVALUATE:
+            factoryMethod = ModelEvaluate;
+            break;
         }
         const component = factoryMethod(pluginModule, params);
         component.version = version;
@@ -215,5 +213,24 @@ export class PipcookRunner {
       }
     });
     this.run(components, successCallback, errorCallback, saveModelCallback);
+  }
+
+  /**
+   * for whatever plugins, they will need
+   *  - deploy plugin
+   *  - model define plugin
+   *  - data process plugin if required 
+   */
+  deploy = async (configPath: string) => {
+    const config: RunConfigI = fs.readJsonSync(configPath);
+    const deployInfo:IDeployInfo = {
+      deployPlugin: config.plugins[MODELDEPLOY], 
+      dataProcessPlugin: config.plugins[DATAPROCESS], 
+      modelDefinePlugin: config.plugins[MODELDEFINE],
+    };
+  
+    const deployComponent = await ModelDeploy(deployInfo);
+    const result = await deployComponent.execute();
+    console.log(result);
   }
 }

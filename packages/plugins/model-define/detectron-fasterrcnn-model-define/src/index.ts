@@ -1,26 +1,25 @@
 import { ModelDefineType, UniModel, ModelDefineArgsType, getModelDir, getMetadata, CocoDataset } from '@pipcook/pipcook-core';
 import * as path from 'path';
+import * as fs from 'fs';
 import * as assert from 'assert';
 
 const boa = require('@pipcook/boa');
 
 const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
-    modelId = '',
     baseLearningRate = 0.00025,
     numWorkers = 4,
     numGpus = 2,
     numClasses = 0,
-    modelPath = ''
+    recoverPath
   } = args;
 
   let cfg: any;
 
-  if (modelId) {
-    const labelMap = getMetadata(modelId).label.labelMap;
+  if (recoverPath) {
+    const log = JSON.parse(fs.readFileSync(path.join(recoverPath, 'log.json'), 'utf8'));
+    const labelMap = log.metadata.labelMap
     numClasses = Object.keys(labelMap).length;
-  } else if (modelPath) {
-    assert.ok(!isNaN(numClasses), 'please give out the number of classes');
   } else {
     numClasses = Object.keys(data.metadata.labelMap).length;
   }
@@ -30,7 +29,6 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   const torch = boa.import('torch');
   const { DefaultPredictor } = boa.import('detectron2.engine.defaults');
   const cv2 = boa.import('cv2');
-  const numpy = boa.import('numpy');
 
   setup_logger();
 
@@ -38,10 +36,8 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   cfg.merge_from_file(path.join(__dirname, 'config', 'faster_rcnn_R_50_C4_3x.yaml'));
   cfg.DATALOADER.NUM_WORKERS = numWorkers;
 
-  if (modelId) {
-    cfg.MODEL.WEIGHTS = path.join(getModelDir(modelId), 'model_final.pth');
-  } else if (modelPath) {
-    cfg.MODEL.WEIGHTS = modelPath;
+  if (recoverPath) {
+    cfg.MODEL.WEIGHTS = path.join(recoverPath, 'model', 'model_final.pth');
   } else {
     cfg.MODEL.WEIGHTS = "detectron2://ImageNetPretrained/MSRA/R-50.pkl";
   }

@@ -1,7 +1,7 @@
 
-import { UniDataset } from './data/common';
+import { UniDataset, Sample, Metadata } from './data/common';
 import { UniModel } from './model';
-import { EvaluateResult } from './other';
+import { EvaluateResult, IDeployInfo } from './other';
 
 export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate' | 'modelDeploy';
 
@@ -17,8 +17,7 @@ export interface ModelArgsType extends ArgsType {
 }
 
 export interface ModelDefineArgsType extends ArgsType {
-  modelId: string;
-  modelPath: string;
+  recoverPath: string;
 }
 
 export interface SaveModelFunction {
@@ -31,6 +30,7 @@ export interface ModelTrainArgsType extends ArgsType {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PipcookPlugin {
+  (...args: any): any;
 }
 
 export interface DataCollectType extends PipcookPlugin {
@@ -42,7 +42,7 @@ export interface DataAccessType extends PipcookPlugin {
 }
 
 export interface DataProcessType extends PipcookPlugin {
-  (data: UniDataset, args: ArgsType): Promise<UniDataset>;
+  (data: Sample, metadata: Metadata, args: ArgsType): Promise<void>;
 }
 
 export interface ModelLoadType extends PipcookPlugin {
@@ -62,5 +62,5 @@ export interface ModelEvaluateType extends PipcookPlugin {
 }
 
 export interface ModelDeployType extends PipcookPlugin {
-  (data: UniDataset, model: UniModel, args: ArgsType): Promise<any>;
+  (args: ArgsType, deployInfo: IDeployInfo): Promise<any>;
 }

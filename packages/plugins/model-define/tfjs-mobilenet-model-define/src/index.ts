@@ -7,6 +7,7 @@ import { ModelDefineType, ImageDataset, getModelDir, getMetadata, ModelDefineArg
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
+import * as fs from 'fs';
 import Jimp from 'jimp';
 
 /**
@@ -70,35 +71,27 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
     loss = 'categoricalCrossentropy',
     metrics = [ 'accuracy' ],
     isFreeze = true,
-    modelId,
-    modelPath,
+    recoverPath,
     outputShape,
     labelMap
   } = args;
 
   let inputShape: number[];
 
-  if (!modelId && !modelPath) {
+  if (!recoverPath) {
     assertionTest(data);
     inputShape = data.metadata.feature.shape;
     outputShape = Object.keys(data.metadata.labelMap).length;
     labelMap = data.metadata.labelMap;
-  }
-
-  if (modelId) {
-    outputShape = Object.keys(getMetadata(modelId).labelMap);
-  }
-
-  if (modelPath) {
-    assert.ok(!isNaN(outputShape), 'the output shape should be a number');
+  } else {
+    const log = JSON.parse(fs.readFileSync(path.join(recoverPath, 'log.json'), 'utf8'));
+    outputShape = Object.keys(log.metadata.labelMap).length;
   }
 
   let model: tf.Sequential | tf.LayersModel | null = null;
 
-  if (modelId) {
-    model = (await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json'))) as tf.LayersModel;
-  } else if (modelPath) {
-    model = (await tf.loadLayersModel(modelPath) as tf.LayersModel);
+  if (recoverPath) {
+    model = (await tf.loadLayersModel('file://' + path.join(recoverPath, 'model', 'model.json'))) as tf.LayersModel;
   } else {
     const trainableLayers = [ 'denseModified', 'conv_pw_13_bn', 'conv_pw_13', 'conv_dw_13_bn', 'conv _dw_13' ];
     const mobilenet = await
@@ -112,7 +105,7 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
     }
     model = mobilenetModified;
   }
-    
+  model.summary();
   model.compile({
     optimizer: optimizer,
     loss: loss,

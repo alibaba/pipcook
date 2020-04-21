@@ -3,8 +3,8 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/mnist-data-collect",
       "params": {
-        "trainCount": 8000,
-        "testCount": 2000
+        "trainCount": 100,
+        "testCount": 100
       }
     },
     "dataAccess": {
@@ -13,16 +13,19 @@
     "dataProcess": {
       "package": "./packages/plugins/data-process/image-data-process",
       "params": {
-        "resize": [28, 28]
+        "resize": [128, 128]
       }
     },
     "modelDefine": {
-      "package": "./packages/plugins/model-define/tfjs-simplecnn-model-define"
+      "package": "./packages/plugins/model-define/tfjs-mobilenet-model-define",
+      "params": {
+        "isFreeze": false
+      }
     },
     "modelTrain": {
       "package": "./packages/plugins/model-train/image-classification-tfjs-model-train",
       "params": {
-        "epochs": 15
+        "epochs": 1
       }
     },
     "modelEvaluate": {
