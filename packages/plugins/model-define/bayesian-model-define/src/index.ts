@@ -5,6 +5,7 @@
 import { ModelDefineType, UniModel, ModelDefineArgsType, getModelDir, CsvDataset } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as path from 'path';
+import { processPredictData, getBayesModel, loadModel } from './script';
 
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
@@ -30,8 +31,6 @@ const bayesianClassifierModelDefine: ModelDefineType = async (data: CsvDataset, 
   } = args;
 
   sys.path.insert(0, path.join(__dirname, 'assets'));
-  
-  const { loadModel, getBayesModel, processPredictData } = boa.import('script');
   let classifier: any;
 
   if (!recoverPath) {
