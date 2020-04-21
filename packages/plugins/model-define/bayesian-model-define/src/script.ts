@@ -79,10 +79,10 @@ export const processPredictData = function (data: any, all_words_list_path: stri
   });
 };
 
-export const getBayesModel = function (): any {
+export const getBayesModel = function () {
   return MultinomialNB();
 };
 
-export const loadModel = function (filepath: string): any {
+export const loadModel = function (filepath: string) {
   return pickle.load(fs.readFileSync(filepath));
 };
