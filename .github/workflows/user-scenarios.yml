@@ -6,7 +6,7 @@ on:
     - master
 
 jobs:
-  pipeline-user=scenarios:
+  pipeline-user-scenario:
     name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
