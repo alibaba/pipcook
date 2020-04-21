@@ -70,7 +70,7 @@ exports.processPredictData = function (data, all_words_list_path, stopwords_path
     return features;
   };
 
-  MakeWordsSet(stopwords_file).then((stopwords_set) => {
+  return MakeWordsSet(stopwords_file).then((stopwords_set) => {
     const feature_words = words_dict(all_words_list, stopwords_set);
     return word_cut.map((text) => {
       return text_features(text, feature_words);
