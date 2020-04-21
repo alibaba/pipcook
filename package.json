@@ -26,6 +26,7 @@
     "clean": "lerna run clean"
   },
   "dependencies": {
+    "@pipcook/pipcook-cli": "file:packages/cli",
     "@types/jasmine": "^3.5.10",
     "jasmine": "^3.5.0"
   }

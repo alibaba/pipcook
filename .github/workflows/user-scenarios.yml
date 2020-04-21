@@ -31,5 +31,9 @@ jobs:
         npm install ../packages/cli
     - name: initialize a pipeline project
       working-directory: ./myworkspace
+      env:
+        NODE_ENV=test
       run: |
-        mkdir -p mypipeline && cd mypipeline && ../../node_modules/.bin/pipcook init
+        mkdir -p mypipeline
+        cd mypipeline
+        ../../node_modules/.bin/pipcook init

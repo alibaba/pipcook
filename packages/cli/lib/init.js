@@ -5,8 +5,9 @@ const path = require('path');
 const glob = require('glob-promise');
 const commandExistsSync = require('command-exists').sync;
 const inquirer = require('inquirer');
+const config = process.env.NODE_ENV === 'test' ? require('./config.test') : require('./config');
 
-const { dependencies, pipcookLogName, optionalNpmClients } = require('./config');
+const { dependencies, pipcookLogName, optionalNpmClients } = config;
 const spinner = ora();
 
 /**
