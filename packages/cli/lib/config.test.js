@@ -10,7 +10,7 @@ module.exports = {
     path.join(__dirname, "../../../packages/plugins/data-collect/mnist-data-collect"),
     path.join(__dirname, "../../../packages/plugins/data-process/image-data-process"),
     path.join(__dirname, "../../../packages/plugins/model-define/bayesian-model-define"),
-    path.join(__dirname, "../../../packages/plugins/model-train/bayesian-model-train"),
+    path.join(__dirname, "../../../packages/plugins/model-train/bayesian-model-train")
   ],
   pipcookLogName: 'pipcook-output',
   optionalNpmClients: [ 'npm', 'cnpm', 'tnpm' ]
