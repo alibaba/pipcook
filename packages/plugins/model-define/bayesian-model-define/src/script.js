@@ -2,14 +2,8 @@
 
 const boa = require('@pipcook/boa');
 
-const os = boa.import('os');
-const time = boa.import('timer');
-const random = boa.import('random');
 const jieba = boa.import('jieba');
-const sklearn = boa.import('sklearn');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
-const np = boa.import('numpy');
-const csv = boa.import('csv');
 const pickle = boa.import('pickle');
 
 const { open } = boa.builtins();
