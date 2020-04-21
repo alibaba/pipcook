@@ -17,7 +17,9 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/boa": "^0.5.2",
-    "@pipcook/pipcook-core": "^0.5.9"
+    "@pipcook/pipcook-core": "^0.5.9",
+    "@types/lodash": "^4.14.150",
+    "lodash": "^4.17.15"
   },
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {
