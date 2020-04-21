@@ -1,4 +1,4 @@
-import { ModelDefineType, getModelDir, ImageDataset, ModelDefineArgsType, TfJsLayersModel, getMetadata } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageSample, ImageDataset, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -48,7 +48,8 @@ const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: M
     labelMap = data.metadata.labelMap;
   } else {
     const log = JSON.parse(fs.readFileSync(path.join(recoverPath, 'log.json'), 'utf8'));
-    outputShape = Object.keys(log.metadata.labelMap).length;
+    labelMap = log.metadata.labelMap;
+    outputShape = Object.keys(labelMap).length;
   }
 
   let model: tf.LayersModel | null = null;
@@ -105,26 +106,24 @@ const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: M
   const result: TfJsLayersModel = {
     model,
     metrics: metrics,
-    predict: async function (inputData: string[]) {
-      const prediction = [];
-      for (let i = 0; i < inputData.length; i++) {
-        const image = await Jimp.read(inputData[i]);
-        const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
-        const imageArray = new Uint8Array(trainImageBuffer);
-        const imgTensor = tf.node.decodeImage(imageArray, 3);
-        const predictResultArray = this.model.predict(imgTensor.expandDims(0));
-        const index = argMax(predictResultArray.dataSync());
-        if (labelMap) {
-          for (let key in labelMap) {
-            if (labelMap[key] === index) {
-              prediction.push(key);
-            }
+    predict: async function (inputData: ImageSample) {
+      let predict: any;
+      const image = await Jimp.read(inputData.data);
+      const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
+      const imageArray = new Uint8Array(trainImageBuffer);
+      const imgTensor = tf.node.decodeImage(imageArray, 3);
+      const predictResultArray = this.model.predict(imgTensor.expandDims(0));
+      const index = argMax(predictResultArray.dataSync());
+      if (labelMap) {
+        for (let key in labelMap) {
+          if (labelMap[key] === index) {
+            predict = key;
           }
-        } else {
-          prediction.push(predictResultArray);
         }
-      } 
-      return prediction;
+      } else {
+        predict = predictResultArray;
+      }
+      return predict;
     }
   };
   return result;

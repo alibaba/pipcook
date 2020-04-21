@@ -13,11 +13,11 @@
     "dataProcess": {
       "package": "./packages/plugins/data-process/image-data-process",
       "params": {
-        "resize": [128, 128]
+        "resize": [28, 28]
       }
     },
     "modelDefine": {
-      "package": "./packages/plugins/model-define/tfjs-mobilenet-model-define",
+      "package": "./packages/plugins/model-define/tfjs-simplecnn-model-define",
       "params": {
         "isFreeze": false
       }
