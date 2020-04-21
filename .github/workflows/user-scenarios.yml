@@ -32,4 +32,4 @@ jobs:
     - name: initialize a pipeline project
       working-directory: ./myworkspace
       run: |
-        mkdir -p mypipeline && cd mypipeline && ../node_modules/.bin/pipcook init
+        mkdir -p mypipeline && cd mypipeline && ../../node_modules/.bin/pipcook init
