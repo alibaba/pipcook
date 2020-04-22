@@ -9,7 +9,7 @@ A JavaScript application framework for machine learning and its engineering.
 
 ## Why Pipcook
 
-With the mission of enabling JavaScript engineers to utilize the power of machine learning without any prerequisites and the vision to lead front-end technical field to the intelligence. [Pipcook][] is to become the JavaScript application framework for the cross-cutting area of machine learning and front-end interaction.
+With the mission of enabling JavaScript engineers to utilize the power of machine learning without any prerequisites and the vision to lead front-end technical field to the intelligention. [Pipcook][] is to become the JavaScript application framework for the cross-cutting area of machine learning and front-end interaction.
 
 We are truly to design Pipcook's API for front-end and machine learning applications, and focusing on the front-end area and developed from the JavaScript engineers' view. With the principle of being friendly to JavaScript, we will push the whole area forward with the machine learning engineering.
 
