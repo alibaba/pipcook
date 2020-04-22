@@ -3,8 +3,8 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/mnist-data-collect",
       "params": {
-        "trainCount": 100,
-        "testCount": 100
+        "trainCount": 8000,
+        "testCount": 2000
       }
     },
     "dataAccess": {
@@ -17,15 +17,12 @@
       }
     },
     "modelDefine": {
-      "package": "./packages/plugins/model-define/tfjs-simplecnn-model-define",
-      "params": {
-        "isFreeze": false
-      }
+      "package": "./packages/plugins/model-define/tfjs-simplecnn-model-define"
     },
     "modelTrain": {
       "package": "./packages/plugins/model-train/image-classification-tfjs-model-train",
       "params": {
-        "epochs": 1
+        "epochs": 15
       }
     },
     "modelEvaluate": {
