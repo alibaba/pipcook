@@ -1,7 +1,6 @@
-import { ModelDefineType, UniModel, ModelDefineArgsType, getModelDir, getMetadata, CocoDataset } from '@pipcook/pipcook-core';
+import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs';
-import * as assert from 'assert';
 
 const boa = require('@pipcook/boa');
 
@@ -56,14 +55,9 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   const pipcookModel: UniModel = {
     model: null,
     config: cfg,
-    predict: function (inputData: string[]) {
+    predict: function (inputData: ImageSample) {
       const predictor = DefaultPredictor(this.config);
-      const images: any[] = [];
-      inputData.forEach((data: string) => {
-        const cvImg = cv2.imread(data);
-        images.push(cvImg);
-      });
-      const img = images[0];
+      const img = cv2.imread(inputData.data);
       const out = predictor(img);
       const ins = out['instances'].to(torch.device('cpu'));
       const boxes = ins.pred_boxes.tensor.numpy();
@@ -77,7 +71,6 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
     }
   };
   return pipcookModel;
-
 };
 
 export default detectronModelDefine;

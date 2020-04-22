@@ -18,7 +18,9 @@ async function predict() {
       data: req.body.data,
       label: null
     }
-    await dataProcess(sample, {}, dataProcessLog.params);
+    if (dataProcess) {
+      await dataProcess(sample, {}, dataProcessLog.params);
+    }
     const result = await model.predict(sample);
     return {
       result: result

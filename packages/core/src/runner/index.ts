@@ -6,7 +6,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as uuid from 'uuid';
-import childProcess from 'child_process';
 
 import config from '../config';
 import { PipcookComponentResult } from '../types/component';
@@ -17,6 +16,7 @@ import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailu
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
 import { RunConfigI } from '../types/config';
+import { compressTarFile } from '../utils/public';
 
 import {
   DataCollect,
@@ -256,5 +256,6 @@ export class PipcookRunner {
       ...dependencies
     };
     await fs.writeJSON(path.join(deployDir, 'package.json'), packageJson, {spaces: 2});
+    await compressTarFile(deployDir, path.join(this.logDir, 'deploy.tar.gz'));
   }
 }

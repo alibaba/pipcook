@@ -2,7 +2,7 @@
  * @file This is for the plugin to load Bayes Classifier model.
  */
 
-import { ModelDefineType, UniModel, ModelDefineArgsType, getModelDir, CsvDataset } from '@pipcook/pipcook-core';
+import { ModelDefineType, UniModel, ModelDefineArgsType, CsvDataset, CsvSample } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as path from 'path';
 import { processPredictData, getBayesModel, loadModel } from './script';
@@ -42,13 +42,10 @@ const bayesianClassifierModelDefine: ModelDefineType = async (data: CsvDataset, 
   
   const pipcookModel: UniModel = {
     model: classifier,
-    predict: function (texts: string[]) {
-      const prediction = texts.map((text) => {
-        const processData = processPredictData(text, path.join(getModelDir(pipelineId), 'feature_words.pkl'), path.join(getModelDir(pipelineId), 'stopwords.txt'));
-        const pred = this.model.predict(processData);
-        return pred.toString();
-      });
-      return prediction;
+    predict: async function (text: CsvSample) {
+      const processData = await processPredictData(text.data, path.join(recoverPath, 'model', 'feature_words.pkl'), path.join(recoverPath, 'model', 'stopwords.txt'));
+      const pred = this.model.predict(processData);
+      return pred.toString();
     }
   };
   return pipcookModel;
