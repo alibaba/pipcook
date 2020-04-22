@@ -106,7 +106,6 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
     }
     model = mobilenetModified;
   }
-  model.summary();
   model.compile({
     optimizer: optimizer,
     loss: loss,
