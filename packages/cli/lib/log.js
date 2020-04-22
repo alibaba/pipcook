@@ -3,6 +3,7 @@ const fse = require('fs-extra');
 const path = require('path');
 const { pipcookLogName } = require('./config');
 const glob = require('glob-promise');
+const { debugLog, debugTable } = require('./debug');
 /**
  * install all dependencies of pipcook into working dir
  */
@@ -15,24 +16,24 @@ const log = async () => {
         const json = fse.readFileSync(file);
         const jsonObj = JSON.parse(json);
         let timestamp = jsonObj.pipelineId.split('-');
-        timestamp = new Date(Number(timestamp[timestamp.length - 1])).toLocaleString();
+        timestamp = new Date(
+          Number(timestamp[timestamp.length - 1])
+        ).toLocaleString();
         return {
           pipelineId: jsonObj.pipelineId,
           success: jsonObj.error ? 'no' : 'yes',
-          evaluation: jsonObj.latestEvaluateResult ? JSON.stringify(jsonObj.latestEvaluateResult) : '',
+          evaluation: jsonObj.latestEvaluateResult
+            ? JSON.stringify(jsonObj.latestEvaluateResult)
+            : '',
           time: timestamp
         };
       } catch (e) {
         return false;
       }
     });
-    console.table(jsonObject);
+    debugTable(jsonObject);
   } catch (error) {
-    console.log(
-      chalk.red(
-        error
-      )
-    );
+    debugLog(chalk.red(error));
   }
 };
 

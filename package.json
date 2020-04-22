@@ -5,12 +5,13 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@lerna/bootstrap": "^3.18.4",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
+    "debug": "^4.1.1",
     "docsify-cli": "^4.4.0",
     "eslint": "^6.6.0",
     "lerna": "^3.18.4",
-    "@lerna/bootstrap": "^3.18.4",
     "typedoc": "^0.15.4",
     "typedoc-plugin-lerna": "^0.1.0",
     "typescript": "^3.7.2"

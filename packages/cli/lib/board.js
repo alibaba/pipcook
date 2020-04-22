@@ -3,7 +3,7 @@ const fse = require('fs-extra');
 const ora = require('ora');
 const childProcess = require('child_process');
 const path = require('path');
-
+const { debugError } = require('./debug');
 const spinner = ora();
 
 module.exports = () => {
@@ -17,8 +17,7 @@ module.exports = () => {
       cwd: process.cwd(),
       stdio: 'inherit'
     });
-  
   } catch (e) {
-    console.error(chalk.red(e));
+    debugError(chalk.red(e));
   }
 };
