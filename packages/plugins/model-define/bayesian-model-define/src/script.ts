@@ -74,8 +74,7 @@ export const processPredictData = async function (data: any, all_words_list_path
 
   const stopwords_set = await MakeWordsSet(stopwords_file);
   const feature_words = words_dict(all_words_list, stopwords_set);
-  const feature_list = [ text_features(word_cut, feature_words) ];
-  return feature_list;
+  return [ text_features(word_cut, feature_words) ];
 };
 
 export const getBayesModel = function () {
