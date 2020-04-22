@@ -26,7 +26,7 @@ export {
 export { Sample } from './types/data/common';
 
 export { UniModel, TfJsLayersModel } from './types/model';
-export { EvaluateResult, IDeployInfo } from './types/other';
+export { EvaluateResult } from './types/other';
 export { PipcookRunner } from './runner';
 export { PipcookComponentResult } from './types/component';
 export {
@@ -37,7 +37,6 @@ export {
   ModelDefineType,
   ModelTrainType,
   ModelEvaluateType,
-  ModelDeployType,
   ArgsType,
   ModelDefineArgsType,
   ModelArgsType,

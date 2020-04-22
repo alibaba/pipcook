@@ -3,7 +3,7 @@ const fastify = require('fastify')({ logger: true });
 const log = require('./log.json');
 
 let dataProcess;
-const dataProcessLog = log.components.find(e => e.type === 'dataProcess');
+const dataProcessLog = log.components.find((e) => e.type === 'dataProcess');
 if (dataProcessLog) {
   dataProcess = require('./dataProcess').default;
 }
@@ -11,13 +11,13 @@ if (dataProcessLog) {
 async function predict() {
   const model = await modelDefine(null, {
     recoverPath: __dirname
-  })
+  });
 
   fastify.post('/', async (req) => {
     const sample = {
       data: req.body.data,
       label: null
-    }
+    };
     if (dataProcess) {
       await dataProcess(sample, {}, dataProcessLog.params);
     }

@@ -26,8 +26,7 @@ const assertionTest = (data: CsvDataset) => {
  */
 const bayesianClassifierModelDefine: ModelDefineType = async (data: CsvDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   const {
-    recoverPath,
-    pipelineId
+    recoverPath
   } = args;
 
   sys.path.insert(0, path.join(__dirname, 'assets'));

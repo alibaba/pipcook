@@ -3,7 +3,7 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelDefineType, ImageDataset, ImageSample, getMetadata, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';

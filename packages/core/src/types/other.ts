@@ -1,5 +1,3 @@
-import { RunConfigParam } from './config';
-
 export interface Statistic {
   metricName: string;
   metricValue: number;
@@ -22,9 +20,3 @@ export interface EvaluateResult {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PipcookMergeArray {}
-
-export interface IDeployInfo {
-  deployPlugin: RunConfigParam; 
-  dataProcessPlugin?: RunConfigParam; 
-  modelDefinePlugin: RunConfigParam;
-}

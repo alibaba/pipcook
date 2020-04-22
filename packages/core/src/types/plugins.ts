@@ -1,7 +1,7 @@
 
 import { UniDataset, Sample, Metadata } from './data/common';
 import { UniModel } from './model';
-import { EvaluateResult, IDeployInfo } from './other';
+import { EvaluateResult } from './other';
 
 export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate' | 'modelDeploy';
 
@@ -59,8 +59,4 @@ export interface ModelTrainType extends PipcookPlugin {
 
 export interface ModelEvaluateType extends PipcookPlugin {
   (data: UniDataset, model: UniModel, args: ArgsType): Promise<EvaluateResult>;
-}
-
-export interface ModelDeployType extends PipcookPlugin {
-  (args: ArgsType, deployInfo: IDeployInfo): Promise<any>;
 }

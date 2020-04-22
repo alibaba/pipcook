@@ -25,7 +25,7 @@ import {
   ModelLoad,
   ModelDefine,
   ModelTrain,
-  ModelEvaluate,
+  ModelEvaluate
 } from '../components/lifecycle';
 import {
   DATACOLLECT,
@@ -34,7 +34,7 @@ import {
   MODELLOAD,
   MODELDEFINE,
   MODELTRAIN,
-  MODELEVALUATE,
+  MODELEVALUATE
 } from '../constants/plugins';
 
 const getCircularReplacer = () => {
@@ -185,27 +185,27 @@ export class PipcookRunner {
           pluginModule = require(path.join(process.cwd(), pluginName)).default;
         }
         switch (pluginType) {
-          case DATACOLLECT:
-            factoryMethod = DataCollect;
-            break;
-          case DATAACCESS:
-            factoryMethod = DataAccess;
-            break;
-          case DATAPROCESS:
-            factoryMethod = DataProcess;
-            break;
-          case MODELLOAD:
-            factoryMethod = ModelLoad;
-            break;
-          case MODELDEFINE:
-            factoryMethod = ModelDefine;
-            break;
-          case MODELTRAIN:
-            factoryMethod = ModelTrain;
-            break;
-          case MODELEVALUATE:
-            factoryMethod = ModelEvaluate;
-            break;
+        case DATACOLLECT:
+          factoryMethod = DataCollect;
+          break;
+        case DATAACCESS:
+          factoryMethod = DataAccess;
+          break;
+        case DATAPROCESS:
+          factoryMethod = DataProcess;
+          break;
+        case MODELLOAD:
+          factoryMethod = ModelLoad;
+          break;
+        case MODELDEFINE:
+          factoryMethod = ModelDefine;
+          break;
+        case MODELTRAIN:
+          factoryMethod = ModelTrain;
+          break;
+        case MODELEVALUATE:
+          factoryMethod = ModelEvaluate;
+          break;
         }
         const component = factoryMethod(pluginModule, params);
         component.version = version;
@@ -226,9 +226,9 @@ export class PipcookRunner {
     const deployDir = path.join(this.logDir, 'deploy');
     await fs.copy(path.join(this.logDir, 'model'), path.join(deployDir, 'model'));
     await fs.copy(path.join(this.logDir, 'log.json'), path.join(deployDir, 'log.json'));
-    await fs.copy(path.join(__dirname, '..', 'assets', 'predict.js'), path.join(deployDir, 'main.js'))
+    await fs.copy(path.join(__dirname, '..', 'assets', 'predict.js'), path.join(deployDir, 'main.js'));
     let dependencies: any = {};
-    const dataProcessCom = this.components.find(e => e.type === DATAPROCESS);
+    const dataProcessCom = this.components.find((e) => e.type === DATAPROCESS);
     const analyzeCom = async (component: PipcookComponentResult) => {
       let pluginPath;
       try {
@@ -240,22 +240,22 @@ export class PipcookRunner {
       await fs.copy(pluginPath, path.join(deployDir, component.type));
       const packageJson = await fs.readJSON(path.join(pluginPath, 'package.json'));
       return packageJson.dependencies;
-    }
+    };
     if (dataProcessCom) {
       dependencies = await analyzeCom(dataProcessCom);
     }
-    const modelDefineCom = this.components.find(e => e.type === MODELDEFINE || e.type === MODELLOAD);
+    const modelDefineCom = this.components.find((e) => e.type === MODELDEFINE || e.type === MODELLOAD);
     const dependenciesTemp = await analyzeCom(modelDefineCom);
     dependencies = {
       ...dependencies,
       ...dependenciesTemp
-    }
+    };
     const packageJson = await fs.readJSON(path.join(__dirname, '..', 'assets', 'template-package.json'));
     packageJson.dependencies = {
       ...packageJson.dependencies,
       ...dependencies
     };
-    await fs.writeJSON(path.join(deployDir, 'package.json'), packageJson, {spaces: 2});
+    await fs.writeJSON(path.join(deployDir, 'package.json'), packageJson, { spaces: 2 });
     await compressTarFile(deployDir, path.join(this.logDir, 'deploy.tar.gz'));
   }
 }

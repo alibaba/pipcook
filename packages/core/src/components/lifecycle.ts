@@ -6,9 +6,8 @@
 import * as path from 'path';
 import { from, range, forkJoin, Subscribable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
-import { PipcookLifeCycleComponent, PipcookComponentResult, PipcookModelDeployComponent } from '../types/component';
+import { PipcookLifeCycleComponent, PipcookComponentResult } from '../types/component';
 import { DATA, MODEL, EVALUATE, MODELTOSAVE } from '../constants/other';
-import { IDeployInfo } from '../types/other';
 import {
   PipcookPlugin,
   DataCollectType,
@@ -17,7 +16,7 @@ import {
   ModelLoadType,
   ModelDefineType,
   ModelTrainType,
-  ModelEvaluateType,
+  ModelEvaluateType
 } from '../types/plugins';
 import {
   DATACOLLECT,
@@ -26,7 +25,7 @@ import {
   MODELLOAD,
   MODELDEFINE,
   MODELTRAIN,
-  MODELEVALUATE,
+  MODELEVALUATE
 } from '../constants/plugins';
 import { UniDataset } from '../types/data/common';
 
@@ -90,17 +89,17 @@ export const DataProcess: PipcookLifeCycleComponent = (plugin: DataProcessType, 
       data.metadata = {};
     }
     const observerables: Subscribable<any>[] = [];
-    [data.trainLoader, data.validationLoader, data.testLoader].forEach((loader) => {
+    [ data.trainLoader, data.validationLoader, data.testLoader ].forEach((loader) => {
       if (loader) {
         observerables.push(
           from(loader.len()).pipe(
-            flatMap(x => range(0, x)),
-            flatMap(x => loader.getItem(x)),
-            flatMap(x => plugin(x, data.metadata, { ...params, ...insertParams }))
+            flatMap((x) => range(0, x)),
+            flatMap((x) => loader.getItem(x)),
+            flatMap((x) => plugin(x, data.metadata, { ...params, ...insertParams }))
           )
-        )
+        );
       }
-    })
+    });
     return from(forkJoin(observerables).toPromise());
   };
   return result;
@@ -165,24 +164,4 @@ export const ModelEvaluate: PipcookLifeCycleComponent = (plugin: ModelEvaluateTy
   };
   result.returnType = EVALUATE;
   return result;
-};
-
-/**
- * Model-Deploy Plugin Component
- * @param plugin 
- * @param params 
- */
-export const ModelDeploy: PipcookModelDeployComponent = async (deployInfo: IDeployInfo) => {
-    return {
-      execute: async () => {
-        let pluginModule;
-        try {
-          pluginModule = require(deployInfo.deployPlugin.package).default;
-        } catch (err) {
-          pluginModule = require(path.join(process.cwd(), deployInfo.deployPlugin.package)).default;
-        }
-        const re = await pluginModule(deployInfo.deployPlugin.params || {}, deployInfo);
-        return re;
-      }
-    }
 };
