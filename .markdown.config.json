@@ -1,9 +1,5 @@
 {
   "ignorePatterns": [{
-    "pattern": "/typedoc"
-  }, {
-    "pattern": "/"
-  }, {
-    "pattern": "/zh-cn"
+    "pattern": "^/.*"
   }]
 }
