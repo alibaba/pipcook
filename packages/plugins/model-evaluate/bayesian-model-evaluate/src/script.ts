@@ -11,6 +11,8 @@ const random = boa.import('random');
 const pickle = boa.import('pickle');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
 
+const { open } = boa.builtins();
+
 function strip(str: string): string {
   return str.replace(/(^\s*)|(\s*$)/g, '');
 }
@@ -111,7 +113,7 @@ export const TextFeatures = function(train_data_list: string[], feature_words: s
 };
 
 export const processPredictData = function (data: any, all_words_list_path: string, stopwords_path: string): Promise<Set<string>> {
-  const all_words_list = pickle.load(fs.readFileSync(all_words_list_path));
+  const all_words_list = pickle.load(open(all_words_list_path, 'rb'));
   const word_cut = jieba.cut(data, boa.kwargs({
     cut_all: false
   }));
@@ -140,11 +142,11 @@ export const processPredictData = function (data: any, all_words_list_path: stri
 };
 
 export const save_all_words_list = function(feature_words: any, filepath: string) {
-  pickle.dump(feature_words, fs.readFileSync(filepath));
+  pickle.dump(feature_words, open(filepath, 'wb'));
 };
 
 export const get_all_words_list = function(filepath: string) {
-  return pickle.load(fs.readFileSync(filepath));
+  return pickle.load(open(filepath, 'rb'));
 };
 
 export const getBayesModel = function() {
@@ -152,9 +154,9 @@ export const getBayesModel = function() {
 };
 
 export const saveBayesModel = function(classifier: any, filepath: string) {
-  pickle.dump(classifier, fs.readFileSync(filepath));
+  pickle.dump(classifier, open(filepath, 'wb'));
 };
 
 export const loadModel = function (filepath: string) {
-  return pickle.load(fs.readFileSync(filepath));
+  return pickle.load(open(filepath, 'rb'));
 };
