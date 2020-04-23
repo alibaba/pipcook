@@ -35,7 +35,6 @@ $ pip --version
 - [Model Load](../spec/plugin/3-model-define.md)
 - [Model Train](../spec/plugin/4-model-train.md)
 - [Model Evaluate](../spec/plugin/5-model-evaluate.md)
-- [Model Deploy](../spec/plugin/6-model-deploy.md)
 
 ## 数据集规范
 

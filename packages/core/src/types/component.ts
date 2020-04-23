@@ -30,7 +30,7 @@ export interface PipcookComponentResult {
   mergeComponents?: PipcookComponentResult[][];
   params?: PipObject;
   observer?: ObserverFunc;
-  returnType: string;
+  returnType?: string;
   previousComponent: PipcookComponentResult | null;
   status: 'not execute' | 'running' | 'success' | 'failure';
   package?: string;
@@ -39,4 +39,8 @@ export interface PipcookComponentResult {
 
 export interface PipcookLifeCycleComponent {
   (plugin: PipcookPlugin, params?: PipObject): PipcookComponentResult;
+}
+
+export interface PipcookModelDeployResult {
+  execute: Function;
 }

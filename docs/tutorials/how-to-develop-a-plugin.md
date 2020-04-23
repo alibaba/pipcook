@@ -14,7 +14,6 @@ The plugin type could be:
 - Model Load
 - Model Train
 - Model Evaluate
-- Model Deploy
 
 ## Create a Plugin
 

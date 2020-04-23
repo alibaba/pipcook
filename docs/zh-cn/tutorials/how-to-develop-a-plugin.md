@@ -14,7 +14,6 @@ pipcook 非常欢迎开发者为我们贡献插件从而扩展 pipcook 的功能
 - modelDefine
 - modelTrain
 - modelEvaluate
-- modelDeploy
 
 ## 创建一个插件
 

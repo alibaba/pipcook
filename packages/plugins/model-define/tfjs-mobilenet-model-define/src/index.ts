@@ -3,10 +3,11 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelDefineType, ImageDataset, getModelDir, getMetadata, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
+import * as fs from 'fs';
 import Jimp from 'jimp';
 
 /**
@@ -70,35 +71,28 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
     loss = 'categoricalCrossentropy',
     metrics = [ 'accuracy' ],
     isFreeze = true,
-    modelId,
-    modelPath,
+    recoverPath,
     outputShape,
     labelMap
   } = args;
 
   let inputShape: number[];
 
-  if (!modelId && !modelPath) {
+  if (!recoverPath) {
     assertionTest(data);
     inputShape = data.metadata.feature.shape;
     outputShape = Object.keys(data.metadata.labelMap).length;
     labelMap = data.metadata.labelMap;
-  }
-
-  if (modelId) {
-    outputShape = Object.keys(getMetadata(modelId).labelMap);
-  }
-
-  if (modelPath) {
-    assert.ok(!isNaN(outputShape), 'the output shape should be a number');
+  } else {
+    const log = JSON.parse(fs.readFileSync(path.join(recoverPath, 'log.json'), 'utf8'));
+    labelMap = log.metadata.labelMap;
+    outputShape = Object.keys(labelMap).length;
   }
 
   let model: tf.Sequential | tf.LayersModel | null = null;
 
-  if (modelId) {
-    model = (await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json'))) as tf.LayersModel;
-  } else if (modelPath) {
-    model = (await tf.loadLayersModel(modelPath) as tf.LayersModel);
+  if (recoverPath) {
+    model = (await tf.loadLayersModel('file://' + path.join(recoverPath, 'model', 'model.json'))) as tf.LayersModel;
   } else {
     const trainableLayers = [ 'denseModified', 'conv_pw_13_bn', 'conv_pw_13', 'conv_dw_13_bn', 'conv _dw_13' ];
     const mobilenet = await
@@ -112,7 +106,6 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
     }
     model = mobilenetModified;
   }
-    
   model.compile({
     optimizer: optimizer,
     loss: loss,
@@ -122,26 +115,24 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
   const result: TfJsLayersModel = {
     model,
     metrics: metrics,
-    predict: async function (inputData: string[]) {
-      const prediction = [];
-      for (let i = 0; i < inputData.length; i++) {
-        const image = await Jimp.read(inputData[i]);
-        const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
-        const imageArray = new Uint8Array(trainImageBuffer);
-        const imgTensor = tf.node.decodeImage(imageArray, 3);
-        const predictResultArray = this.model.predict(imgTensor.expandDims(0));
-        const index = argMax(predictResultArray.dataSync());
-        if (labelMap) {
-          for (let key in labelMap) {
-            if (labelMap[key] === index) {
-              prediction.push(key);
-            }
+    predict: async function (inputData: ImageSample) {
+      let predict: any;
+      const image = await Jimp.read(inputData.data);
+      const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
+      const imageArray = new Uint8Array(trainImageBuffer);
+      const imgTensor = tf.node.decodeImage(imageArray, 3);
+      const predictResultArray = this.model.predict(imgTensor.expandDims(0));
+      const index = argMax(predictResultArray.dataSync());
+      if (labelMap) {
+        for (let key in labelMap) {
+          if (labelMap[key] === index) {
+            predict = key;
           }
-        } else {
-          prediction.push(predictResultArray);
         }
-      } 
-      return prediction;
+      } else {
+        predict = predictResultArray;
+      }
+      return predict;
     }
   };
   return result;

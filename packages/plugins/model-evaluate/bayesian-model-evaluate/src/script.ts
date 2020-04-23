@@ -11,7 +11,7 @@ const random = boa.import('random');
 const pickle = boa.import('pickle');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
 
-const { open } = boa.builtins();
+const { open, list, set } = boa.builtins();
 
 function strip(str: string): string {
   return str.replace(/(^\s*)|(\s*$)/g, '');
@@ -49,7 +49,7 @@ export const TextProcessing = function(row_data: string[], row_class: string[]):
     const word_cut: string[] = jieba.cut(data, boa.kwargs({
       cut_all: false
     }));
-    data_list.push(word_cut);
+    data_list.push(list(word_cut));
     class_list.push(row_class[i]);
   });
       
@@ -94,16 +94,8 @@ function words_dict(all_words_list: string[], stopwords_set = new Set<string>())
 
 export const TextFeatures = function(train_data_list: string[], feature_words: string[]) {
   function text_features(text: string, feature_words: string[]) {
-    const text_words = new Set(text);
-    const features = [];
-    for (const word of feature_words) {
-      if (text_words.has(word)) {
-        features.push(1);
-      } else {
-        features.push(0);
-      }
-    }
-
+    const text_words = set(text);
+    const features = boa.eval(`[1 if word in ${text_words} else 0 for word in ${feature_words}]`);
     return features;
   }
 

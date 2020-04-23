@@ -20,5 +20,4 @@
     - [ModelDefine](/spec/plugin/3-model-define.md)
     - [ModelTrain](/spec/plugin/4-model-train.md)
     - [ModelEvaluate](/spec/plugin/5-model-evaluate.md)
-    - [ModelDeploy](/spec/plugin/6-model-deploy.md)
   - [Dataset Specification](/spec/dataset.md)
