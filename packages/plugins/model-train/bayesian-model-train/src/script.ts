@@ -38,7 +38,7 @@ export const MakeWordsSet = function(words_file: string): Promise<Set<string>> {
       resolve(words_set);
     });
   });
-}
+};
 
 export const TextProcessing = function(row_data: string[], row_class: string[]): any[][] {
   const data_list: string[][] = [];
@@ -77,7 +77,7 @@ export const TextProcessing = function(row_data: string[], row_class: string[]):
   return [ all_words_list, train_data_list, train_class_list ];
 };
 
-export const words_dict  = function(all_words_list: string[], stopwords_set = new Set<string>()): string[] {
+export const words_dict = function(all_words_list: string[], stopwords_set = new Set<string>()): string[] {
   const feature_words: string[] = [];
   for (let word of all_words_list) {
     if (!isdigit(word) &&
@@ -89,7 +89,7 @@ export const words_dict  = function(all_words_list: string[], stopwords_set = ne
   }
 
   return feature_words;
-}
+};
 
 export const TextFeatures = function(train_data_list: string[], feature_words: string[]) {
   function text_features(text: string, feature_words: string[]) {
