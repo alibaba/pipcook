@@ -83,9 +83,14 @@ program
 
 program
   .command('serve [deployPath]')
+  .option('-p, --port', 'port of server')
   .description('serve the model to predict')
-  .action((deployPath) => {
-    serve(deployPath);
+  .action((port, cmd, deployPath) => {
+    if (!deployPath) {
+      serve(port);
+    } else {
+      serve(deployPath[0], port);
+    }
   });
 
 program.parse(process.argv);

@@ -4,7 +4,10 @@ const ora = require('ora');
 const childProcess = require('child_process');
 
 const spinner = ora();
-function serve(deployPath) {
+function serve(deployPath, port) {
+  if (!port) {
+    port = 7682;
+  }
   let predictFunc;
   try {
     predictFunc = require(path.join(deployPath, 'main.js'));
@@ -27,8 +30,8 @@ function serve(deployPath) {
 
   const start = async () => {
     try {
-      await fastify.listen(7687);
-      console.log('predict server is starting. Please send POST HTTP request to 7687');
+      await fastify.listen(port);
+      console.log(`predict server is starting. Please send POST HTTP request to ${port}`);
     } catch (err) {
       process.exit(1);
     }
