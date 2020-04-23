@@ -1,7 +1,7 @@
 const fse = require('fs-extra');
 const path = require('path');
 const glob = require('glob-promise');
-const { debugLog } = require('./debug');
+const debugLog = require('debug')('cli/dataset');
 /**
  * prepare a working dir for developer to develop plugins
  */
@@ -52,15 +52,12 @@ const dataset = async (cmdObj) => {
         dirName = dirName[dirName.length - 1];
         if (
           !fse.pathExistsSync(
-            path.join(process.cwd(), 'annotations', dirName + '.json')
+            path.join(process.cwd(), 'annotations', `${dirName}.json`)
           )
         ) {
           throw new Error('no corresponding annotation');
         }
-        const json = require(path.join(
-          process.cwd(),
-          'annotations',
-          dirName + '.json'
+        const json = require(path.join(process.cwd(), 'annotations', `${dirName}.json`
         ));
 
         json.images.forEach((image) => {

@@ -2,9 +2,9 @@ const fse = require('fs-extra');
 const ora = require('ora');
 const chalk = require('chalk');
 const path = require('path');
-const { debugLog, debugWarning } = require('./debug');
 const spinner = ora();
 const { constants } = require('@pipcook/pipcook-core');
+const debugLog = require('debug')('cli/devPlugin');
 
 /**
  * prepare a working dir for developer to develop plugins
@@ -19,11 +19,12 @@ const devPlugin = (cmdObj) => {
   }
 
   if (!constants.PLUGINS.includes(pluginType)) {
-    debugWarning(
+    debugLog(
       chalk.red(
-        `Unsupported plugin type: "${pluginType}", it must be one of: \n${constants.PLUGINS.join(
-          ',\n'
-        )}`
+        `Unsupported plugin type: "
+        ${pluginType}
+        ", it must be one of: \n
+        ${constants.PLUGINS.join(',\n')}`
       )
     );
     return;
@@ -38,7 +39,9 @@ const devPlugin = (cmdObj) => {
     dirname = path.join(process.cwd(), projectName);
     if (fse.existsSync(dirname)) {
       spinner.fail(
-        `a directory or file called ${projectName} already exists. Please use a new working directory`
+        `a directory or file called 
+        ${projectName}
+        already exists. Please use a new working directory`
       );
       return;
     }
@@ -64,7 +67,7 @@ const devPlugin = (cmdObj) => {
     );
     debugLog('success');
   } catch (e) {
-    debugLog(e);
+    debugLog(chalk.red(e));
     fse.removeSync(dirname);
   }
 };

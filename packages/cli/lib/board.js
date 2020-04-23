@@ -3,8 +3,8 @@ const fse = require('fs-extra');
 const ora = require('ora');
 const childProcess = require('child_process');
 const path = require('path');
-const { debugError } = require('./debug');
 const spinner = ora();
+const debugLog = require('debug')('cli/board');
 
 module.exports = () => {
   try {
@@ -18,6 +18,6 @@ module.exports = () => {
       stdio: 'inherit'
     });
   } catch (e) {
-    debugError(chalk.red(e));
+    debugLog(chalk.red(e));
   }
 };

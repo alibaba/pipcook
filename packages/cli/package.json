@@ -31,6 +31,7 @@
   "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856",
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
+    "debug": "^4.1.1",
     "nyc": "14.1.1"
   },
   "publishConfig": {

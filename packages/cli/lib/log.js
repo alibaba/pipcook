@@ -3,7 +3,8 @@ const fse = require('fs-extra');
 const path = require('path');
 const { pipcookLogName } = require('./config');
 const glob = require('glob-promise');
-const { debugLog, debugTable } = require('./debug');
+const debugLog = require('debug')('cli/log');
+
 /**
  * install all dependencies of pipcook into working dir
  */
@@ -31,7 +32,7 @@ const log = async () => {
         return false;
       }
     });
-    debugTable(jsonObject);
+    debugLog(console.table(jsonObject));
   } catch (error) {
     debugLog(chalk.red(error));
   }
