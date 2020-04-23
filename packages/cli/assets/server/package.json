@@ -21,7 +21,7 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^1.7.0",
+    "@tensorflow/tfjs-node-gpu": "1.7.0",
     "axios": "^0.19.2",
     "better-opn": "^1.0.0",
     "egg": "^2.6.1",

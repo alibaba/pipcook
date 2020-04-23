@@ -1,5 +1,5 @@
 import { Controller } from 'egg';
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 import { successRes } from '../utils/index';
 import * as Jimp from 'jimp';
 import axios from 'axios';
