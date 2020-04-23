@@ -4,7 +4,6 @@ const ora = require('ora');
 const childProcess = require('child_process');
 const path = require('path');
 const spinner = ora();
-const debugLog = require('debug')('cli/board');
 
 module.exports = () => {
   try {
@@ -18,6 +17,6 @@ module.exports = () => {
       stdio: 'inherit'
     });
   } catch (e) {
-    debugLog(chalk.red(e));
+    console.error(chalk.red(e));
   }
 };

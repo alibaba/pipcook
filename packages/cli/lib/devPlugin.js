@@ -4,7 +4,6 @@ const chalk = require('chalk');
 const path = require('path');
 const spinner = ora();
 const { constants } = require('@pipcook/pipcook-core');
-const debugLog = require('debug')('cli/devPlugin');
 
 /**
  * prepare a working dir for developer to develop plugins
@@ -14,19 +13,12 @@ const devPlugin = (cmdObj) => {
   let projectName = cmdObj && cmdObj[1];
 
   if (!pluginType) {
-    debugLog('Please provide a plugin type');
+    console.log('Please provide a plugin type');
     return;
   }
 
   if (!constants.PLUGINS.includes(pluginType)) {
-    debugLog(
-      chalk.red(
-        `Unsupported plugin type: "
-        ${pluginType}
-        ", it must be one of: \n
-        ${constants.PLUGINS.join(',\n')}`
-      )
-    );
+    console.warn(chalk.red(`Unsupported plugin type: "${pluginType}", it must be one of: \n${constants.PLUGINS.join(',\n')}`));
     return;
   }
 
@@ -65,9 +57,9 @@ const devPlugin = (cmdObj) => {
       ),
       path.join(dirname, 'src', `index.ts`)
     );
-    debugLog('success');
+    console.log('success');
   } catch (e) {
-    debugLog(chalk.red(e));
+    console.error(e);
     fse.removeSync(dirname);
   }
 };

@@ -1,7 +1,6 @@
 const fse = require('fs-extra');
 const path = require('path');
 const glob = require('glob-promise');
-const debugLog = require('debug')('cli/dataset');
 /**
  * prepare a working dir for developer to develop plugins
  */
@@ -9,7 +8,7 @@ const dataset = async (cmdObj) => {
   const pluginType = cmdObj && cmdObj[0];
 
   if (!pluginType) {
-    debugLog('Please provide a plugin type');
+    console.log('Please provide a plugin type');
     return;
   }
 

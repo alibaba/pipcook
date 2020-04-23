@@ -5,7 +5,6 @@
 import chalk from 'chalk';
 import { PipcookRunner } from '../runner';
 import { PipcookComponentResult } from '../types/component';
-const debugLog = require('debug')('core/utils');
 
 enum LoggerColor {
   GREEN = 'green',
@@ -17,24 +16,18 @@ type LoggerFunction = (input: string) => void;
 
 // TODO(Yorkie): support custom Console?
 function createLogger(level: string, color: LoggerColor): LoggerFunction {
-  return (input) => (debugLog as any)(chalk[color](level), chalk[color](input));
+  return (input) => (console as any)[level](chalk[color](input));
 }
 
 export default class Logger {
-  protected static log:
-    LoggerFunction = createLogger('log', LoggerColor.GREEN);
-  protected static info:
-    LoggerFunction = createLogger('info', LoggerColor.CYAN);
-  protected static error:
-    LoggerFunction = createLogger('error', LoggerColor.RED);
+  protected static log: LoggerFunction = createLogger('log', LoggerColor.GREEN);
+  protected static info: LoggerFunction = createLogger('info', LoggerColor.CYAN);
+  protected static error: LoggerFunction = createLogger('error', LoggerColor.RED);
 
   public static logStartExecution(pipline: PipcookRunner) {
     Logger.log(`start execution: \npipeline id: ${pipline.pipelineId}`);
   }
-  public static logCurrentExecution(
-    component: PipcookComponentResult,
-    type = 'normal'
-  ) {
+  public static logCurrentExecution(component: PipcookComponentResult, type = 'normal') {
     let msg = `current execution component: ${component.type}`;
     if (type === 'merge') {
       msg = 'in merge, ' + msg;

@@ -11,7 +11,7 @@ import { Observable, from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE } from '../constants/other';
 
-const debugLog = require('debug')('core/runner');
+const debug = require('debug')('core/runner');
 
 /**
  * Retreive relative logs required to be stored.
@@ -45,7 +45,7 @@ export async function assignLatestResult(updatedType: string, result: any, self:
       self.latestModel = result;
       break;
     case EVALUATE:
-      debugLog('evaluate result: ', result);
+      debug('evaluate result: ', result);
       self.latestEvaluateResult = result;
       break;
     case DEPLOYMENT:
