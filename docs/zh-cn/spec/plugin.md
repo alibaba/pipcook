@@ -12,7 +12,6 @@ Pipcook 使用插件的形式来实现具体机器学习周期中的任务，这
 - ModelDefine: 用于定义模型，此插件将模型加载到 pipeline 中，同时会抹平 keras，python tf 等模型的差异
 - ModelTrain: 模型训练： 训练模型
 - ModelEvaluate: 评估模型
-- ModelDeploy: 部署模型
 
 ## 插件特点
 
@@ -35,7 +34,6 @@ function DataProcess(plugin: EscherPlugin, params: object);
 function ModelDefine(plugin: EscherPlugin, params: object);
 function ModelTrain(plugin: EscherPlugin, params: object);
 function ModelEvaluate(plugin: EscherPlugin, params: object);
-function ModelDeploy(plugin: EscherPlugin, params: object);
 ```
 
 ### 使用插件

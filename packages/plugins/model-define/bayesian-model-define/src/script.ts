@@ -8,6 +8,7 @@ const boa = require('@pipcook/boa');
 const jieba = boa.import('jieba');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
 const pickle = boa.import('pickle');
+const { open } = boa.builtins();
 
 function strip(str: string): string {
   return str.replace(/(^\s*)|(\s*$)/g, '');
@@ -50,8 +51,8 @@ function words_dict(all_words_list: string[], stopwords_set = new Set<string>())
   return feature_words;
 }
 
-export const processPredictData = function (data: any, all_words_list_path: string, stopwords_path: string): Promise<Set<string>> {
-  const all_words_list = pickle.load(fs.readFileSync(all_words_list_path));
+export const processPredictData = async function (data: any, all_words_list_path: string, stopwords_path: string): Promise<number[][]> {
+  const all_words_list = pickle.load(open(all_words_list_path, 'rb'));
   const word_cut = jieba.cut(data, boa.kwargs({
     cut_all: false
   }));
@@ -71,12 +72,9 @@ export const processPredictData = function (data: any, all_words_list_path: stri
     return features;
   };
 
-  return MakeWordsSet(stopwords_file).then((stopwords_set) => {
-    const feature_words = words_dict(all_words_list, stopwords_set);
-    return word_cut.map((text: string) => {
-      return text_features(text, feature_words);
-    });
-  });
+  const stopwords_set = await MakeWordsSet(stopwords_file);
+  const feature_words = words_dict(all_words_list, stopwords_set);
+  return [ text_features(word_cut, feature_words) ];
 };
 
 export const getBayesModel = function () {
@@ -84,5 +82,5 @@ export const getBayesModel = function () {
 };
 
 export const loadModel = function (filepath: string) {
-  return pickle.load(fs.readFileSync(filepath));
+  return pickle.load(open(filepath, 'rb'));
 };

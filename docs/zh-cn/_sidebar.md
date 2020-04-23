@@ -20,5 +20,4 @@
     - [模型定义插件](/zh-cn/spec/plugin/3-model-define.md)
     - [模型训练插件](/zh-cn/spec/plugin/4-model-train.md)
     - [模型求值插件](/zh-cn/spec/plugin/5-model-evaluate.md)
-    - [模型附属插件](/zh-cn/spec/plugin/6-model-deploy.md)
   - [数据集规范](/zh-cn/spec/dataset.md)

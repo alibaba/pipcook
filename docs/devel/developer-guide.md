@@ -34,7 +34,6 @@ We have defined a set of interfaces for each plugin. Each type of plugin must be
 - [Model Load](../spec/plugin/3-model-define.md)
 - [Model Train](../spec/plugin/4-model-train.md)
 - [Model Evaluate](../spec/plugin/5-model-evaluate.md)
-- [Model Deploy](../spec/plugin/6-model-deploy.md)
 
 ## Dataset Specification
 
