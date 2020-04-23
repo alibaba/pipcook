@@ -23,7 +23,8 @@
     "test": "lerna run --scope @pipcook/pipcook-core --scope @pipcook/boa test",
     "test:pipeline": "sh ./run_pipeline.sh",
     "typedoc": "typedoc",
-    "clean": "lerna run clean"
+    "clean": "lerna run clean",
+    "release": "echo 23"
   },
   "dependencies": {
     "@types/jasmine": "^3.5.10",
