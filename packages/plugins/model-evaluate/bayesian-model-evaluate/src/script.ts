@@ -95,8 +95,7 @@ function words_dict(all_words_list: string[], stopwords_set = new Set<string>())
 export const TextFeatures = function(train_data_list: string[], feature_words: string[]) {
   function text_features(text: string, feature_words: string[]) {
     const text_words = set(text);
-    const features = boa.eval(`[1 if word in ${text_words} else 0 for word in ${feature_words}]`);
-    return features;
+    return boa.eval(`[1 if word in ${text_words} else 0 for word in ${feature_words}]`);
   }
 
   return train_data_list.map((text: string) => {
