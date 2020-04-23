@@ -3,6 +3,7 @@ docs
 dist
 test
 pipcook_venv
+example
 
 packages/pipcook-core/src/assets
 packages/pipcook-cli/assets

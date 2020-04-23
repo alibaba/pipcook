@@ -7,7 +7,12 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
+    'airbnb-base',
+    'airbnb-typescript/base'
   ],
+  'parserOptions': {
+    'project': './tsconfig.json',
+  },
   'rules': {
     'prefer-const': 'off',
     'no-useless-escape': 'off',
@@ -44,6 +49,11 @@ module.exports = {
     'arrow-spacing': [ 'error', { before: true, after: true } ],
     'block-spacing': 'error',
     'brace-style': [ 'error', '1tbs', { allowSingleLine: true } ],
-    'comma-style': 'error'
+    'comma-style': 'error',
+    'no-console': 'off',
+    'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
+    'no-restricted-syntax': 'off',
+    'import/no-cycle': 'off',
+    '@typescript-eslint/indent': 'off'
   }
 };
