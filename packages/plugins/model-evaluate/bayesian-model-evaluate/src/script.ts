@@ -21,6 +21,10 @@ function isdigit(str: string): boolean {
   return /^\d+$/.test(str);
 }
 
+interface AllWordsDict {
+  [key: string]: [ string, number ];
+}
+
 function MakeWordsSet(words_file: string): Promise<Set<string>> {
   const words_set = new Set<string>();
   const rl = readline.createInterface({
@@ -53,14 +57,10 @@ export const TextProcessing = function(row_data: string[], row_class: string[]):
     class_list.push(row_class[i]);
   });
       
-  // 划分训练集和测试集
+  // split train set and testing set
   const data_class_list = zip(data_list, class_list);
   random.shuffle(data_class_list);
   const [ train_data_list, train_class_list ] = unzip(data_class_list);
-
-  interface AllWordsDict {
-    [key: string]: [ string, number ];
-  }
   const all_words_dict: AllWordsDict = {};
   for (const word_list of train_data_list) {
     for (const word of word_list) {
