@@ -9,6 +9,7 @@ const board = require('../lib/board');
 const start = require('../lib/start');
 const devPlugin = require('../lib/devPlugin');
 const dataset = require('../lib/dataset');
+const serve = require('../lib/serve');
 const childProcess = require('child_process');
 
 // check node version
@@ -78,6 +79,13 @@ program
     childProcess.execSync(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
       cwd: process.cwd()
     });
+  });
+
+program
+  .command('serve [deployPath]')
+  .description('serve the model to predict')
+  .action((deployPath) => {
+    serve(deployPath);
   });
 
 program.parse(process.argv);

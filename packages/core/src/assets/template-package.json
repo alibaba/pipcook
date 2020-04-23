@@ -9,7 +9,6 @@
   "author": "pipcook",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^2.13.0"
   },
   "devDependencies": {
   }
