@@ -34,3 +34,28 @@ $ pipcook init
 ```sh
 $ pipcook run examples/pipelines/mnist-image-classification.json
 ```
+
+### 通过 Docker 镜像安装
+
+首先下载 [Dockerfile](https://github.com/alibaba/pipcook/blob/master/Dockerfile)。
+
+打开 Dockerfile 所在目录，并构建镜像：
+
+```sh
+$ git clone https://github.com/alibaba/pipcook.git && cd pipcook
+$ docker build -t alibaba/pipcook .
+```
+
+安装完成后查看：
+
+```sh
+$ docker images
+REPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZE
+alibaba/pipcook                               latest              c297c73d62d4        7 hours ago         3.67GB
+```
+
+创建容器并运行
+
+```sh
+$ docker run -it --name pipcook_test alibaba/pipcook /bin/bash
+```

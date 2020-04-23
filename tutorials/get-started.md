@@ -30,3 +30,28 @@ At this point, all the relevant environments required by Pipcook have been insta
 ```sh
 $ pipcook run examples/pipelines/mnist-image-classification.json
 ```
+
+### Install via Docker
+
+First install [Dockerfile](https://github.com/alibaba/pipcook/blob/master/Dockerfile).
+
+Open Dockerfile's path and install image.
+
+```sh
+$ git clone https://github.com/alibaba/pipcook.git && cd pipcook
+$ docker build -t alibaba/pipcook .
+```
+
+Check if the image is installed successfully.
+
+```sh
+$ docker images
+REPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZE
+alibaba/pipcook                               latest              c297c73d62d4        7 hours ago         3.67GB
+```
+
+And run in the following command:
+
+```sh
+$ docker run -it --name pipcook_test alibaba/pipcook /bin/bash
+```
