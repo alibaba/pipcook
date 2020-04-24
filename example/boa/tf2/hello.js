@@ -1,6 +1,6 @@
-'use strict';
 
 const boa = require('@pipcook/boa');
+
 const tf = boa.import('tensorflow');
 
 const n1 = tf.add(1, 2).numpy();

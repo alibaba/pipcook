@@ -12,7 +12,9 @@ const mnist = require('mnist');
 /**
  * collect mnist data
  */
-const imageMnistDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
+const imageMnistDataCollect: DataCollectType = async (
+  args: ArgsType
+): Promise<void> => {
   const {
     trainCount = 8000,
     testCount = 500,
@@ -23,7 +25,10 @@ const imageMnistDataCollect: DataCollectType = async (args: ArgsType): Promise<v
   const trainingSet = set.training;
   const testSet = set.test;
 
-  const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
+  const bar1 = new _cliProgress.SingleBar(
+    {},
+    _cliProgress.Presets.shades_classic
+  );
   console.log('collecting training data ...');
   bar1.start(trainCount, 0);
 
@@ -31,10 +36,14 @@ const imageMnistDataCollect: DataCollectType = async (args: ArgsType): Promise<v
     bar1.update(i);
     const trainingSample = trainingSet[i];
     const input = (trainingSample.input).map((x: any) => x * 255);
-    const output = trainingSample.output;
+    const { output } = trainingSample;
     const trainDir = path.join(dataDir, 'train');
     const imageName = `trainsample${i}.jpg`;
-    createAnnotationFile(trainDir, imageName, trainDir, String(output.indexOf(1)));
+    createAnnotationFile(
+      trainDir,
+      imageName,
+      trainDir, String(output.indexOf(1))
+    );
     const image = await tf.node.encodeJpeg(tf.tensor3d(input, [ 28, 28, 1 ], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
     await jimpImage.write(path.join(trainDir, imageName));
@@ -42,16 +51,24 @@ const imageMnistDataCollect: DataCollectType = async (args: ArgsType): Promise<v
   bar1.stop();
 
   console.log('collecting test data ...');
-  const bar2 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
+  const bar2 = new _cliProgress.SingleBar(
+    {},
+    _cliProgress.Presets.shades_classic
+  );
   bar2.start(testCount, 0);
   for (let i = 0; i < testSet.length; i++) {
     bar2.update(i);
     const trainingSample = testSet[i];
     const input = (trainingSample.input).map((x: any) => x * 255);
-    const output = trainingSample.output;
+    const { output } = trainingSample;
     const testDir = path.join(dataDir, 'test');
     const imageName = `trainsample${i}.jpg`;
-    createAnnotationFile(testDir, imageName, testDir, String(output.indexOf(1)));
+    createAnnotationFile(
+      testDir,
+      imageName,
+      testDir,
+      String(output.indexOf(1))
+    );
     const image = await tf.node.encodeJpeg(tf.tensor3d(input, [ 28, 28, 1 ], 'int32'));
     const jimpImage = await Jimp.read(image.buffer as Buffer);
     await jimpImage.write(path.join(testDir, imageName));

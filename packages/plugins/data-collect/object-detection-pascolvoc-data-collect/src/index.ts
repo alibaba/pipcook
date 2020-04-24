@@ -1,9 +1,16 @@
-import { ArgsType, unZipData, download, DataCollectType } from '@pipcook/pipcook-core';
+import {
+  ArgsType,
+  unZipData,
+  download,
+  DataCollectType
+} from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
 
-const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
+const imageDetectionDataCollect: DataCollectType = async (
+  args: ArgsType
+): Promise<void> => {
   let {
     url = '',
     dataDir

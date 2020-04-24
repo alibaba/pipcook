@@ -1,5 +1,6 @@
-const fork = require('child_process').fork;
+const { fork } = require('child_process');
 const ora = require('ora');
+
 const spinner = ora();
 const path = require('path');
 

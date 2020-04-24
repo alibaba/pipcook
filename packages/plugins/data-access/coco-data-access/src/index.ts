@@ -3,7 +3,15 @@
  * the data is conform to expectation.
  */
 
-import { ArgsType, parseAnnotation, DataAccessType, CocoDataset, ImageDataLoader, ImageLabel, convertPascal2CocoFileOutput } from '@pipcook/pipcook-core';
+import {
+  ArgsType,
+  parseAnnotation,
+  DataAccessType,
+  CocoDataset,
+  ImageDataLoader,
+  ImageLabel,
+  convertPascal2CocoFileOutput
+} from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -16,6 +24,7 @@ interface DataPair {
 
 class DataLoader implements ImageDataLoader {
   dataPairs!: DataPair[];
+
   constructor(dataPairs: DataPair[]) {
     this.dataPairs = dataPairs;
   }
@@ -34,7 +43,7 @@ class DataLoader implements ImageDataLoader {
 
 /**
  * merge all possible values of labels. Get the map between label and numeric value
- * @param data 
+ * @param data
  */
 const getLabelMap = async (dataPath: string) => {
   const labelSet = new Set<string>();
@@ -46,7 +55,7 @@ const getLabelMap = async (dataPath: string) => {
       labelSet.add(object.name[0]);
     });
   }
-  
+
   const labelArray = Array.from(labelSet);
   const labelMap: {[key: string]: number} = {};
   labelArray.forEach((label: any, index: number) => {
@@ -87,17 +96,22 @@ const getValidPair = async (dataPath: string, labelMap: {
     }
   }
   if (pairs.length > 0) {
-    await convertPascal2CocoFileOutput(Array.from(new Set(pairs.map((pair) => pair.annotation))), 
-      path.join(dataPath, 'annotation.json'));
+    await convertPascal2CocoFileOutput(
+      Array.from(new Set(pairs.map((pair) => pair.annotation))),
+      path.join(dataPath, 'annotation.json')
+    );
   }
   return pairs;
 };
 
 /**
- * The plugin used to access data from different sources. It will detect all possible values of labels and 
+ * The plugin used to access data from different sources.
+ * It will detect all possible values of labels and
  * merge them into numeric expressions.
  */
-const cocoDataAccess: DataAccessType = async (args: ArgsType): Promise<CocoDataset> => {
+const cocoDataAccess: DataAccessType = async (
+  args: ArgsType
+): Promise<CocoDataset> => {
   const {
     dataDir
   } = args;
@@ -134,7 +148,7 @@ const cocoDataAccess: DataAccessType = async (args: ArgsType): Promise<CocoDatas
   if (testPair.length > 0) {
     result.testLoader = testLoader;
   }
-  
+
   return result;
 };
 

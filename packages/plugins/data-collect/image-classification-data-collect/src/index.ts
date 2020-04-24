@@ -3,7 +3,13 @@
  * the data is conform to expectation.
  */
 
-import { ArgsType, createAnnotationFile, DataCollectType, unZipData, download } from '@pipcook/pipcook-core';
+import {
+  ArgsType,
+  createAnnotationFile,
+  DataCollectType,
+  unZipData,
+  download
+} from '@pipcook/pipcook-core';
 
 import glob from 'glob-promise';
 import * as path from 'path';
@@ -12,9 +18,9 @@ import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
 /**
- * collect the data either from remote url or local file system. It expects a zip 
+ * collect the data either from remote url or local file system. It expects a zip
  * which contains the structure of traditional iamge classification data folder.
- * 
+ *
  * The structure should be:
  * - train
  *  - category1-name
@@ -25,10 +31,12 @@ import { v1 as uuidv1 } from 'uuid';
  *  - ...
  * - test (optional)
  * - validate (optional)
- * 
+ *
  * @param url path of the data, if it comes from local file, please add file:// as prefix
  */
-const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
+const imageClassDataCollect: DataCollectType = async (
+  args: ArgsType
+): Promise<void> => {
   let {
     url = '',
     dataDir
@@ -45,7 +53,7 @@ const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<v
   if (/^file:\/\/.*/.test(url)) {
     url = url.substring(7);
   } else {
-    const targetPath = path.join(dataDir, uuidv1() + '.zip');
+    const targetPath = path.join(dataDir, `${uuidv1()}.zip`);
     console.log('downloading dataset ...');
     await download(url, targetPath);
     url = targetPath;
@@ -63,8 +71,17 @@ const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<v
     const category = splitString[splitString.length - 2];
     const imageName = uuidv1() + splitString[splitString.length - 1];
     const annotationDir = path.join(dataDir, trainType);
-    createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
-    fs.moveSync(imagePath, path.join(annotationDir, imageName), { overwrite: true });
+    createAnnotationFile(
+      annotationDir,
+      imageName,
+      splitString.slice(0, splitString.length - 1).join(path.sep),
+      category
+    );
+    fs.moveSync(
+      imagePath,
+      path.join(annotationDir, imageName),
+      { overwrite: true }
+    );
   });
 
   if (isDownload) {

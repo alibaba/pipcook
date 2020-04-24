@@ -1,16 +1,28 @@
-import { DataProcessType, ImageDataset, ArgsType, ImageDataLoader } from '@pipcook/pipcook-core';
+import {
+  DataProcessType,
+  ImageDataset,
+  ArgsType,
+  ImageDataLoader
+} from '@pipcook/pipcook-core';
 
 import Jimp from 'jimp';
 import cliProgress from 'cli-progress';
 
 /**
  * @ignore
- * @param imagePaths 
- * @param resize 
- * @param normalize 
+ * @param imagePaths
+ * @param resize
+ * @param normalize
  */
-const processImage = async (loader: ImageDataLoader, resize: number[], normalize: boolean) => {
-  const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+const processImage = async (
+  loader: ImageDataLoader,
+  resize: number[],
+  normalize: boolean
+) => {
+  const bar1 = new cliProgress.SingleBar(
+    {},
+    cliProgress.Presets.shades_classic
+  );
   const totalNumber = await loader.len();
   bar1.start(totalNumber, 0);
   for (let i = 0; i < totalNumber; i++) {
@@ -31,7 +43,10 @@ const processImage = async (loader: ImageDataLoader, resize: number[], normalize
  * @param resize =[256, 256][optional] resize all images to same size
  * @param normalize =false[optional] if normalize all images to have values between [0, 1]
  */
-const pascalVocDataProcess: DataProcessType = async (data: ImageDataset, args: ArgsType): Promise<ImageDataset> => {
+const pascalVocDataProcess: DataProcessType = async (
+  data: ImageDataset,
+  args: ArgsType
+): Promise<ImageDataset> => {
   const {
     resize = [ 256, 256 ],
     normalize = false
@@ -43,7 +58,7 @@ const pascalVocDataProcess: DataProcessType = async (data: ImageDataset, args: A
     console.log('process train data');
     await processImage(trainLoader, resize, normalize);
   }
-  
+
   if (validationLoader) {
     console.log('process validation data');
     await processImage(validationLoader, resize, normalize);

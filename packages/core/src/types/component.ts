@@ -1,8 +1,8 @@
+import { Subscribable } from 'rxjs';
 import { PipcookPlugin } from './plugins';
 import { UniModel } from './model';
 import { UniDataset } from './data/common';
 import { PipObject } from './other';
-import { Subscribable } from 'rxjs';
 
 export interface InsertParams {
   pipelineId: string;
@@ -11,14 +11,18 @@ export interface InsertParams {
 }
 
 interface ObserverFunc {
-  (data: UniDataset, model: UniModel |null, insertParams: InsertParams): Subscribable<any>;
+(
+  data: UniDataset,
+  model: UniModel |null,
+  insertParams: InsertParams
+): Subscribable<any>;
 }
 
-type ResultType = 
-  'dataCollect' | 
-  'dataAccess' | 
-  'dataProcess' | 
-  'modelLoad' | 
+type ResultType =
+  'dataCollect' |
+  'dataAccess' |
+  'dataProcess' |
+  'modelLoad' |
   'modelDefine' |
   'modelTrain' |
   'modelEvaluate' |

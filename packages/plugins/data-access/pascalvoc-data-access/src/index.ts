@@ -3,7 +3,14 @@
  * the data is conform to expectation.
  */
 
-import { ArgsType, parseAnnotation, DataAccessType, VocDataset, ImageDataLoader, ImageLabel } from '@pipcook/pipcook-core';
+import {
+  ArgsType,
+  parseAnnotation,
+  DataAccessType,
+  VocDataset,
+  ImageDataLoader,
+  ImageLabel
+} from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -16,6 +23,7 @@ interface DataPair {
 
 class DataLoader implements ImageDataLoader {
   dataPairs!: DataPair[];
+
   constructor(dataPairs: DataPair[]) {
     this.dataPairs = dataPairs;
   }
@@ -34,7 +42,7 @@ class DataLoader implements ImageDataLoader {
 
 /**
  * merge all possible values of labels. Get the map between label and numeric value
- * @param data 
+ * @param data
  */
 const getLabelMap = async (dataPath: string) => {
   const labelSet = new Set<string>();
@@ -46,7 +54,7 @@ const getLabelMap = async (dataPath: string) => {
       labelSet.add(object.name[0]);
     });
   }
-  
+
   const labelArray = Array.from(labelSet);
   const labelMap: {[key: string]: number} = {};
   labelArray.forEach((label: any, index: number) => {
@@ -90,10 +98,12 @@ const getValidPair = async (dataPath: string, labelMap: {
 };
 
 /**
- * The plugin used to access data from different sources. It will detect all possible values of labels and 
+ * The plugin used to access data from different sources. It will detect all possible values of labels and
  * merge them into numeric expressions.
  */
-const pascalVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocDataset> => {
+const pascalVocDataAccess: DataAccessType = async (
+  args: ArgsType
+): Promise<VocDataset> => {
   const {
     dataDir
   } = args;
@@ -116,9 +126,12 @@ const pascalVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocD
     validationResult: {
       result: true
     },
-    trainXmlPaths: Array.from(new Set(trainPair.map((pair) => pair.annotation))),
-    validationXmlPaths: Array.from(new Set(validationPair.map((pair) => pair.annotation))),
-    testXmlPaths: Array.from(new Set(testPair.map((pair) => pair.annotation)))
+    trainXmlPaths:
+      Array.from(new Set(trainPair.map((pair) => pair.annotation))),
+    validationXmlPaths:
+      Array.from(new Set(validationPair.map((pair) => pair.annotation))),
+    testXmlPaths:
+      Array.from(new Set(testPair.map((pair) => pair.annotation)))
   };
 
   if (trainPair.length > 0) {
@@ -130,7 +143,7 @@ const pascalVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocD
   if (testPair.length > 0) {
     result.testLoader = testLoader;
   }
-  
+
   return result;
 };
 

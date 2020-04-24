@@ -34,7 +34,7 @@ export interface PipcookPlugin {
 }
 
 export interface DataCollectType extends PipcookPlugin {
-  (args: ArgsType): Promise<void>; 
+  (args: ArgsType): Promise<void>;
 }
 
 export interface DataAccessType extends PipcookPlugin {
@@ -54,7 +54,9 @@ export interface ModelDefineType extends PipcookPlugin {
 }
 
 export interface ModelTrainType extends PipcookPlugin {
-  (data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>;
+  (
+    data: UniDataset, model: UniModel, args: ModelTrainArgsType
+  ): Promise<UniModel>;
 }
 
 export interface ModelEvaluateType extends PipcookPlugin {

@@ -3,7 +3,14 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelDefineType, ImageDataset, getModelDir, getMetadata, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
+import {
+  ModelDefineType,
+  ImageDataset,
+  getModelDir,
+  getMetadata,
+  ModelDefineArgsType,
+  TfJsLayersModel
+} from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -11,10 +18,13 @@ import Jimp from 'jimp';
 
 /**
  * Transfer learning: freeze several top layers
- * @param trainableLayers 
- * @param mobilenetModified 
+ * @param trainableLayers
+ * @param mobilenetModified
  */
-const freezeModelLayers = (trainableLayers: string[], mobilenetModified: tf.LayersModel) => {
+const freezeModelLayers = (
+  trainableLayers: string[],
+  mobilenetModified: tf.LayersModel
+) => {
   for (const layer of mobilenetModified.layers) {
     layer.trainable = false;
     for (const tobeTrained of trainableLayers) {
@@ -29,7 +39,7 @@ const freezeModelLayers = (trainableLayers: string[], mobilenetModified: tf.Laye
 
 /** @ignore
  * assertion test
- * @param data 
+ * @param data
  */
 const assertionTest = (data: ImageDataset) => {
   assert.ok(data.metadata.feature, 'Image feature is missing');
@@ -37,17 +47,23 @@ const assertionTest = (data: ImageDataset) => {
 };
 
 function argMax(array: any) {
-  return [].map.call(array, (x: any, i: any) => [ x, i ]).reduce((r: any, a: any) => (a[0] > r[0] ? a : r))[1];
+  return [].map.call(
+    array, (x: any, i: any) => [ x, i ]
+  )
+    .reduce((r: any, a: any) => (a[0] > r[0] ? a : r))[1];
 }
 
 
 /**
- * Delete original input layer and original output layer. 
+ * Delete original input layer and original output layer.
  * Use our own input layer and add softmax layer after global average pooling layer
  * @param inputLayer the input layer of the model
  * @param originModel original loaded moblienet
  */
-const applyModel = (inputLayer: tf.SymbolicTensor, originModel: tf.LayersModel) => {
+const applyModel = (
+  inputLayer: tf.SymbolicTensor,
+  originModel: tf.LayersModel
+) => {
   let currentLayer: any = inputLayer;
   for (const layer of originModel.layers) {
     if (layer.name !== 'input_1') {
@@ -64,7 +80,10 @@ const applyModel = (inputLayer: tf.SymbolicTensor, originModel: tf.LayersModel) 
  *  main function of the operator: load the mobilenet model
  * @param data sample data
  */
-const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
+const localMobileNetModelDefine: ModelDefineType = async (
+  data: ImageDataset,
+  args: ModelDefineArgsType
+): Promise<TfJsLayersModel> => {
   let {
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
@@ -96,7 +115,7 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
   let model: tf.Sequential | tf.LayersModel | null = null;
 
   if (modelId) {
-    model = (await tf.loadLayersModel('file://' + path.join(getModelDir(modelId), 'model.json'))) as tf.LayersModel;
+    model = (await tf.loadLayersModel(`file://${path.join(getModelDir(modelId), 'model.json')}`)) as tf.LayersModel;
   } else if (modelPath) {
     model = (await tf.loadLayersModel(modelPath) as tf.LayersModel);
   } else {
@@ -112,17 +131,17 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
     }
     model = mobilenetModified;
   }
-    
+
   model.compile({
-    optimizer: optimizer,
-    loss: loss,
-    metrics: metrics
+    optimizer,
+    loss,
+    metrics
   });
 
   const result: TfJsLayersModel = {
     model,
-    metrics: metrics,
-    predict: async function (inputData: string[]) {
+    metrics,
+    async predict(inputData: string[]) {
       const prediction = [];
       for (let i = 0; i < inputData.length; i++) {
         const image = await Jimp.read(inputData[i]);
@@ -140,7 +159,7 @@ const localMobileNetModelDefine: ModelDefineType = async (data: ImageDataset, ar
         } else {
           prediction.push(predictResultArray);
         }
-      } 
+      }
       return prediction;
     }
   };

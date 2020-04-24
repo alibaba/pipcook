@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 const semver = require('semver');
 const chalk = require('chalk');
-const pkg = require('../package.json');
 const program = require('commander');
+const childProcess = require('child_process');
+const pkg = require('../package.json');
 const init = require('../lib/init');
 const log = require('../lib/log');
 const board = require('../lib/board');
 const start = require('../lib/start');
 const devPlugin = require('../lib/devPlugin');
 const dataset = require('../lib/dataset');
-const childProcess = require('child_process');
 
 // check node version
 if (!semver.gte(process.version, '10.0.0')) {
   console.log(
     chalk.red(
-      `Pipcook requires node version higher than node 10.x. Howeverm your kicak node version is ${process.version}, ` +
-      'Please update node.js'
+      `Pipcook requires node version higher than node 10.x. Howeverm your kicak node version is ${process.version}, `
+      + 'Please update node.js'
     )
   );
   return;

@@ -3,7 +3,13 @@
  * the data is conform to expectation.
  */
 
-import { CsvDataset, ArgsType, DataAccessType, CsvDataLoader, CsvSample } from '@pipcook/pipcook-core';
+import {
+  CsvDataset,
+  ArgsType,
+  DataAccessType,
+  CsvDataLoader,
+  CsvSample
+} from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -16,7 +22,7 @@ class DataLoader implements CsvDataLoader {
     const records = parse(fs.readFileSync(csvPath), {
       columns: true
     });
-    this.records = records.map((record: any) => {  
+    this.records = records.map((record: any) => {
       const label = record[labelColumn];
       delete record[labelColumn];
       return {
@@ -40,7 +46,9 @@ class DataLoader implements CsvDataLoader {
  * @param data Pipcook origin sample data
  * @param args oneHotTransfer: if current plugin will transfer label data to one-hot (only used when it's not one hot data.)
  */
-const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset> => {
+const csvDataAccess: DataAccessType = async (
+  args: ArgsType
+): Promise<CsvDataset> => {
   const {
     dataDir,
     labelColumn
@@ -76,12 +84,12 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
 
 
   if (loader) {
-    const data = await loader.getItem(0);
+    const loaderData = await loader.getItem(0);
     names.push(
-      ...Object.keys(data.data)
+      ...Object.keys(loaderData.data)
     );
   }
-  
+
   const result: CsvDataset = {
     ...data,
     metadata: {

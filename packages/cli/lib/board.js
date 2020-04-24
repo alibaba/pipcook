@@ -13,11 +13,10 @@ module.exports = () => {
       return;
     }
 
-    childProcess.execSync(`cd .server && npm run dev`, {
+    childProcess.execSync('cd .server && npm run dev', {
       cwd: process.cwd(),
       stdio: 'inherit'
     });
-  
   } catch (e) {
     console.error(chalk.red(e));
   }

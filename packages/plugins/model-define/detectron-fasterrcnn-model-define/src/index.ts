@@ -1,10 +1,20 @@
-import { ModelDefineType, UniModel, ModelDefineArgsType, getModelDir, getMetadata, CocoDataset } from '@pipcook/pipcook-core';
+import {
+  ModelDefineType,
+  UniModel,
+  ModelDefineArgsType,
+  getModelDir,
+  getMetadata,
+  CocoDataset
+} from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 
 const boa = require('@pipcook/boa');
 
-const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: ModelDefineArgsType): Promise<UniModel> => {
+const detectronModelDefine: ModelDefineType = async (
+  data: CocoDataset,
+  args: ModelDefineArgsType
+): Promise<UniModel> => {
   let {
     modelId = '',
     baseLearningRate = 0.00025,
@@ -17,7 +27,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   let cfg: any;
 
   if (modelId) {
-    const labelMap = getMetadata(modelId).label.labelMap;
+    const { labelMap } = getMetadata(modelId).label;
     numClasses = Object.keys(labelMap).length;
   } else if (modelPath) {
     assert.ok(!isNaN(numClasses), 'please give out the number of classes');
@@ -30,7 +40,6 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   const torch = boa.import('torch');
   const { DefaultPredictor } = boa.import('detectron2.engine.defaults');
   const cv2 = boa.import('cv2');
-  const numpy = boa.import('numpy');
 
   setup_logger();
 
@@ -43,9 +52,9 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   } else if (modelPath) {
     cfg.MODEL.WEIGHTS = modelPath;
   } else {
-    cfg.MODEL.WEIGHTS = "detectron2://ImageNetPretrained/MSRA/R-50.pkl";
+    cfg.MODEL.WEIGHTS = 'detectron2://ImageNetPretrained/MSRA/R-50.pkl';
   }
-    
+
   cfg.SOLVER.IMS_PER_BATCH = 4;
   cfg.SOLVER.BASE_LR = baseLearningRate;
   cfg.SOLVER.NUM_GPUS = numGpus;
@@ -53,23 +62,23 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   if (!torch.cuda.is_available()) {
     cfg.MODEL.DEVICE = 'cpu';
   }
-    
+
   cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128;
   cfg.MODEL.ROI_HEADS.NUM_CLASSES = numClasses;
 
   const pipcookModel: UniModel = {
     model: null,
     config: cfg,
-    predict: function (inputData: string[]) {
+    predict(inputData: string[]) {
       const predictor = DefaultPredictor(this.config);
       const images: any[] = [];
-      inputData.forEach((data: string) => {
-        const cvImg = cv2.imread(data);
+      inputData.forEach((dataItem: string) => {
+        const cvImg = cv2.imread(dataItem);
         images.push(cvImg);
       });
       const img = images[0];
       const out = predictor(img);
-      const ins = out['instances'].to(torch.device('cpu'));
+      const ins = out.instances.to(torch.device('cpu'));
       const boxes = ins.pred_boxes.tensor.numpy();
       const scores = ins.scores.numpy();
       const classes = ins.pred_classes.numpy();
@@ -81,7 +90,6 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
     }
   };
   return pipcookModel;
-
 };
 
 export default detectronModelDefine;

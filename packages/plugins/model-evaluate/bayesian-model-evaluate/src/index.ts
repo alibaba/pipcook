@@ -1,10 +1,21 @@
-import { ModelEvaluateType, UniModel, CsvDataset, EvaluateResult, CsvDataLoader, CsvMetadata, ArgsType } from '@pipcook/pipcook-core';
+import {
+  ModelEvaluateType,
+  UniModel, CsvDataset,
+  EvaluateResult,
+  CsvDataLoader,
+  CsvMetadata,
+  ArgsType
+} from '@pipcook/pipcook-core';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
+
 const sys = boa.import('sys');
 
-const createDataset = async (dataLoader: CsvDataLoader, metadata: CsvMetadata) => {
+const createDataset = async (
+  dataLoader: CsvDataLoader,
+  metadata: CsvMetadata
+) => {
   const rawData: any[] = [];
   const rawClass: any[] = [];
 
@@ -18,28 +29,33 @@ const createDataset = async (dataLoader: CsvDataLoader, metadata: CsvMetadata) =
   return { rawData, rawClass };
 };
 
-const bayesianModelEvaluate: ModelEvaluateType 
-  = async (data: CsvDataset, model: UniModel, args: ArgsType): Promise<EvaluateResult> => {
+const bayesianModelEvaluate: ModelEvaluateType = async (
+  data: CsvDataset, model: UniModel, args: ArgsType
+): Promise<EvaluateResult> => {
+  sys.path.insert(0, path.join(__dirname, 'assets'));
+  const module = boa.import('script');
+  const importlib = boa.import('importlib');
+  importlib.reload(module);
 
-    sys.path.insert(0, path.join(__dirname, 'assets'));
-    const module = boa.import('script');
-    const importlib = boa.import('importlib');
-    importlib.reload(module);
-  
-    const { modelDir } = args;
-    const { testLoader, metadata } = data;
-    const classifier = model.model;
+  const { modelDir } = args;
+  const { testLoader, metadata } = data;
+  const classifier = model.model;
 
-    const { rawData, rawClass } = await createDataset(testLoader, metadata);
-    const { TextProcessing, TextFeatures, get_all_words_list } = boa.import('script');
-    const text_list = TextProcessing(rawData, rawClass);
+  const { rawData, rawClass } = await createDataset(testLoader, metadata);
+  const {
+    TextProcessing,
+    TextFeatures, get_all_words_list
+  } = boa.import('script');
+  const text_list = TextProcessing(rawData, rawClass);
 
-    const feature_words = get_all_words_list(path.join(modelDir, 'feature_words.pkl'));
-    const feature_list = TextFeatures(text_list[1], feature_words);
-    const test_accuracy = classifier.score(feature_list, text_list[2]);
-    return {
-      accuracy: test_accuracy
-    };
+  const feature_words = get_all_words_list(
+    path.join(modelDir, 'feature_words.pkl')
+  );
+  const feature_list = TextFeatures(text_list[1], feature_words);
+  const test_accuracy = classifier.score(feature_list, text_list[2]);
+  return {
+    accuracy: test_accuracy
   };
+};
 
 export default bayesianModelEvaluate;

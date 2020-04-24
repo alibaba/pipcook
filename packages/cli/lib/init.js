@@ -7,6 +7,7 @@ const commandExistsSync = require('command-exists').sync;
 const inquirer = require('inquirer');
 
 const { dependencies, pipcookLogName, optionalNpmClients } = require('./config');
+
 const spinner = ora();
 
 /**
@@ -15,7 +16,7 @@ const spinner = ora();
 const init = async (cmdObj) => {
   let client = 'npm';
   if (cmdObj && cmdObj[0]) {
-    client = cmdObj[0];
+    [ client ] = cmdObj;
     if (!optionalNpmClients.includes(client)) {
       spinner.fail(`Invalid npm client: ${client}.`);
       return;
@@ -29,7 +30,7 @@ const init = async (cmdObj) => {
     }
 
     if (clientChoices.length === 1) {
-      client = clientChoices[0];
+      [ client ] = clientChoices;
     } else if (clientChoices.length > 1) {
       const answer = await inquirer.prompt([
         {
@@ -41,7 +42,7 @@ const init = async (cmdObj) => {
       ]);
       client = answer.client;
     } else {
-      spinner.fail(`no npm client detected`);
+      spinner.fail('no npm client detected');
       return;
     }
   }
@@ -64,13 +65,13 @@ const init = async (cmdObj) => {
     fse.ensureDirSync(path.join(dirname, pipcookLogName));
     fse.ensureDirSync(path.join(dirname, '.server'));
     fse.copySync(path.join(__dirname, '..', 'assets', 'server'), path.join(dirname, '.server'));
- 
+
     // init npm project
     childProcess.execSync(`${client} init -y`, {
       cwd: dirname
     });
 
-    spinner.start(`installing pipcook`);
+    spinner.start('installing pipcook');
 
     for (const item of dependencies) {
       childProcess.execSync(`${client} install ${item}${beta ? '@beta' : ''} --save`, {
@@ -78,14 +79,14 @@ const init = async (cmdObj) => {
         stdio: 'inherit'
       });
     }
-    spinner.succeed(`install pipcook core successfully`);
+    spinner.succeed('install pipcook core successfully');
 
-    spinner.start(`installing pipcook board`);
+    spinner.start('installing pipcook board');
     childProcess.execSync(`${client} install`, {
       cwd: path.join(dirname, '.server'),
       stdio: 'inherit'
     });
-    spinner.succeed(`install pipcook board successfully`);
+    spinner.succeed('install pipcook board successfully');
   } catch (error) {
     spinner.fail(`install ${error} error`);
     childProcess.execSync(`rm -r ${path.join(dirname, '*')}`);

@@ -8,7 +8,7 @@ export interface DeploymentResult {
   deployService: string;
   serviceapi: string;
   extraData: any;
-} 
+}
 
 export interface PipObject {
   [key: string]: any;

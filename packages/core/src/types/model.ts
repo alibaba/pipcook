@@ -5,4 +5,4 @@ export interface UniModel {
   config?: any;
 }
 
-export type TfJsLayersModel = UniModel
+export type TfJsLayersModel = UniModel;

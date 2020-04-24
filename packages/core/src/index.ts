@@ -1,8 +1,11 @@
 // types
+// expose constants
+import { PLUGINS } from './constants/plugins';
+
 export {
-  UniDataset, 
-  DataLoader, 
-  Metadata, 
+  UniDataset,
+  DataLoader,
+  Metadata,
   DataDescriptor
 } from './types/data/common';
 
@@ -55,9 +58,6 @@ export {
   convertPascal2CocoFileOutput,
   compressTarFile
 } from './utils/public';
-
-// expose constants
-import { PLUGINS } from './constants/plugins';
 export const constants = {
   PLUGINS
 };

@@ -1,4 +1,10 @@
-import { ImageDataset, ModelTrainType, TfJsLayersModel, ModelTrainArgsType, ImageDataLoader } from '@pipcook/pipcook-core';
+import {
+  ImageDataset,
+  ModelTrainType,
+  TfJsLayersModel,
+  ModelTrainArgsType,
+  ImageDataLoader
+} from '@pipcook/pipcook-core';
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
@@ -32,7 +38,11 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
  * @param batchSize : need to specify batch size
  * @param optimizer : need to specify optimizer
  */
-const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersModel, args: ModelTrainArgsType): Promise<TfJsLayersModel> => {
+const ModelTrain: ModelTrainType = async (
+  data: ImageDataset,
+  model: TfJsLayersModel,
+  args: ModelTrainArgsType
+): Promise<TfJsLayersModel> => {
   try {
     const {
       epochs = 10,
@@ -45,8 +55,8 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
     const count = await trainLoader.len();
 
     const trainConfig: any = {
-      epochs: epochs,
-      batchesPerEpoch: parseInt(String(count / batchSize))
+      epochs,
+      batchesPerEpoch: parseInt(String(count / batchSize), 10)
     };
 
     console.log('create train dataset');
@@ -55,19 +65,24 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
     let validationDataSet: tf.data.Dataset<any>;
     if (validationLoader) {
       console.log('create validation dataset');
-      validationDataSet = await createDataset(validationLoader, metadata.labelMap);
+      validationDataSet = await createDataset(
+        validationLoader,
+        metadata.labelMap
+      );
       const valCount = await validationLoader.len();
       const validateDs = validationDataSet.batch(batchSize);
       trainConfig.validationData = validateDs;
-      trainConfig.validationBatches = parseInt(String(valCount / batchSize));
+      trainConfig.validationBatches = parseInt(
+        String(valCount / batchSize), 10
+      );
     }
 
     const trainModel = model.model;
-    
+
     await trainModel.fitDataset(ds, trainConfig);
 
     await saveModel(async (modelPath: string) => {
-      await trainModel.save('file://' + modelPath);
+      await trainModel.save(`file://${modelPath}`);
     });
 
     const result: TfJsLayersModel = {

@@ -1,7 +1,9 @@
 /**
  * @file For plugin to collect test classification data
  */
-import { DataCollectType, ArgsType, download, unZipData } from '@pipcook/pipcook-core';
+import {
+  DataCollectType, ArgsType, download, unZipData
+} from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
@@ -39,7 +41,7 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
   if (/^file:\/\/.*/.test(url)) {
     url = url.substring(7);
   } else {
-    const targetPath = path.join(dataDir, uuidv1() + '.zip');
+    const targetPath = path.join(dataDir, `${uuidv1()}.zip`);
     console.log('downloading dataset ...');
     await download(url, targetPath);
     url = targetPath;
@@ -87,5 +89,3 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
 };
 
 export default textClassDataCollect;
-
-

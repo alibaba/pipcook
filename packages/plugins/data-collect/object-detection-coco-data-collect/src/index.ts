@@ -3,14 +3,27 @@
  * the data is conform to expectation.
  */
 
-import { ArgsType, unZipData, download, createAnnotationFromJson, DataCollectType } from '@pipcook/pipcook-core';
+import {
+  ArgsType,
+  unZipData,
+  download,
+  createAnnotationFromJson,
+  DataCollectType
+} from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
-const createAnnotation = (folder: string, fileName: string, width: number, height: number, objects: any, annotation: any) => {
+const createAnnotation = (
+  folder: string,
+  fileName: string,
+  width: number,
+  height: number,
+  objects: any,
+  annotation: any
+) => {
   const currentAnnotation: any = {
     annotation: {
       folder: [
@@ -36,14 +49,16 @@ const createAnnotation = (folder: string, fileName: string, width: number, heigh
   };
   currentAnnotation.annotation.object = objects.map((object: any) => {
     if (!object.category_name) {
-      const category = annotation.categories.find((e: any) => e.id == object.category_id).name;
+      const category = annotation.categories.find(
+        (e: any) => e.id === object.category_id
+      ).name;
       object.category_name = category;
     }
     return {
       name: [ object.category_name ],
-      pose: [ "Unspecified" ],
-      truncated: [ "0" ],
-      difficult: [ "0" ],
+      pose: [ 'Unspecified' ],
+      truncated: [ '0' ],
+      difficult: [ '0' ],
       bndbox: [
         {
           xmin: [ object.bbox[0] ],
@@ -57,7 +72,9 @@ const createAnnotation = (folder: string, fileName: string, width: number, heigh
   createAnnotationFromJson(folder, currentAnnotation);
 };
 
-const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
+const imageDetectionDataCollect: DataCollectType = async (
+  args: ArgsType
+): Promise<void> => {
   let {
     url = '',
     dataDir
@@ -74,7 +91,7 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
   if (/^file:\/\/.*/.test(url)) {
     url = url.substring(7);
   } else {
-    const targetPath = path.join(dataDir, uuidv1() + '.zip');
+    const targetPath = path.join(dataDir, `${uuidv1()}.zip`);
     console.log('downloading dataset ...');
     await download(url, targetPath);
     url = targetPath;
@@ -92,10 +109,19 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
     const annotation = fs.readJSONSync(annotationPath);
     annotation.images.forEach((image: any) => {
       if (fs.existsSync(path.join(imageDir, trainType, image.file_name))) {
-        const objects = annotation.annotations.filter((e: any) => e.image_id == image.id);
+        const objects = annotation.annotations.filter(
+          (e: any) => e.image_id === image.id
+        );
         if (objects.length > 0) {
-          fs.moveSync(path.join(imageDir, trainType, image.file_name), path.join(dataDir, trainType, image.file_name));
-          createAnnotation(path.join(dataDir, trainType), image.file_name, image.width, image.height, objects, annotation);
+          fs.moveSync(
+            path.join(imageDir, trainType, image.file_name),
+            path.join(dataDir, trainType, image.file_name)
+          );
+          createAnnotation(
+            path.join(dataDir, trainType),
+            image.file_name, image.width,
+            image.height, objects, annotation
+          );
         }
       }
     });

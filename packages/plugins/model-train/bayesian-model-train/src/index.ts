@@ -1,14 +1,24 @@
 /**
  * @file this is for Pipcook plugin to train Bayes Classifier.
  */
-import { ModelTrainType, UniModel, CsvDataset, ModelTrainArgsType, CsvDataLoader, CsvMetadata } from '@pipcook/pipcook-core';
+import {
+  ModelTrainType,
+  UniModel,
+  CsvDataset,
+  ModelTrainArgsType,
+  CsvDataLoader,
+  CsvMetadata
+} from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
 const boa = require('@pipcook/boa');
+
 const sys = boa.import('sys');
 
-const createDataset = async (dataLoader: CsvDataLoader, metadata: CsvMetadata) => {
+const createDataset = async (
+  dataLoader: CsvDataLoader, metadata: CsvMetadata
+) => {
   const rawData: any[] = [];
   const rawClass: any[] = [];
 
@@ -23,12 +33,14 @@ const createDataset = async (dataLoader: CsvDataLoader, metadata: CsvMetadata) =
 };
 
 /**
- * 
- * @param data Pipcook uniform data 
+ *
+ * @param data Pipcook uniform data
  * @param model Eshcer model
  */
-const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
-  const { 
+const bayesianClassifierModelTrain: ModelTrainType = async (
+  data: CsvDataset, model: UniModel, args: ModelTrainArgsType
+): Promise<UniModel> => {
+  const {
     saveModel,
     mode = 'cn'
   } = args;
@@ -39,12 +51,19 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   importlib.reload(module);
 
   const { trainLoader, metadata } = data;
-  
+
   const classifier = model.model;
-  
+
   const { rawData, rawClass } = await createDataset(trainLoader, metadata);
 
-  const { TextProcessing, MakeWordsSet, words_dict, TextFeatures, save_all_words_list, saveBayesModel } = boa.import('script');
+  const {
+    TextProcessing,
+    MakeWordsSet,
+    words_dict,
+    TextFeatures,
+    save_all_words_list,
+    saveBayesModel
+  } = boa.import('script');
   const text_list = TextProcessing(rawData, rawClass);
 
   let stoppath = '';
@@ -61,13 +80,14 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
 
   await saveModel(async (modelPath: string) => {
     await fs.copySync(stoppath, path.join(modelPath, 'stopwords.txt'));
-    save_all_words_list(feature_words, path.join(modelPath, 'feature_words.pkl'));
+    save_all_words_list(
+      feature_words,
+      path.join(modelPath, 'feature_words.pkl')
+    );
     saveBayesModel(classifier, path.join(modelPath, 'model.pkl'));
   });
 
   return model;
-
 };
 
 export default bayesianClassifierModelTrain;
-
