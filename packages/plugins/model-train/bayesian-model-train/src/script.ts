@@ -11,7 +11,7 @@ const random = boa.import('random');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
 const pickle = boa.import('pickle');
 
-const { open, set } = boa.builtins();
+const { open, set, list } = boa.builtins();
 
 function strip(str: string): string {
   return str.replace(/(^\s*)|(\s*$)/g, '');
@@ -52,7 +52,7 @@ export const TextProcessing = function(row_data: string[], row_class: string[]):
     const word_cut: string[] = jieba.cut(data, boa.kwargs({
       cut_all: false
     }));
-    data_list.push(word_cut);
+    data_list.push(list(word_cut));
     class_list.push(row_class[i]);
   });
       
