@@ -19,8 +19,12 @@ jobs:
           npm install
           npm run build
 
-      # - name: publish npm Packages
-      #     run: npm run release
+      - name: publish npm Packages
+        run: npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+
 
       - name: get current packages and versions
         id: get_version  
