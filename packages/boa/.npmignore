@@ -1,2 +1,11 @@
 .gitignore
 .CONDA_INSTALL_DIR
+.dataset
+.data
+.checkpoints
+
+**/__pycache__
+.idea/.DS_Store/**
+
+.miniconda/
+Miniconda3-*.sh
