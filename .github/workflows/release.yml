@@ -34,6 +34,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: ${{steps.get_version.outputs.*}}
+          body: ${{steps.get_version.outputs.body}}
           draft: false
           prerelease: false
