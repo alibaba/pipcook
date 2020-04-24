@@ -13,8 +13,8 @@ jobs:
           node-version: 12
       - name: npm install, build and test
         run: |
-        npm install
-        npm run build
+          npm install
+          npm run build
 
   release:
     name: Release
