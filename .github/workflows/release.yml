@@ -27,6 +27,7 @@ jobs:
 
       - name: publish npm Packages
         run: |
+          npm whoami
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" > ~/.npmrc
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'  
