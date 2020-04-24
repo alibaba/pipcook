@@ -24,8 +24,8 @@
     "test:pipeline": "sh ./run_pipeline.sh",
     "typedoc": "typedoc",
     "clean": "lerna run clean",
-    "release": "lerna publish from-package -y --no-verify-access --no-push --force-publish",
-    "version": "echo \"::set-output name=lerna-package::$(lerna list)\n\""
+    "release": "lerna publish -y --no-verify-access --no-push --force-publish",
+    "version": "echo \"::set-output name=lerna-package::$(lerna list -l)\n\""
   },
   "dependencies": {
     "@changesets/cli": "^2.6.5",
