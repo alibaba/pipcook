@@ -31,7 +31,6 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > ~/.npmrc
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
-          npm whoami
           sh release.sh ${{steps.get_tag.outputs.tag}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,6 +41,7 @@ jobs:
         run: |
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
+          git add .
           git commit -am "release pipcook"
           git push
 
