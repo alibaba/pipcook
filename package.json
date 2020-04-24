@@ -24,11 +24,9 @@
     "test:pipeline": "sh ./run_pipeline.sh",
     "typedoc": "typedoc",
     "clean": "lerna run clean",
-    "version": "echo \"::set-output name=lerna-package::$(lerna list -l)\n\"",
     "release": "lerna publish from-package --yes --no-verify-access"
   },
   "dependencies": {
-    "@changesets/cli": "^2.6.5",
     "@types/jasmine": "^3.5.10",
     "jasmine": "^3.5.0"
   }
