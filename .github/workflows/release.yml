@@ -2,7 +2,7 @@ name: Publish Packages
 on:
   push:
     branches:
-      - v32-test
+      - v32-patch
 jobs:
   release:
     name: Release
