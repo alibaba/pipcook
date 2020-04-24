@@ -8,10 +8,10 @@ const boa = require('@pipcook/boa');
 
 const jieba = boa.import('jieba');
 const random = boa.import('random');
-const pickle = boa.import('pickle');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
+const pickle = boa.import('pickle');
 
-const { open, list, set } = boa.builtins();
+const { open, set, list } = boa.builtins();
 
 function strip(str: string): string {
   return str.replace(/(^\s*)|(\s*$)/g, '');
@@ -25,12 +25,11 @@ interface AllWordsDict {
   [key: string]: [ string, number ];
 }
 
-function MakeWordsSet(words_file: string): Promise<Set<string>> {
+export const MakeWordsSet = function(words_file: string): Promise<Set<string>> {
   const words_set = new Set<string>();
   const rl = readline.createInterface({
     input: fs.createReadStream(words_file)
   });
-
   return new Promise((resolve) => {
     rl.on('line', (line: string) => {
       const word = strip(line);
@@ -43,7 +42,7 @@ function MakeWordsSet(words_file: string): Promise<Set<string>> {
       resolve(words_set);
     });
   });
-}
+};
 
 export const TextProcessing = function(row_data: string[], row_class: string[]): any[][] {
   const data_list: string[][] = [];
@@ -61,6 +60,7 @@ export const TextProcessing = function(row_data: string[], row_class: string[]):
   const data_class_list = zip(data_list, class_list);
   random.shuffle(data_class_list);
   const [ train_data_list, train_class_list ] = unzip(data_class_list);
+
   const all_words_dict: AllWordsDict = {};
   for (const word_list of train_data_list) {
     for (const word of word_list) {
@@ -78,7 +78,7 @@ export const TextProcessing = function(row_data: string[], row_class: string[]):
   return [ all_words_list, train_data_list, train_class_list ];
 };
 
-function words_dict(all_words_list: string[], stopwords_set = new Set<string>()): string[] {
+export const words_dict = function(all_words_list: string[], stopwords_set = new Set<string>()): string[] {
   const feature_words: string[] = [];
   for (let word of all_words_list) {
     if (!isdigit(word) &&
@@ -90,7 +90,7 @@ function words_dict(all_words_list: string[], stopwords_set = new Set<string>())
   }
 
   return feature_words;
-}
+};
 
 function text_features(text: string, feature_words: string[]) {
   const text_words = set(text);
@@ -120,10 +120,6 @@ export const processPredictData = function (data: any, all_words_list_path: stri
 
 export const save_all_words_list = function(feature_words: any, filepath: string) {
   pickle.dump(feature_words, open(filepath, 'wb'));
-};
-
-export const get_all_words_list = function(filepath: string) {
-  return pickle.load(open(filepath, 'rb'));
 };
 
 export const getBayesModel = function() {

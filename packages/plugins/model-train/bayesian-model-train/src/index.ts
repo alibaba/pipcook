@@ -4,6 +4,7 @@
 import { ModelTrainType, UniModel, CsvDataset, ModelTrainArgsType, CsvDataLoader, CsvMetadata } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import { TextProcessing, MakeWordsSet, words_dict, TextFeatures, save_all_words_list, saveBayesModel } from './script';
 
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
@@ -34,9 +35,6 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   } = args;
 
   sys.path.insert(0, path.join(__dirname, 'assets'));
-  const module = boa.import('script');
-  const importlib = boa.import('importlib');
-  importlib.reload(module);
 
   const { trainLoader, metadata } = data;
   
@@ -44,7 +42,6 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   
   const { rawData, rawClass } = await createDataset(trainLoader, metadata);
 
-  const { TextProcessing, MakeWordsSet, words_dict, TextFeatures, save_all_words_list, saveBayesModel } = boa.import('script');
   const text_list = TextProcessing(rawData, rawClass);
 
   let stoppath = '';
@@ -54,7 +51,7 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
     stoppath = path.join(__dirname, 'assets', 'stopwords_cn.txt');
   }
 
-  const stopwords_set = MakeWordsSet(stoppath);
+  const stopwords_set = await MakeWordsSet(stoppath);
   const feature_words = words_dict(text_list[0], stopwords_set);
   const feature_list = TextFeatures(text_list[1], feature_words);
   classifier.fit(feature_list, text_list[2]);
