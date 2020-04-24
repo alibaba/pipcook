@@ -11,7 +11,7 @@ const random = boa.import('random');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
 const pickle = boa.import('pickle');
 
-const { open } = boa.builtins();
+const { open, set } = boa.builtins();
 
 function strip(str: string): string {
   return str.replace(/(^\s*)|(\s*$)/g, '');
@@ -94,17 +94,8 @@ export const words_dict = function(all_words_list: string[], stopwords_set = new
 
 export const TextFeatures = function(train_data_list: string[], feature_words: string[]) {
   function text_features(text: string, feature_words: string[]) {
-    const text_words = new Set(text);
-    const features = [];
-    for (const word of feature_words) {
-      if (text_words.has(word)) {
-        features.push(1);
-      } else {
-        features.push(0);
-      }
-    }
-
-    return features;
+    const text_words = set(text);
+    return boa.eval(`[1 if word in ${text_words} else 0 for word in ${feature_words}]`);
   }
 
   return train_data_list.map((text: string) => {
