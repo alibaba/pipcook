@@ -54,6 +54,13 @@ module.exports = {
     'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
     'no-restricted-syntax': 'off',
     'import/no-cycle': 'off',
-    '@typescript-eslint/indent': 'off'
+    '@typescript-eslint/indent': 'off',
+    'global-require': 'off',
+    'import/no-dynamic-require': 'off',
+    'max-len': ["error", { 
+      "ignoreComments": true ,
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true
+    }]
   }
 };
