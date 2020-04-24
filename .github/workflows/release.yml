@@ -27,10 +27,10 @@ jobs:
 
       - name: publish npm Packages
         run: |
-          npm whoami
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" > ~/.npmrc
           git config --global user.name 'pipcook'
-          git config --global user.email 'queyue.crk@alibaba-inc.com'  
+          git config --global user.email 'queyue.crk@alibaba-inc.com'
+          npm whoami
           sh release.sh ${{steps.get_tag.outputs.tag}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
