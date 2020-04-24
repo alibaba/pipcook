@@ -8,7 +8,7 @@ const boa = require('@pipcook/boa');
 const jieba = boa.import('jieba');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
 const pickle = boa.import('pickle');
-const { open } = boa.builtins();
+const { open, list } = boa.builtins();
 
 function strip(str: string): string {
   return str.replace(/(^\s*)|(\s*$)/g, '');
@@ -74,7 +74,7 @@ export const processPredictData = async function (data: any, all_words_list_path
 
   const stopwords_set = await MakeWordsSet(stopwords_file);
   const feature_words = words_dict(all_words_list, stopwords_set);
-  return [ text_features(word_cut, feature_words) ];
+  return [ text_features(list(word_cut), feature_words) ];
 };
 
 export const getBayesModel = function () {

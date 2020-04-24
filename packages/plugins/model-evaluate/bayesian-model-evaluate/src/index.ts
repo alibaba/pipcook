@@ -23,10 +23,7 @@ const bayesianModelEvaluate: ModelEvaluateType
   = async (data: CsvDataset, model: UniModel, args: ArgsType): Promise<EvaluateResult> => {
 
     sys.path.insert(0, path.join(__dirname, 'assets'));
-    const module = boa.import('script');
-    const importlib = boa.import('importlib');
-    importlib.reload(module);
-  
+
     const { modelDir } = args;
     const { testLoader, metadata } = data;
     const classifier = model.model;
