@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-pascalvoc-data-access",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.14",
+    "@pipcook/pipcook-core": "^0.5.15",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0"
   },

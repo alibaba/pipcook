@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-image-classification-tfjs-model-train",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.14",
+    "@pipcook/pipcook-core": "^0.5.15",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "jimp": "^0.10.0"
   },

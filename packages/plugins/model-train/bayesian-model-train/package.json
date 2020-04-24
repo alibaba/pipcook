@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-bayesian-model-train",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.5.8",
-    "@pipcook/pipcook-core": "^0.5.14",
+    "@pipcook/boa": "^0.5.9",
+    "@pipcook/pipcook-core": "^0.5.15",
     "@types/fs-extra": "^8.1.0",
     "fs-extra": "^9.0.0"
   },
