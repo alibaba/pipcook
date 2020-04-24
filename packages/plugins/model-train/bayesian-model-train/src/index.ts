@@ -35,9 +35,6 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   } = args;
 
   sys.path.insert(0, path.join(__dirname, 'assets'));
-  const module = boa.import('script');
-  const importlib = boa.import('importlib');
-  importlib.reload(module);
 
   const { trainLoader, metadata } = data;
   
