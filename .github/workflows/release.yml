@@ -2,7 +2,7 @@ name: Publish Packages
 on:
   push:
     branches:
-      - test_release1
+      - v32-test
 jobs:
   release:
     name: Release
@@ -23,7 +23,7 @@ jobs:
         
       - name: get current tag
         id: get_tag
-        run: echo ::set-output name=tag::${GITHUB_REF:10}
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/v*-}
 
       - name: publish npm Packages
         run: sh release.sh ${{steps.get_tag.outputs.tag}}
