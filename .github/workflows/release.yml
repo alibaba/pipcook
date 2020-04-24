@@ -28,12 +28,12 @@ jobs:
 
       - name: create release
         id: create_release
-          uses: actions/create-release@latest
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: Release ${{ github.ref }}
-            body: ${{steps.get_version.outputs.*}}
-            draft: false
-            prerelease: false
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{steps.get_version.outputs.*}}
+          draft: false
+          prerelease: false
