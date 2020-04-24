@@ -7,6 +7,7 @@ import {
   ArgsType
 } from '@pipcook/pipcook-core';
 import * as path from 'path';
+import { TextProcessing, TextFeatures, get_all_words_list } from './script';
 
 const boa = require('@pipcook/boa');
 
@@ -30,7 +31,9 @@ const createDataset = async (
 };
 
 const bayesianModelEvaluate: ModelEvaluateType = async (
-  data: CsvDataset, model: UniModel, args: ArgsType
+  data: CsvDataset,
+  model: UniModel,
+  args: ArgsType
 ): Promise<EvaluateResult> => {
   sys.path.insert(0, path.join(__dirname, 'assets'));
   const module = boa.import('script');
@@ -42,15 +45,9 @@ const bayesianModelEvaluate: ModelEvaluateType = async (
   const classifier = model.model;
 
   const { rawData, rawClass } = await createDataset(testLoader, metadata);
-  const {
-    TextProcessing,
-    TextFeatures, get_all_words_list
-  } = boa.import('script');
   const text_list = TextProcessing(rawData, rawClass);
 
-  const feature_words = get_all_words_list(
-    path.join(modelDir, 'feature_words.pkl')
-  );
+  const feature_words = get_all_words_list(path.join(modelDir, 'feature_words.pkl'));
   const feature_list = TextFeatures(text_list[1], feature_words);
   const test_accuracy = classifier.score(feature_list, text_list[2]);
   return {

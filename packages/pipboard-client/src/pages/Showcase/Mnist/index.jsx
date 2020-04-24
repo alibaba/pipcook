@@ -12,6 +12,8 @@ export default class Mnist extends Component {
     image: '',
   }
 
+  canvasObject = null
+
   onChange = (value) => {
     this.setState({
       image: value.canvas.drawing.toDataURL(),
@@ -36,11 +38,17 @@ export default class Mnist extends Component {
    
   }
 
+  clear = () => {
+    this.canvasObject.clear();
+  }
+
   render() {
     return (
       <div className="mnist">
         <div className="toast">you can draw a digit here and predict it</div>
+        <Button size="small" className="clear-button" onClick={this.clear}>Clear Canvas</Button>
         <CanvasDraw 
+          ref={ref => this.canvasObject = ref}
           onChange={this.onChange}
           canvasWidth={600}
           canvasHeight={600}

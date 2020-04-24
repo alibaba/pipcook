@@ -4,7 +4,7 @@ Pipcook uses plugins to implement tasks in a specific machine learning cycle, wh
 
 ## Plugin type
 
-We have defined seven types of machine learning lifecycle plugins:
+We have defined six types of machine learning lifecycle plugins:
 
 | plugin name | description |
 |-------------|-------------|
@@ -14,7 +14,6 @@ We have defined seven types of machine learning lifecycle plugins:
 | [Model Define](./plugin/3-model-define.md) | this plugin loads the model into the pipeline and eliminates the differences between models such as `keras` and `tensorflow`. |
 | [Model Train](./plugin/4-model-train.md) | train models |
 | [Model Evaluate](./plugin/5-model-evaluate.md) | evaluate a given model |
-| [Model Deploy](./plugin/6-model-deploy.md) | deploy a given model |
 
 ## Plugin features
 
@@ -28,7 +27,7 @@ We have defined interfaces and specifications for each type of plugins. Develope
 
 ### Plugin Parsing Component
 
-For each plugin, we need to pass it into the corresponding type of parsers for parsing. For the above plugins, there are 7 types of parsers:
+For each plugin, we need to pass it into the corresponding type of parsers for parsing. For the above plugins, there are 6 types of parsers:
 
 ```ts
 function DataCollect(plugin: PipcookPlugin, params: object);
@@ -37,7 +36,6 @@ function DataProcess(plugin: PipcookPlugin, params: object);
 function ModelDefine(plugin: PipcookPlugin, params: object);
 function ModelTrain(plugin: PipcookPlugin, params: object);
 function ModelEvaluate(plugin: PipcookPlugin, params: object);
-function ModelDeploy(plugin: PipcookPlugin, params: object);
 ```
 
 ### Using Plugin

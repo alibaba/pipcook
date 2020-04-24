@@ -4,18 +4,13 @@
  */
 
 import * as path from 'path';
-import { from } from 'rxjs';
 import {
-  PipcookLifeCycleComponent,
-  PipcookComponentResult
-} from '../types/component';
+  from, range, forkJoin, Subscribable
+} from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+import { PipcookLifeCycleComponent, PipcookComponentResult } from '../types/component';
 import {
-  DATA,
-  MODEL,
-  EVALUATE,
-  DEPLOYMENT,
-  MODELTOSAVE,
-  ORIGINDATA
+  DATA, MODEL, EVALUATE, MODELTOSAVE
 } from '../constants/other';
 import {
   PipcookPlugin,
@@ -25,8 +20,7 @@ import {
   ModelLoadType,
   ModelDefineType,
   ModelTrainType,
-  ModelEvaluateType,
-  ModelDeployType
+  ModelEvaluateType
 } from '../types/plugins';
 import {
   DATACOLLECT,
@@ -35,9 +29,9 @@ import {
   MODELLOAD,
   MODELDEFINE,
   MODELTRAIN,
-  MODELEVALUATE,
-  MODELDEPLOY
+  MODELEVALUATE
 } from '../constants/plugins';
+import { UniDataset } from '../types/data/common';
 
 /**
  * The is the factory function to produce Pipcook Component.
@@ -74,7 +68,6 @@ export const DataCollect: PipcookLifeCycleComponent = (
     model,
     insertParams
   ) => from(plugin({ ...params, ...insertParams }));
-  result.returnType = ORIGINDATA;
   return result;
 };
 
@@ -105,11 +98,29 @@ export const DataProcess: PipcookLifeCycleComponent = (
   plugin: DataProcessType, params?: any
 ) => {
   const result = produceResultFactory(DATAPROCESS, plugin, params);
-  result.observer = (
-    data: any,
-    model, insertParams
-  ) => from(plugin(data, { ...params, ...insertParams }));
-  result.returnType = DATA;
+  result.observer = (data: UniDataset, model, insertParams) => {
+    if (!data.metadata) {
+      data.metadata = {};
+    }
+    const observerables: Subscribable<any>[] = [];
+    [ data.trainLoader, data.validationLoader, data.testLoader ]
+      .forEach((loader) => {
+        if (loader) {
+          observerables.push(
+            from(loader.len()).pipe(
+              flatMap((x) => range(0, x)),
+              flatMap((x) => loader.getItem(x)),
+              flatMap((x) => plugin(
+                x,
+                data.metadata,
+                { ...params, ...insertParams }
+              ))
+            )
+          );
+        }
+      });
+    return from(forkJoin(observerables).toPromise());
+  };
   return result;
 };
 
@@ -190,23 +201,5 @@ export const ModelEvaluate: PipcookLifeCycleComponent = (
     insertParams
   ) => from(plugin(data, model, { ...params, ...insertParams }));
   result.returnType = EVALUATE;
-  return result;
-};
-
-/**
- * Model-Deploy Plugin Component
- * @param plugin
- * @param params
- */
-export const ModelDeploy: PipcookLifeCycleComponent = (
-  plugin: ModelDeployType,
-  params?: any
-) => {
-  const result = produceResultFactory(MODELDEPLOY, plugin, params);
-  result.observer = (
-    data: any,
-    model, insertParams
-  ) => from(plugin(data, model, { ...params, ...insertParams }));
-  result.returnType = DEPLOYMENT;
   return result;
 };

@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-core",
-  "version": "0.5.9",
+  "version": "0.5.11",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -11,7 +11,7 @@
     "test": "ts-node ../../run_tests.ts",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json"
+    "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
   },
   "author": "",
   "license": "ISC",

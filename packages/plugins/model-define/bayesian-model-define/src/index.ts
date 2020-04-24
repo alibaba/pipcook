@@ -3,14 +3,11 @@
  */
 
 import {
-  ModelDefineType,
-  UniModel,
-  ModelDefineArgsType,
-  getModelDir,
-  CsvDataset
+  ModelDefineType, UniModel, ModelDefineArgsType, CsvDataset, CsvSample
 } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as path from 'path';
+import { processPredictData, getBayesModel, loadModel } from './script';
 
 const boa = require('@pipcook/boa');
 
@@ -35,38 +32,25 @@ const bayesianClassifierModelDefine: ModelDefineType = async (
   args: ModelDefineArgsType
 ): Promise<UniModel> => {
   const {
-    modelId = '',
-    modelPath = '',
-    pipelineId
+    recoverPath
   } = args;
 
   sys.path.insert(0, path.join(__dirname, 'assets'));
-
-  const { loadModel, getBayesModel, processPredictData } = boa.import('script');
   let classifier: any;
 
-  if (!modelId && !modelPath) {
+  if (!recoverPath) {
     assertionTest(data);
     classifier = getBayesModel();
-  }
-
-  if (modelId) {
-    classifier = loadModel(path.join(getModelDir(modelId), 'model.pkl'));
-  }
-
-  if (modelPath) {
-    classifier = loadModel(modelPath);
+  } else {
+    classifier = loadModel(path.join(recoverPath, 'model', 'model.pkl'));
   }
 
   const pipcookModel: UniModel = {
     model: classifier,
-    predict(texts: string[]) {
-      const prediction = texts.map((text) => {
-        const processData = processPredictData(text, path.join(getModelDir(pipelineId), 'feature_words.pkl'), path.join(getModelDir(pipelineId), 'stopwords.txt'));
-        const pred = this.model.predict(processData);
-        return pred.toString();
-      });
-      return prediction;
+    async predict(text: CsvSample) {
+      const processData = await processPredictData(text.data, path.join(recoverPath, 'model', 'feature_words.pkl'), path.join(recoverPath, 'model', 'stopwords.txt'));
+      const pred = this.model.predict(processData);
+      return pred.toString();
     }
   };
   return pipcookModel;

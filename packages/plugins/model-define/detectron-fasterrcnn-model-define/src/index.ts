@@ -1,13 +1,8 @@
 import {
-  ModelDefineType,
-  UniModel,
-  ModelDefineArgsType,
-  getModelDir,
-  getMetadata,
-  CocoDataset
+  ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset
 } from '@pipcook/pipcook-core';
 import * as path from 'path';
-import * as assert from 'assert';
+import * as fs from 'fs';
 
 const boa = require('@pipcook/boa');
 
@@ -16,21 +11,19 @@ const detectronModelDefine: ModelDefineType = async (
   args: ModelDefineArgsType
 ): Promise<UniModel> => {
   let {
-    modelId = '',
     baseLearningRate = 0.00025,
     numWorkers = 4,
     numGpus = 2,
     numClasses = 0,
-    modelPath = ''
+    recoverPath
   } = args;
 
   let cfg: any;
 
-  if (modelId) {
-    const { labelMap } = getMetadata(modelId).label;
+  if (recoverPath) {
+    const log = JSON.parse(fs.readFileSync(path.join(recoverPath, 'log.json'), 'utf8'));
+    const { labelMap } = log.metadata;
     numClasses = Object.keys(labelMap).length;
-  } else if (modelPath) {
-    assert.ok(!isNaN(numClasses), 'please give out the number of classes');
   } else {
     numClasses = Object.keys(data.metadata.labelMap).length;
   }
@@ -47,10 +40,8 @@ const detectronModelDefine: ModelDefineType = async (
   cfg.merge_from_file(path.join(__dirname, 'config', 'faster_rcnn_R_50_C4_3x.yaml'));
   cfg.DATALOADER.NUM_WORKERS = numWorkers;
 
-  if (modelId) {
-    cfg.MODEL.WEIGHTS = path.join(getModelDir(modelId), 'model_final.pth');
-  } else if (modelPath) {
-    cfg.MODEL.WEIGHTS = modelPath;
+  if (recoverPath) {
+    cfg.MODEL.WEIGHTS = path.join(recoverPath, 'model', 'model_final.pth');
   } else {
     cfg.MODEL.WEIGHTS = 'detectron2://ImageNetPretrained/MSRA/R-50.pkl';
   }
@@ -69,14 +60,9 @@ const detectronModelDefine: ModelDefineType = async (
   const pipcookModel: UniModel = {
     model: null,
     config: cfg,
-    predict(inputData: string[]) {
+    predict(inputData: ImageSample) {
       const predictor = DefaultPredictor(this.config);
-      const images: any[] = [];
-      inputData.forEach((dataItem: string) => {
-        const cvImg = cv2.imread(dataItem);
-        images.push(cvImg);
-      });
-      const img = images[0];
+      const img = cv2.imread(inputData.data);
       const out = predictor(img);
       const ins = out.instances.to(torch.device('cpu'));
       const boxes = ins.pred_boxes.tensor.numpy();
