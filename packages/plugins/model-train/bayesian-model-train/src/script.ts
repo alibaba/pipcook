@@ -92,12 +92,12 @@ export const words_dict = function(all_words_list: string[], stopwords_set = new
   return feature_words;
 };
 
-export const TextFeatures = function(train_data_list: string[], feature_words: string[]) {
-  function text_features(text: string, feature_words: string[]) {
-    const text_words = set(text);
-    return boa.eval(`[1 if word in ${text_words} else 0 for word in ${feature_words}]`);
-  }
+function text_features(text: string, feature_words: string[]) {
+  const text_words = set(text);
+  return boa.eval`[1 if word in ${text_words} else 0 for word in ${feature_words}]`;
+}
 
+export const TextFeatures = function(train_data_list: string[], feature_words: string[]) {
   return train_data_list.map((text: string) => {
     return text_features(text, feature_words);
   });
@@ -110,20 +110,6 @@ export const processPredictData = function (data: any, all_words_list_path: stri
   }));
 
   const stopwords_file = stopwords_path;
-  const text_features = function (text: string, feature_words: string[]): number[] {
-    const text_words = new Set(text);
-    const features = [];
-    for (let word of feature_words) {
-      if (text_words.has(word)) {
-        features.push(1);
-      } else {
-        features.push(0);
-      }
-    }
-
-    return features;
-  };
-
   return MakeWordsSet(stopwords_file).then((stopwords_set) => {
     const feature_words = words_dict(all_words_list, stopwords_set);
     return word_cut.map((text: string) => {
