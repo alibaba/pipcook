@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-csv-data-collect",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.15",
+    "@pipcook/pipcook-core": "^0.5.16",
     "@types/fs-extra": "^8.1.0",
     "@types/uuid": "^7.0.2",
     "csv-parse": "^4.8.8",

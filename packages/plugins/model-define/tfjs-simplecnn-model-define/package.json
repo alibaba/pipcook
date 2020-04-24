@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-tfjs-simplecnn-model-define",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.15",
+    "@pipcook/pipcook-core": "^0.5.16",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "jimp": "^0.10.0"
   },
