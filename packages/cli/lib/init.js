@@ -12,12 +12,17 @@ const spinner = ora();
 /**
  * install all dependencies of pipcook into working dir
  */
-const init = async (cmdObj) => {
-  let client = 'npm';
-  if (cmdObj && cmdObj[0]) {
-    client = cmdObj[0];
-    if (!optionalNpmClients.includes(client)) {
-      spinner.fail(`Invalid npm client: ${client}.`);
+const init = async ({ client, beta, tuna }) => {
+  let npmClient = 'npm';
+  const npmInstallEnvs = Object.assign({}, process.env);
+  if (tuna) {
+    npmInstallEnvs.BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';
+    npmInstallEnvs.BOA_CONDA_MIRROR = 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive';
+  }
+  if (client) {
+    npmClient = client;
+    if (!optionalNpmClients.includes(npmClient)) {
+      spinner.fail(`Invalid npm client: ${npmClient}.`);
       return;
     }
   } else {
@@ -29,7 +34,7 @@ const init = async (cmdObj) => {
     }
 
     if (clientChoices.length === 1) {
-      client = clientChoices[0];
+      npmClient = clientChoices[0];
     } else if (clientChoices.length > 1) {
       const answer = await inquirer.prompt([
         {
@@ -39,25 +44,21 @@ const init = async (cmdObj) => {
           choices: clientChoices
         }
       ]);
-      client = answer.client;
+      npmClient = answer.client;
     } else {
       spinner.fail(`no npm client detected`);
       return;
     }
   }
 
-  const beta = cmdObj && cmdObj[0] === 'true';
-
   let dirname;
   try {
     dirname = process.cwd();
-
     const existingContents = await glob(path.join(dirname, '*'));
     if (existingContents.length > 0) {
       spinner.fail('Current working directory is not empty');
       return;
     }
-
     fse.ensureDirSync(path.join(dirname, 'examples'));
     // we prepared several examples. Here copy these examples to current working directory
     fse.copySync(path.join(__dirname, '..', 'assets', 'example'), path.join(dirname, 'examples'));
@@ -66,28 +67,29 @@ const init = async (cmdObj) => {
     fse.copySync(path.join(__dirname, '..', 'assets', 'server'), path.join(dirname, '.server'));
  
     // init npm project
-    childProcess.execSync(`${client} init -y`, {
-      cwd: dirname
+    childProcess.execSync(`${npmClient} init -y`, {
+      cwd: dirname,
+      stdio: 'inherit'
     });
-
     spinner.start(`installing pipcook`);
 
     for (const item of dependencies) {
-      childProcess.execSync(`${client} install ${item}${beta ? '@beta' : ''} --save`, {
+      childProcess.execSync(`${npmClient} install ${item}${beta ? '@beta' : ''} --save`, {
         cwd: dirname,
-        stdio: 'inherit'
+        stdio: 'inherit',
+        env: npmInstallEnvs
       });
     }
     spinner.succeed(`install pipcook core successfully`);
-
     spinner.start(`installing pipcook board`);
-    childProcess.execSync(`${client} install`, {
+    childProcess.execSync(`${npmClient} install`, {
       cwd: path.join(dirname, '.server'),
-      stdio: 'inherit'
+      stdio: 'inherit',
+      env: npmInstallEnvs
     });
     spinner.succeed(`install pipcook board successfully`);
-  } catch (error) {
-    spinner.fail(`install ${error} error`);
+  } catch (err) {
+    spinner.fail(`failed to initialize the project: ${err && err.stack}`);
     childProcess.execSync(`rm -r ${path.join(dirname, '*')}`);
     childProcess.execSync(`rm -r ${path.join(dirname, '.server')}`);
   }

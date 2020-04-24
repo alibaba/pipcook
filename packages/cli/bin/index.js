@@ -29,12 +29,11 @@ program.version(pkg.version, '-v, --version').usage('<command> [options]');
 // init the pipcook project workspace
 program
   .command('init')
-  .option('-c, --client', 'npm client')
+  .option('-c, --client <string>', 'specify your npm client')
   .option('--beta', 'pull beta version')
+  .option('--tuna', 'use tuna mirror to download miniconda at China')
   .description('Init the Pipcook project')
-  .action((dir, cmdObj) => {
-    init(cmdObj);
-  });
+  .action(init);
 
 // start the pipeline. Actually same as node xxx at current stage
 program
