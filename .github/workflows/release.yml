@@ -11,7 +11,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: |
+      - name: npm install, build and test
+        run: |
         npm install
         npm run build
 
