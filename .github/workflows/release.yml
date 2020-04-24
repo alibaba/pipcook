@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -25,6 +25,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
+      - name: Commit release
+        run: |
+          git config --global user.name 'pipcook'
+          git config --global user.email 'queyue.crk@alibaba-inc.com'
+          git commit -am "release pipcook"
+          git push
 
       - name: get current packages and versions
         id: get_version  
