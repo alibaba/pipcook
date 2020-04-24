@@ -10,17 +10,23 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 12
+
       - name: Install Dependencies
         run: |
           npm install
           npm run build
+        
+      - name: get current tag
+        id: get_tag
+        run: echo ::set-output name=tag::${GITHUB_REF:10}
 
       - name: publish npm Packages
-        run: npm run release
+        run: sh release.sh ${{steps.get_tag.outputs.tag}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
