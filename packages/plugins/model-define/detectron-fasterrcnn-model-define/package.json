@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-detectron-fasterrcnn-model-define",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.5.7",
-    "@pipcook/pipcook-core": "^0.5.13"
+    "@pipcook/boa": "^0.5.8",
+    "@pipcook/pipcook-core": "^0.5.14"
   },
   "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
   "devDependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-bayesian-model-evaluate",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.5.7",
-    "@pipcook/pipcook-core": "^0.5.13",
+    "@pipcook/boa": "^0.5.8",
+    "@pipcook/pipcook-core": "^0.5.14",
     "@types/lodash": "^4.14.150",
     "lodash": "^4.17.15"
   },

@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-core",
-  "version": "0.5.13",
+  "version": "0.5.14",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",

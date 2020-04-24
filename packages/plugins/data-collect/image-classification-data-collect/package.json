@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-image-classification-data-collect",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.13",
+    "@pipcook/pipcook-core": "^0.5.14",
     "@types/fs-extra": "^8.1.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
