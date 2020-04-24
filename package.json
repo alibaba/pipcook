@@ -5,12 +5,12 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@lerna/bootstrap": "^3.18.4",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
     "docsify-cli": "^4.4.0",
     "eslint": "^6.6.0",
     "lerna": "^3.18.4",
-    "@lerna/bootstrap": "^3.18.4",
     "typedoc": "^0.15.4",
     "typedoc-plugin-lerna": "^0.1.0",
     "typescript": "^3.7.2"
@@ -24,9 +24,10 @@
     "test:pipeline": "sh ./run_pipeline.sh",
     "typedoc": "typedoc",
     "clean": "lerna run clean",
-    "release": "echo 23"
+    "release": "lerna publish from-package -y --no-verify-access"
   },
   "dependencies": {
+    "@changesets/cli": "^2.6.5",
     "@types/jasmine": "^3.5.10",
     "jasmine": "^3.5.0"
   }

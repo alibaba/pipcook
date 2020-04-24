@@ -1,31 +1,51 @@
-name: release-lerna
+name: Publish Packages
 on:
   push:
-  pull_request:
     branches:
-    - master
-
+      - master
 jobs:
-  release-lerna:
-    name: release lerna pacakages
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-
-    - name: setup nodejs
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12
-
-    - name: npm install, build
-      run: |
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: |
         npm install
         npm run build
 
-    - name: Create Release Pull Request and publish
-      uses: changesets/action@master
-      with:
-        publish: npm run release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }} 
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Install Dependencies
+        run: |
+          npm install
+          npm run build
+
+      - name: Create Release Pull Request
+        uses: changesets/action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm install
+      - run: npm run build
+      - run: npm run release
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
