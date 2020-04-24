@@ -4,18 +4,6 @@ on:
     branches:
       - test_release
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: npm install, build and test
-        run: |
-          npm install
-          npm run build
-
   release:
     name: Release
     runs-on: ubuntu-latest
@@ -31,22 +19,21 @@ jobs:
           npm install
           npm run build
 
-      - name: Create Release Pull Request
-        uses: changesets/action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: publish npm Packages
+      #     run: npm run release
 
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
-      - run: npm install
-      - run: npm run build
-      - run: npm run release
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      - name: get current packages and versions
+        id: get_version  
+        run: echo "::set-output name=lerna-package::$(npm run version)\n"
+
+      - name: create release
+        id: create_release
+          uses: actions/create-release@latest
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref }}
+            body: ${{steps.get_version.outputs.*}}
+            draft: false
+            prerelease: false
