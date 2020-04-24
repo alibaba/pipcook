@@ -112,7 +112,7 @@ export const processPredictData = function (data: any, all_words_list_path: stri
   const stopwords_file = stopwords_path;
   return MakeWordsSet(stopwords_file).then((stopwords_set) => {
     const feature_words = words_dict(all_words_list, stopwords_set);
-    return word_cut.map((text: string) => {
+    return list(word_cut).map((text: string) => {
       return text_features(text, feature_words);
     });
   });
