@@ -1,1 +1,0 @@
-npx lerna version $1 --yes --no-push --force-publish && npx lerna publish from-package --yes --no-push --no-verify-access

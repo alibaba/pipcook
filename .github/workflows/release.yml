@@ -1,8 +1,9 @@
 name: Publish Packages
 on:
   push:
-    branches:
-      - v32-patch
+    tags:
+      - 'v*'
+
 jobs:
   release:
     name: Release
@@ -15,46 +16,19 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-          scope: 
 
       - name: Install Dependencies
         run: |
           npm install
           npm run build
-        
-      - name: get current tag
-        id: get_tag
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/v*-}
 
       - name: publish npm Packages
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > ~/.npmrc
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
-          sh release.sh ${{steps.get_tag.outputs.tag}}
+          npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
           NPM_AUTH_TOKEN: ${{ secrets.npm_token }}
-
-      - name: Commit release
-        run: |
-          git config --global user.name 'pipcook'
-          git config --global user.email 'queyue.crk@alibaba-inc.com'
-          git push
-
-      - name: get current packages and versions
-        id: get_version  
-        run: echo "::set-output name=lerna-package::$(npm run version)\n"
-
-      - name: create release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: ${{steps.get_version.outputs.body}}
-          draft: false
-          prerelease: false
