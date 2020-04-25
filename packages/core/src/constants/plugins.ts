@@ -1,13 +1,13 @@
 import { PluginTypeI } from '../types/plugins';
 
-export const DATACOLLECT = 'dataCollect';
-export const DATAACCESS = 'dataAccess';
-export const DATAPROCESS = 'dataProcess';
-export const MODELLOAD = 'modelLoad';
-export const MODELDEFINE = 'modelDefine';
-export const MODELTRAIN = 'modelTrain';
-export const MODELEVALUATE = 'modelEvaluate';
-export const MODELDEPLOY = 'modelDeploy';
+export const DATACOLLECT: PluginTypeI = 'dataCollect';
+export const DATAACCESS: PluginTypeI = 'dataAccess';
+export const DATAPROCESS: PluginTypeI = 'dataProcess';
+export const MODELLOAD: PluginTypeI = 'modelLoad';
+export const MODELDEFINE: PluginTypeI = 'modelDefine';
+export const MODELTRAIN: PluginTypeI = 'modelTrain';
+export const MODELEVALUATE: PluginTypeI = 'modelEvaluate';
+export const MODELDEPLOY: PluginTypeI = 'modelDeploy';
 export const PLUGINS: PluginTypeI[] = [
   DATACOLLECT,
   DATAACCESS,
