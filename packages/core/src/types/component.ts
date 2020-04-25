@@ -44,3 +44,7 @@ export interface PipcookLifeCycleComponent {
 export interface PipcookModelDeployResult {
   execute: Function;
 }
+
+export interface PipcookLifeCycleTypes {
+  [pluginType: string]: PipcookLifeCycleComponent;
+}

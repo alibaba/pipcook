@@ -19,23 +19,11 @@ import { RunConfigI } from '../types/config';
 import { compressTarFile } from '../utils/public';
 
 import {
-  DataCollect,
-  DataAccess,
-  DataProcess,
-  ModelLoad,
-  ModelDefine,
-  ModelTrain,
-  ModelEvaluate
-} from '../components/lifecycle';
-import {
-  DATACOLLECT,
-  DATAACCESS,
   DATAPROCESS,
   MODELLOAD,
-  MODELDEFINE,
-  MODELTRAIN,
-  MODELEVALUATE
+  MODELDEFINE
 } from '../constants/plugins';
+import { LifeCycleTypes } from '../components/lifecycle';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -173,40 +161,20 @@ export class PipcookRunner {
     const config: RunConfigI = fs.readJsonSync(configPath);
     const components: PipcookComponentResult[] = [];
     PLUGINS.forEach((pluginType) => {
-      if (config.plugins[pluginType] && config.plugins[pluginType].package) {
+      if (config.plugins[pluginType] &&
+          config.plugins[pluginType].package &&
+          LifeCycleTypes[pluginType]) {
         const pluginName = config.plugins[pluginType].package;
         const params = config.plugins[pluginType].params || {};
         const version = process.env.npm_package_version;
 
-        let pluginModule, factoryMethod;
+        let pluginModule;
         try {
           pluginModule = require(pluginName).default;
         } catch (err) {
           pluginModule = require(path.join(process.cwd(), pluginName)).default;
         }
-        switch (pluginType) {
-        case DATACOLLECT:
-          factoryMethod = DataCollect;
-          break;
-        case DATAACCESS:
-          factoryMethod = DataAccess;
-          break;
-        case DATAPROCESS:
-          factoryMethod = DataProcess;
-          break;
-        case MODELLOAD:
-          factoryMethod = ModelLoad;
-          break;
-        case MODELDEFINE:
-          factoryMethod = ModelDefine;
-          break;
-        case MODELTRAIN:
-          factoryMethod = ModelTrain;
-          break;
-        case MODELEVALUATE:
-          factoryMethod = ModelEvaluate;
-          break;
-        }
+        const factoryMethod = LifeCycleTypes[pluginType];
         const component = factoryMethod(pluginModule, params);
         component.version = version;
         component.package = config.plugins[pluginType].package;
