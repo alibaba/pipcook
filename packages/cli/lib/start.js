@@ -1,11 +1,17 @@
 const fork = require('child_process').fork;
 const ora = require('ora');
 const spinner = ora();
+const fs = require('fs');
 const path = require('path');
 
 const start = async (filename) => {
   if (!filename) {
     spinner.fail('Please specify the config path');
+    return;
+  }
+
+  if (!fs.existsSync(filename)) {
+    spinner.fail(`${filename} not exists`);
     return;
   }
 
