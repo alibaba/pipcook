@@ -4,12 +4,8 @@ import * as path from 'path';
 const boa = require('@pipcook/boa');
 
 const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, model: UniModel, args: ArgsType): Promise<any> => {
-  let {
-    modelDir
-  } = args;
-
+  let { modelDir, expectResult = 0.9 } = args;
   const { register_coco_instances } = boa.import('detectron2.data.datasets');
-
   const { testLoader } = data;
   const cfg = model.config;
 
@@ -22,13 +18,12 @@ const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, mode
     cfg.DATASETS.TEST = [ "test_dataset" ];
 
     const evaluator = COCOEvaluator("test_dataset", cfg, false, boa.kwargs({ output_dir: modelDir }));
-      
     const val_loader = build_detection_test_loader(cfg, "val_dataset");
-
-    const val_result = inference_on_dataset(trainer.model, val_loader, evaluator);
+    const result = inference_on_dataset(trainer.model, val_loader, evaluator);
 
     return {
-      result: val_result
+      pass: result > expectResult,
+      result
     };
   }
 };
