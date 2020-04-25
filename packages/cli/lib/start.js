@@ -11,7 +11,7 @@ const start = async (filename) => {
   }
 
   if (!fs.existsSync(filename)) {
-    spinner.fail(`Config file: '${filename}' not exist.`);
+    spinner.fail(`${filename} not exists`);
     return;
   }
 
