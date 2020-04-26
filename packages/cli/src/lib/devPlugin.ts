@@ -11,29 +11,24 @@ const spinner = ora();
 /**
  * prepare a working dir for developer to develop plugins
  */
-export const devPlugin: CMDHandler = async (cmdObj) => {
-  const pluginType: any = cmdObj && cmdObj[0];
-  let projectName = cmdObj && cmdObj[1];
-
-  if (!pluginType) {
+export const devPlugin: CMDHandler = ({ type, name }) => {
+  if (!type) {
     console.log('Please provide a plugin type');
     return;
   }
-
-  if (!constants.PLUGINS.includes(pluginType)) {
-    console.warn(chalk.red(`Unsupported plugin type: "${pluginType}", it must be one of: \n${constants.PLUGINS.join(',\n')}`));
+  if (!constants.PLUGINS.includes(type)) {
+    console.warn(chalk.red(`Unsupported plugin type: "${type}", it must be one of: \n${constants.PLUGINS.join(',\n')}`));
     return;
   }
 
-  if (!projectName) {
-    projectName = 'template-plugin';
+  if (!name) {
+    name = 'template-plugin';
   }
-
   let dirname;
   try {
-    dirname = path.join(process.cwd(), projectName);
+    dirname = path.join(process.cwd(), name);
     if (fse.existsSync(dirname)) {
-      spinner.fail(`a directory or file called ${projectName} already exists. Please use a new working directory`);
+      spinner.fail(`a directory or file called ${name} already exists. Please use a new working directory`);
       return;
     }
     fse.ensureDirSync(path.join(dirname, 'src'));
@@ -41,7 +36,7 @@ export const devPlugin: CMDHandler = async (cmdObj) => {
       path.join(dirname, 'package.json'));
     fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'tsconfig.json'), 
       path.join(dirname, 'tsconfig.json'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'src', `${pluginType}.ts`), 
+    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'src', `${type}.ts`), 
       path.join(dirname, 'src', `index.ts`));
     console.log('success');
   } catch (e) {
