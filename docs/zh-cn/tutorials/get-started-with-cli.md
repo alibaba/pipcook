@@ -12,11 +12,9 @@ $ npm install @pipcook/pipcook-cli -g
 ## 初始化项目
 
 ```sh
-$ pipcook init [OPTIONS]
-
--c: npm 客户端，比如 tnpm cnpm 等
-例如如果您想使用 cnpm，您可以直接运行：
-pipcook init -c cnpm
+$ pipcook init
+$ pipcook init -c tnpm
+$ pipcook init --tuna # 使用清华大学开源软件镜像来下载 Python
 ```
 
 ## 可视化日志工具
@@ -30,5 +28,5 @@ $ pipcook board
 ## 启动流水线
 
 ```sh
-$ pipcook run [config-file]
+$ pipcook run [pipeline]
 ```

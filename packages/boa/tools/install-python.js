@@ -4,7 +4,11 @@ const { run, initAndGetCondaPath, PLATFORM, ARCH } = require('./utils');
 const fs = require('fs');
 const path = require('path');
 
-const CONDA_DOWNLOAD_PREFIX = 'https://repo.anaconda.com/miniconda';
+let CONDA_DOWNLOAD_PREFIX = 'https://repo.anaconda.com/miniconda';
+if (process.env.BOA_CONDA_MIRROR) {
+  CONDA_DOWNLOAD_PREFIX = process.env.BOA_CONDA_MIRROR;
+}
+
 const CONDA_LOCAL_PATH = initAndGetCondaPath();
 let condaDownloadName = 'Miniconda3-latest';
 
