@@ -40,9 +40,7 @@ program
 program
   .command('run [fileName]')
   .description('run pipeline with config file')
-  .action((fileName) => {
-    start(fileName);
-  });
+  .action(start);
 
 // print out basic logs
 program
@@ -57,20 +55,16 @@ program
 
 program
   .command('plugin-dev')
-  .option('-t, --type', 'plugin type')
-  .option('-n, --name', 'project name')
+  .option('-t, --type <type>', 'plugin type')
+  .option('-n, --name <name>', 'project name')
   .description('initialize plugin development environment')
-  .action((dir, cmdObj) => {
-    devPlugin(cmdObj);
-  });
+  .action(devPlugin);
 
 program
   .command('dataset')
-  .option('-t, --type', 'action type')
+  .option('-t, --type <type>', 'action type')
   .description('type of action you want to do on dataset')
-  .action((dir, cmdObj) => {
-    dataset(cmdObj);
-  });
+  .action(dataset);
 
 program
   .command('bip')
@@ -82,15 +76,11 @@ program
   });
 
 program
-  .command('serve [deployPath]')
-  .option('-p, --port', 'port of server')
+  .command('serve <dir>')
+  .option('-p, --port <number>', 'port of server', 7682)
   .description('serve the model to predict')
-  .action((port, cmd, deployPath) => {
-    if (!deployPath) {
-      serve(port);
-    } else {
-      serve(deployPath[0], port);
-    }
+  .action((dir, opts) => {
+    serve(dir, opts.port);
   });
 
 program.parse(process.argv);

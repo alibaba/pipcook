@@ -4,20 +4,17 @@ const ora = require('ora');
 const childProcess = require('child_process');
 
 const spinner = ora();
-function serve(deployPath, port) {
-  if (!port) {
-    port = 7682;
-  }
+function serve(dir, port = 7682) {
   let predictFunc;
   try {
-    predictFunc = require(path.join(deployPath, 'main.js'));
+    predictFunc = require(path.join(dir, 'main.js'));
   } catch (err) {
     spinner.fail(`the path specified is not a valid pipcook deploy path`);
     return;
   }
 
-  childProcess.execSync(`npm install`, {
-    cwd: deployPath,
+  childProcess.execSync('npm install', {
+    cwd: dir,
     stdio: 'inherit'
   });
 
