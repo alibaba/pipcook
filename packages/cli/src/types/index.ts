@@ -5,7 +5,8 @@ import {
 import {
   CMDHandler,
   ServeHandler,
-  PredictFunc
+  PredictFunc,
+  StartHandler
 } from './handler';
 
 import {
@@ -22,6 +23,7 @@ export {
   CMDHandler,
   ServeHandler,
   PredictFunc,
+  StartHandler,
 
   DataSetJSONImage,
   DataSetJSONAnnotation,

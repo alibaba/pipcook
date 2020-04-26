@@ -3,11 +3,11 @@ import ora from 'ora';
 import path from 'path';
 import { existsSync } from 'fs';
 
-import { CMDHandler } from '../types';
+import { StartHandler } from '../types';
 
 const spinner = ora();
 
-export const start: CMDHandler = async (filename: string) => {
+export const start: StartHandler = async (filename: string) => {
   if (!filename) {
     spinner.fail('Please specify the config path');
     return;

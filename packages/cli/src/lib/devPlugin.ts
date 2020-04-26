@@ -11,7 +11,7 @@ const spinner = ora();
 /**
  * prepare a working dir for developer to develop plugins
  */
-export const devPlugin: CMDHandler = ({ type, name }) => {
+export const devPlugin: CMDHandler = async ({ type, name }) => {
   if (!type) {
     console.log('Please provide a plugin type');
     return;

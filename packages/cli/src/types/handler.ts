@@ -1,5 +1,9 @@
+interface CMDHandlerObjectParams {
+  [key: string]: any
+}
+
 export interface CMDHandler {
-  (cmdObj: string | string[]): Promise<void>
+  (cmdObj: CMDHandlerObjectParams): Promise<void>
 }
 
 export interface ServeHandler {
@@ -8,4 +12,8 @@ export interface ServeHandler {
 
 export interface PredictFunc {
   (param: any): Promise<any>
+}
+
+export interface StartHandler {
+  (filename: string): Promise<void>
 }
