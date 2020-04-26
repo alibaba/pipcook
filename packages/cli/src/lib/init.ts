@@ -16,7 +16,7 @@ const spinner = ora();
  * install all dependencies of pipcook into working dir
  */
 export const init: CommandHandler = async ({ client, beta, tuna }) => {
-  let npmClient: string = 'npm';
+  let npmClient = 'npm';
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
     npmInstallEnvs.BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';
