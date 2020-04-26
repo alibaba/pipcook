@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env ts-node
 import semver from 'semver';
 import chalk from 'chalk';
 import program from 'commander';
@@ -13,7 +13,7 @@ import childProcess from 'child_process';
 
 const pkg = require('../package.json');
 
-function run() {
+function run(): void {
   // check node version
   if (!semver.gte(process.version, '10.0.0')) {
     console.log(

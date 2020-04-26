@@ -2,8 +2,8 @@
   "name": "@pipcook/pipcook-cli",
   "version": "0.5.29",
   "description": "",
-  "main": "bin/index",
-  "types": "bin/index",
+  "main": "dist/bin/index.js",
+  "types": "dist/bin/index.js",
   "files": [
     "dist"
   ],
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json && cp -r ./assets ./dist/ && cp ./package.json ./dist/"
+    "compile": "cp ./package.json ./dist/ && tsc -b tsconfig.json && cp -r ./assets ./dist/"
   },
   "bin": {
     "pipcook": "./bin/index.js"

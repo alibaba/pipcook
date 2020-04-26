@@ -4,14 +4,14 @@ import chalk from 'chalk';
 import path from 'path';
 import { constants } from '@pipcook/pipcook-core';
 
-import { CMDHandler } from '../types';
+import { CommandHandler } from '../types';
 
 const spinner = ora();
 
 /**
  * prepare a working dir for developer to develop plugins
  */
-export const devPlugin: CMDHandler = async ({ type, name }) => {
+export const devPlugin: CommandHandler = async ({ type, name }) => {
   if (!type) {
     console.log('Please provide a plugin type');
     return;

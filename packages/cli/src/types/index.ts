@@ -1,9 +1,9 @@
 import {
   Config
-} from "./config";
+} from './config';
 
 import {
-  CMDHandler,
+  CommandHandler,
   ServeHandler,
   PredictFunc,
   StartHandler
@@ -20,7 +20,7 @@ import {
 export {
   Config,
 
-  CMDHandler,
+  CommandHandler,
   ServeHandler,
   PredictFunc,
   StartHandler,

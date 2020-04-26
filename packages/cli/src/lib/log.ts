@@ -4,9 +4,9 @@ import path from 'path';
 import { pipcookLogName } from './config';
 import glob from 'glob-promise';
 
-import { CMDHandler } from '../types';
+import { CommandHandler } from '../types';
 
-export const log: CMDHandler = async () => {
+export const log: CommandHandler = async () => {
   const logDir = path.join(process.cwd(), pipcookLogName);
   try {
     const files = await glob(path.join(logDir, '*', 'log.json'));

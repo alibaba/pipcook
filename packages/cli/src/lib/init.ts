@@ -7,7 +7,7 @@ import glob from 'glob-promise';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 
-import { CMDHandler } from '../types';
+import { CommandHandler } from '../types';
 import { dependencies, pipcookLogName, optionalNpmClients } from './config';
 
 const spinner = ora();
@@ -15,8 +15,8 @@ const spinner = ora();
 /**
  * install all dependencies of pipcook into working dir
  */
-export const init: CMDHandler = async ({ client, beta, tuna }) => {
-  let npmClient = 'npm';
+export const init: CommandHandler = async ({ client, beta, tuna }) => {
+  let npmClient: string = 'npm';
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
     npmInstallEnvs.BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';

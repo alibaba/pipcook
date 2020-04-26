@@ -3,11 +3,11 @@ import fse from 'fs-extra';
 import ora from 'ora';
 import childProcess from 'child_process';
 import path from 'path';
-import { CMDHandler } from '../types';
+import { CommandHandler } from '../types';
 
 const spinner = ora();
 
-export const board: CMDHandler = async () => {
+export const board: CommandHandler = async () => {
   try {
     if (!fse.existsSync(path.join(process.cwd(), '.server'))) {
       spinner.fail('Please init the project firstly');

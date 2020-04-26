@@ -1,9 +1,9 @@
-interface CMDHandlerObjectParams {
+interface CommandHandlerObjectParams {
   [key: string]: any;
 }
 
-export interface CMDHandler {
-  (cmdObj: CMDHandlerObjectParams): Promise<void>;
+export interface CommandHandler {
+  (cmdObj: CommandHandlerObjectParams): Promise<void>;
 }
 
 export interface ServeHandler {
