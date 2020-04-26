@@ -6,6 +6,6 @@
   },
   "exclude": [
     "dist",
-    ".cab"
+    "assets"
   ]
 }

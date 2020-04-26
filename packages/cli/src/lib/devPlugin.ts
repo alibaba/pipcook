@@ -12,7 +12,7 @@ const spinner = ora();
  * prepare a working dir for developer to develop plugins
  */
 export const devPlugin: CMDHandler = async (cmdObj) => {
-  const pluginType = cmdObj && cmdObj[0];
+  const pluginType: any = cmdObj && cmdObj[0];
   let projectName = cmdObj && cmdObj[1];
 
   if (!pluginType) {
