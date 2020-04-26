@@ -14,17 +14,12 @@ const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, mode
     const { COCOEvaluator, inference_on_dataset } = boa.import('detectron2.evaluation');
     const { build_detection_test_loader } = boa.import('detectron2.data');
 
-    register_coco_instances("test_dataset", {}, data.testAnnotationPath, path.join(data.testAnnotationPath, '..'));
-    cfg.DATASETS.TEST = [ "test_dataset" ];
+    register_coco_instances('test_dataset', {}, data.testAnnotationPath, path.join(data.testAnnotationPath, '..'));
+    cfg.DATASETS.TEST = [ 'test_dataset' ];
 
-    const evaluator = COCOEvaluator("test_dataset", cfg, false, boa.kwargs({ output_dir: modelDir }));
-    const val_loader = build_detection_test_loader(cfg, "val_dataset");
-    const result = inference_on_dataset(trainer.model, val_loader, evaluator);
-
-    return {
-      pass: result > expectResult,
-      result
-    };
+    const evaluator = COCOEvaluator('test_dataset', cfg, false, boa.kwargs({ output_dir: modelDir }));
+    const val_loader = build_detection_test_loader(cfg, 'val_dataset');
+    return inference_on_dataset(trainer.model, val_loader, evaluator);
   }
 };
 

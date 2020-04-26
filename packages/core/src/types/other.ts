@@ -15,7 +15,7 @@ export interface PipObject {
 }
 
 export interface EvaluateResult {
-  pass: boolean;
+  pass?: boolean;
   [key: string]: any;
 }
 
