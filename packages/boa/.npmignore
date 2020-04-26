@@ -1,11 +1,14 @@
-.gitignore
-.CONDA_INSTALL_DIR
+build
+coverage
+node_modules
+.nyc_output
 .dataset
 .data
 .checkpoints
 
 **/__pycache__
 .idea/.DS_Store/**
+.CONDA_INSTALL_DIR
 
 .miniconda/
 Miniconda3-*.sh

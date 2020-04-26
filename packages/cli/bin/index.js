@@ -69,8 +69,9 @@ program
   .command('bip')
   .description('boa packages installer')
   .action(() => {
-    childProcess.execSync(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
-      cwd: process.cwd()
+    childProcess.execSync(`${process.cwd()}/node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
+      cwd: process.cwd(),
+      stdio: 'inherit'
     });
   });
 
