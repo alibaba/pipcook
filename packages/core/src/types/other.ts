@@ -10,9 +10,7 @@ export interface DeploymentResult {
   extraData: any;
 } 
 
-export interface PipObject {
-  [key: string]: any;
-}
+export type PipObject = Record<string, any>
 
 export interface EvaluateResult {
   [key: string]: any;
