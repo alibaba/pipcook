@@ -2,7 +2,11 @@
   "name": "@pipcook/pipcook-cli",
   "version": "0.5.27",
   "description": "",
-  "main": "index.js",
+  "main": "bin/index",
+  "types": "bin/index",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
