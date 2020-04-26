@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo"
   },
   "bin": {
     "pipcook": "./bin/index.js"
@@ -14,6 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.16",
+    "@types/command-exists": "^1.2.0",
+    "@types/inquirer": "^6.5.0",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
