@@ -22,5 +22,5 @@ export const dependencies: string[] = [
   '@pipcook/plugins-object-detection-detectron-model-train'
 ];
 
-export const pipcookLogName: string = 'pipcook-output';
+export const pipcookLogName = 'pipcook-output';
 export const optionalNpmClients: string[] = [ 'npm', 'cnpm', 'tnpm' ];

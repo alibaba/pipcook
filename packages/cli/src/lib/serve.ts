@@ -38,4 +38,4 @@ export const serve: ServeHandler = async function(dir, port = 7682) {
     }
   };
   start();
-}
+};

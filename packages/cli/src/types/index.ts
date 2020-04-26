@@ -30,4 +30,4 @@ export {
   DataSetJSONCategory,
   DataSetJSON,
   CategoryMap
-}
+};

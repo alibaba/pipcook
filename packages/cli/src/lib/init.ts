@@ -5,7 +5,7 @@ import fse from 'fs-extra';
 import ora from 'ora';
 import glob from 'glob-promise';
 import { prompt } from 'inquirer';
-import { sync } from 'command-exists'
+import { sync } from 'command-exists';
 
 import { CMDHandler } from '../types';
 import { dependencies, pipcookLogName, optionalNpmClients } from './config';
@@ -96,4 +96,4 @@ export const init: CMDHandler = async ({ client, beta, tuna }) => {
     childProcess.execSync(`rm -r ${path.join(dirname, '*')}`);
     childProcess.execSync(`rm -r ${path.join(dirname, '.server')}`);
   }
-}
+};
