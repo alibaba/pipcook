@@ -72,7 +72,14 @@ $ mkdir pipcook-example && cd pipcook-example
 $ pipcook init
 ```
 
+Occuring the download problems? We use [tuna](https://mirror.tuna.tsinghua.edu.cn/help/pypi/) mirror to address this issue:
+
+```sh
+$ pipcook init --tuna
+```
+
 ### Playground
+
 If you are wondering what you can do in [Pipcook][] and where you can check your training logs and models, you could start from Pipboard
 
 ```sh
@@ -108,13 +115,6 @@ Clone this repository:
 
 ```sh
 $ git clone git@github.com:alibaba/pipcook.git
-```
-
-Install [lerna][] and [TypeScript][], and check:
-
-```sh
-$ lerna -v
-$ tsc -v
 ```
 
 install dependencies, e.g. via [npm][]:

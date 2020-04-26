@@ -11,11 +11,9 @@ $ npm install @pipcook/pipcook-cli -g
 ## Project Init
 
 ```sh
-$ pipcook --help
-pipcook init [OPTIONS]
--c: npm client，for example cnpm, tnpm，etc. default is npm
-so if you want to use cnpm client, you can use:
-pipcook init -c cnpm
+$ pipcook init
+$ pipcook init -c cnpm
+$ pipcook init --tuna # using tuna mirror for downloading Python/Miniconda
 ```
 
 ## View GUI Tools
@@ -27,5 +25,5 @@ $ pipcook board
 ## Start pipeline by config file
 
 ```sh
-$ pipcook run [config-file]
+$ pipcook run [pipeline]
 ```
