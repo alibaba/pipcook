@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json && cp -r ./assets ./dist/"
+    "compile": "tsc -b tsconfig.json && cp -r ./assets ./dist/ && cp ./packages.json ./dist/"
   },
   "bin": {
     "pipcook": "./bin/index.js"
@@ -23,6 +23,7 @@
     "@pipcook/pipcook-core": "^0.5.16",
     "@types/command-exists": "^1.2.0",
     "@types/inquirer": "^6.5.0",
+    "@types/semver": "^7.1.0",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
