@@ -3,13 +3,13 @@ const semver = require('semver');
 const chalk = require('chalk');
 const pkg = require('../package.json');
 const program = require('commander');
-const init = require('../lib/init');
-const log = require('../lib/log');
-const board = require('../lib/board');
-const start = require('../lib/start');
-const devPlugin = require('../lib/devPlugin');
-const dataset = require('../lib/dataset');
-const serve = require('../lib/serve');
+const init = require('../dist/lib/init');
+const log = require('../dist/lib/log');
+const board = require('../dist/lib/board');
+const start = require('../dist/lib/start');
+const devPlugin = require('../dist/lib/devPlugin');
+const dataset = require('../dist/lib/dataset');
+const serve = require('../dist/lib/serve');
 const childProcess = require('child_process');
 
 // check node version
