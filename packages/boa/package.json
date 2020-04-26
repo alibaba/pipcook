@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "preinstall": "node tools/install-python.js && node tools/install-requirements.js",
+    "postinstall": "npm run build",
     "test": "tap ./tests/**/*.js",
     "lint": "eslint . && ./clang-format.py",
     "build": "node-gyp configure && node-gyp build",
