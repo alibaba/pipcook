@@ -3,17 +3,23 @@
 A JavaScript application framework for machine learning and its engineering.
 
 <a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
-  <img alt="npm" src="https://img.shields.io/npm/dm/@pipcook/pipcook-core"></a>
-<a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
   <img alt="npm" src="https://img.shields.io/npm/v/@pipcook/pipcook-core"></a>
-<a href="https://github.com/alibaba/pipcook/actions">
-  <img alt="Github Action Build" src="https://github.com/alibaba/pipcook/workflows/build/badge.svg?branch=master&event=push"></a>
-<a href="https://hub.docker.com/r/pipcook/pipcook">
-  <img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/pipcook/pipcook"></a>
+<a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
+  <img alt="npm" src="https://img.shields.io/npm/dm/@pipcook/pipcook-core"></a>
 <a href="https://github.com/alibaba/pipcook">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/alibaba/pipcook"></a>
 <a href="https://opensource.org/licenses/Apache-2.0">
   <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
+
+## Builds
+
+| Build Types | Status |
+|---------------|--------|
+| tests         | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Abuild"><img src="https://github.com/alibaba/pipcook/workflows/build/badge.svg?branch=master&event=push"></a> |
+| pipeline      | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Apipeline"><img src="https://github.com/alibaba/pipcook/workflows/pipeline/badge.svg?branch=master"></a> |
+| release       | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3A%22Publish+Packages%22"><img src="https://github.com/alibaba/pipcook/workflows/Publish%20Packages/badge.svg"></a> |
+| documentation | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Agh-pages"><img src="https://github.com/alibaba/pipcook/workflows/gh-pages/badge.svg"></a> |
+| docker        | <a href="https://hub.docker.com/r/pipcook/pipcook"><img src="https://img.shields.io/docker/cloud/build/pipcook/pipcook"></a> |
 
 ## Why Pipcook
 
@@ -135,11 +141,17 @@ $ npm run build
 
 ## Community
 
-#### IRC
+#### DingTalk
 
 <img width="200" src="./community_qrcode.png">
 
 > Download DingTalk (an all-in-one free communication and collaboration platform) here: [English](https://www.dingtalk.com/static/en/download) | [中文](https://page.dingtalk.com/wow/dingtalk/act/download)
+
+#### Gitter Room
+
+<a href="https://gitter.im/alibaba/pipcook">
+  <img src="https://img.shields.io/gitter/room/alibaba/pipcook?logo=pipcook&style=flat-square" />
+</a>
 
 #### Who's using it
 
