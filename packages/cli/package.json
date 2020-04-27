@@ -3,7 +3,6 @@
   "version": "0.5.29",
   "description": "",
   "main": "dist/bin/index.js",
-  "types": "dist/bin/index.js",
   "files": [
     "dist"
   ],
