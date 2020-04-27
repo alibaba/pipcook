@@ -4,7 +4,7 @@ import * as path from 'path';
 const boa = require('@pipcook/boa');
 
 const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, model: UniModel, args: ArgsType): Promise<any> => {
-  let { modelDir, expectResult = 0.9 } = args;
+  let { modelDir } = args;
   const { register_coco_instances } = boa.import('detectron2.data.datasets');
   const { testLoader } = data;
   const cfg = model.config;
