@@ -141,6 +141,10 @@ $ npm run build
 
 > Download DingTalk (an all-in-one free communication and collaboration platform) here: [English](https://www.dingtalk.com/static/en/download) | [中文](https://page.dingtalk.com/wow/dingtalk/act/download)
 
+#### Gitter Room
+
+![Gitter](https://img.shields.io/gitter/room/alibaba/pipcook?logo=pipcook&style=for-the-badge).
+
 #### Who's using it
 
 <a href="https://www.imgcook.com"><img height="40" src="https://img.alicdn.com/tfs/TB1lle4yQzoK1RjSZFlXXai4VXa-200-64.png"></a>
