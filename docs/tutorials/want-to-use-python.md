@@ -25,7 +25,7 @@ By default, Boa will install a conda virtual environment under the path of Boa p
 ```sh
 $ ./node_modules/.bin/bip install <package-name>
 ``` 
-Actually `bip` is an alias of pip which points to correct python environment
+> `bip` is an alias of pip which points to correct Python environment.
 
 ## Get started
 
@@ -287,4 +287,3 @@ See [./tests](https://github.com/alibaba/pipcook/tree/master/packages/boa/tests)
 [Python]: https://docs.python.org/3/
 [ES6 Proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 [tagged template literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Description
-
