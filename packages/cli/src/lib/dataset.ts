@@ -53,8 +53,8 @@ export const dataset: CommandHandler = async ({ type }) => {
       const imageDir = imageDirs[i];
       try {
         fse.lstatSync(imageDir).isDirectory();
-        let dirName: string[] | string = imageDir.split(path.sep);
-        dirName = dirName[dirName.length - 1];
+        const dirNames: string[] | string = imageDir.split(path.sep);
+        const dirName = dirNames[dirNames.length - 1];
         if (!fse.pathExistsSync(path.join(process.cwd(), 'annotations', dirName + '.json'))) {
           throw new Error('no corresponding annotation');
         }
