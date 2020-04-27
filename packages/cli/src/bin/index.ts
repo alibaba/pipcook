@@ -11,7 +11,7 @@ import { dataset } from '../lib/dataset';
 import { serve } from '../lib/serve';
 import childProcess from 'child_process';
 
-const pkg = require('../package.json');
+import pkg from '../package.json';
 
 function run(): void {
   // check node version

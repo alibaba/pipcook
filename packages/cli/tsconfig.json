@@ -1,11 +1,16 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "resolveJsonModule": true,
     "outDir": "./dist",
     "rootDir": "./src"
   },
   "exclude": [
     "dist",
     "assets"
+  ],
+  "include": [
+    "src/**/*",
+    "src/package.json"
   ]
 }
