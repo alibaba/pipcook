@@ -102,8 +102,23 @@ image classification, just run the following to start the pipeline:
 $ pipcook run examples/pipelines/mnist-image-classification.json
 ```
 
-__NOTICE__: the last two examples are using Boa (pipcook python bridge layer). 
-Before run them, you need to setup Python environment. See [here](docs/tutorials/want-to-use-python.md) for more information
+__NOTICE__: The last two examples are using Boa (pipcook python bridge layer). Boa is not responsible for installing specific python packages currently. You can use `pipcook bip` as an alias for `pip` and install packages. To make pipeline-object-detection working, please make sure you have dependencies specified in [detectron2 installation reference][]. See [here](docs/tutorials/want-to-use-python.md) for more information about Boa.
+
+### Serving
+After the above pipeline is finished, you have already trained a awesome model and we have generated the prediction logics for you to use your model. This prediction package is stored in pipcook-output/[pipeline-id]/deploy. It's an independent npm package and can be easily integrated in your exsiting system. To just start a prediction server locally, you can run 
+
+```sh
+$ pipcook serve <path of deploy folder>
+```
+After the prediction server is started, you can use following requests to make prediction
+
+```curl
+curl --request POST 'http://localhost:7682' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "data": "<local path of an image>"
+}'
+```
 
 ## Documentation
 
@@ -159,3 +174,4 @@ $ npm run build
 [pipeline-databinding-image-classification]: example/pipelines/databinding-image-classification.json
 [pipeline-object-detection]: example/pipelines/object-detection.json
 [pipeline-text-bayes-classification]: example/pipelines/text-bayes-classification.json
+[detectron2 installation reference]: https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md

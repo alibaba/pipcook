@@ -19,6 +19,13 @@ If you are using virtualenv or conda, you can just set up your system environmen
 $ export PYTHONPATH = /Users/venv/lib/python3.7/site-packages
 ```
 
+## How to install packages
+By default, Boa will install a conda virtual environment under the path of Boa package. To make it easier to install python libraries, you can run
+```sh
+$ ./node_modules/.bin/bip install <package-name>
+``` 
+Actually `bip` is an alias of pip which points to correct python environment
+
 ## Get started
 
 Let's have a glance on how to call to Python's function:
