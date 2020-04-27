@@ -16,7 +16,7 @@
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "postinstall": "lerna bootstrap --nohoist=node-addon-api",
+    "postinstall": "lerna bootstrap",
     "build": "lerna run compile",
     "lint": "eslint . --ext .ts --ext .js",
     "pretest": "npm run lint",

@@ -11,4 +11,7 @@ export default (app: Application) => {
   // showcase
   router.post('/showcase/mnist', controller.showcase.mnist);
   router.post('/showcase/asset-classification', controller.showcase.assetClassification);
+
+  // pipeline CRUD
+  router.post('/pipeline', controller.pipeline.create);
 };

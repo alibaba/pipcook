@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/pipcook-board-server",
+  "name": "@pipcook/pipboard-daemon",
   "version": "1.0.0",
   "description": "",
   "private": true,
@@ -21,6 +21,7 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
+    "@pipcook/pipcook-core": "^0.5.16",
     "@tensorflow/tfjs": "^1.7.0",
     "axios": "^0.19.2",
     "better-opn": "^1.0.0",
@@ -32,24 +33,25 @@
     "jimp": "^0.10.0",
     "request": "^2.88.2",
     "shelljs": "^0.8.3",
+    "sqlite3": "^4.1.1",
     "uuid": "^7.0.2"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.40",
-    "@types/node": "^7.0.12",
+    "@types/node": "^12.12.6",
     "@types/supertest": "^2.0.0",
     "autod": "^3.0.1",
     "autod-egg": "^1.1.0",
-    "egg-ci": "^1.8.0",
     "egg-bin": "^4.11.0",
+    "egg-ci": "^1.8.0",
     "egg-mock": "^3.16.0",
-    "tslib": "^1.9.0",
     "eslint": "^6.7.2",
     "eslint-config-egg": "^8.0.0",
+    "tslib": "^1.9.0",
     "typescript": "^3.0.0"
   },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=12.14.0"
   },
   "ci": {
     "version": "8"

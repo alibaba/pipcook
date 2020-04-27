@@ -3,6 +3,7 @@
     "packages/cli",
     "packages/core",
     "packages/boa",
+    "packages/pipboard-daemon",
     "packages/plugins/**/*"
   ],
   "version": "independent",
@@ -10,6 +11,18 @@
   "command": {
     "publishConfig": {
       "access": "public"
+    },
+    "bootstrap": {
+      "nohoist": [
+        "node-addon-api",
+        "egg",
+        "egg-scripts",
+        "egg-ci",
+        "egg-bin",
+        "egg-mock",
+        "autod-egg",
+        "autod"
+      ]
     }
   },
   "hoist": true
