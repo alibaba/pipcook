@@ -16,8 +16,10 @@ import {
   ModelLoadType,
   ModelDefineType,
   ModelTrainType,
-  ModelEvaluateType
+  ModelEvaluateType,
+  PluginTypeI
 } from '../types/plugins';
+import { PipObject } from '../types/other';
 import {
   DATACOLLECT,
   DATAACCESS,
@@ -27,7 +29,6 @@ import {
   MODELTRAIN,
   MODELEVALUATE
 } from '../constants/plugins';
-import { UniDataset } from '../types/data/common';
 
 /**
  * The is the factory function to produce Pipcook Component.
@@ -35,8 +36,7 @@ import { UniDataset } from '../types/data/common';
  * @param plugin: plugin
  * @param params: plugin's parameters
  */
-function produceResultFactory(type: 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate' | 'modelDeploy',
-  plugin: PipcookPlugin, params? : any): PipcookComponentResult {
+function produceResultFactory(type: PluginTypeI, plugin: PipcookPlugin, params?: PipObject): PipcookComponentResult {
   const result: PipcookComponentResult = {
     type, 
     plugin,
@@ -55,7 +55,7 @@ function produceResultFactory(type: 'dataCollect' | 'dataAccess' | 'dataProcess'
  * @param plugin: plugin
  * @param params: plugin's parameters
  */
-export const DataCollect: PipcookLifeCycleComponent = (plugin: DataCollectType, params?: any) => {
+export const DataCollect: PipcookLifeCycleComponent = (plugin: DataCollectType, params?: PipObject) => {
   const result = produceResultFactory(DATACOLLECT, plugin, params);
   result.observer = (data, model, insertParams) => {
     return from(plugin({ ...params, ...insertParams }));
@@ -68,9 +68,9 @@ export const DataCollect: PipcookLifeCycleComponent = (plugin: DataCollectType, 
  * @param plugin 
  * @param params 
  */
-export const DataAccess: PipcookLifeCycleComponent = (plugin: DataAccessType, params?: any) => {
+export const DataAccess: PipcookLifeCycleComponent = (plugin: DataAccessType, params?: PipObject) => {
   const result = produceResultFactory(DATAACCESS, plugin, params);
-  result.observer = (data: any, model, insertParams) => {
+  result.observer = (data, model, insertParams) => {
     return from(plugin({ ...params, ...insertParams }));
   };
   result.returnType = DATA;
@@ -82,9 +82,9 @@ export const DataAccess: PipcookLifeCycleComponent = (plugin: DataAccessType, pa
  * @param plugin 
  * @param params 
  */
-export const DataProcess: PipcookLifeCycleComponent = (plugin: DataProcessType, params?: any) => {
+export const DataProcess: PipcookLifeCycleComponent = (plugin: DataProcessType, params?: PipObject) => {
   const result = produceResultFactory(DATAPROCESS, plugin, params);
-  result.observer = (data: UniDataset, model, insertParams) => {
+  result.observer = (data, model, insertParams) => {
     if (!data.metadata) {
       data.metadata = {};
     }
@@ -110,9 +110,9 @@ export const DataProcess: PipcookLifeCycleComponent = (plugin: DataProcessType, 
  * @param plugin 
  * @param params 
  */
-export const ModelLoad: PipcookLifeCycleComponent = (plugin: ModelLoadType, params?: any) => {
+export const ModelLoad: PipcookLifeCycleComponent = (plugin: ModelLoadType, params?: PipObject) => {
   const result = produceResultFactory(MODELLOAD, plugin, params);
-  result.observer = (data: any, model, insertParams) => {
+  result.observer = (data, model, insertParams) => {
     return from(plugin(data, { ...params, ...insertParams }));
   };
   result.returnType = MODEL;
@@ -124,9 +124,9 @@ export const ModelLoad: PipcookLifeCycleComponent = (plugin: ModelLoadType, para
  * @param plugin 
  * @param params 
  */
-export const ModelDefine: PipcookLifeCycleComponent = (plugin: ModelDefineType, params?: any) => {
+export const ModelDefine: PipcookLifeCycleComponent = (plugin: ModelDefineType, params?: PipObject) => {
   const result = produceResultFactory(MODELDEFINE, plugin, params);
-  result.observer = (data: any, model, insertParams) => {
+  result.observer = (data, model, insertParams) => {
     return from(plugin(data, { ...params, ...insertParams }));
   };
   result.returnType = MODEL;
@@ -138,9 +138,9 @@ export const ModelDefine: PipcookLifeCycleComponent = (plugin: ModelDefineType, 
  * @param plugin 
  * @param params 
  */
-export const ModelTrain: PipcookLifeCycleComponent = (plugin: ModelTrainType, params?: any) => {
+export const ModelTrain: PipcookLifeCycleComponent = (plugin: ModelTrainType, params?: PipObject) => {
   const result = produceResultFactory(MODELTRAIN, plugin, params);
-  result.observer = (data: any, model, insertParams) => {
+  result.observer = (data, model, insertParams) => {
     return from(plugin(data, model, {
       ...params, ...insertParams, 
       saveModel: async (callback: Function) => {
@@ -157,9 +157,9 @@ export const ModelTrain: PipcookLifeCycleComponent = (plugin: ModelTrainType, pa
  * @param plugin 
  * @param params 
  */
-export const ModelEvaluate: PipcookLifeCycleComponent = (plugin: ModelEvaluateType, params?: any) => {
+export const ModelEvaluate: PipcookLifeCycleComponent = (plugin: ModelEvaluateType, params?: PipObject) => {
   const result = produceResultFactory(MODELEVALUATE, plugin, params);
-  result.observer = (data: any, model, insertParams) => {
+  result.observer = (data, model, insertParams) => {
     return from(plugin(data, model, { ...params, ...insertParams }));
   };
   result.returnType = EVALUATE;
