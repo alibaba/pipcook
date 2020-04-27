@@ -86,7 +86,11 @@ If you are wondering what you can do in [Pipcook][] and where you can check your
 $ pipcook board
 ```
 
-You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the examples below.
+You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. 
+
+### Pipelines
+
+If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the examples below.
 
 - [pipeline-mnist-image-classification][]: pipeline for classific Mnist image classification problem.
 - [pipeline-databinding-image-classification][]: pipeline example to train the iamge classification task which is 
@@ -103,8 +107,6 @@ $ pipcook run examples/pipelines/mnist-image-classification.json
 ```
 
 __NOTICE__: The last two examples are using Boa (pipcook python bridge layer). Boa is not responsible for installing specific python packages currently. You can use `pipcook bip` as an alias for `pip` and install packages. To make pipeline-object-detection working, please make sure you have dependencies specified in [detectron2 installation reference][]. See [here](docs/tutorials/want-to-use-python.md) for more information about Boa.
-
-### Serving
 
 After the above pipeline is finished, you have already trained an awesome model and we have generated the prediction logics for you to use your model. This prediction package is stored in pipcook-output/[pipeline-id]/deploy. It's an independent npm package and can be easily integrated in your exsiting system. To just start a prediction server locally, you can run 
 
