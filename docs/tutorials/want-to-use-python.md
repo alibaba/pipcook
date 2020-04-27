@@ -19,6 +19,14 @@ If you are using virtualenv or conda, you can just set up your system environmen
 $ export PYTHONPATH = /Users/venv/lib/python3.7/site-packages
 ```
 
+## How to install packages
+
+By default, Boa will install a conda virtual environment under the path of Boa package. To make it easier to install python libraries, you can run
+```sh
+$ ./node_modules/.bin/bip install <package-name>
+``` 
+> `bip` is an alias of pip which points to correct Python environment.
+
 ## Get started
 
 Let's have a glance on how to call to Python's function:
@@ -279,4 +287,3 @@ See [./tests](https://github.com/alibaba/pipcook/tree/master/packages/boa/tests)
 [Python]: https://docs.python.org/3/
 [ES6 Proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 [tagged template literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Description
-
