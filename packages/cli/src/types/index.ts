@@ -10,11 +10,10 @@ import {
 } from './handler';
 
 import {
-  DataSetJSONImage,
+  ImageSchema,
   DataSetJSONAnnotation,
   DataSetJSONCategory,
-  DataSetJSON,
-  CategoryMap
+  DataSetJSON
 } from './dataset';
 
 export {
@@ -25,9 +24,8 @@ export {
   PredictFunc,
   StartHandler,
 
-  DataSetJSONImage,
+  ImageSchema,
   DataSetJSONAnnotation,
   DataSetJSONCategory,
-  DataSetJSON,
-  CategoryMap
+  DataSetJSON
 };

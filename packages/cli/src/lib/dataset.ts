@@ -4,11 +4,10 @@ import glob from 'glob-promise';
 
 import {
   CommandHandler,
-  DataSetJSONImage,
+  ImageSchema,
   DataSetJSON,
   DataSetJSONCategory,
-  DataSetJSONAnnotation,
-  CategoryMap
+  DataSetJSONAnnotation
 } from '../types';
 
 /**
@@ -47,7 +46,7 @@ export const dataset: CommandHandler = async ({ type }) => {
 
     let imageNum = 1;
     let annotationNum = 1;
-    const categoryMap: CategoryMap = {};
+    const categoryMap: Record<string, number> = {};
     let categoryNum = 1;
     for (let i = 0; i < imageDirs.length; i++) {
       const imageDir = imageDirs[i];
@@ -60,7 +59,7 @@ export const dataset: CommandHandler = async ({ type }) => {
         }
         const json = require(path.join(process.cwd(), 'annotations', dirName + '.json'));
 
-        json.images.forEach((image: DataSetJSONImage) => {
+        json.images.forEach((image: ImageSchema) => {
           newJson.images.push({
             license: 1,
             file_name: image.file_name,
@@ -91,7 +90,7 @@ export const dataset: CommandHandler = async ({ type }) => {
           newJson.annotations.push({
             id: annotationNum,
             image_id: newJson.images.find((img) => img.file_name == 
-              (json.images.find((image: DataSetJSONImage) => image.id === annotation.image_id).file_name)).id,
+              (json.images.find((image: ImageSchema) => image.id === annotation.image_id).file_name)).id,
             category_id: newJson.categories.find((cate) => cate.name == 
               (json.categories.find((category: DataSetJSONCategory) => category.id === annotation.category_id).name)).id,
             segmentation: [],

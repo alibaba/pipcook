@@ -1,4 +1,4 @@
-interface DataSetJSONInfo {
+interface DatasetMetadata {
   description: string;
   url: string;
   version: string;
@@ -7,7 +7,7 @@ interface DataSetJSONInfo {
   date_created: string;
 }
 
-export interface DataSetJSONImage {
+export interface ImageSchema {
   license: number;
   file_name: string;
   coco_url: string;
@@ -39,13 +39,9 @@ export interface DataSetJSONCategory {
 }
 
 export interface DataSetJSON {
-  info: DataSetJSONInfo;
-  images: DataSetJSONImage[];
+  info: DatasetMetadata;
+  images: ImageSchema[];
   licenses: DataSetJSONLicense[];
   annotations: DataSetJSONAnnotation[];
   categories: DataSetJSONCategory[];
-}
-
-export interface CategoryMap {
-  [categoryName: string]: number;
 }
