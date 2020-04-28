@@ -8,9 +8,11 @@ import { dataset } from './dataset';
 import { serve } from './serve';
 import { execSync } from 'child_process';
 
+const pkg = require('../../package.json');
+
 export const initCommander = () => {
   // version
-  program.version(process.env.npm_package_version, '-v, --version').usage('<command> [options]');
+  program.version(pkg.version, '-v, --version').usage('<command> [options]');
 
   // init the pipcook project workspace
   program
