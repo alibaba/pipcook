@@ -8,7 +8,7 @@ import { dataset } from './dataset';
 import { serve } from './serve';
 import { execSync } from 'child_process';
 
-export const initCommand = () => {
+export const initCommander = () => {
   // version
   program.version(process.env.npm_package_version, '-v, --version').usage('<command> [options]');
 

@@ -2,7 +2,7 @@
 import semver from 'semver';
 import chalk from 'chalk';
 
-import { initCommand } from './commands';
+import { initCommander } from './commands';
 
 export function run(): void {
   // check node version
@@ -16,5 +16,5 @@ export function run(): void {
     return;
   }
 
-  initCommand();
+  initCommander();
 }
