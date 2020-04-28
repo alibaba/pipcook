@@ -198,24 +198,27 @@ function _internalWrap(T, src={}) {
       writable: false,
       value: () => T.toString(),
     },
+    /**
+     * @method toJSON
+     * @public
+     */
     toJSON: {
       configurable: true,
       enumerable: false,
       writable: false,
       value: () => {
-        if (T.isSequence()) {
-          return map(T, wrap);
-        } else if (T.isMapping()) {
-          const keys = list(T.__getattr__('keys').invoke());
-          return reduce(keys, (val, name) => {
-            const k = name.toString();
-            val[k] = wrap(T.__getitem__(k));
-            return val;
-          }, {});
+        const type = getTypeInfo(T);
+        const json = pyInst.import('json');
+        const dump = (v) => json.__getattr__('dumps').invoke(asHandleObject(v));
+
+        let str;
+        if (type.module === 'numpy') {
+          str = dump(T.__getattr__('tolist').invoke());
         } else {
-          // TODO(Yorkie): support more types toJSON().
-          return T.toString();
+          str = dump(T);
         }
+        // TODO(Yorkie): more performant way to serialize objects?
+        return JSON.parse(wrap(str));
       },
     },
     /**
