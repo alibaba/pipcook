@@ -18,4 +18,4 @@ import { initCommander } from '../commands';
   }
 
   initCommander();
-})()
+})();
