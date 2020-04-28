@@ -83,4 +83,4 @@ import childProcess from 'child_process';
     });
 
   program.parse(process.argv);
-})()
+})();
