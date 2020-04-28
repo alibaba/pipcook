@@ -19,7 +19,10 @@
       "package": "./packages/plugins/model-train/bayesian-model-train"
     },
     "modelEvaluate": {
-      "package": "./packages/plugins/model-evaluate/bayesian-model-evaluate"
+      "package": "./packages/plugins/model-evaluate/bayesian-model-evaluate",
+      "params": {
+        "expectAccracy": 0.9
+      }
     }
   }
 }

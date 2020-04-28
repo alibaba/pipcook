@@ -2,15 +2,11 @@
 import { UniDataset, Sample, Metadata } from './data/common';
 import { UniModel } from './model';
 import { EvaluateResult } from './other';
+import { InsertParams } from './component';
 
 export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate';
 
-export interface ArgsType {
-  runId: string;
-  modelDir: string;
-  dataDir: string;
-  [key: string]: any;
-}
+export type ArgsType = InsertParams & Record<string, any>
 
 export interface ModelArgsType extends ArgsType {
   train: boolean;

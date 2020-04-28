@@ -236,7 +236,7 @@ export async function convertPascal2CocoFileOutput(files: string[], targetPath: 
       }
       const cocoItem: any = {
         id: cocoJson.annotations.length + 1,
-        image_id: i,
+        image_id: i + 1,
         category_id: id,
         segmentation: [],
         iscrowd: 0

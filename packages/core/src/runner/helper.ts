@@ -6,6 +6,7 @@ import * as fs from 'fs-extra';
 
 import { PipcookRunner } from './index';
 import { PipcookComponentResult } from '../types/component';
+import { EvaluateError } from '../types/other';
 import { logCurrentExecution } from '../utils/logger';
 import { Observable, from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
@@ -45,6 +46,9 @@ export async function assignLatestResult(updatedType: string, result: any, self:
   case EVALUATE:
     console.log('evaluate result: ', result);
     self.latestEvaluateResult = result;
+    if (!self.latestEvaluateResult.pass) {
+      throw new EvaluateError(self.latestEvaluateResult);
+    }
     break;
   case MODELTOSAVE:
     self.latestModel = result;

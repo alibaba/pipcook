@@ -61,7 +61,7 @@ After building a machine learning application, if you want to learn more about P
   - [Get started with command-line tools](./tutorials/get-started-with-cli.md)
   - [Developer Guide](./devel/developer-guide.md)
   - [How to develop a plugin](./tutorials/how-to-develop-a-plugin.md)
-  - [Want to use Python?](./tutorials/want-to-use-python.md)
+  - [Boa specification (want to use Python in Node.js?)](./tutorials/want-to-use-python.md)
 
 - Specification
   - [Plugin Specification](./spec/plugin.md)

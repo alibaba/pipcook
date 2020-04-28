@@ -3,17 +3,23 @@
 A JavaScript application framework for machine learning and its engineering.
 
 <a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
-  <img alt="npm" src="https://img.shields.io/npm/dm/@pipcook/pipcook-core"></a>
-<a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
   <img alt="npm" src="https://img.shields.io/npm/v/@pipcook/pipcook-core"></a>
-<a href="https://github.com/alibaba/pipcook/actions">
-  <img alt="Github Action Build" src="https://github.com/alibaba/pipcook/workflows/build/badge.svg?branch=master&event=push"></a>
-<a href="https://hub.docker.com/r/pipcook/pipcook">
-  <img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/pipcook/pipcook"></a>
+<a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
+  <img alt="npm" src="https://img.shields.io/npm/dm/@pipcook/pipcook-core"></a>
 <a href="https://github.com/alibaba/pipcook">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/alibaba/pipcook"></a>
 <a href="https://opensource.org/licenses/Apache-2.0">
   <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
+
+## Builds
+
+| Build Types | Status |
+|---------------|--------|
+| tests         | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Abuild"><img src="https://github.com/alibaba/pipcook/workflows/build/badge.svg?branch=master&event=push"></a> |
+| pipeline      | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Apipeline"><img src="https://github.com/alibaba/pipcook/workflows/pipeline/badge.svg?branch=master"></a> |
+| release       | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3A%22Publish+Packages%22"><img src="https://github.com/alibaba/pipcook/workflows/Publish%20Packages/badge.svg"></a> |
+| documentation | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Agh-pages"><img src="https://github.com/alibaba/pipcook/workflows/gh-pages/badge.svg"></a> |
+| docker        | <a href="https://hub.docker.com/r/pipcook/pipcook"><img src="https://img.shields.io/docker/cloud/build/pipcook/pipcook"></a> |
 
 ## Why Pipcook
 
@@ -86,7 +92,11 @@ If you are wondering what you can do in [Pipcook][] and where you can check your
 $ pipcook board
 ```
 
-You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the examples below.
+You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. 
+
+### Pipelines
+
+If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the examples below.
 
 - [pipeline-mnist-image-classification][]: pipeline for classific Mnist image classification problem.
 - [pipeline-databinding-image-classification][]: pipeline example to train the iamge classification task which is 
@@ -102,8 +112,23 @@ image classification, just run the following to start the pipeline:
 $ pipcook run examples/pipelines/mnist-image-classification.json
 ```
 
-__NOTICE__: the last two examples are using Boa (pipcook python bridge layer). 
-Before run them, you need to setup Python environment. See [here](docs/tutorials/want-to-use-python.md) for more information
+__NOTICE__: The last two examples are using Boa (pipcook python bridge layer). Boa is not responsible for installing specific python packages currently. You can use `pipcook bip` as an alias for `pip` and install packages. To make pipeline-object-detection working, please make sure you have dependencies specified in [detectron2 installation reference][]. See [here](docs/tutorials/want-to-use-python.md) for more information about Boa.
+
+After the above pipeline is finished, you have already trained an awesome model and we have generated the prediction logics for you to use your model. This prediction package is stored in pipcook-output/[pipeline-id]/deploy. It's an independent npm package and can be easily integrated in your exsiting system. To just start a prediction server locally, you can run 
+
+```sh
+$ pipcook serve <path of deploy folder>
+```
+
+After the prediction server is started, you can use following requests to make prediction
+
+```curl
+curl --request POST 'http://localhost:7682' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "data": "<local path of an image>"
+}'
+```
 
 ## Documentation
 
@@ -135,11 +160,17 @@ $ npm run build
 
 ## Community
 
-#### IRC
+#### DingTalk
 
 <img width="200" src="./community_qrcode.png">
 
 > Download DingTalk (an all-in-one free communication and collaboration platform) here: [English](https://www.dingtalk.com/static/en/download) | [中文](https://page.dingtalk.com/wow/dingtalk/act/download)
+
+#### Gitter Room
+
+<a href="https://gitter.im/alibaba/pipcook">
+  <img src="https://img.shields.io/gitter/room/alibaba/pipcook?logo=pipcook&style=flat-square" />
+</a>
 
 #### Who's using it
 
@@ -159,3 +190,4 @@ $ npm run build
 [pipeline-databinding-image-classification]: example/pipelines/databinding-image-classification.json
 [pipeline-object-detection]: example/pipelines/object-detection.json
 [pipeline-text-bayes-classification]: example/pipelines/text-bayes-classification.json
+[detectron2 installation reference]: https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md
