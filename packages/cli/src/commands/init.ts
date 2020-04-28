@@ -8,7 +8,7 @@ import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 
 import { CommandHandler } from '../types';
-import { dependencies, pipcookLogName, optionalNpmClients } from './config';
+import { dependencies, pipcookLogName, optionalNpmClients } from '../config';
 
 const spinner = ora();
 

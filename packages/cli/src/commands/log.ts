@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { readFileSync } from 'fs-extra';
 import path from 'path';
-import { pipcookLogName } from './config';
+import { pipcookLogName } from '../config';
 import glob from 'glob-promise';
 
 import { CommandHandler } from '../types';
