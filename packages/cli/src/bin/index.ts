@@ -9,7 +9,7 @@ import { start } from '../lib/start';
 import { devPlugin } from '../lib/devPlugin';
 import { dataset } from '../lib/dataset';
 import { serve } from '../lib/serve';
-import childProcess from 'child_process';
+import { execSync } from 'child_process';
 
 (function run(): void {
   // check node version
@@ -69,7 +69,7 @@ import childProcess from 'child_process';
     .command('bip')
     .description('boa packages installer')
     .action(() => {
-      childProcess.execSync(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
+      execSync(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
         cwd: process.cwd()
       });
     });
