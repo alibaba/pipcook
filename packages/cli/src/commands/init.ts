@@ -7,7 +7,7 @@ import glob from 'glob-promise';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 
-import { CommandHandler } from '../types';
+import { InitCommandHandler } from '../types';
 import { dependencies, pipcookLogName, optionalNpmClients } from '../config';
 
 const spinner = ora();
@@ -15,7 +15,7 @@ const spinner = ora();
 /**
  * install all dependencies of pipcook into working dir
  */
-export const init: CommandHandler = async ({ client, beta, tuna }) => {
+export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   let npmClient = 'npm';
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {

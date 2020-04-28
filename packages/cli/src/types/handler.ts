@@ -1,9 +1,42 @@
-interface CommandHandlerObjectParams {
-  [key: string]: any;
-}
+declare type PluginTypeI = 
+  'dataCollect' |
+  'dataAccess' |
+  'dataProcess' |
+  'modelLoad' |
+  'modelDefine' |
+  'modelTrain' |
+  'modelEvaluate' |
+  'modelDeploy';
 
 export interface CommandHandler {
-  (cmdObj: CommandHandlerObjectParams): Promise<void>;
+  (cmdObj: void): Promise<void>;
+}
+
+interface DatasetCommandHandlerObjectParams {
+  type: string;
+}
+
+export interface DatasetCommandHandler {
+  (cmdObj: DatasetCommandHandlerObjectParams): Promise<void>;
+}
+
+interface DevPluginCommandHandlerObjectParams {
+  type: PluginTypeI;
+  name: string;
+}
+
+export interface DevPluginCommandHandler {
+  (cmdObj: DevPluginCommandHandlerObjectParams): Promise<void>;
+}
+
+interface InitCommandHandlerObjectParams {
+  client: string;
+  beta: boolean;
+  tuna: boolean;
+}
+
+export interface InitCommandHandler {
+  (cmdObj: InitCommandHandlerObjectParams): Promise<void>;
 }
 
 export interface ServeHandler {

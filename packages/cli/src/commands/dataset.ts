@@ -3,7 +3,7 @@ import path from 'path';
 import glob from 'glob-promise';
 
 import {
-  CommandHandler,
+  DatasetCommandHandler,
   DatasetImage,
   Dataset,
   DatasetCategory,
@@ -13,7 +13,7 @@ import {
 /**
  * prepare a working dir for developer to develop plugins
  */
-export const dataset: CommandHandler = async ({ type }) => {
+export const dataset: DatasetCommandHandler = async ({ type }) => {
   if (!type) {
     console.log('Please provide a plugin type');
     return;

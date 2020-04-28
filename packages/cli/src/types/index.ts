@@ -4,6 +4,9 @@ import {
 
 import {
   CommandHandler,
+  DatasetCommandHandler,
+  DevPluginCommandHandler,
+  InitCommandHandler,
   ServeHandler,
   PredictHandler,
   StartHandler
@@ -20,6 +23,9 @@ export {
   Config,
 
   CommandHandler,
+  DatasetCommandHandler,
+  DevPluginCommandHandler,
+  InitCommandHandler,
   ServeHandler,
   PredictHandler,
   StartHandler,
