@@ -1,4 +1,3 @@
-#!/usr/bin/env ts-node
 import semver from 'semver';
 import chalk from 'chalk';
 
