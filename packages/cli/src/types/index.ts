@@ -11,9 +11,9 @@ import {
 
 import {
   ImageSchema,
-  DataSetJSONAnnotation,
-  DataSetJSONCategory,
-  DataSetJSON
+  DatasetAnnotation,
+  DatasetCategory,
+  Dataset
 } from './dataset';
 
 export {
@@ -25,7 +25,7 @@ export {
   StartHandler,
 
   ImageSchema,
-  DataSetJSONAnnotation,
-  DataSetJSONCategory,
-  DataSetJSON
+  DatasetAnnotation,
+  DatasetCategory,
+  Dataset
 };

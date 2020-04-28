@@ -16,13 +16,13 @@ export interface ImageSchema {
   id: number;
 }
 
-interface DataSetJSONLicense {
+interface DatasetLicense {
   url: string;
   id: number;
   name: string;
 }
 
-export interface DataSetJSONAnnotation {
+export interface DatasetAnnotation {
   id: number;
   image_id: number;
   category_id: number;
@@ -32,16 +32,16 @@ export interface DataSetJSONAnnotation {
   bbox: string;
 }
 
-export interface DataSetJSONCategory {
+export interface DatasetCategory {
   id: number;
   name: string;
   supercategory: string;
 }
 
-export interface DataSetJSON {
+export interface Dataset {
   info: DatasetMetadata;
   images: ImageSchema[];
-  licenses: DataSetJSONLicense[];
-  annotations: DataSetJSONAnnotation[];
-  categories: DataSetJSONCategory[];
+  licenses: DatasetLicense[];
+  annotations: DatasetAnnotation[];
+  categories: DatasetCategory[];
 }

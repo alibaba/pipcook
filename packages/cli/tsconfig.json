@@ -10,7 +10,6 @@
     "assets"
   ],
   "include": [
-    "src/**/*",
-    "src/package.json"
+    "src/**/*"
   ]
 }

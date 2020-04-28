@@ -11,9 +11,7 @@ import { dataset } from '../lib/dataset';
 import { serve } from '../lib/serve';
 import childProcess from 'child_process';
 
-import pkg from '../package.json';
-
-function run(): void {
+(function run(): void {
   // check node version
   if (!semver.gte(process.version, '10.0.0')) {
     console.log(
@@ -26,7 +24,7 @@ function run(): void {
   }
 
   // version
-  program.version(pkg.version, '-v, --version').usage('<command> [options]');
+  program.version(process.env.npm_package_version, '-v, --version').usage('<command> [options]');
 
   // init the pipcook project workspace
   program
@@ -85,6 +83,4 @@ function run(): void {
     });
 
   program.parse(process.argv);
-}
-
-run();
+})()

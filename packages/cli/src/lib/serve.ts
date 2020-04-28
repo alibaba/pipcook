@@ -1,11 +1,11 @@
-import getGastify from 'fastify';
+import Fastify from 'fastify';
 import path from 'path';
 import ora from 'ora';
 import childProcess from 'child_process';
 
 import { ServeHandler, PredictFunc } from '../types';
 
-const fastify = getGastify({ logger: true });
+const fastify = Fastify({ logger: true });
 const spinner = ora();
 
 export const serve: ServeHandler = async function(dir, port = 7682) {
