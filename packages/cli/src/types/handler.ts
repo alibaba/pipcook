@@ -9,7 +9,7 @@ declare type PluginTypeI =
   'modelDeploy';
 
 export interface CommandHandler {
-  (cmdObj: void): Promise<void>;
+  (): Promise<void>;
 }
 
 interface DatasetCommandHandlerObjectParams {
