@@ -183,7 +183,7 @@ function _internalWrap(T, src={}) {
       value: () => {
         const type = getTypeInfo(T);
         const json = pyInst.import('json');
-        const dump = (v) => json.__getattr__('dumps').invoke(asHandleObject(v));
+        const dump = v => json.__getattr__('dumps').invoke(asHandleObject(v));
 
         let str;
         if (type.module === 'numpy') {
