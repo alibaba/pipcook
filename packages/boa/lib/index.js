@@ -47,6 +47,32 @@ function copy(T) {
   return fn.invoke(asHandleObject(T));
 }
 
+function list(T) {
+  return builtins.__getitem__('list').invoke(asHandleObject(T));
+}
+
+function len(T) {
+  return builtins.__getitem__('len').invoke(asHandleObject(T));
+}
+
+function map(T, fn) {
+  const size = len(T).toPrimitive();
+  const val = new Array(size);
+  for (let i = 0; i < size; i++) {
+    val[i] = fn(T.__getitem__(i), i);
+  }
+  return val;
+}
+
+function reduce(T, fn, val) {
+  const size = len(T).toPrimitive();
+  for (let i = 0; i < size; i++) {
+    console.log(i);
+    val = fn(val, T.__getitem__(i), i);
+  }
+  return val;
+}
+
 function getDelegator(type) {
   if (typeof type === 'string') {
     return delegators[type];
@@ -171,6 +197,26 @@ function _internalWrap(T, src={}) {
       enumerable: false,
       writable: false,
       value: () => T.toString(),
+    },
+    toJSON: {
+      configurable: true,
+      enumerable: false,
+      writable: false,
+      value: () => {
+        if (T.isSequence()) {
+          return map(T, wrap);
+        } else if (T.isMapping()) {
+          const keys = list(T.__getattr__('keys').invoke());
+          return reduce(keys, (val, name) => {
+            const k = name.toString();
+            val[k] = wrap(T.__getitem__(k));
+            return val;
+          }, {});
+        } else {
+          // TODO(Yorkie): support more types toJSON().
+          return T.toString();
+        }
+      },
     },
     /**
      * Shortcut for slicing object.
