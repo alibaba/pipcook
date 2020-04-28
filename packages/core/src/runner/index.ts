@@ -5,24 +5,26 @@
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as uuid from 'uuid';
+import * as os from 'os';
 
 import config from '../config';
 import { PipcookComponentResult } from '../types/component';
 import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
-import { DeploymentResult, EvaluateResult } from '../types/other';
+import { EvaluateResult } from '../types/other';
 import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './helper';
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
 import { RunConfigI } from '../types/config';
 import { compressTarFile } from '../utils/public';
+import { PipelineStatus, PipelineDB, PipelineDBParams } from '../types/database';
 
 import {
   DATAPROCESS,
   MODELLOAD,
   MODELDEFINE
 } from '../constants/plugins';
+import { PIPCOOK_PLUGINS } from '../constants/other';
 import { LifeCycleTypes } from '../components/lifecycle';
 
 const getCircularReplacer = () => {
@@ -45,7 +47,6 @@ const getCircularReplacer = () => {
  * @public pipelineId: id for this time's execution
  * @public latestSampleData: up to date train data in the pipeline
  * @public latestModel: up to date model data in the pipeline
- * @public latestDeploymentResult: up to date deployment data in the pipeline
  * @public updatedType: the return type of lastest plugin in the pipeline
  * @public components: all components executed in the pipeline
  * @public currentIndex: lastest indes of components executed
@@ -60,10 +61,11 @@ export class PipcookRunner {
   pipelineVersion: string = config.version;
   logDir: string|null = null;
   pipelineId: string|null = null;
+  runId: string|null = null;
   latestSampleData: UniDataset |null = null;
-  latestModel: UniModel |null = null;
+  latestModel: UniModel | null = null;
   latestEvaluateResult: EvaluateResult | null = null;
-  latestDeploymentResult: DeploymentResult | null = null;
+  evaluatePass: boolean | null = null;
 
   updatedType: string | null = null;
   components: PipcookComponentResult[] = [];
@@ -73,19 +75,20 @@ export class PipcookRunner {
   startTime = 0;
   endTime = 0;
 
-  status: 'running' | 'error' | 'success' = 'running';
+  status: PipelineStatus;
 
   /**
    * Constructor, user need to specify pipeline name when init
    */
-  constructor() {
-    this.pipelineId = uuid.v1();
-    this.logDir = path.join(process.cwd(), 'pipcook-output', this.pipelineId);
+  constructor(pipelineId: string, runId: string) {
+    this.pipelineId = pipelineId;
+    this.runId = runId;
+    this.logDir = path.join(os.homedir(), '.pipcook', 'logs', runId);
+    this.status = PipelineStatus.INIT;
     fs.ensureDirSync(this.logDir);
     fs.ensureDirSync(path.join(this.logDir, 'model'));
     fs.ensureDirSync(path.join(this.logDir, 'data'));
     fs.ensureDirSync(path.join(this.logDir, 'deploy'));
-    fs.ensureDirSync(path.join(process.cwd(), '.temp', this.pipelineId));
   }
 
   /**
@@ -109,7 +112,7 @@ export class PipcookRunner {
   }
 
   handleError = async (error: Error, components: PipcookComponentResult[]) => {
-    this.status = 'error';
+    this.status = PipelineStatus.FAIL;
     // error handle
     this.endTime = Date.now();
     assignFailures(components);
@@ -121,10 +124,10 @@ export class PipcookRunner {
 
   handleSuccess = async () => {
     // end the pipeline
-    this.status = 'success';
+    this.status = PipelineStatus.SUCCESS;
     this.endTime = Date.now();
     await this.savePipcook();
-    await this.deploy();
+    // await this.deploy();
     logComplete(); 
   }
 
@@ -132,98 +135,89 @@ export class PipcookRunner {
    * run components
    * @param components: components to be executed
    */
-  run = async (components: PipcookComponentResult[], successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) => {
+  run = async (components: PipcookComponentResult[]) => {
     await this.init(components);
     
     // create pipeline of plugins
-    const pipeline = createPipeline(components, this, 'normal', saveModelCallback);
+    const pipeline = createPipeline(components, this, 'normal');
     pipeline.subscribe((result: any) => {
       // success handle
       components[components.length - 1].status = 'success';
       assignLatestResult(this.updatedType as string, result, this);
     }, async (error: Error) => {
       await this.handleError(error, components);
-      if (errorCallback) {
-        await errorCallback(error, this);
-      }
     }, async () => {
       await this.handleSuccess();
-      if (successCallback) {
-        await successCallback(this);
-      }
     });
   }
 
   /**
    * run config file
    */
-  runConfig = async (configPath: string, successCallback?: Function, errorCallback?: Function, saveModelCallback?: Function) => {
-    const config: RunConfigI = fs.readJsonSync(configPath);
+  runConfig = async (config: PipelineDB) => {
     const components: PipcookComponentResult[] = [];
     PLUGINS.forEach((pluginType) => {
-      if (config.plugins[pluginType] &&
-          config.plugins[pluginType].package &&
-          LifeCycleTypes[pluginType]) {
-        const pluginName = config.plugins[pluginType].package;
-        const params = config.plugins[pluginType].params || {};
+      if (config[pluginType] && LifeCycleTypes[pluginType]) {
+        const pluginName = config[pluginType];
+        const params = JSON.parse(config[(pluginType + 'Params') as PipelineDBParams] || '{}');
         const version = process.env.npm_package_version;
 
         let pluginModule;
         try {
-          pluginModule = require(pluginName).default;
+          pluginModule = require(path.join(PIPCOOK_PLUGINS, pluginName)).default;
         } catch (err) {
-          pluginModule = require(path.join(process.cwd(), pluginName)).default;
+          pluginModule = require(pluginName).default;
         }
         const factoryMethod = LifeCycleTypes[pluginType];
         const component = factoryMethod(pluginModule, params);
         component.version = version;
-        component.package = config.plugins[pluginType].package;
+        component.package = config[pluginType];
         components.push(component);
       }
     });
-    this.run(components, successCallback, errorCallback, saveModelCallback);
+    this.run(components);
   }
 
-  /**
-   * for whatever plugins, they will need
-   *  - deploy plugin
-   *  - model define plugin
-   *  - data process plugin if required 
-   */
-  deploy = async () => {
-    const deployDir = path.join(this.logDir, 'deploy');
-    await fs.copy(path.join(this.logDir, 'model'), path.join(deployDir, 'model'));
-    await fs.copy(path.join(this.logDir, 'log.json'), path.join(deployDir, 'log.json'));
-    await fs.copy(path.join(__dirname, '..', 'assets', 'predict.js'), path.join(deployDir, 'main.js'));
-    let dependencies: any = {};
-    const dataProcessCom = this.components.find((e) => e.type === DATAPROCESS);
-    const analyzeCom = async (component: PipcookComponentResult) => {
-      let pluginPath;
-      try {
-        pluginPath = require.resolve(component.package);
-      } catch (err) {
-        pluginPath = require.resolve(path.join(process.cwd(), component.package));
-      }
-      pluginPath = path.join(pluginPath, '..', '..');
-      await fs.copy(pluginPath, path.join(deployDir, component.type));
-      const packageJson = await fs.readJSON(path.join(pluginPath, 'package.json'));
-      return packageJson.dependencies;
-    };
-    if (dataProcessCom) {
-      dependencies = await analyzeCom(dataProcessCom);
-    }
-    const modelDefineCom = this.components.find((e) => e.type === MODELDEFINE || e.type === MODELLOAD);
-    const dependenciesTemp = await analyzeCom(modelDefineCom);
-    dependencies = {
-      ...dependencies,
-      ...dependenciesTemp
-    };
-    const packageJson = await fs.readJSON(path.join(__dirname, '..', 'assets', 'template-package.json'));
-    packageJson.dependencies = {
-      ...packageJson.dependencies,
-      ...dependencies
-    };
-    await fs.writeJSON(path.join(deployDir, 'package.json'), packageJson, { spaces: 2 });
-    await compressTarFile(deployDir, path.join(this.logDir, 'deploy.tar.gz'));
-  }
+  // /**
+  //  * for whatever plugins, they will need
+  //  *  - deploy plugin
+  //  *  - model define plugin
+  //  *  - data process plugin if required 
+  //  */
+  // deploy = async () => {
+  //   const deployDir = path.join(this.logDir, 'deploy');
+  //   await fs.copy(path.join(this.logDir, 'model'), path.join(deployDir, 'model'));
+  //   await fs.copy(path.join(this.logDir, 'log.json'), path.join(deployDir, 'log.json'));
+  //   await fs.copy(path.join(__dirname, '..', 'assets', 'predict.js'), path.join(deployDir, 'main.js'));
+  //   let dependencies: any = {};
+  //   const dataProcessCom = this.components.find((e) => e.type === DATAPROCESS);
+  //   const analyzeCom = async (component: PipcookComponentResult) => {
+  //     let pluginPath;
+  //     try {
+  //       pluginPath = require.resolve(component.package);
+  //     } catch (err) {
+  //       pluginPath = require.resolve(path.join(process.cwd(), component.package));
+  //     }
+  //     pluginPath = path.join(pluginPath, '..', '..');
+  //     await fs.copy(pluginPath, path.join(deployDir, component.type));
+  //     const packageJson = await fs.readJSON(path.join(pluginPath, 'package.json'));
+  //     return packageJson.dependencies;
+  //   };
+  //   if (dataProcessCom) {
+  //     dependencies = await analyzeCom(dataProcessCom);
+  //   }
+  //   const modelDefineCom = this.components.find((e) => e.type === MODELDEFINE || e.type === MODELLOAD);
+  //   const dependenciesTemp = await analyzeCom(modelDefineCom);
+  //   dependencies = {
+  //     ...dependencies,
+  //     ...dependenciesTemp
+  //   };
+  //   const packageJson = await fs.readJSON(path.join(__dirname, '..', 'assets', 'template-package.json'));
+  //   packageJson.dependencies = {
+  //     ...packageJson.dependencies,
+  //     ...dependencies
+  //   };
+  //   await fs.writeJSON(path.join(deployDir, 'package.json'), packageJson, { spaces: 2 });
+  //   await compressTarFile(deployDir, path.join(this.logDir, 'deploy.tar.gz'));
+  // }
 }

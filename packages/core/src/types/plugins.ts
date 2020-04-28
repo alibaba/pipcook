@@ -3,10 +3,10 @@ import { UniDataset, Sample, Metadata } from './data/common';
 import { UniModel } from './model';
 import { EvaluateResult } from './other';
 
-export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate' | 'modelDeploy';
+export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate';
 
 export interface ArgsType {
-  pipelineId: string;
+  runId: string;
   modelDir: string;
   dataDir: string;
   [key: string]: any;

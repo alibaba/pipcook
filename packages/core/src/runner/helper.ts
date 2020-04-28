@@ -46,18 +46,8 @@ export async function assignLatestResult(updatedType: string, result: any, self:
     console.log('evaluate result: ', result);
     self.latestEvaluateResult = result;
     break;
-  case DEPLOYMENT:
-    self.latestDeploymentResult = result;
-    break;
   case MODELTOSAVE:
     self.latestModel = result;
-    if (saveModelCallback) {
-      const valueMap = 
-        (self.latestSampleData && self.latestSampleData.metadata 
-          && self.latestSampleData.metadata.label && self.latestSampleData.metadata.labelMap) || {};
-      fs.writeJSONSync(path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'), valueMap);
-      await saveModelCallback(path.join(self.logDir as string, 'model'), self.pipelineId, path.join(process.cwd(), '.temp', self.pipelineId, 'label.json'));
-    } 
     break;
   default:
     break;
@@ -74,7 +64,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
   firstComponent.status = 'running';
   logCurrentExecution(firstComponent, logType);
   const insertParams = {
-    pipelineId: self.pipelineId,
+    runId: self.runId,
     modelDir: path.join(self.logDir, 'model'),
     dataDir: path.join(self.logDir, 'data')
   };

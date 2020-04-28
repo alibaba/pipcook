@@ -15,13 +15,12 @@
     "bootstrap": {
       "nohoist": [
         "node-addon-api",
-        "egg",
+        "midway",
         "egg-scripts",
         "egg-ci",
-        "egg-bin",
-        "egg-mock",
-        "autod-egg",
-        "autod"
+        "midway-bin",
+        "midway-mock",
+        "ts-node"
       ]
     }
   },

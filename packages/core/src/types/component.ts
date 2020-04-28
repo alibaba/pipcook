@@ -5,7 +5,7 @@ import { PipObject } from './other';
 import { Subscribable } from 'rxjs';
 
 export interface InsertParams {
-  pipelineId: string;
+  runId: string;
   modelDir: string;
   dataDir: string;
 }
@@ -21,8 +21,7 @@ type ResultType =
   'modelLoad' | 
   'modelDefine' |
   'modelTrain' |
-  'modelEvaluate' |
-  'modelDeploy' ;
+  'modelEvaluate';
 
 export interface PipcookComponentResult {
   type: ResultType;
@@ -39,10 +38,6 @@ export interface PipcookComponentResult {
 
 export interface PipcookLifeCycleComponent {
   (plugin: PipcookPlugin, params?: PipObject): PipcookComponentResult;
-}
-
-export interface PipcookModelDeployResult {
-  execute: Function;
 }
 
 export interface PipcookLifeCycleTypes {

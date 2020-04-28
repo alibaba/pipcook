@@ -62,3 +62,12 @@ import { PLUGINS } from './constants/plugins';
 export const constants = {
   PLUGINS
 };
+
+export {
+  parseConfig,
+  createRun
+} from './runner/daemon';
+
+export {
+  PipelineDB
+} from './types/database';

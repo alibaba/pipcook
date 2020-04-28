@@ -25,7 +25,7 @@ export default class Logger {
   protected static error: LoggerFunction = createLogger('error', LoggerColor.RED);
 
   public static logStartExecution(pipline: PipcookRunner) {
-    Logger.log(`start execution: \npipeline id: ${pipline.pipelineId}`);
+    Logger.log(`start execution: \npipeline id: ${pipline.pipelineId}\nrun id: ${pipline.runId}`);
   }
   public static logCurrentExecution(component: PipcookComponentResult, type = 'normal') {
     let msg = `current execution component: ${component.type}`;

@@ -8,6 +8,7 @@ import { from, range, forkJoin, Subscribable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { PipcookLifeCycleComponent, PipcookComponentResult, PipcookLifeCycleTypes } from '../types/component';
 import { DATA, MODEL, EVALUATE, MODELTOSAVE } from '../constants/other';
+import * as os from 'os';
 import {
   PipcookPlugin,
   DataCollectType,
@@ -35,7 +36,7 @@ import { UniDataset } from '../types/data/common';
  * @param plugin: plugin
  * @param params: plugin's parameters
  */
-function produceResultFactory(type: 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate' | 'modelDeploy',
+function produceResultFactory(type: 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate',
   plugin: PipcookPlugin, params? : any): PipcookComponentResult {
   const result: PipcookComponentResult = {
     type, 
@@ -144,7 +145,7 @@ export const ModelTrain: PipcookLifeCycleComponent = (plugin: ModelTrainType, pa
     return from(plugin(data, model, {
       ...params, ...insertParams, 
       saveModel: async (callback: Function) => {
-        await callback(path.join(process.cwd(), 'pipcook-output', insertParams.pipelineId, 'model'));
+        await callback(path.join(os.homedir(), '.pipcook', 'logs', insertParams.runId, 'model'));
       }
     }));
   };

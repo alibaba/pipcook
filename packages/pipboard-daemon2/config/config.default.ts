@@ -27,6 +27,10 @@ export default (appInfo: EggAppInfo) => {
     dir: path.join(appInfo.baseDir, 'app/public'),
   };
 
+  config.sequelize = {
+    dialect: 'sqlite',
+    storage: path.join(__dirname, '..', 'db', 'pipcook.db'),
+  };
 
   // the return config will combines to EggAppConfig
   return {

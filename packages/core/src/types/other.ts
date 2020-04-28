@@ -3,13 +3,6 @@ export interface Statistic {
   metricValue: number;
 }
 
-export interface DeploymentResult {
-  version: string;
-  deployService: string;
-  serviceapi: string;
-  extraData: any;
-} 
-
 export interface PipObject {
   [key: string]: any;
 }

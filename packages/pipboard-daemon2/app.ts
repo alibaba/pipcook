@@ -9,6 +9,7 @@ class AppBootHook {
   }
 
   async serverDidReady() {
+    this.app.model.sync()
     opn('http://127.0.0.1:7001/index.html');
   }
 }

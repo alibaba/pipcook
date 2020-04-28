@@ -4,6 +4,7 @@
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as os from 'os';
 import _cliProgress from 'cli-progress';
 
 const xml2js = require('xml2js');
@@ -140,16 +141,16 @@ export function unZipData(filePath: string, targetPath: string) {
  * get pipcook model path
  */
 
-export function getModelDir(modelId: string) {
-  return path.join(process.cwd(), 'pipcook-output', modelId, 'model');
+export function getModelDir(runId: string) {
+  return path.join(os.homedir(), '.pipcook', 'logs', runId, 'model');
 }
 
 /**
  * get pipcook log's sample data's metadata according to modelId
  */
 
-export function getMetadata(modelId: string) {
-  const json = require(path.join(process.cwd(), 'pipcook-output', modelId, `log.json`));
+export function getMetadata(runId: string) {
+  const json = require(path.join(os.homedir(), '.pipcook', 'logs', runId, `log.json`));
   return json && json.metadata;
 }
 

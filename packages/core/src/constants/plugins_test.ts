@@ -5,7 +5,6 @@ import {
   MODELLOAD,
   MODELTRAIN,
   MODELEVALUATE,
-  MODELDEPLOY
 } from './plugins';
 
 describe('plugins constant', () => {
@@ -16,6 +15,5 @@ describe('plugins constant', () => {
     expect(MODELLOAD).toEqual('modelLoad');
     expect(MODELTRAIN).toEqual('modelTrain');
     expect(MODELEVALUATE).toEqual('modelEvaluate');
-    expect(MODELDEPLOY).toEqual('modelDeploy');
   });
 });

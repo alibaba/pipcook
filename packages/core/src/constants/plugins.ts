@@ -7,7 +7,6 @@ export const MODELLOAD: PluginTypeI = 'modelLoad';
 export const MODELDEFINE: PluginTypeI = 'modelDefine';
 export const MODELTRAIN: PluginTypeI = 'modelTrain';
 export const MODELEVALUATE: PluginTypeI = 'modelEvaluate';
-export const MODELDEPLOY: PluginTypeI = 'modelDeploy';
 export const PLUGINS: PluginTypeI[] = [
   DATACOLLECT,
   DATAACCESS,
@@ -16,5 +15,4 @@ export const PLUGINS: PluginTypeI[] = [
   MODELDEFINE,
   MODELTRAIN,
   MODELEVALUATE,
-  MODELDEPLOY
 ];
