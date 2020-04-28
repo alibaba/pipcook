@@ -1,0 +1,16 @@
+{
+  "name": "plugins",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pipcook/plugins-csv-data-access": "^0.5.9"
+  },
+  "devDependencies": {},
+  "description": ""
+}
