@@ -1,9 +1,11 @@
+#!/usr/bin/env ts-node
+
 import semver from 'semver';
 import chalk from 'chalk';
 
-import { initCommander } from './commands';
+import { initCommander } from '../commands';
 
-export function run(): void {
+(function(): void {
   // check node version
   if (!semver.gte(process.version, '10.0.0')) {
     console.log(
@@ -16,4 +18,4 @@ export function run(): void {
   }
 
   initCommander();
-}
+})()

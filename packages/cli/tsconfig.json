@@ -8,8 +8,5 @@
   "exclude": [
     "dist",
     "assets"
-  ],
-  "include": [
-    "src/**/*"
   ]
 }

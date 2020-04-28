@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-./packages/cli/src/bin/index.js run ./test/pipelines/$1.json
+chmod +x ./packages/cli/dist/bin/index.js
+./packages/cli/dist/bin/index.js run ./test/pipelines/$1.json
