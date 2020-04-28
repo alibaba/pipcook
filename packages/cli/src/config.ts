@@ -19,8 +19,7 @@ export const dependencies: string[] = [
   '@pipcook/plugins-tfjs-simplecnn-model-define',
   '@pipcook/plugins-bayesian-model-train',
   '@pipcook/plugins-image-classification-tfjs-model-train',
-  '@pipcook/plugins-object-detection-detectron-model-train',
-  'ts-node'
+  '@pipcook/plugins-object-detection-detectron-model-train'
 ];
 
 export const pipcookLogName = 'pipcook-output';

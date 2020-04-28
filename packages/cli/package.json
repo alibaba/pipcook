@@ -36,6 +36,7 @@
     "ora": "^3.4.0",
     "request": "^2.88.2",
     "semver": "^6.3.0",
+    "ts-node": "^8.9.1",
     "yaml": "^1.7.2"
   },
   "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
