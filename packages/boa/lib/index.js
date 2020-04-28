@@ -47,6 +47,12 @@ function copy(T) {
   return fn.invoke(asHandleObject(T));
 }
 
+function dump(T) {
+  return pyInst.import('json')
+    .__getattr__('dumps')
+    .invoke(asHandleObject(T));
+}
+
 function getDelegator(type) {
   if (typeof type === 'string') {
     return delegators[type];
@@ -182,9 +188,6 @@ function _internalWrap(T, src={}) {
       writable: false,
       value: () => {
         const type = getTypeInfo(T);
-        const json = pyInst.import('json');
-        const dump = v => json.__getattr__('dumps').invoke(asHandleObject(v));
-
         let str;
         if (type.module === 'numpy') {
           str = dump(T.__getattr__('tolist').invoke());
