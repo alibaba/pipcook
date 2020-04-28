@@ -2,9 +2,9 @@
 import semver from 'semver';
 import chalk from 'chalk';
 
-import { initCommand } from '../commands'
+import { initCommand } from './commands';
 
-(function(): void {
+export function run(): void {
   // check node version
   if (!semver.gte(process.version, '10.0.0')) {
     console.log(
@@ -16,5 +16,5 @@ import { initCommand } from '../commands'
     return;
   }
 
-  initCommand()
-})();
+  initCommand();
+}

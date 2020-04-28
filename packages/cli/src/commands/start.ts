@@ -18,7 +18,7 @@ export const start: StartHandler = async (filename: string) => {
     return;
   }
 
-  const script = path.join(__dirname, 'runConfig.js');
+  const script = path.join(__dirname, '../../dist/commands/runConfig.js');
   const child = fork(script, [ filename ], {
     cwd: process.cwd(),
     env: {

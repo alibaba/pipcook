@@ -69,4 +69,4 @@ export const initCommand = () => {
     });
 
   program.parse(process.argv);
-}
+};
