@@ -1,12 +1,6 @@
-declare type PluginTypeI = 
-  'dataCollect' |
-  'dataAccess' |
-  'dataProcess' |
-  'modelLoad' |
-  'modelDefine' |
-  'modelTrain' |
-  'modelEvaluate' |
-  'modelDeploy';
+import {
+  PluginTypeI
+} from "@pipcook/pipcook-core";
 
 export interface CommandHandler {
   (): Promise<void>;
