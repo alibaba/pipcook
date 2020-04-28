@@ -3,15 +3,15 @@ import path from 'path';
 import ora from 'ora';
 import childProcess from 'child_process';
 
-import { ServeHandler, PredictFunc } from '../types';
+import { ServeHandler, PredictHandler } from '../types';
 
 const fastify = Fastify({ logger: true });
 const spinner = ora();
 
 export const serve: ServeHandler = async function(dir, port = 7682) {
-  let predictFunc: PredictFunc;
+  let predictHandler: PredictHandler;
   try {
-    predictFunc = require(path.join(dir, 'main.js'));
+    predictHandler = require(path.join(dir, 'main.js'));
   } catch (err) {
     spinner.fail(`the path specified is not a valid pipcook deploy path`);
     return;
@@ -23,7 +23,7 @@ export const serve: ServeHandler = async function(dir, port = 7682) {
   });
 
   fastify.post('/', async (req) => {
-    const result = await predictFunc(req.body.data);
+    const result = await predictHandler(req.body.data);
     return {
       result: result
     };

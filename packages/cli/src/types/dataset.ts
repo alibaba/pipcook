@@ -7,7 +7,7 @@ interface DatasetMetadata {
   date_created: string;
 }
 
-export interface ImageSchema {
+export interface DatasetImage {
   license: number;
   file_name: string;
   coco_url: string;
@@ -40,7 +40,7 @@ export interface DatasetCategory {
 
 export interface Dataset {
   info: DatasetMetadata;
-  images: ImageSchema[];
+  images: DatasetImage[];
   licenses: DatasetLicense[];
   annotations: DatasetAnnotation[];
   categories: DatasetCategory[];

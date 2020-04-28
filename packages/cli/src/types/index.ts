@@ -5,12 +5,12 @@ import {
 import {
   CommandHandler,
   ServeHandler,
-  PredictFunc,
+  PredictHandler,
   StartHandler
 } from './handler';
 
 import {
-  ImageSchema,
+  DatasetImage,
   DatasetAnnotation,
   DatasetCategory,
   Dataset
@@ -21,10 +21,10 @@ export {
 
   CommandHandler,
   ServeHandler,
-  PredictFunc,
+  PredictHandler,
   StartHandler,
 
-  ImageSchema,
+  DatasetImage,
   DatasetAnnotation,
   DatasetCategory,
   Dataset

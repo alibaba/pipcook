@@ -10,7 +10,7 @@ export interface ServeHandler {
   (deployPath: string, port: number): Promise<void>;
 }
 
-export interface PredictFunc {
+export interface PredictHandler {
   (param: any): Promise<any>;
 }
 

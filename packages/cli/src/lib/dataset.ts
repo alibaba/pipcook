@@ -4,7 +4,7 @@ import glob from 'glob-promise';
 
 import {
   CommandHandler,
-  ImageSchema,
+  DatasetImage,
   Dataset,
   DatasetCategory,
   DatasetAnnotation
@@ -59,7 +59,7 @@ export const dataset: CommandHandler = async ({ type }) => {
         }
         const json = require(path.join(process.cwd(), 'annotations', dirName + '.json'));
 
-        json.images.forEach((image: ImageSchema) => {
+        json.images.forEach((image: DatasetImage) => {
           newJson.images.push({
             license: 1,
             file_name: image.file_name,
@@ -90,7 +90,7 @@ export const dataset: CommandHandler = async ({ type }) => {
           newJson.annotations.push({
             id: annotationNum,
             image_id: newJson.images.find((img) => img.file_name == 
-              (json.images.find((image: ImageSchema) => image.id === annotation.image_id).file_name)).id,
+              (json.images.find((image: DatasetImage) => image.id === annotation.image_id).file_name)).id,
             category_id: newJson.categories.find((cate) => cate.name == 
               (json.categories.find((category: DatasetCategory) => category.id === annotation.category_id).name)).id,
             segmentation: [],
