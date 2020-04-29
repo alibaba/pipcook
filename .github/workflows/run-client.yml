@@ -21,6 +21,7 @@ jobs:
         node-version: ${{ matrix.node_version }}
     - name: building
       run: |
+        npm install ts-node -g
         npm install
         npm run build
     - name: create workspace
