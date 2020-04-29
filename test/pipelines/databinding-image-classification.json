@@ -12,20 +12,18 @@
     "dataProcess": {
       "package": "./packages/plugins/data-process/image-data-process",
       "params": {
-        "resize": [256, 256]
+        "resize": [256, 256],
+        "normalize": true
       }
     },
     "modelDefine": {
-      "package": "./packages/plugins/model-define/tfjs-mobilenet-model-define"
+      "package": "./packages/plugins/model-define/tensorflow-resnet-model-define"
     },
     "modelTrain": {
-      "package": "./packages/plugins/model-train/image-classification-tfjs-model-train",
+      "package": "./packages/plugins/model-train/image-classification-tensorflow-model-train",
       "params": {
-        "epochs": 15
+        "epochs": 20
       }
-    },
-    "modelEvaluate": {
-      "package": "./packages/plugins/model-evaluate/image-classification-tfjs-model-evaluate"
     }
   }
 }
