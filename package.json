@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@types/jasmine": "^3.5.10",
-    "jasmine": "^3.5.0"
+    "jasmine": "^3.5.0",
+    "ts-node": "^8.9.1"
   }
 }
