@@ -4,6 +4,8 @@
   "description": "{{description}}",
   "private": true,
   "dependencies": {
+    "@types/cls-hooked": "^4.3.0",
+    "cls-hooked": "^4.2.2",
     "egg-scripts": "^2.10.0",
     "midway": "^1.0.0",
     "sequelize": "^5.21.7",

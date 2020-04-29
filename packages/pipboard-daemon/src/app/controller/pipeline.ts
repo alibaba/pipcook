@@ -103,22 +103,4 @@ export class PipelineController {
       });
     }
   }
-
-  @post('/run/:pipelineId')
-  public async runPipeline() {
-    const { ctx } = this;
-    const { pipelineId } = ctx.params;
-    try {
-      const data = await this.pipelineService.createNewRun(pipelineId);
-      this.pipelineService.startRun(data);
-      successRes(ctx, {
-        message: 'create run job successfully',
-        data
-      }, 201);
-    } catch (err) {
-      failRes(ctx, {
-        message: err.message
-      });
-    }
-  }
 }

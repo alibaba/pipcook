@@ -5,6 +5,7 @@ import * as path from 'path';
 import { RunConfigI } from '../types/config';
 import { PipelineDB, PipelineDBParams, PipelineStatus, RunDB } from '../types/database';
 import { PLUGINS } from '../constants/plugins';
+import { PIPCOOK_LOGS } from '../constants/other';
 import { LifeCycleTypes } from '../components/lifecycle';
 
 export async function parseConfig(configPath: string, generateId = true) {
@@ -39,4 +40,18 @@ export async function createRun(pipelineId: string): Promise<RunDB> {
     status: PipelineStatus.INIT,
     currentIndex: -1
   }
+}
+
+export async function writeOutput(runId: string, content: string, stderr = false) {
+  const fileName = stderr ? 'stderr' : 'stdout';
+  const filePath = path.join(PIPCOOK_LOGS, runId, fileName);
+  await new Promise((resolve, reject) => {
+    fs.appendFile(filePath, content, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    })
+  })
 }

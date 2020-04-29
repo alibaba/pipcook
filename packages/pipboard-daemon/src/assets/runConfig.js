@@ -10,15 +10,6 @@ if (command === 'run-pipeline') {
     const runner = new PipcookRunner(pipelineId, runId);
     await runner.runConfig(JSON.parse(runConfig));
   })();
-  
-  // console.log('here');
-  // const timer = setInterval(() => {
-  //   process.send({ type: 'pipeline-status', ff: 112 });
-  // }, 1000);
-  // setTimeout(() => {
-  //   clearInterval(timer);
-  //   process.exit();
-  // }, 5000);
 }
 
 

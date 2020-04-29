@@ -37,25 +37,29 @@ export function getLog(pipcookRunner: PipcookRunner): any {
  */
 export async function assignLatestResult(updatedType: string, result: any, self: PipcookRunner, saveModelCallback?: Function) {
   switch (updatedType) {
-  case DATA:
-    self.latestSampleData = result;
-    break;
-  case MODEL:
-    self.latestModel = result;
-    break;
-  case EVALUATE:
-    console.log('evaluate result: ', result);
-    self.latestEvaluateResult = result;
-    if (!self.latestEvaluateResult.pass) {
-      throw new EvaluateError(self.latestEvaluateResult);
-    }
-    break;
-  case MODELTOSAVE:
-    self.latestModel = result;
-    break;
-  default:
-    break;
+    case DATA:
+      self.latestSampleData = result;
+      break;
+    case MODEL:
+      self.latestModel = result;
+      break;
+    case EVALUATE:
+      console.log('evaluate result: ', result);
+      self.evaluateMap = result;
+      if (self.evaluateMap.pass === true || self.evaluateMap.pass === false) {
+        self.evaluatePass = self.evaluateMap.pass;
+      }
+      if (self.evaluateMap.pass === false) {
+        throw new EvaluateError(self.evaluateMap);
+      }
+      break;
+    case MODELTOSAVE:
+      self.latestModel = result;
+      break;
+    default:
+      break;
   }
+  self.notifyStatus();
 }
 
 /**

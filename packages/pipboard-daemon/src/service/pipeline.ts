@@ -1,7 +1,9 @@
 import { provide, inject } from 'midway';
-import { PipelineDB, createRun } from '@pipcook/pipcook-core';
+import { PipelineDB, createRun, writeOutput } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import { fork } from 'child_process';
+
+import { RunParams } from '../interface';
 
 @provide('pipelineService')
 export class PipelineService {
@@ -52,6 +54,32 @@ export class PipelineService {
     return record;
   }
 
+  async getRunById(id: string) {
+    const record = await this.runModel.findOne({
+      where: { id }
+    });
+    return record;
+  }
+
+  async getRunsByPipelineId(pipelineId: string, offset: number, limit: number) {
+    const records = await this.runModel.findAndCountAll({
+      offset,
+      limit,
+      where: {
+        pipelineId
+      }
+    });
+    return records;
+  }
+
+  async updateRunById(id: string, data: RunParams) {
+    await this.runModel.update(data, {
+      where: { id }
+    });
+    const record = await this.getRunById(id);
+    return record;
+  }
+
   async startRun(runRecord: any) {
     const pipelineRecord = await this.getPipelineById(runRecord.pipelineId);
     const script = path.join(__dirname, '..', 'assets', 'runConfig.js');
@@ -62,15 +90,15 @@ export class PipelineService {
           NODE_PATH: '/Users/queyue/Documents/work/pipcook/test/node_modules'
         }
       });
-      child.stdout.on('data', (data) => {
-        console.log(String(data));
+      child.stdout.on('data', async (data) => {
+        await writeOutput(runRecord.id, data);
       });
-      child.stderr.on('data', (data) => {
-        console.error(String(data));
+      child.stderr.on('data', async (data) => {
+        await writeOutput(runRecord.id, data, true);
       });
-      child.on('message', (data) => {
+      child.on('message', async (data) => {
         if (data.type === 'pipeline-status') {
-          console.log(data);
+          await this.updateRunById(runRecord.id, data.data);
         }
       });
       child.on('close', (code) => {

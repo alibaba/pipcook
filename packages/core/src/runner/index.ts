@@ -51,7 +51,7 @@ const getCircularReplacer = () => {
  * @public components: all components executed in the pipeline
  * @public currentIndex: lastest indes of components executed
  * @public error: if there are any error
- * @public latestEvaluateResult: evaluation result
+ * @public evaluateMap: evaluation result
  * @public startTime: start time of pipeline
  * @public endTime: end time of pipeline
  * @public status: status of current pipeline
@@ -64,7 +64,7 @@ export class PipcookRunner {
   runId: string|null = null;
   latestSampleData: UniDataset |null = null;
   latestModel: UniModel | null = null;
-  latestEvaluateResult: EvaluateResult | null = null;
+  evaluateMap: EvaluateResult | null = null;
   evaluatePass: boolean | null = null;
 
   updatedType: string | null = null;
@@ -109,6 +109,18 @@ export class PipcookRunner {
 
     linkComponents(components);
     this.components = components;
+
+    process
+      .on('unhandledRejection', async reason => {
+        await this.handleError(reason as Error, this.components);
+        this.notifyStatus();
+        process.exit();
+      })
+      .on('uncaughtException', async err => {
+        await this.handleError(err, this.components);
+        this.notifyStatus();
+        process.exit();
+      });
   }
 
   handleError = async (error: Error, components: PipcookComponentResult[]) => {
@@ -116,7 +128,7 @@ export class PipcookRunner {
     // error handle
     this.endTime = Date.now();
     assignFailures(components);
-    this.error = error.message;
+    this.error = error.message || JSON.stringify(error);
     await this.savePipcook();
     logError('Component ' + this.components[this.currentIndex].type + ' error: ');
     logError(error);
@@ -131,11 +143,35 @@ export class PipcookRunner {
     logComplete(); 
   }
 
+  notifyStatus = () => {
+    const runnerStatus: any = {
+      status: this.status,
+      currentIndex: this.currentIndex
+    };
+    if(this.evaluateMap) {
+      runnerStatus.evaluateMap = JSON.stringify(this.evaluateMap);
+    }
+    if (this.evaluatePass !== undefined) {
+      runnerStatus.evaluatePass = this.evaluatePass;
+    }
+    if (this.endTime) {
+      runnerStatus.endTime = this.endTime;
+    }
+    if (this.error) {
+      runnerStatus.error = JSON.stringify(this.error);
+    }
+    process.send({
+      type: 'pipeline-status',
+      data: runnerStatus
+    });
+  }
+
   /**
    * run components
    * @param components: components to be executed
    */
   run = async (components: PipcookComponentResult[]) => {
+    this.status = PipelineStatus.RUNNING;
     await this.init(components);
     
     // create pipeline of plugins
@@ -146,8 +182,10 @@ export class PipcookRunner {
       assignLatestResult(this.updatedType as string, result, this);
     }, async (error: Error) => {
       await this.handleError(error, components);
+      this.notifyStatus();
     }, async () => {
       await this.handleSuccess();
+      this.notifyStatus();
     });
   }
 
