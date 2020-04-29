@@ -6,21 +6,53 @@ All source code is open-source and hosted at [GitHub](https://github.com/alibaba
 
 ## Environment
 
-- Operating system: MacOs, Linux
-- Running environment: Node. js> = 10.16, Npm> = 6.1.0
-- Python requirements (python> = 3.6, pip points to the correct python3 path)
-- Global npm package: lerna, typescript compiler
+- operating system: macOS/Linux
+- Node.js >= 12
 
-To check whether the above environment is installed correctly, run the following command:
+## Development
 
-```sh
-$ node -v
-$ npm -v
-$ tsc -v
-$ lerna -v
-$ python --version
-$ pip --version
+### Initialize
+
+Clong the repository from GitHub:
+
+```bash
+$ git clone git@github.com:alibaba/pipcook.git
 ```
+
+### Build
+
+And install the requirements and build:
+
+```bash
+$ npm install
+$ npm run build
+```
+
+### Test
+
+Run all the tests in the following
+
+```bash
+$ npm test
+```
+
+And run tests for single specific package:
+
+```bash
+$ ./node_modules/.bin/lerna run --scope <package_name>
+```
+
+### Pipeline
+
+```bash
+$ sh run_pipeline.sh <pipeline_name>
+```
+
+The `pipeline_name` is the name of the pipeline file under "test/pipelines", such as:
+
+- "text-bayes-classification"
+- "mnist-image-classification"
+- "databinding-image-classification"
 
 ## Plugin Specifications
 
