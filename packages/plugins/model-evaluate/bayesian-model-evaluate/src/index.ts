@@ -24,7 +24,7 @@ const bayesianModelEvaluate: ModelEvaluateType
 
     sys.path.insert(0, path.join(__dirname, 'assets'));
 
-    const { modelDir } = args;
+    const { modelDir, expectAccuracy = 0.95 } = args;
     const { testLoader, metadata } = data;
     const classifier = model.model;
 
@@ -33,9 +33,10 @@ const bayesianModelEvaluate: ModelEvaluateType
 
     const feature_words = get_all_words_list(path.join(modelDir, 'feature_words.pkl'));
     const feature_list = TextFeatures(text_list[1], feature_words);
-    const test_accuracy = classifier.score(feature_list, text_list[2]);
+    const accuracy = classifier.score(feature_list, text_list[2]);
     return {
-      accuracy: test_accuracy
+      pass: accuracy >= parseInt(expectAccuracy),
+      accuracy
     };
   };
 
