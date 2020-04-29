@@ -12,6 +12,7 @@ boa.import('numpy.matlib');
 test('numpy.mat: interpret the input as a matrix.', t => {
   const x = np.array([[1, 2], [3, 4]]);
   const m = np.asmatrix(x);
+  t.equal(JSON.stringify(m.tolist()), '[[1,2],[3,4]]');
   t.equal(type(m).__name__, 'matrix');
   t.end();
 });

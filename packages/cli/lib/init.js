@@ -17,7 +17,7 @@ const init = async ({ client, beta, tuna }) => {
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
     npmInstallEnvs.BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';
-    npmInstallEnvs.BOA_CONDA_MIRROR = 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive';
+    npmInstallEnvs.BOA_CONDA_MIRROR = 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda';
   }
   if (client) {
     npmClient = client;
