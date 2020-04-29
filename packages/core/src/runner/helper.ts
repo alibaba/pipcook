@@ -46,7 +46,7 @@ export async function assignLatestResult(updatedType: string, result: any, self:
   case EVALUATE:
     console.log('evaluate result: ', result);
     self.latestEvaluateResult = result;
-    if (!self.latestEvaluateResult.pass) {
+    if (self.latestEvaluateResult.pass === false) {
       throw new EvaluateError(self.latestEvaluateResult);
     }
     break;
