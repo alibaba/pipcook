@@ -18,6 +18,8 @@ function _testshape(t) {
 
 test('the ndarry constructor', t => {
   const x = np.array([[1, 2, 3], [4, 5, 6]], np.int32);
+  t.equal(JSON.stringify(x), '[[1,2,3],[4,5,6]]');
+
   const testshape = _testshape(t);
   t.equal(type(x).__name__, 'ndarray');
   t.equal(x.dtype.name, 'int32', 'the dtype should be int32');
