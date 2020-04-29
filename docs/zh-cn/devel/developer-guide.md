@@ -28,6 +28,14 @@ $ npm install
 $ npm run build
 ```
 
+我们支持通过使用[清华开源镜像](https://mirrors.tuna.tsinghua.edu.cn/)来下载 Python 与 Python 包：
+
+```sh
+$ export BOA_CONDA_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda # 用于下载 Miniconda/Python
+$ export BOA_CONDA_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple                 # 用于下载 Pip 包
+$ npm install
+```
+
 ### 测试
 
 通过下面的命令来测试：
