@@ -57,13 +57,21 @@
 					<a href="observerfunc.html">ObserverFunc</a>
 				</li>
 			</ul>
-			<h1>Interface ObserverFunc</h1>
+			<h1>Interface ObserverFunc&lt;T&gt;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>T<span class="tsd-signature-symbol">: </span><a href="pipcookplugin.html" class="tsd-signature-type">PipcookPlugin</a></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -74,14 +82,14 @@
 			</section>
 			<section class="tsd-panel">
 				<h3 class="tsd-before-signature">Callable</h3>
-				<ul class="tsd-signatures tsd-kind-interface tsd-is-not-exported">
-					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="unidataset.html" class="tsd-signature-type">UniDataset</a>, model<span class="tsd-signature-symbol">: </span><a href="unimodel.html" class="tsd-signature-type">UniModel</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, insertParams<span class="tsd-signature-symbol">: </span><a href="insertparams.html" class="tsd-signature-type">InsertParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Subscribable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+				<ul class="tsd-signatures tsd-kind-interface tsd-has-type-parameter tsd-is-not-exported">
+					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="unidataset.html" class="tsd-signature-type">UniDataset</a>, model<span class="tsd-signature-symbol">: </span><a href="unimodel.html" class="tsd-signature-type">UniModel</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, insertParams<span class="tsd-signature-symbol">: </span><a href="insertparams.html" class="tsd-signature-type">InsertParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#promisedvalueof" class="tsd-signature-type">PromisedValueOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ReturnType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/d4f08d8/packages/core/src/types/component.ts#L13">packages/core/src/types/component.ts:13</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/ce6e670/packages/core/src/types/component.ts#L13">packages/core/src/types/component.ts:13</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -96,7 +104,7 @@
 								<h5>insertParams: <a href="insertparams.html" class="tsd-signature-type">InsertParams</a></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Subscribable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#promisedvalueof" class="tsd-signature-type">PromisedValueOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ReturnType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -113,7 +121,7 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-is-not-exported">
+					<li class="current tsd-kind-interface tsd-has-type-parameter tsd-is-not-exported">
 						<a href="observerfunc.html" class="tsd-kind-icon">Observer<wbr>Func</a>
 					</li>
 				</ul>
