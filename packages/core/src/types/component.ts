@@ -2,8 +2,7 @@ import { Observable } from 'rxjs';
 import { PipcookPlugin } from './plugins';
 import { UniModel } from './model';
 import { UniDataset } from './data/common';
-import { PipObject } from './other';
-import { PromisedValueOf } from './utility';
+import { PipObject, PromisedValueOf } from './other';
 
 export interface InsertParams {
   pipelineId: string;
