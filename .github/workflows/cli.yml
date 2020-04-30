@@ -21,47 +21,22 @@ jobs:
         node-version: ${{ matrix.node_version }}
     - name: building
       run: |
-        npm install ts-node -g
         npm install
         npm run build
     - name: create workspace
       run: mkdir -p myworkspace
-    - name: test client info
+    - name: test client basic info
       working-directory: ./myworkspace
       run: |
         ../packages/cli/dist/bin/index.js -v
         ../packages/cli/dist/bin/index.js --version
         ../packages/cli/dist/bin/index.js -h
         ../packages/cli/dist/bin/index.js --help
-    - name: test client init
-      working-directory: ./myworkspace
-      run: |
         ../packages/cli/dist/bin/index.js init --help
-    - name: test client run
-      working-directory: ./myworkspace
-      run: |
         ../packages/cli/dist/bin/index.js run --help
-    - name: test client log
-      working-directory: ./myworkspace
-      run: |
         ../packages/cli/dist/bin/index.js log --help
-    - name: test client board
-      working-directory: ./myworkspace
-      run: |
         ../packages/cli/dist/bin/index.js board --help
-    - name: test client plugin-dev
-      working-directory: ./myworkspace
-      run: |
         ../packages/cli/dist/bin/index.js plugin-dev --help
-    - name: test client dataset
-      working-directory: ./myworkspace
-      run: |
         ../packages/cli/dist/bin/index.js dataset --help
-    - name: test client bip
-      working-directory: ./myworkspace
-      run: |
         ../packages/cli/dist/bin/index.js bip --help
-    - name: test client serve
-      working-directory: ./myworkspace
-      run: |
         ../packages/cli/dist/bin/index.js serve --help
