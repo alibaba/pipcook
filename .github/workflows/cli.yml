@@ -1,4 +1,4 @@
-name: run client
+name: run CLI
 on:
   push:
   pull_request:
@@ -6,13 +6,13 @@ on:
     - master
 
 jobs:
-  pipeline-user-scenario:
+  basic-usage:
     name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node_version: ['12']
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v1
     - name: Use Node.js ${{ matrix.node_version }}
