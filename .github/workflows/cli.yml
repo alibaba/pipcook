@@ -57,8 +57,6 @@ jobs:
     - name: test client basic operate run
       working-directory: ./myworkspace
       run: |
-        ../packages/cli/dist/bin/index.js run ../test/databinding-image-classification.json
-        ../packages/cli/dist/bin/index.js run ../test/mnist-image-classification.json
         ../packages/cli/dist/bin/index.js run ../test/text-bayes-classification.json
     - name: test client basic operate plugin-dev
       working-directory: ./myworkspace
