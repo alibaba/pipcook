@@ -45,15 +45,16 @@ jobs:
       run: |
         mkdir init1
         cd init1
-        ../packages/cli/dist/bin/index.js init
+        ../../packages/cli/dist/bin/index.js init
         cd ../
         mkdir init2
         cd init2
-        ../packages/cli/dist/bin/index.js init --beta
+        ../../packages/cli/dist/bin/index.js init --beta
         cd ../
         mkdir init3
         cd init3
-        ../packages/cli/dist/bin/index.js init --tuna
+        ../../packages/cli/dist/bin/index.js init --tuna
+        cd ../
     - name: test client basic operate run
       working-directory: ./myworkspace
       run: |
