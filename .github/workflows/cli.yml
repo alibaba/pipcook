@@ -40,3 +40,27 @@ jobs:
         ../packages/cli/dist/bin/index.js dataset --help
         ../packages/cli/dist/bin/index.js bip --help
         ../packages/cli/dist/bin/index.js serve --help
+    - name: test client basic operate init
+      working-directory: ./myworkspace
+      run: |
+        mkdir init1
+        cd init1
+        ../packages/cli/dist/bin/index.js init
+        cd ../
+        mkdir init2
+        cd init2
+        ../packages/cli/dist/bin/index.js init --beta
+        cd ../
+        mkdir init3
+        cd init3
+        ../packages/cli/dist/bin/index.js init --tuna
+    - name: test client basic operate run
+      working-directory: ./myworkspace
+      run: |
+        ../packages/cli/dist/bin/index.js run ../test/databinding-image-classification.json
+        ../packages/cli/dist/bin/index.js run ../test/mnist-image-classification.json
+        ../packages/cli/dist/bin/index.js run ../test/text-bayes-classification.json
+    - name: test client basic operate plugin-dev
+      working-directory: ./myworkspace
+      run: |
+        ../packages/cli/dist/bin/index.js plugin-dev -t dataCollect
