@@ -1,14 +1,17 @@
-const fse = require('fs-extra');
-const ora = require('ora');
-const chalk = require('chalk');
-const path = require('path');
+import fse from 'fs-extra';
+import ora from 'ora';
+import chalk from 'chalk';
+import path from 'path';
+import { constants } from '@pipcook/pipcook-core';
+
+import { DevPluginCommandHandler } from '../types';
+
 const spinner = ora();
-const { constants } = require('@pipcook/pipcook-core');
 
 /**
  * prepare a working dir for developer to develop plugins
  */
-const devPlugin = ({ type, name }) => {
+export const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
   if (!type) {
     console.log('Please provide a plugin type');
     return;
@@ -41,5 +44,3 @@ const devPlugin = ({ type, name }) => {
     fse.removeSync(dirname);
   }
 };
-
-module.exports = devPlugin;

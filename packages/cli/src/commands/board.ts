@@ -1,12 +1,13 @@
-const chalk = require('chalk');
-const fse = require('fs-extra');
-const ora = require('ora');
-const childProcess = require('child_process');
-const path = require('path');
+import chalk from 'chalk';
+import fse from 'fs-extra';
+import ora from 'ora';
+import childProcess from 'child_process';
+import path from 'path';
+import { CommandHandler } from '../types';
 
 const spinner = ora();
 
-module.exports = () => {
+export const board: CommandHandler = async () => {
   try {
     if (!fse.existsSync(path.join(process.cwd(), '.server'))) {
       spinner.fail('Please init the project firstly');
