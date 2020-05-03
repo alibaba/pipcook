@@ -3,12 +3,12 @@
  */
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import { from } from 'rxjs';
 
 import { PipcookRunner } from './index';
 import { PipcookComponentResult } from '../types/component';
 import { EvaluateError } from '../types/other';
 import { logCurrentExecution } from '../utils/logger';
-import { Observable, from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE } from '../constants/other';
 
@@ -48,7 +48,7 @@ export async function assignLatestResult(updatedType: string, result: any, self:
   case EVALUATE:
     console.log('evaluate result: ', result);
     self.latestEvaluateResult = result;
-    if (!self.latestEvaluateResult.pass) {
+    if (self.latestEvaluateResult.pass === false) {
       throw new EvaluateError(self.latestEvaluateResult);
     }
     break;
@@ -84,7 +84,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
     modelDir: path.join(self.logDir, 'model'),
     dataDir: path.join(self.logDir, 'data')
   };
-  const firstObservable = firstComponent.observer(null, self.latestModel, insertParams) as Observable<any>;
+  const firstObservable = firstComponent.observer(null, self.latestModel, insertParams);
   self.updatedType = firstComponent.returnType;
 
   const flatMapArray: any = [];

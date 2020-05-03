@@ -24,9 +24,8 @@ export interface ModelTrainArgsType extends ArgsType {
   saveModel: SaveModelFunction;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PipcookPlugin {
-  (...args: any): any;
+  (...args: any[]): Promise<void | UniDataset | UniModel | EvaluateResult>;
 }
 
 export interface DataCollectType extends PipcookPlugin {
