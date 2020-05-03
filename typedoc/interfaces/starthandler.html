@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ModelDefineArgsType | Pipcook</title>
+	<title>StartHandler | Pipcook</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="modeldefineargstype.html">ModelDefineArgsType</a>
+					<a href="starthandler.html">StartHandler</a>
 				</li>
 			</ul>
-			<h1>Interface ModelDefineArgsType</h1>
+			<h1>Interface StartHandler</h1>
 		</div>
 	</div>
 </header>
@@ -68,78 +68,31 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="insertparams.html" class="tsd-signature-type">InsertParams</a>
-						<span class="tsd-signature-symbol"> &amp; </span>
-						<span class="tsd-signature-type">object</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">ModelDefineArgsType</span>
-							</li>
-						</ul>
+						<span class="target">StartHandler</span>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="modeldefineargstype.html#datadir" class="tsd-kind-icon">data<wbr>Dir</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="modeldefineargstype.html#modeldir" class="tsd-kind-icon">model<wbr>Dir</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="modeldefineargstype.html#pipelineid" class="tsd-kind-icon">pipeline<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="modeldefineargstype.html#recoverpath" class="tsd-kind-icon">recover<wbr>Path</a></li>
+			<section class="tsd-panel">
+				<h3 class="tsd-before-signature">Callable</h3>
+				<ul class="tsd-signatures tsd-kind-interface">
+					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/cli/src/types/handler.ts#L44">packages/cli/src/types/handler.ts:44</a></li>
 							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="datadir" class="tsd-anchor"></a>
-					<h3>data<wbr>Dir</h3>
-					<div class="tsd-signature tsd-kind-icon">data<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="insertparams.html">InsertParams</a>.<a href="insertparams.html#datadir">dataDir</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/core/src/types/component.ts#L10">packages/core/src/types/component.ts:10</a></li>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>filename: <span class="tsd-signature-type">string</span></h5>
+							</li>
 						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="modeldir" class="tsd-anchor"></a>
-					<h3>model<wbr>Dir</h3>
-					<div class="tsd-signature tsd-kind-icon">model<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="insertparams.html">InsertParams</a>.<a href="insertparams.html#modeldir">modelDir</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/core/src/types/component.ts#L9">packages/core/src/types/component.ts:9</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="pipelineid" class="tsd-anchor"></a>
-					<h3>pipeline<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="insertparams.html">InsertParams</a>.<a href="insertparams.html#pipelineid">pipelineId</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/core/src/types/component.ts#L8">packages/core/src/types/component.ts:8</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="recoverpath" class="tsd-anchor"></a>
-					<h3>recover<wbr>Path</h3>
-					<div class="tsd-signature tsd-kind-icon">recover<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/core/src/types/plugins.ts#L16">packages/core/src/types/plugins.ts:16</a></li>
-						</ul>
-					</aside>
-				</section>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -155,21 +108,7 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="modeldefineargstype.html" class="tsd-kind-icon">Model<wbr>Define<wbr>Args<wbr>Type</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="modeldefineargstype.html#datadir" class="tsd-kind-icon">data<wbr>Dir</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="modeldefineargstype.html#modeldir" class="tsd-kind-icon">model<wbr>Dir</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="modeldefineargstype.html#pipelineid" class="tsd-kind-icon">pipeline<wbr>Id</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="modeldefineargstype.html#recoverpath" class="tsd-kind-icon">recover<wbr>Path</a>
-							</li>
-						</ul>
+						<a href="starthandler.html" class="tsd-kind-icon">Start<wbr>Handler</a>
 					</li>
 				</ul>
 				<ul class="after-current">

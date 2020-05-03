@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ModelDefineArgsType | Pipcook</title>
+	<title>DatasetAnnotation | Pipcook</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="modeldefineargstype.html">ModelDefineArgsType</a>
+					<a href="datasetannotation.html">DatasetAnnotation</a>
 				</li>
 			</ul>
-			<h1>Interface ModelDefineArgsType</h1>
+			<h1>Interface DatasetAnnotation</h1>
 		</div>
 	</div>
 </header>
@@ -68,14 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="insertparams.html" class="tsd-signature-type">InsertParams</a>
-						<span class="tsd-signature-symbol"> &amp; </span>
-						<span class="tsd-signature-type">object</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">ModelDefineArgsType</span>
-							</li>
-						</ul>
+						<span class="target">DatasetAnnotation</span>
 					</li>
 				</ul>
 			</section>
@@ -86,10 +79,13 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="modeldefineargstype.html#datadir" class="tsd-kind-icon">data<wbr>Dir</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="modeldefineargstype.html#modeldir" class="tsd-kind-icon">model<wbr>Dir</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="modeldefineargstype.html#pipelineid" class="tsd-kind-icon">pipeline<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="modeldefineargstype.html#recoverpath" class="tsd-kind-icon">recover<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="datasetannotation.html#area" class="tsd-kind-icon">area</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="datasetannotation.html#bbox" class="tsd-kind-icon">bbox</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="datasetannotation.html#category_id" class="tsd-kind-icon">category_<wbr>id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="datasetannotation.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="datasetannotation.html#image_id" class="tsd-kind-icon">image_<wbr>id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="datasetannotation.html#iscrowd" class="tsd-kind-icon">iscrowd</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="datasetannotation.html#segmentation" class="tsd-kind-icon">segmentation</a></li>
 							</ul>
 						</section>
 					</div>
@@ -97,46 +93,73 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="datadir" class="tsd-anchor"></a>
-					<h3>data<wbr>Dir</h3>
-					<div class="tsd-signature tsd-kind-icon">data<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="area" class="tsd-anchor"></a>
+					<h3>area</h3>
+					<div class="tsd-signature tsd-kind-icon">area<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="insertparams.html">InsertParams</a>.<a href="insertparams.html#datadir">dataDir</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/core/src/types/component.ts#L10">packages/core/src/types/component.ts:10</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="modeldir" class="tsd-anchor"></a>
-					<h3>model<wbr>Dir</h3>
-					<div class="tsd-signature tsd-kind-icon">model<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="insertparams.html">InsertParams</a>.<a href="insertparams.html#modeldir">modelDir</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/core/src/types/component.ts#L9">packages/core/src/types/component.ts:9</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="pipelineid" class="tsd-anchor"></a>
-					<h3>pipeline<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="insertparams.html">InsertParams</a>.<a href="insertparams.html#pipelineid">pipelineId</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/core/src/types/component.ts#L8">packages/core/src/types/component.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/cli/src/types/dataset.ts#L31">packages/cli/src/types/dataset.ts:31</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="recoverpath" class="tsd-anchor"></a>
-					<h3>recover<wbr>Path</h3>
-					<div class="tsd-signature tsd-kind-icon">recover<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="bbox" class="tsd-anchor"></a>
+					<h3>bbox</h3>
+					<div class="tsd-signature tsd-kind-icon">bbox<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/core/src/types/plugins.ts#L16">packages/core/src/types/plugins.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/cli/src/types/dataset.ts#L32">packages/cli/src/types/dataset.ts:32</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="category_id" class="tsd-anchor"></a>
+					<h3>category_<wbr>id</h3>
+					<div class="tsd-signature tsd-kind-icon">category_<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/cli/src/types/dataset.ts#L28">packages/cli/src/types/dataset.ts:28</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/cli/src/types/dataset.ts#L26">packages/cli/src/types/dataset.ts:26</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="image_id" class="tsd-anchor"></a>
+					<h3>image_<wbr>id</h3>
+					<div class="tsd-signature tsd-kind-icon">image_<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/cli/src/types/dataset.ts#L27">packages/cli/src/types/dataset.ts:27</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="iscrowd" class="tsd-anchor"></a>
+					<h3>iscrowd</h3>
+					<div class="tsd-signature tsd-kind-icon">iscrowd<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/cli/src/types/dataset.ts#L30">packages/cli/src/types/dataset.ts:30</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="segmentation" class="tsd-anchor"></a>
+					<h3>segmentation</h3>
+					<div class="tsd-signature tsd-kind-icon">segmentation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/850162d/packages/cli/src/types/dataset.ts#L29">packages/cli/src/types/dataset.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -155,19 +178,28 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="modeldefineargstype.html" class="tsd-kind-icon">Model<wbr>Define<wbr>Args<wbr>Type</a>
+						<a href="datasetannotation.html" class="tsd-kind-icon">Dataset<wbr>Annotation</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="modeldefineargstype.html#datadir" class="tsd-kind-icon">data<wbr>Dir</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="modeldefineargstype.html#modeldir" class="tsd-kind-icon">model<wbr>Dir</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="modeldefineargstype.html#pipelineid" class="tsd-kind-icon">pipeline<wbr>Id</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="datasetannotation.html#area" class="tsd-kind-icon">area</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="modeldefineargstype.html#recoverpath" class="tsd-kind-icon">recover<wbr>Path</a>
+								<a href="datasetannotation.html#bbox" class="tsd-kind-icon">bbox</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="datasetannotation.html#category_id" class="tsd-kind-icon">category_<wbr>id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="datasetannotation.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="datasetannotation.html#image_id" class="tsd-kind-icon">image_<wbr>id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="datasetannotation.html#iscrowd" class="tsd-kind-icon">iscrowd</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="datasetannotation.html#segmentation" class="tsd-kind-icon">segmentation</a>
 							</li>
 						</ul>
 					</li>
