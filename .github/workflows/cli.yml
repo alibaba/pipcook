@@ -73,7 +73,7 @@ jobs:
     - name: test client basic usage run
       working-directory: ./myworkspace
       run: |
-        ../packages/cli/dist/bin/index.js run ../test/pipelines/text-bayes-classification.json
+        ../packages/cli/dist/bin/index.js run ../example/pipelines/text-bayes-classification.json
     - name: test client basic usage plugin-dev
       working-directory: ./myworkspace
       run: |
