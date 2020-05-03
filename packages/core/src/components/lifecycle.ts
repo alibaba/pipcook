@@ -36,8 +36,8 @@ import {
  * @param plugin: plugin
  * @param params: plugin's parameters
  */
-function produceResultFactory(type: PluginTypeI, plugin: PipcookPlugin, params?: PipObject): PipcookComponentResult {
-  const result: PipcookComponentResult = {
+function produceResultFactory<T extends PipcookPlugin>(type: PluginTypeI, plugin: T, params?: PipObject): PipcookComponentResult<T> {
+  const result: PipcookComponentResult<T> = {
     type, 
     plugin,
     previousComponent: null,
@@ -55,7 +55,7 @@ function produceResultFactory(type: PluginTypeI, plugin: PipcookPlugin, params?:
  * @param plugin: plugin
  * @param params: plugin's parameters
  */
-export const DataCollect: PipcookLifeCycleComponent = (plugin: DataCollectType, params?: PipObject) => {
+export const DataCollect: PipcookLifeCycleComponent<DataCollectType> = (plugin, params?) => {
   const result = produceResultFactory(DATACOLLECT, plugin, params);
   result.observer = (data, model, insertParams) => {
     return from(plugin({ ...params, ...insertParams }));
@@ -68,7 +68,7 @@ export const DataCollect: PipcookLifeCycleComponent = (plugin: DataCollectType, 
  * @param plugin 
  * @param params 
  */
-export const DataAccess: PipcookLifeCycleComponent = (plugin: DataAccessType, params?: PipObject) => {
+export const DataAccess: PipcookLifeCycleComponent<DataAccessType> = (plugin, params?) => {
   const result = produceResultFactory(DATAACCESS, plugin, params);
   result.observer = (data, model, insertParams) => {
     return from(plugin({ ...params, ...insertParams }));
@@ -82,7 +82,7 @@ export const DataAccess: PipcookLifeCycleComponent = (plugin: DataAccessType, pa
  * @param plugin 
  * @param params 
  */
-export const DataProcess: PipcookLifeCycleComponent = (plugin: DataProcessType, params?: PipObject) => {
+export const DataProcess: PipcookLifeCycleComponent<DataProcessType> = (plugin, params?) => {
   const result = produceResultFactory(DATAPROCESS, plugin, params);
   result.observer = (data, model, insertParams) => {
     if (!data.metadata) {
@@ -110,7 +110,7 @@ export const DataProcess: PipcookLifeCycleComponent = (plugin: DataProcessType, 
  * @param plugin 
  * @param params 
  */
-export const ModelLoad: PipcookLifeCycleComponent = (plugin: ModelLoadType, params?: PipObject) => {
+export const ModelLoad: PipcookLifeCycleComponent<ModelLoadType> = (plugin, params?) => {
   const result = produceResultFactory(MODELLOAD, plugin, params);
   result.observer = (data, model, insertParams) => {
     return from(plugin(data, { ...params, ...insertParams }));
@@ -124,7 +124,7 @@ export const ModelLoad: PipcookLifeCycleComponent = (plugin: ModelLoadType, para
  * @param plugin 
  * @param params 
  */
-export const ModelDefine: PipcookLifeCycleComponent = (plugin: ModelDefineType, params?: PipObject) => {
+export const ModelDefine: PipcookLifeCycleComponent<ModelDefineType> = (plugin, params?) => {
   const result = produceResultFactory(MODELDEFINE, plugin, params);
   result.observer = (data, model, insertParams) => {
     return from(plugin(data, { ...params, ...insertParams }));
@@ -138,7 +138,7 @@ export const ModelDefine: PipcookLifeCycleComponent = (plugin: ModelDefineType, 
  * @param plugin 
  * @param params 
  */
-export const ModelTrain: PipcookLifeCycleComponent = (plugin: ModelTrainType, params?: PipObject) => {
+export const ModelTrain: PipcookLifeCycleComponent<ModelTrainType> = (plugin, params?) => {
   const result = produceResultFactory(MODELTRAIN, plugin, params);
   result.observer = (data, model, insertParams) => {
     return from(plugin(data, model, {
@@ -157,7 +157,7 @@ export const ModelTrain: PipcookLifeCycleComponent = (plugin: ModelTrainType, pa
  * @param plugin 
  * @param params 
  */
-export const ModelEvaluate: PipcookLifeCycleComponent = (plugin: ModelEvaluateType, params?: PipObject) => {
+export const ModelEvaluate: PipcookLifeCycleComponent<ModelEvaluateType> = (plugin, params?) => {
   const result = produceResultFactory(MODELEVALUATE, plugin, params);
   result.observer = (data, model, insertParams) => {
     return from(plugin(data, model, { ...params, ...insertParams }));

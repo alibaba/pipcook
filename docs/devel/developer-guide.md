@@ -28,6 +28,14 @@ $ npm install
 $ npm run build
 ```
 
+We provide a way to use [tuna mirror](https://mirrors.tuna.tsinghua.edu.cn/) for downloading Python and packages:
+
+```sh
+$ export BOA_CONDA_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda # this is for miniconda
+$ export BOA_CONDA_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple                 # this is for pip
+$ npm install
+```
+
 ### Test
 
 Run all the tests in the following

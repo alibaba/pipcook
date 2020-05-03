@@ -1,8 +1,8 @@
+import { Observable } from 'rxjs';
 import { PipcookPlugin } from './plugins';
 import { UniModel } from './model';
 import { UniDataset } from './data/common';
-import { PipObject } from './other';
-import { Subscribable } from 'rxjs';
+import { PipObject, PromisedValueOf } from './other';
 
 export interface InsertParams {
   pipelineId: string;
@@ -10,8 +10,8 @@ export interface InsertParams {
   dataDir: string;
 }
 
-interface ObserverFunc {
-  (data: UniDataset, model: UniModel |null, insertParams: InsertParams): Subscribable<any>;
+interface ObserverFunc<T extends PipcookPlugin> {
+  (data: UniDataset, model: UniModel |null, insertParams: InsertParams): Observable<PromisedValueOf<ReturnType<T>>>;
 }
 
 type ResultType = 
@@ -24,21 +24,21 @@ type ResultType =
   'modelEvaluate' |
   'modelDeploy' ;
 
-export interface PipcookComponentResult {
+export interface PipcookComponentResult<T extends PipcookPlugin = PipcookPlugin> {
   type: ResultType;
   plugin?: PipcookPlugin;
-  mergeComponents?: PipcookComponentResult[][];
+  mergeComponents?: PipcookComponentResult<T>[][];
   params?: PipObject;
-  observer?: ObserverFunc;
+  observer?: ObserverFunc<T>;
   returnType?: string;
-  previousComponent: PipcookComponentResult | null;
+  previousComponent: PipcookComponentResult<T> | null;
   status: 'not execute' | 'running' | 'success' | 'failure';
   package?: string;
   version?: string;
 }
 
-export interface PipcookLifeCycleComponent {
-  (plugin: PipcookPlugin, params?: PipObject): PipcookComponentResult;
+export interface PipcookLifeCycleComponent<T extends PipcookPlugin> {
+  (plugin: T, params?: PipObject): PipcookComponentResult<T>;
 }
 
 export interface PipcookModelDeployResult {
@@ -46,5 +46,5 @@ export interface PipcookModelDeployResult {
 }
 
 export interface PipcookLifeCycleTypes {
-  [pluginType: string]: PipcookLifeCycleComponent;
+  [pluginType: string]: PipcookLifeCycleComponent<PipcookPlugin>;
 }
