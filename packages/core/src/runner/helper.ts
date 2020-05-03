@@ -34,6 +34,8 @@ export function getLog(pipcookRunner: PipcookRunner): any {
  * According to return type of plugin, we need to update runner.
  * @param updatedType: updated return type of plugin
  * @param result: lasted return data of plugin
+ * @param self: the target update runner
+ * @param saveModelCallback
  */
 export async function assignLatestResult(updatedType: string, result: any, self: PipcookRunner, saveModelCallback?: Function) {
   switch (updatedType) {

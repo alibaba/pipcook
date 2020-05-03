@@ -12,9 +12,9 @@ import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
 /**
- * collect the data either from remote url or local file system. It expects a zip 
- * which contains the structure of traditional iamge classification data folder.
- * 
+ * collect the data either from remote url or local file system. It expects a zip
+ * which contains the structure of traditional image classification data folder.
+ *
  * The structure should be:
  * - train
  *  - category1-name
@@ -25,7 +25,7 @@ import { v1 as uuidv1 } from 'uuid';
  *  - ...
  * - test (optional)
  * - validate (optional)
- * 
+ *
  * @param url path of the data, if it comes from local file, please add file:// as prefix
  */
 const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {

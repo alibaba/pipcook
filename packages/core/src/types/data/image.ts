@@ -11,7 +11,7 @@ export interface ImageLabel {
   };
 }
 export interface ImageMetadata extends Metadata {
-  labelMap: {[key: string]: number};
+  labelMap: Record<string, number>;
 }
 
 export interface ImageSample {
