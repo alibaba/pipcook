@@ -45,4 +45,4 @@ export interface PipcookModelDeployResult {
   execute: Function;
 }
 
-export type PipcookLifeCycleTypes = Record<string, PipcookLifeCycleComponent<PipcookPlugin>>
+export type PipcookLifeCycleTypes = Record<string, PipcookLifeCycleComponent<PipcookPlugin>>;
