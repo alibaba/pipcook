@@ -1,4 +1,4 @@
-name: run CLI
+name: cli
 on:
   push:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   basic-usage:
-    name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    name: Test CLI on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
