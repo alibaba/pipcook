@@ -16,7 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.16",
     "@types/fs-extra": "^8.1.0",
     "@types/uuid": "^7.0.2",
     "csv-parse": "^4.8.8",
@@ -32,5 +31,14 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pipcook": {
+    "datatype": "text"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "numpy": "*"
+    }
   }
 }

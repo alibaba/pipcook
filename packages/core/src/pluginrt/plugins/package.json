@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/plugins-csv-data-access": "^0.5.9"
+    "@pipcook/plugins-bayesian-model-define": "^0.5.10",
+    "@pipcook/plugins-csv-data-access": "^0.5.9",
+    "@pipcook/plugins-csv-data-collect": "^0.5.9"
   },
   "devDependencies": {},
   "description": ""

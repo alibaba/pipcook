@@ -1,6 +1,6 @@
 export interface PluginMessage {
   event: string;
-  params: string[];
+  params?: any[];
 }
 
 export enum PluginOperator {
