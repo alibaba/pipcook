@@ -14,11 +14,11 @@ const spinner = ora();
 export const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
   if (!type) {
     console.log('Please provide a plugin type');
-    return;
+    process.exit(1);
   }
   if (!constants.PLUGINS.includes(type)) {
     console.warn(chalk.red(`Unsupported plugin type: "${type}", it must be one of: \n${constants.PLUGINS.join(',\n')}`));
-    return;
+    process.exit(1);
   }
 
   if (!name) {
@@ -29,7 +29,7 @@ export const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
     dirname = path.join(process.cwd(), name);
     if (fse.existsSync(dirname)) {
       spinner.fail(`a directory or file called ${name} already exists. Please use a new working directory`);
-      return;
+      process.exit(1);
     }
     fse.ensureDirSync(path.join(dirname, 'src'));
     fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'package.json'), 

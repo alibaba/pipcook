@@ -14,7 +14,7 @@ export const serve: ServeHandler = async function(dir, port = 7682) {
     predictHandler = require(path.join(dir, 'main.js'));
   } catch (err) {
     spinner.fail(`the path specified is not a valid pipcook deploy path`);
-    return;
+    process.exit(1);
   }
 
   childProcess.execSync('npm install', {
