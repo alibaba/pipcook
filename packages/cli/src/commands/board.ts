@@ -11,7 +11,7 @@ export const board: CommandHandler = async () => {
   try {
     if (!fse.existsSync(path.join(process.cwd(), '.server'))) {
       spinner.fail('Please init the project firstly');
-      process.exit(1);
+      return process.exit(1);
     }
 
     childProcess.execSync(`cd .server && npm run dev`, {

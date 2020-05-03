@@ -14,7 +14,7 @@ export const serve: ServeHandler = async function(dir, port = 7682) {
     predictHandler = require(path.join(dir, 'main.js'));
   } catch (err) {
     spinner.fail(`the path specified is not a valid pipcook deploy path`);
-    process.exit(1);
+    return process.exit(1);
   }
 
   childProcess.execSync('npm install', {
@@ -34,7 +34,7 @@ export const serve: ServeHandler = async function(dir, port = 7682) {
       await fastify.listen(port);
       console.log(`predict server is starting. Please send POST HTTP request to ${port}`);
     } catch (err) {
-      process.exit(1);
+      return process.exit(1);
     }
   };
   start();
