@@ -1,21 +1,24 @@
-const fork = require('child_process').fork;
-const ora = require('ora');
-const spinner = ora();
-const fs = require('fs');
-const path = require('path');
+import { fork } from 'child_process';
+import ora from 'ora';
+import path from 'path';
+import { existsSync } from 'fs';
 
-const start = async (filename) => {
+import { StartHandler } from '../types';
+
+const spinner = ora();
+
+export const start: StartHandler = async (filename: string) => {
   if (!filename) {
     spinner.fail('Please specify the config path');
     return;
   }
 
-  if (!fs.existsSync(filename)) {
+  if (!existsSync(filename)) {
     spinner.fail(`${filename} not exists`);
     return;
   }
 
-  const script = path.join(__dirname, 'runConfig.js');
+  const script = path.join(__dirname, '../../dist/commands/runConfig.js');
   const child = fork(script, [ filename ], {
     cwd: process.cwd(),
     env: {
@@ -27,5 +30,3 @@ const start = async (filename) => {
     process.exit(code);
   });
 };
-
-module.exports = start;

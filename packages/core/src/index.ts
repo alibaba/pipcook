@@ -40,7 +40,8 @@ export {
   ArgsType,
   ModelDefineArgsType,
   ModelArgsType,
-  ModelTrainArgsType
+  ModelTrainArgsType,
+  PluginTypeI
 } from './types/plugins';
 
 export {
