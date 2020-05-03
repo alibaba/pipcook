@@ -6,7 +6,7 @@ on:
     - master
 
 jobs:
-  basic-usage:
+  basic-info:
     name: Test CLI on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -40,7 +40,26 @@ jobs:
         ../packages/cli/dist/bin/index.js dataset --help
         ../packages/cli/dist/bin/index.js bip --help
         ../packages/cli/dist/bin/index.js serve --help
-    - name: test client basic operate init
+  basic-usage:
+    name: Test CLI on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: ['12']
+        os: [ubuntu-latest, macOS-latest]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node_version }}
+    - name: building
+      run: |
+        npm install
+        npm run build
+    - name: create workspace
+      run: mkdir -p myworkspace
+    - name: test client basic usage init
       working-directory: ./myworkspace
       run: |
         mkdir init1
@@ -49,17 +68,13 @@ jobs:
         cd ../
         mkdir init2
         cd init2
-        ../../packages/cli/dist/bin/index.js init --beta
-        cd ../
-        mkdir init3
-        cd init3
         ../../packages/cli/dist/bin/index.js init --tuna
         cd ../
-    - name: test client basic operate run
+    - name: test client basic usage run
       working-directory: ./myworkspace
       run: |
-        ../packages/cli/dist/bin/index.js run ../test/text-bayes-classification.json
-    - name: test client basic operate plugin-dev
+        ../packages/cli/dist/bin/index.js run ../test/pipelines/text-bayes-classification.json
+    - name: test client basic usage plugin-dev
       working-directory: ./myworkspace
       run: |
         ../packages/cli/dist/bin/index.js plugin-dev -t dataCollect
