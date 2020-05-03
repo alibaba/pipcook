@@ -55,10 +55,6 @@ jobs:
         cd init3
         ../../packages/cli/dist/bin/index.js init --tuna
         cd ../
-    - name: test client basic operate run
-      working-directory: ./myworkspace
-      run: |
-        ../packages/cli/dist/bin/index.js run ../test/text-bayes-classification.json
     - name: test client basic operate plugin-dev
       working-directory: ./myworkspace
       run: |
