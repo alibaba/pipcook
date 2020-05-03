@@ -3,6 +3,4 @@ export interface PluginInfoI {
   params: object;
 }
 
-export interface PluginMapI {
-  [key: string]: PluginInfoI;
-}
+export type PluginMapI = Record<string, PluginInfoI>
