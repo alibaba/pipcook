@@ -15,7 +15,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.5.10",
     "@types/cli-progress": "^3.4.2",
     "@types/debug": "^4.1.5",
     "@types/fs-extra": "^8.0.1",
