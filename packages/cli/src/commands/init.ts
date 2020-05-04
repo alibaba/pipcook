@@ -26,7 +26,7 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     npmClient = client;
     if (!optionalNpmClients.includes(npmClient)) {
       spinner.fail(`Invalid npm client: ${npmClient}.`);
-      return;
+      return process.exit(1);
     }
   } else {
     const clientChoices = [];
@@ -50,7 +50,7 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
       npmClient = answer.client;
     } else {
       spinner.fail(`no npm client detected`);
-      return;
+      return process.exit(1);
     }
   }
 
@@ -60,7 +60,7 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     const existingContents = await glob(path.join(dirname, '*'));
     if (existingContents.length > 0) {
       spinner.fail('Current working directory is not empty');
-      return;
+      return process.exit(1);
     }
     fse.ensureDirSync(path.join(dirname, 'examples'));
     // we prepared several examples. Here copy these examples to current working directory
