@@ -16,7 +16,7 @@ import {
 export const dataset: DatasetCommandHandler = async ({ type }) => {
   if (!type) {
     console.log('Please provide a plugin type');
-    return;
+    return process.exit(1);
   }
   if (type === 'coco-merge') {
     const newDir = path.join(process.cwd(), 'merge-data');
