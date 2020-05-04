@@ -65,6 +65,9 @@ jobs:
         mkdir init1
         cd init1
         ../../packages/cli/dist/bin/index.js init
+    - name: test client basic usage run
+      working-directory: ./myworkspace
+      run: |
         ../../packages/cli/dist/bin/index.js run ./examples/pipelines/text-bayes-classification.json
         cd ../
     - name: test client basic usage plugin-dev
