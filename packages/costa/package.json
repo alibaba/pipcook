@@ -10,7 +10,7 @@
     "test": "ts-node ../../run_tests.ts",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
+    "compile": "tsc -b tsconfig.json"
   },
   "license": "Apache 2.0",
   "dependencies": {

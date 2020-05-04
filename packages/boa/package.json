@@ -4,6 +4,7 @@
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {
+    "clean": "rm -rf ./build && rm -rf ./node_modules",
     "preinstall": "node tools/install-python.js && node tools/install-requirements.js",
     "postinstall": "npm run build",
     "test": "tap ./tests/**/*.js",
@@ -34,7 +35,7 @@
   "dependencies": {
     "bindings": "^1.5.0",
     "debug": "^4.1.1",
-    "node-addon-api": "git://github.com/nodejs/node-addon-api.git#e1a827ae295d4e426ab6c77272c3f3e87e31817c"
+    "node-addon-api": "^3.0.0"
   },
   "devDependencies": {
     "codecov": "^3.6.5",

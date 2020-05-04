@@ -1,11 +1,13 @@
 {
   "packages": [
-    "packages/cli",
-    "packages/core",
     "packages/boa",
+    "packages/core",
+    "packages/costa",
+    "packages/cli",
     "packages/plugins/**/*"
   ],
   "version": "independent",
+  "loglevel": "verbose",
   "npmClient": "npm",
   "command": {
     "publishConfig": {
