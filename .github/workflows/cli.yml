@@ -68,7 +68,7 @@ jobs:
         mkdir init1
         cd init1
         ../../packages/cli/dist/bin/index.js init
-        ../../packages/cli/dist/bin/index.js run ./example/pipelines/text-bayes-classification.json
+        ../../packages/cli/dist/bin/index.js run ./examples/pipelines/text-bayes-classification.json
         echo "after init:"
         pwd
         ls
