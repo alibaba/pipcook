@@ -8,7 +8,7 @@ import { PluginProto, PluginOperator, PluginMessage } from './proto';
 import request from 'request-promise';
 import Debug from 'debug';
 
-const debug = Debug('core.pluginrt');
+const debug = Debug('costa');
 const CONDA_CONFIG = path.join(__dirname, '../../node_modules/@pipcook/boa/.CONDA_INSTALL_DIR');
 
 /**

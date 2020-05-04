@@ -2,7 +2,7 @@ import { PluginProto, PluginOperator } from './proto';
 import Debug from 'debug';
 
 type MessageHandler = Record<PluginOperator, (proto: PluginProto) => void>;
-const debug = Debug('core.pluginrt.client');
+const debug = Debug('costa.client');
 
 function pong() {
   process.send(PluginProto.stringify(PluginOperator.WRITE, {
