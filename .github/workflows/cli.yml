@@ -7,7 +7,7 @@ on:
 
 jobs:
   basic-info:
-    name: Test CLI on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    name: Test CLI basic info on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -41,7 +41,7 @@ jobs:
         ../packages/cli/dist/bin/index.js bip --help
         ../packages/cli/dist/bin/index.js serve --help
   basic-usage:
-    name: Test CLI on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    name: Test CLI basic usage on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -62,14 +62,11 @@ jobs:
     - name: test client basic usage init
       working-directory: ./myworkspace
       run: |
+        pwd
+        ls
         mkdir init1
         cd init1
         ../../packages/cli/dist/bin/index.js init
-        ../../packages/cli/dist/bin/index.js run ./example/pipelines/text-bayes-classification.json
-        cd ../
-        mkdir init2
-        cd init2
-        ../../packages/cli/dist/bin/index.js init --tuna
         ../../packages/cli/dist/bin/index.js run ./example/pipelines/text-bayes-classification.json
         cd ../
     - name: test client basic usage plugin-dev
