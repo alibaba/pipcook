@@ -1,6 +1,6 @@
 {
-  "name": "@pipcook/pipcook-core",
-  "version": "0.5.17",
+  "name": "@pipcook/costa",
+  "version": "0.5.0",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -12,39 +12,26 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/boa": "^0.5.10",
-    "@types/cli-progress": "^3.4.2",
+    "@pipcook/pipcook-core": "^0.5.17",
     "@types/debug": "^4.1.5",
     "@types/fs-extra": "^8.0.1",
     "@types/request": "^2.48.4",
     "@types/request-promise": "^4.1.46",
     "@types/uuid": "^7.0.2",
     "better-opn": "^1.0.0",
-    "chalk": "^3.0.0",
-    "cli-progress": "^3.6.0",
     "debug": "^4.1.1",
-    "decompress-zip": "^0.2.2",
-    "extract-zip": "^1.6.7",
     "fs-extra": "^8.1.0",
-    "glob": "^7.1.6",
-    "glob-promise": "^3.4.0",
-    "jimp": "^0.10.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
-    "rxjs": "^6.5.3",
-    "systeminformation": "^4.16.0",
-    "targz": "^1.0.1",
-    "uuid": "^3.4.0",
-    "xml2js": "^0.4.22"
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
     "jasmine": "^3.5.0",
-    "nyc": "14.1.1",
-    "ts-node": "^8.6.2"
+    "nyc": "14.1.1"
   },
   "publishConfig": {
     "access": "public"

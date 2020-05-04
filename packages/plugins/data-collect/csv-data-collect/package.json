@@ -18,6 +18,7 @@
   "dependencies": {
     "@types/fs-extra": "^8.1.0",
     "@types/uuid": "^7.0.2",
+    "@pipcook/pipcook-core": "^0.5.16",
     "csv-parse": "^4.8.8",
     "csv-stringify": "^5.3.6",
     "glob": "^7.1.6",
