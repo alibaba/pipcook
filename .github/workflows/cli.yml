@@ -62,12 +62,16 @@ jobs:
     - name: test client basic usage init
       working-directory: ./myworkspace
       run: |
+        echo "before init:"
         pwd
         ls
         mkdir init1
         cd init1
         ../../packages/cli/dist/bin/index.js init
         ../../packages/cli/dist/bin/index.js run ./example/pipelines/text-bayes-classification.json
+        echo "after init:"
+        pwd
+        ls
         cd ../
     - name: test client basic usage plugin-dev
       working-directory: ./myworkspace
