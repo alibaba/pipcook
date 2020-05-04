@@ -40,6 +40,7 @@ jobs:
         ../packages/cli/dist/bin/index.js dataset --help
         ../packages/cli/dist/bin/index.js bip --help
         ../packages/cli/dist/bin/index.js serve --help
+
   basic-usage:
     name: Test CLI basic usage on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
