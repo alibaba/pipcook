@@ -21,7 +21,7 @@ export const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
     return process.exit(1);
   }
 
-  if (!name) {
+  if (typeof name !== 'string') {
     name = 'template-plugin';
   }
   let dirname;
