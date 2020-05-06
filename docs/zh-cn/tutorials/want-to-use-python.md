@@ -25,15 +25,14 @@ By default, Boa will install a conda virtual environment under the path of Boa p
 ```sh
 $ ./node_modules/.bin/bip install <package-name>
 ``` 
-
-`bip` is an alias of pip which points to correct python environment
+> `bip` is an alias of pip which points to correct Python environment.
 
 ## Get started
 
 Let's have a glance on how to call to Python's function:
 
 ```js
-const boa = require('boa');
+const boa = require('@pipcook/boa');
 const os = boa.import('os');
 console.log(os.getpid()); // prints the pid from python.
 
@@ -75,7 +74,7 @@ A Connection between 2 languages(ecosystems) has huge works to be done, even tho
 
 ### `boa`
 
-`require('boa')` returns the root object, which will be your entry point to all Python functions, and it provides these methods:
+`require('@pipcook/boa')` returns the root object, which will be your entry point to all Python functions, and it provides these methods:
 
 #### `.builtins()`
 
@@ -216,7 +215,7 @@ Unfortunately, [ES6 Proxy][] does not distinguish the above things. Therefore, i
 To better understand the algorithm above, let's look at some examples:
 
 ```js
-const boa = require('boa');
+const boa = require('@pipcook/boa');
 const { abs, tuple } = boa.builtins();
 
 {
@@ -288,4 +287,3 @@ See [./tests](https://github.com/alibaba/pipcook/tree/master/packages/boa/tests)
 [Python]: https://docs.python.org/3/
 [ES6 Proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 [tagged template literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Description
-
