@@ -39,6 +39,11 @@ function setenv() {
     .__getattr__('path')
     .__getattr__('append');
   appendSysPath.invoke(path.join(condaPath, 'lib/python3.7/lib-dynload'));
+
+  // append the extra BOA_PYTHONPATH
+  if (process.env.BOA_PYTHONPATH) {
+    appendSysPath.invoke(process.env.BOA_PYTHONPATH);
+  }
 }
 
 // shadow copy an object, and returns the new copied object.
