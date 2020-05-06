@@ -34,7 +34,7 @@ class DataLoader implements ImageDataLoader {
 
 /**
  * merge all possible values of labels. Get the map between label and numeric value
- * @param data 
+ * @param dataPath
  */
 const getLabelMap = async (dataPath: string) => {
   const labelSet = new Set<string>();

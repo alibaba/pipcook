@@ -1,18 +1,18 @@
-const chalk = require('chalk');
-const fse = require('fs-extra');
-const path = require('path');
-const { pipcookLogName } = require('./config');
-const glob = require('glob-promise');
-/**
- * install all dependencies of pipcook into working dir
- */
-const log = async () => {
+import chalk from 'chalk';
+import { readFileSync } from 'fs-extra';
+import path from 'path';
+import { pipcookLogName } from '../config';
+import glob from 'glob-promise';
+
+import { CommandHandler } from '../types';
+
+export const log: CommandHandler = async () => {
   const logDir = path.join(process.cwd(), pipcookLogName);
   try {
     const files = await glob(path.join(logDir, '*', 'log.json'));
     const jsonObject = files.map((file) => {
       try {
-        const json = fse.readFileSync(file);
+        const json = readFileSync(file).toString();
         const jsonObj = JSON.parse(json);
         let timestamp = jsonObj.pipelineId.split('-');
         timestamp = new Date(Number(timestamp[timestamp.length - 1])).toLocaleString();
@@ -35,5 +35,3 @@ const log = async () => {
     );
   }
 };
-
-module.exports = log;

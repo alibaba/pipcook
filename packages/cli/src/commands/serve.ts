@@ -1,16 +1,20 @@
-const fastify = require('fastify')({ logger: true });
-const path = require('path');
-const ora = require('ora');
-const childProcess = require('child_process');
+import Fastify from 'fastify';
+import path from 'path';
+import ora from 'ora';
+import childProcess from 'child_process';
 
+import { ServeHandler, PredictHandler } from '../types';
+
+const fastify = Fastify({ logger: true });
 const spinner = ora();
-function serve(dir, port = 7682) {
-  let predictFunc;
+
+export const serve: ServeHandler = async function(dir, port = 7682) {
+  let predictHandler: PredictHandler;
   try {
-    predictFunc = require(path.join(dir, 'main.js'));
+    predictHandler = require(path.join(dir, 'main.js'));
   } catch (err) {
     spinner.fail(`the path specified is not a valid pipcook deploy path`);
-    return;
+    return process.exit(1);
   }
 
   childProcess.execSync('npm install', {
@@ -19,7 +23,7 @@ function serve(dir, port = 7682) {
   });
 
   fastify.post('/', async (req) => {
-    const result = await predictFunc(req.body.data);
+    const result = await predictHandler(req.body.data);
     return {
       result: result
     };
@@ -30,10 +34,8 @@ function serve(dir, port = 7682) {
       await fastify.listen(port);
       console.log(`predict server is starting. Please send POST HTTP request to ${port}`);
     } catch (err) {
-      process.exit(1);
+      return process.exit(1);
     }
   };
   start();
-}
-
-module.exports = serve;
+};

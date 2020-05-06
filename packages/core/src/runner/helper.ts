@@ -3,12 +3,12 @@
  */
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import { from } from 'rxjs';
 
 import { PipcookRunner } from './index';
 import { PipcookComponentResult } from '../types/component';
 import { EvaluateError } from '../types/other';
 import { logCurrentExecution } from '../utils/logger';
-import { Observable, from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE } from '../constants/other';
 
@@ -34,6 +34,8 @@ export function getLog(pipcookRunner: PipcookRunner): any {
  * According to return type of plugin, we need to update runner.
  * @param updatedType: updated return type of plugin
  * @param result: lasted return data of plugin
+ * @param self: the target update runner
+ * @param saveModelCallback
  */
 export async function assignLatestResult(updatedType: string, result: any, self: PipcookRunner, saveModelCallback?: Function) {
   switch (updatedType) {
@@ -76,7 +78,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
     modelDir: path.join(self.logDir, 'model'),
     dataDir: path.join(self.logDir, 'data')
   };
-  const firstObservable = firstComponent.observer(null, self.latestModel, insertParams) as Observable<any>;
+  const firstObservable = firstComponent.observer(null, self.latestModel, insertParams);
   self.updatedType = firstComponent.returnType;
 
   const flatMapArray: any = [];
