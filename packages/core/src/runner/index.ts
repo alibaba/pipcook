@@ -11,7 +11,7 @@ import config from '../config';
 import { PipcookComponentResult } from '../types/component';
 import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
-import { DeploymentResult, EvaluateResult } from '../types/other';
+import { EvaluateResult } from '../types/other';
 import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './helper';
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
@@ -45,7 +45,6 @@ const getCircularReplacer = () => {
  * @public pipelineId: id for this time's execution
  * @public latestSampleData: up to date train data in the pipeline
  * @public latestModel: up to date model data in the pipeline
- * @public latestDeploymentResult: up to date deployment data in the pipeline
  * @public updatedType: the return type of lastest plugin in the pipeline
  * @public components: all components executed in the pipeline
  * @public currentIndex: lastest indes of components executed
@@ -63,7 +62,6 @@ export class PipcookRunner {
   latestSampleData: UniDataset |null = null;
   latestModel: UniModel |null = null;
   latestEvaluateResult: EvaluateResult | null = null;
-  latestDeploymentResult: DeploymentResult | null = null;
 
   updatedType: string | null = null;
   components: PipcookComponentResult[] = [];

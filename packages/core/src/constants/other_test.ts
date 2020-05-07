@@ -10,7 +10,6 @@ describe('other constants', () => {
     expect(other.DATA).toEqual('data');
     expect(other.MODEL).toEqual('model');
     expect(other.EVALUATE).toEqual('evaluate');
-    expect(other.DEPLOYMENT).toEqual('deployment');
     expect(other.MERGE).toEqual('merge');
     expect(other.MODELTOSAVE).toEqual('modeltosave');
     expect(other.ORIGINDATA).toEqual('origindata');

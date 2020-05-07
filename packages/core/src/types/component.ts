@@ -15,14 +15,13 @@ interface ObserverFunc<T extends PipcookPlugin> {
 }
 
 type ResultType = 
-  'dataCollect' | 
-  'dataAccess' | 
-  'dataProcess' | 
-  'modelLoad' | 
-  'modelDefine' |
-  'modelTrain' |
-  'modelEvaluate' |
-  'modelDeploy' ;
+  | 'dataCollect'
+  | 'dataAccess'
+  | 'dataProcess'
+  | 'modelLoad'
+  | 'modelDefine'
+  | 'modelTrain'
+  | 'modelEvaluate'
 
 export interface PipcookComponentResult<T extends PipcookPlugin = PipcookPlugin> {
   type: ResultType;
