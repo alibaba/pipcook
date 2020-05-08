@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { PipcookPlugin } from './plugins';
+import { PipcookPlugin, PluginTypeI } from './plugins';
 import { UniModel } from './model';
 import { UniDataset } from './data/common';
 import { PipObject, PromisedValueOf } from './other';
@@ -14,17 +14,8 @@ interface ObserverFunc<T extends PipcookPlugin> {
   (data: UniDataset, model: UniModel |null, insertParams: InsertParams): Observable<PromisedValueOf<ReturnType<T>>>;
 }
 
-type ResultType = 
-  | 'dataCollect'
-  | 'dataAccess'
-  | 'dataProcess'
-  | 'modelLoad'
-  | 'modelDefine'
-  | 'modelTrain'
-  | 'modelEvaluate'
-
 export interface PipcookComponentResult<T extends PipcookPlugin = PipcookPlugin> {
-  type: ResultType;
+  type: PluginTypeI;
   plugin?: PipcookPlugin;
   mergeComponents?: PipcookComponentResult<T>[][];
   params?: PipObject;
