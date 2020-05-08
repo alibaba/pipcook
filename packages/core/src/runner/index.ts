@@ -8,10 +8,10 @@ import * as path from 'path';
 import * as uuid from 'uuid';
 
 import config from '../config';
-import { PipcookComponentResult } from '../types/component';
+import { PipcookComponentResult, PipcookComponentOutput } from '../types/component';
 import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
-import { EvaluateResult } from '../types/other';
+import { EvaluateResult, PipObject } from '../types/other';
 import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './helper';
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
@@ -66,7 +66,7 @@ export class PipcookRunner {
   updatedType: string | null = null;
   components: PipcookComponentResult[] = [];
   currentIndex = -1;
-  error: any = null;
+  error: string = null;
 
   startTime = 0;
   endTime = 0;
@@ -92,7 +92,7 @@ export class PipcookRunner {
   savePipcook = async () => {
     // store Pipcook log
     const json = JSON.stringify(getLog(this), getCircularReplacer(), 2);
-    await fs.outputFile(path.join(this.logDir as string, 'log.json'), json);
+    await fs.outputFile(path.join(this.logDir, 'log.json'), json);
   }
 
   init = async (components: PipcookComponentResult[]) => {
@@ -135,10 +135,10 @@ export class PipcookRunner {
     
     // create pipeline of plugins
     const pipeline = createPipeline(components, this, 'normal', saveModelCallback);
-    pipeline.subscribe((result: any) => {
+    pipeline.subscribe((result: PipcookComponentOutput) => {
       // success handle
       components[components.length - 1].status = 'success';
-      assignLatestResult(this.updatedType as string, result, this);
+      assignLatestResult(this.updatedType, result, this);
     }, async (error: Error) => {
       await this.handleError(error, components);
       if (errorCallback) {
@@ -193,9 +193,9 @@ export class PipcookRunner {
     await fs.copy(path.join(this.logDir, 'model'), path.join(deployDir, 'model'));
     await fs.copy(path.join(this.logDir, 'log.json'), path.join(deployDir, 'log.json'));
     await fs.copy(path.join(__dirname, '..', 'assets', 'predict.js'), path.join(deployDir, 'main.js'));
-    let dependencies: any = {};
+    let dependencies: PipObject = {};
     const dataProcessCom = this.components.find((e) => e.type === DATAPROCESS);
-    const analyzeCom = async (component: PipcookComponentResult) => {
+    const analyzeCom = async (component: PipcookComponentResult): Promise<PipObject> => {
       let pluginPath;
       try {
         pluginPath = require.resolve(component.package);

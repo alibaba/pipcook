@@ -1,8 +1,8 @@
-import { Observable } from 'rxjs';
+import { Observable, OperatorFunction } from 'rxjs';
 import { PipcookPlugin } from './plugins';
 import { UniModel } from './model';
 import { UniDataset } from './data/common';
-import { PipObject, PromisedValueOf } from './other';
+import { PipObject, PromisedValueOf, EvaluateResult } from './other';
 
 export interface InsertParams {
   pipelineId: string;
@@ -22,7 +22,15 @@ type ResultType =
   | 'modelDefine'
   | 'modelTrain'
   | 'modelEvaluate'
-
+  
+export type PipcookComponentOutput = 
+  | void
+  | UniModel
+  | UniDataset
+  | EvaluateResult
+  
+export type PipcookComponentOperator = OperatorFunction<PipcookComponentOutput, PipcookComponentOutput>
+  
 export interface PipcookComponentResult<T extends PipcookPlugin = PipcookPlugin> {
   type: ResultType;
   plugin?: PipcookPlugin;
