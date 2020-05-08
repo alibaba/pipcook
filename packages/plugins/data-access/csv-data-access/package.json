@@ -28,5 +28,11 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pipcook": {
+    "types": {
+      "dataset": "text",
+      "plugin": "dataAccess"
+    }
   }
 }

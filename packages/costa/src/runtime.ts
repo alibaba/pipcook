@@ -80,22 +80,26 @@ export class PluginRT {
    */
   async fetch(name: string): Promise<PluginPackage> {
     const source = this.getSource(name);
-    let pkgJSON;
+    let pkg: PluginPackage;
     if (source.from === 'npm') {
       debug(`requesting the url ${source.uri}`);
       const resp = await request(source.uri);
       const meta = JSON.parse(resp) as NpmPackageMetadata;
-      pkgJSON = selectLatestPackage(meta);
+      pkg = selectLatestPackage(meta);
     } else {
       debug(`linking the url ${source.uri}`);
-      pkgJSON = require(source.uri + '/package.json');
+      pkg = require(source.uri + '/package.json');
     }
 
-    if (!pkgJSON.pipcook) {
+    if (!pkg.pipcook) {
       throw new TypeError('Invalid plugin package.json, not found on "pipcook"');
     }
-    pkgJSON.pipcook.source = source;
-    return pkgJSON as PluginPackage;
+    pkg.pipcook.source = source;
+    pkg.pipcook.target = {
+      PYTHONPATH: path.join(
+        this.config.installDir, `conda_envs/${pkg.name}@${pkg.version}`, 'lib/python3.7/site-packages')
+    };
+    return pkg;
   }
   async linkBoa() {
     const boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
@@ -123,37 +127,42 @@ export class PluginRT {
       cwd: this.config.installDir
     });
 
-    debug(`prepare the Python environment for ${pluginStdName}`);
-    const envDir = path.join(this.config.installDir, 'conda_envs', pluginStdName);
-    await remove(envDir);
-    await ensureDir(envDir);
+    if (pkg.conda?.dependencies) {
+      debug(`prepare the Python environment for ${pluginStdName}`);
+      const envDir = path.join(this.config.installDir, 'conda_envs', pluginStdName);
+      await remove(envDir);
+      await ensureDir(envDir);
 
-    debug(`install the Python environment for ${pluginStdName}`);
-    await writeFile(
-      `${envDir}/requirements.txt`,
-      this.createPythonRequirements(pluginStdName, pkg.conda),
-    );
+      debug(`install the Python environment for ${pluginStdName}`);
+      await writeFile(
+        `${envDir}/requirements.txt`,
+        this.createPythonRequirements(pluginStdName, pkg.conda),
+      );
 
-    let python;
-    try {
-      const condaInstallDir = await readFile(CONDA_CONFIG, 'utf8');
-      python = `${condaInstallDir}/bin/python3`;
-      await access(python);
-    } catch (err) {
-      debug(`occuring an error when fetching conda: ${err && err.stack}`);
-      throw new Error('Invalid boa/conda installation, please try to install.');
+      let python;
+      try {
+        const condaInstallDir = await readFile(CONDA_CONFIG, 'utf8');
+        python = `${condaInstallDir}/bin/python3`;
+        await access(python);
+      } catch (err) {
+        debug(`occuring an error when fetching conda: ${err && err.stack}`);
+        throw new Error('Invalid boa/conda installation, please try to install.');
+      }
+
+      debug('conda environment is setup correctly, start downloading.');
+      await spawnAsync(python, [ '-m', 'venv', envDir ]);
+      // TODO(yorkie): check for access(pip3)
+      await spawnAsync(`${envDir}/bin/pip3`, 
+        [ 'install',
+          '-r', `${envDir}/requirements.txt`,
+          // TODO(yorkie): make this be optional
+          '-i', 'https://pypi.tuna.tsinghua.edu.cn/simple'
+        ]
+      );
+    } else {
+      debug(`just skip the Python environment installation.`);
     }
-
-    debug('conda environment is setup correctly, start downloading.');
-    await spawnAsync(python, [ '-m', 'venv', envDir ]);
-    // TODO(yorkie): check for access(pip3)
-    await spawnAsync(`${envDir}/bin/pip3`, 
-      [ 'install',
-        '-r', `${envDir}/requirements.txt`,
-        // TODO(yorkie): make this be optional
-        '-i', 'https://pypi.tuna.tsinghua.edu.cn/simple'
-      ]);
-
+    
     await this.linkBoa();
     return true;
   }
@@ -169,35 +178,9 @@ export class PluginRT {
     }
     return str;
   }
-  /**
-   * Run the plugin by given arguments.
-   * @param name the plugin name
-   * @param args the plugin args to run
-   */
-  async run(pkg: PluginPackage, args?: Record<string, any>): Promise<any> {
+  async createRunnable(): Promise<PluginRunnable> {
     const runnable = new PluginRunnable(this);
-    await runnable.bootstrap(pkg.name);
-    runnable.start();
-
-    const d = await runnable.read();
-    if (d.message.event !== 'pong') {
-      throw new TypeError('create plugin failed.');
-    }
-
-    if (!args) {
-      args = {};
-    }
-    args.dataDir = path.join(this.config.datasetDir, `${pkg.name}@1.0.0`);
-    runnable.write({
-      event: 'load',
-      params: [ pkg.name, args ]
-    });
-
-    const r = await runnable.read();
-    if (r.message.event !== 'pong') {
-      throw new TypeError('plugin suspend.');
-    }
-    runnable.destroy();
-    console.log('got', d);
+    await runnable.bootstrap();
+    return runnable;
   }
 }

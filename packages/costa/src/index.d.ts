@@ -1,3 +1,5 @@
+import { PluginTypeI } from '@pipcook/pipcook-core';
+
 /**
  * The config for Plugin Runtime.
  */
@@ -33,8 +35,14 @@ export interface PluginPackage {
   main: string;
   description?: string;
   pipcook: {
-    datatype: 'vision' | 'text' | 'table';
+    types: {
+      plugin: PluginTypeI;
+      dataset: 'image' | 'text';
+    };
     source: PluginSource;
+    target?: {
+      PYTHONPATH: string;
+    };
   };
   conda?: CondaConfig;
 }
@@ -82,10 +90,5 @@ export declare class PluginRT {
    * @param config 
    */
   createPythonRequirements(name: string, config: CondaConfig): string;
-  /**
-   * Run the plugin by given arguments.
-   * @param name the plugin name
-   * @param args the plugin args to run
-   */
-  run(pkg: PluginPackage, args?: Record<string, any>): Promise<any>;
+  createRunnable(): Promise<PluginRunnable>;
 }

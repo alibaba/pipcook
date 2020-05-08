@@ -34,7 +34,10 @@
     "access": "public"
   },
   "pipcook": {
-    "datatype": "text"
+    "types": {
+      "dataset": "text",
+      "plugin": "dataCollect"
+    }
   },
   "conda": {
     "python": "3.7",

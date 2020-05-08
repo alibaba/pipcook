@@ -32,13 +32,16 @@ private:
   Napi::Value ToPrimitive(const CallbackInfo &);
   Napi::Value ToString(const CallbackInfo &);
   Napi::Value SetClassMethod(const CallbackInfo &);
+  
   // Python magic methods
   Napi::Value Hash(const CallbackInfo &);
   Napi::Value HasAttr(const CallbackInfo &);
   Napi::Value GetAttr(const CallbackInfo &);
-  Napi::Value GetItem(const CallbackInfo &);
   Napi::Value SetAttr(const CallbackInfo &);
+  Napi::Value DelAttr(const CallbackInfo &);
+  Napi::Value GetItem(const CallbackInfo &);
   Napi::Value SetItem(const CallbackInfo &);
+  Napi::Value DelItem(const CallbackInfo &);
 
 public:
   // The followings are to convert Napi value to PyObject*

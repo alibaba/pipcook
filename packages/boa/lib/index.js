@@ -11,12 +11,13 @@ const IterIdxForSeqSymbol = Symbol('The iteration index for sequence');
 
 // create the instance
 let pyInst = new native.Python(process.argv.slice(1));
+const importedNames = [];
 const globals = pyInst.globals();
 const builtins = pyInst.builtins();
 const delegators = DelegatorLoader.load();
 
 // reset some envs for Python
-setenv();
+setenv(null);
 
 function getTypeInfo(T) {
   const typeo = builtins.__getitem__('type').invoke(asHandleObject(T));
@@ -30,20 +31,29 @@ function getTypeInfo(T) {
   return tinfo;
 }
 
-function setenv() {
+function setenv(externalSearchPath) {
   // read the conda path from the .CONDA_INSTALL_DIR
   // eslint-disable-next-line no-sync
   const condaPath = fs.readFileSync(
     path.join(__dirname, '../.CONDA_INSTALL_DIR'), 'utf8');
-  const appendSysPath = pyInst.import('sys')
-    .__getattr__('path')
-    .__getattr__('append');
-  appendSysPath.invoke(path.join(condaPath, 'lib/python3.7/lib-dynload'));
-
-  // append the extra BOA_PYTHONPATH
-  if (process.env.BOA_PYTHONPATH) {
-    appendSysPath.invoke(process.env.BOA_PYTHONPATH);
+  const sys = pyInst.import('sys');
+  const sysPath = eval(sys.__getattr__('path').toString());
+  sysPath.push(path.join(condaPath, 'lib/python3.7/lib-dynload'));
+  if (externalSearchPath) {
+    sysPath.push(externalSearchPath);
   }
+  sys.__setattr__('path', sysPath);
+
+  // reset the cached modules that imported before.
+  for (let name of importedNames) {
+    name.split('.').reduce((namespace, name, index) => {
+      namespace += index === 0 ? name : `.${name}`;
+      sys.__getattr__('modules').__delitem__(namespace);
+      return namespace;
+    }, '');
+  }
+  // set `length` to zero to release all references of the array.
+  importedNames.length = 0;
 }
 
 // shadow copy an object, and returns the new copied object.
@@ -364,12 +374,23 @@ function _internalWrap(T, src={}) {
 }
 
 module.exports = {
+  setenv,
   /*
    * Import a Python module.
    * @method import
-   * @param {string} mod - the module path.
+   * @param {string} name - the module name.
    */
-  'import': mod => wrap(pyInst.import(mod)),
+  'import': name => {
+    try {
+      const pyo = wrap(pyInst.import(name));
+      if (importedNames.indexOf(name) === -1) {
+        importedNames.push(name);
+      }
+      return pyo;
+    } catch (err) {
+      throw err;
+    }
+  },
   /*
    * Get the builtins
    * @method builtins
