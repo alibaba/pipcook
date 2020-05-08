@@ -4,8 +4,7 @@ import {
   DATAPROCESS,
   MODELLOAD,
   MODELTRAIN,
-  MODELEVALUATE,
-  MODELDEPLOY
+  MODELEVALUATE
 } from './plugins';
 
 describe('plugins constant', () => {
@@ -16,6 +15,5 @@ describe('plugins constant', () => {
     expect(MODELLOAD).toEqual('modelLoad');
     expect(MODELTRAIN).toEqual('modelTrain');
     expect(MODELEVALUATE).toEqual('modelEvaluate');
-    expect(MODELDEPLOY).toEqual('modelDeploy');
   });
 });

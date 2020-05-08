@@ -10,7 +10,7 @@ import { PipcookComponentResult } from '../types/component';
 import { EvaluateError } from '../types/other';
 import { logCurrentExecution } from '../utils/logger';
 import { flatMap } from 'rxjs/operators';
-import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE } from '../constants/other';
+import { DATA, MODEL, EVALUATE, MODELTOSAVE } from '../constants/other';
 
 /**
  * Retreive relative logs required to be stored.
@@ -51,9 +51,6 @@ export async function assignLatestResult(updatedType: string, result: any, self:
     if (self.latestEvaluateResult.pass === false) {
       throw new EvaluateError(self.latestEvaluateResult);
     }
-    break;
-  case DEPLOYMENT:
-    self.latestDeploymentResult = result;
     break;
   case MODELTOSAVE:
     self.latestModel = result;
