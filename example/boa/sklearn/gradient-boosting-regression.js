@@ -15,12 +15,12 @@ const { load_boston } = datasets;
 const { mean_squared_error } = metrics;
 
 const boston = load_boston();
-const [X, y] = [boston.data, boston.target];
-const [X_train, X_test, y_train, y_test] = train_test_split(X, y, boa.kwargs({ random_state: 8 }));
+const [ X, y ] = [ boston.data, boston.target ];
+const [ X_train, X_test, y_train, y_test ] = train_test_split(X, y, boa.kwargs({ random_state: 8 }));
 const params = {
-    'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 2,
-    'learning_rate': 0.01, 'loss': 'ls'
-}
+  'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 2,
+  'learning_rate': 0.01, 'loss': 'ls'
+};
 
 // Fit regression model
 const clf = GradientBoostingRegressor(boa.kwargs(params));
@@ -35,21 +35,21 @@ console.log("mse", mse);
 
 // compute test set deviance
 const test_score = np.zeros((params['n_estimators']), boa.kwargs({ dtype: np.float64 }));
-for (const [i, y_pred] of enumerate(clf.staged_predict(X_test))) {
-    test_score[i] = clf.loss_(y_test, y_pred);
+for (const [ i, y_pred ] of enumerate(clf.staged_predict(X_test))) {
+  test_score[i] = clf.loss_(y_test, y_pred);
 }
 
 // numpy advanced indexing
 const ndReindex = (nd_array, sorted_idx) => {
-    const tmp = [];
-    for (const [i, index] of enumerate(sorted_idx)) {
-        tmp.push(nd_array[index])
-    }
-    return tmp;
-}
+  const tmp = [];
+  for (const [ i, index ] of enumerate(sorted_idx)) {
+    tmp.push(nd_array[index]);
+  }
+  return tmp;
+};
 
 // plot training deviance
-plt.figure(boa.kwargs({ figsize: [12, 6] }));
+plt.figure(boa.kwargs({ figsize: [ 12, 6 ] }));
 plt.subplot(1, 2, 1);
 plt.title('Deviance');
 plt.plot(np.arange(params['n_estimators']), clf.train_score_, 'b-', boa.kwargs({ label: 'Training Set Deviance' }));
@@ -59,9 +59,9 @@ plt.xlabel('Boosting Iterations');
 plt.ylabel('Deviance');
 
 // plot feature importance
-plt.subplot(1, 2, 2)
-plt.barh(pos, ndReindex(feature_importance, sorted_idx), boa.kwargs({ align: 'center' }))
-plt.yticks(pos, ndReindex(boston.feature_names, sorted_idx))
+plt.subplot(1, 2, 2);
+plt.barh(pos, ndReindex(feature_importance, sorted_idx), boa.kwargs({ align: 'center' }));
+plt.yticks(pos, ndReindex(boston.feature_names, sorted_idx));
 plt.xlabel('Relative Importance');
 plt.title('Variable Importance');
 
