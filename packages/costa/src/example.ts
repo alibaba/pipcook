@@ -1,10 +1,10 @@
 import path from 'path';
-import { PluginRT } from './runtime';
+import { CostaRuntime } from './runtime';
 
-const costa = new PluginRT({
-  installDir: path.join(__dirname, './plugins/'),
-  datasetDir: path.join(__dirname, './datasets/'),
-  componentDir: path.join(__dirname, './components/')
+const costa = new CostaRuntime({
+  installDir: path.join(__dirname, '../.debug/plugins/'),
+  datasetDir: path.join(__dirname, '../.debug/datasets/'),
+  componentDir: path.join(__dirname, '../.debug/components/')
 });
 
 (async function() {
@@ -21,7 +21,7 @@ const costa = new PluginRT({
   await costa.install(evaluateClassfier);
 
   const r = await costa.createRunnable();
-  const dataDir = costa.config.datasetDir + `/${collectCsv.name}@${collectCsv.version}`;
+  const dataDir = costa.options.datasetDir + `/${collectCsv.name}@${collectCsv.version}`;
 
   // collect dataset
   await r.start(collectCsv, {

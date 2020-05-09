@@ -3,7 +3,7 @@ import path from 'path';
 import { ensureDir, ensureSymlink, remove } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProto, PluginOperator, PluginMessage, PluginResponse } from './proto';
-import { PluginRT, PluginPackage } from './index';
+import { CostaRuntime, PluginPackage } from './index';
 import Debug from 'debug';
 const debug = Debug('costa.runnable');
 
@@ -33,7 +33,7 @@ interface BootstrapArg {
  */
 export class PluginRunnable {
   private id: string = uuid.v4();
-  private rt: PluginRT;
+  private rt: CostaRuntime;
   private handle: ChildProcess = null;
   private state: 'init' | 'idle' | 'busy';
   private readable: Function | null;
@@ -47,9 +47,9 @@ export class PluginRunnable {
    * Create a runnable by the given runtime.
    * @param rt the costa runtime.
    */
-  constructor(rt: PluginRT) {
+  constructor(rt: CostaRuntime) {
     this.rt = rt;
-    this.workingDir = path.join(this.rt.config.componentDir, this.id);
+    this.workingDir = path.join(this.rt.options.componentDir, this.id);
     this.state = 'init';
   }
   /**
@@ -138,7 +138,7 @@ export class PluginRunnable {
     }
     this.state = 'busy';
 
-    const { installDir, componentDir } = this.rt.config;
+    const { installDir, componentDir } = this.rt.options;
     const compPath = path.join(componentDir, this.id);
     const nameSchema = path.parse(pkg.name);
 
@@ -204,6 +204,6 @@ export class PluginRunnable {
    */
   private async afterDestroy(): Promise<void> {
     debug(`the runnable(${this.id}) has been destroyed.`);
-    await remove(path.join(this.rt.config.componentDir, this.id));
+    await remove(path.join(this.rt.options.componentDir, this.id));
   }
 }

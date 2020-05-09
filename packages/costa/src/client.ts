@@ -6,6 +6,11 @@ import Debug from 'debug';
 type MessageHandler = Record<PluginOperator, (proto: PluginProto) => void>;
 const debug = Debug('costa.client');
 
+/**
+ * Send a message back from the client process.
+ * @param respOp the operator of response.
+ * @param params the parameters of response.
+ */
 function recv(respOp: PluginOperator, ...params: string[]) {
   process.send(PluginProto.stringify(respOp, {
     event: 'pong',
@@ -13,9 +18,26 @@ function recv(respOp: PluginOperator, ...params: string[]) {
   }));
 }
 
+/**
+ * The id of client.
+ */
 let clientId: string;
+
+/**
+ * The flag to be handshaked.
+ */
+let handshaked = false;
+
+/**
+ * In a client, multiple plugins can be executed. To avoid the overhead of serialization,
+ * we save the results of each plugin for peer `CostaRuntime`.
+ */
 let previousResults: Record<string, any> = {};
 
+/**
+ * Deserialize an argument.
+ * @param arg 
+ */
 function deserializeArg(arg: Record<string, any>) {
   if (arg.__flag__ === '__pipcook_plugin_runnable_result__' &&
     previousResults[arg.id]) {
@@ -24,6 +46,11 @@ function deserializeArg(arg: Record<string, any>) {
   return arg;
 }
 
+/**
+ * Run a plugin, before running, a clean sandbox environment will be constructed 
+ * for the plug-in runtime.
+ * @param message 
+ */
 async function emitStart(message: PluginMessage) {
   const { params } = message;
   const pkg = params[0] as PluginPackage;
@@ -54,41 +81,67 @@ async function emitStart(message: PluginMessage) {
   }
 }
 
-async function emitDestroy(message: PluginMessage) {
+/**
+ * Emits a destroy event, it exits the current client process.
+ */
+async function emitDestroy() {
+  clientId = null;
+  handshaked = false;
   process.exit(0);
 }
 
+/**
+ * Gets the response by a result.
+ * @param message 
+ */
 function getResponse(message: PluginMessage) {
   const resp = deserializeArg(message.params[0]);
   recv(PluginOperator.READ, JSON.stringify(resp));
 }
 
 const handlers: MessageHandler = {
+  /**
+   * When each client process is just started, CostaRuntime will send a handshake 
+   * command, and the client will reply with a Pong message through START, which 
+   * is counted as a complete handshake. The client process will not receive other
+   * messages until the handshake is complete.
+   */
   [PluginOperator.START]: (proto: PluginProto) => {
     if (proto.message.event === 'handshake' &&
       typeof proto.message.params[0] === 'string') {
       clientId = proto.message.params[0];
+      handshaked = true;
       recv(PluginOperator.START, clientId);
     }
   },
+  /**
+   * The client process receives events from the runtime by processing the WRITE
+   * message, such as executing the plug-in and ending the process.
+   */
   [PluginOperator.WRITE]: async (proto: PluginProto) => {
+    if (!handshaked) {
+      throw new TypeError('handshake is required.');
+    }
     const { event } = proto.message;
     debug(`receive an event write.${event}`);
     if (event === 'start') {
       emitStart(proto.message);
     } else if (event === 'destroy') {
-      emitDestroy(proto.message);
+      emitDestroy();
     }
   },
-  [PluginOperator.READ]: (proto: PluginProto) => {
+  /**
+   * Use the READ command to read the value and status of some client processes.
+   */
+  [PluginOperator.READ]: async (proto: PluginProto) => {
+    if (!handshaked) {
+      throw new TypeError('handshake is required.');
+    }
     const { event } = proto.message;
     debug(`receive an event read.${event}`);
     if (event === 'deserialize response') {
       getResponse(proto.message);
     }
-  },
-  [PluginOperator.COMPILE]: (proto: PluginProto) => {
-    // TODO
   }
 };
 

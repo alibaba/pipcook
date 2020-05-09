@@ -6,7 +6,7 @@ import { PluginRunnable } from './runnable';
 import {
   NpmPackageMetadata,
   NpmPackage,
-  RuntimeConfig,
+  RuntimeOptions,
   PluginPackage,
   PluginSource,
   CondaConfig
@@ -33,46 +33,39 @@ function spawnAsync(command: string, args?: string[], opts: SpawnOptions = {}): 
   });
 }
 
-/**
- * Plugin Runtime class.
- */
-export class PluginRT {
-  config: RuntimeConfig;
+function createRequirements(name: string, config: CondaConfig): string {
+  let str = '';
+  for (let k in config.dependencies) {
+    const v = config.dependencies[k];
+    if (v === '*') {
+      str += `${k}\n`;
+    } else {
+      str += `${k}==${v}\n`;
+    }
+  }
+  return str;
+}
 
-  constructor(config: RuntimeConfig) {
-    this.config = config;
-    process.env.NODE_PATH += `:${config.installDir}/node_modules`;
-    ensureDirSync(config.installDir);
-    ensureDirSync(config.datasetDir);
-    ensureDirSync(config.componentDir);
+/**
+ * The Costa runtime is for scheduling plugins and management.
+ */
+export class CostaRuntime {
+  options: RuntimeOptions;
+
+  /**
+   * Create a new Costa runtime by given `RuntimeOptions`.
+   * @param opts the runtime options.
+   */
+  constructor(opts: RuntimeOptions) {
+    this.options = opts;
+    process.env.NODE_PATH += `:${opts.installDir}/node_modules`;
+    ensureDirSync(opts.installDir);
+    ensureDirSync(opts.datasetDir);
+    ensureDirSync(opts.componentDir);
     spawnSync('npm', [ 'init', '-y' ], {
-      cwd: config.installDir,
+      cwd: opts.installDir,
       stdio: 'inherit'
     });
-  }
-  check(name: string): Promise<boolean> {
-    return pathExists(`${this.config.installDir}/node_modules/${name}`);
-  }
-  getSource(name: string): PluginSource {
-    const urlObj = url.parse(name);
-    const src: PluginSource = {
-      from: null,
-      name,
-      uri: null
-    };
-    if (path.isAbsolute(name)) {
-      src.from = 'fs';
-      src.uri = name;
-    } else if (name[0] !== '.') {
-      src.from = 'npm';
-      src.uri = `http://registry.npmjs.com/${name}`;
-    } else if (urlObj.protocol == null) {
-      src.from = 'fs';
-      src.uri = path.join(process.cwd(), name);
-    } else {
-      throw new TypeError(`Unsupported resolving plugin name: ${name}`);
-    }
-    return src;
   }
   /**
    * fetch and check if the package name is valid.
@@ -94,20 +87,13 @@ export class PluginRT {
     if (!pkg.pipcook) {
       throw new TypeError('Invalid plugin package.json, not found on "pipcook"');
     }
-    const { installDir } = this.config;
+    const { installDir } = this.options;
     pkg.pipcook.source = source;
     pkg.pipcook.target = {
       PYTHONPATH: path.join(
         installDir, `conda_envs/${pkg.name}@${pkg.version}`, 'lib/python3.7/site-packages')
     };
     return pkg;
-  }
-  async linkBoa() {
-    const boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
-    const boaDstPath = path.join(this.config.installDir, '/node_modules/@pipcook/boa');
-    await remove(boaDstPath);
-    await ensureSymlink(boaSrcPath, boaDstPath);
-    debug(`linked @pipcook/boa to ${boaDstPath} <= ${boaSrcPath}`);
   }
   /**
    * Install the given plugin by name.
@@ -116,7 +102,7 @@ export class PluginRT {
    */
   async install(pkg: PluginPackage, force = false): Promise<boolean> {
     // check if the pkg is installed
-    if ((await this.check(pkg.name)) && !force) {
+    if ((await this.isInstalled(pkg.name)) && !force) {
       debug(`skip install "${pkg.name}" because it already exists`);
       return true;
     }
@@ -133,19 +119,19 @@ export class PluginRT {
     await spawnAsync('npm', [
       'install', `${pluginAbsName}`, '--save'
     ], {
-      cwd: this.config.installDir
+      cwd: this.options.installDir
     });
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);
-      const envDir = path.join(this.config.installDir, 'conda_envs', pluginStdName);
+      const envDir = path.join(this.options.installDir, 'conda_envs', pluginStdName);
       await remove(envDir);
       await ensureDir(envDir);
 
       debug(`install the Python environment for ${pluginStdName}`);
       await writeFile(
         `${envDir}/requirements.txt`,
-        this.createPythonRequirements(pluginStdName, pkg.conda),
+        createRequirements(pluginStdName, pkg.conda),
       );
 
       let python;
@@ -175,21 +161,12 @@ export class PluginRT {
     await this.linkBoa();
     return true;
   }
-  createPythonRequirements(name: string, config: CondaConfig): string {
-    let str = '';
-    for (let k in config.dependencies) {
-      const v = config.dependencies[k];
-      if (v === '*') {
-        str += `${k}\n`;
-      } else {
-        str += `${k}==${v}\n`;
-      }
-    }
-    return str;
-  }
+  /**
+   * create a runnable.
+   */
   async createRunnable(): Promise<PluginRunnable> {
     const runnable = new PluginRunnable(this);
-    const pluginNodePath = path.join(this.config.installDir, 'node_modules');
+    const pluginNodePath = path.join(this.options.installDir, 'node_modules');
     await this.linkBoa();
     await runnable.bootstrap({
       customEnv: {
@@ -197,5 +174,47 @@ export class PluginRT {
       }
     });
     return runnable;
+  }
+  /**
+   * Check the plugin installed
+   * @param name 
+   */
+  private isInstalled(name: string): Promise<boolean> {
+    return pathExists(`${this.options.installDir}/node_modules/${name}`);
+  }
+  /**
+   * link the boa dependency.
+   */
+  private async linkBoa() {
+    const boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
+    const boaDstPath = path.join(this.options.installDir, '/node_modules/@pipcook/boa');
+    await remove(boaDstPath);
+    await ensureSymlink(boaSrcPath, boaDstPath);
+    debug(`linked @pipcook/boa to ${boaDstPath} <= ${boaSrcPath}`);
+  }
+  /**
+   * Get the `PluginSource` object by a package name.
+   * @param name the package name
+   */
+  private getSource(name: string): PluginSource {
+    const urlObj = url.parse(name);
+    const src: PluginSource = {
+      from: null,
+      name,
+      uri: null
+    };
+    if (path.isAbsolute(name)) {
+      src.from = 'fs';
+      src.uri = name;
+    } else if (name[0] !== '.') {
+      src.from = 'npm';
+      src.uri = `http://registry.npmjs.com/${name}`;
+    } else if (urlObj.protocol == null) {
+      src.from = 'fs';
+      src.uri = path.join(process.cwd(), name);
+    } else {
+      throw new TypeError(`Unsupported resolving plugin name: ${name}`);
+    }
+    return src;
   }
 }
