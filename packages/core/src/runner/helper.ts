@@ -127,20 +127,19 @@ export function linkComponents(components: PipcookComponentResult[]) {
  * those components which are not changed to success status should be failing ones
  * @param components 
  */
-export function assignFailures(components: PipcookComponentResult[]) {
-  components.forEach((component) => {
-    if (component.status === 'running') {
-      component.status = 'failure';
+export function markFailures(components: PipcookComponentResult[]): PipcookComponentResult[] {
+  return components.map(function markFailure(component) {
+    const nextComponent = { ...component };
+
+    if (nextComponent.status === 'running') {
+      nextComponent.status = 'failure';
     }
-    if (component.mergeComponents) {
-      component.mergeComponents.forEach((componentArray) => {
-        componentArray.forEach((component) => {
-          if (component.status === 'running') {
-            component.status = 'failure';
-          }
-        });
-      });
+
+    if (nextComponent.mergeComponents) {
+      nextComponent.mergeComponents = nextComponent.mergeComponents
+        .map((componentArray) => componentArray.map(markFailure));
     }
+
+    return nextComponent;
   });
 }
-

@@ -12,7 +12,7 @@ import { PipcookComponentResult, PipcookComponentOutput } from '../types/compone
 import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
 import { EvaluateResult, PipObject } from '../types/other';
-import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './helper';
+import { getLog, createPipeline, assignLatestResult, linkComponents, markFailures } from './helper';
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
 import { RunConfigI } from '../types/config';
@@ -110,7 +110,7 @@ export class PipcookRunner {
     this.status = 'error';
     // error handle
     this.endTime = Date.now();
-    assignFailures(components);
+    this.components = markFailures(components);
     this.error = error.message;
     await this.savePipcook();
     logError('Component ' + this.components[this.currentIndex].type + ' error: ');
