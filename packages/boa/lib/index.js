@@ -1,4 +1,5 @@
 const fs = require('fs');
+const vm = require('vm');
 const util = require('util');
 const path = require('path');
 const native = require('bindings')('boa');
@@ -15,6 +16,7 @@ const importedNames = [];
 const globals = pyInst.globals();
 const builtins = pyInst.builtins();
 const delegators = DelegatorLoader.load();
+let defaultSysPath = [];
 
 // reset some envs for Python
 setenv(null);
@@ -37,7 +39,10 @@ function setenv(externalSearchPath) {
   const condaPath = fs.readFileSync(
     path.join(__dirname, '../.CONDA_INSTALL_DIR'), 'utf8');
   const sys = pyInst.import('sys');
-  const sysPath = eval(sys.__getattr__('path').toString());
+  if (!defaultSysPath || !defaultSysPath.length) {
+    defaultSysPath = vm.runInThisContext(sys.__getattr__('path').toString()) || [];
+  }
+  const sysPath = Object.assign([], defaultSysPath);
   sysPath.push(path.join(condaPath, 'lib/python3.7/lib-dynload'));
   if (externalSearchPath) {
     sysPath.push(externalSearchPath);
@@ -383,7 +388,7 @@ module.exports = {
   'import': name => {
     try {
       const pyo = wrap(pyInst.import(name));
-      if (importedNames.indexOf(name) === -1) {
+      if (name !== 'sys' && importedNames.indexOf(name) === -1) {
         importedNames.push(name);
       }
       return pyo;

@@ -2,11 +2,23 @@ import * as uuid from 'uuid';
 import path from 'path';
 import { ensureDir, ensureSymlink, remove } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
-import { PluginProto, PluginOperator, PluginMessage } from './proto';
+import { PluginProto, PluginOperator, PluginMessage, PluginResponse } from './proto';
 import { PluginRT, PluginPackage } from './index';
 import Debug from 'debug';
 
 const debug = Debug('costa.runnable');
+
+class RunnableResponse implements PluginResponse {
+  public id: string;
+  public __flag__ = '__pipcook_plugin_runnable_result__';
+  constructor(id: string) {
+    this.id = id;
+  }
+}
+
+interface BootstrapArg {
+  customEnv: Record<string, string>;
+}
 
 export class PluginRunnable {
   private id: string = uuid.v4();
@@ -15,23 +27,29 @@ export class PluginRunnable {
   private state: 'init' | 'idle' | 'busy';
   private readable: Function | null;
 
+  /**
+   * the current working directory for this runnable.
+   */
+  public workingDir: string;
+
   constructor(rt: PluginRT) {
     this.rt = rt;
+    this.workingDir = path.join(this.rt.config.componentDir, this.id);
     this.state = 'init';
   }
   /**
    * Do bootstrap the runnable client.
    */
-  async bootstrap(): Promise<void> {
-    const { componentDir } = this.rt.config;
-    const compPath = path.join(componentDir, this.id);
+  async bootstrap(arg: BootstrapArg): Promise<void> {
+    const compPath = this.workingDir;
     await ensureDir(compPath);
     await ensureDir(compPath + '/node_modules');
 
     debug(`bootstrap a new process for ${this.id}`);
     this.handle = fork(__dirname + '/client', [], {
       stdio: 'inherit',
-      cwd: compPath
+      cwd: compPath,
+      env: Object.assign({}, process.env, arg.customEnv)
     });
     this.handle.on('message', this.handleMessage.bind(this));
     this.handle.once('disconnect', this.afterDestroy.bind(this));
@@ -56,6 +74,10 @@ export class PluginRunnable {
     await this.waitOn(PluginOperator.START);
     return true;
   }
+  /**
+   * Wait for the next operator util receiving.
+   * @param op operator to wait.
+   */
   async waitOn(op: PluginOperator): Promise<PluginMessage> {
     let cur, msg;
     do {
@@ -69,7 +91,7 @@ export class PluginRunnable {
    * Do start from a specific plugin.
    * @param name the plguin name.
    */
-  async start(pkg: PluginPackage, ...args: any[]): Promise<void> {
+  async start(pkg: PluginPackage, ...args: any[]): Promise<RunnableResponse | null> {
     if (this.state !== 'idle') {
       throw new TypeError(`the runnable "${this.id}" is busy or not ready now`);
     }
@@ -99,7 +121,10 @@ export class PluginRunnable {
     });
     const resp = await this.waitOn(PluginOperator.WRITE);
     this.state = 'idle';
-    console.log('got response', resp);
+
+    // return if the result id is provided.
+    const id = resp.params[0];
+    return id ? new RunnableResponse(id) : null;
   }
   async destroy(): Promise<void> {
     this.write({ event: 'destroy' });

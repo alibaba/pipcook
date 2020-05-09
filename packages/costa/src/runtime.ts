@@ -94,24 +94,33 @@ export class PluginRT {
     if (!pkg.pipcook) {
       throw new TypeError('Invalid plugin package.json, not found on "pipcook"');
     }
+    const { installDir } = this.config;
     pkg.pipcook.source = source;
     pkg.pipcook.target = {
       PYTHONPATH: path.join(
-        this.config.installDir, `conda_envs/${pkg.name}@${pkg.version}`, 'lib/python3.7/site-packages')
+        installDir, `conda_envs/${pkg.name}@${pkg.version}`, 'lib/python3.7/site-packages')
     };
     return pkg;
   }
   async linkBoa() {
     const boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
-    const boaDstPath = this.config.installDir + '/node_modules/@pipcook/boa';
+    const boaDstPath = path.join(this.config.installDir, '/node_modules/@pipcook/boa');
     await remove(boaDstPath);
     await ensureSymlink(boaSrcPath, boaDstPath);
+    debug(`linked @pipcook/boa to ${boaDstPath} <= ${boaSrcPath}`);
   }
   /**
    * Install the given plugin by name.
-   * @param name the plugin package name
+   * @param name the plugin package name.
+   * @param force install from new anyway.
    */
-  async install(pkg: PluginPackage): Promise<boolean> {
+  async install(pkg: PluginPackage, force = false): Promise<boolean> {
+    // check if the pkg is installed
+    if ((await this.check(pkg.name)) && !force) {
+      debug(`skip install "${pkg.name}" because it already exists`);
+      return true;
+    }
+
     const pluginStdName = `${pkg.name}@${pkg.version}`;
     let pluginAbsName;
     if (pkg.pipcook.source.from === 'npm') {
@@ -180,7 +189,13 @@ export class PluginRT {
   }
   async createRunnable(): Promise<PluginRunnable> {
     const runnable = new PluginRunnable(this);
-    await runnable.bootstrap();
+    const pluginNodePath = path.join(this.config.installDir, 'node_modules');
+    await this.linkBoa();
+    await runnable.bootstrap({
+      customEnv: {
+        NODE_PATH: `${(process.env.NODE_PATH || '')}:${pluginNodePath}`
+      }
+    });
     return runnable;
   }
 }

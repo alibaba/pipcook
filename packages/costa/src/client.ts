@@ -1,7 +1,7 @@
+import * as uuid from 'uuid';
 import { PluginProto, PluginOperator } from './proto';
 import { PluginPackage } from './index';
 import Debug from 'debug';
-const boa = require('@pipcook/boa');
 
 type MessageHandler = Record<PluginOperator, (proto: PluginProto) => void>;
 const debug = Debug('costa.client');
@@ -14,10 +14,18 @@ function recv(respOp: PluginOperator, ...params: string[]) {
 }
 
 let clientId: string;
+let previousResults: Record<string, any> = {};
+
+function deserializeArg(arg: Record<string, any>) {
+  if (arg.__flag__ === '__pipcook_plugin_runnable_result__' &&
+    previousResults[arg.id]) {
+    return previousResults[arg.id];
+  }
+  return arg;
+}
 
 const handlers: MessageHandler = {
   [PluginOperator.START]: (proto: PluginProto) => {
-    console.log(proto);
     if (proto.message.event === 'handshake' &&
       typeof proto.message.params[0] === 'string') {
       clientId = proto.message.params[0];
@@ -33,6 +41,7 @@ const handlers: MessageHandler = {
       debug(`start loading plugin ${pkg.name}`);
 
       try {
+        const boa = require('@pipcook/boa');
         if (pkg.pipcook?.target.PYTHONPATH) {
           boa.setenv(pkg.pipcook.target.PYTHONPATH);
           debug('setup boa environment');
@@ -41,9 +50,15 @@ const handlers: MessageHandler = {
         if (fn && typeof fn !== 'function' && typeof fn.default === 'function') {
           fn = fn.default;
         }
-        const resp = await fn(...pluginArgs);
-        console.log(resp);
-        recv(PluginOperator.WRITE);
+        const resp = await fn(...pluginArgs.map(deserializeArg));
+        if (resp) {
+          const rid = uuid.v4();
+          previousResults[rid] = resp;
+          debug(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
+          recv(PluginOperator.WRITE, rid);
+        } else {
+          recv(PluginOperator.WRITE);
+        }
       } catch (err) {
         console.error(`occurring an error: ${err?.stack}`);
       }

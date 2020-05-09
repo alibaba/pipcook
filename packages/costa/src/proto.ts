@@ -3,6 +3,11 @@ export interface PluginMessage {
   params?: any[];
 }
 
+export interface PluginResponse {
+  id: string;
+  __flag__: string;
+}
+
 export enum PluginOperator {
   START = 0x30,
   WRITE = 0x31,

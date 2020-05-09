@@ -30,7 +30,7 @@ const createDataset = async (dataLoader: CsvDataLoader, metadata: CsvMetadata) =
  */
 const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
   const { 
-    saveModel,
+    modelPath,
     mode = 'cn'
   } = args;
 
@@ -56,14 +56,10 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   const feature_list = TextFeatures(text_list[1], feature_words);
   classifier.fit(feature_list, text_list[2]);
 
-  await saveModel(async (modelPath: string) => {
-    await fs.copySync(stoppath, path.join(modelPath, 'stopwords.txt'));
-    save_all_words_list(feature_words, path.join(modelPath, 'feature_words.pkl'));
-    saveBayesModel(classifier, path.join(modelPath, 'model.pkl'));
-  });
-
+  await fs.copySync(stoppath, path.join(modelPath, 'stopwords.txt'));
+  save_all_words_list(feature_words, path.join(modelPath, 'feature_words.pkl'));
+  saveBayesModel(classifier, path.join(modelPath, 'model.pkl'));
   return model;
-
 };
 
 export default bayesianClassifierModelTrain;

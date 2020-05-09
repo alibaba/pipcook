@@ -7,6 +7,7 @@ const boa = require('@pipcook/boa');
 
 const jieba = boa.import('jieba');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
+
 const pickle = boa.import('pickle');
 const { open, list } = boa.builtins();
 
