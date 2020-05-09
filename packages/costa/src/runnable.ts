@@ -25,7 +25,7 @@ interface BootstrapArg {
   /**
    * Add extra environment variables.
    */
-  customEnv: Record<string, string>;
+  customEnv?: Record<string, string>;
 }
 
 /**
@@ -35,13 +35,20 @@ export class PluginRunnable {
   private id: string = uuid.v4();
   private rt: CostaRuntime;
   private handle: ChildProcess = null;
-  private state: 'init' | 'idle' | 'busy';
-  private readable: Function | null;
+
+  // private events
+  private onread: Function | null;
+  private ondestroyed: Function | null;
 
   /**
    * the current working directory for this runnable.
    */
   public workingDir: string;
+
+  /**
+   * The current state.
+   */
+  public state: 'init' | 'idle' | 'busy';
 
   /**
    * Create a runnable by the given runtime.
@@ -75,44 +82,6 @@ export class PluginRunnable {
       throw new TypeError(`created runnable "${this.id}" failed.`);
     }
     this.state = 'idle';
-  }
-  /**
-   * Wait for the next operator util receiving.
-   * @param op operator to wait.
-   */
-  async waitOn(op: PluginOperator): Promise<PluginMessage> {
-    let cur, msg;
-    do {
-      const data = await this.read();
-      cur = data.op;
-      msg = data.message;
-    } while (cur !== op);
-    return msg;
-  }
-  /**
-   * Send an operator with message, and waits for the response.
-   * @param op 
-   * @param msg 
-   */
-  async sendAndWait(op: PluginOperator, msg: PluginMessage) {
-    this.send(op, msg);
-    debug(`sent ${msg.event} for ${this.id}, and wait for response`);
-
-    const resp = await this.waitOn(op);
-    if (resp.event !== 'pong') {
-      throw new TypeError('invalid response because the event is not "pong".');
-    }
-    return resp;
-  }
-  /**
-   * Do send handshake message to runnable client, and wait for response.
-   */
-  async handshake(): Promise<boolean> {
-    await this.sendAndWait(PluginOperator.START, {
-      event: 'handshake',
-      params: [ this.id ]
-    });
-    return true;
   }
   /**
    * Get the runnable value for the given response.
@@ -173,6 +142,9 @@ export class PluginRunnable {
    */
   destroy() {
     this.send(PluginOperator.WRITE, { event: 'destroy' });
+    return new Promise((resolve) => {
+      this.ondestroyed = resolve;
+    });
   }
   /**
    * Send a message with operator.
@@ -186,10 +158,48 @@ export class PluginRunnable {
   /**
    * Reads the message, it's blocking the async context util.
    */
-  async read(): Promise<PluginProto> {
+  private async read(): Promise<PluginProto> {
     return new Promise((resolve) => {
-      this.readable = resolve;
+      this.onread = resolve;
     });
+  }
+  /**
+   * Do send handshake message to runnable client, and wait for response.
+   */
+  private async handshake(): Promise<boolean> {
+    await this.sendAndWait(PluginOperator.START, {
+      event: 'handshake',
+      params: [ this.id ]
+    });
+    return true;
+  }
+  /**
+   * Wait for the next operator util receiving.
+   * @param op operator to wait.
+   */
+  private async waitOn(op: PluginOperator): Promise<PluginMessage> {
+    let cur, msg;
+    do {
+      const data = await this.read();
+      cur = data.op;
+      msg = data.message;
+    } while (cur !== op);
+    return msg;
+  }
+  /**
+   * Send an operator with message, and waits for the response.
+   * @param op 
+   * @param msg 
+   */
+  private async sendAndWait(op: PluginOperator, msg: PluginMessage) {
+    this.send(op, msg);
+    debug(`sent ${msg.event} for ${this.id}, and wait for response`);
+
+    const resp = await this.waitOn(op);
+    if (resp.event !== 'pong') {
+      throw new TypeError('invalid response because the event is not "pong".');
+    }
+    return resp;
   }
   /**
    * handle the messages from peer client.
@@ -197,8 +207,8 @@ export class PluginRunnable {
    */
   private handleMessage(msg: string) {
     const proto = PluginProto.parse(msg) as PluginProto;
-    if (typeof this.readable === 'function') {
-      this.readable(proto);
+    if (typeof this.onread === 'function') {
+      this.onread(proto);
     }
   }
   /**
@@ -207,5 +217,8 @@ export class PluginRunnable {
   private async afterDestroy(): Promise<void> {
     debug(`the runnable(${this.id}) has been destroyed.`);
     await remove(path.join(this.rt.options.componentDir, this.id));
+    if (typeof this.ondestroyed === 'function') {
+      this.ondestroyed();
+    }
   }
 }

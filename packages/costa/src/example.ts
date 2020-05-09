@@ -2,9 +2,9 @@ import path from 'path';
 import { CostaRuntime } from './runtime';
 
 const costa = new CostaRuntime({
-  installDir: path.join(__dirname, '../.debug/plugins/'),
-  datasetDir: path.join(__dirname, '../.debug/datasets/'),
-  componentDir: path.join(__dirname, '../.debug/components/')
+  installDir: path.join(__dirname, '.debug/plugins/'),
+  datasetDir: path.join(__dirname, '.debug/datasets/'),
+  componentDir: path.join(__dirname, '.debug/components/')
 });
 
 (async function() {
