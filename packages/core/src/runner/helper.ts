@@ -7,7 +7,7 @@ import { from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 
 import { PipcookRunner } from './index';
-import { DATA, MODEL, EVALUATE, MODELTOSAVE } from '../constants/other';
+import { OutputType } from '../constants/other';
 import { logCurrentExecution } from '../utils/logger';
 import { PipcookComponentResult, InsertParams, PipcookComponentOperator, PipcookComponentOutput } from '../types/component';
 import { EvaluateError, EvaluateResult, PipObject } from '../types/other';
@@ -39,22 +39,22 @@ export function getLog(pipcookRunner: PipcookRunner) {
  * @param self: the target update runner
  * @param saveModelCallback
  */
-export async function assignLatestResult(updatedType: string, result: PipcookComponentOutput, self: PipcookRunner, saveModelCallback?: Function) {
+export async function assignLatestResult(updatedType: OutputType, result: PipcookComponentOutput, self: PipcookRunner, saveModelCallback?: Function) {
   switch (updatedType) {
-  case DATA:
+  case OutputType.Data:
     self.latestSampleData = result as UniDataset;
     break;
-  case MODEL:
+  case OutputType.Model:
     self.latestModel = result as UniModel;
     break;
-  case EVALUATE:
+  case OutputType.Evaluate:
     console.log('evaluate result: ', result);
     self.latestEvaluateResult = result as EvaluateResult;
     if (self.latestEvaluateResult.pass === false) {
       throw new EvaluateError(self.latestEvaluateResult);
     }
     break;
-  case MODELTOSAVE:
+  case OutputType.ModelToSave:
     self.latestModel = result as UniModel;
     if (saveModelCallback) {
       const valueMap = 

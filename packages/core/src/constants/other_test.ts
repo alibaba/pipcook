@@ -1,5 +1,7 @@
 import * as other from './other';
 
+const { OutputType } = other;
+
 describe('other constants', () => {
   it('should own some constants', () => {
     expect(other.STATUS_NOT_EXECUTE).toEqual('not execute');
@@ -7,11 +9,11 @@ describe('other constants', () => {
     expect(other.STATUS_FAILURE).toEqual('failure');
     expect(other.STATUS_RUNNING).toEqual('running');
 
-    expect(other.DATA).toEqual('data');
-    expect(other.MODEL).toEqual('model');
-    expect(other.EVALUATE).toEqual('evaluate');
-    expect(other.MERGE).toEqual('merge');
-    expect(other.MODELTOSAVE).toEqual('modeltosave');
-    expect(other.ORIGINDATA).toEqual('origindata');
+    expect(OutputType.Data).toEqual('data');
+    expect(OutputType.Model).toEqual('model');
+    expect(OutputType.Evaluate).toEqual('evaluate');
+    expect(OutputType.Merge).toEqual('merge');
+    expect(OutputType.ModelToSave).toEqual('modeltosave');
+    expect(OutputType.OriginData).toEqual('origindata');
   });
 });
