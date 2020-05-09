@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import { from, range, forkJoin, Subscribable } from 'rxjs';
+import { from, range, forkJoin, Observable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { PipcookLifeCycleComponent, PipcookComponentResult, PipcookLifeCycleTypes } from '../types/component';
 import { DATA, MODEL, EVALUATE, MODELTOSAVE } from '../constants/other';
@@ -88,7 +88,7 @@ export const DataProcess: PipcookLifeCycleComponent<DataProcessType> = (plugin, 
     if (!data.metadata) {
       data.metadata = {};
     }
-    const observerables: Subscribable<any>[] = [];
+    const observerables: Observable<void>[] = [];
     [ data.trainLoader, data.validationLoader, data.testLoader ].forEach((loader) => {
       if (loader) {
         observerables.push(
