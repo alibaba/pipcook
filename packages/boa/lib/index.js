@@ -51,10 +51,10 @@ function setenv(externalSearchPath) {
 
   // reset the cached modules that imported before.
   for (let name of importedNames) {
-    name.split('.').reduce((namespace, name, index) => {
-      namespace += index === 0 ? name : `.${name}`;
-      sys.__getattr__('modules').__delitem__(namespace);
-      return namespace;
+    name.split('.').reduce((ns, n, i) => {
+      const nss = ns + (i === 0 ? n : `.${n}`);
+      sys.__getattr__('modules').__delitem__(nss);
+      return nss;
     }, '');
   }
   // set `length` to zero to release all references of the array.
@@ -232,7 +232,7 @@ function _internalWrap(T, src={}) {
       enumerable: false,
       writable: false,
       // eslint-disable-next-line no-unused-vars
-      value: hint => T.toString(),
+      value: () => T.toString(),
     },
     /**
      * Implementation of ES iterator protocol, See:
@@ -379,6 +379,11 @@ function _internalWrap(T, src={}) {
 }
 
 module.exports = {
+  /**
+   * Reset the Python module environment, it clears the `sys.modules`, and
+   * add the given search paths if provided.
+   * @param {string} extraSearchPath
+   */
   setenv,
   /*
    * Import a Python module.
@@ -386,15 +391,11 @@ module.exports = {
    * @param {string} name - the module name.
    */
   'import': name => {
-    try {
-      const pyo = wrap(pyInst.import(name));
-      if (name !== 'sys' && importedNames.indexOf(name) === -1) {
-        importedNames.push(name);
-      }
-      return pyo;
-    } catch (err) {
-      throw err;
+    const pyo = wrap(pyInst.import(name));
+    if (name !== 'sys' && importedNames.indexOf(name) === -1) {
+      importedNames.push(name);
     }
+    return pyo;
   },
   /*
    * Get the builtins
