@@ -36,7 +36,7 @@ const bayesianClassifierModelDefine: ModelDefineType = async (data: CsvDataset, 
     assertionTest(data);
     classifier = getBayesModel();
   } else {
-    classifier = loadModel(path.join(recoverPath, 'model', 'model.pkl'));
+    classifier = await loadModel(path.join(recoverPath, 'model.pkl'));
   }
   
   const pipcookModel: UniModel = {

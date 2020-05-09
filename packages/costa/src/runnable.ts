@@ -5,9 +5,11 @@ import { fork, ChildProcess } from 'child_process';
 import { PluginProto, PluginOperator, PluginMessage, PluginResponse } from './proto';
 import { PluginRT, PluginPackage } from './index';
 import Debug from 'debug';
-
 const debug = Debug('costa.runnable');
 
+/**
+ * Returns when called `start()`
+ */
 class RunnableResponse implements PluginResponse {
   public id: string;
   public __flag__ = '__pipcook_plugin_runnable_result__';
@@ -16,10 +18,19 @@ class RunnableResponse implements PluginResponse {
   }
 }
 
+/**
+ * The arguments for calling `bootstrap`.
+ */
 interface BootstrapArg {
+  /**
+   * Add extra environment variables.
+   */
   customEnv: Record<string, string>;
 }
 
+/**
+ * The runnable is to represent a container to run plugins.
+ */
 export class PluginRunnable {
   private id: string = uuid.v4();
   private rt: PluginRT;
@@ -32,6 +43,10 @@ export class PluginRunnable {
    */
   public workingDir: string;
 
+  /**
+   * Create a runnable by the given runtime.
+   * @param rt the costa runtime.
+   */
   constructor(rt: PluginRT) {
     this.rt = rt;
     this.workingDir = path.join(this.rt.config.componentDir, this.id);
@@ -62,19 +77,6 @@ export class PluginRunnable {
     this.state = 'idle';
   }
   /**
-   * Do send handshake message to runnable client, and wait for response.
-   */
-  async handshake(): Promise<boolean> {
-    this.send(PluginOperator.START, {
-      event: 'handshake',
-      params: [ this.id ]
-    });
-    debug(`sent handshake for ${this.id} and waiting for client response.`);
-
-    await this.waitOn(PluginOperator.START);
-    return true;
-  }
-  /**
    * Wait for the next operator util receiving.
    * @param op operator to wait.
    */
@@ -86,6 +88,45 @@ export class PluginRunnable {
       msg = data.message;
     } while (cur !== op);
     return msg;
+  }
+  /**
+   * Send an operator with message, and waits for the response.
+   * @param op 
+   * @param msg 
+   */
+  async sendAndWait(op: PluginOperator, msg: PluginMessage) {
+    this.send(op, msg);
+    debug(`sent ${msg.event} for ${this.id}, and wait for response`);
+    return (await this.waitOn(op));
+  }
+  /**
+   * Do send handshake message to runnable client, and wait for response.
+   */
+  async handshake(): Promise<boolean> {
+    await this.sendAndWait(PluginOperator.START, {
+      event: 'handshake',
+      params: [ this.id ]
+    });
+    return true;
+  }
+  /**
+   * Get the runnable value for the given response.
+   * @param resp the value to the response.
+   */
+  async valueOf(resp: RunnableResponse): Promise<object> {
+    const msg = await this.sendAndWait(PluginOperator.READ, {
+      event: 'deserialize response',
+      params: [
+        resp
+      ]
+    });
+    if (msg.event !== 'pong') {
+      throw new TypeError('invalid response because the event is not "pong".');
+    }
+    if (!msg.params || msg.params.length !== 1) {
+      throw new TypeError('invalid response because the params is invalid.');
+    }
+    return JSON.parse(msg.params[0]);
   }
   /**
    * Do start from a specific plugin.
@@ -112,43 +153,57 @@ export class PluginRunnable {
       path.join(installDir, 'node_modules', pkg.name),
       compPath + `/node_modules/${pkg.name}`);
 
-    await this.write({
+    const resp = await this.sendAndWait(PluginOperator.WRITE, {
       event: 'start',
       params: [
         pkg,
         ...args
       ]
     });
-    const resp = await this.waitOn(PluginOperator.WRITE);
     this.state = 'idle';
 
     // return if the result id is provided.
     const id = resp.params[0];
     return id ? new RunnableResponse(id) : null;
   }
-  async destroy(): Promise<void> {
-    this.write({ event: 'destroy' });
+  /**
+   * Destroy this runnable, this will kill process, and get notified on `afterDestory()`. 
+   */
+  destroy() {
+    this.send(PluginOperator.WRITE, { event: 'destroy' });
   }
-  async afterDestroy(): Promise<void> {
-    debug(`the runnable(${this.id}) has been destroyed.`);
-    await remove(path.join(this.rt.config.componentDir, this.id));
-  }
-  send(code: number, msg?: PluginMessage): boolean {
-    const data = PluginProto.stringify(code, msg);
+  /**
+   * Send a message with operator.
+   * @param op 
+   * @param msg 
+   */
+  send(op: PluginOperator, msg?: PluginMessage): boolean {
+    const data = PluginProto.stringify(op, msg);
     return this.handle.send(data);
   }
-  write(data: PluginMessage): boolean {
-    return this.send(PluginOperator.WRITE, data);
-  }
+  /**
+   * Reads the message, it's blocking the async context util.
+   */
   async read(): Promise<PluginProto> {
     return new Promise((resolve) => {
       this.readable = resolve;
     });
   }
-  handleMessage(msg: string) {
+  /**
+   * handle the messages from peer client.
+   * @param msg 
+   */
+  private handleMessage(msg: string) {
     const proto = PluginProto.parse(msg) as PluginProto;
     if (typeof this.readable === 'function') {
       this.readable(proto);
     }
+  }
+  /**
+   * Fired when the peer client is exited.
+   */
+  private async afterDestroy(): Promise<void> {
+    debug(`the runnable(${this.id}) has been destroyed.`);
+    await remove(path.join(this.rt.config.componentDir, this.id));
   }
 }

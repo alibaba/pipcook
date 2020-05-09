@@ -439,8 +439,9 @@ module.exports = {
     }
     return (async () => {
       let hitException = false;
+      let v = null;
       try {
-        await fn(ctx.__enter__());
+        v = await fn(ctx.__enter__());
       } catch (err) {
         hitException = true;
         if (!ctx.__exit__(
@@ -455,6 +456,7 @@ module.exports = {
           ctx.__exit__(null, null, null);
         }
       }
+      return v;
     })();
   },
   'eval': (strs, ...params) => {

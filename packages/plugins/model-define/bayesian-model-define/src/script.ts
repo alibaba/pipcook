@@ -79,9 +79,9 @@ export const processPredictData = async function (data: any, all_words_list_path
 };
 
 export const getBayesModel = function () {
-  return MultinomialNB();
+  return pickle.dumps(MultinomialNB());
 };
 
-export const loadModel = function (filepath: string) {
-  return pickle.load(open(filepath, 'rb'));
+export const loadModel = async function (filepath: string) {
+  return boa.with(open(filepath, 'rb'), pickle.load);
 };

@@ -1,5 +1,5 @@
 import * as uuid from 'uuid';
-import { PluginProto, PluginOperator } from './proto';
+import { PluginProto, PluginOperator, PluginMessage } from './proto';
 import { PluginPackage } from './index';
 import Debug from 'debug';
 
@@ -24,6 +24,45 @@ function deserializeArg(arg: Record<string, any>) {
   return arg;
 }
 
+async function emitStart(message: PluginMessage) {
+  const { params } = message;
+  const pkg = params[0] as PluginPackage;
+  const [ , ...pluginArgs ] = params;
+  debug(`start loading plugin ${pkg.name}`);
+
+  try {
+    const boa = require('@pipcook/boa');
+    if (pkg.pipcook?.target.PYTHONPATH) {
+      boa.setenv(pkg.pipcook.target.PYTHONPATH);
+      debug('setup boa environment');
+    }
+    let fn = require(pkg.name);
+    if (fn && typeof fn !== 'function' && typeof fn.default === 'function') {
+      fn = fn.default;
+    }
+    const resp = await fn(...pluginArgs.map(deserializeArg));
+    if (resp) {
+      const rid = uuid.v4();
+      previousResults[rid] = resp;
+      debug(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
+      recv(PluginOperator.WRITE, rid);
+    } else {
+      recv(PluginOperator.WRITE);
+    }
+  } catch (err) {
+    console.error(`occurring an error: ${err?.stack}`);
+  }
+}
+
+async function emitDestroy(message: PluginMessage) {
+  process.exit(0);
+}
+
+function getResponse(message: PluginMessage) {
+  const resp = deserializeArg(message.params[0]);
+  recv(PluginOperator.READ, JSON.stringify(resp));
+}
+
 const handlers: MessageHandler = {
   [PluginOperator.START]: (proto: PluginProto) => {
     if (proto.message.event === 'handshake' &&
@@ -33,42 +72,20 @@ const handlers: MessageHandler = {
     }
   },
   [PluginOperator.WRITE]: async (proto: PluginProto) => {
-    const { event, params } = proto.message;
-    debug(`receive an event ${event}`);
+    const { event } = proto.message;
+    debug(`receive an event write.${event}`);
     if (event === 'start') {
-      const pkg = params[0] as PluginPackage;
-      const [ , ...pluginArgs ] = params;
-      debug(`start loading plugin ${pkg.name}`);
-
-      try {
-        const boa = require('@pipcook/boa');
-        if (pkg.pipcook?.target.PYTHONPATH) {
-          boa.setenv(pkg.pipcook.target.PYTHONPATH);
-          debug('setup boa environment');
-        }
-        let fn = require(pkg.name);
-        if (fn && typeof fn !== 'function' && typeof fn.default === 'function') {
-          fn = fn.default;
-        }
-        const resp = await fn(...pluginArgs.map(deserializeArg));
-        if (resp) {
-          const rid = uuid.v4();
-          previousResults[rid] = resp;
-          debug(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
-          recv(PluginOperator.WRITE, rid);
-        } else {
-          recv(PluginOperator.WRITE);
-        }
-      } catch (err) {
-        console.error(`occurring an error: ${err?.stack}`);
-      }
+      emitStart(proto.message);
     } else if (event === 'destroy') {
-      debug('stop the plugin.');
-      process.exit(0);
+      emitDestroy(proto.message);
     }
   },
   [PluginOperator.READ]: (proto: PluginProto) => {
-    // TODO
+    const { event } = proto.message;
+    debug(`receive an event read.${event}`);
+    if (event === 'deserialize response') {
+      getResponse(proto.message);
+    }
   },
   [PluginOperator.COMPILE]: (proto: PluginProto) => {
     // TODO

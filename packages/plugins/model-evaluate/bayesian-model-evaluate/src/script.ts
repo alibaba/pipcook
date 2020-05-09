@@ -9,7 +9,6 @@ const boa = require('@pipcook/boa');
 const jieba = boa.import('jieba');
 const random = boa.import('random');
 const pickle = boa.import('pickle');
-const { MultinomialNB } = boa.import('sklearn.naive_bayes');
 
 const { open, list, set } = boa.builtins();
 
@@ -122,18 +121,15 @@ export const save_all_words_list = function(feature_words: any, filepath: string
   pickle.dump(feature_words, open(filepath, 'wb'));
 };
 
-export const get_all_words_list = function(filepath: string) {
-  return pickle.load(open(filepath, 'rb'));
+export const get_all_words_list = async function(filepath: string): Promise<any> {
+  return boa.with(open(filepath, 'rb'), pickle.load);
 };
 
-export const getBayesModel = function() {
-  return MultinomialNB();
-};
-
-export const saveBayesModel = function(classifier: any, filepath: string) {
-  pickle.dump(classifier, open(filepath, 'wb'));
-};
-
-export const loadModel = function (filepath: string) {
-  return pickle.load(open(filepath, 'rb'));
+export const loadModel = async function (filepath: string): Promise<any> {
+  console.log('load model from', filepath);
+  return boa.with(open(filepath, 'rb'), (f: any) => {
+    const m = pickle.load(f);
+    console.log('>>>', m);
+    return m;
+  });
 };
