@@ -97,7 +97,12 @@ export class PluginRunnable {
   async sendAndWait(op: PluginOperator, msg: PluginMessage) {
     this.send(op, msg);
     debug(`sent ${msg.event} for ${this.id}, and wait for response`);
-    return (await this.waitOn(op));
+
+    const resp = await this.waitOn(op);
+    if (resp.event !== 'pong') {
+      throw new TypeError('invalid response because the event is not "pong".');
+    }
+    return resp;
   }
   /**
    * Do send handshake message to runnable client, and wait for response.
@@ -120,9 +125,6 @@ export class PluginRunnable {
         resp
       ]
     });
-    if (msg.event !== 'pong') {
-      throw new TypeError('invalid response because the event is not "pong".');
-    }
     if (!msg.params || msg.params.length !== 1) {
       throw new TypeError('invalid response because the params is invalid.');
     }
