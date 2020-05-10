@@ -3,6 +3,7 @@ import { PipcookPlugin, PluginTypeI } from './plugins';
 import { UniModel } from './model';
 import { UniDataset } from './data/common';
 import { PipObject, PromisedValueOf, EvaluateResult } from './other';
+import { OutputType } from '../constants/other';
 
 export interface InsertParams {
   pipelineId: string;
@@ -28,7 +29,7 @@ export interface PipcookComponentResult<T extends PipcookPlugin = PipcookPlugin>
   mergeComponents?: PipcookComponentResult<T>[][];
   params?: PipObject;
   observer?: ObserverFunc<T>;
-  returnType?: string;
+  returnType?: OutputType;
   previousComponent: PipcookComponentResult<T> | null;
   status: 'not execute' | 'running' | 'success' | 'failure';
   package?: string;

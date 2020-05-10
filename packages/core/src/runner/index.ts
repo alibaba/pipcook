@@ -24,6 +24,7 @@ import {
   MODELDEFINE
 } from '../constants/plugins';
 import { LifeCycleTypes } from '../components/lifecycle';
+import { OutputType } from '../constants/other';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -63,7 +64,7 @@ export class PipcookRunner {
   latestModel: UniModel |null = null;
   latestEvaluateResult: EvaluateResult | null = null;
 
-  updatedType: string | null = null;
+  updatedType: OutputType = null;
   components: PipcookComponentResult[] = [];
   currentIndex = -1;
   error: string = null;

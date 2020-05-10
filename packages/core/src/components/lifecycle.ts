@@ -7,7 +7,7 @@ import * as path from 'path';
 import { from, range, forkJoin, Observable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { PipcookLifeCycleComponent, PipcookComponentResult, PipcookLifeCycleTypes } from '../types/component';
-import { DATA, MODEL, EVALUATE, MODELTOSAVE } from '../constants/other';
+import { OutputType } from '../constants/other';
 import {
   PipcookPlugin,
   DataCollectType,
@@ -42,7 +42,7 @@ function produceResultFactory<T extends PipcookPlugin>(type: PluginTypeI, plugin
     plugin,
     previousComponent: null,
     status: 'not execute',
-    returnType: 'not set'
+    returnType: OutputType.NotSet
   };
   if (params) {
     result.params = params;
@@ -73,7 +73,7 @@ export const DataAccess: PipcookLifeCycleComponent<DataAccessType> = (plugin, pa
   result.observer = (data, model, insertParams) => {
     return from(plugin({ ...params, ...insertParams }));
   };
-  result.returnType = DATA;
+  result.returnType = OutputType.Data;
   return result;
 };
 
@@ -115,7 +115,7 @@ export const ModelLoad: PipcookLifeCycleComponent<ModelLoadType> = (plugin, para
   result.observer = (data, model, insertParams) => {
     return from(plugin(data, { ...params, ...insertParams }));
   };
-  result.returnType = MODEL;
+  result.returnType = OutputType.Model;
   return result;
 };
 
@@ -129,7 +129,7 @@ export const ModelDefine: PipcookLifeCycleComponent<ModelDefineType> = (plugin, 
   result.observer = (data, model, insertParams) => {
     return from(plugin(data, { ...params, ...insertParams }));
   };
-  result.returnType = MODEL;
+  result.returnType = OutputType.Model;
   return result;
 };
 
@@ -148,7 +148,7 @@ export const ModelTrain: PipcookLifeCycleComponent<ModelTrainType> = (plugin, pa
       }
     }));
   };
-  result.returnType = MODELTOSAVE;
+  result.returnType = OutputType.ModelToSave;
   return result;
 };
 
@@ -162,7 +162,7 @@ export const ModelEvaluate: PipcookLifeCycleComponent<ModelEvaluateType> = (plug
   result.observer = (data, model, insertParams) => {
     return from(plugin(data, model, { ...params, ...insertParams }));
   };
-  result.returnType = EVALUATE;
+  result.returnType = OutputType.Evaluate;
   return result;
 };
 
