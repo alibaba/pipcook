@@ -9,7 +9,7 @@ import { flatMap } from 'rxjs/operators';
 import { PipcookRunner } from './index';
 import { OutputType } from '../constants/other';
 import { logCurrentExecution } from '../utils/logger';
-import { PipcookComponentResult, InsertParams, PipcookComponentOperator, PipcookComponentOutput } from '../types/component';
+import { PipcookComponentResult, PipcookComponentResultStatus, InsertParams, PipcookComponentOperator, PipcookComponentOutput } from '../types/component';
 import { EvaluateError, EvaluateResult, PipObject } from '../types/other';
 import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
@@ -76,7 +76,7 @@ export async function assignLatestResult(updatedType: OutputType, result: Pipcoo
  */
 export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal', saveModelCallback?: Function) {
   const firstComponent = components[0];
-  firstComponent.status = 'running';
+  firstComponent.status = PipcookComponentResultStatus.Running;
   logCurrentExecution(firstComponent, logType);
   const insertParams: InsertParams = {
     pipelineId: self.pipelineId,
@@ -92,7 +92,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
     // rxjs pipe: serialize all components
     (function execute(component, assignLatestResult, updatedType, self, flatMapArray) {
       const flatMapObject = flatMap((result: PipcookComponentOutput) => {
-        component.previousComponent.status = 'success';
+        component.previousComponent.status = PipcookComponentResultStatus.Success;
         self.currentIndex++;
         logCurrentExecution(component, logType);
         return from(assignLatestResult(updatedType, result, self, saveModelCallback)).pipe(
@@ -131,8 +131,8 @@ export function markFailures(components: PipcookComponentResult[]): PipcookCompo
   return components.map(function markFailure(component) {
     const nextComponent = { ...component };
 
-    if (nextComponent.status === 'running') {
-      nextComponent.status = 'failure';
+    if (nextComponent.status === PipcookComponentResultStatus.Running) {
+      nextComponent.status = PipcookComponentResultStatus.Failure;
     }
 
     if (nextComponent.mergeComponents) {
