@@ -1,7 +1,7 @@
 {
   "name": "@pipcook/plugins-tensorflow-model-load",
   "version": "0.5.0",
-  "description": "",
+  "description": "uniform model loader for tensorflow",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -14,7 +14,7 @@
     "compile": "tsc -b tsconfig.json"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.16",
     "@pipcook/boa": "^0.5.10"

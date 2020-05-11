@@ -10,7 +10,7 @@ import * as path from 'path';
 
 const boa = require('@pipcook/boa');
 const tf = boa.import('tensorflow');
-const { Adam } = boa.import('tensorflow.keras.optimizers')
+const { Adam } = boa.import('tensorflow.keras.optimizers');
 const { ResNet50 } = boa.import('tensorflow.keras.applications.resnet50');
 
 /** @ignore
@@ -55,7 +55,7 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
     outputShape = Object.keys(labelMap).length;
   }
 
-  let model: any
+  let model: any;
   model = ResNet50(boa.kwargs({
     include_top: true,
     weights: pretrained ? 'imagenet' : null,
@@ -79,6 +79,11 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
     model,
     metrics: metrics,
     predict: async function (inputData: ImageSample) {
+      let image = tf.io.read_file(inputData.data);
+      image = tf.image.decode_jpeg(image, boa.kwargs({
+        channels: 3
+      }));
+      return this.model.predict(image).toString();
     }
   };
   return result;

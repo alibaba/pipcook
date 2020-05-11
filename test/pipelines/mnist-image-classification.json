@@ -3,8 +3,8 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/mnist-data-collect",
       "params": {
-        "trainCount": 100,
-        "testCount": 100
+        "trainCount": 8000,
+        "testCount": 2000
       }
     },
     "dataAccess": {
@@ -13,18 +13,20 @@
     "dataProcess": {
       "package": "./packages/plugins/data-process/image-data-process",
       "params": {
-        "resize": [64, 64],
-        "normalize": true
+        "resize": [28, 28]
       }
     },
     "modelDefine": {
-      "package": "./packages/plugins/model-define/tensorflow-resnet-model-define"
+      "package": "./packages/plugins/model-define/tfjs-simplecnn-model-define"
     },
     "modelTrain": {
-      "package": "./packages/plugins/model-train/image-classification-tensorflow-model-train",
+      "package": "./packages/plugins/model-train/image-classification-tfjs-model-train",
       "params": {
-        "epochs": 1
+        "epochs": 15
       }
+    },
+    "modelEvaluate": {
+      "package": "./packages/plugins/model-evaluate/image-classification-tfjs-model-evaluate"
     }
   }
 }

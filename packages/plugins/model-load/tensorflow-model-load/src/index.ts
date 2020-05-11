@@ -10,7 +10,7 @@ const tf = boa.import('tensorflow');
 
 const tensorflowModelLoad: ModelLoadType = async (data: UniDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
-    recoverPath,
+    recoverPath
   } = args;
 
   const model = tf.keras.models.load_model(recoverPath);

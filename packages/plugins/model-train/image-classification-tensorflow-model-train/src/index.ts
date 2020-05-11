@@ -29,8 +29,8 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
     num_parallel_calls: AUTOTUNE
   }));
   const labelDs = tf.data.Dataset.from_tensor_slices(labels);
-  const imageLabelDs = tf.data.Dataset.zip(tuple([imageDs, labelDs]));
-  return imageLabelDs
+  const imageLabelDs = tf.data.Dataset.zip(tuple([ imageDs, labelDs ]));
+  return imageLabelDs;
 }
 
 /**
@@ -55,7 +55,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
     const count = await trainLoader.len();
 
     trainDataSet = trainDataSet.repeat();
-    trainDataSet = trainDataSet.batch(batchSize)
+    trainDataSet = trainDataSet.batch(batchSize);
     trainDataSet = trainDataSet.prefetch(boa.kwargs({
       buffer_size: AUTOTUNE
     }));
