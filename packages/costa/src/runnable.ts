@@ -69,7 +69,7 @@ export class PluginRunnable {
 
     debug(`bootstrap a new process for ${this.id}`);
     this.handle = fork(__dirname + '/client', [], {
-      stdio: 'inherit',
+      stdio: [ 'inherit', 'inherit', 'inherit' ],
       cwd: compPath,
       env: Object.assign({}, process.env, arg.customEnv)
     });

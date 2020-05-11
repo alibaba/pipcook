@@ -161,6 +161,23 @@ export class CostaRuntime {
     await this.linkBoa();
     return true;
   }
+  async uninstall(name: string): Promise<boolean> {
+    const pkg = await this.fetch(name);
+    if (!await this.isInstalled(pkg.name)) {
+      debug(`skip uninstall "${pkg.name}" because it not exists.`);
+      return false;
+    }
+
+    const pluginStdName = `${pkg.name}@${pkg.version}`;
+    await spawnAsync('npm', [
+      'uninstall', `${pluginStdName}`, '--save'
+    ], {
+      cwd: this.options.installDir
+    });
+    await remove(
+      path.join(this.options.installDir, 'conda_envs', pluginStdName));
+    return false;
+  }
   /**
    * create a runnable.
    */

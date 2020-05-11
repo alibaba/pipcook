@@ -137,11 +137,6 @@ export declare class PluginRunnable {
    * Destroy this runnable, this will kill process, and get notified on `afterDestory()`. 
    */
   destroy(): Promise<void>;
-
-  /**
-   * Get the logger, it returns a `stream.Readable`.
-   */
-  getLogger(): Readable;
 }
 
 /**
