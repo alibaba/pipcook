@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import { PluginTypeI } from '@pipcook/pipcook-core';
 
 /**
@@ -109,6 +110,40 @@ export interface NpmPackageMetadata {
   versions: Record<string, NpmPackage>;
 }
 
+export declare class PluginRunnable {
+  /**
+   * the current working directory for this runnable.
+   */
+  public workingDir: string;
+  
+  /**
+   * The current state.
+   */
+  public state: 'init' | 'idle' | 'busy';
+
+  /**
+   * Get the runnable value for the given response.
+   * @param resp the value to the response.
+   */
+  valueOf(resp: RunnableResponse): Promise<object>;
+
+  /**
+   * Do start from a specific plugin.
+   * @param name the plguin name.
+   */
+  start(pkg: PluginPackage, ...args: any[]): Promise<RunnableResponse | null>;
+
+  /**
+   * Destroy this runnable, this will kill process, and get notified on `afterDestory()`. 
+   */
+  destroy(): Promise<void>;
+
+  /**
+   * Get the logger, it returns a `stream.Readable`.
+   */
+  getLogger(): Readable;
+}
+
 /**
  * The Costa runtime is for scheduling plugins and management.
  */
@@ -133,6 +168,10 @@ export declare class CostaRuntime {
    * @param pkg the plugin package name
    */
   install(pkg: PluginPackage): Promise<boolean>;
+  /**
+   * Uninstall matched plugins by name.
+   */
+  uninstall(name: string): Promise<boolean>;
   /**
    * Create a `PluginRunnable` object.
    */

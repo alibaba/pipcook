@@ -140,7 +140,7 @@ export class PluginRunnable {
   /**
    * Destroy this runnable, this will kill process, and get notified on `afterDestory()`. 
    */
-  destroy() {
+  async destroy(): Promise<void> {
     this.send(PluginOperator.WRITE, { event: 'destroy' });
     return new Promise((resolve) => {
       this.ondestroyed = resolve;
@@ -151,7 +151,7 @@ export class PluginRunnable {
    * @param op 
    * @param msg 
    */
-  send(op: PluginOperator, msg?: PluginMessage): boolean {
+  private send(op: PluginOperator, msg?: PluginMessage): boolean {
     const data = PluginProto.stringify(op, msg);
     return this.handle.send(data);
   }

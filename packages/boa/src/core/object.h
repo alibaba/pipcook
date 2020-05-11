@@ -32,7 +32,7 @@ private:
   Napi::Value ToPrimitive(const CallbackInfo &);
   Napi::Value ToString(const CallbackInfo &);
   Napi::Value SetClassMethod(const CallbackInfo &);
-  
+
   // Python magic methods
   Napi::Value Hash(const CallbackInfo &);
   Napi::Value HasAttr(const CallbackInfo &);
