@@ -9,7 +9,7 @@ export interface DataDescriptor {
 export interface Metadata {
   feature?: DataDescriptor;
   label?: DataDescriptor;
-  labelMap?: {[key: string]: number};
+  labelMap?: Record<string, number>;
 }
 
 export interface Sample {

@@ -1,18 +1,21 @@
-const fse = require('fs-extra');
-const childProcess = require('child_process');
-const ora = require('ora');
-const path = require('path');
-const glob = require('glob-promise');
-const commandExistsSync = require('command-exists').sync;
-const inquirer = require('inquirer');
+import path from 'path';
+import childProcess from 'child_process';
 
-const { dependencies, pipcookLogName, optionalNpmClients } = require('./config');
+import fse from 'fs-extra';
+import ora from 'ora';
+import glob from 'glob-promise';
+import { prompt } from 'inquirer';
+import { sync } from 'command-exists';
+
+import { InitCommandHandler } from '../types';
+import { dependencies, pipcookLogName, optionalNpmClients } from '../config';
+
 const spinner = ora();
 
 /**
  * install all dependencies of pipcook into working dir
  */
-const init = async ({ client, beta, tuna }) => {
+export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   let npmClient = 'npm';
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
@@ -23,12 +26,12 @@ const init = async ({ client, beta, tuna }) => {
     npmClient = client;
     if (!optionalNpmClients.includes(npmClient)) {
       spinner.fail(`Invalid npm client: ${npmClient}.`);
-      return;
+      return process.exit(1);
     }
   } else {
     const clientChoices = [];
     for (const npmClient of optionalNpmClients) {
-      if (commandExistsSync(npmClient)) {
+      if (sync(npmClient)) {
         clientChoices.push(npmClient);
       }
     }
@@ -36,7 +39,7 @@ const init = async ({ client, beta, tuna }) => {
     if (clientChoices.length === 1) {
       npmClient = clientChoices[0];
     } else if (clientChoices.length > 1) {
-      const answer = await inquirer.prompt([
+      const answer = await prompt([
         {
           type: 'list',
           name: 'client',
@@ -47,7 +50,7 @@ const init = async ({ client, beta, tuna }) => {
       npmClient = answer.client;
     } else {
       spinner.fail(`no npm client detected`);
-      return;
+      return process.exit(1);
     }
   }
 
@@ -57,7 +60,7 @@ const init = async ({ client, beta, tuna }) => {
     const existingContents = await glob(path.join(dirname, '*'));
     if (existingContents.length > 0) {
       spinner.fail('Current working directory is not empty');
-      return;
+      return process.exit(1);
     }
     fse.ensureDirSync(path.join(dirname, 'examples'));
     // we prepared several examples. Here copy these examples to current working directory
@@ -94,5 +97,3 @@ const init = async ({ client, beta, tuna }) => {
     childProcess.execSync(`rm -r ${path.join(dirname, '.server')}`);
   }
 };
-
-module.exports = init;

@@ -8,11 +8,11 @@ import * as path from 'path';
 import * as uuid from 'uuid';
 
 import config from '../config';
-import { PipcookComponentResult } from '../types/component';
+import { PipcookComponentResult, PipcookComponentOutput } from '../types/component';
 import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
-import { DeploymentResult, EvaluateResult } from '../types/other';
-import { getLog, createPipeline, assignLatestResult, linkComponents, assignFailures } from './helper';
+import { EvaluateResult, PipObject } from '../types/other';
+import { getLog, createPipeline, assignLatestResult, linkComponents, markFailures } from './helper';
 import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
 import { RunConfigI } from '../types/config';
@@ -24,6 +24,7 @@ import {
   MODELDEFINE
 } from '../constants/plugins';
 import { LifeCycleTypes } from '../components/lifecycle';
+import { OutputType } from '../constants/other';
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
@@ -45,7 +46,6 @@ const getCircularReplacer = () => {
  * @public pipelineId: id for this time's execution
  * @public latestSampleData: up to date train data in the pipeline
  * @public latestModel: up to date model data in the pipeline
- * @public latestDeploymentResult: up to date deployment data in the pipeline
  * @public updatedType: the return type of lastest plugin in the pipeline
  * @public components: all components executed in the pipeline
  * @public currentIndex: lastest indes of components executed
@@ -63,12 +63,11 @@ export class PipcookRunner {
   latestSampleData: UniDataset |null = null;
   latestModel: UniModel |null = null;
   latestEvaluateResult: EvaluateResult | null = null;
-  latestDeploymentResult: DeploymentResult | null = null;
 
-  updatedType: string | null = null;
+  updatedType: OutputType = null;
   components: PipcookComponentResult[] = [];
   currentIndex = -1;
-  error: any = null;
+  error: string = null;
 
   startTime = 0;
   endTime = 0;
@@ -94,7 +93,7 @@ export class PipcookRunner {
   savePipcook = async () => {
     // store Pipcook log
     const json = JSON.stringify(getLog(this), getCircularReplacer(), 2);
-    await fs.outputFile(path.join(this.logDir as string, 'log.json'), json);
+    await fs.outputFile(path.join(this.logDir, 'log.json'), json);
   }
 
   init = async (components: PipcookComponentResult[]) => {
@@ -112,7 +111,7 @@ export class PipcookRunner {
     this.status = 'error';
     // error handle
     this.endTime = Date.now();
-    assignFailures(components);
+    this.components = markFailures(components);
     this.error = error.message;
     await this.savePipcook();
     logError('Component ' + this.components[this.currentIndex].type + ' error: ');
@@ -137,10 +136,10 @@ export class PipcookRunner {
     
     // create pipeline of plugins
     const pipeline = createPipeline(components, this, 'normal', saveModelCallback);
-    pipeline.subscribe((result: any) => {
+    pipeline.subscribe((result: PipcookComponentOutput) => {
       // success handle
       components[components.length - 1].status = 'success';
-      assignLatestResult(this.updatedType as string, result, this);
+      assignLatestResult(this.updatedType, result, this);
     }, async (error: Error) => {
       await this.handleError(error, components);
       if (errorCallback) {
@@ -195,9 +194,9 @@ export class PipcookRunner {
     await fs.copy(path.join(this.logDir, 'model'), path.join(deployDir, 'model'));
     await fs.copy(path.join(this.logDir, 'log.json'), path.join(deployDir, 'log.json'));
     await fs.copy(path.join(__dirname, '..', 'assets', 'predict.js'), path.join(deployDir, 'main.js'));
-    let dependencies: any = {};
+    let dependencies: PipObject = {};
     const dataProcessCom = this.components.find((e) => e.type === DATAPROCESS);
-    const analyzeCom = async (component: PipcookComponentResult) => {
+    const analyzeCom = async (component: PipcookComponentResult): Promise<PipObject> => {
       let pluginPath;
       try {
         pluginPath = require.resolve(component.package);

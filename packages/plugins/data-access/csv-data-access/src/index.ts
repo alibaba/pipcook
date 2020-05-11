@@ -3,7 +3,7 @@
  * the data is conform to expectation.
  */
 
-import { CsvDataset, ArgsType, DataAccessType, CsvDataLoader, CsvSample } from '@pipcook/pipcook-core';
+import { ArgsType, CsvDataLoader, CsvDataset, CsvSample, DataAccessType } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -37,7 +37,6 @@ class DataLoader implements CsvDataLoader {
 
 /**
  * the main entry for plugin which is used to access text classification data
- * @param data Pipcook origin sample data
  * @param args oneHotTransfer: if current plugin will transfer label data to one-hot (only used when it's not one hot data.)
  */
 const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset> => {
@@ -60,20 +59,16 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
 
   const names: string[] = [];
   if (fs.existsSync(path.join(dataDir, 'train.csv'))) {
-    const dataLoader = new DataLoader(path.join(dataDir, 'train.csv'), labelColumn);
-    data.trainLoader = dataLoader;
+    data.trainLoader = new DataLoader(path.join(dataDir, 'train.csv'), labelColumn);
   }
   if (fs.existsSync(path.join(dataDir, 'validation.csv'))) {
-    const dataLoader = new DataLoader(path.join(dataDir, 'validation.csv'), labelColumn);
-    data.validationLoader = dataLoader;
+    data.validationLoader = new DataLoader(path.join(dataDir, 'validation.csv'), labelColumn);
   }
   if (fs.existsSync(path.join(dataDir, 'test.csv'))) {
-    const dataLoader = new DataLoader(path.join(dataDir, 'test.csv'), labelColumn);
-    data.testLoader = dataLoader;
+    data.testLoader = new DataLoader(path.join(dataDir, 'test.csv'), labelColumn);
   }
 
   const loader = data.trainLoader || data.validationLoader || data.testLoader;
-
 
   if (loader) {
     const data = await loader.getItem(0);

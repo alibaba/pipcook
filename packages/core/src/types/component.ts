@@ -1,8 +1,9 @@
-import { PipcookPlugin } from './plugins';
+import { Observable, OperatorFunction } from 'rxjs';
+import { PipcookPlugin, PluginTypeI } from './plugins';
 import { UniModel } from './model';
 import { UniDataset } from './data/common';
-import { PipObject } from './other';
-import { Subscribable } from 'rxjs';
+import { PipObject, PromisedValueOf, EvaluateResult } from './other';
+import { OutputType } from '../constants/other';
 
 export interface InsertParams {
   pipelineId: string;
@@ -10,41 +11,37 @@ export interface InsertParams {
   dataDir: string;
 }
 
-interface ObserverFunc {
-  (data: UniDataset, model: UniModel |null, insertParams: InsertParams): Subscribable<any>;
+interface ObserverFunc<T extends PipcookPlugin> {
+  (data: UniDataset, model: UniModel |null, insertParams: InsertParams): Observable<PromisedValueOf<ReturnType<T>>>;
 }
 
-type ResultType = 
-  'dataCollect' | 
-  'dataAccess' | 
-  'dataProcess' | 
-  'modelLoad' | 
-  'modelDefine' |
-  'modelTrain' |
-  'modelEvaluate' |
-  'modelDeploy' ;
-
-export interface PipcookComponentResult {
-  type: ResultType;
+export type PipcookComponentOutput = 
+  | void
+  | UniModel
+  | UniDataset
+  | EvaluateResult
+  
+export type PipcookComponentOperator = OperatorFunction<PipcookComponentOutput, PipcookComponentOutput>
+  
+export interface PipcookComponentResult<T extends PipcookPlugin = PipcookPlugin> {
+  type: PluginTypeI;
   plugin?: PipcookPlugin;
-  mergeComponents?: PipcookComponentResult[][];
+  mergeComponents?: PipcookComponentResult<T>[][];
   params?: PipObject;
-  observer?: ObserverFunc;
-  returnType?: string;
-  previousComponent: PipcookComponentResult | null;
+  observer?: ObserverFunc<T>;
+  returnType?: OutputType;
+  previousComponent: PipcookComponentResult<T> | null;
   status: 'not execute' | 'running' | 'success' | 'failure';
   package?: string;
   version?: string;
 }
 
-export interface PipcookLifeCycleComponent {
-  (plugin: PipcookPlugin, params?: PipObject): PipcookComponentResult;
+export interface PipcookLifeCycleComponent<T extends PipcookPlugin> {
+  (plugin: T, params?: PipObject): PipcookComponentResult<T>;
 }
 
 export interface PipcookModelDeployResult {
   execute: Function;
 }
 
-export interface PipcookLifeCycleTypes {
-  [pluginType: string]: PipcookLifeCycleComponent;
-}
+export type PipcookLifeCycleTypes = Record<string, PipcookLifeCycleComponent<PipcookPlugin>>;
