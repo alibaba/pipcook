@@ -16,13 +16,38 @@ export class JobController {
   public async runPipeline() {
     const { ctx } = this;
     const { pipelineId } = ctx.request.body;
+    let data: any;
     try {
-      const data = await this.pipelineService.createNewRun(pipelineId);
+      data = await this.pipelineService.createNewRun(pipelineId);
       this.pipelineService.startRun(data);
       successRes(ctx, {
         message: 'create run job successfully',
         data
       }, 201);
+    } catch (err) {
+      if (data && data.id) {
+        await this.pipelineService.updateRunById(data.id, {
+          status: 3
+        });
+      }
+      failRes(ctx, {
+        message: err.message
+      });
+    }
+  }
+
+  @get('/:runId/log')
+  public async getLog() {
+    const { ctx } = this;
+    const { runId } = ctx.params;
+    try {
+      const data = await this.pipelineService.getLogById(runId);
+      if (!data) {
+        throw new Error('log not found');
+      }
+      successRes(ctx, {
+        data
+      });
     } catch (err) {
       failRes(ctx, {
         message: err.message
@@ -53,9 +78,13 @@ export class JobController {
   public async getRunJobs() {
     const { ctx } = this;
     const { pipelineId, offset = 0, limit = 10 } = ctx.query;
-    console.log('0----', pipelineId);
     try {
-      const data = await this.pipelineService.getRunsByPipelineId(pipelineId, offset, limit);
+      let data: any;
+      if (pipelineId) {
+        data = await this.pipelineService.getRunsByPipelineId(pipelineId, offset, limit);
+      } else {
+        data = await this.pipelineService.getRuns(offset, limit);
+      }
       if (!data || data.length === 0) {
         throw new Error('job not found');
       }

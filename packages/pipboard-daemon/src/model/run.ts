@@ -44,6 +44,9 @@ export default async function model(context) {
       allowNull: false,
       defaultValue: 0
     },
+    metadata: {
+      type: STRING
+    },
     evaluateMap: {
       type: STRING
     },

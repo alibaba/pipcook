@@ -1,12 +1,10 @@
 import program from 'commander';
 import { init } from './init';
-import { log } from './log';
-import { board } from './board';
-import { start } from './start';
 import { devPlugin } from './devPlugin';
-import { dataset } from './dataset';
 import { serve } from './serve';
 import { execSync } from 'child_process';
+import { pipeline as pipelineHandler } from './pipeline';
+import { job } from './job';
 
 const pkg = require('../../package.json');
 
@@ -23,22 +21,21 @@ export const initCommander = () => {
     .description('Init the Pipcook project')
     .action(init);
 
-  // start the pipeline. Actually same as node xxx at current stage
   program
-    .command('run [fileName]')
-    .description('run pipeline with config file')
-    .action(start);
-
-  // print out basic logs
-  program
-    .command('log')
-    .description('Print out Pipcook log')
-    .action(log);
+    .command('job <operation> [id]')
+    .option('-p, --pipeline <pipeline>', 'get job with specified pipeline')
+    .option('--verbose <verbose>', 'if print out log')
+    .description('operate the job bound to specific pipeline')
+    .action((operation, id, opts) => {
+      job(operation, id, opts.pipeline, opts.verbose);
+    })
 
   program
-    .command('board')
-    .description('Start Pipcook Board')
-    .action(board);
+    .command('pipeline <operation> [pipeline] [pipelineId]')
+    .description('operate on pipeline')
+    .action((operation, pipeline, pipelineId) => {
+      pipelineHandler(operation, pipeline, pipelineId);
+   })
 
   program
     .command('plugin-dev')
@@ -46,12 +43,6 @@ export const initCommander = () => {
     .option('-n, --name <name>', 'project name')
     .description('initialize plugin development environment')
     .action(devPlugin);
-
-  program
-    .command('dataset')
-    .option('-t, --type <type>', 'action type')
-    .description('type of action you want to do on dataset')
-    .action(dataset);
 
   program
     .command('bip')

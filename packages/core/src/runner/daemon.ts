@@ -55,3 +55,8 @@ export async function writeOutput(runId: string, content: string, stderr = false
     })
   })
 }
+
+export async function getLog(runId: string) {
+  const log = await fs.readFile(path.join(PIPCOOK_LOGS, runId, 'stdout'), 'utf8');
+  return log;
+}

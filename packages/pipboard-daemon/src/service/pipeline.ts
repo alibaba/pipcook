@@ -1,6 +1,7 @@
 import { provide, inject } from 'midway';
-import { PipelineDB, createRun, writeOutput } from '@pipcook/pipcook-core';
+import { PipelineDB, createRun, writeOutput, getLog } from '@pipcook/pipcook-core';
 import * as path from 'path';
+import { MODULE_PATH } from '../utils/tools';
 import { fork } from 'child_process';
 
 import { RunParams } from '../interface';
@@ -29,7 +30,8 @@ export class PipelineService {
   async getPipelines(offset: number, limit: number) {
     const records = await this.model.findAndCountAll({
       offset,
-      limit
+      limit,
+      order: [['createdAt', 'DESC']]
     });
     return records;
   }
@@ -67,7 +69,17 @@ export class PipelineService {
       limit,
       where: {
         pipelineId
-      }
+      },
+      order: [['createdAt', 'DESC']]
+    });
+    return records;
+  }
+
+  async getRuns(offset: number, limit: number) {
+    const records = await this.runModel.findAndCountAll({
+      offset,
+      limit,
+      order: [['createdAt', 'DESC']]
     });
     return records;
   }
@@ -87,13 +99,14 @@ export class PipelineService {
       const child = fork(script, [ runRecord.pipelineId, runRecord.id, JSON.stringify(pipelineRecord), 'run-pipeline' ], {
         silent: true,
         env: {
-          NODE_PATH: '/Users/queyue/Documents/work/pipcook/test/node_modules'
+          NODE_PATH: MODULE_PATH
         }
       });
       child.stdout.on('data', async (data) => {
         await writeOutput(runRecord.id, data);
       });
       child.stderr.on('data', async (data) => {
+        await writeOutput(runRecord.id, data);
         await writeOutput(runRecord.id, data, true);
       });
       child.on('message', async (data) => {
@@ -110,5 +123,10 @@ export class PipelineService {
         }
       });
     });
+  }
+
+  async getLogById(id: string) {
+    const logs = await getLog(id);
+    return logs;
   }
 }

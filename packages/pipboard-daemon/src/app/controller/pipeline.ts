@@ -40,7 +40,7 @@ export class PipelineController {
       limit = parseInt(limit);
       const data = await this.pipelineService.getPipelines(offset, limit);
       successRes(ctx, {
-        message: 'create pipeline successfully',
+        message: 'get pipeline successfully',
         data
       });
     } catch (err) {

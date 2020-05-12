@@ -7,7 +7,7 @@
 import { Sequelize } from 'sequelize';
 import * as cls from 'cls-hooked';
 import { scope, ScopeEnum, provide, async, init } from 'midway';
-import * as path from 'path';
+import { DB_PATH } from '../utils/tools';
 
 @scope(ScopeEnum.Singleton)
 @async()
@@ -21,7 +21,7 @@ export default class DB {
     Sequelize.useCLS(pipcookNamespace);
     this.sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: path.join(__dirname, '..', '..', 'db', 'pipcook.db')
+      storage: DB_PATH
     });
     this.sequelize.sync();
   }

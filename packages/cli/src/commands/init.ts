@@ -1,14 +1,13 @@
 import path from 'path';
 import childProcess from 'child_process';
-
 import fse from 'fs-extra';
 import ora from 'ora';
-import glob from 'glob-promise';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
+import * as os from 'os';
 
 import { InitCommandHandler } from '../types';
-import { dependencies, pipcookLogName, optionalNpmClients } from '../config';
+import { dependencies, optionalNpmClients } from '../config';
 
 const spinner = ora();
 
@@ -56,29 +55,20 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
 
   let dirname;
   try {
-    dirname = process.cwd();
-    const existingContents = await glob(path.join(dirname, '*'));
-    if (existingContents.length > 0) {
-      spinner.fail('Current working directory is not empty');
-      return process.exit(1);
-    }
-    fse.ensureDirSync(path.join(dirname, 'examples'));
-    // we prepared several examples. Here copy these examples to current working directory
-    fse.copySync(path.join(__dirname, '..', 'assets', 'example'), path.join(dirname, 'examples'));
-    fse.ensureDirSync(path.join(dirname, pipcookLogName));
+    dirname = path.join(os.homedir(), '.pipcook');
     fse.ensureDirSync(path.join(dirname, '.server'));
     fse.copySync(path.join(__dirname, '..', 'assets', 'server'), path.join(dirname, '.server'));
  
     // init npm project
     childProcess.execSync(`${npmClient} init -y`, {
-      cwd: dirname,
+      cwd: path.join(dirname, 'dependencies'),
       stdio: 'inherit'
     });
     spinner.start(`installing pipcook`);
 
     for (const item of dependencies) {
       childProcess.execSync(`${npmClient} install ${item}${beta ? '@beta' : ''} --save`, {
-        cwd: dirname,
+        cwd: path.join(dirname, 'dependencies'),
         stdio: 'inherit',
         env: npmInstallEnvs
       });
@@ -93,7 +83,7 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     spinner.succeed(`install pipcook board successfully`);
   } catch (err) {
     spinner.fail(`failed to initialize the project: ${err && err.stack}`);
-    childProcess.execSync(`rm -r ${path.join(dirname, '*')}`);
+    childProcess.execSync(`rm -r ${path.join(dirname, 'dependencies')}`);
     childProcess.execSync(`rm -r ${path.join(dirname, '.server')}`);
   }
 };

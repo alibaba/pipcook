@@ -67,7 +67,8 @@ export const constants = {
 export {
   parseConfig,
   createRun,
-  writeOutput
+  writeOutput,
+  getLog
 } from './runner/daemon';
 
 export {
