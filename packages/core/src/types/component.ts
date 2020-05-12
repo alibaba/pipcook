@@ -22,6 +22,13 @@ export type PipcookComponentOutput =
   | EvaluateResult
   
 export type PipcookComponentOperator = OperatorFunction<PipcookComponentOutput, PipcookComponentOutput>
+
+export const enum PipcookComponentResultStatus {
+  NotExecute = 'not execute',
+  Running = 'running',
+  Success = 'success',
+  Failure = 'failure'
+}
   
 export interface PipcookComponentResult<T extends PipcookPlugin = PipcookPlugin> {
   type: PluginTypeI;
@@ -31,7 +38,7 @@ export interface PipcookComponentResult<T extends PipcookPlugin = PipcookPlugin>
   observer?: ObserverFunc<T>;
   returnType?: OutputType;
   previousComponent: PipcookComponentResult<T> | null;
-  status: 'not execute' | 'running' | 'success' | 'failure';
+  status: PipcookComponentResultStatus;
   package?: string;
   version?: string;
 }

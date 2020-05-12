@@ -6,7 +6,7 @@
 import * as path from 'path';
 import { from, range, forkJoin, Observable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
-import { PipcookLifeCycleComponent, PipcookComponentResult, PipcookLifeCycleTypes } from '../types/component';
+import { PipcookLifeCycleComponent, PipcookComponentResult, PipcookLifeCycleTypes, PipcookComponentResultStatus } from '../types/component';
 import { OutputType } from '../constants/other';
 import {
   PipcookPlugin,
@@ -41,7 +41,7 @@ function produceResultFactory<T extends PipcookPlugin>(type: PluginTypeI, plugin
     type, 
     plugin,
     previousComponent: null,
-    status: 'not execute',
+    status: PipcookComponentResultStatus.NotExecute,
     returnType: OutputType.NotSet
   };
   if (params) {

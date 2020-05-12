@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as uuid from 'uuid';
 
 import config from '../config';
-import { PipcookComponentResult, PipcookComponentOutput } from '../types/component';
+import { PipcookComponentResult, PipcookComponentOutput, PipcookComponentResultStatus } from '../types/component';
 import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
 import { EvaluateResult, PipObject } from '../types/other';
@@ -138,7 +138,7 @@ export class PipcookRunner {
     const pipeline = createPipeline(components, this, 'normal', saveModelCallback);
     pipeline.subscribe((result: PipcookComponentOutput) => {
       // success handle
-      components[components.length - 1].status = 'success';
+      components[components.length - 1].status = PipcookComponentResultStatus.Success;
       assignLatestResult(this.updatedType, result, this);
     }, async (error: Error) => {
       await this.handleError(error, components);
