@@ -13,7 +13,7 @@ const tf = boa.import('tensorflow');
 const { Adam } = boa.import('tensorflow.keras.optimizers');
 const { ResNet50 } = boa.import('tensorflow.keras.applications.resnet50');
 const { GlobalAveragePooling2D, Dropout, Dense } = boa.import('tensorflow.keras.layers');
-const { Model } = boa.import('tensorflow.keras.models')
+const { Model } = boa.import('tensorflow.keras.models');
 
 /** @ignore
  * assertion test
@@ -64,16 +64,16 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
     input_shape: inputShape
   }));
 
-  let output = model.output
-  output = GlobalAveragePooling2D()(output)
+  let output = model.output;
+  output = GlobalAveragePooling2D()(output);
   output = Dense(1024, boa.kwargs({
     activation: 'relu'
-  }))(output)
-  output = Dropout(0.5)(output)
+  }))(output);
+  output = Dropout(0.5)(output);
 
   const outputs = Dense(outputShape, boa.kwargs({
     activation: 'softmax'
-  }))(output)
+  }))(output);
   model = Model(boa.kwargs({
     inputs: model.input, 
     outputs: outputs
@@ -81,7 +81,7 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
 
   if (freeze) {
     for (let layer of model.layers.slice(0, -26)) {
-      layer.trainable = false
+      layer.trainable = false;
     }
   }
 
