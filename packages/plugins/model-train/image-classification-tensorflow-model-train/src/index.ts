@@ -1,4 +1,4 @@
-import { ImageDataset, ModelTrainType, TfJsLayersModel, ModelTrainArgsType, ImageDataLoader } from '@pipcook/pipcook-core';
+import { ImageDataset, ModelTrainType, UniModel, ModelTrainArgsType, ImageDataLoader } from '@pipcook/pipcook-core';
 
 const boa = require('@pipcook/boa');
 const { tuple } = boa.builtins();
@@ -41,7 +41,7 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
  * @param batchSize : need to specify batch size
  * @param optimizer : need to specify optimizer
  */
-const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersModel, args: ModelTrainArgsType): Promise<TfJsLayersModel> => {
+const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
   try {
     const {
       epochs = 10,
@@ -82,7 +82,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
       await trainModel.save_weights(modelPath);
     });
 
-    const result: TfJsLayersModel = {
+    const result: UniModel = {
       ...model,
       model: trainModel
     };

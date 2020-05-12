@@ -24,6 +24,9 @@
       "params": {
         "epochs": 20
       }
+    },
+    "modelEvaluate": {
+      "package": "./packages/plugins/model-evaluate/image-classification-tensorflow-model-evaluate"
     }
   }
 }

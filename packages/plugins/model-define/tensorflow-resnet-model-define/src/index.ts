@@ -3,7 +3,7 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -30,7 +30,7 @@ function argMax(array: any) {
  *  main function of the operator: load the mobilenet model
  * @param data sample data
  */
-const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
+const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
     loss = 'categorical_crossentropy',
     metrics = [ 'accuracy' ],
@@ -75,7 +75,7 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
     metrics: metrics
   }));
 
-  const result: TfJsLayersModel = {
+  const result: UniModel = {
     model,
     metrics: metrics,
     predict: async function (inputData: ImageSample) {
