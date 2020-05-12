@@ -17,3 +17,12 @@ export const ORIGINDATA = 'origindata';
 export const PIPCOOK_DIR = path.join(os.homedir(), '.pipcook');
 export const PIPCOOK_PLUGINS = path.join(PIPCOOK_DIR, 'plugins');
 export const PIPCOOK_LOGS = path.join(PIPCOOK_DIR, 'logs');
+export const enum OutputType {
+  Data = 'data',
+  Model = 'model',
+  Evaluate = 'evaluate',
+  Merge = 'merge',
+  ModelToSave = 'modeltosave',
+  OriginData = 'origindata',
+  NotSet = 'not set'
+}

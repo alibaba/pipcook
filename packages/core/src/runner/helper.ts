@@ -4,20 +4,22 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { from } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
 
 import { PipcookRunner } from './index';
-import { PipcookComponentResult } from '../types/component';
-import { EvaluateError } from '../types/other';
+import { OutputType } from '../constants/other';
 import { logCurrentExecution } from '../utils/logger';
-import { flatMap } from 'rxjs/operators';
-import { DATA, MODEL, EVALUATE, DEPLOYMENT, MODELTOSAVE } from '../constants/other';
+import { PipcookComponentResult, PipcookComponentResultStatus, InsertParams, PipcookComponentOperator, PipcookComponentOutput } from '../types/component';
+import { EvaluateError, EvaluateResult, PipObject } from '../types/other';
+import { UniDataset } from '../types/data/common';
+import { UniModel } from '../types/model';
 
 /**
  * Retreive relative logs required to be stored.
  * @param pipcookRunner : The pipcookRunner object
  */
-export function getLog(pipcookRunner: PipcookRunner): any {
-  const result: any = {
+export function getLog(pipcookRunner: PipcookRunner) {
+  const result: PipObject = {
     ...pipcookRunner,
     latestModel: null,
     latestSampleData: null
@@ -37,15 +39,15 @@ export function getLog(pipcookRunner: PipcookRunner): any {
  * @param self: the target update runner
  * @param saveModelCallback
  */
-export async function assignLatestResult(updatedType: string, result: any, self: PipcookRunner, saveModelCallback?: Function) {
+export async function assignLatestResult(updatedType: OutputType, result: PipcookComponentOutput, self: PipcookRunner, saveModelCallback?: Function) {
   switch (updatedType) {
-    case DATA:
+    case OutputType.Data:
       self.latestSampleData = result;
       break;
-    case MODEL:
+    case OutputType.Model:
       self.latestModel = result;
       break;
-    case EVALUATE:
+    case OutputType.Evaluate:
       console.log('evaluate result: ', result);
       self.evaluateMap = result;
       if (self.evaluateMap.pass === true || self.evaluateMap.pass === false) {
@@ -55,7 +57,7 @@ export async function assignLatestResult(updatedType: string, result: any, self:
         throw new EvaluateError(self.evaluateMap);
       }
       break;
-    case MODELTOSAVE:
+    case OutputType.ModelToSave:
       self.latestModel = result;
       break;
     default:
@@ -71,7 +73,7 @@ export async function assignLatestResult(updatedType: string, result: any, self:
  */
 export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal', saveModelCallback?: Function) {
   const firstComponent = components[0];
-  firstComponent.status = 'running';
+  firstComponent.status = PipcookComponentResultStatus.Running;
   logCurrentExecution(firstComponent, logType);
   const insertParams = {
     runId: self.runId,
@@ -81,19 +83,17 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
   const firstObservable = firstComponent.observer(null, self.latestModel, insertParams);
   self.updatedType = firstComponent.returnType;
 
-  const flatMapArray: any = [];
+  const flatMapArray: PipcookComponentOperator[] = [];
   self.currentIndex = 0;
   for (let i = 1; i < components.length; i++) {
     // rxjs pipe: serialize all components
     (function execute(component, assignLatestResult, updatedType, self, flatMapArray) {
-      const flatMapObject = flatMap((result) => {
-        component.previousComponent.status = 'success';
+      const flatMapObject = flatMap((result: PipcookComponentOutput) => {
+        component.previousComponent.status = PipcookComponentResultStatus.Success;
         self.currentIndex++;
         logCurrentExecution(component, logType);
         return from(assignLatestResult(updatedType, result, self, saveModelCallback)).pipe(
-          flatMap(() => {
-            return component.observer(self.latestSampleData, self.latestModel, insertParams);
-          })
+          flatMap(() => component.observer(self.latestSampleData, self.latestModel, insertParams))
         );  
       });
       flatMapArray.push(flatMapObject);
@@ -124,20 +124,19 @@ export function linkComponents(components: PipcookComponentResult[]) {
  * those components which are not changed to success status should be failing ones
  * @param components 
  */
-export function assignFailures(components: PipcookComponentResult[]) {
-  components.forEach((component: PipcookComponentResult) => {
-    if (component.status === 'running') {
-      component.status = 'failure';
+export function markFailures(components: PipcookComponentResult[]): PipcookComponentResult[] {
+  return components.map(function markFailure(component) {
+    const nextComponent = { ...component };
+
+    if (nextComponent.status === PipcookComponentResultStatus.Running) {
+      nextComponent.status = PipcookComponentResultStatus.Failure;
     }
-    if (component.mergeComponents) {
-      component.mergeComponents.forEach((componentArray: PipcookComponentResult[]) => {
-        componentArray.forEach((component: PipcookComponentResult) => {
-          if (component.status === 'running') {
-            component.status = 'failure';
-          }
-        });
-      });
+
+    if (nextComponent.mergeComponents) {
+      nextComponent.mergeComponents = nextComponent.mergeComponents
+        .map((componentArray) => componentArray.map(markFailure));
     }
+
+    return nextComponent;
   });
 }
-

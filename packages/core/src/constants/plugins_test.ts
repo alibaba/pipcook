@@ -4,7 +4,7 @@ import {
   DATAPROCESS,
   MODELLOAD,
   MODELTRAIN,
-  MODELEVALUATE,
+  MODELEVALUATE
 } from './plugins';
 
 describe('plugins constant', () => {

@@ -142,7 +142,7 @@ Clone this repository:
 $ git clone git@github.com:alibaba/pipcook.git
 ```
 
-install dependencies, e.g. via [npm][]:
+Install dependencies, e.g. via [npm][]:
 
 ```sh
 $ npm install

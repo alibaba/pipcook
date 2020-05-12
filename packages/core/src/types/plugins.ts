@@ -2,7 +2,7 @@
 import { UniDataset, Sample, Metadata } from './data/common';
 import { UniModel } from './model';
 import { EvaluateResult } from './other';
-import { InsertParams } from './component';
+import { InsertParams, PipcookComponentOutput } from './component';
 
 export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate';
 
@@ -25,7 +25,7 @@ export interface ModelTrainArgsType extends ArgsType {
 }
 
 export interface PipcookPlugin {
-  (...args: any[]): Promise<void | UniDataset | UniModel | EvaluateResult>;
+  (...args: any[]): Promise<PipcookComponentOutput>;
 }
 
 export interface DataCollectType extends PipcookPlugin {
