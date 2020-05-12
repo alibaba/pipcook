@@ -5,6 +5,13 @@ const { tuple } = boa.builtins();
 const tf = boa.import('tensorflow');
 const AUTOTUNE = tf.data.experimental.AUTOTUNE;
 
+interface TrainConfig {
+  epochs: number;
+  steps_per_epoch: number;
+  validation_data?: any;
+  validation_steps?: number;
+}
+
 function loadImage(path: string) {
   let image = tf.io.read_file(path);
   image = tf.image.decode_jpeg(image, boa.kwargs({
@@ -13,9 +20,7 @@ function loadImage(path: string) {
   return image;
 }
 
-async function createDataset(dataLoader: ImageDataLoader, labelMap: {
-  [key: string]: number;
-}) {
+async function createDataset(dataLoader: ImageDataLoader, labelMap: Record<string, number>) {
   const imageNames: string[] = [];
   const labels: number[] = [];
   const count = await dataLoader.len();
@@ -60,7 +65,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
       buffer_size: AUTOTUNE
     }));
 
-    const trainConfig: any = {
+    const trainConfig: TrainConfig = {
       epochs: epochs,
       steps_per_epoch: parseInt(String(count / batchSize))
     };

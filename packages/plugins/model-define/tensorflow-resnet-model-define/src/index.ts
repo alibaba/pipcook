@@ -12,6 +12,8 @@ const boa = require('@pipcook/boa');
 const tf = boa.import('tensorflow');
 const { Adam } = boa.import('tensorflow.keras.optimizers');
 const { ResNet50 } = boa.import('tensorflow.keras.applications.resnet50');
+const { GlobalAveragePooling2D, Dropout, Dense } = boa.import('tensorflow.keras.layers');
+const { Model } = boa.import('tensorflow.keras.models')
 
 /** @ignore
  * assertion test
@@ -57,11 +59,25 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
 
   let model: any;
   model = ResNet50(boa.kwargs({
-    include_top: true,
+    include_top: false,
     weights: pretrained ? 'imagenet' : null,
-    input_shape:  inputShape,
-    classes: outputShape
+    input_shape: inputShape
   }));
+
+  let output = model.output
+  output = GlobalAveragePooling2D()(output)
+  output = Dense(1024, boa.kwargs({
+    activation: 'relu'
+  }))(output)
+  output = Dropout(0.5)(output)
+
+  const outputs = Dense(outputShape, boa.kwargs({
+    activation: 'softmax'
+  }))(output)
+  model = Model(boa.kwargs({
+    inputs: model.input, 
+    outputs: outputs
+  }))
 
   if (recoverPath) {
     model.load_weights(recoverPath);
