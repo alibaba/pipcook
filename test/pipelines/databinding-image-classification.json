@@ -26,7 +26,7 @@
     "modelTrain": {
       "package": "./packages/plugins/model-train/image-classification-tensorflow-model-train",
       "params": {
-        "epochs": 20
+        "epochs": 15
       }
     },
     "modelEvaluate": {
