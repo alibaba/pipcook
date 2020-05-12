@@ -1,4 +1,4 @@
-- [什么是 Pipcook](README.md)
+- [什么是 Pipcook](/zh-cn/README.md)
 
 - 新手教程
 
