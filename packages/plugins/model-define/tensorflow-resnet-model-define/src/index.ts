@@ -3,7 +3,7 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel, download } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -40,7 +40,7 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
     decay = 0.05,
     recoverPath,
     labelMap,
-    pretrained = false
+    freeze = false
   } = args;
 
   let inputShape: number[];
@@ -60,7 +60,7 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
   let model: any;
   model = ResNet50(boa.kwargs({
     include_top: false,
-    weights: pretrained ? 'imagenet' : null,
+    weights: 'imagenet',
     input_shape: inputShape
   }));
 
@@ -77,11 +77,18 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
   model = Model(boa.kwargs({
     inputs: model.input, 
     outputs: outputs
-  }))
+  }));
+
+  if (freeze) {
+    for (let layer of model.layers.slice(0, -26)) {
+      layer.trainable = false
+    }
+  }
 
   if (recoverPath) {
     model.load_weights(recoverPath);
   }
+
   model.compile(boa.kwargs({
     optimizer: Adam(boa.kwargs({
       lr: learningRate,

@@ -80,7 +80,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
     }
 
     const trainModel = model.model;
-    
+    console.log('start ...');
     await trainModel.fit(trainDataSet, boa.kwargs(trainConfig));
 
     await saveModel(async (modelPath: string) => {

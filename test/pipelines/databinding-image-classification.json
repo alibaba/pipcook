@@ -3,7 +3,7 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/image-classification-data-collect",
       "params": {
-        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip"
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/eCommerceImageClassification.zip"
       }
     },
     "dataAccess": {
@@ -19,7 +19,8 @@
     "modelDefine": {
       "package": "./packages/plugins/model-define/tensorflow-resnet-model-define",
       "params": {
-        "batchSize": 4
+        "batchSize": 16,
+        "freeze": true
       }
     },
     "modelTrain": {
