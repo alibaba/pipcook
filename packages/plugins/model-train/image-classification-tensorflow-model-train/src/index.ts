@@ -29,6 +29,7 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: Record<strin
     imageNames.push(currentData.data);
     labels.push(tf.one_hot(currentData.label.categoryId, Object.keys(labelMap).length));
   }
+  console.log(imageNames);
   const pathDs = tf.data.Dataset.from_tensor_slices(imageNames);
   const imageDs = pathDs.map(loadImage, boa.kwargs({
     num_parallel_calls: AUTOTUNE
