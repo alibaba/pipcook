@@ -57,6 +57,7 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   try {
     dirname = path.join(os.homedir(), '.pipcook');
     fse.ensureDirSync(path.join(dirname, '.server'));
+    fse.ensureDirSync(path.join(dirname, 'dependencies'));
     fse.copySync(path.join(__dirname, '..', 'assets', 'server'), path.join(dirname, '.server'));
  
     // init npm project
@@ -75,7 +76,7 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     }
     spinner.succeed(`install pipcook core successfully`);
     spinner.start(`installing pipcook board`);
-    childProcess.execSync(`${npmClient} install`, {
+    childProcess.execSync(`${npmClient !== 'tnpm' ? npmClient : 'npm'} install`, {
       cwd: path.join(dirname, '.server'),
       stdio: 'inherit',
       env: npmInstallEnvs

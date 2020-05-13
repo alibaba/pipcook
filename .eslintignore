@@ -6,7 +6,7 @@ pipcook_venv
 
 packages/pipcook-core/src/assets
 packages/pipcook-cli/assets
+packages/pipboard-daemon
 packages/pipboard-client
-packages/pipboard-server
 packages/boa
 packages/cli/assets

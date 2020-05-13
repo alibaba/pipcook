@@ -4,6 +4,7 @@
     "packages/core",
     "packages/boa",
     "packages/pipboard-daemon",
+    "packages/pipboard-client",
     "packages/plugins/**/*"
   ],
   "version": "independent",
@@ -20,7 +21,11 @@
         "egg-ci",
         "midway-bin",
         "midway-mock",
-        "ts-node"
+        "ts-node",
+        "ice-scripts",
+        "stylelint",
+        "ice-plugin-fusion",
+        "ice-plugin-moment-locales"
       ]
     }
   },

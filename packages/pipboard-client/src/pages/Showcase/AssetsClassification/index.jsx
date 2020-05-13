@@ -87,7 +87,7 @@ export default class AssetsClassification extends Component {
 
   onPredict = async image => {
     messageLoading('Please give us some time to predict the result ...');
-    let response = await axios.post('/showcase/asset-classification', {
+    let response = await axios.post('/playground/asset-classification', {
       image,
     });
     response = response.data;

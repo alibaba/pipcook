@@ -39,7 +39,7 @@ export async function createRun(pipelineId: string): Promise<RunDB> {
     coreVersion: packageJson.version,
     status: PipelineStatus.INIT,
     currentIndex: -1
-  }
+  };
 }
 
 export async function writeOutput(runId: string, content: string, stderr = false) {
@@ -52,8 +52,8 @@ export async function writeOutput(runId: string, content: string, stderr = false
       } else {
         resolve();
       }
-    })
-  })
+    });
+  });
 }
 
 export async function getLog(runId: string) {

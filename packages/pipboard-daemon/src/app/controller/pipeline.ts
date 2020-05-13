@@ -36,8 +36,8 @@ export class PipelineController {
     const { ctx } = this;
     let { offset = 0, limit = 10 } = ctx.query;
     try {
-      offset = parseInt(offset);
-      limit = parseInt(limit);
+      offset = parseInt(offset, 10);
+      limit = parseInt(limit, 10);
       const data = await this.pipelineService.getPipelines(offset, limit);
       successRes(ctx, {
         message: 'get pipeline successfully',

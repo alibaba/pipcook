@@ -4,6 +4,7 @@
  */
 
 import * as path from 'path';
+import * as os from 'os';
 import { from, range, forkJoin, Observable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { PipcookLifeCycleComponent, PipcookComponentResult, PipcookLifeCycleTypes, PipcookComponentResultStatus } from '../types/component';

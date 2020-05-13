@@ -16,34 +16,27 @@ export default class Log extends Component {
       let response = await axios.get('/log/logs');
       response = response.data;
       if (response.status) {
-        const result = response.logs.map((item) => {
+        const result = response.data.rows.map((item) => {
           return {
            ...item,
-           startTime: new Date(item.startTime).toLocaleString(), 
+           startTime: new Date(item.createdAt).toLocaleString(), 
            endTime: new Date(item.endTime).toLocaleString(),
           };
         });
         this.setState({data: result});
       } else {
-        messageError(response.msg);
+        messageError(response.message);
       }
     } catch (err) {
       messageError(err.message);
     }
   }
 
-  showModal = (record, value) => {
-    if (value === 0) {
-      Dialog.show({
-        title: 'Plugins Status',
-        content: record.components,
-      });
-    } else if (value === 1) {
-      Dialog.show({
-        title: 'Dataset',
-        content: record.dataset,
-      });
-    }
+  showModal = (record) => {
+    Dialog.show({
+      title: 'Dataset',
+      content: record.metadata,
+    });
   }
 
   render() {
@@ -51,12 +44,13 @@ export default class Log extends Component {
     return (
       <div className="log">
         <Table dataSource={data}>
+          <Table.Column title="Job Id" dataIndex="id" />
           <Table.Column title="Pipeline Id" dataIndex="pipelineId" />
-          <Table.Column title="Pipeline Versiom" dataIndex="pipelineVersion" />
-          <Table.Column title="Test Evaluation" dataIndex="evaluation"/>
-          <Table.Column title="Plugins Status" cell={(value, index, record) => <Button onClick={() => this.showModal(record, 0)}>Expand</Button>}/>
-          <Table.Column title="Dataset" cell={(value, index, record) => <Button onClick={() => this.showModal(record, 1)}>Expand</Button>}/>
+          <Table.Column title="Pipeline Version" dataIndex="coreVersion" />
+          <Table.Column title="Test Evaluation" dataIndex="evaluateMap"/>
+          <Table.Column title="Metadata" cell={(value, index, record) => <Button onClick={() => this.showModal(record)}>Expand</Button>}/>
           <Table.Column title="Start Time" dataIndex="startTime"/>
+          <Table.Column title="End Time" dataIndex="endTime"/>
         </Table>
       </div>
     );

@@ -22,7 +22,7 @@ export default class Mnist extends Component {
 
   predict = async () => {
     try {
-      let response = await axios.post('/showcase/mnist', {
+      let response = await axios.post('/playground/mnist', {
         image: this.state.image,
       });
       response = response.data;

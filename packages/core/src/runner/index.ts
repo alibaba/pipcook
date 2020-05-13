@@ -17,6 +17,8 @@ import { logStartExecution, logError, logComplete } from '../utils/logger';
 import { PLUGINS } from '../constants/plugins';
 import { compressTarFile } from '../utils/public';
 import { PipelineStatus, PipelineDB, PipelineDBParams } from '../types/database';
+import * as uuid from 'uuid';
+import { RunConfigI } from '../types/config';
 
 import {
   DATAPROCESS,
@@ -62,7 +64,7 @@ export class PipcookRunner {
   logDir: string|null = null;
   pipelineId: string|null = null;
   runId: string|null = null;
-  latestSampleData: UniDataset |null = null;
+  latestSampleData: UniDataset | null = null;
   latestModel: UniModel | null = null;
   evaluateMap: EvaluateResult | null = null;
   evaluatePass: boolean | null = null;
@@ -80,10 +82,11 @@ export class PipcookRunner {
   /**
    * Constructor, user need to specify pipeline name when init
    */
-  constructor(pipelineId: string, runId: string) {
-    this.pipelineId = pipelineId;
-    this.runId = runId;
-    this.logDir = path.join(os.homedir(), '.pipcook', 'logs', runId);
+  constructor(pipelineId?: string, runId?: string) {
+    
+    this.pipelineId = pipelineId || uuid.v1();
+    this.runId = runId || uuid.v1();
+    this.logDir = path.join(os.homedir(), '.pipcook', 'logs', this.runId);
     this.status = PipelineStatus.INIT;
     fs.ensureDirSync(this.logDir);
     fs.ensureDirSync(path.join(this.logDir, 'model'));
@@ -111,12 +114,12 @@ export class PipcookRunner {
     this.components = components;
 
     process
-      .on('unhandledRejection', async reason => {
+      .on('unhandledRejection', async (reason) => {
         await this.handleError(reason as Error, this.components);
         this.notifyStatus();
         process.exit();
       })
-      .on('uncaughtException', async err => {
+      .on('uncaughtException', async (err) => {
         await this.handleError(err, this.components);
         this.notifyStatus();
         process.exit();
@@ -148,7 +151,7 @@ export class PipcookRunner {
       status: this.status,
       currentIndex: this.currentIndex
     };
-    if(this.evaluateMap) {
+    if (this.evaluateMap) {
       runnerStatus.evaluateMap = JSON.stringify(this.evaluateMap);
     }
     if (this.evaluatePass !== undefined) {
@@ -194,6 +197,30 @@ export class PipcookRunner {
 
   /**
    * run config file
+   */
+  runFile = async (configPath: string) => {
+    const configJson: RunConfigI = fs.readJsonSync(configPath);
+    const parsedConfig: PipelineDB = {};
+    parsedConfig.id = this.runId;
+
+    PLUGINS.forEach((pluginType) => {
+      if (configJson.plugins[pluginType] &&
+        configJson.plugins[pluginType].package &&
+          LifeCycleTypes[pluginType]) {
+        const pluginName = configJson.plugins[pluginType].package;
+        const params = configJson.plugins[pluginType].params || {};
+  
+        parsedConfig[pluginType] = pluginName;
+        const paramsAttribute: PipelineDBParams = (pluginType + 'Params') as PipelineDBParams;
+        parsedConfig[paramsAttribute] = JSON.stringify(params);
+      }
+    });
+
+    this.runConfig(parsedConfig);
+  }
+
+  /**
+   * run config
    */
   runConfig = async (config: PipelineDB) => {
     const components: PipcookComponentResult[] = [];

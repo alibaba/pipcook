@@ -10,7 +10,7 @@ export class BoaController {
   @inject()
   ctx: Context;
 
-  @get('bip')
+  @get('/bip')
   public async getBoaPath() {
     const { ctx } = this;
     successRes(ctx, {

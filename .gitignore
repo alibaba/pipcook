@@ -17,6 +17,6 @@ docs/typedoc
 .eslintcache
 packages/pipboard-client/build
 .eslintcache
-packages/pipcook-cli/assets/server
 ENV
 .test
+packages/cli/assets/server/**

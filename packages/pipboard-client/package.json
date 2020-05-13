@@ -26,7 +26,6 @@
   "devDependencies": {
     "@ice/spec": "^0.1.1",
     "@types/jasmine": "^3.5.7",
-    "eslint": "^6.0.1",
     "ice-plugin-fusion": "^0.1.4",
     "ice-plugin-moment-locales": "^0.1.0",
     "ice-scripts": "^2.0.0",
@@ -39,10 +38,7 @@
     "lint": "npm run eslint && npm run stylelint",
     "eslint": "eslint --cache --ext .js,.jsx ./",
     "stylelint": "stylelint ./**/*.scss",
-    "clean": "rm -rf ./build",
-    "buildserver": "cd ../pipboard-server && npm run ci",
-    "buildstatic": "npm run buildserver && npm run build && rm -rf ../pipboard-server/app/public && mkdir ../pipboard-server/app/public && cp -r ./build/. ../pipboard-server/app/public",
-    "compile": "npm run buildstatic && rm -rf ../cli/assets/server && mkdir ../cli/assets/server && rsync -av --progress ../pipboard-server/. ../cli/assets/server --exclude node_modules"
+    "clean": "rm -rf ./build"
   },
   "engines": {
     "node": ">=8.0.0"
