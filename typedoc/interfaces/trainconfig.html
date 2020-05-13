@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DataCollectType | Pipcook</title>
+	<title>TrainConfig | Pipcook</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="datacollecttype.html">DataCollectType</a>
+					<a href="trainconfig.html">TrainConfig</a>
 				</li>
 			</ul>
-			<h1>Interface DataCollectType</h1>
+			<h1>Interface TrainConfig</h1>
 		</div>
 	</div>
 </header>
@@ -68,51 +68,68 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="pipcookplugin.html" class="tsd-signature-type">PipcookPlugin</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">DataCollectType</span>
-							</li>
-						</ul>
+						<span class="target">TrainConfig</span>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel">
-				<h3 class="tsd-before-signature">Callable</h3>
-				<ul class="tsd-signatures tsd-kind-interface">
-					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../index.html#argstype" class="tsd-signature-type">ArgsType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#pipcookcomponentoutput" class="tsd-signature-type">PipcookComponentOutput</a><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/d9caa5f/packages/core/src/types/plugins.ts#L31">packages/core/src/types/plugins.ts:31</a></li>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="trainconfig.html#epochs" class="tsd-kind-icon">epochs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="trainconfig.html#steps_per_epoch" class="tsd-kind-icon">steps_<wbr>per_<wbr>epoch</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="trainconfig.html#validation_data" class="tsd-kind-icon">validation_<wbr>data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="trainconfig.html#validation_steps" class="tsd-kind-icon">validation_<wbr>steps</a></li>
 							</ul>
-						</aside>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5>args: <a href="../index.html#argstype" class="tsd-signature-type">ArgsType</a></h5>
-							</li>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="epochs" class="tsd-anchor"></a>
+					<h3>epochs</h3>
+					<div class="tsd-signature tsd-kind-icon">epochs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/d9caa5f/packages/plugins/model-train/image-classification-tensorflow-model-train/src/index.ts#L9">packages/plugins/model-train/image-classification-tensorflow-model-train/src/index.ts:9</a></li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/d9caa5f/packages/core/src/types/plugins.ts#L27">packages/core/src/types/plugins.ts:27</a></li>
-							</ul>
-						</aside>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
-							</li>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="steps_per_epoch" class="tsd-anchor"></a>
+					<h3>steps_<wbr>per_<wbr>epoch</h3>
+					<div class="tsd-signature tsd-kind-icon">steps_<wbr>per_<wbr>epoch<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/d9caa5f/packages/plugins/model-train/image-classification-tensorflow-model-train/src/index.ts#L10">packages/plugins/model-train/image-classification-tensorflow-model-train/src/index.ts:10</a></li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#pipcookcomponentoutput" class="tsd-signature-type">PipcookComponentOutput</a><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="validation_data" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> validation_<wbr>data</h3>
+					<div class="tsd-signature tsd-kind-icon">validation_<wbr>data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/d9caa5f/packages/plugins/model-train/image-classification-tensorflow-model-train/src/index.ts#L11">packages/plugins/model-train/image-classification-tensorflow-model-train/src/index.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="validation_steps" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> validation_<wbr>steps</h3>
+					<div class="tsd-signature tsd-kind-icon">validation_<wbr>steps<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/d9caa5f/packages/plugins/model-train/image-classification-tensorflow-model-train/src/index.ts#L12">packages/plugins/model-train/image-classification-tensorflow-model-train/src/index.ts:12</a></li>
+						</ul>
+					</aside>
+				</section>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -127,8 +144,22 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="datacollecttype.html" class="tsd-kind-icon">Data<wbr>Collect<wbr>Type</a>
+					<li class="current tsd-kind-interface tsd-is-not-exported">
+						<a href="trainconfig.html" class="tsd-kind-icon">Train<wbr>Config</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="trainconfig.html#epochs" class="tsd-kind-icon">epochs</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="trainconfig.html#steps_per_epoch" class="tsd-kind-icon">steps_<wbr>per_<wbr>epoch</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="trainconfig.html#validation_data" class="tsd-kind-icon">validation_<wbr>data</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="trainconfig.html#validation_steps" class="tsd-kind-icon">validation_<wbr>steps</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
