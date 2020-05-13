@@ -10,3 +10,4 @@ packages/pipboard-daemon
 packages/pipboard-client
 packages/boa
 packages/cli/assets
+pipcook-output
