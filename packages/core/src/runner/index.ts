@@ -237,7 +237,13 @@ export class PipcookRunner {
           try {
             pluginModule = require(pluginName).default;
           } catch (err) {
-            pluginModule = require(path.join(process.cwd(), pluginName)).default;
+            try {
+              pluginModule = require(path.join(process.cwd(), pluginName)).default;
+            } catch (err) {
+              this.handleError(err, this.components);
+              this.notifyStatus();
+              process.exit();
+            }  
           }
         }
         const factoryMethod = LifeCycleTypes[pluginType];
