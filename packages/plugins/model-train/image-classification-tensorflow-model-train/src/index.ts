@@ -94,7 +94,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
     };
     return result;
   } catch (err) {
-    console.log('[ERROR] model trainer', err);
+    console.error('occurs an error on model trainer', err);
     throw err;
   }
 };
