@@ -3,8 +3,8 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/mnist-data-collect",
       "params": {
-        "trainCount": 100,
-        "testCount": 100
+        "trainCount": 8000,
+        "testCount": 2000
       }
     },
     "dataAccess": {

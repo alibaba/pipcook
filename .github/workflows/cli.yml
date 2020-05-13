@@ -30,7 +30,6 @@ jobs:
       run: |
         ../packages/cli/dist/bin/index.js -v
         ../packages/cli/dist/bin/index.js --version
-        ../packages/cli/dist/bin/index.js -h
         ../packages/cli/dist/bin/index.js --help
         ../packages/cli/dist/bin/index.js init --help
         ../packages/cli/dist/bin/index.js run --help
@@ -66,12 +65,6 @@ jobs:
         mkdir init1
         cd init1
         ../../packages/cli/dist/bin/index.js init
-        cd ../
-    - name: test client basic usage run
-      working-directory: ./myworkspace
-      run: |
-        cd init1
-        ../../packages/cli/dist/bin/index.js run ./examples/pipelines/text-bayes-classification.json
         cd ../
     - name: test client basic usage plugin-dev
       working-directory: ./myworkspace
