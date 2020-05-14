@@ -61,9 +61,9 @@ const getCircularReplacer = () => {
  */
 export class PipcookRunner {
   pipelineVersion: string = config.version;
-  logDir: string|null = null;
-  pipelineId: string|null = null;
-  runId: string|null = null;
+  logDir: string | null = null;
+  pipelineId: string | null = null;
+  jobId: string | null = null;
   latestSampleData: UniDataset | null = null;
   latestModel: UniModel | null = null;
   evaluateMap: EvaluateResult | null = null;
@@ -82,11 +82,11 @@ export class PipcookRunner {
   /**
    * Constructor, user need to specify pipeline name when init
    */
-  constructor(pipelineId?: string, runId?: string) {
+  constructor(pipelineId?: string, jobId?: string) {
     
     this.pipelineId = pipelineId || uuid.v1();
-    this.runId = runId || uuid.v1();
-    this.logDir = path.join(os.homedir(), '.pipcook', 'logs', this.runId);
+    this.jobId = jobId || uuid.v1();
+    this.logDir = path.join(os.homedir(), '.pipcook', 'logs', this.jobId);
     this.status = PipelineStatus.INIT;
     fs.ensureDirSync(this.logDir);
     fs.ensureDirSync(path.join(this.logDir, 'model'));
@@ -201,7 +201,7 @@ export class PipcookRunner {
   runFile = async (configPath: string) => {
     const configJson: RunConfigI = fs.readJsonSync(configPath);
     const parsedConfig: PipelineDB = {};
-    parsedConfig.id = this.runId;
+    parsedConfig.id = this.jobId;
 
     PLUGINS.forEach((pluginType) => {
       if (configJson.plugins[pluginType] &&

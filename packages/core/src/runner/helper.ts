@@ -2,14 +2,13 @@
  * @file This file is for helper functions related to Pipcook-core
  */
 import * as path from 'path';
-import * as fs from 'fs-extra';
 import { from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 
 import { PipcookRunner } from './index';
 import { OutputType } from '../constants/other';
 import { logCurrentExecution } from '../utils/logger';
-import { PipcookComponentResult, PipcookComponentResultStatus, InsertParams, PipcookComponentOperator, PipcookComponentOutput } from '../types/component';
+import { PipcookComponentResult, PipcookComponentResultStatus, PipcookComponentOperator, PipcookComponentOutput } from '../types/component';
 import { EvaluateError, EvaluateResult, PipObject } from '../types/other';
 import { UniDataset } from '../types/data/common';
 import { UniModel } from '../types/model';
@@ -37,9 +36,8 @@ export function getLog(pipcookRunner: PipcookRunner) {
  * @param updatedType: updated return type of plugin
  * @param result: lasted return data of plugin
  * @param self: the target update runner
- * @param saveModelCallback
  */
-export async function assignLatestResult(updatedType: OutputType, result: PipcookComponentOutput, self: PipcookRunner, saveModelCallback?: Function) {
+export async function assignLatestResult(updatedType: OutputType, result: PipcookComponentOutput, self: PipcookRunner) {
   switch (updatedType) {
   case OutputType.Data:
     self.latestSampleData = result as UniDataset;
@@ -71,12 +69,12 @@ export async function assignLatestResult(updatedType: OutputType, result: Pipcoo
  * @param components: EscherComponent 
  * @param self: the pipeline subject
  */
-export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal', saveModelCallback?: Function) {
+export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal') {
   const firstComponent = components[0];
   firstComponent.status = PipcookComponentResultStatus.Running;
   logCurrentExecution(firstComponent, logType);
   const insertParams = {
-    runId: self.runId,
+    jobId: self.jobId,
     modelDir: path.join(self.logDir, 'model'),
     dataDir: path.join(self.logDir, 'data')
   };
@@ -92,7 +90,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
         component.previousComponent.status = PipcookComponentResultStatus.Success;
         self.currentIndex++;
         logCurrentExecution(component, logType);
-        return from(assignLatestResult(updatedType, result, self, saveModelCallback)).pipe(
+        return from(assignLatestResult(updatedType, result, self)).pipe(
           flatMap(() => component.observer(self.latestSampleData, self.latestModel, insertParams))
         );  
       });

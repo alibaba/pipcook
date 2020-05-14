@@ -1,5 +1,7 @@
 import ora from 'ora';
 import { runJob, getJobById, getJobByPipeline, getJobs, getLogById } from '../service/job';
+import { ResponseParams } from '../request';
+import { JobOperation } from '../types/config';
 
 const PipelineStatus: any = {
   0: 'creating',
@@ -10,8 +12,40 @@ const PipelineStatus: any = {
 
 const spinner = ora();
 
-export const job = async (operation: string, id: string, pipelineId: string, verbose: string) => {
-  let data: any;
+function getListJob(data: ResponseParams) {
+  data = data.rows.map((row: any) => ({
+    id: row.id,
+    pipelineId: row.pipelineId,
+    status: PipelineStatus[row.status],
+    createdAt: row.createdAt
+  }));
+  return data;
+}
+
+function fetchLog(data: ResponseParams, logs: string) {
+  setTimeout(async () => {
+    try {
+      const jobInfo = await getJobById(data.id);
+      if (!(jobInfo.status === 2 || jobInfo.status === 3)) {
+        const log = await getLogById(data.id);
+        let incrementLog;
+        if (logs) {
+          incrementLog = log.substring(log.indexOf(logs) + 1);
+        } else {
+          incrementLog = log;
+        }    
+        logs = log.log;
+        console.log(incrementLog);
+        fetchLog(data, logs);
+      }
+    } catch (err) {
+      spinner.fail(err.message);
+    }
+  }, 2000);
+}
+
+export const job = async (operation: JobOperation, id: string, pipelineId: string, verbose: boolean) => {
+  let data: ResponseParams;
   switch (operation) {
   case 'run':
     if (!pipelineId) {
@@ -20,24 +54,8 @@ export const job = async (operation: string, id: string, pipelineId: string, ver
     }
     data = await runJob(pipelineId);
     spinner.succeed(`create job ${data.id} succeeded`);
-    if (verbose === 'true') {
-      let logs = ' ';
-      const timer = setInterval(async () => {
-        try {
-          const jobInfo = await getJobById(data.id);
-          if (jobInfo.status === 2 || jobInfo.status === 3) {
-            clearInterval(timer);
-          } else {
-            const log = await getLogById(data.id);
-            const incrementLog = log.substring(log.indexOf(logs) + 1);
-            logs = log;
-            console.log(incrementLog);
-          }
-        } catch (err) {
-          spinner.fail(err.message);
-          clearInterval(timer);
-        }
-      }, 2000);
+    if (verbose === true) {
+      fetchLog(data, '');
     }
     break;
   case 'list':
@@ -46,12 +64,7 @@ export const job = async (operation: string, id: string, pipelineId: string, ver
       console.log(JSON.stringify(data, null, 2));
     } else if (pipelineId) {
       data = await getJobByPipeline(pipelineId);
-      data = data.rows.map((row: any) => ({
-        id: row.id,
-        pipelineId: row.pipelineId,
-        status: PipelineStatus[row.status],
-        createdAt: row.createdAt
-      }));
+      data = getListJob(data);
       console.table(data);
     } else {
       data = await getJobs();

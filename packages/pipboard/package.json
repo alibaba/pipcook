@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/pipboard-client",
+  "name": "@pipcook/pipboard",
   "version": "0.5.3",
   "description": "board for pipcook",
   "dependencies": {

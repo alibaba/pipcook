@@ -1,2 +1,2 @@
-cd packages/pipboard-client && npm run build && mkdir -p ../pipboard-daemon/src/app/public && cp -r ./build/. ../pipboard-daemon/src/app/public \
-&& cd ../cli/assets && mkdir -p server && rsync -av --progress ../../pipboard-daemon/. server --exclude=node_modules
+cd packages/pipboard && npm run build && mkdir -p ../daemon/src/app/public && cp -r ./build/. ../daemon/src/app/public \
+&& cd ../cli/assets && mkdir -p server && rsync -av --progress ../../daemon/. server --exclude=node_modules

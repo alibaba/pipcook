@@ -7,7 +7,11 @@ interface RequestParams {
   [key: string]: any;
 }
 
-export async function get(host: string, params?: RequestParams) {
+export interface ResponseParams {
+  [key: string]: any;
+}
+
+export async function get(host: string, params?: RequestParams): Promise<ResponseParams> {
   try {
     let response = await axios.get(host, {
       params
@@ -25,7 +29,7 @@ export async function get(host: string, params?: RequestParams) {
   }
 }
 
-export async function post(host: string, body?: RequestParams, params?: RequestParams) {
+export async function post(host: string, body?: RequestParams, params?: RequestParams): Promise<ResponseParams> {
   try {
     let response = await axios.post(host, body, params);
     if (response.data.status === true) {
@@ -57,7 +61,7 @@ export async function put(host: string, body?: RequestParams, params?: RequestPa
   }
 }
 
-export async function remove(host: string) {
+export async function remove(host: string): Promise<ResponseParams> {
   try {
     let response = await axios.delete(host);
     if (response.data.status === true) {

@@ -10,7 +10,7 @@ const spinner = ora();
 export const daemon = async (operation: string) => {
   let pid: number | string = '';
   try {
-    pid = await fs.readFile(path.join(os.homedir(), '.pipcook', 'pid.txt'), 'utf8');
+    pid = await fs.readFile(path.join(os.homedir(), '.pipcook', 'daemon', 'pid.txt'), 'utf8');
     pid = parseInt(pid);
   } finally {
     if (operation === 'start') {
@@ -18,13 +18,13 @@ export const daemon = async (operation: string) => {
         const pidInfo = await find('pid', pid);
         if (pidInfo && pidInfo.length > 0) {
           spinner.fail('Daemon is already running');
-          process.exit();
+          process.exit(1);
         }
       } 
       const daemonProcess = spawn('npm', [ 'run', 'dev' ], {
         cwd: path.join(os.homedir(), '.pipcook', '.server')
       });
-      await fs.outputFile(path.join(os.homedir(), '.pipcook', 'pid.txt'), String(daemonProcess.pid));
+      await fs.outputFile(path.join(os.homedir(), '.pipcook', 'daemon', 'pid.txt'), String(daemonProcess.pid));
   
       daemonProcess.stderr.on('data', (data) => {
         console.error(`stderr: ${data}`);

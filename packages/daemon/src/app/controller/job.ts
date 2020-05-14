@@ -36,17 +36,19 @@ export class JobController {
     }
   }
 
-  @get('/:runId/log')
+  @get('/:jobId/log')
   public async getLog() {
     const { ctx } = this;
-    const { runId } = ctx.params;
+    const { jobId } = ctx.params;
     try {
-      const data = await this.pipelineService.getLogById(runId);
+      const data = await this.pipelineService.getLogById(jobId);
       if (!data) {
         throw new Error('log not found');
       }
       successRes(ctx, {
-        data
+        data: {
+          log: data
+        }
       });
     } catch (err) {
       failRes(ctx, {
@@ -55,12 +57,12 @@ export class JobController {
     }
   }
 
-  @get('/:runId')
+  @get('/:jobId')
   public async getRunJob() {
     const { ctx } = this;
-    const { runId } = ctx.params;
+    const { jobId } = ctx.params;
     try {
-      const data = await this.pipelineService.getRunById(runId);
+      const data = await this.pipelineService.getRunById(jobId);
       if (!data) {
         throw new Error('job not found');
       }

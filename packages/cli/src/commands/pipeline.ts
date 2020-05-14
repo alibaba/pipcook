@@ -1,10 +1,11 @@
 import ora from 'ora';
 import * as path from 'path';
 import { getPipelines, createPipeline, updatePipeline, deletePipeline, getPipelineInfo } from '../service/pipeline';
+import { PipelineOperation } from '../types/config';
 
 const spinner = ora();
 
-export const pipeline = async (operation: string, pipeline: string, pipelineId: string) => {
+export const pipeline = async (operation: PipelineOperation, pipeline: string, pipelineId: string) => {
   let data: any;
   switch (operation) {
   case 'list':

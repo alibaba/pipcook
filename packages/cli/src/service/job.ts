@@ -1,31 +1,17 @@
 import { get, post } from '../request';
 import { route } from '../router';
 
-export async function runJob(pipelineId: string) {
-  const data = await post(route.job, {
-    pipelineId
-  });
-  return data;
-}
+export const runJob = (pipelineId: string) => post(route.job, {
+  pipelineId
+});
 
-export async function getJobById(id: string) {
-  const data = await get(`${route.job}/${id}`);
-  return data;
-}
 
-export async function getJobByPipeline(pipelineId: string) {
-  const data = await get(route.job, {
-    pipelineId
-  });
-  return data;
-}
+export const getJobById = (id: string) => get(`${route.job}/${id}`);
 
-export async function getJobs() {
-  const data = await get(route.job);
-  return data;
-}
+export const getJobByPipeline = (pipelineId: string) => get(route.job, {
+  pipelineId
+});
 
-export async function getLogById(id: string) {
-  const data = await get(`${route.job}/${id}/log`);
-  return data;
-}
+export const getJobs = () => get(route.job);
+
+export const getLogById = (id: string) => get(`${route.job}/${id}/log`);

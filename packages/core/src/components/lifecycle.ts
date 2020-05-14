@@ -145,7 +145,7 @@ export const ModelTrain: PipcookLifeCycleComponent<ModelTrainType> = (plugin, pa
     return from(plugin(data, model, {
       ...params, ...insertParams, 
       saveModel: async (callback: Function) => {
-        await callback(path.join(os.homedir(), '.pipcook', 'logs', insertParams.runId, 'model'));
+        await callback(path.join(os.homedir(), '.pipcook', 'logs', insertParams.jobId, 'model'));
       }
     }));
   };

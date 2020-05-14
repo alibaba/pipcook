@@ -42,9 +42,9 @@ export async function createRun(pipelineId: string): Promise<RunDB> {
   };
 }
 
-export async function writeOutput(runId: string, content: string, stderr = false) {
+export async function writeOutput(jobId: string, content: string, stderr = false) {
   const fileName = stderr ? 'stderr' : 'stdout';
-  const filePath = path.join(PIPCOOK_LOGS, runId, fileName);
+  const filePath = path.join(PIPCOOK_LOGS, jobId, fileName);
   await new Promise((resolve, reject) => {
     fs.appendFile(filePath, content, (err) => {
       if (err) {
@@ -56,7 +56,7 @@ export async function writeOutput(runId: string, content: string, stderr = false
   });
 }
 
-export async function getLog(runId: string) {
-  const log = await fs.readFile(path.join(PIPCOOK_LOGS, runId, 'stdout'), 'utf8');
+export async function getLog(jobId: string) {
+  const log = await fs.readFile(path.join(PIPCOOK_LOGS, jobId, 'stdout'), 'utf8');
   return log;
 }

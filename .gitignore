@@ -15,7 +15,7 @@ detectron2
 pipcook-output/
 docs/typedoc
 .eslintcache
-packages/pipboard-client/build
+packages/pipboard/build
 .eslintcache
 ENV
 .test

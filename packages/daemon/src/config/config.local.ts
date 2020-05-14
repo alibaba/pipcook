@@ -8,5 +8,5 @@ export const development = {
     'agent.ts',
     'interface.ts',
   ],
-  overrideDefault: true,
+  overrideDefault: true
 };

@@ -3,8 +3,8 @@
     "packages/cli",
     "packages/core",
     "packages/boa",
-    "packages/pipboard-daemon",
-    "packages/pipboard-client",
+    "packages/daemon",
+    "packages/pipboard",
     "packages/plugins/**/*"
   ],
   "version": "independent",

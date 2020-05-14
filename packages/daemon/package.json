@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/pipcook-daemon",
+  "name": "@pipcook/daemon",
   "version": "1.0.0",
   "description": "pipcook daemon",
   "private": true,

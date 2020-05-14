@@ -42,7 +42,7 @@ export const initCommander = () => {
     .option('--verbose <verbose>', 'if print out log')
     .description('operate the job bound to specific pipeline')
     .action((operation, id, opts) => {
-      job(operation, id, opts.pipeline, opts.verbose);
+      job(operation, id, opts.pipeline, opts.verbose === 'true');
     });
 
   program
