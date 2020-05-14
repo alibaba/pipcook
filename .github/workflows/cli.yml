@@ -71,7 +71,7 @@ jobs:
       working-directory: ./myworkspace
       run: |
         cd init1
-        ../../packages/cli/dist/bin/index.js run ../../example/pipelines/mnist-image-classification
+        ../../packages/cli/dist/bin/index.js run ../../example/pipelines/mnist-image-classification.json
         cd ../
     - name: test client basic usage plugin-dev
       working-directory: ./myworkspace
