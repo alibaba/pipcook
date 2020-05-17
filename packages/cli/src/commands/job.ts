@@ -3,17 +3,12 @@ import { runJob, getJobById, getJobByPipeline, getJobs, getLogById } from '../se
 import { ResponseParams } from '../request';
 import { JobOperation } from '../types/config';
 
-const PipelineStatus: any = {
-  0: 'creating',
-  1: 'running',
-  2: 'success',
-  3: 'fail'
-};
+const PipelineStatus = [ 'creating', 'running', 'success', 'fail' ];
 
 const spinner = ora();
 
 function getListJob(data: ResponseParams) {
-  data = data.rows.map((row: any) => ({
+  data = data.rows.map((row: Record<'id' | 'pipelineId' | 'status' | 'createdAt', any>) => ({
     id: row.id,
     pipelineId: row.pipelineId,
     status: PipelineStatus[row.status],
@@ -22,19 +17,19 @@ function getListJob(data: ResponseParams) {
   return data;
 }
 
-function fetchLog(data: ResponseParams, logs: string) {
+export function fetchLog(data: ResponseParams, logs: string) {
   setTimeout(async () => {
     try {
       const jobInfo = await getJobById(data.id);
       if (!(jobInfo.status === 2 || jobInfo.status === 3)) {
-        const log = await getLogById(data.id);
+        let log = await getLogById(data.id);
+        log = log.log;
         let incrementLog;
         if (logs) {
           incrementLog = log.substring(log.indexOf(logs) + 1);
         } else {
           incrementLog = log;
         }    
-        logs = log.log;
         console.log(incrementLog);
         fetchLog(data, logs);
       }
@@ -68,7 +63,7 @@ export const job = async (operation: JobOperation, id: string, pipelineId: strin
       console.table(data);
     } else {
       data = await getJobs();
-      data = data.rows.map((row: any) => ({
+      data = data.rows.map((row: Record<'id' | 'pipelineId' | 'status' | 'createdAt', any>) => ({
         id: row.id,
         pipelineId: row.pipelineId,
         status: PipelineStatus[row.status],

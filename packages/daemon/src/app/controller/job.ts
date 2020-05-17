@@ -2,6 +2,7 @@ import { Context, controller, inject, provide, post, get } from 'midway';
 
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
+import { parseConfig } from '../../runner/helper';
 
 @provide()
 @controller('/job')
@@ -36,13 +37,36 @@ export class JobController {
     }
   }
 
+  @post('/start')
+  public async startPipeline() {
+    const { ctx } = this;
+    try {
+      const { config } = ctx.request.body;
+      const parsedConfig = await parseConfig(config);
+      const data = await this.pipelineService.initPipeline(parsedConfig);
+      const jobData = await this.pipelineService.createNewRun(data.id);
+      this.pipelineService.startRun(jobData);
+      successRes(ctx, {
+        message: 'create pipeline and jobs successfully',
+        data: jobData
+      }, 201);
+    } catch (err) {
+      if (err.errors && err.errors[0] && err.errors[0].message) {
+        err.message = err.errors[0].message;
+      }
+      failRes(ctx, {
+        message: err.message
+      });
+    }
+  }
+
   @get('/:jobId/log')
   public async getLog() {
     const { ctx } = this;
     const { jobId } = ctx.params;
     try {
       const data = await this.pipelineService.getLogById(jobId);
-      if (!data) {
+      if (data === null || data === undefined) {
         throw new Error('log not found');
       }
       successRes(ctx, {

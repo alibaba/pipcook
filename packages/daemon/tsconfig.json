@@ -17,6 +17,7 @@
   "exclude": [
     "dist",
     "node_modules",
-    "test"
+    "test",
+    "assets"
   ]
 }

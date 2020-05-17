@@ -1,5 +1,5 @@
 import { Context, controller, inject, provide, post, get, del, put } from 'midway';
-import { parseConfig } from '@pipcook/pipcook-core';
+import { parseConfig } from '../../runner/helper';
 
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';

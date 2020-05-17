@@ -8,10 +8,10 @@ import ora from 'ora';
 const spinner = ora();
 
 export const daemon = async (operation: string) => {
-  let pid: number | string = '';
+  let pid: number;
   try {
-    pid = await fs.readFile(path.join(os.homedir(), '.pipcook', 'daemon', 'pid.txt'), 'utf8');
-    pid = parseInt(pid);
+    const pidFilePath = path.join(os.homedir(), '.pipcook', 'daemon', 'pid.txt');
+    pid = parseInt(await fs.readFile(pidFilePath, 'utf8'));
   } finally {
     if (operation === 'start') {
       if (pid) {
@@ -35,7 +35,7 @@ export const daemon = async (operation: string) => {
       });
     } else if (operation === 'stop'){
       if (pid) {
-        process.kill(pid as number);
+        process.kill(pid);
       }
       spinner.succeed('Daemon is stopped');
     }

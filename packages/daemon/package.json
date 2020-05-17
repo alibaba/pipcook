@@ -9,7 +9,9 @@
     "egg-scripts": "^2.10.0",
     "midway": "^1.0.0",
     "sequelize": "^5.21.7",
-    "sqlite3": "^4.1.1"
+    "sqlite3": "^4.1.1",
+    "uuid": "^8.0.0",
+    "uuid-validate": "^0.0.3"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.7",
@@ -29,7 +31,9 @@
     "fs-extra": "^8.1.0",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "jimp": "^0.10.0",
-    "axios": "^0.18.1"
+    "axios": "^0.18.1",
+    "chalk": "^3.0.0",
+    "rxjs": "^6.5.3"
   },
   "engines": {
     "node": ">=10.16.0"

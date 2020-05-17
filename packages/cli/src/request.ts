@@ -3,76 +3,26 @@ import ora from 'ora';
 
 const spinner = ora();
 
-interface RequestParams {
-  [key: string]: any;
-}
+export type RequestParams = Record<string, any>;
 
-export interface ResponseParams {
-  [key: string]: any;
-}
+export type ResponseParams = Record<string, any>;
 
-export async function get(host: string, params?: RequestParams): Promise<ResponseParams> {
+const createGeneralRqeuest = (agent: Function) => async (...args: any[]) => {
   try {
-    let response = await axios.get(host, {
-      params
-    });
+    let response = await agent(...args);
     if (response.data.status === true) {
       return response.data.data;
     }
   } catch (err) {
-    if (err.response && err.response.data && err.response.data.message) {
+    if (err?.response.data.message) {
       spinner.fail(err.response.data.message);
       process.exit();
     } else {
       throw err;
     }
   }
-}
-
-export async function post(host: string, body?: RequestParams, params?: RequestParams): Promise<ResponseParams> {
-  try {
-    let response = await axios.post(host, body, params);
-    if (response.data.status === true) {
-      return response.data.data;
-    }
-  } catch (err) {
-    if (err.response && err.response.data && err.response.data.message) {
-      spinner.fail(err.response.data.message);
-      process.exit();
-    } else {
-      throw err;
-    }
-  }
-}
-
-export async function put(host: string, body?: RequestParams, params?: RequestParams) {
-  try {
-    let response = await axios.put(host, body, params);
-    if (response.data.status === true) {
-      return response.data.data;
-    }
-  } catch (err) {
-    if (err.response && err.response.data && err.response.data.message) {
-      spinner.fail(err.response.data.message);
-      process.exit();
-    } else {
-      throw err;
-    }
-  }
-}
-
-export async function remove(host: string): Promise<ResponseParams> {
-  try {
-    let response = await axios.delete(host);
-    if (response.data.status === true) {
-      return response.data.data;
-    }
-  } catch (err) {
-    if (err.response && err.response.data && err.response.data.message) {
-      spinner.fail(err.response.data.message);
-      process.exit();
-    } else {
-      throw err;
-    }
-  }
-}
+};
+export const get = async (host: string, params?: RequestParams) => createGeneralRqeuest(axios.get)(host, params);
+export const post = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRqeuest(axios.post)(host, body, params);
+export const put = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRqeuest(axios.put)(host, body, params);
+export const remove = async (host: string) => createGeneralRqeuest(axios.delete)(host);

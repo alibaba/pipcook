@@ -15,3 +15,7 @@ export const getJobByPipeline = (pipelineId: string) => get(route.job, {
 export const getJobs = () => get(route.job);
 
 export const getLogById = (id: string) => get(`${route.job}/${id}/log`);
+
+export const startJob = (path: string) => post(`${route.job}/start`, {
+  config: path
+});

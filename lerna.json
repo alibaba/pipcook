@@ -21,7 +21,6 @@
         "egg-ci",
         "midway-bin",
         "midway-mock",
-        "ts-node",
         "ice-scripts",
         "stylelint",
         "ice-plugin-fusion",

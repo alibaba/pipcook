@@ -1,4 +1,4 @@
-import { Config } from './types/config';
+import { Config } from '@pipcook/pipcook-core';
 
 const config: Config = {
   // See https://docs.npmjs.com/misc/scripts#packagejson-vars

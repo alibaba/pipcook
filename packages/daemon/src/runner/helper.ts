@@ -4,14 +4,33 @@
 import * as path from 'path';
 import { from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
+import * as fs from 'fs-extra';
+import { v1 as uuidv1 } from 'uuid';
 
+import {
+  RunConfigI,
+  PipelineDB,
+  PipelineDBParams,
+  PipelineStatus,
+  RunDB,
+  constants,
+  OutputType,
+  PipcookComponentResult,
+  PipcookComponentResultStatus,
+  PipcookComponentOperator,
+  PipcookComponentOutput,
+  EvaluateError,
+  EvaluateResult,
+  PipObject,
+  UniDataset,
+  UniModel
+} from '@pipcook/pipcook-core';
+
+import { LifeCycleTypes } from './lifecycle';
 import { PipcookRunner } from './index';
-import { OutputType } from '../constants/other';
-import { logCurrentExecution } from '../utils/logger';
-import { PipcookComponentResult, PipcookComponentResultStatus, PipcookComponentOperator, PipcookComponentOutput } from '../types/component';
-import { EvaluateError, EvaluateResult, PipObject } from '../types/other';
-import { UniDataset } from '../types/data/common';
-import { UniModel } from '../types/model';
+import { logCurrentExecution } from './logger';
+
+const { PLUGINS, PIPCOOK_LOGS } = constants;
 
 /**
  * Retreive relative logs required to be stored.
@@ -27,7 +46,7 @@ export function getLog(pipcookRunner: PipcookRunner) {
   if (pipcookRunner.latestSampleData && pipcookRunner.latestSampleData.metadata) {
     result.metadata = pipcookRunner.latestSampleData.metadata;
   }
-  
+
   return result;
 }
 
@@ -66,7 +85,7 @@ export async function assignLatestResult(updatedType: OutputType, result: Pipcoo
 
 /**
  * create the pipeline according to the components given. The pipelien serializes all components sepcified
- * @param components: EscherComponent 
+ * @param components: EscherComponent
  * @param self: the pipeline subject
  */
 export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal') {
@@ -92,13 +111,13 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
         logCurrentExecution(component, logType);
         return from(assignLatestResult(updatedType, result, self)).pipe(
           flatMap(() => component.observer(self.latestSampleData, self.latestModel, insertParams))
-        );  
+        );
       });
       flatMapArray.push(flatMapObject);
     })(components[i], assignLatestResult, self.updatedType, self, flatMapArray);
     self.updatedType = components[i].returnType;
   }
-  
+
   return firstObservable.pipe(
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
@@ -107,7 +126,7 @@ export function createPipeline(components: PipcookComponentResult[], self: Pipco
 }
 
 /**
- * After the user specifiy the components used for current pipeline, 
+ * After the user specifiy the components used for current pipeline,
  * we link each component to its previous component
  * @param components : PipcookComponentResult[]
  */
@@ -118,9 +137,9 @@ export function linkComponents(components: PipcookComponentResult[]) {
 }
 
 /**
- * After the pipeline is finished, 
+ * After the pipeline is finished,
  * those components which are not changed to success status should be failing ones
- * @param components 
+ * @param components
  */
 export function markFailures(components: PipcookComponentResult[]): PipcookComponentResult[] {
   return components.map(function markFailure(component) {
@@ -137,4 +156,61 @@ export function markFailures(components: PipcookComponentResult[]): PipcookCompo
 
     return nextComponent;
   });
+}
+
+export async function parseConfig(configPath: string, generateId = true) {
+  const configJson: RunConfigI = await fs.readJson(configPath);
+  const result: PipelineDB = {};
+  if (generateId) {
+    result.id = uuidv1();
+  }
+
+  if (configJson.name) {
+    result.name = configJson.name;
+  }
+
+  PLUGINS.forEach((pluginType) => {
+    if (configJson.plugins[pluginType] &&
+      configJson.plugins[pluginType].package &&
+        LifeCycleTypes[pluginType]) {
+      const pluginName = configJson.plugins[pluginType].package;
+      const params = configJson.plugins[pluginType].params || {};
+
+      result[pluginType] = pluginName;
+      const paramsAttribute: PipelineDBParams = (pluginType + 'Params') as PipelineDBParams;
+      result[paramsAttribute] = JSON.stringify(params);
+    }
+  });
+
+  return result;
+}
+
+export async function createRun(pipelineId: string): Promise<RunDB> {
+  const packageJson = await fs.readJSON(path.join(__dirname, '..', '..', 'package.json'));
+  return {
+    id: uuidv1(),
+    pipelineId,
+    coreVersion: packageJson.version,
+    status: PipelineStatus.INIT,
+    currentIndex: -1
+  };
+}
+
+export async function writeOutput(jobId: string, content: string, stderr = false) {
+  const fileName = stderr ? 'stderr' : 'stdout';
+  const filePath = path.join(PIPCOOK_LOGS, jobId, fileName);
+  await new Promise((resolve, reject) => {
+    fs.appendFile(filePath, content, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+export async function retriveLog(jobId: string) {
+  const log = await fs.readFile(path.join(PIPCOOK_LOGS, jobId, 'stdout'), 'utf8');
+  return log;
 }

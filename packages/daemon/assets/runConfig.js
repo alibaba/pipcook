@@ -1,4 +1,4 @@
-const { PipcookRunner } = require('@pipcook/pipcook-core');
+const { PipcookRunner } = require('../src/runner');
 const pipelineId = process.argv[2];
 const jobId = process.argv[3];
 const runConfig = process.argv[4];

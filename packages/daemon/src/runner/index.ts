@@ -6,33 +6,34 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as os from 'os';
+import { v1 as uuidv1 } from 'uuid';
 
-import config from '../config';
-import { PipcookComponentResult, PipcookComponentOutput, PipcookComponentResultStatus } from '../types/component';
-import { UniDataset } from '../types/data/common';
-import { UniModel } from '../types/model';
-import { getLog, createPipeline, assignLatestResult, linkComponents, markFailures } from './helper';
-import { EvaluateResult, PipObject } from '../types/other';
-import { logStartExecution, logError, logComplete } from '../utils/logger';
-import { PLUGINS } from '../constants/plugins';
-import { compressTarFile } from '../utils/public';
-import { PipelineStatus, PipelineDB, PipelineDBParams } from '../types/database';
-import * as uuid from 'uuid';
-import { RunConfigI } from '../types/config';
-
+import config from './config';
 import {
-  DATAPROCESS,
-  MODELLOAD,
-  MODELDEFINE
-} from '../constants/plugins';
-import { PIPCOOK_PLUGINS } from '../constants/other';
-import { LifeCycleTypes } from '../components/lifecycle';
-import { OutputType } from '../constants/other';
+  PipcookComponentResult,
+  PipcookComponentOutput,
+  PipcookComponentResultStatus,
+  UniDataset,
+  UniModel,
+  EvaluateResult,
+  PipObject,
+  constants,
+  PipelineStatus,
+  PipelineDB,
+  PipelineDBParams,
+  compressTarFile,
+  OutputType
+} from '@pipcook/pipcook-core';
+import { getLog, createPipeline, assignLatestResult, linkComponents, markFailures } from './helper';
+import { logStartExecution, logError, logComplete } from './logger';
+import { LifeCycleTypes } from './lifecycle';
+
+const { PLUGINS, DATAPROCESS, MODELLOAD, MODELDEFINE, PIPCOOK_DEPENDENCIES } = constants;
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();
   return (key: any, value: any) => {
-    if (typeof value === "object" && value !== null) {
+    if (typeof value === 'object' && value !== null) {
       if (seen.has(value)) {
         return;
       }
@@ -57,7 +58,7 @@ const getCircularReplacer = () => {
  * @public startTime: start time of pipeline
  * @public endTime: end time of pipeline
  * @public status: status of current pipeline
- * 
+ *
  */
 export class PipcookRunner {
   pipelineVersion: string = config.version;
@@ -83,12 +84,10 @@ export class PipcookRunner {
    * Constructor, user need to specify pipeline name when init
    */
   constructor(pipelineId?: string, jobId?: string) {
-    
-    this.pipelineId = pipelineId || uuid.v1();
-    this.jobId = jobId || uuid.v1();
+    this.pipelineId = pipelineId || uuidv1();
+    this.jobId = jobId || uuidv1();
     this.logDir = path.join(os.homedir(), '.pipcook', 'logs', this.jobId);
     this.status = PipelineStatus.INIT;
-    fs.ensureDirSync(this.logDir);
     fs.ensureDirSync(path.join(this.logDir, 'model'));
     fs.ensureDirSync(path.join(this.logDir, 'data'));
     fs.ensureDirSync(path.join(this.logDir, 'deploy'));
@@ -143,7 +142,7 @@ export class PipcookRunner {
     this.endTime = Date.now();
     await this.savePipcook();
     await this.deploy();
-    logComplete(); 
+    logComplete();
   }
 
   notifyStatus = () => {
@@ -179,7 +178,7 @@ export class PipcookRunner {
   run = async (components: PipcookComponentResult[]) => {
     this.status = PipelineStatus.RUNNING;
     await this.init(components);
-    
+
     // create pipeline of plugins
     const pipeline = createPipeline(components, this, 'normal');
     pipeline.subscribe((result: PipcookComponentOutput) => {
@@ -196,30 +195,6 @@ export class PipcookRunner {
   }
 
   /**
-   * run config file
-   */
-  runFile = async (configPath: string) => {
-    const configJson: RunConfigI = fs.readJsonSync(configPath);
-    const parsedConfig: PipelineDB = {};
-    parsedConfig.id = this.jobId;
-
-    PLUGINS.forEach((pluginType) => {
-      if (configJson.plugins[pluginType] &&
-        configJson.plugins[pluginType].package &&
-          LifeCycleTypes[pluginType]) {
-        const pluginName = configJson.plugins[pluginType].package;
-        const params = configJson.plugins[pluginType].params || {};
-  
-        parsedConfig[pluginType] = pluginName;
-        const paramsAttribute: PipelineDBParams = (pluginType + 'Params') as PipelineDBParams;
-        parsedConfig[paramsAttribute] = JSON.stringify(params);
-      }
-    });
-
-    this.runConfig(parsedConfig);
-  }
-
-  /**
    * run config
    */
   runConfig = async (config: PipelineDB) => {
@@ -229,10 +204,9 @@ export class PipcookRunner {
         const pluginName = config[pluginType];
         const params = JSON.parse(config[(pluginType + 'Params') as PipelineDBParams] || '{}');
         const version = process.env.npm_package_version;
-
         let pluginModule;
         try {
-          pluginModule = require(path.join(PIPCOOK_PLUGINS, pluginName)).default;
+          pluginModule = require(path.join(PIPCOOK_DEPENDENCIES, 'node_modules', pluginName)).default;
         } catch (err) {
           try {
             pluginModule = require(pluginName).default;
@@ -243,7 +217,7 @@ export class PipcookRunner {
               this.handleError(err, this.components);
               this.notifyStatus();
               process.exit();
-            }  
+            }
           }
         }
         const factoryMethod = LifeCycleTypes[pluginType];
@@ -260,22 +234,22 @@ export class PipcookRunner {
    * for whatever plugins, they will need
    *  - deploy plugin
    *  - model define plugin
-   *  - data process plugin if required 
+   *  - data process plugin if required
    */
   deploy = async () => {
     const deployDir = path.join(this.logDir, 'deploy');
     await fs.copy(path.join(this.logDir, 'model'), path.join(deployDir, 'model'));
     await fs.copy(path.join(this.logDir, 'log.json'), path.join(deployDir, 'log.json'));
-    await fs.copy(path.join(__dirname, '..', 'assets', 'predict.js'), path.join(deployDir, 'main.js'));
+    await fs.copy(path.join(__dirname, '..', '..', 'assets', 'predict.js'), path.join(deployDir, 'main.js'));
     let dependencies: PipObject = {};
     const dataProcessCom = this.components.find((e) => e.type === DATAPROCESS);
     const analyzeCom = async (component: PipcookComponentResult): Promise<PipObject> => {
       let pluginPath;
       try {
-        pluginPath = require.resolve(component.package);
+        pluginPath = require.resolve(path.join(PIPCOOK_DEPENDENCIES, 'node_modules', component.package));
       } catch (err) {
         try {
-          pluginPath = require.resolve(path.join(PIPCOOK_PLUGINS, component.package));
+          pluginPath = require.resolve(component.package);
         } catch (err) {
           pluginPath = require.resolve(path.join(process.cwd(), component.package));
         }
@@ -294,7 +268,7 @@ export class PipcookRunner {
       ...dependencies,
       ...dependenciesTemp
     };
-    const packageJson = await fs.readJSON(path.join(__dirname, '..', 'assets', 'template-package.json'));
+    const packageJson = await fs.readJSON(path.join(__dirname, '..', '..', 'assets', 'template-package.json'));
     packageJson.dependencies = {
       ...packageJson.dependencies,
       ...dependencies

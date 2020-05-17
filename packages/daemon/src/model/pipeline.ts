@@ -28,6 +28,10 @@ export default async function model(context) {
       allowNull: false,
       unique: true
     },
+    name: {
+      type: STRING,
+      unique: true
+    },
     dataCollect: {
       type: STRING
     },

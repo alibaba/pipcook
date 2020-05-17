@@ -11,9 +11,10 @@ export const pipeline = async (operation: PipelineOperation, pipeline: string, p
   case 'list':
     if (!pipeline) {
       data = await getPipelines();
-      data = data.rows.map((row: any) => {
+      data = data.rows.map((row: Record<'id' | 'name' | 'updatedAt' | 'createdAt', any>) => {
         const rowPost = {
           id: row.id,
+          name: row.name,
           createdAt: row.createdAt,
           updatedAt: row.updatedAt
         };

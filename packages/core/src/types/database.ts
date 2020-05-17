@@ -1,3 +1,5 @@
+import { PluginTypeI } from './plugins';
+
 export enum PipelineStatus {
   INIT,
   RUNNING,
@@ -8,23 +10,7 @@ export enum PipelineStatus {
 export type PipelineDBParams = 'dataCollectParams' | 'dataAccessParams' | 'dataProcessParams' |
   'modelDefineParams' | 'modelLoadParams' | 'modelTrainParams' | 'modelEvaluateParams';
 
-export interface PipelineDB {
-  id?: string;
-  dataCollect?: string;
-  dataCollectParams?: string;
-  dataAccess?: string;
-  dataAccessParams?: string;
-  dataProcess?: string;
-  dataProcessParams?: string;
-  modelDefine?: string;
-  modelDefineParams?: string;
-  modelLoad?: string;
-  modelLoadParams?: string;
-  modelTrain?: string;
-  modelTrainParams?: string;
-  modelEvaluate?: string;
-  modelEvaluateParams?: string;
-}
+export type PipelineDB = Partial<Record<'id' | PluginTypeI | PipelineDBParams, string>>
 
 export interface RunDB {
   id: string;

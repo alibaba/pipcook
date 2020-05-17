@@ -3,8 +3,8 @@
  */
 
 import chalk from 'chalk';
-import { PipcookRunner } from '../runner';
-import { PipcookComponentResult } from '../types/component';
+import { PipcookRunner } from './';
+import { PipcookComponentResult } from '@pipcook/pipcook-core';
 
 enum LoggerColor {
   GREEN = 'green',
@@ -35,8 +35,9 @@ export default class Logger {
     Logger.info(msg);
   }
   public static logError(errmsg: string | Error) {
-    if (errmsg instanceof Error)
+    if (errmsg instanceof Error) {
       errmsg = errmsg.stack;
+    }
     return Logger.error(errmsg);
   }
   public static logComplete() {

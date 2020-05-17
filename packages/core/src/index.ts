@@ -26,9 +26,16 @@ export {
 export { Sample } from './types/data/common';
 
 export { UniModel, TfJsLayersModel } from './types/model';
-export { EvaluateResult } from './types/other';
-export { PipcookRunner } from './runner';
-export { PipcookComponentResult } from './types/component';
+export { EvaluateResult, PipObject, EvaluateError } from './types/other';
+export { 
+  PipcookComponentResult, 
+  PipcookComponentOutput, 
+  PipcookComponentResultStatus, 
+  PipcookComponentOperator, 
+  PipcookLifeCycleComponent,
+  PipcookLifeCycleTypes
+} from './types/component';
+
 export {
   DataCollectType,
   DataAccessType,
@@ -41,7 +48,8 @@ export {
   ModelDefineArgsType,
   ModelArgsType,
   ModelTrainArgsType,
-  PluginTypeI
+  PluginTypeI,
+  PipcookPlugin
 } from './types/plugins';
 
 export {
@@ -59,18 +67,38 @@ export {
 } from './utils/public';
 
 // expose constants
-import { PLUGINS } from './constants/plugins';
+import { 
+  PLUGINS, 
+  MODELLOAD, 
+  MODELDEFINE, 
+  DATACOLLECT, 
+  DATAACCESS,
+  DATAPROCESS,
+  MODELTRAIN,
+  MODELEVALUATE 
+} from './constants/plugins';
+import { PIPCOOK_PLUGINS, PIPCOOK_LOGS, PIPCOOK_DEPENDENCIES } from './constants/other';
 export const constants = {
-  PLUGINS
+  PLUGINS,
+  MODELLOAD,
+  MODELDEFINE,
+  PIPCOOK_PLUGINS,
+  DATACOLLECT, 
+  DATAACCESS,
+  DATAPROCESS,
+  MODELTRAIN,
+  MODELEVALUATE,
+  PIPCOOK_LOGS,
+  PIPCOOK_DEPENDENCIES
 };
 
-export {
-  parseConfig,
-  createRun,
-  writeOutput,
-  getLog
-} from './runner/daemon';
+export { OutputType } from './constants/other';
 
 export {
-  PipelineDB
+  PipelineDB,
+  PipelineStatus,
+  PipelineDBParams,
+  RunDB
 } from './types/database';
+
+export { RunConfigI, Config } from './types/config';

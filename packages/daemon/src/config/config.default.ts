@@ -1,4 +1,5 @@
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'midway';
+import * as path from 'path';
 
 export type DefaultConfig = PowerPartial<EggAppConfig>;
 
@@ -16,6 +17,11 @@ export default (appInfo: EggAppInfo) => {
     csrf: {
       enable: false,
     }
+  };
+
+  config.static = {
+    prefix: '/',
+    dir: path.join(appInfo.baseDir, 'app/public'),
   };
 
   return config;

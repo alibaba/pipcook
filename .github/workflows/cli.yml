@@ -34,10 +34,7 @@ jobs:
         ../packages/cli/dist/bin/index.js --help
         ../packages/cli/dist/bin/index.js init --help
         ../packages/cli/dist/bin/index.js run --help
-        ../packages/cli/dist/bin/index.js log --help
-        ../packages/cli/dist/bin/index.js board --help
         ../packages/cli/dist/bin/index.js plugin-dev --help
-        ../packages/cli/dist/bin/index.js dataset --help
         ../packages/cli/dist/bin/index.js bip --help
         ../packages/cli/dist/bin/index.js serve --help
 

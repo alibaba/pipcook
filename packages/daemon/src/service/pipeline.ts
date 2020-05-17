@@ -1,10 +1,30 @@
 import { provide, inject } from 'midway';
-import { PipelineDB, createRun, writeOutput, getLog } from '@pipcook/pipcook-core';
+import { PipelineDB, constants } from '@pipcook/pipcook-core';
 import * as path from 'path';
-import { MODULE_PATH } from '../utils/tools';
 import { fork } from 'child_process';
+import * as validate from 'uuid-validate';
+import * as fs from 'fs-extra';
 
+import { MODULE_PATH } from '../utils/tools';
 import { RunParams } from '../interface';
+import {
+  createRun, writeOutput, retriveLog
+} from '../runner/helper';
+
+const { PIPCOOK_LOGS } = constants;
+
+function getIdOrName(id: string) {
+  if (!id) {
+    throw new Error('id or name cannot be empty');
+  }
+  const isValidateUuid = validate(id);
+  const fetchParam = isValidateUuid ? {
+    id
+  } : {
+    name: id
+  };
+  return fetchParam;
+}
 
 @provide('pipelineService')
 export class PipelineService {
@@ -22,7 +42,7 @@ export class PipelineService {
 
   async getPipelineById(id: string) {
     const record = await this.model.findOne({
-      where: { id }
+      where: getIdOrName(id)
     });
     return record;
   }
@@ -31,28 +51,31 @@ export class PipelineService {
     const records = await this.model.findAndCountAll({
       offset,
       limit,
-      order: [['createdAt', 'DESC']]
+      order: [ [ 'createdAt', 'DESC' ] ]
     });
     return records;
   }
 
   async deletePipelineById(id: string) {
     await this.model.destroy({
-      where: { id }
+      where: getIdOrName(id)
     });
   }
 
   async updatePipelineById(id: string, config: PipelineDB) {
     await this.model.update(config, {
-      where: { id }
+      where: getIdOrName(id)
     });
     const record = await this.getPipelineById(id);
     return record;
   }
 
   async createNewRun(pipelineId: string) {
+    pipelineId = await this.getPipelineId(pipelineId);
     const config = await createRun(pipelineId);
     const record = await this.runModel.create(config);
+    await fs.ensureFile(path.join(PIPCOOK_LOGS, record.id, 'stderr'));
+    await fs.ensureFile(path.join(PIPCOOK_LOGS, record.id, 'stdout'));
     return record;
   }
 
@@ -64,6 +87,7 @@ export class PipelineService {
   }
 
   async getRunsByPipelineId(pipelineId: string, offset: number, limit: number) {
+    pipelineId = await this.getPipelineId(pipelineId);
     const records = await this.runModel.findAndCountAll({
       offset,
       limit,
@@ -79,7 +103,7 @@ export class PipelineService {
     const records = await this.runModel.findAndCountAll({
       offset,
       limit,
-      order: [['createdAt', 'DESC']]
+      order: [ [ 'createdAt', 'DESC' ] ]
     });
     return records;
   }
@@ -94,10 +118,11 @@ export class PipelineService {
 
   async startRun(runRecord: any) {
     const pipelineRecord = await this.getPipelineById(runRecord.pipelineId);
-    const script = path.join(__dirname, '..', 'assets', 'runConfig.js');
+    const script = path.join(__dirname, '..', '..', 'assets', 'runConfig.js');
     await new Promise((resolve, reject) => {
       const child = fork(script, [ runRecord.pipelineId, runRecord.id, JSON.stringify(pipelineRecord), 'run-pipeline' ], {
         silent: true,
+        cwd: path.join(process.cwd(), '..', '..'),
         env: {
           NODE_PATH: MODULE_PATH
         }
@@ -126,7 +151,20 @@ export class PipelineService {
   }
 
   async getLogById(id: string) {
-    const logs = await getLog(id);
+    const logs = await retriveLog(id);
     return logs;
+  }
+
+  async getPipelineId(id: string) {
+    if (!id) {
+      throw new Error('id or name cannot be empty');
+    }
+    const isValidateUuid = validate(id);
+    if (isValidateUuid) {
+      return id;
+    } else {
+      const pipelineInfo = await this.getPipelineById(id);
+      return pipelineInfo.id;
+    }
   }
 }

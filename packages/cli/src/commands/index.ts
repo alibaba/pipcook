@@ -26,8 +26,11 @@ export const initCommander = () => {
 
   program
     .command('run [fileName]')
+    .option('--verbose <verbose>', 'if print out log')
     .description('run pipeline with config file')
-    .action(start);
+    .action((fileName, opts) => {
+      start(fileName, opts.verbose === 'true');
+    });
 
   program
     .command('daemon <operation>')
@@ -69,11 +72,11 @@ export const initCommander = () => {
     });
 
   program
-    .command('serve <dir>')
+    .command('serve <jobId>')
     .option('-p, --port <number>', 'port of server', 7682)
     .description('serve the model to predict')
-    .action((dir, opts) => {
-      serve(dir, opts.port);
+    .action((jobId, opts) => {
+      serve(jobId, opts.port);
     });
 
   program.parse(process.argv);

@@ -7,9 +7,13 @@ import * as path from 'path';
 import * as os from 'os';
 import { from, range, forkJoin, Observable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
-import { PipcookLifeCycleComponent, PipcookComponentResult, PipcookLifeCycleTypes, PipcookComponentResultStatus } from '../types/component';
-import { OutputType } from '../constants/other';
+
 import {
+  PipcookLifeCycleComponent,
+  PipcookComponentResult,
+  PipcookLifeCycleTypes,
+  PipcookComponentResultStatus,
+  OutputType,
   PipcookPlugin,
   DataCollectType,
   DataAccessType,
@@ -18,10 +22,12 @@ import {
   ModelDefineType,
   ModelTrainType,
   ModelEvaluateType,
-  PluginTypeI
-} from '../types/plugins';
-import { PipObject } from '../types/other';
-import {
+  PluginTypeI,
+  PipObject,
+  constants
+} from '@pipcook/pipcook-core';
+
+const {
   DATACOLLECT,
   DATAACCESS,
   DATAPROCESS,
@@ -29,7 +35,7 @@ import {
   MODELDEFINE,
   MODELTRAIN,
   MODELEVALUATE
-} from '../constants/plugins';
+} = constants;
 
 /**
  * The is the factory function to produce Pipcook Component.
@@ -39,7 +45,7 @@ import {
  */
 function produceResultFactory<T extends PipcookPlugin>(type: PluginTypeI, plugin: T, params?: PipObject): PipcookComponentResult<T> {
   const result: PipcookComponentResult<T> = {
-    type, 
+    type,
     plugin,
     previousComponent: null,
     status: PipcookComponentResultStatus.NotExecute,
@@ -66,8 +72,8 @@ export const DataCollect: PipcookLifeCycleComponent<DataCollectType> = (plugin, 
 
 /**
  * Data-Access Plugin's Component
- * @param plugin 
- * @param params 
+ * @param plugin
+ * @param params
  */
 export const DataAccess: PipcookLifeCycleComponent<DataAccessType> = (plugin, params?) => {
   const result = produceResultFactory(DATAACCESS, plugin, params);
@@ -80,8 +86,8 @@ export const DataAccess: PipcookLifeCycleComponent<DataAccessType> = (plugin, pa
 
 /**
  * Data-Process Plugin's Component
- * @param plugin 
- * @param params 
+ * @param plugin
+ * @param params
  */
 export const DataProcess: PipcookLifeCycleComponent<DataProcessType> = (plugin, params?) => {
   const result = produceResultFactory(DATAPROCESS, plugin, params);
@@ -89,7 +95,7 @@ export const DataProcess: PipcookLifeCycleComponent<DataProcessType> = (plugin, 
     if (!data.metadata) {
       data.metadata = {};
     }
-    const observerables: Observable<void>[] = [];
+    const observerables: Array<Observable<void>> = [];
     [ data.trainLoader, data.validationLoader, data.testLoader ].forEach((loader) => {
       if (loader) {
         observerables.push(
@@ -108,8 +114,8 @@ export const DataProcess: PipcookLifeCycleComponent<DataProcessType> = (plugin, 
 
 /**
  * Model-Load Plugin Component
- * @param plugin 
- * @param params 
+ * @param plugin
+ * @param params
  */
 export const ModelLoad: PipcookLifeCycleComponent<ModelLoadType> = (plugin, params?) => {
   const result = produceResultFactory(MODELLOAD, plugin, params);
@@ -122,8 +128,8 @@ export const ModelLoad: PipcookLifeCycleComponent<ModelLoadType> = (plugin, para
 
 /**
  * Model-Define Plugin Component
- * @param plugin 
- * @param params 
+ * @param plugin
+ * @param params
  */
 export const ModelDefine: PipcookLifeCycleComponent<ModelDefineType> = (plugin, params?) => {
   const result = produceResultFactory(MODELDEFINE, plugin, params);
@@ -136,15 +142,15 @@ export const ModelDefine: PipcookLifeCycleComponent<ModelDefineType> = (plugin, 
 
 /**
  * Model-Train Plugin Component
- * @param plugin 
- * @param params 
+ * @param plugin
+ * @param params
  */
 export const ModelTrain: PipcookLifeCycleComponent<ModelTrainType> = (plugin, params?) => {
   const result = produceResultFactory(MODELTRAIN, plugin, params);
   result.observer = (data, model, insertParams) => {
     return from(plugin(data, model, {
-      ...params, ...insertParams, 
-      saveModel: async (callback: Function) => {
+      ...params, ...insertParams,
+      saveModel: async (callback: (string) => void) => {
         await callback(path.join(os.homedir(), '.pipcook', 'logs', insertParams.jobId, 'model'));
       }
     }));
@@ -155,8 +161,8 @@ export const ModelTrain: PipcookLifeCycleComponent<ModelTrainType> = (plugin, pa
 
 /**
  * Model-Evaluate Plugin Component
- * @param plugin 
- * @param params 
+ * @param plugin
+ * @param params
  */
 export const ModelEvaluate: PipcookLifeCycleComponent<ModelEvaluateType> = (plugin, params?) => {
   const result = produceResultFactory(MODELEVALUATE, plugin, params);
