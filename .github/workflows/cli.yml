@@ -55,22 +55,13 @@ jobs:
       run: |
         npm install
         npm run build
-    - name: create workspace
-      run: mkdir -p myworkspace
+        cd ./packages/daemon && npm run dev
     - name: test client basic usage init
-      working-directory: ./myworkspace
       run: |
-        mkdir init1
-        cd init1
-        ../../packages/cli/dist/bin/index.js init
-        cd ../
+        ./packages/cli/dist/bin/index.js init
     - name: test client basic usage run
-      working-directory: ./myworkspace
       run: |
-        cd init1
-        ../../packages/cli/dist/bin/index.js run ../../example/pipelines/mnist-image-classification.json
-        cd ../
+        ./packages/cli/dist/bin/index.js run ./test/pipelines/text-bayes-classification.json
     - name: test client basic usage plugin-dev
-      working-directory: ./myworkspace
       run: |
         ../packages/cli/dist/bin/index.js plugin-dev -t dataCollect
