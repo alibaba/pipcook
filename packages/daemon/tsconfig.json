@@ -12,7 +12,8 @@
     "stripInternal": true,
     "pretty": true,
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "skipLibCheck": true
   },
   "exclude": [
     "dist",

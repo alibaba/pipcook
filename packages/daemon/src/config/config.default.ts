@@ -1,5 +1,11 @@
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'midway';
+import * as os from 'os';
 import * as path from 'path';
+
+const staticDir =
+  process.env.NODE_ENV === 'local' ?
+  path.join(__dirname, '..', '..', '..', 'pipboard', 'build') :
+  path.join(os.homedir(), '.pipcook', 'pipboard', 'node_modules', '@pipcook', 'pipboard', 'build');
 
 export type DefaultConfig = PowerPartial<EggAppConfig>;
 
@@ -21,7 +27,7 @@ export default (appInfo: EggAppInfo) => {
 
   config.static = {
     prefix: '/',
-    dir: path.join(appInfo.baseDir, 'app/public'),
+    dir: staticDir,
   };
 
   return config;

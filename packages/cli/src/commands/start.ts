@@ -1,5 +1,6 @@
 import ora from 'ora';
 import { existsSync } from 'fs';
+import * as path from 'path';
 
 import { startJob } from '../service/job';
 import { StartHandler } from '../types';
@@ -12,6 +13,8 @@ export const start: StartHandler = async (filename: string, verbose: boolean) =>
     spinner.fail('Please specify the config path');
     return process.exit(1);
   }
+
+  filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
 
   if (!existsSync(filename)) {
     spinner.fail(`${filename} not exists`);

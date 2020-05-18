@@ -7,9 +7,18 @@ import { sync } from 'command-exists';
 import * as os from 'os';
 
 import { InitCommandHandler } from '../types';
-import { dependencies, optionalNpmClients } from '../config';
+import { dependencies, optionalNpmClients, daemonPackage, boardPackage } from '../config';
 
 const spinner = ora();
+
+function installDependency(npmClient: string, item: string, beta: boolean, 
+  cwd: string, npmInstallEnvs: NodeJS.ProcessEnv) {
+  childProcess.execSync(`${npmClient} install ${item}${beta ? '@beta' : ''} --save`, {
+    cwd,
+    stdio: 'inherit',
+    env: npmInstallEnvs
+  });
+}
 
 /**
  * install all dependencies of pipcook into working dir
@@ -56,10 +65,7 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   let dirname;
   try {
     dirname = path.join(os.homedir(), '.pipcook');
-    fse.ensureDirSync(path.join(dirname, '.server'));
     fse.ensureDirSync(path.join(dirname, 'dependencies'));
-    fse.copySync(path.join(__dirname, '..', 'assets', 'server'), path.join(dirname, '.server'));
- 
     // init npm project
     childProcess.execSync(`${npmClient} init -y`, {
       cwd: path.join(dirname, 'dependencies'),
@@ -68,23 +74,19 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     spinner.start(`installing pipcook`);
 
     for (const item of dependencies) {
-      childProcess.execSync(`${npmClient} install ${item}${beta ? '@beta' : ''} --save`, {
-        cwd: path.join(dirname, 'dependencies'),
-        stdio: 'inherit',
-        env: npmInstallEnvs
-      });
+      installDependency(npmClient, item, beta, path.join(dirname, 'dependencies'), npmInstallEnvs);
     }
     spinner.succeed(`install pipcook core successfully`);
-    spinner.start(`installing pipcook board`);
-    childProcess.execSync(`${npmClient !== 'tnpm' ? npmClient : 'npm'} install`, {
-      cwd: path.join(dirname, '.server'),
-      stdio: 'inherit',
-      env: npmInstallEnvs
-    });
-    spinner.succeed(`install pipcook board successfully`);
+    spinner.start(`installing pipcook daemon and board`);
+    const transformNpm = npmClient !== 'tnpm' ? npmClient : 'npm';
+    installDependency(transformNpm, daemonPackage, beta, path.join(dirname, 'server'), npmInstallEnvs);
+    installDependency(transformNpm, boardPackage, beta, path.join(dirname, 'pipboard'), npmInstallEnvs);
+    spinner.succeed(`installing pipcook daemon and board`);
+    
   } catch (err) {
     spinner.fail(`failed to initialize the project: ${err && err.stack}`);
     childProcess.execSync(`rm -r ${path.join(dirname, 'dependencies')}`);
-    childProcess.execSync(`rm -r ${path.join(dirname, '.server')}`);
+    childProcess.execSync(`rm -r ${path.join(dirname, 'server')}`);
+    childProcess.execSync(`rm -r ${path.join(dirname, 'pipboard')}`);
   }
 };

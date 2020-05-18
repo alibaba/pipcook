@@ -21,8 +21,8 @@ export const daemon = async (operation: string) => {
           process.exit(1);
         }
       } 
-      const daemonProcess = spawn('npm', [ 'run', 'dev' ], {
-        cwd: path.join(os.homedir(), '.pipcook', '.server')
+      const daemonProcess = spawn('node', [ 'index.js' ], {
+        cwd: path.join(os.homedir(), '.pipcook', 'server', 'node_modules', '@pipcook', 'daemon')
       });
       await fs.outputFile(path.join(os.homedir(), '.pipcook', 'daemon', 'pid.txt'), String(daemonProcess.pid));
   
