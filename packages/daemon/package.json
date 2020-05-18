@@ -10,7 +10,16 @@
     "sequelize": "^5.21.7",
     "sqlite3": "^4.1.1",
     "uuid": "^8.0.0",
-    "uuid-validate": "^0.0.3"
+    "uuid-validate": "^0.0.3",
+    "@pipcook/pipcook-core": "^0.5.16",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0",
+    "fs-extra": "^8.1.0",
+    "@tensorflow/tfjs-node-gpu": "1.7.0",
+    "jimp": "^0.10.0",
+    "axios": "^0.18.1",
+    "chalk": "^3.0.0",
+    "rxjs": "^6.5.3"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.7",
@@ -23,16 +32,7 @@
     "tslint-midway-contrib": "1",
     "ts-node": "^8.3.0",
     "tslint": "^5.11.0",
-    "typescript": "^3.5.0",
-    "@pipcook/pipcook-core": "^0.5.16",
-    "glob": "^7.1.6",
-    "glob-promise": "^3.4.0",
-    "fs-extra": "^8.1.0",
-    "@tensorflow/tfjs-node-gpu": "1.7.0",
-    "jimp": "^0.10.0",
-    "axios": "^0.18.1",
-    "chalk": "^3.0.0",
-    "rxjs": "^6.5.3"
+    "typescript": "^3.5.0"
   },
   "engines": {
     "node": ">=10.16.0"
