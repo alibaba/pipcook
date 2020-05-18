@@ -64,4 +64,4 @@ jobs:
         ./packages/cli/dist/bin/index.js run ./test/pipelines/text-bayes-classification.json
     - name: test client basic usage plugin-dev
       run: |
-        ../packages/cli/dist/bin/index.js plugin-dev -t dataCollect
+        ./packages/cli/dist/bin/index.js plugin-dev -t dataCollect
