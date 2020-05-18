@@ -55,7 +55,7 @@ jobs:
       run: |
         npm install
         npm run build
-        cd ./packages/daemon && npm run dev
+        cd ./packages/daemon && nohup npm run dev >out.file 2>&1 &
     - name: test client basic usage init
       run: |
         ./packages/cli/dist/bin/index.js init
