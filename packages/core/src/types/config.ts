@@ -10,7 +10,6 @@ export interface RunConfigParam {
 }
 
 export interface RunConfigI {
-  plugins: {
-    [key in PluginTypeI]: RunConfigParam;
-  };
+  plugins: Record<PluginTypeI, RunConfigParam>;
+  name: string;
 }

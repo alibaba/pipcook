@@ -2,9 +2,9 @@
 import { UniDataset, Sample, Metadata } from './data/common';
 import { UniModel } from './model';
 import { EvaluateResult } from './other';
-import { InsertParams } from './component';
+import { InsertParams, PipcookComponentOutput } from './component';
 
-export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate' | 'modelDeploy';
+export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelLoad' | 'modelDefine' |'modelTrain' | 'modelEvaluate';
 
 export type ArgsType = InsertParams & Record<string, any>
 
@@ -24,9 +24,8 @@ export interface ModelTrainArgsType extends ArgsType {
   saveModel: SaveModelFunction;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PipcookPlugin {
-  (...args: any): any;
+  (...args: any[]): Promise<PipcookComponentOutput>;
 }
 
 export interface DataCollectType extends PipcookPlugin {

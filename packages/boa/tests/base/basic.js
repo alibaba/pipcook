@@ -15,10 +15,14 @@ test('hash function', t => {
   t.equal(builtins['__notexists__'], undefined);
 
   const mlist = builtins.list([1, 3, 5]);
+  t.strictEqual(JSON.stringify({ foobar: mlist }),
+                '{"foobar":[1,3,5]}');
   mlist[0] = 2;
   mlist[1] = 4;
   t.strictEqual(mlist[0], 2);
   t.strictEqual(mlist[1], 4);
+  t.strictEqual(JSON.stringify({ foofoo: mlist }),
+                '{"foofoo":[2,4,5]}');
   t.end();
 });
 
@@ -30,6 +34,7 @@ test('define a class extending python class', t => {
     }
   }
   const d = new EmptyDict();
+  t.equal(JSON.stringify(d), '{"foobar":10}');
   t.equal(builtins.type(d).__name__, 'EmptyDict');
   t.equal(d.foobar, 10);
   t.end();

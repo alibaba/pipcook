@@ -6,21 +6,61 @@ All source code is open-source and hosted at [GitHub](https://github.com/alibaba
 
 ## Environment
 
-- Operating system: MacOs, Linux
-- Running environment: Node. js> = 10.16, Npm> = 6.1.0
-- Python requirements (python> = 3.6, pip points to the correct python3 path)
-- Global npm package: lerna, typescript compiler
+- operating system: macOS/Linux
+- Node.js >= 12
 
-To check whether the above environment is installed correctly, run the following command:
+## Development
+
+### Initialize
+
+Clong the repository from GitHub:
+
+```bash
+$ git clone git@github.com:alibaba/pipcook.git
+```
+
+### Build
+
+And install the requirements and build:
+
+```bash
+$ npm install
+$ npm run build
+```
+
+We provide a way to use [tuna mirror](https://mirrors.tuna.tsinghua.edu.cn/) for downloading Python and packages:
 
 ```sh
-$ node -v
-$ npm -v
-$ tsc -v
-$ lerna -v
-$ python --version
-$ pip --version
+$ export BOA_CONDA_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda # this is for miniconda
+$ export BOA_CONDA_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple                 # this is for pip
+$ npm install
 ```
+
+### Test
+
+Run all the tests in the following
+
+```bash
+$ npm test
+```
+
+And run tests for single specific package:
+
+```bash
+$ ./node_modules/.bin/lerna run --scope <package_name>
+```
+
+### Pipeline
+
+```bash
+$ sh run_pipeline.sh <pipeline_name>
+```
+
+The `pipeline_name` is the name of the pipeline file under "test/pipelines", such as:
+
+- "text-bayes-classification"
+- "mnist-image-classification"
+- "databinding-image-classification"
 
 ## Plugin Specifications
 

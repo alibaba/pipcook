@@ -1,0 +1,69 @@
+{
+  "name": "@pipcook/daemon",
+  "version": "0.5.0",
+  "description": "pipcook daemon",
+  "dependencies": {
+    "@types/cls-hooked": "^4.3.0",
+    "cls-hooked": "^4.2.2",
+    "egg-scripts": "^2.10.0",
+    "midway": "^1.0.0",
+    "sequelize": "^5.21.7",
+    "sqlite3": "^4.1.1",
+    "uuid": "^8.0.0",
+    "uuid-validate": "^0.0.3",
+    "@pipcook/pipcook-core": "^0.5.16",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0",
+    "fs-extra": "^8.1.0",
+    "@tensorflow/tfjs-node-gpu": "1.7.0",
+    "jimp": "^0.10.0",
+    "axios": "^0.18.1",
+    "chalk": "^3.0.0",
+    "rxjs": "^6.5.3"
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.5.5",
+    "cross-env": "^6.0.0",
+    "egg-ci": "^1.8.0",
+    "midway-bin": "1",
+    "midway-mock": "1",
+    "tslib": "^1.8.1",
+    "tslint-midway-contrib": "1",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.5.0"
+  },
+  "engines": {
+    "node": ">=10.16.0"
+  },
+  "scripts": {
+    "start": "ts-node src/utils/dbinit.ts && egg-scripts start --daemon --title=pipcook-daemon --framework=midway --ts --port=6927 --ignore-stderr",
+    "stop": "egg-scripts stop --title=pipcook-daemon",
+    "start_build": "npm run compile && cross-env NODE_ENV=development midway-bin dev --port=6927",
+    "clear": "midway-bin clean",
+    "dev": "ts-node src/utils/dbinit.ts && cross-env NODE_ENV=local midway-bin dev --port=6927 --ts",
+    "debug": "cross-env NODE_ENV=local midway-bin debug --ts",
+    "cov": "midway-bin cov --ts",
+    "lint": "tslint --fix -p tsconfig.json -t stylish",
+    "ci": "npm run cov",
+    "compile": "midway-bin build -c --port=6927",
+    "clean": "rm -rf src/app/public"
+  },
+  "ci": {
+    "version": "10"
+  },
+  "midway-bin-clean": [
+    ".vscode/.tsbuildinfo",
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "anonymous",
+  "license": "MIT",
+  "midway-server-options": {
+    "port": 6927
+  }
+}

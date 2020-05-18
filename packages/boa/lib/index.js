@@ -67,6 +67,12 @@ function copy(T) {
   return fn.invoke(asHandleObject(T));
 }
 
+function dump(T) {
+  return pyInst.import('json')
+    .__getattr__('dumps')
+    .invoke(asHandleObject(T));
+}
+
 function getDelegator(type) {
   if (typeof type === 'string') {
     return delegators[type];
@@ -191,6 +197,26 @@ function _internalWrap(T, src={}) {
       enumerable: false,
       writable: false,
       value: () => T.toString(),
+    },
+    /**
+     * @method toJSON
+     * @public
+     */
+    toJSON: {
+      configurable: true,
+      enumerable: false,
+      writable: false,
+      value: () => {
+        const type = getTypeInfo(T);
+        let str;
+        if (type.module === 'numpy') {
+          str = dump(T.__getattr__('tolist').invoke());
+        } else {
+          str = dump(T);
+        }
+        // TODO(Yorkie): more performant way to serialize objects?
+        return JSON.parse(wrap(str));
+      },
     },
     /**
      * Shortcut for slicing object.

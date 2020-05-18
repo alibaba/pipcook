@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-object-detection-detectron-model-evaluate",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",

@@ -7,7 +7,7 @@
     "clean": "rm -rf ./build && rm -rf ./node_modules",
     "preinstall": "node tools/install-python.js && node tools/install-requirements.js",
     "postinstall": "npm run build",
-    "test": "tap ./tests/**/*.js",
+    "test": "tap --no-cov ./tests/**/*.js",
     "lint": "eslint . && ./clang-format.py",
     "build": "node-gyp configure && node-gyp build",
     "pretest": "npm run lint",

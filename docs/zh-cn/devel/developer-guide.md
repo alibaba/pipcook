@@ -4,24 +4,63 @@
 
 我们全部的代码将会开源并托管在我们的 GitHub 仓库中，这里是我们仓库的[地址](https://github.com/alibaba/pipcook)
 
-
 ## 环境搭建
 
-- 操作系统：支持 MacOs, Linux
-- 运行环境：Node.js >= 10.16， Npm >= 6.1.0
-- python要求 （python >= 3.6, pip 指向正确的 python3 路径
-- 全局 npm 包: lerna, typescript compiler
+- 操作系统：支持 macOs/Linux
+- Node.js >= 12
 
-想要查看是否正确安装上述环境，可以使用如下命令查看
+## 开发
+
+### 初始化
+
+从 GitHub 克隆仓库：
+
+```bash
+$ git clone git@github.com:alibaba/pipcook.git
+```
+
+### 构建
+
+通过下面的命令安装依赖，以及执行构建：
+
+```bash
+$ npm install
+$ npm run build
+```
+
+我们支持通过使用[清华开源镜像](https://mirrors.tuna.tsinghua.edu.cn/)来下载 Python 与 Python 包：
 
 ```sh
-$ node -v
-$ npm -v
-$ tsc -v
-$ lerna -v
-$ python --version
-$ pip --version
+$ export BOA_CONDA_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda # 用于下载 Miniconda/Python
+$ export BOA_CONDA_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple                 # 用于下载 Pip 包
+$ npm install
 ```
+
+### 测试
+
+通过下面的命令来测试：
+
+```bash
+$ npm test
+```
+
+也可以只测试单个包：
+
+```bash
+$ ./node_modules/.bin/lerna run --scope <package_name>
+```
+
+### Pipeline
+
+```bash
+$ sh run_pipeline.sh <pipeline_name>
+```
+
+The `pipeline_name` 是目录 "test/pipelines" 下 Pipeline 的文件名称，如：
+
+- "text-bayes-classification"
+- "mnist-image-classification"
+- "databinding-image-classification"
 
 ## 插件开发规范
 

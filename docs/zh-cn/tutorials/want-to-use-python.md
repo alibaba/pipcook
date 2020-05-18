@@ -25,15 +25,14 @@ By default, Boa will install a conda virtual environment under the path of Boa p
 ```sh
 $ ./node_modules/.bin/bip install <package-name>
 ``` 
-
-`bip` is an alias of pip which points to correct python environment
+> `bip` is an alias of pip which points to correct Python environment.
 
 ## Get started
 
 Let's have a glance on how to call to Python's function:
 
 ```js
-const boa = require('boa');
+const boa = require('@pipcook/boa');
 const os = boa.import('os');
 console.log(os.getpid()); // prints the pid from python.
 
@@ -75,7 +74,7 @@ A Connection between 2 languages(ecosystems) has huge works to be done, even tho
 
 ### `boa`
 
-`require('boa')` returns the root object, which will be your entry point to all Python functions, and it provides these methods:
+`require('@pipcook/boa')` returns the root object, which will be your entry point to all Python functions, and it provides these methods:
 
 #### `.builtins()`
 
@@ -216,7 +215,7 @@ Unfortunately, [ES6 Proxy][] does not distinguish the above things. Therefore, i
 To better understand the algorithm above, let's look at some examples:
 
 ```js
-const boa = require('boa');
+const boa = require('@pipcook/boa');
 const { abs, tuple } = boa.builtins();
 
 {
@@ -275,6 +274,40 @@ Returns the hash value of this object, internally it calls the CPython's [`PyObj
 
 Returns a corresponding primitive value for this object, see [`Symbol.toPrimitive` on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive) for more details.
 
+## Working with ECMAScript Modules
+> Requires Node.js >= `v12.11.1`
+
+Use Node.js custom loader for better import-statement.
+```js
+// app.mjs
+import { range, len } from 'py:builtins';
+import os from 'py:os';
+import {
+  array as NumpyArray,
+  int32 as NumpyInt32,
+} from 'py:numpy';
+
+console.log(os.getpid()); // prints the pid from python.
+
+const list = range(0, 10); // create a range array
+console.log(len(list)); // 10
+console.log(list[2]); // 2
+
+const arr = NumpyArray([1, 2, 3], NumpyInt32); // Create an array of int32 using ndarry constructor
+console.log(arr[0]); // 1
+```
+
+In `Node.js v14.x` you can specify only [`--experimental-loader`](https://nodejs.org/dist/latest-v14.x/docs/api/cli.html#cli_experimental_loader_module) to launch your application:
+
+```sh
+$ node --experimental-loader @pipcook/boa/esm/loader.mjs app.mjs
+```
+
+In Node.js version < `v14.x`, you also need to add the [`--experimental-modules`](https://nodejs.org/dist/latest-v14.x/docs/api/cli.html#cli_experimental_modules) option:
+```sh
+$ node --experimental-modules --experimental-loader @pipcook/boa/esm/loader.mjs app.mjs
+```
+
 ## Tests
 
 To run the full tests:
@@ -288,4 +321,3 @@ See [./tests](https://github.com/alibaba/pipcook/tree/master/packages/boa/tests)
 [Python]: https://docs.python.org/3/
 [ES6 Proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 [tagged template literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Description
-
