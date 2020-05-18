@@ -199,15 +199,7 @@ export async function createRun(pipelineId: string): Promise<RunDB> {
 export async function writeOutput(jobId: string, content: string, stderr = false) {
   const fileName = stderr ? 'stderr' : 'stdout';
   const filePath = path.join(PIPCOOK_LOGS, jobId, fileName);
-  await new Promise((resolve, reject) => {
-    fs.appendFile(filePath, content, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  await fs.appendFile(filePath, content);
 }
 
 export async function retriveLog(jobId: string) {
