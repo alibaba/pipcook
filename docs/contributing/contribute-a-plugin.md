@@ -1,10 +1,10 @@
-# How To Develop a Plugin
+# Contribute a Plugin
 
-Pipcook welcomes developers to contribute plugins for us to extend the functions of pipcook. This document describes how to develop a plugin. The content involved in this article is just a few suggestions, the specific plugin can run successfully in pipcook as long as it meets our plugin prototype specifications.
+Pipcook welcomes developer to contribute plugins for us to extend the functions of Pipcook. This document describes how to develop a plugin. The content involved in this article is just a few suggestions, the specific plugin can run successfully in Pipcook as long as it meets our plugin prototype specifications.
 
 ## Plugin Specification
 
-We strongly recommend that you first understand the plugin specifications that we define. Only plugins that meet the interface that we define can be accepted. For more information about the specification of each plugin, see [here](../devel/developer-guide.md) for plugin development specifications.
+We strongly recommend that you first understand the plugin specifications that we define. Only plugins that meet the interface that we define can be accepted. For more information about the specification of each plugin, see [here](../contribution/contributor-guide.md) for plugin development specifications.
 
 The plugin type could be:
 
@@ -32,7 +32,7 @@ $ cd template-plugin
 $ npm install
 ```
 
-You can initialize a development environment, which contains the following structure
+You can initialize a development environment, which contains the following structure:
 
 ```
 - template-plugin
@@ -43,11 +43,11 @@ You can initialize a development environment, which contains the following struc
   - tsconfig. json // typescript compilation configuration file
 ```
 
-### Auto-injected Parameters and User-defined Parameters
+### Auto-injected parameters and user-defined parameters
 
 If you check our [Plugin Specification](../spec/plugin.md), you will notice that the plugin we define mainly contains three parameters: data (not necessary), model (not necessary), and args. The data and model parameters are automatically injected by pipcook during pipeline execution. The args parameters are custom parameters that can be input by the plugin. After a plugin is developed and the user runs pipeline, the user does not need to display input data and model parameters to the corresponding component of the plugin. For example, the interface of a data access plugin is:
 
-```ts
+```js
 interface DataAccessType extends PipcookPlugin {
   (data: OriginSampleData | OriginSampleData[], args?: ArgsType): Promise<UniformSampleData>
 }
@@ -55,7 +55,7 @@ interface DataAccessType extends PipcookPlugin {
 
 Therefore, any data access plugin contains two parameters, data and args. However, the user code should be similar to this:
 
-```ts
+```js
 const dataAccess = DataAccess(imageClassDataAccess, {
   imgSize:[28, 28],
 });
@@ -69,7 +69,7 @@ This chapter uses a simple example to show how to develop a data processing plug
 
 ### Data Processing Plugin Interface
 
-```ts
+```js
 export interface DataProcessType extends PipcookPlugin {
   (data: UniformSampleData | UniformSampleData[], args?: ArgsType): Promise<UniformSampleData>
 }
@@ -77,7 +77,7 @@ export interface DataProcessType extends PipcookPlugin {
 
 First, you can view the interface of the plugin type you want to develop according to the preceding link. For example, the plugin of the data processing type accepts a parameter of the supposed sampledata type and an optional parameter of the ArgsType type as shown above. The following figure shows the sub-interface type of sampledata:
 
-```ts
+```js
 interface UniformSampleData {
   trainData: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
   validationData?: tf.data.Dataset<{xs: tf.Tensor<any>, ys?: tf.Tensor<any>}>;
@@ -95,14 +95,14 @@ interface UniformSampleData {
 
 ### Mocking Data
 
-You can prepare the corresponding mock data based on the interface to develop the plugin. For example, if we develop a data processing plugin, we can construct the following mock data
+You can prepare the corresponding mock data based on the interface to develop the plugin. For example, if we develop a data processing plugin, we can construct the following mock data:
 
-```ts
+```js
 const data = {
-	trainData: tf.data.array([{xs: [1,2,3], ys: [1]},{xs: [4,5,6], ys: [2]}]),
+  trainData: tf.data.array([{xs: [1,2,3], ys: [1]},{xs: [4,5,6], ys: [2]}]),
   metaData: {
     feature: {
-    	name: 'train',
+      name: 'train',
       type: 'int32',
       shape: [1,3]
     },
@@ -112,21 +112,20 @@ const data = {
       shape: [1]
     },
   }
-}
+};
 ```
 
 For example, if the data processing plugin needs to double the size of each feature, you can implement your plugin as follows:
 
-```ts
-import {DataProcessType, UniformSampleData, ArgsType} from '@pipcook/pipcook-core'
-
+```js
+import { DataProcessType, UniformSampleData, ArgsType } from '@pipcook/pipcook-core';
 const templateDataProcess: DataProcessType = async (data: UniformSampleData, args?: ArgsType): Promise<UniformSampleData> => {
-  const {trainData} = data;
+  const { trainData } = data;
   return {
-  	...data,
+    ...data,
     trainData: trainData.map((v) => 2*v)
-  }
-}
+  };
+};
 
 export default templateDataProcess;
 ```
@@ -138,7 +137,7 @@ After developing your plugin, you need to check the following two points:
 
 After ensuring the preceding two points, you can run a real pipcook pipeline to check whether your plugin is compatible with the corresponding upstream and downstream plugins.
 
-## Release Your Plugin
+## Release
 
 After you have developed the plugin, you can create your own GitHub repository, and push your code and corresponding unit tests to your own repository, the repository should be named "pipcook-plugins-{name}-{type}"
 

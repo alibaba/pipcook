@@ -1,23 +1,25 @@
 - [What's Pipcook](/README.md)
-
+- [Install](/INSTALL.md)
+- User Manual
+  - [Introduction to Pipeline](/manual/intro-to-pipeline.md)
+  - [Introduction to Plugin](/manual/intro-to-plugin.md)
+  - [Introduction to Boa](/manual/intro-to-boa.md)
 - Tutorials
-
-  - [Get started](/tutorials/get-started.md)
-  - [Get started with CLI](/tutorials/get-started-with-cli.md)
-  - [Develop a plugin](/tutorials/how-to-develop-a-plugin.md)
-  - [Want to use Python](/tutorials/want-to-use-python.md)
-
-- Developers
-
-  - [Developer guide](/devel/developer-guide.md)
-
+  - [Machine Learning Overview](/tutorials/machine-learning-overview.md)
+  <!-- - [Working with Text Data](/tutorials/working-with-text-data.md) -->
+  <!-- - [Working with Image Data](/tutorials/working-with-image-data.md) -->
+  - [Using Python functions in Node.js](/tutorials/using-python-functions-in-nodejs.md)
+- Contributing
+  - [Contributor guide](/contributing/guide-to-contributor.md)
+  - [Collaborator guide](/contributing/guide-to-collaborator.md)
+  - [Contribute a plugin](/contributing/contribute-a-plugin.md)
 - Specification
-
   - [Plugin Specification](/spec/plugin.md)
-    - [DataCollect](/spec/plugin/0-data-collect.md)
-    - [DataAccess](/spec/plugin/1-data-access.md)
-    - [DataProcess](/spec/plugin/2-data-process.md)
-    - [ModelDefine](/spec/plugin/3-model-define.md)
-    - [ModelTrain](/spec/plugin/4-model-train.md)
-    - [ModelEvaluate](/spec/plugin/5-model-evaluate.md)
+    - [`DataCollect`](/spec/plugin/0-data-collect.md)
+    - [`DataAccess`](/spec/plugin/1-data-access.md)
+    - [`DataProcess`](/spec/plugin/2-data-process.md)
+    - [`ModelDefine`](/spec/plugin/3-model-define.md)
+    - [`ModelTrain`](/spec/plugin/4-model-train.md)
+    - [`ModelEvaluate`](/spec/plugin/5-model-evaluate.md)
   - [Dataset Specification](/spec/dataset.md)
+- [Glossory](/GLOSSORY.md)

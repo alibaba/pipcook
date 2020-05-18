@@ -1,33 +1,8 @@
-# Boa (Python Bridge Layer)
+# Introduction to Boa
 
-Using Python functions seamlessly in Node.js, it delivers any Python module for Node.js developer in lower-cost to learn or use.
+Boa is the Python Bridge Layer in Pipcook, it lets you call Python functions seamlessly in Node.js, it delivers any Python module for Node.js developer in lower-cost to learn or use.
 
-## Dependencies
-
-- Node.js 10, 12
-- Platforms
-  - MacOS
-  - Linux
-
-> Note: we integrate Python3.7 via conda, no necessary to install Python by yourself.
-
-## Virtual Environment
-
-If you are using virtualenv or conda, you can just set up your system environment PYTHONPATH to point to your site-packages folder. For instance
-
-```sh
-$ export PYTHONPATH = /Users/venv/lib/python3.7/site-packages
-```
-
-## How to install packages
-
-By default, Boa will install a conda virtual environment under the path of Boa package. To make it easier to install python libraries, you can run
-```sh
-$ ./node_modules/.bin/bip install <package-name>
-``` 
-> `bip` is an alias of pip which points to correct Python environment.
-
-## Get started
+## Quick Start
 
 Let's have a glance on how to call to Python's function:
 
@@ -49,26 +24,16 @@ console.log(len(list)); // 10
 console.log(list[2]); // 2
 ```
 
-## How to build
+## Install Python Package
 
-```bash
-# clone this project firstly.
-$ npm install
-$ npm run build
-```
+By default, Boa will install a conda virtual environment under the path of Boa package. To make it easier to install python libraries, you can run:
 
-__Verify if the generated library is linked to correct Python version__
+```sh
+$ ./node_modules/.bin/bip install <package-name>
+``` 
+> `bip` is an alias of pip which points to correct Python environment.
 
-When buidling finished, use `objdump -macho -dylibs-used ./build/Release/boa.node` to check if your linked libs are correct as:
-
-```bash
-/build/Release/boa.node:
-  /usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/Python (compatibility version 3.7.0, current version 3.7.0)
-  /usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 400.9.4)
-  /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1252.250.1)
-```
-
-## API Design Principle
+## API References
 
 A Connection between 2 languages(ecosystems) has huge works to be done, even though this package is working only on the unilateral from Python to JavaScript. The most difficult part is that for developers, they need to understand the correspondence between the two languages and ecosystems. Therefore, a good design principle will make developers reduce learning costs.
 
@@ -275,6 +240,7 @@ Returns the hash value of this object, internally it calls the CPython's [`PyObj
 Returns a corresponding primitive value for this object, see [`Symbol.toPrimitive` on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive) for more details.
 
 ## Working with ECMAScript Modules
+
 > Requires Node.js >= `v12.11.1`
 
 Use Node.js custom loader for better import-statement.
@@ -308,12 +274,23 @@ In Node.js version < `v14.x`, you also need to add the [`--experimental-modules`
 $ node --experimental-modules --experimental-loader @pipcook/boa/esm/loader.mjs app.mjs
 ```
 
-## Tests
-
-To run the full tests:
+## Build from source
 
 ```bash
-$ npm test
+# clone this project firstly.
+$ npm install
+$ npm run build
+```
+
+__Verify if the generated library is linked to correct Python version__
+
+When buidling finished, use `objdump -macho -dylibs-used ./build/Release/boa.node` to check if your linked libs are correct as:
+
+```bash
+/build/Release/boa.node:
+  /usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/Python (compatibility version 3.7.0, current version 3.7.0)
+  /usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 400.9.4)
+  /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1252.250.1)
 ```
 
 See [./tests](https://github.com/alibaba/pipcook/tree/master/packages/boa/tests) for more testing details.
@@ -321,3 +298,19 @@ See [./tests](https://github.com/alibaba/pipcook/tree/master/packages/boa/tests)
 [Python]: https://docs.python.org/3/
 [ES6 Proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 [tagged template literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Description
+
+## Build Tests
+
+To run the full tests:
+
+```bash
+$ npm test
+```
+
+## Virtual Environment for Python
+
+If you are using virtualenv or conda, you can just set up your system environment PYTHONPATH to point to your site-packages folder. For instance:
+
+```sh
+$ export PYTHONPATH = /Users/venv/lib/python3.7/site-packages
+```
