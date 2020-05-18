@@ -11,4 +11,5 @@ export interface RunConfigParam {
 
 export interface RunConfigI {
   plugins: Record<PluginTypeI, RunConfigParam>;
+  name: string;
 }

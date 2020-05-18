@@ -1,16 +1,24 @@
 import path from 'path';
 import childProcess from 'child_process';
-
 import fse from 'fs-extra';
 import ora from 'ora';
-import glob from 'glob-promise';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
+import * as os from 'os';
 
 import { InitCommandHandler } from '../types';
-import { dependencies, pipcookLogName, optionalNpmClients } from '../config';
+import { dependencies, optionalNpmClients, daemonPackage, boardPackage } from '../config';
 
 const spinner = ora();
+
+function installDependency(npmClient: string, item: string, beta: boolean, 
+  cwd: string, npmInstallEnvs: NodeJS.ProcessEnv) {
+  childProcess.execSync(`${npmClient} install ${item}${beta ? '@beta' : ''} --save`, {
+    cwd,
+    stdio: 'inherit',
+    env: npmInstallEnvs
+  });
+}
 
 /**
  * install all dependencies of pipcook into working dir
@@ -56,44 +64,31 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
 
   let dirname;
   try {
-    dirname = process.cwd();
-    const existingContents = await glob(path.join(dirname, '*'));
-    if (existingContents.length > 0) {
-      spinner.fail('Current working directory is not empty');
-      return process.exit(1);
-    }
-    fse.ensureDirSync(path.join(dirname, 'examples'));
-    // we prepared several examples. Here copy these examples to current working directory
-    fse.copySync(path.join(__dirname, '..', 'assets', 'example'), path.join(dirname, 'examples'));
-    fse.ensureDirSync(path.join(dirname, pipcookLogName));
-    fse.ensureDirSync(path.join(dirname, '.server'));
-    fse.copySync(path.join(__dirname, '..', 'assets', 'server'), path.join(dirname, '.server'));
- 
+    dirname = path.join(os.homedir(), '.pipcook');
+    await fse.ensureDir(path.join(dirname, 'dependencies'));
+    await fse.ensureDir(path.join(dirname, 'server'));
+    await fse.ensureDir(path.join(dirname, 'pipboard'));
     // init npm project
     childProcess.execSync(`${npmClient} init -y`, {
-      cwd: dirname,
+      cwd: path.join(dirname, 'dependencies'),
       stdio: 'inherit'
     });
     spinner.start(`installing pipcook`);
 
     for (const item of dependencies) {
-      childProcess.execSync(`${npmClient} install ${item}${beta ? '@beta' : ''} --save`, {
-        cwd: dirname,
-        stdio: 'inherit',
-        env: npmInstallEnvs
-      });
+      installDependency(npmClient, item, beta, path.join(dirname, 'dependencies'), npmInstallEnvs);
     }
     spinner.succeed(`install pipcook core successfully`);
-    spinner.start(`installing pipcook board`);
-    childProcess.execSync(`${npmClient} install`, {
-      cwd: path.join(dirname, '.server'),
-      stdio: 'inherit',
-      env: npmInstallEnvs
-    });
-    spinner.succeed(`install pipcook board successfully`);
+    spinner.start(`installing pipcook daemon and board`);
+    const transformNpm = npmClient !== 'tnpm' ? npmClient : 'npm';
+    installDependency(transformNpm, daemonPackage, beta, path.join(dirname, 'server'), npmInstallEnvs);
+    installDependency(transformNpm, boardPackage, beta, path.join(dirname, 'pipboard'), npmInstallEnvs);
+    spinner.succeed(`installing pipcook daemon and board`);
+    
   } catch (err) {
     spinner.fail(`failed to initialize the project: ${err && err.stack}`);
-    childProcess.execSync(`rm -r ${path.join(dirname, '*')}`);
-    childProcess.execSync(`rm -r ${path.join(dirname, '.server')}`);
+    childProcess.execSync(`rm -r ${path.join(dirname, 'dependencies')}`);
+    childProcess.execSync(`rm -r ${path.join(dirname, 'server')}`);
+    childProcess.execSync(`rm -r ${path.join(dirname, 'pipboard')}`);
   }
 };

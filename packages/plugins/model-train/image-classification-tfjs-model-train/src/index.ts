@@ -33,52 +33,47 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
  * @param optimizer : need to specify optimizer
  */
 const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersModel, args: ModelTrainArgsType): Promise<TfJsLayersModel> => {
-  try {
-    const {
-      epochs = 10,
-      batchSize = 16,
-      saveModel
-    } = args;
+  const {
+    epochs = 10,
+    batchSize = 16,
+    saveModel
+  } = args;
 
-    const { trainLoader, validationLoader, metadata } = data;
+  const { trainLoader, validationLoader, metadata } = data;
 
-    const count = await trainLoader.len();
+  const count = await trainLoader.len();
 
-    const trainConfig: any = {
-      epochs: epochs,
-      batchesPerEpoch: parseInt(String(count / batchSize))
-    };
+  const trainConfig: any = {
+    epochs: epochs,
+    batchesPerEpoch: parseInt(String(count / batchSize))
+  };
 
-    console.log('create train dataset');
-    const trainDataSet = await createDataset(trainLoader, metadata.labelMap);
-    const ds = trainDataSet.repeat().batch(batchSize);
-    let validationDataSet: tf.data.Dataset<any>;
-    if (validationLoader) {
-      console.log('create validation dataset');
-      validationDataSet = await createDataset(validationLoader, metadata.labelMap);
-      const valCount = await validationLoader.len();
-      const validateDs = validationDataSet.batch(batchSize);
-      trainConfig.validationData = validateDs;
-      trainConfig.validationBatches = parseInt(String(valCount / batchSize));
-    }
-
-    const trainModel = model.model;
-    
-    await trainModel.fitDataset(ds, trainConfig);
-
-    await saveModel(async (modelPath: string) => {
-      await trainModel.save('file://' + modelPath);
-    });
-
-    const result: TfJsLayersModel = {
-      ...model,
-      model: trainModel
-    };
-    return result;
-  } catch (err) {
-    console.log('[ERROR] model trainer', err);
-    throw err;
+  console.log('create train dataset');
+  const trainDataSet = await createDataset(trainLoader, metadata.labelMap);
+  const ds = trainDataSet.repeat().batch(batchSize);
+  let validationDataSet: tf.data.Dataset<any>;
+  if (validationLoader) {
+    console.log('create validation dataset');
+    validationDataSet = await createDataset(validationLoader, metadata.labelMap);
+    const valCount = await validationLoader.len();
+    const validateDs = validationDataSet.batch(batchSize);
+    trainConfig.validationData = validateDs;
+    trainConfig.validationBatches = parseInt(String(valCount / batchSize));
   }
+
+  const trainModel = model.model;
+  
+  await trainModel.fitDataset(ds, trainConfig);
+
+  await saveModel(async (modelPath: string) => {
+    await trainModel.save('file://' + modelPath);
+  });
+
+  const result: TfJsLayersModel = {
+    ...model,
+    model: trainModel
+  };
+  return result;
 };
 
 export default ModelTrain;

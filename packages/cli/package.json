@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -rf ./assets/server",
     "compile": "tsc -b tsconfig.json && cp -r ./assets ./dist/ && cp ./package.json ./dist/ && chmod +x ./dist/bin/index.js"
   },
   "bin": {
@@ -26,8 +26,8 @@
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
-    "console.table": "^0.10.0",
     "fastify": "^2.13.1",
+    "find-process": "^1.4.3",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",

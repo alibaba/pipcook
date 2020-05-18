@@ -34,10 +34,7 @@ jobs:
         ../packages/cli/dist/bin/index.js --help
         ../packages/cli/dist/bin/index.js init --help
         ../packages/cli/dist/bin/index.js run --help
-        ../packages/cli/dist/bin/index.js log --help
-        ../packages/cli/dist/bin/index.js board --help
         ../packages/cli/dist/bin/index.js plugin-dev --help
-        ../packages/cli/dist/bin/index.js dataset --help
         ../packages/cli/dist/bin/index.js bip --help
         ../packages/cli/dist/bin/index.js serve --help
 
@@ -58,22 +55,13 @@ jobs:
       run: |
         npm install
         npm run build
-    - name: create workspace
-      run: mkdir -p myworkspace
+        cd ./packages/daemon && npm start
     - name: test client basic usage init
-      working-directory: ./myworkspace
       run: |
-        mkdir init1
-        cd init1
-        ../../packages/cli/dist/bin/index.js init
-        cd ../
+        ./packages/cli/dist/bin/index.js init
     - name: test client basic usage run
-      working-directory: ./myworkspace
       run: |
-        cd init1
-        ../../packages/cli/dist/bin/index.js run ./examples/pipelines/text-bayes-classification.json
-        cd ../
+        ./packages/cli/dist/bin/index.js run ./test/pipelines/text-bayes-classification.json
     - name: test client basic usage plugin-dev
-      working-directory: ./myworkspace
       run: |
-        ../packages/cli/dist/bin/index.js plugin-dev -t dataCollect
+        ./packages/cli/dist/bin/index.js plugin-dev -t dataCollect
