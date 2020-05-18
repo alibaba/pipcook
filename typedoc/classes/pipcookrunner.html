@@ -98,7 +98,9 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#currentindex" class="tsd-kind-icon">current<wbr>Index</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#endtime" class="tsd-kind-icon">end<wbr>Time</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#error" class="tsd-kind-icon">error</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#latestevaluateresult" class="tsd-kind-icon">latest<wbr>Evaluate<wbr>Result</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#evaluatemap" class="tsd-kind-icon">evaluate<wbr>Map</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#evaluatepass" class="tsd-kind-icon">evaluate<wbr>Pass</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#jobid" class="tsd-kind-icon">job<wbr>Id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#latestmodel" class="tsd-kind-icon">latest<wbr>Model</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#latestsampledata" class="tsd-kind-icon">latest<wbr>Sample<wbr>Data</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookrunner.html#logdir" class="tsd-kind-icon">log<wbr>Dir</a></li>
@@ -116,6 +118,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipcookrunner.html#handleerror" class="tsd-kind-icon">handle<wbr>Error</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipcookrunner.html#handlesuccess" class="tsd-kind-icon">handle<wbr>Success</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipcookrunner.html#init" class="tsd-kind-icon">init</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipcookrunner.html#notifystatus" class="tsd-kind-icon">notify<wbr>Status</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipcookrunner.html#run" class="tsd-kind-icon">run</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipcookrunner.html#runconfig" class="tsd-kind-icon">run<wbr>Config</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipcookrunner.html#savepipcook" class="tsd-kind-icon">save<wbr>Pipcook</a></li>
@@ -130,13 +133,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Pipcook<wbr>Runner<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="pipcookrunner.html" class="tsd-signature-type">PipcookRunner</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Pipcook<wbr>Runner<span class="tsd-signature-symbol">(</span>pipelineId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, jobId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="pipcookrunner.html" class="tsd-signature-type">PipcookRunner</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L75">packages/core/src/runner/index.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L81">packages/daemon/src/runner/index.ts:81</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -144,6 +147,15 @@
 									<p>Constructor, user need to specify pipeline name when init</p>
 								</div>
 							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> pipelineId: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> jobId: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="pipcookrunner.html" class="tsd-signature-type">PipcookRunner</a></h4>
 						</li>
 					</ul>
@@ -157,7 +169,7 @@
 					<div class="tsd-signature tsd-kind-icon">components<span class="tsd-signature-symbol">:</span> <a href="../interfaces/pipcookcomponentresult.html" class="tsd-signature-type">PipcookComponentResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L68">packages/core/src/runner/index.ts:68</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L74">packages/daemon/src/runner/index.ts:74</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -167,7 +179,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;-1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L69">packages/core/src/runner/index.ts:69</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L75">packages/daemon/src/runner/index.ts:75</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -177,7 +189,7 @@
 					<div class="tsd-signature tsd-kind-icon">end<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L73">packages/core/src/runner/index.ts:73</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L79">packages/daemon/src/runner/index.ts:79</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -187,17 +199,37 @@
 					<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L70">packages/core/src/runner/index.ts:70</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L76">packages/daemon/src/runner/index.ts:76</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="latestevaluateresult" class="tsd-anchor"></a>
-					<h3>latest<wbr>Evaluate<wbr>Result</h3>
-					<div class="tsd-signature tsd-kind-icon">latest<wbr>Evaluate<wbr>Result<span class="tsd-signature-symbol">:</span> <a href="../interfaces/evaluateresult.html" class="tsd-signature-type">EvaluateResult</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
+					<a name="evaluatemap" class="tsd-anchor"></a>
+					<h3>evaluate<wbr>Map</h3>
+					<div class="tsd-signature tsd-kind-icon">evaluate<wbr>Map<span class="tsd-signature-symbol">:</span> <a href="../interfaces/evaluateresult.html" class="tsd-signature-type">EvaluateResult</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L65">packages/core/src/runner/index.ts:65</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L70">packages/daemon/src/runner/index.ts:70</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="evaluatepass" class="tsd-anchor"></a>
+					<h3>evaluate<wbr>Pass</h3>
+					<div class="tsd-signature tsd-kind-icon">evaluate<wbr>Pass<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L71">packages/daemon/src/runner/index.ts:71</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="jobid" class="tsd-anchor"></a>
+					<h3>job<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">job<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L67">packages/daemon/src/runner/index.ts:67</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -207,7 +239,7 @@
 					<div class="tsd-signature tsd-kind-icon">latest<wbr>Model<span class="tsd-signature-symbol">:</span> <a href="../interfaces/unimodel.html" class="tsd-signature-type">UniModel</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L64">packages/core/src/runner/index.ts:64</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L69">packages/daemon/src/runner/index.ts:69</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -217,7 +249,7 @@
 					<div class="tsd-signature tsd-kind-icon">latest<wbr>Sample<wbr>Data<span class="tsd-signature-symbol">:</span> <a href="../interfaces/unidataset.html" class="tsd-signature-type">UniDataset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L63">packages/core/src/runner/index.ts:63</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L68">packages/daemon/src/runner/index.ts:68</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -227,7 +259,7 @@
 					<div class="tsd-signature tsd-kind-icon">log<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L61">packages/core/src/runner/index.ts:61</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L65">packages/daemon/src/runner/index.ts:65</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -237,7 +269,7 @@
 					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L62">packages/core/src/runner/index.ts:62</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L66">packages/daemon/src/runner/index.ts:66</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -247,7 +279,7 @@
 					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;config.version</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L60">packages/core/src/runner/index.ts:60</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L64">packages/daemon/src/runner/index.ts:64</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -257,17 +289,17 @@
 					<div class="tsd-signature tsd-kind-icon">start<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L72">packages/core/src/runner/index.ts:72</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L78">packages/daemon/src/runner/index.ts:78</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="status" class="tsd-anchor"></a>
 					<h3>status</h3>
-					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"running"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"error"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"success"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;running&quot;</span></div>
+					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <a href="../enums/pipelinestatus.html" class="tsd-signature-type">PipelineStatus</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L75">packages/core/src/runner/index.ts:75</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L81">packages/daemon/src/runner/index.ts:81</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -277,7 +309,7 @@
 					<div class="tsd-signature tsd-kind-icon">updated<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/outputtype.html" class="tsd-signature-type">OutputType</a><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L67">packages/core/src/runner/index.ts:67</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L73">packages/daemon/src/runner/index.ts:73</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -294,7 +326,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L192">packages/core/src/runner/index.ts:192</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L239">packages/daemon/src/runner/index.ts:239</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -321,7 +353,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L110">packages/core/src/runner/index.ts:110</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L128">packages/daemon/src/runner/index.ts:128</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -347,7 +379,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L121">packages/core/src/runner/index.ts:121</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L139">packages/daemon/src/runner/index.ts:139</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -364,7 +396,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L99">packages/core/src/runner/index.ts:99</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L105">packages/daemon/src/runner/index.ts:105</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -378,16 +410,33 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="run" class="tsd-anchor"></a>
-					<h3>run</h3>
+					<a name="notifystatus" class="tsd-anchor"></a>
+					<h3>notify<wbr>Status</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>components<span class="tsd-signature-symbol">: </span><a href="../interfaces/pipcookcomponentresult.html" class="tsd-signature-type">PipcookComponentResult</a><span class="tsd-signature-symbol">[]</span>, successCallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span>, errorCallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span>, saveModelCallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">notify<wbr>Status<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L134">packages/core/src/runner/index.ts:134</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L148">packages/daemon/src/runner/index.ts:148</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="run" class="tsd-anchor"></a>
+					<h3>run</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>components<span class="tsd-signature-symbol">: </span><a href="../interfaces/pipcookcomponentresult.html" class="tsd-signature-type">PipcookComponentResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L178">packages/daemon/src/runner/index.ts:178</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -400,15 +449,6 @@
 								<li>
 									<h5>components: <a href="../interfaces/pipcookcomponentresult.html" class="tsd-signature-type">PipcookComponentResult</a><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> successCallback: <span class="tsd-signature-type">Function</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> errorCallback: <span class="tsd-signature-type">Function</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> saveModelCallback: <span class="tsd-signature-type">Function</span></h5>
-								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
@@ -418,33 +458,24 @@
 					<a name="runconfig" class="tsd-anchor"></a>
 					<h3>run<wbr>Config</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">run<wbr>Config<span class="tsd-signature-symbol">(</span>configPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, successCallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span>, errorCallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span>, saveModelCallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<wbr>Config<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">: </span><a href="../index.html#pipelinedb" class="tsd-signature-type">PipelineDB</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L159">packages/core/src/runner/index.ts:159</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L200">packages/daemon/src/runner/index.ts:200</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>run config file</p>
+									<p>run config</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>configPath: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> successCallback: <span class="tsd-signature-type">Function</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> errorCallback: <span class="tsd-signature-type">Function</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> saveModelCallback: <span class="tsd-signature-type">Function</span></h5>
+									<h5>config: <a href="../index.html#pipelinedb" class="tsd-signature-type">PipelineDB</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -461,7 +492,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/core/src/runner/index.ts#L93">packages/core/src/runner/index.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/runner/index.ts#L99">packages/daemon/src/runner/index.ts:99</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -506,7 +537,13 @@
 								<a href="pipcookrunner.html#error" class="tsd-kind-icon">error</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="pipcookrunner.html#latestevaluateresult" class="tsd-kind-icon">latest<wbr>Evaluate<wbr>Result</a>
+								<a href="pipcookrunner.html#evaluatemap" class="tsd-kind-icon">evaluate<wbr>Map</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="pipcookrunner.html#evaluatepass" class="tsd-kind-icon">evaluate<wbr>Pass</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="pipcookrunner.html#jobid" class="tsd-kind-icon">job<wbr>Id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="pipcookrunner.html#latestmodel" class="tsd-kind-icon">latest<wbr>Model</a>
@@ -543,6 +580,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="pipcookrunner.html#init" class="tsd-kind-icon">init</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="pipcookrunner.html#notifystatus" class="tsd-kind-icon">notify<wbr>Status</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="pipcookrunner.html#run" class="tsd-kind-icon">run</a>

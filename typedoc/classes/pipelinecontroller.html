@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ProjectController | Pipcook</title>
+	<title>PipelineController | Pipcook</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="projectcontroller.html">ProjectController</a>
+					<a href="pipelinecontroller.html">PipelineController</a>
 				</li>
 			</ul>
-			<h1>Class ProjectController</h1>
+			<h1>Class PipelineController</h1>
 		</div>
 	</div>
 </header>
@@ -68,12 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">any</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">ProjectController</span>
-							</li>
-						</ul>
+						<span class="target">PipelineController</span>
 					</li>
 				</ul>
 			</section>
@@ -82,66 +77,132 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipelinecontroller.html#ctx" class="tsd-kind-icon">ctx</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipelinecontroller.html#pipelineservice" class="tsd-kind-icon">pipeline<wbr>Service</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="projectcontroller.html#datasets" class="tsd-kind-icon">datasets</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="projectcontroller.html#logs" class="tsd-kind-icon">logs</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="projectcontroller.html#models" class="tsd-kind-icon">models</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipelinecontroller.html#createpipeline" class="tsd-kind-icon">create<wbr>Pipeline</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipelinecontroller.html#deletepipeline" class="tsd-kind-icon">delete<wbr>Pipeline</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipelinecontroller.html#fetchpipeline" class="tsd-kind-icon">fetch<wbr>Pipeline</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipelinecontroller.html#fetchpipelines" class="tsd-kind-icon">fetch<wbr>Pipelines</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipelinecontroller.html#updatepipeline" class="tsd-kind-icon">update<wbr>Pipeline</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="ctx" class="tsd-anchor"></a>
+					<h3>ctx</h3>
+					<div class="tsd-signature tsd-kind-icon">ctx<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Context</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/pipeline.ts#L11">packages/daemon/src/app/controller/pipeline.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="pipelineservice" class="tsd-anchor"></a>
+					<h3>pipeline<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="pipelineservice.html" class="tsd-signature-type">PipelineService</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/pipeline.ts#L14">packages/daemon/src/app/controller/pipeline.ts:14</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="datasets" class="tsd-anchor"></a>
-					<h3>datasets</h3>
+					<a name="createpipeline" class="tsd-anchor"></a>
+					<h3>create<wbr>Pipeline</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">datasets<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Pipeline<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/pipboard-server/app/controller/log.ts#L51">packages/pipboard-server/app/controller/log.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/pipeline.ts#L17">packages/daemon/src/app/controller/pipeline.ts:17</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="logs" class="tsd-anchor"></a>
-					<h3>logs</h3>
+					<a name="deletepipeline" class="tsd-anchor"></a>
+					<h3>delete<wbr>Pipeline</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">logs<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">delete<wbr>Pipeline<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/pipboard-server/app/controller/log.ts#L15">packages/pipboard-server/app/controller/log.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/pipeline.ts#L73">packages/daemon/src/app/controller/pipeline.ts:73</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="models" class="tsd-anchor"></a>
-					<h3>models</h3>
+					<a name="fetchpipeline" class="tsd-anchor"></a>
+					<h3>fetch<wbr>Pipeline</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">models<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>Pipeline<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/pipboard-server/app/controller/log.ts#L80">packages/pipboard-server/app/controller/log.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/pipeline.ts#L54">packages/daemon/src/app/controller/pipeline.ts:54</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="fetchpipelines" class="tsd-anchor"></a>
+					<h3>fetch<wbr>Pipelines</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>Pipelines<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/pipeline.ts#L35">packages/daemon/src/app/controller/pipeline.ts:35</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="updatepipeline" class="tsd-anchor"></a>
+					<h3>update<wbr>Pipeline</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">update<wbr>Pipeline<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/pipeline.ts#L89">packages/daemon/src/app/controller/pipeline.ts:89</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -160,16 +221,28 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="projectcontroller.html" class="tsd-kind-icon">Project<wbr>Controller</a>
+						<a href="pipelinecontroller.html" class="tsd-kind-icon">Pipeline<wbr>Controller</a>
 						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="projectcontroller.html#datasets" class="tsd-kind-icon">datasets</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="pipelinecontroller.html#ctx" class="tsd-kind-icon">ctx</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="pipelinecontroller.html#pipelineservice" class="tsd-kind-icon">pipeline<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="projectcontroller.html#logs" class="tsd-kind-icon">logs</a>
+								<a href="pipelinecontroller.html#createpipeline" class="tsd-kind-icon">create<wbr>Pipeline</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="projectcontroller.html#models" class="tsd-kind-icon">models</a>
+								<a href="pipelinecontroller.html#deletepipeline" class="tsd-kind-icon">delete<wbr>Pipeline</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="pipelinecontroller.html#fetchpipeline" class="tsd-kind-icon">fetch<wbr>Pipeline</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="pipelinecontroller.html#fetchpipelines" class="tsd-kind-icon">fetch<wbr>Pipelines</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="pipelinecontroller.html#updatepipeline" class="tsd-kind-icon">update<wbr>Pipeline</a>
 							</li>
 						</ul>
 					</li>

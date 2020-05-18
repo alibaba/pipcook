@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PluginInfoI | Pipcook</title>
+	<title>LogController | Pipcook</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="plugininfoi.html">PluginInfoI</a>
+					<a href="logcontroller.html">LogController</a>
 				</li>
 			</ul>
-			<h1>Interface PluginInfoI</h1>
+			<h1>Class LogController</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">PluginInfoI</span>
+						<span class="target">LogController</span>
 					</li>
 				</ul>
 			</section>
@@ -79,8 +79,15 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="plugininfoi.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="plugininfoi.html#params" class="tsd-kind-icon">params</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="logcontroller.html#ctx" class="tsd-kind-icon">ctx</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="logcontroller.html#pipelineservice" class="tsd-kind-icon">pipeline<wbr>Service</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="logcontroller.html#getlogs" class="tsd-kind-icon">get<wbr>Logs</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="logcontroller.html#getpipelines" class="tsd-kind-icon">get<wbr>Pipelines</a></li>
 							</ul>
 						</section>
 					</div>
@@ -88,25 +95,62 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="ctx" class="tsd-anchor"></a>
+					<h3>ctx</h3>
+					<div class="tsd-signature tsd-kind-icon">ctx<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Context</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/pipboard-server/app/utils/types.ts#L2">packages/pipboard-server/app/utils/types.ts:2</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/log.ts#L10">packages/daemon/src/app/controller/log.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="params" class="tsd-anchor"></a>
-					<h3>params</h3>
-					<div class="tsd-signature tsd-kind-icon">params<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="pipelineservice" class="tsd-anchor"></a>
+					<h3>pipeline<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="pipelineservice.html" class="tsd-signature-type">PipelineService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0d696b5/packages/pipboard-server/app/utils/types.ts#L3">packages/pipboard-server/app/utils/types.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/log.ts#L13">packages/daemon/src/app/controller/log.ts:13</a></li>
 						</ul>
 					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getlogs" class="tsd-anchor"></a>
+					<h3>get<wbr>Logs</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Logs<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/log.ts#L16">packages/daemon/src/app/controller/log.ts:16</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getpipelines" class="tsd-anchor"></a>
+					<h3>get<wbr>Pipelines</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Pipelines<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/30aca83/packages/daemon/src/app/controller/log.ts#L35">packages/daemon/src/app/controller/log.ts:35</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -122,14 +166,20 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="plugininfoi.html" class="tsd-kind-icon">Plugin<wbr>InfoI</a>
+					<li class="current tsd-kind-class">
+						<a href="logcontroller.html" class="tsd-kind-icon">Log<wbr>Controller</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="plugininfoi.html#name" class="tsd-kind-icon">name</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="logcontroller.html#ctx" class="tsd-kind-icon">ctx</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="plugininfoi.html#params" class="tsd-kind-icon">params</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="logcontroller.html#pipelineservice" class="tsd-kind-icon">pipeline<wbr>Service</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="logcontroller.html#getlogs" class="tsd-kind-icon">get<wbr>Logs</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="logcontroller.html#getpipelines" class="tsd-kind-icon">get<wbr>Pipelines</a>
 							</li>
 						</ul>
 					</li>
