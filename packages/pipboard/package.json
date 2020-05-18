@@ -1,0 +1,56 @@
+{
+  "name": "@pipcook/pipboard",
+  "version": "0.5.3",
+  "description": "board for pipcook",
+  "dependencies": {
+    "@alifd/next": "^1.x",
+    "@icedesign/container": "^1.x",
+    "@icedesign/img": "^1.x",
+    "@icedesign/layout": "^1.x",
+    "@icedesign/notification": "^1.0.5",
+    "@icedesign/theme": "^1.0.0",
+    "axios": "^0.18.1",
+    "classnames": "^2.2.5",
+    "codemirror": "^5.52.2",
+    "enquire-js": "^0.1.2",
+    "prop-types": "^15.5.8",
+    "react": "^16.4.1",
+    "react-canvas-draw": "^1.1.0",
+    "react-codemirror2": "^7.1.0",
+    "react-dom": "^16.4.1",
+    "react-draggable": "^4.2.0",
+    "react-images-upload": "^1.2.7",
+    "react-json-view": "^1.19.1",
+    "react-router-dom": "^5.0.1"
+  },
+  "devDependencies": {
+    "@ice/spec": "^0.1.1",
+    "@types/jasmine": "^3.5.7",
+    "ice-plugin-fusion": "^0.1.4",
+    "ice-plugin-moment-locales": "^0.1.0",
+    "ice-scripts": "^2.0.0",
+    "nyc": "14.1.1",
+    "stylelint": "^10.1.0"
+  },
+  "scripts": {
+    "start": "ice-scripts dev",
+    "compile": "ice-scripts build",
+    "lint": "npm run eslint && npm run stylelint",
+    "eslint": "eslint --cache --ext .js,.jsx ./",
+    "stylelint": "stylelint ./**/*.scss",
+    "clean": "rm -rf ./build"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "iceworks": {
+    "type": "react",
+    "adapter": "adapter-react-v3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ice-lab/react-materials/tree/master/scaffolds/ice-design-lite"
+  },
+  "proxy": "http://localhost:7778",
+  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856"
+}

@@ -42,5 +42,5 @@ export interface PredictHandler {
 }
 
 export interface StartHandler {
-  (filename: string): Promise<void>;
+  (filename: string, verbose: boolean): Promise<void>;
 }

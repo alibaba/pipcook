@@ -3,6 +3,8 @@
     "packages/cli",
     "packages/core",
     "packages/boa",
+    "packages/daemon",
+    "packages/pipboard",
     "packages/plugins/**/*"
   ],
   "version": "independent",
@@ -10,6 +12,20 @@
   "command": {
     "publishConfig": {
       "access": "public"
+    },
+    "bootstrap": {
+      "nohoist": [
+        "node-addon-api",
+        "midway",
+        "egg-scripts",
+        "egg-ci",
+        "midway-bin",
+        "midway-mock",
+        "ice-scripts",
+        "stylelint",
+        "ice-plugin-fusion",
+        "ice-plugin-moment-locales"
+      ]
     }
   },
   "hoist": true

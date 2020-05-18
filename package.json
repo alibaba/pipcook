@@ -16,9 +16,9 @@
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "postinstall": "lerna bootstrap --nohoist=node-addon-api",
+    "postinstall": "lerna bootstrap",
     "build": "lerna run compile",
-    "lint": "eslint . --ext .ts --ext .js",
+    "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon --scope @pipcook/pipboard lint",
     "pretest": "npm run lint",
     "test": "lerna run --scope @pipcook/pipcook-core --scope @pipcook/boa test",
     "test:pipeline": "sh ./run_pipeline.sh",

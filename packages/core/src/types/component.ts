@@ -6,7 +6,7 @@ import { PipObject, PromisedValueOf, EvaluateResult } from './other';
 import { OutputType } from '../constants/other';
 
 export interface InsertParams {
-  pipelineId: string;
+  jobId: string;
   modelDir: string;
   dataDir: string;
 }
