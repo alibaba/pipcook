@@ -1,9 +1,3 @@
-/**
- * Copyright(c) Alibaba Group Holding Limited.
- *
- *
- * DVC DB
- */
 import { Sequelize } from 'sequelize';
 import * as cls from 'cls-hooked';
 import { scope, ScopeEnum, provide, async, init } from 'midway';
