@@ -1,8 +1,7 @@
 {
   "name": "@pipcook/daemon",
-  "version": "1.0.0",
+  "version": "0.5.0",
   "description": "pipcook daemon",
-  "private": true,
   "dependencies": {
     "@types/cls-hooked": "^4.3.0",
     "cls-hooked": "^4.2.2",

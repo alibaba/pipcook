@@ -65,7 +65,9 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   let dirname;
   try {
     dirname = path.join(os.homedir(), '.pipcook');
-    fse.ensureDirSync(path.join(dirname, 'dependencies'));
+    await fse.ensureDir(path.join(dirname, 'dependencies'));
+    await fse.ensureDir(path.join(dirname, 'server'));
+    await fse.ensureDir(path.join(dirname, 'pipboard'));
     // init npm project
     childProcess.execSync(`${npmClient} init -y`, {
       cwd: path.join(dirname, 'dependencies'),

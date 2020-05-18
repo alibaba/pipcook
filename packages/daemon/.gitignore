@@ -15,4 +15,4 @@ run/
 .tsbuildinfo.*
 src/app/public
 .travis.yml
-.appveyor.yml
+appveyor.yml
