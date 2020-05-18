@@ -77,5 +77,6 @@ export default async function model(context) {
   });
 
   Pipeline.hasMany(RunModel);
+  Pipeline.sync();
   return Pipeline;
 }

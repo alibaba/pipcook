@@ -66,5 +66,7 @@ export default async function model(context) {
     }
   });
 
+  Run.sync();
+
   return Run;
 }
