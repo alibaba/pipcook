@@ -2,7 +2,7 @@
  * @file This file is for all loggers.
  */
 
-import chalk from 'chalk';
+const chalk = require('chalk');
 import { PipcookRunner } from './';
 import { PipcookComponentResult } from '@pipcook/pipcook-core';
 

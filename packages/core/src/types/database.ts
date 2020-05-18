@@ -10,10 +10,11 @@ export enum PipelineStatus {
 export type PipelineDBParams = 'dataCollectParams' | 'dataAccessParams' | 'dataProcessParams' |
   'modelDefineParams' | 'modelLoadParams' | 'modelTrainParams' | 'modelEvaluateParams';
 
-export type PipelineDB = Partial<Record<'id' | PluginTypeI | PipelineDBParams, string>>
+export type PipelineDB = Partial<Record<'id' | 'name' | PluginTypeI | PipelineDBParams, string>>
 
 export interface RunDB {
   id: string;
+  name?: string;
   pipelineId: string;
   coreVersion: string;
   status: PipelineStatus;
