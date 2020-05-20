@@ -13,7 +13,7 @@ export class PluginController {
     const { ctx } = this;
     const pluginRuntime = getPluginRuntime();
     // fetch information
-    const metadata = await pluginRuntime.fetch(ctx.body.name);
+    const metadata = await pluginRuntime.fetch(ctx.request.body.name);
     // install
     await pluginRuntime.install(metadata);
     successRes(ctx, {
