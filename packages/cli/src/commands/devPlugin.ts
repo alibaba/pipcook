@@ -2,6 +2,7 @@ import fse from 'fs-extra';
 import ora from 'ora';
 import chalk from 'chalk';
 import path from 'path';
+import { promisify } from 'util';
 import { constants } from '@pipcook/pipcook-core';
 
 import { DevPluginCommandHandler } from '../types';
@@ -27,20 +28,21 @@ export const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
   let dirname;
   try {
     dirname = path.join(process.cwd(), name);
-    if (fse.existsSync(dirname)) {
+    const isDirExist = await promisify(fse.exists)(dirname);
+    if (isDirExist) {
       spinner.fail(`a directory or file called ${name} already exists. Please use a new working directory`);
       return process.exit(1);
     }
-    fse.ensureDirSync(path.join(dirname, 'src'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'package.json'), 
+    await fse.ensureDir(path.join(dirname, 'src'));
+    await fse.copyFile(path.join(__dirname, '..', 'assets', 'pluginPackage', 'package.json'), 
       path.join(dirname, 'package.json'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'tsconfig.json'), 
+    await fse.copyFile(path.join(__dirname, '..', 'assets', 'pluginPackage', 'tsconfig.json'), 
       path.join(dirname, 'tsconfig.json'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'src', `${type}.ts`), 
+    await fse.copyFile(path.join(__dirname, '..', 'assets', 'pluginPackage', 'src', `${type}.ts`), 
       path.join(dirname, 'src', `index.ts`));
     console.log('success');
   } catch (e) {
     console.error(e);
-    fse.removeSync(dirname);
+    await fse.remove(dirname);
   }
 };

@@ -1,6 +1,7 @@
 import ora from 'ora';
-import { existsSync } from 'fs';
+import { exists } from 'fs';
 import * as path from 'path';
+import { promisify } from 'util';
 
 import { startJob } from '../service/job';
 import { StartHandler } from '../types';
@@ -15,8 +16,8 @@ export const start: StartHandler = async (filename: string, verbose: boolean) =>
   }
 
   filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
-
-  if (!existsSync(filename)) {
+  const isFileExist = await promisify(exists)(filename);
+  if (!isFileExist) {
     spinner.fail(`${filename} not exists`);
     return process.exit(1);
   }

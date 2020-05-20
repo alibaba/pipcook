@@ -68,9 +68,9 @@ const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<v
   });
 
   if (isDownload) {
-    fs.removeSync(url);
+    await fs.remove(url);
   }
-  fs.removeSync(path.join(dataDir, 'images'));
+  await fs.remove(path.join(dataDir, 'images'));
 };
 
 export default imageClassDataCollect;

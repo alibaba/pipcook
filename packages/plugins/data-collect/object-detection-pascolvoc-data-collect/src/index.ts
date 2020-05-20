@@ -31,7 +31,7 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
   await unZipData(url, dataDir);
 
   if (isDownload) {
-    fs.removeSync(url);
+    await fs.remove(url);
   }
 };
 

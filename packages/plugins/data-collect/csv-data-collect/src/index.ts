@@ -71,18 +71,18 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
   }
 
   if (trainData.length > 0) {
-    fs.outputFileSync(path.join(dataDir, 'train.csv'), stringify(trainData, { header: true }));
+    await fs.outputFile(path.join(dataDir, 'train.csv'), stringify(trainData, { header: true }));
   }
   if (validationData.length > 0) {
-    fs.outputFileSync(path.join(dataDir, 'validation.csv'), stringify(validationData, { header: true }));
+    await fs.outputFile(path.join(dataDir, 'validation.csv'), stringify(validationData, { header: true }));
   }
   if (testData.length > 0) {
-    fs.outputFileSync(path.join(dataDir, 'test.csv'), stringify(testData, { header: true }));
+    await fs.outputFile(path.join(dataDir, 'test.csv'), stringify(testData, { header: true }));
   }
 
-  fs.removeSync(tempDir);
+  await fs.remove(tempDir);
   if (isDownload) {
-    fs.removeSync(url);
+    await fs.remove(url);
   }
 };
 

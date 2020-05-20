@@ -102,9 +102,9 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
   });
 
   if (isDownload) {
-    fs.removeSync(url);
+    await fs.remove(url);
   }
-  fs.removeSync(imageDir);
+  await fs.remove(imageDir);
 };
 
 export default imageDetectionDataCollect;
