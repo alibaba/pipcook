@@ -1,7 +1,7 @@
 import ora from 'ora';
 import { exists } from 'fs';
-import * as path from 'path';
 import { promisify } from 'util';
+import * as path from 'path';
 
 import { startJob } from '../service/job';
 import { StartHandler } from '../types';
