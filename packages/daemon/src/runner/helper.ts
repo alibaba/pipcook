@@ -88,7 +88,7 @@ export async function assignLatestResult(updatedType: OutputType, result: Pipcoo
  * @param components: EscherComponent
  * @param self: the pipeline subject
  */
-export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal') {
+export function createPipeline(components: PipcookComponentResult[], self: PipcookRunner, logType = 'normal'): any {
   const firstComponent = components[0];
   firstComponent.status = PipcookComponentResultStatus.Running;
   logCurrentExecution(firstComponent, logType);

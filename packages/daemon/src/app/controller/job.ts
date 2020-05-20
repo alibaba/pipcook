@@ -86,7 +86,7 @@ export class JobController {
     const { ctx } = this;
     const { jobId } = ctx.params;
     try {
-      const data = await this.pipelineService.getRunById(jobId);
+      const data = await this.pipelineService.getJobById(jobId);
       if (!data) {
         throw new Error('job not found');
       }
@@ -107,9 +107,9 @@ export class JobController {
     try {
       let data: any;
       if (pipelineId) {
-        data = await this.pipelineService.getRunsByPipelineId(pipelineId, offset, limit);
+        data = await this.pipelineService.getJobsByPipelineId(pipelineId, offset, limit);
       } else {
-        data = await this.pipelineService.getRuns(offset, limit);
+        data = await this.pipelineService.getJobs(offset, limit);
       }
       if (!data || data.length === 0) {
         throw new Error('job not found');

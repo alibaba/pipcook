@@ -9,7 +9,7 @@ import { MODULE_PATH } from '../utils/tools';
 import { RunParams } from '../interface';
 import { createRun, writeOutput, retriveLog } from '../runner/helper';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
-import { JobModelStatic } from '../model/job';
+import { JobModelStatic, JobModel } from '../model/job';
 
 const { PIPCOOK_LOGS } = constants;
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
@@ -18,11 +18,7 @@ function getIdOrName(id: string): QueryParams {
   if (!id) {
     throw new Error('id or name cannot be empty');
   }
-  return validate(id) as boolean ? {
-    id
-  } : {
-    name: id
-  };
+  return validate(id) as boolean ? { id } : { name: id };
 }
 
 @provide('pipelineService')
@@ -32,86 +28,83 @@ export class PipelineService {
   model: PipelineModelStatic;
 
   @inject('jobModel')
-  runModel: JobModelStatic;
+  job: JobModelStatic;
 
   initPipeline(config: PipelineDB): Promise<PipelineModel> {
     return this.model.create(config);
   }
 
-  async getPipelineById(id: string) {
-    const record = await this.model.findOne({
+  async getPipelineById(id: string): Promise<PipelineModel> {
+    return await this.model.findOne({
       where: getIdOrName(id)
     });
-    return record;
   }
 
-  async getPipelines(offset: number, limit: number) {
-    const records = await this.model.findAndCountAll({
+  async getPipelines(offset: number, limit: number): Promise<{rows: PipelineModel[], count: number}> {
+    return await this.model.findAndCountAll({
       offset,
       limit,
       order: [ [ 'createdAt', 'DESC' ] ]
     });
-    return records;
   }
 
-  async deletePipelineById(id: string) {
+  async deletePipelineById(id: string): Promise<void> {
     await this.model.destroy({
       where: getIdOrName(id)
     });
   }
 
-  async updatePipelineById(id: string, config: PipelineDB) {
+  async updatePipelineById(id: string, config: PipelineDB): Promise<PipelineModel> {
     await this.model.update(config, {
       where: getIdOrName(id)
     });
-    const record = await this.getPipelineById(id);
-    return record;
+    return await this.getPipelineById(id);
   }
 
-  async createNewRun(pipelineId: string) {
+  async createNewRun(pipelineId: string): Promise<JobModel> {
     pipelineId = await this.getPipelineId(pipelineId);
     const config = await createRun(pipelineId);
-    const record = await this.runModel.create(config);
+    const record = await this.job.create(config);
     await fs.ensureFile(path.join(PIPCOOK_LOGS, record.id, 'stderr'));
     await fs.ensureFile(path.join(PIPCOOK_LOGS, record.id, 'stdout'));
     return record;
   }
 
-  async getRunById(id: string) {
-    const record = await this.runModel.findOne({
+  async getJobById(id: string): Promise<JobModel> {
+    return await this.job.findOne({
       where: { id }
     });
-    return record;
   }
 
-  async getRunsByPipelineId(pipelineId: string, offset: number, limit: number) {
-    pipelineId = await this.getPipelineId(pipelineId);
-    const records = await this.runModel.findAndCountAll({
+  async getJobsByPipelineId(id: string, offset: number, limit: number): Promise<{rows: JobModel[], count: number}> {
+    const pipelineId = await this.getPipelineId(id);
+    return await this.job.findAndCountAll({
       offset,
       limit,
       where: {
         pipelineId
       },
-      order: [['createdAt', 'DESC']]
+      order: [
+        ['createdAt', 'DESC']
+      ]
     });
-    return records;
   }
 
-  async getJobs(offset: number, limit: number) {
-    const records = await this.jobModel.findAndCountAll({
+  async getJobs(offset: number, limit: number): Promise<{rows: JobModel[], count: number}> {
+    return await this.job.findAndCountAll({
       offset,
       limit,
-      order: [ [ 'createdAt', 'DESC' ] ]
+      order: [
+        [ 'createdAt', 'DESC' ]
+      ]
     });
-    return records;
   }
 
-  async updateRunById(id: string, data: RunParams) {
-    await this.runModel.update(data, {
+  async updateRunById(id: string, data: RunParams): Promise<JobModel> {
+    await this.job.update(data, {
       where: { id }
     });
-    const record = await this.getRunById(id);
-    return record;
+    return this.getJobById(id);
   }
 
   async startRun(runRecord: any) {
@@ -148,21 +141,15 @@ export class PipelineService {
     });
   }
 
-  async getLogById(id: string) {
-    const logs = await retriveLog(id);
-    return logs;
+  getLogById(id: string): Promise<string> {
+    return retriveLog(id);
   }
 
-  async getPipelineId(id: string) {
-    if (!id) {
-      throw new Error('id or name cannot be empty');
-    }
-    const isValidateUuid = validate(id);
-    if (isValidateUuid) {
+  async getPipelineId(id: string): Promise<string> {
+    if (validate(id) as boolean) {
       return id;
-    } else {
-      const pipelineInfo = await this.getPipelineById(id);
-      return pipelineInfo.id;
     }
+    const pipeline = await this.getPipelineById(id);
+    return pipeline.id;
   }
 }

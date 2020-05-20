@@ -19,7 +19,7 @@ export class LogController {
     try {
       offset = parseInt(offset, 10);
       limit = parseInt(limit, 10);
-      const data = await this.pipelineService.getRuns(offset, limit);
+      const data = await this.pipelineService.getJobs(offset, limit);
       successRes(ctx, {
         message: 'get logs successfully',
         data
