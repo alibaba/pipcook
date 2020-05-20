@@ -10,7 +10,7 @@ providerWrapper([
   }
 ]);
 
-class PipelineModel extends Model {
+export class PipelineModel extends Model {
   readonly id: string;
   readonly name: string;
   readonly dataCollect: string;

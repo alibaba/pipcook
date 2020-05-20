@@ -8,32 +8,33 @@ import * as fs from 'fs-extra';
 import { MODULE_PATH } from '../utils/tools';
 import { RunParams } from '../interface';
 import { createRun, writeOutput, retriveLog } from '../runner/helper';
+import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
+import { JobModelStatic } from '../model/job';
 
 const { PIPCOOK_LOGS } = constants;
+type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
-function getIdOrName(id: string) {
+function getIdOrName(id: string): QueryParams {
   if (!id) {
     throw new Error('id or name cannot be empty');
   }
-  const isValidateUuid = validate(id);
-  const fetchParam = isValidateUuid ? {
+  return validate(id) as boolean ? {
     id
   } : {
     name: id
   };
-  return fetchParam;
 }
 
 @provide('pipelineService')
 export class PipelineService {
 
   @inject('pipelineModel')
-  model;
+  model: PipelineModelStatic;
 
-  @inject('runModel')
-  runModel;
+  @inject('jobModel')
+  runModel: JobModelStatic;
 
-  initPipeline(config: PipelineDB) {
+  initPipeline(config: PipelineDB): Promise<PipelineModel> {
     return this.model.create(config);
   }
 

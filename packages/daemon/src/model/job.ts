@@ -9,7 +9,7 @@ providerWrapper([
   }
 ]);
 
-class JobModel extends Model {
+export class JobModel extends Model {
   readonly id: string;
   readonly pipelineId: string;
   readonly coreVersion: string;
