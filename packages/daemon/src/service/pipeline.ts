@@ -1,13 +1,14 @@
 import { provide, inject } from 'midway';
-import { PipelineDB, constants } from '@pipcook/pipcook-core';
+import { PipelineDB, constants, PipelineStatus } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import { fork } from 'child_process';
 import * as validate from 'uuid-validate';
 import * as fs from 'fs-extra';
+import { v1 as uuidv1 } from 'uuid';
 
 import { MODULE_PATH } from '../utils/tools';
 import { RunParams } from '../interface';
-import { createRun, writeOutput, retriveLog } from '../runner/helper';
+import { writeOutput, retriveLog } from '../runner/helper';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 
@@ -63,15 +64,6 @@ export class PipelineService {
     return this.getPipelineById(id);
   }
 
-  async createJob(pipelineId: string): Promise<JobModel> {
-    pipelineId = await this.getPipelineId(pipelineId);
-    const config = await createRun(pipelineId);
-    const record = await this.job.create(config);
-    await fs.ensureFile(path.join(PIPCOOK_LOGS, record.id, 'stderr'));
-    await fs.ensureFile(path.join(PIPCOOK_LOGS, record.id, 'stdout'));
-    return record;
-  }
-
   async getJobById(id: string): Promise<JobModel> {
     return this.job.findOne({
       where: { id }
@@ -102,18 +94,33 @@ export class PipelineService {
     });
   }
 
-  async updateRunById(id: string, data: RunParams): Promise<JobModel> {
+  async updateJobById(id: string, data: RunParams): Promise<JobModel> {
     await this.job.update(data, {
       where: { id }
     });
     return this.getJobById(id);
   }
 
-  async startRun(runRecord: any) {
-    const pipelineRecord = await this.getPipelineById(runRecord.pipelineId);
+  async createJob(id: string): Promise<JobModel> {
+    const pipelineId = await this.getPipelineId(id);
+    const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
+    const job = await this.job.create({
+      id: uuidv1(),
+      pipelineId,
+      specVersion,
+      status: PipelineStatus.INIT,
+      currentIndex: -1
+    });
+    await fs.ensureFile(path.join(PIPCOOK_LOGS, job.id, 'stderr'));
+    await fs.ensureFile(path.join(PIPCOOK_LOGS, job.id, 'stdout'));
+    return job;
+  }
+
+  async startJob(job: JobModel) {
+    const pipelineRecord = await this.getPipelineById(job.pipelineId);
     const script = path.join(__dirname, '..', '..', 'assets', 'runConfig.js');
     await new Promise((resolve, reject) => {
-      const child = fork(script, [ runRecord.pipelineId, runRecord.id, JSON.stringify(pipelineRecord), 'run-pipeline' ], {
+      const child = fork(script, [ job.pipelineId, job.id, JSON.stringify(pipelineRecord), 'run-pipeline' ], {
         silent: true,
         cwd: path.join(process.cwd(), '..', '..'),
         env: {
@@ -121,15 +128,15 @@ export class PipelineService {
         }
       });
       child.stdout.on('data', async (data) => {
-        await writeOutput(runRecord.id, data);
+        await writeOutput(job.id, data);
       });
       child.stderr.on('data', async (data) => {
-        await writeOutput(runRecord.id, data);
-        await writeOutput(runRecord.id, data, true);
+        await writeOutput(job.id, data);
+        await writeOutput(job.id, data, true);
       });
       child.on('message', async (data: any) => {
         if (data.type === 'pipeline-status') {
-          await this.updateRunById(runRecord.id, data.data);
+          await this.updateJobById(job.id, data.data);
         }
       });
       child.on('close', (code) => {

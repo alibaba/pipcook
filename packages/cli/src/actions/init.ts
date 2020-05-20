@@ -24,7 +24,7 @@ function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string,
 /**
  * install all dependencies of pipcook into working dir
  */
-export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
+const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   let npmClient = 'npm';
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
@@ -81,3 +81,5 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     await fse.remove(BOARD_DIR);
   }
 };
+
+export default init;

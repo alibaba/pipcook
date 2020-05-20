@@ -3,14 +3,13 @@ import path from 'path';
 import ora from 'ora';
 import childProcess from 'child_process';
 import { constants } from '@pipcook/pipcook-core';
-
 import { ServeHandler, PredictHandler } from '../types';
 
 const fastify = Fastify({ logger: true });
 const spinner = ora();
 const { PIPCOOK_LOGS } = constants;
 
-export const serve: ServeHandler = async function(jobId, port = 7682) {
+const serve: ServeHandler = async function(jobId, port = 7682) {
   let predictHandler: PredictHandler;
   try {
     predictHandler = require(path.join(PIPCOOK_LOGS, jobId, 'deploy', 'main.js'));
@@ -41,3 +40,5 @@ export const serve: ServeHandler = async function(jobId, port = 7682) {
   };
   start();
 };
+
+export default serve;

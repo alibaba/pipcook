@@ -1,14 +1,13 @@
 import ora from 'ora';
 import { existsSync } from 'fs';
 import * as path from 'path';
-
 import { startJob } from '../service/job';
 import { StartHandler } from '../types';
-import { fetchLog } from './job';
+import { fetchLog } from '../utils';
 
 const spinner = ora();
 
-export const start: StartHandler = async (filename: string, verbose: boolean) => {
+const start: StartHandler = async (filename: string, verbose: boolean) => {
   if (!filename) {
     spinner.fail('Please specify the config path');
     return process.exit(1);
@@ -26,3 +25,5 @@ export const start: StartHandler = async (filename: string, verbose: boolean) =>
     fetchLog(data, '');
   }
 };
+
+export default start;

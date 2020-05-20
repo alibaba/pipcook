@@ -3,7 +3,6 @@ import ora from 'ora';
 import chalk from 'chalk';
 import path from 'path';
 import { constants } from '@pipcook/pipcook-core';
-
 import { DevPluginCommandHandler } from '../types';
 
 const spinner = ora();
@@ -11,7 +10,7 @@ const spinner = ora();
 /**
  * prepare a working dir for developer to develop plugins
  */
-export const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
+const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
   if (!type) {
     console.log('Please provide a plugin type');
     return process.exit(1);
@@ -44,3 +43,5 @@ export const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
     fse.removeSync(dirname);
   }
 };
+
+export default devPlugin;

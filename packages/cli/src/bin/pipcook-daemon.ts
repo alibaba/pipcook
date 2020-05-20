@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+
+import program from 'commander';
 import { execSync as exec } from 'child_process';
 import * as os from 'os';
 import path from 'path';
@@ -33,11 +36,12 @@ function stopDaemon() {
   return execEggScript('stop', [ '--title=pipcook-daemon' ]);
 }
 
-export const daemon = async (op: DaemonOperator) => {
-  if (op === 'start') {
-    await stopDaemon(); // FIXME(yorkie): stop daemon before starting
-    await startDaemon();
-  } else if (op === 'stop'){
-    await stopDaemon();
-  }
-};
+program
+  .command('start')
+  .action(startDaemon);
+
+program
+  .command('stop')
+  .action(stopDaemon);
+
+program.parse(process.argv);

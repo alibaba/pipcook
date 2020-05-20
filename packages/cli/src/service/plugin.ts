@@ -8,7 +8,7 @@ export async function install(name: string) {
 }
 
 export async function uninstall(path: string) {
-  const data = await post(route.pipelines, {
+  const data = await post(route.plugin, {
     config: path
   });
   return data;

@@ -20,14 +20,14 @@ export class JobController {
     let data: any;
     try {
       data = await this.pipelineService.createJob(pipelineId);
-      this.pipelineService.startRun(data);
+      this.pipelineService.startJob(data);
       successRes(ctx, {
         message: 'create run job successfully',
         data
       }, 201);
     } catch (err) {
       if (data && data.id) {
-        await this.pipelineService.updateRunById(data.id, {
+        await this.pipelineService.updateJobById(data.id, {
           status: 3
         });
       }
@@ -45,7 +45,7 @@ export class JobController {
       const parsedConfig = await parseConfig(config);
       const data = await this.pipelineService.initPipeline(parsedConfig);
       const jobData = await this.pipelineService.createJob(data.id);
-      this.pipelineService.startRun(jobData);
+      this.pipelineService.startJob(jobData);
       successRes(ctx, {
         message: 'create pipeline and jobs successfully',
         data: jobData
