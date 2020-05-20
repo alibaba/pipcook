@@ -28,15 +28,15 @@ jobs:
     - name: test client basic info
       working-directory: ./myworkspace
       run: |
-        ../packages/cli/dist/bin/index.js -v
-        ../packages/cli/dist/bin/index.js --version
-        ../packages/cli/dist/bin/index.js -h
-        ../packages/cli/dist/bin/index.js --help
-        ../packages/cli/dist/bin/index.js init --help
-        ../packages/cli/dist/bin/index.js run --help
-        ../packages/cli/dist/bin/index.js plugin-dev --help
-        ../packages/cli/dist/bin/index.js bip --help
-        ../packages/cli/dist/bin/index.js serve --help
+        ../packages/cli/dist/bin/pipcook -v
+        ../packages/cli/dist/bin/pipcook --version
+        ../packages/cli/dist/bin/pipcook -h
+        ../packages/cli/dist/bin/pipcook --help
+        ../packages/cli/dist/bin/pipcook init --help
+        ../packages/cli/dist/bin/pipcook run --help
+        ../packages/cli/dist/bin/pipcook plugin-dev --help
+        ../packages/cli/dist/bin/pipcook bip --help
+        ../packages/cli/dist/bin/pipcook serve --help
 
   basic-usage:
     name: Test CLI basic usage on node ${{ matrix.node_version }} and ${{ matrix.os }}
@@ -58,10 +58,10 @@ jobs:
         cd ./packages/daemon && npm start
     - name: test client basic usage init
       run: |
-        ./packages/cli/dist/bin/index.js init
+        ./packages/cli/dist/bin/pipcook init
     - name: test client basic usage run
       run: |
-        ./packages/cli/dist/bin/index.js run ./test/pipelines/text-bayes-classification.json
+        ./packages/cli/dist/bin/pipcook run ./test/pipelines/text-bayes-classification.json
     - name: test client basic usage plugin-dev
       run: |
-        ./packages/cli/dist/bin/index.js plugin-dev -t dataCollect
+        ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
