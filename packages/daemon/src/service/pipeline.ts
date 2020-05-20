@@ -35,16 +35,18 @@ export class PipelineService {
   }
 
   async getPipelineById(id: string): Promise<PipelineModel> {
-    return await this.model.findOne({
+    return this.model.findOne({
       where: getIdOrName(id)
     });
   }
 
   async getPipelines(offset: number, limit: number): Promise<{rows: PipelineModel[], count: number}> {
-    return await this.model.findAndCountAll({
+    return this.model.findAndCountAll({
       offset,
       limit,
-      order: [ [ 'createdAt', 'DESC' ] ]
+      order: [
+        [ 'createdAt', 'DESC' ]
+      ]
     });
   }
 
@@ -58,10 +60,10 @@ export class PipelineService {
     await this.model.update(config, {
       where: getIdOrName(id)
     });
-    return await this.getPipelineById(id);
+    return this.getPipelineById(id);
   }
 
-  async createNewRun(pipelineId: string): Promise<JobModel> {
+  async createJob(pipelineId: string): Promise<JobModel> {
     pipelineId = await this.getPipelineId(pipelineId);
     const config = await createRun(pipelineId);
     const record = await this.job.create(config);
@@ -71,14 +73,14 @@ export class PipelineService {
   }
 
   async getJobById(id: string): Promise<JobModel> {
-    return await this.job.findOne({
+    return this.job.findOne({
       where: { id }
     });
   }
 
   async getJobsByPipelineId(id: string, offset: number, limit: number): Promise<{rows: JobModel[], count: number}> {
     const pipelineId = await this.getPipelineId(id);
-    return await this.job.findAndCountAll({
+    return this.job.findAndCountAll({
       offset,
       limit,
       where: {
@@ -91,7 +93,7 @@ export class PipelineService {
   }
 
   async getJobs(offset: number, limit: number): Promise<{rows: JobModel[], count: number}> {
-    return await this.job.findAndCountAll({
+    return this.job.findAndCountAll({
       offset,
       limit,
       order: [

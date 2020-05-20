@@ -31,12 +31,12 @@ export class PipelineModel extends Model {
 
 export type PipelineModelStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): PipelineModel;
-}
+};
 
 export default async function model(context: IApplicationContext): Promise<PipelineModelStatic> {
   const db = await context.getAsync('pipcookDB') as DB;
   const JobModel = await context.getAsync('jobModel') as JobModelStatic;
-  const PipelineModel = <PipelineModelStatic>db.sequelize.define('pipeline', {
+  const PipelineModel = db.sequelize.define('pipeline', {
     id: {
       type: STRING,
       primaryKey: true,
@@ -89,7 +89,7 @@ export default async function model(context: IApplicationContext): Promise<Pipel
     modelEvaluateParams: {
       type: STRING
     }
-  });
+  }) as PipelineModelStatic;
   PipelineModel.hasMany(JobModel);
   await PipelineModel.sync();
   return PipelineModel;

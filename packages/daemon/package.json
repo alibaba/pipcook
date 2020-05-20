@@ -46,7 +46,7 @@
     "dev": "ts-node src/utils/dbinit.ts && cross-env NODE_ENV=local midway-bin dev --port=6927 --ts",
     "debug": "cross-env NODE_ENV=local midway-bin debug --ts",
     "cov": "midway-bin cov --ts",
-    "lint": "tslint --fix -p tsconfig.json -t stylish",
+    "lint": "tslint -p tsconfig.json -t stylish",
     "ci": "npm run cov",
     "compile": "midway-bin build -c --port=6927",
     "clean": "rm -rf src/app/public"

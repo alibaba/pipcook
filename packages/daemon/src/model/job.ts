@@ -12,7 +12,7 @@ providerWrapper([
 export class JobModel extends Model {
   readonly id: string;
   readonly pipelineId: string;
-  readonly coreVersion: string;
+  readonly specVersion: string;
   readonly status: number;
   readonly metadata: number;
   readonly evaluateMap: string;
@@ -24,11 +24,11 @@ export class JobModel extends Model {
 
 export type JobModelStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): JobModel;
-}
+};
 
 export default async function model(context: IApplicationContext): Promise<JobModelStatic> {
   const db = await context.getAsync('pipcookDB') as DB;
-  const JobModel = <JobModelStatic>db.sequelize.define('job', {
+  const JobModel = db.sequelize.define('job', {
     id: {
       type: STRING,
       primaryKey: true,
@@ -42,9 +42,9 @@ export default async function model(context: IApplicationContext): Promise<JobMo
         key: 'id'
       }
     },
-    coreVersion: {
+    specVersion: {
       type: STRING,
-      field: 'core_version',
+      field: 'spec_version',
       allowNull: false
     },
     status: {
@@ -72,7 +72,7 @@ export default async function model(context: IApplicationContext): Promise<JobMo
     endTime: {
       type: INTEGER
     }
-  });
+  }) as JobModelStatic;
   await JobModel.sync();
   return JobModel;
 }
