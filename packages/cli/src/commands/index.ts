@@ -8,7 +8,6 @@ import { job } from './job';
 import { daemon } from './daemon';
 import { start } from './start';
 
-
 const pkg = require('../../package.json');
 
 export const initCommander = () => {
@@ -18,42 +17,37 @@ export const initCommander = () => {
   // init the pipcook project workspace
   program
     .command('init')
-    .option('-c, --client <string>', 'specify your npm client')
-    .option('--beta', 'pull beta version')
-    .option('--tuna', 'use tuna mirror to download miniconda at China')
-    .description('Init the Pipcook project')
+    .option('-c, --client <string>', 'specify your npm client.')
+    .option('--tuna', 'use tuna mirror to download miniconda at China.')
+    .description('initialize the daemon and pipboard.')
     .action(init);
 
   program
-    .command('run [fileName]')
-    .option('--verbose <verbose>', 'if print out log')
-    .description('run pipeline with config file')
-    .action((fileName, opts) => {
-      start(fileName, opts.verbose === 'true');
+    .command('run <filename>')
+    .option('--verbose', 'prints verbose logs')
+    .description('run pipeline with a json file.')
+    .action((filename, opts) => {
+      start(filename, opts.verbose === 'true');
     });
 
   program
-    .command('daemon <operation>')
-    .description('start or stop daemon service')
-    .action((operation) => {
-      daemon(operation);
-    });
+    .command('daemon <op>')
+    .description('start/stop service')
+    .action(daemon);
 
   program
     .command('job <operation> [id]')
     .option('-p, --pipeline <pipeline>', 'get job with specified pipeline')
-    .option('--verbose <verbose>', 'if print out log')
+    .option('--verbose', 'print verbose logs')
     .description('operate the job bound to specific pipeline')
     .action((operation, id, opts) => {
-      job(operation, id, opts.pipeline, opts.verbose === 'true');
+      job(operation, id, opts.pipeline, opts.verbose);
     });
 
   program
     .command('pipeline <operation> [pipeline] [pipelineId]')
     .description('operate on pipeline')
-    .action((operation, pipeline, pipelineId) => {
-      pipelineHandler(operation, pipeline, pipelineId);
-    });
+    .action(pipelineHandler);
 
   program
     .command('plugin-dev')
@@ -72,7 +66,7 @@ export const initCommander = () => {
     });
 
   program
-    .command('serve <jobId>')
+    .command('serve <id>')
     .option('-p, --port <number>', 'port of server', 7682)
     .description('serve the model to predict')
     .action((jobId, opts) => {

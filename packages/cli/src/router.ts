@@ -3,5 +3,6 @@ export const PORT = 6927;
 
 export const route = {
   pipelines: `${HOST}:${PORT}/pipeline`,
-  job: `${HOST}:${PORT}/job`
+  job: `${HOST}:${PORT}/job`,
+  plugin: `${HOST}:${PORT}/plugin`
 };

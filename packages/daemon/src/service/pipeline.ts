@@ -7,9 +7,7 @@ import * as fs from 'fs-extra';
 
 import { MODULE_PATH } from '../utils/tools';
 import { RunParams } from '../interface';
-import {
-  createRun, writeOutput, retriveLog
-} from '../runner/helper';
+import { createRun, writeOutput, retriveLog } from '../runner/helper';
 
 const { PIPCOOK_LOGS } = constants;
 
@@ -35,9 +33,8 @@ export class PipelineService {
   @inject('runModel')
   runModel;
 
-  async initPipeline(config: PipelineDB) {
-    const record = await this.model.create(config);
-    return record;
+  initPipeline(config: PipelineDB) {
+    return this.model.create(config);
   }
 
   async getPipelineById(id: string) {
@@ -99,8 +96,8 @@ export class PipelineService {
     return records;
   }
 
-  async getRuns(offset: number, limit: number) {
-    const records = await this.runModel.findAndCountAll({
+  async getJobs(offset: number, limit: number) {
+    const records = await this.jobModel.findAndCountAll({
       offset,
       limit,
       order: [ [ 'createdAt', 'DESC' ] ]
@@ -134,7 +131,7 @@ export class PipelineService {
         await writeOutput(runRecord.id, data);
         await writeOutput(runRecord.id, data, true);
       });
-      child.on('message', async (data) => {
+      child.on('message', async (data: any) => {
         if (data.type === 'pipeline-status') {
           await this.updateRunById(runRecord.id, data.data);
         }

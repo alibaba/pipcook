@@ -1,14 +1,7 @@
-
-/**
- * Copyright(c) Alibaba Group Holding Limited.
- *
- *
- * Classification Model
- */
-
-import * as Sequelize from 'sequelize';
-import { providerWrapper } from 'midway';
-const { STRING } = Sequelize;
+import { STRING, Model, BuildOptions } from 'sequelize';
+import { providerWrapper, IApplicationContext } from 'midway';
+import { JobModelStatic } from './job';
+import DB from './init';
 
 providerWrapper([
   {
@@ -17,11 +10,33 @@ providerWrapper([
   }
 ]);
 
-export default async function model(context) {
-  const db = await context.getAsync('pipcookDB');
-  const RunModel = await context.getAsync('runModel');
+class PipelineModel extends Model {
+  readonly id: string;
+  readonly name: string;
+  readonly dataCollect: string;
+  readonly dataCollectParams: string;
+  readonly dataAccess: string;
+  readonly dataAccessParams: string;
+  readonly dataProcess: string;
+  readonly dataProcessParams: string;
+  readonly modelDefine: string;
+  readonly modelDefineParams: string;
+  readonly modelLoad: string;
+  readonly modelLoadParams: string;
+  readonly modelTrain: string;
+  readonly modelTrainParams: string;
+  readonly modelEvaluate: string;
+  readonly modelEvaluateParams: string;
+}
 
-  const Pipeline = db.sequelize.define('pipeline', {
+export type PipelineModelStatic = typeof Model & {
+  new (values?: object, options?: BuildOptions): PipelineModel;
+}
+
+export default async function model(context: IApplicationContext): Promise<PipelineModelStatic> {
+  const db = await context.getAsync('pipcookDB') as DB;
+  const JobModel = await context.getAsync('jobModel') as JobModelStatic;
+  const PipelineModel = <PipelineModelStatic>db.sequelize.define('pipeline', {
     id: {
       type: STRING,
       primaryKey: true,
@@ -75,8 +90,7 @@ export default async function model(context) {
       type: STRING
     }
   });
-
-  Pipeline.hasMany(RunModel);
-  Pipeline.sync();
-  return Pipeline;
+  PipelineModel.hasMany(JobModel);
+  PipelineModel.sync();
+  return PipelineModel;
 }

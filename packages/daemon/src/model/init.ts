@@ -7,16 +7,16 @@ import { DB_PATH } from '../utils/tools';
 @async()
 @provide('pipcookDB')
 export default class DB {
-  sequelize;
+  sequelize: Sequelize;
 
   @init()
-  connect() {
-    const pipcookNamespace = cls.createNamespace('pipcook-cls');
-    Sequelize.useCLS(pipcookNamespace);
-    this.sequelize = new Sequelize({
+  async connect(): Promise<void> {
+    Sequelize.useCLS(cls.createNamespace('pipcook-cls'));
+    const sequelize = new Sequelize({
       dialect: 'sqlite',
       storage: DB_PATH
     });
-    this.sequelize.sync();
+    await sequelize.sync();
+    this.sequelize = sequelize;
   }
 }

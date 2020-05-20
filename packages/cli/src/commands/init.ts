@@ -1,5 +1,5 @@
 import path from 'path';
-import childProcess from 'child_process';
+import { execSync as exec } from 'child_process';
 import fse from 'fs-extra';
 import ora from 'ora';
 import { prompt } from 'inquirer';
@@ -7,17 +7,18 @@ import { sync } from 'command-exists';
 import * as os from 'os';
 
 import { InitCommandHandler } from '../types';
-import { dependencies, optionalNpmClients, daemonPackage, boardPackage } from '../config';
+import { optionalNpmClients, daemonPackage, boardPackage } from '../config';
 
 const spinner = ora();
+const NPM_PUBLIC_REGISTRY = 'https://registry.npmjs.org/';
 
-function installDependency(npmClient: string, item: string, beta: boolean, 
-  cwd: string, npmInstallEnvs: NodeJS.ProcessEnv) {
-  childProcess.execSync(`${npmClient} install ${item}${beta ? '@beta' : ''} --save`, {
-    cwd,
-    stdio: 'inherit',
-    env: npmInstallEnvs
-  });
+function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv) {
+  if (beta) {
+    name += '@beta';
+  }
+  const command = `${npmClient} install ${name} --registry ${NPM_PUBLIC_REGISTRY}`;
+  console.info(`exec ${command}`);
+  return exec(command, { cwd, env, stdio: 'inherit' });
 }
 
 /**
@@ -33,7 +34,7 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   if (client) {
     npmClient = client;
     if (!optionalNpmClients.includes(npmClient)) {
-      spinner.fail(`Invalid npm client: ${npmClient}.`);
+      spinner.fail(`invalid npm client: ${npmClient}.`);
       return process.exit(1);
     }
   } else {
@@ -62,33 +63,21 @@ export const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     }
   }
 
-  let dirname;
-  try {
-    dirname = path.join(os.homedir(), '.pipcook');
-    await fse.ensureDir(path.join(dirname, 'dependencies'));
-    await fse.ensureDir(path.join(dirname, 'server'));
-    await fse.ensureDir(path.join(dirname, 'pipboard'));
-    // init npm project
-    childProcess.execSync(`${npmClient} init -y`, {
-      cwd: path.join(dirname, 'dependencies'),
-      stdio: 'inherit'
-    });
-    spinner.start(`installing pipcook`);
+  // Install the daemon and pipboard.
+  // use ~/.pipcook as PIPCOOK_DIR
+  const PIPCOOK_DIR = path.join(os.homedir(), '.pipcook');
+  const DAEMON_DIR = path.join(PIPCOOK_DIR, 'server');
+  const BOARD_DIR = path.join(PIPCOOK_DIR, 'pipboard');
 
-    for (const item of dependencies) {
-      installDependency(npmClient, item, beta, path.join(dirname, 'dependencies'), npmInstallEnvs);
-    }
-    spinner.succeed(`install pipcook core successfully`);
-    spinner.start(`installing pipcook daemon and board`);
-    const transformNpm = npmClient !== 'tnpm' ? npmClient : 'npm';
-    installDependency(transformNpm, daemonPackage, beta, path.join(dirname, 'server'), npmInstallEnvs);
-    installDependency(transformNpm, boardPackage, beta, path.join(dirname, 'pipboard'), npmInstallEnvs);
-    spinner.succeed(`installing pipcook daemon and board`);
-    
+  try {
+    await fse.ensureDir(DAEMON_DIR);
+    await fse.ensureDir(BOARD_DIR);
+    npmInstall(npmClient, daemonPackage, beta, DAEMON_DIR, npmInstallEnvs);
+    npmInstall(npmClient, boardPackage, beta, BOARD_DIR, npmInstallEnvs);
+    spinner.succeed('daemon and board installed.');
   } catch (err) {
     spinner.fail(`failed to initialize the project: ${err && err.stack}`);
-    childProcess.execSync(`rm -r ${path.join(dirname, 'dependencies')}`);
-    childProcess.execSync(`rm -r ${path.join(dirname, 'server')}`);
-    childProcess.execSync(`rm -r ${path.join(dirname, 'pipboard')}`);
+    await fse.remove(DAEMON_DIR);
+    await fse.remove(BOARD_DIR);
   }
 };

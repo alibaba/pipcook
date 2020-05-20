@@ -1,43 +1,43 @@
-import { spawn } from 'child_process';
+import { execSync as exec } from 'child_process';
 import * as os from 'os';
-import * as fs from 'fs-extra';
 import path from 'path';
-import find from 'find-process';
-import ora from 'ora';
 
-const spinner = ora();
+const PIPCOOK_DIR = path.join(os.homedir(), '.pipcook');
+const DAEMON_DIR = path.join(PIPCOOK_DIR, 'server');
+const DAEMON_PORT = 6927;
 
-export const daemon = async (operation: string) => {
-  let pid: number;
-  try {
-    const pidFilePath = path.join(os.homedir(), '.pipcook', 'daemon', 'pid.txt');
-    pid = parseInt(await fs.readFile(pidFilePath, 'utf8'));
-  } finally {
-    if (operation === 'start') {
-      if (pid) {
-        const pidInfo = await find('pid', pid);
-        if (pidInfo && pidInfo.length > 0) {
-          spinner.fail('Daemon is already running');
-          process.exit(1);
-        }
-      } 
-      const daemonProcess = spawn('node', [ 'index.js' ], {
-        cwd: path.join(os.homedir(), '.pipcook', 'server', 'node_modules', '@pipcook', 'daemon')
-      });
-      await fs.outputFile(path.join(os.homedir(), '.pipcook', 'daemon', 'pid.txt'), String(daemonProcess.pid));
-  
-      daemonProcess.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
-      });
-  
-      daemonProcess.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
-      });
-    } else if (operation === 'stop'){
-      if (pid) {
-        process.kill(pid);
-      }
-      spinner.succeed('Daemon is stopped');
-    }
+type DaemonOperator = 'start' | 'stop';
+
+function execEggScript(op: DaemonOperator, args: string[]): void {
+  const bin = DAEMON_DIR + '/node_modules/@pipcook/daemon/node_modules/.bin/egg-scripts';
+  const command = [ bin, op ].concat(args).join(' ');
+  console.info('>', command);
+  exec(command, {
+    cwd: DAEMON_DIR + '/node_modules/@pipcook/daemon'
+  });
+}
+
+function startDaemon() {
+  return execEggScript('start', [
+    '--daemon', '--ts',
+    '--title=pipcook-daemon',
+    '--framework=midway',
+    `--port=${DAEMON_PORT}`,
+    `--stdout=${PIPCOOK_DIR}/daemon/stdout.log`,
+    `--stderr=${PIPCOOK_DIR}/deamon/stderr.log`,
+    '--ignore-stderr'
+  ]);
+}
+
+function stopDaemon() {
+  return execEggScript('stop', [ '--title=pipcook-daemon' ]);
+}
+
+export const daemon = async (op: DaemonOperator) => {
+  if (op === 'start') {
+    await stopDaemon(); // FIXME(yorkie): stop daemon before starting
+    await startDaemon();
+  } else if (op === 'stop'){
+    await stopDaemon();
   }
 };
