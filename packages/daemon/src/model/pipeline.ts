@@ -91,6 +91,6 @@ export default async function model(context: IApplicationContext): Promise<Pipel
     }
   });
   PipelineModel.hasMany(JobModel);
-  PipelineModel.sync();
+  await PipelineModel.sync();
   return PipelineModel;
 }
