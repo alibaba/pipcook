@@ -1,6 +1,6 @@
 import path from 'path';
 import url from 'url';
-import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, ensureSymlink } from 'fs-extra';
+import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, ensureSymlink, symlinkSync } from 'fs-extra';
 import { spawn, spawnSync, SpawnOptions } from 'child_process';
 import { PluginRunnable } from './runnable';
 import {
@@ -161,21 +161,21 @@ export class CostaRuntime {
     await this.linkBoa();
     return true;
   }
+  /**
+   * Uninstall the given plugin by name.
+   * @param name the plugin package name.
+   */
   async uninstall(name: string): Promise<boolean> {
-    const pkg = await this.fetch(name);
-    if (!await this.isInstalled(pkg.name)) {
-      debug(`skip uninstall "${pkg.name}" because it not exists.`);
+    if (!await this.isInstalled(name)) {
+      debug(`skip uninstall "${name}" because it not exists.`);
       return false;
     }
-
-    const pluginStdName = `${pkg.name}@${pkg.version}`;
-    await spawnAsync('npm', [
-      'uninstall', `${pluginStdName}`, '--save'
-    ], {
+    await spawnAsync('npm', [ 'uninstall', name, '--save' ], {
       cwd: this.options.installDir
     });
-    await remove(
-      path.join(this.options.installDir, 'conda_envs', pluginStdName));
+
+    const condaPkgs = path.join(this.options.installDir, 'conda_envs', `${name}*`);
+    await spawnAsync('rm', [ '-rf', condaPkgs ]);
     return false;
   }
   /**

@@ -1,7 +1,7 @@
 import { STRING, Model, BuildOptions } from 'sequelize';
 import { providerWrapper, IApplicationContext } from 'midway';
 import { JobModelStatic } from './job';
-import DB from './init';
+import DB from '../boot/database';
 
 providerWrapper([
   {

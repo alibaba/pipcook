@@ -63,8 +63,9 @@
     "url": ""
   },
   "author": "anonymous",
-  "license": "MIT",
+  "license": "Apache 2.0",
   "midway-server-options": {
-    "port": 6927
+    "port": 6927,
+    "workers": 1
   }
 }

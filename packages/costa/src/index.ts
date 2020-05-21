@@ -1,5 +1,5 @@
-import { Readable } from 'stream';
 import { PluginTypeI } from '@pipcook/pipcook-core';
+import { RunnableResponse } from './runnable';
 
 /**
  * The options to configure Costa runtime.

@@ -10,7 +10,7 @@ const debug = Debug('costa.runnable');
 /**
  * Returns when called `start()`
  */
-class RunnableResponse implements PluginResponse {
+export class RunnableResponse implements PluginResponse {
   public id: string;
   public __flag__ = '__pipcook_plugin_runnable_result__';
   constructor(id: string) {
@@ -21,7 +21,7 @@ class RunnableResponse implements PluginResponse {
 /**
  * The arguments for calling `bootstrap`.
  */
-interface BootstrapArg {
+export interface BootstrapArg {
   /**
    * Add extra environment variables.
    */
