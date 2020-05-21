@@ -16,9 +16,7 @@ export class PluginController {
     const metadata = await pluginRuntime.fetch(ctx.request.body.name);
     // install
     await pluginRuntime.install(metadata);
-    successRes(ctx, {
-      metadata
-    });
+    successRes(ctx, { metadata });
   }
 
   @post('/uninstall')

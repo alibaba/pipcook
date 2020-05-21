@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-import program from 'commander';
-import { execSync as exec } from 'child_process';
-import * as os from 'os';
+import { execSync as exec, spawn } from 'child_process';
+import os from 'os';
 import path from 'path';
+import program from 'commander';
+import { remove } from 'fs-extra';
 
 const PIPCOOK_DIR = path.join(os.homedir(), '.pipcook');
 const DAEMON_DIR = path.join(PIPCOOK_DIR, 'server');
@@ -20,28 +21,47 @@ function execEggScript(op: DaemonOperator, args: string[]): void {
   });
 }
 
-function startDaemon() {
+async function start(): Promise<void> {
   return execEggScript('start', [
-    '--daemon', '--ts',
+    '--daemon',
+    '--ts',
     '--title=pipcook-daemon',
     '--framework=midway',
+    '--workers=1',
     `--port=${DAEMON_PORT}`,
     `--stdout=${PIPCOOK_DIR}/daemon/stdout.log`,
-    `--stderr=${PIPCOOK_DIR}/deamon/stderr.log`,
+    `--stderr=${PIPCOOK_DIR}/daemon/stderr.log`,
     '--ignore-stderr'
   ]);
 }
 
-function stopDaemon() {
+async function stop(): Promise<void> {
+  await remove(`${PIPCOOK_DIR}/daemon`);
   return execEggScript('stop', [ '--title=pipcook-daemon' ]);
+}
+
+function tail(file: string): void {
+  spawn('tail', [ '-f', file ], { stdio: 'inherit' });
+}
+
+async function monitor(): Promise<void> {
+  tail(`${PIPCOOK_DIR}/daemon/stdout.log`);
+  tail(`${PIPCOOK_DIR}/daemon/stderr.log`);
 }
 
 program
   .command('start')
-  .action(startDaemon);
+  .description('start the pipcook daemon.')
+  .action(start);
 
 program
   .command('stop')
-  .action(stopDaemon);
+  .description('stop the pipcook daemon.')
+  .action(stop);
+
+program
+  .command('monit')
+  .description('monit the daemon logs.')
+  .action(monitor);
 
 program.parse(process.argv);

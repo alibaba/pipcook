@@ -13,12 +13,13 @@
     "compile": "tsc -b tsconfig.json && sh setup.sh"
   },
   "bin": {
-    "pipcook": "./dist/bin/pipcook.js",
-    "pipcook-plugin": "./dist/bin/pipcook-plugin.js"
+    "pipcook": "./dist/bin/pipcook",
+    "pipcook-plugin": "./dist/bin/pipcook-plugin",
+    "pipcook-pipeline": "./dist/bin/pipcook-pipeline"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.16",
     "@types/command-exists": "^1.2.0",
