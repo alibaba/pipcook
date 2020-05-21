@@ -1,12 +1,11 @@
 import boa from '../lib/index.js';
 const { dir } = boa.builtins();
-const extensionsPrefix = 'py:';
-const protocol = 'nodejs://boa/';
+const protocol = 'py:';
 
 export function resolve(specifier, context, defaultResolve) {
-  if (specifier.startsWith(extensionsPrefix)) {
+  if (specifier.startsWith(protocol)) {
     return {
-      url: protocol + specifier.replace(extensionsPrefix, '')
+      url: specifier
     };
   }
   return defaultResolve(specifier, context, defaultResolve);
