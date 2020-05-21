@@ -5,14 +5,12 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import _cliProgress from 'cli-progress';
-import { PIPCOOK_LOGS } from '../constants/other';
+import * as xml2js from 'xml2js';
+import * as request from 'request';
+import * as targz from 'targz';
+import extract from 'extract-zip';
 
-const xml2js = require('xml2js');
-const request = require('request');
-const si = require('systeminformation');
-const targz = require('targz');
-const extract = require('extract-zip');
-
+import { PIPCOOK_LOGS } from '../constants';
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
  * For more info, you can check the sources codes of plugin: @pipcook/pipcook-plugins-image-class-data-collect
@@ -146,37 +144,6 @@ export function getModelDir(jobId: string) {
 }
 
 /**
- * get pipcook log's sample data's metadata according to modelId
- */
-
-export function getMetadata(jobId: string) {
-  const json = require(path.join(PIPCOOK_LOGS, jobId, `log.json`));
-  return json && json.metadata;
-}
-
-/**
- * transform a string to its csv suitable format
- * @param text the text to be converted
- */
-export function transformCsv(text: string){
-  if (text.includes(',')){
-    if (text.includes('"')) {
-      let newText = '';
-      for (let i = 0; i < text.length; i++) {
-        if (text[i] === '"') {
-          newText += `""`;
-        } else {
-          newText += text[i];
-        }  
-      }
-      text = newText;
-    } 
-    text = `"${text}"`;
-  }
-  return text;
-}
-
-/**
  * converter between PASCOL VOC format and COCO data format
  * @param files : paths of xml files
  * @param targetPath target output path
@@ -253,26 +220,3 @@ export async function convertPascal2CocoFileOutput(files: string[], targetPath: 
   fs.outputJSONSync(targetPath, cocoJson);
 }
 
-/**
- * return that current system is:
- * mac / linux / windows / other
- */
-export function getOsInfo() {
-  return new Promise((resolve, reject) => {
-    si.osInfo((info: any, err: Error) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      if (info.platform === 'linux') {
-        resolve('linux');
-      } else if (info.platform === 'win32') {
-        resolve('windows');
-      } else if (info.platform === 'darwin') {
-        resolve('mac');
-      } else {
-        resolve('other');
-      }
-    });
-  });
-}

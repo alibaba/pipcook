@@ -26,11 +26,13 @@ import {
   UniModel
 } from '@pipcook/pipcook-core';
 
+import { PIPCOOK_LOGS } from '@pipcook/pipcook-utils';
+
 import { LifeCycleTypes } from './lifecycle';
 import { PipcookRunner } from './index';
 import { logCurrentExecution } from './logger';
 
-const { PLUGINS, PIPCOOK_LOGS } = constants;
+const { PLUGINS } = constants;
 
 /**
  * Retreive relative logs required to be stored.

@@ -1,3 +1,6 @@
+import * as path from "path";
+import * as os from 'os';
+
 export const dependencies: string[] = [
   '@pipcook/boa',
   '@pipcook/pipcook-core',
@@ -26,3 +29,4 @@ export const daemonPackage = '@pipcook/daemon';
 export const boardPackage = '@pipcook/pipboard';
 export const pipcookLogName = 'pipcook-output';
 export const optionalNpmClients: string[] = [ 'npm', 'cnpm', 'tnpm' ];
+

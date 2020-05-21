@@ -21,14 +21,14 @@ import {
   PipelineStatus,
   PipelineDB,
   PipelineDBParams,
-  compressTarFile,
   OutputType
 } from '@pipcook/pipcook-core';
 import { getLog, createPipeline, assignLatestResult, linkComponents, markFailures } from './helper';
 import { logStartExecution, logError, logComplete } from './logger';
 import { LifeCycleTypes } from './lifecycle';
+import { PIPCOOK_DEPENDENCIES, compressTarFile } from '@pipcook/pipcook-utils';
 
-const { PLUGINS, DATAPROCESS, MODELLOAD, MODELDEFINE, PIPCOOK_DEPENDENCIES } = constants;
+const { PLUGINS, DATAPROCESS, MODELLOAD, MODELDEFINE } = constants;
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();

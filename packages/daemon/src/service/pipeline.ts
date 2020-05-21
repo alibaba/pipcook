@@ -1,5 +1,5 @@
 import { provide, inject } from 'midway';
-import { PipelineDB, constants } from '@pipcook/pipcook-core';
+import { PipelineDB } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import { fork } from 'child_process';
 import * as validate from 'uuid-validate';
@@ -10,8 +10,7 @@ import { RunParams } from '../interface';
 import {
   createRun, writeOutput, retriveLog
 } from '../runner/helper';
-
-const { PIPCOOK_LOGS } = constants;
+import { PIPCOOK_LOGS } from '@pipcook/pipcook-utils';
 
 function getIdOrName(id: string) {
   if (!id) {

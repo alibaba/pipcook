@@ -5,6 +5,7 @@
     "packages/boa",
     "packages/daemon",
     "packages/pipboard",
+    "packages/utils",
     "packages/plugins/**/*"
   ],
   "version": "independent",

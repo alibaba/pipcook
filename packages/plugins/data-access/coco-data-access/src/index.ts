@@ -3,7 +3,8 @@
  * the data is conform to expectation.
  */
 
-import { ArgsType, parseAnnotation, DataAccessType, CocoDataset, ImageDataLoader, ImageLabel, convertPascal2CocoFileOutput } from '@pipcook/pipcook-core';
+import { ArgsType, DataAccessType, CocoDataset, ImageDataLoader, ImageLabel } from '@pipcook/pipcook-core';
+import { parseAnnotation, convertPascal2CocoFileOutput } from '@pipcook/pipcook-utils';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as fs from 'fs';

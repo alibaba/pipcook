@@ -52,20 +52,6 @@ export {
   PipcookPlugin
 } from './types/plugins';
 
-export {
-  createAnnotationFile,
-  parseAnnotation,
-  unZipData,
-  download,
-  getOsInfo,
-  transformCsv,
-  createAnnotationFromJson,
-  getMetadata,
-  getModelDir,
-  convertPascal2CocoFileOutput,
-  compressTarFile
-} from './utils/public';
-
 // expose constants
 import { 
   PLUGINS, 
@@ -77,19 +63,15 @@ import {
   MODELTRAIN,
   MODELEVALUATE 
 } from './constants/plugins';
-import { PIPCOOK_PLUGINS, PIPCOOK_LOGS, PIPCOOK_DEPENDENCIES } from './constants/other';
 export const constants = {
   PLUGINS,
   MODELLOAD,
   MODELDEFINE,
-  PIPCOOK_PLUGINS,
   DATACOLLECT, 
   DATAACCESS,
   DATAPROCESS,
   MODELTRAIN,
-  MODELEVALUATE,
-  PIPCOOK_LOGS,
-  PIPCOOK_DEPENDENCIES
+  MODELEVALUATE
 };
 
 export { OutputType } from './constants/other';

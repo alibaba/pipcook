@@ -3,7 +3,8 @@
  * the data is conform to expectation.
  */
 
-import { ArgsType, createAnnotationFile, DataCollectType, unZipData, download } from '@pipcook/pipcook-core';
+import { ArgsType, DataCollectType } from '@pipcook/pipcook-core';
+import { createAnnotationFile, unZipData, download } from '@pipcook/pipcook-utils';
 
 import glob from 'glob-promise';
 import * as path from 'path';
