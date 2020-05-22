@@ -1,4 +1,3 @@
-import { Writable } from 'stream';
 import { PluginTypeI } from '@pipcook/pipcook-core';
 import { RunnableResponse, BootstrapArg } from './runnable';
 

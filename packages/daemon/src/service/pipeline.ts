@@ -29,7 +29,7 @@ function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
       err == null ? resolve(stdout) : reject(err);
     });
   });
-};
+}
 
 @provide('pipelineService')
 export class PipelineService {
@@ -116,7 +116,7 @@ export class PipelineService {
   async createJob(id: string): Promise<JobModel> {
     const pipelineId = await this.getPipelineId(id);
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
-    return await this.job.create({
+    return this.job.create({
       id: uuidv1(),
       pipelineId,
       specVersion,
@@ -137,7 +137,9 @@ export class PipelineService {
       }
     };
     const verifyPlugin = (name: string): void => {
-      if (!pipeline[name]) throw new TypeError(`"${name}" plugin is required`);
+      if (!pipeline[name]) {
+        throw new TypeError(`"${name}" plugin is required`);
+      }
     };
 
     verifyPlugin('dataCollect');
