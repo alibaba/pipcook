@@ -28,7 +28,7 @@ export const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
   let dirname;
   try {
     dirname = path.join(process.cwd(), name);
-    const isDirExist = await promisify(fse.exists)(dirname);
+    const isDirExist = await fse.exists(dirname);
     if (isDirExist) {
       spinner.fail(`a directory or file called ${name} already exists. Please use a new working directory`);
       return process.exit(1);

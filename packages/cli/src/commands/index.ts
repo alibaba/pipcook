@@ -3,6 +3,7 @@ import { init } from './init';
 import { devPlugin } from './devPlugin';
 import { serve } from './serve';
 import { exec } from 'child_process';
+import { promisify } from 'util';
 import { pipeline as pipelineHandler } from './pipeline';
 import { job } from './job';
 import { daemon } from './daemon';
@@ -65,15 +66,9 @@ export const initCommander = () => {
   program
     .command('bip')
     .description('boa packages installer')
-    .action(() => new Promise((resolve, reject) => exec(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
+    .action(() => promisify(exec)(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
       cwd: process.cwd()
-    }, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    })));
+    }));
 
   program
     .command('serve <jobId>')
