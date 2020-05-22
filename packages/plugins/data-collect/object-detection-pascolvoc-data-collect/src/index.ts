@@ -1,5 +1,5 @@
 import { ArgsType, DataCollectType } from '@pipcook/pipcook-core';
-import { unZipData, download } from '@pipcook/pipcook-utils';
+import { unZipData, download } from '@pipcook/utils';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';

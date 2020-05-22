@@ -10,7 +10,7 @@ import { RunParams } from '../interface';
 import {
   createRun, writeOutput, retriveLog
 } from '../runner/helper';
-import { PIPCOOK_LOGS } from '@pipcook/pipcook-utils';
+import { PIPCOOK_PATH } from '@pipcook/utils';
 
 function getIdOrName(id: string) {
   if (!id) {
@@ -73,8 +73,8 @@ export class PipelineService {
     pipelineId = await this.getPipelineId(pipelineId);
     const config = await createRun(pipelineId);
     const record = await this.runModel.create(config);
-    await fs.ensureFile(path.join(PIPCOOK_LOGS, record.id, 'stderr'));
-    await fs.ensureFile(path.join(PIPCOOK_LOGS, record.id, 'stdout'));
+    await fs.ensureFile(path.join(PIPCOOK_PATH.PIPCOOK_LOGS, record.id, 'stderr'));
+    await fs.ensureFile(path.join(PIPCOOK_PATH.PIPCOOK_LOGS, record.id, 'stdout'));
     return record;
   }
 

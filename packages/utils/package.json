@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/pipcook-utils",
+  "name": "@pipcook/utils",
   "version": "0.5.0",
   "description": "this is some public utils to be used by plugins and other parts of pipcook",
   "main": "dist/index",

@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import path from 'path';
 import ora from 'ora';
 import childProcess from 'child_process';
-import { PIPCOOK_LOGS } from '@pipcook/pipcook-utils';
+import { PIPCOOK_PATH } from '@pipcook/utils';
 
 import { ServeHandler, PredictHandler } from '../types';
 
@@ -12,14 +12,14 @@ const spinner = ora();
 export const serve: ServeHandler = async function(jobId, port = 7682) {
   let predictHandler: PredictHandler;
   try {
-    predictHandler = require(path.join(PIPCOOK_LOGS, jobId, 'deploy', 'main.js'));
+    predictHandler = require(path.join(PIPCOOK_PATH.PIPCOOK_LOGS, jobId, 'deploy', 'main.js'));
   } catch (err) {
     spinner.fail(`the path specified is not a valid pipcook deploy path`);
     return process.exit(1);
   }
 
   childProcess.execSync('npm install', {
-    cwd: path.join(PIPCOOK_LOGS, jobId, 'deploy'),
+    cwd: path.join(PIPCOOK_PATH.PIPCOOK_LOGS, jobId, 'deploy'),
     stdio: 'inherit'
   });
 

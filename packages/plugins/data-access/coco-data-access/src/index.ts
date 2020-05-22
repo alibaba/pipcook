@@ -4,7 +4,7 @@
  */
 
 import { ArgsType, DataAccessType, CocoDataset, ImageDataLoader, ImageLabel } from '@pipcook/pipcook-core';
-import { parseAnnotation, convertPascal2CocoFileOutput } from '@pipcook/pipcook-utils';
+import { parseAnnotation, convertPascal2CocoFileOutput } from '@pipcook/utils';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as fs from 'fs';

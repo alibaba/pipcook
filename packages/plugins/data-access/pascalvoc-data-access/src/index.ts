@@ -4,7 +4,7 @@
  */
 
 import { ArgsType, DataAccessType, VocDataset, ImageDataLoader, ImageLabel } from '@pipcook/pipcook-core';
-import { parseAnnotation } from '@pipcook/pipcook-utils';
+import { parseAnnotation } from '@pipcook/utils';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as fs from 'fs';

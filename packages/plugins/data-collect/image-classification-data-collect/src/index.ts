@@ -4,7 +4,7 @@
  */
 
 import { ArgsType, DataCollectType } from '@pipcook/pipcook-core';
-import { createAnnotationFile, unZipData, download } from '@pipcook/pipcook-utils';
+import { createAnnotationFile, unZipData, download } from '@pipcook/utils';
 
 import glob from 'glob-promise';
 import * as path from 'path';

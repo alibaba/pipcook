@@ -26,7 +26,7 @@ import {
 import { getLog, createPipeline, assignLatestResult, linkComponents, markFailures } from './helper';
 import { logStartExecution, logError, logComplete } from './logger';
 import { LifeCycleTypes } from './lifecycle';
-import { PIPCOOK_DEPENDENCIES, compressTarFile } from '@pipcook/pipcook-utils';
+import { PIPCOOK_PATH, compressTarFile } from '@pipcook/utils';
 
 const { PLUGINS, DATAPROCESS, MODELLOAD, MODELDEFINE } = constants;
 
@@ -206,7 +206,7 @@ export class PipcookRunner {
         const version = process.env.npm_package_version;
         let pluginModule;
         try {
-          pluginModule = require(path.join(PIPCOOK_DEPENDENCIES, 'node_modules', pluginName)).default;
+          pluginModule = require(path.join(PIPCOOK_PATH.PIPCOOK_DEPENDENCIES, 'node_modules', pluginName)).default;
         } catch (err) {
           try {
             pluginModule = require(pluginName).default;
@@ -246,7 +246,7 @@ export class PipcookRunner {
     const analyzeCom = async (component: PipcookComponentResult): Promise<PipObject> => {
       let pluginPath;
       try {
-        pluginPath = require.resolve(path.join(PIPCOOK_DEPENDENCIES, 'node_modules', component.package));
+        pluginPath = require.resolve(path.join(PIPCOOK_PATH.PIPCOOK_DEPENDENCIES, 'node_modules', component.package));
       } catch (err) {
         try {
           pluginPath = require.resolve(component.package);

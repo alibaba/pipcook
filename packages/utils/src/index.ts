@@ -9,4 +9,4 @@ export {
   compressTarFile
 } from './utils/public';
 
-export { PIPCOOK_PLUGINS, PIPCOOK_LOGS, PIPCOOK_DEPENDENCIES } from './constants';
+export { PIPCOOK_PATH } from './constants';

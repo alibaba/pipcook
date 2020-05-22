@@ -26,7 +26,7 @@ import {
   UniModel
 } from '@pipcook/pipcook-core';
 
-import { PIPCOOK_LOGS } from '@pipcook/pipcook-utils';
+import { PIPCOOK_PATH } from '@pipcook/utils';
 
 import { LifeCycleTypes } from './lifecycle';
 import { PipcookRunner } from './index';
@@ -200,11 +200,11 @@ export async function createRun(pipelineId: string): Promise<RunDB> {
 
 export async function writeOutput(jobId: string, content: string, stderr = false) {
   const fileName = stderr ? 'stderr' : 'stdout';
-  const filePath = path.join(PIPCOOK_LOGS, jobId, fileName);
+  const filePath = path.join(PIPCOOK_PATH.PIPCOOK_LOGS, jobId, fileName);
   await fs.appendFile(filePath, content);
 }
 
 export async function retriveLog(jobId: string) {
-  const log = await fs.readFile(path.join(PIPCOOK_LOGS, jobId, 'stdout'), 'utf8');
+  const log = await fs.readFile(path.join(PIPCOOK_PATH.PIPCOOK_LOGS, jobId, 'stdout'), 'utf8');
   return log;
 }

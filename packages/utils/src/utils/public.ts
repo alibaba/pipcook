@@ -10,7 +10,7 @@ import * as request from 'request';
 import * as targz from 'targz';
 import extract from 'extract-zip';
 
-import { PIPCOOK_LOGS } from '../constants';
+import { PIPCOOK_PATH } from '../constants';
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
  * For more info, you can check the sources codes of plugin: @pipcook/pipcook-plugins-image-class-data-collect
@@ -140,7 +140,7 @@ export function unZipData(filePath: string, targetPath: string) {
  */
 
 export function getModelDir(jobId: string) {
-  return path.join(PIPCOOK_LOGS, jobId, 'model');
+  return path.join(PIPCOOK_PATH.PIPCOOK_LOGS, jobId, 'model');
 }
 
 /**
