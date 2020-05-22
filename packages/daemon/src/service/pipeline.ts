@@ -1,5 +1,5 @@
 import { provide, inject } from 'midway';
-import { PipelineDB, constants, PipelineStatus } from '@pipcook/pipcook-core';
+import { PipelineDB, constants, PipelineStatus, EvaluateResult } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as validate from 'uuid-validate';
 import * as fs from 'fs-extra';
@@ -11,6 +11,8 @@ import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import PluginRuntime from '../boot/plugin';
 import { RunnableResponse } from '@pipcook/costa/dist/runnable';
+import { exec, ExecOptions, ExecException } from 'child_process';
+import { PluginPackage } from '@pipcook/costa/dist';
 
 const { PIPCOOK_LOGS } = constants;
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
@@ -21,6 +23,14 @@ function getIdOrName(id: string): QueryParams {
   }
   return validate(id) as boolean ? { id } : { name: id };
 }
+
+function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
+  return new Promise((resolve, reject): void => {
+    exec(cmd, opts, (err: ExecException, stdout: string, stderr: string) => {
+      err == null ? resolve(stdout) : reject(err);
+    });
+  });
+};
 
 @provide('pipelineService')
 export class PipelineService {
@@ -130,14 +140,16 @@ export class PipelineService {
         return Object.assign(JSON.parse(params), ...extra);
       }
     };
-    const verifyPlugin = (name: string) => {
+    const verifyPlugin = (name: string): void => {
       if (!pipeline[name]) throw new TypeError(`"${name}" plugin is required`);
-    }
-    const dataDir = path.join(costa.options.datasetDir, pipeline.id);
-    const modelPath = runable.workingDir;
+    };
 
     verifyPlugin('dataCollect');
     const dataCollect = await costa.fetchAndInstall(pipeline.dataCollect, cwd);
+    const dataDir = path.join(costa.options.datasetDir, `${dataCollect.name}@${dataCollect.version}`);
+    const modelPath = path.join(runable.workingDir, 'model');
+
+    // run dataCollect to download dataset.
     await runable.start(dataCollect, getParams(pipeline.dataCollectParams, {
       dataDir
     }));
@@ -148,8 +160,9 @@ export class PipelineService {
       dataDir
     }));
 
+    let dataProcess: PluginPackage;
     if (pipeline.dataProcess) {
-      const dataProcess = await costa.fetchAndInstall(pipeline.dataProcess, cwd);
+      dataProcess = await costa.fetchAndInstall(pipeline.dataProcess, cwd);
       dataset = await runable.start(dataProcess, getParams(pipeline.dataProcessParams));
     }
 
@@ -169,10 +182,46 @@ export class PipelineService {
     }));
 
     const modelEvaluate = await costa.fetchAndInstall(pipeline.modelEvaluate, cwd);
-    const result = await runable.start(modelEvaluate, dataset, model, getParams(pipeline.modelEvaluateParams, {
+    const output = await runable.start(modelEvaluate, dataset, model, getParams(pipeline.modelEvaluateParams, {
       modelDir: modelPath
     }));
-    console.log(await runable.valueOf(result));
+
+    const result = await runable.valueOf(output) as EvaluateResult;
+    job.evaluateMap = JSON.stringify(result);
+    job.evaluatePass = result.pass;
+    job.endTime = Date.now();
+    await job.save();
+
+    // start generates the output directory
+    const dist = path.join(cwd, 'output');
+    await fs.remove(dist);
+    await fs.ensureDir(dist);
+    await execAsync('npm init -y', { cwd: dist });
+
+    // post processing the package.json
+    const projPackage = await fs.readJSON(dist + '/package.json');
+    projPackage.dependencies = {
+      [modelDefine.name]: modelDefine.version,
+    };
+    if (dataProcess) {
+      projPackage.dependencies[dataProcess.name] = dataProcess.version;
+    }
+
+    const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
+    const metadata = {
+      cwd,
+      pipeline: pipeline.toJSON(),
+      output: job.toJSON(),
+    };
+
+    await [
+      fs.copy(modelPath, dist + '/model'),
+      fs.copy(path.join(__dirname, '../../assets/predict.js'), dist + '/index.js'),
+      fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
+      fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
+    ];
+    await runable.destroy();
+    console.log(`trained the model to ${dist}`);
   }
 
   getLogById(id: string): Promise<string> {

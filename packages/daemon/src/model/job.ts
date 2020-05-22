@@ -15,11 +15,12 @@ export class JobModel extends Model {
   readonly specVersion: string;
   readonly status: number;
   readonly metadata: number;
-  readonly evaluateMap: string;
-  readonly evaluatePass: boolean;
-  readonly currentIndex: number;
-  readonly error: string;
-  readonly endTime: number;
+
+  evaluateMap: string;
+  evaluatePass: boolean;
+  currentIndex: number;
+  error: string;
+  endTime: number;
 }
 
 export type JobModelStatic = typeof Model & {
