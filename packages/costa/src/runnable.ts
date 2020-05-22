@@ -1,7 +1,6 @@
 import * as uuid from 'uuid';
 import path from 'path';
-import { Writable } from 'stream';
-import { ensureDir, ensureSymlink, remove } from 'fs-extra';
+import { ensureDir, ensureSymlink, ensureFile, remove, open, close } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProto, PluginOperator, PluginMessage, PluginResponse } from './proto';
 import { CostaRuntime, PluginPackage } from './index';
@@ -27,8 +26,6 @@ export interface BootstrapArg {
    * Add extra environment variables.
    */
   customEnv?: Record<string, string>;
-  stdout?: Writable;
-  stderr?: Writable;
 }
 
 /**
@@ -38,6 +35,10 @@ export class PluginRunnable {
   private id: string = uuid.v4();
   private rt: CostaRuntime;
   private handle: ChildProcess = null;
+
+  // private stdout/stderr
+  private stdout: number;
+  private stderr: number;
 
   // private events
   private onread: Function | null;
@@ -67,15 +68,24 @@ export class PluginRunnable {
    */
   async bootstrap(arg: BootstrapArg): Promise<void> {
     const compPath = this.workingDir;
-    await ensureDir(compPath);
-    await ensureDir(compPath + '/node_modules');
 
-    debug(`bootstrap a new process for ${this.id}`);
+    debug(`make sure the component dir is existed.`);
+    await ensureDir(compPath + '/node_modules');
+    await ensureDir(compPath + '/logs');
+    await [
+      ensureFile(compPath + '/logs/stdout.log'),
+      ensureFile(compPath + '/logs/stderr.log')
+    ];
+
+    this.stdout = await open(compPath + '/logs/stdout.log', 'w+');
+    this.stderr = await open(compPath + '/logs/stderr.log', 'w+');
+
+    debug(`bootstrap a new process for ${this.id}.`);
     this.handle = fork(__dirname + '/client', [], {
       stdio: [
-        process.stdin,  // stdin
-        arg.stdout || 'inherit',
-        arg.stderr || 'inherit',
+        process.stdin, // stdin
+        this.stdout,
+        this.stderr,
         'ipc'
       ],
       cwd: compPath,
@@ -224,7 +234,11 @@ export class PluginRunnable {
    */
   private async afterDestroy(): Promise<void> {
     debug(`the runnable(${this.id}) has been destroyed.`);
-    await remove(path.join(this.rt.options.componentDir, this.id));
+    await [
+      remove(path.join(this.rt.options.componentDir, this.id)),
+      close(this.stdout),
+      close(this.stderr)
+    ];
     if (typeof this.ondestroyed === 'function') {
       this.ondestroyed();
     }

@@ -211,9 +211,14 @@ export class PipelineService {
     };
 
     await [
+      // copy base components
       fs.copy(modelPath, dist + '/model'),
-      fs.copy(path.join(__dirname, '../../assets/predict.js'), dist + '/index.js'),
+      fs.copy(path.join(__dirname, '../../assets/predict.js'), `${dist}/index.js`),
+      // copy logs
+      fs.copy(runable.workingDir + '/logs', `${dist}/logs`),
+      // write package.json
       fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
+      // write metadata.json
       fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
     ];
     await runable.destroy();

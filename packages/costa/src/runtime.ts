@@ -182,7 +182,7 @@ export class CostaRuntime {
    * create a runnable.
    */
   async createRunnable(args?: BootstrapArg): Promise<PluginRunnable> {
-    if (args.customEnv) {
+    if (args?.customEnv) {
       throw new TypeError('"customEnv" is not allowed here.');
     }
     const runnable = new PluginRunnable(this);
