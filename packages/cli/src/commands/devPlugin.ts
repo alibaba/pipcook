@@ -9,6 +9,7 @@ import { DevPluginCommandHandler } from '../types';
 
 const spinner = ora();
 
+
 /**
  * prepare a working dir for developer to develop plugins
  */
