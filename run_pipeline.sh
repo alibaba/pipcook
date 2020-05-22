@@ -1,3 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-./packages/cli/dist/bin/index.js run ./test/pipelines/$1.json
+PIPCOOK=./packages/cli/dist/bin/pipcook
+
+$PIPCOOK init
+$PIPCOOK daemon start
+$PIPCOOK run ./test/pipelines/$1.json
