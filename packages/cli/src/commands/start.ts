@@ -16,7 +16,7 @@ export const start: StartHandler = async (filename: string, verbose: boolean) =>
   }
 
   filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
-  const isFileExist = await exists(filename);
+  const isFileExist = await promisify(exists)(filename);
   if (!isFileExist) {
     spinner.fail(`${filename} not exists`);
     return process.exit(1);

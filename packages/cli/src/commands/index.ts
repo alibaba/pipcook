@@ -2,13 +2,11 @@ import program from 'commander';
 import { init } from './init';
 import { devPlugin } from './devPlugin';
 import { serve } from './serve';
-import { exec } from 'child_process';
-import { promisify } from 'util';
 import { pipeline as pipelineHandler } from './pipeline';
 import { job } from './job';
 import { daemon } from './daemon';
 import { start } from './start';
-
+import { bip } from './bip';
 
 const pkg = require('../../package.json');
 
@@ -66,9 +64,7 @@ export const initCommander = () => {
   program
     .command('bip')
     .description('boa packages installer')
-    .action(() => promisify(exec)(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
-      cwd: process.cwd()
-    }));
+    .action(bip);
 
   program
     .command('serve <jobId>')
