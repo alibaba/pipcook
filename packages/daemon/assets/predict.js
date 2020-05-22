@@ -24,11 +24,16 @@ const model = modelDefineModule(null, {
 
 function predict(data) {
   const sample = { data, label: null };
+  let future = model;
+
   if (typeof dataProcessModule === 'function') {
-    dataProcessModule(sample, {}, pipeline.dataProcessParams);
+    future = future.then((m) => {
+      dataProcessModule(sample, {}, pipeline.dataProcessParams);
+      return m
+    });
   }
-  return model.then((m) => {
-    return m.predict(sample);
+  return future.then((m) => {
+    m.predict(sample);
   });
 };
 
