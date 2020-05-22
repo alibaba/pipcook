@@ -6,12 +6,15 @@ import Debug from 'debug';
 type MessageHandler = Record<PluginOperator, (proto: PluginProto) => void>;
 const debug = Debug('costa.client');
 
+// Set the costa runtime title.
+process.title = 'pipcook.costa';
+
 /**
  * Send a message back from the client process.
  * @param respOp the operator of response.
  * @param params the parameters of response.
  */
-function recv(respOp: PluginOperator, ...params: string[]) {
+function recv(respOp: PluginOperator, ...params: string[]): void {
   process.send(PluginProto.stringify(respOp, {
     event: 'pong',
     params
@@ -38,7 +41,7 @@ let previousResults: Record<string, any> = {};
  * Deserialize an argument.
  * @param arg 
  */
-function deserializeArg(arg: Record<string, any>) {
+function deserializeArg(arg: Record<string, any>): Record<string, any> {
   if (arg.__flag__ === '__pipcook_plugin_runnable_result__' &&
     previousResults[arg.id]) {
     return previousResults[arg.id];
@@ -51,7 +54,7 @@ function deserializeArg(arg: Record<string, any>) {
  * for the plug-in runtime.
  * @param message 
  */
-async function emitStart(message: PluginMessage) {
+async function emitStart(message: PluginMessage): Promise<void> {
   const { params } = message;
   const pkg = params[0] as PluginPackage;
   const [ , ...pluginArgs ] = params;
@@ -84,7 +87,7 @@ async function emitStart(message: PluginMessage) {
 /**
  * Emits a destroy event, it exits the current client process.
  */
-async function emitDestroy() {
+async function emitDestroy(): Promise<void> {
   clientId = null;
   handshaked = false;
   process.exit(0);
@@ -94,7 +97,7 @@ async function emitDestroy() {
  * Gets the response by a result.
  * @param message 
  */
-function getResponse(message: PluginMessage) {
+function getResponse(message: PluginMessage): void {
   const resp = deserializeArg(message.params[0]);
   recv(PluginOperator.READ, JSON.stringify(resp));
 }
@@ -106,7 +109,7 @@ const handlers: MessageHandler = {
    * is counted as a complete handshake. The client process will not receive other
    * messages until the handshake is complete.
    */
-  [PluginOperator.START]: (proto: PluginProto) => {
+  [PluginOperator.START]: (proto: PluginProto): void => {
     if (proto.message.event === 'handshake' &&
       typeof proto.message.params[0] === 'string') {
       clientId = proto.message.params[0];
@@ -118,7 +121,7 @@ const handlers: MessageHandler = {
    * The client process receives events from the runtime by processing the WRITE
    * message, such as executing the plug-in and ending the process.
    */
-  [PluginOperator.WRITE]: async (proto: PluginProto) => {
+  [PluginOperator.WRITE]: async (proto: PluginProto): Promise<void> => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
@@ -133,7 +136,7 @@ const handlers: MessageHandler = {
   /**
    * Use the READ command to read the value and status of some client processes.
    */
-  [PluginOperator.READ]: async (proto: PluginProto) => {
+  [PluginOperator.READ]: async (proto: PluginProto): Promise<void> => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
@@ -145,7 +148,7 @@ const handlers: MessageHandler = {
   }
 };
 
-process.on('message', (msg) => {
+process.on('message', (msg): void => {
   const proto = PluginProto.parse(msg) as PluginProto;
   handlers[proto.op](proto);
 });

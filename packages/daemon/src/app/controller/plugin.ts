@@ -18,7 +18,6 @@ export class PluginController {
 
     // fetch information
     const metadata = await costa.fetch(ctx.request.body.name);
-  
     // install
     await costa.install(metadata);
     successRes(ctx, { metadata });

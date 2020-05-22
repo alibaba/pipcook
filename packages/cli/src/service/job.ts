@@ -16,6 +16,7 @@ export const getJobs = () => get(route.job);
 
 export const getLogById = (id: string) => get(`${route.job}/${id}/log`);
 
-export const startJob = (path: string) => post(`${route.job}/start`, {
-  config: path
+export const startJob = (path: string, cwd: string) => post(`${route.job}/start`, {
+  config: path,
+  cwd
 });

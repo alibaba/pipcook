@@ -70,9 +70,10 @@ export class CostaRuntime {
   /**
    * fetch and check if the package name is valid.
    * @param name the plugin package name.
+   * @param cwd the current working directory.
    */
-  async fetch(name: string): Promise<PluginPackage> {
-    const source = this.getSource(name);
+  async fetch(name: string, cwd?: string): Promise<PluginPackage> {
+    const source = this.getSource(name, cwd || process.cwd());
     let pkg: PluginPackage;
     if (source.from === 'npm') {
       debug(`requesting the url ${source.uri}`);
@@ -84,15 +85,17 @@ export class CostaRuntime {
       pkg = require(source.uri + '/package.json');
     }
 
-    if (!pkg.pipcook) {
-      throw new TypeError('Invalid plugin package.json, not found on "pipcook"');
-    }
-    const { installDir } = this.options;
-    pkg.pipcook.source = source;
-    pkg.pipcook.target = {
-      PYTHONPATH: path.join(
-        installDir, `conda_envs/${pkg.name}@${pkg.version}`, 'lib/python3.7/site-packages')
-    };
+    this.validPackage(pkg);
+    this.assignPackage(pkg, source);
+    return pkg;
+  }
+  /**
+   * Get the package `PluginPackage` instance.
+   * @param name the package name
+   */
+  async fetchAndInstall(name: string, cwd?: string): Promise<PluginPackage> {
+    const pkg = await this.fetch(name, cwd);
+    await this.install(pkg);
     return pkg;
   }
   /**
@@ -173,9 +176,6 @@ export class CostaRuntime {
     await spawnAsync('npm', [ 'uninstall', name, '--save' ], {
       cwd: this.options.installDir
     });
-
-    const condaPkgs = path.join(this.options.installDir, 'conda_envs', `${name}*`);
-    await spawnAsync('rm', [ '-rf', condaPkgs ]);
     return false;
   }
   /**
@@ -211,9 +211,10 @@ export class CostaRuntime {
   }
   /**
    * Get the `PluginSource` object by a package name.
-   * @param name the package name
+   * @param name the package name.
+   * @param cwd the current working dir.
    */
-  private getSource(name: string): PluginSource {
+  private getSource(name: string, cwd: string): PluginSource {
     const urlObj = url.parse(name);
     const src: PluginSource = {
       from: null,
@@ -228,10 +229,32 @@ export class CostaRuntime {
       src.uri = `http://registry.npmjs.com/${name}`;
     } else if (urlObj.protocol == null) {
       src.from = 'fs';
-      src.uri = path.join(process.cwd(), name);
+      src.uri = path.join(cwd, name);
     } else {
       throw new TypeError(`Unsupported resolving plugin name: ${name}`);
     }
     return src;
+  }
+  /**
+   * Valid the package.
+   * @param pkg the plugin package.
+   */
+  private validPackage(pkg: PluginPackage): void {
+    if (!pkg.pipcook) {
+      throw new TypeError('Invalid plugin package.json, not found on "pipcook"');
+    }
+  }
+  /**
+   * Assign some fields to package.
+   * @param pkg the plugin package.
+   */
+  private assignPackage(pkg: PluginPackage, source: PluginSource): PluginPackage {
+    const { installDir } = this.options;
+    pkg.pipcook.source = source;
+    pkg.pipcook.target = {
+      PYTHONPATH: path.join(
+        installDir, `conda_envs/${pkg.name}@${pkg.version}`, 'lib/python3.7/site-packages')
+    };
+    return pkg;
   }
 }

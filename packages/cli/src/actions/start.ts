@@ -19,7 +19,7 @@ const start: StartHandler = async (filename: string, verbose: boolean) => {
     spinner.fail(`${filename} not exists`);
     return process.exit(1);
   }
-  const data = await startJob(filename);
+  const data = await startJob(filename, process.cwd());
   spinner.succeed(`create job ${data.id} succeeded`);
   if (verbose === true) {
     fetchLog(data, '');

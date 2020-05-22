@@ -3,6 +3,7 @@ import { Context, controller, inject, provide, post, get } from 'midway';
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
 import { parseConfig } from '../../runner/helper';
+import { JobModel } from '../../model/job';
 
 @provide()
 @controller('/job')
@@ -17,17 +18,19 @@ export class JobController {
   public async runPipeline() {
     const { ctx } = this;
     const { pipelineId } = ctx.request.body;
-    let data: any;
+    let job: JobModel;
     try {
-      data = await this.pipelineService.createJob(pipelineId);
-      this.pipelineService.startJob(data);
+      console.log('create job with pipeline id', pipelineId);
+      job = await this.pipelineService.createJob(pipelineId);
+      this.pipelineService.startJob(job, process.cwd());
       successRes(ctx, {
         message: 'create run job successfully',
-        data
+        job
       }, 201);
     } catch (err) {
-      if (data && data.id) {
-        await this.pipelineService.updateJobById(data.id, {
+      console.log(err?.stack);
+      if (job && job.id) {
+        await this.pipelineService.updateJobById(job.id, {
           status: 3
         });
       }
@@ -41,11 +44,11 @@ export class JobController {
   public async startPipeline() {
     const { ctx } = this;
     try {
-      const { config } = ctx.request.body;
+      const { config, cwd } = ctx.request.body;
       const parsedConfig = await parseConfig(config);
       const data = await this.pipelineService.initPipeline(parsedConfig);
       const jobData = await this.pipelineService.createJob(data.id);
-      this.pipelineService.startJob(jobData);
+      this.pipelineService.startJob(jobData, cwd);
       successRes(ctx, {
         message: 'create pipeline and jobs successfully',
         data: jobData

@@ -156,8 +156,15 @@ export declare class CostaRuntime {
   /**
    * fetch and check if the package name is valid.
    * @param name the plugin package name.
+   * @param cwd the current working directory to fetch package
    */
-  fetch(name: string): Promise<PluginPackage>;
+  fetch(name: string, cwd?: string): Promise<PluginPackage>;
+  /**
+   * get the package instance for later install and runnable.
+   * @param name the plugin package name.
+   * @param cwd the current working directory to fetch package
+   */
+  fetchAndInstall(name: string, cwd?: string): Promise<PluginPackage>;
   /**
    * Install the given plugin by a `PluginPackage` object.
    * @param pkg the plugin package name
