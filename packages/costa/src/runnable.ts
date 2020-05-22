@@ -1,5 +1,6 @@
 import * as uuid from 'uuid';
 import path from 'path';
+import { Writable } from 'stream';
 import { ensureDir, ensureSymlink, remove } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProto, PluginOperator, PluginMessage, PluginResponse } from './proto';
@@ -26,6 +27,8 @@ export interface BootstrapArg {
    * Add extra environment variables.
    */
   customEnv?: Record<string, string>;
+  stdout?: Writable;
+  stderr?: Writable;
 }
 
 /**
@@ -69,7 +72,12 @@ export class PluginRunnable {
 
     debug(`bootstrap a new process for ${this.id}`);
     this.handle = fork(__dirname + '/client', [], {
-      stdio: [ 'inherit', 'inherit', 'inherit', 'ipc' ],
+      stdio: [
+        process.stdin,  // stdin
+        arg.stdout || 'inherit',
+        arg.stderr || 'inherit',
+        'ipc'
+      ],
       cwd: compPath,
       env: Object.assign({}, process.env, arg.customEnv)
     });

@@ -1,8 +1,8 @@
 import path from 'path';
 import url from 'url';
-import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, ensureSymlink, symlinkSync } from 'fs-extra';
+import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, ensureSymlink } from 'fs-extra';
 import { spawn, spawnSync, SpawnOptions } from 'child_process';
-import { PluginRunnable } from './runnable';
+import { PluginRunnable, BootstrapArg } from './runnable';
 import {
   NpmPackageMetadata,
   NpmPackage,
@@ -181,14 +181,18 @@ export class CostaRuntime {
   /**
    * create a runnable.
    */
-  async createRunnable(): Promise<PluginRunnable> {
+  async createRunnable(args?: BootstrapArg): Promise<PluginRunnable> {
+    if (args.customEnv) {
+      throw new TypeError('"customEnv" is not allowed here.');
+    }
     const runnable = new PluginRunnable(this);
     const pluginNodePath = path.join(this.options.installDir, 'node_modules');
     await this.linkBoa();
     await runnable.bootstrap({
       customEnv: {
         NODE_PATH: `${(process.env.NODE_PATH || '')}:${pluginNodePath}`
-      }
+      },
+      ...args
     });
     return runnable;
   }

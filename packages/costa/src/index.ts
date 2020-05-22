@@ -1,5 +1,6 @@
+import { Writable } from 'stream';
 import { PluginTypeI } from '@pipcook/pipcook-core';
-import { RunnableResponse } from './runnable';
+import { RunnableResponse, BootstrapArg } from './runnable';
 
 /**
  * The options to configure Costa runtime.
@@ -177,5 +178,5 @@ export declare class CostaRuntime {
   /**
    * Create a `PluginRunnable` object.
    */
-  createRunnable(): Promise<PluginRunnable>;
+  createRunnable(opts?: BootstrapArg): Promise<PluginRunnable>;
 }

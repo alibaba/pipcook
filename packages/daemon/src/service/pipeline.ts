@@ -1,5 +1,5 @@
 import { provide, inject } from 'midway';
-import { PipelineDB, constants, PipelineStatus, EvaluateResult } from '@pipcook/pipcook-core';
+import { PipelineDB, PipelineStatus, EvaluateResult } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as validate from 'uuid-validate';
 import * as fs from 'fs-extra';
@@ -14,7 +14,6 @@ import { RunnableResponse } from '@pipcook/costa/dist/runnable';
 import { exec, ExecOptions, ExecException } from 'child_process';
 import { PluginPackage } from '@pipcook/costa/dist';
 
-const { PIPCOOK_LOGS } = constants;
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
 function getIdOrName(id: string): QueryParams {
@@ -117,16 +116,13 @@ export class PipelineService {
   async createJob(id: string): Promise<JobModel> {
     const pipelineId = await this.getPipelineId(id);
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
-    const job = await this.job.create({
+    return await this.job.create({
       id: uuidv1(),
       pipelineId,
       specVersion,
       status: PipelineStatus.INIT,
       currentIndex: -1
     });
-    await fs.ensureFile(path.join(PIPCOOK_LOGS, job.id, 'stderr'));
-    await fs.ensureFile(path.join(PIPCOOK_LOGS, job.id, 'stdout'));
-    return job;
   }
 
   async startJob(job: JobModel, cwd: string) {
