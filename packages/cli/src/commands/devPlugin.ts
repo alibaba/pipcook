@@ -9,7 +9,6 @@ import { DevPluginCommandHandler } from '../types';
 
 const spinner = ora();
 
-
 /**
  * prepare a working dir for developer to develop plugins
  */
@@ -30,7 +29,7 @@ export const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
   try {
     dirname = path.join(process.cwd(), name);
     const isDirExist = await promisify(exists)(dirname);
-    if (!isDirExist) {
+    if (isDirExist) {
       spinner.fail(`a directory or file called ${name} already exists. Please use a new working directory`);
       return process.exit(1);
     }
