@@ -13,7 +13,7 @@ import { retriveLog } from '../runner/helper';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import PluginRuntime from '../boot/plugin';
-import { PluginPackage, RunnableResponse } from '@pipcook/costa';
+import { PluginPackage } from '@pipcook/costa';
 
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
