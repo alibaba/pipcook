@@ -1,18 +1,19 @@
-import { provide, inject } from 'midway';
-import { PipelineDB, PipelineStatus, EvaluateResult } from '@pipcook/pipcook-core';
+
+import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as validate from 'uuid-validate';
 import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
+
+import { provide, inject } from 'midway';
+import { PipelineDB, PipelineStatus, EvaluateResult } from '@pipcook/pipcook-core';
 
 import { RunParams } from '../interface';
 import { retriveLog } from '../runner/helper';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import PluginRuntime from '../boot/plugin';
-import { RunnableResponse } from '@pipcook/costa/dist/runnable';
-import { exec, ExecOptions, ExecException } from 'child_process';
-import { PluginPackage } from '@pipcook/costa/dist';
+import { PluginPackage, RunnableResponse } from '@pipcook/costa';
 
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
@@ -170,9 +171,8 @@ export class PipelineService {
     verifyPlugin('modelEvaluate');
 
     // start defining/training/evaluating model
-    let model: RunnableResponse;
     const modelDefine = await costa.fetchAndInstall(pipeline.modelDefine, cwd);
-    model = await runable.start(modelDefine, dataset, getParams(pipeline.modelDefineParams));
+    let model = await runable.start(modelDefine, dataset, getParams(pipeline.modelDefineParams));
 
     const modelTrain = await costa.fetchAndInstall(pipeline.modelTrain, cwd);
     model = await runable.start(modelTrain, dataset, model, getParams(pipeline.modelTrainParams, {

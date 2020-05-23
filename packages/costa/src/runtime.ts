@@ -46,6 +46,9 @@ function createRequirements(name: string, config: CondaConfig): string {
   return str;
 }
 
+export { PluginPackage } from './index';
+export { RunnableResponse } from './runnable';
+
 /**
  * The Costa runtime is for scheduling plugins and management.
  */
