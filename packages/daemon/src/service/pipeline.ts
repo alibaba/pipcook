@@ -13,7 +13,7 @@ import { retriveLog } from '../runner/helper';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import PluginRuntime from '../boot/plugin';
-import { PluginPackage } from '@pipcook/costa';
+import { PluginPackage, RunnableResponse } from '@pipcook/costa';
 
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
@@ -165,20 +165,29 @@ export class PipelineService {
       dataset = await runable.start(dataProcess, getParams(pipeline.dataProcessParams));
     }
 
-    // verify the model related plugins are used.
-    verifyPlugin('modelDefine');
-    verifyPlugin('modelTrain');
+    let model: RunnableResponse;
+    let modelPlugin: PluginPackage;
+
+    // select one of `ModelDefine` and `ModelLoad`.
+    if (pipeline.modelDefine) {
+      modelPlugin = await costa.fetchAndInstall(pipeline.modelDefine, cwd);
+      model = await runable.start(modelPlugin, dataset, getParams(pipeline.modelDefineParams));
+    } else if (pipeline.modelLoad) {
+      modelPlugin = await costa.fetchAndInstall(pipeline.modelLoad, cwd);
+      model = await runable.start(modelPlugin, dataset, getParams(pipeline.modelLoadParams, {
+        // specify the recover path for model loader by default.
+        recoverPath: modelPath
+      }));
+    }
+
+    if (pipeline.modelTrain) {
+      const modelTrain = await costa.fetchAndInstall(pipeline.modelTrain, cwd);
+      model = await runable.start(modelTrain, dataset, model, getParams(pipeline.modelTrainParams, {
+        modelPath
+      }));
+    }
+
     verifyPlugin('modelEvaluate');
-
-    // start defining/training/evaluating model
-    const modelDefine = await costa.fetchAndInstall(pipeline.modelDefine, cwd);
-    let model = await runable.start(modelDefine, dataset, getParams(pipeline.modelDefineParams));
-
-    const modelTrain = await costa.fetchAndInstall(pipeline.modelTrain, cwd);
-    model = await runable.start(modelTrain, dataset, model, getParams(pipeline.modelTrainParams, {
-      modelPath
-    }));
-
     const modelEvaluate = await costa.fetchAndInstall(pipeline.modelEvaluate, cwd);
     const output = await runable.start(modelEvaluate, dataset, model, getParams(pipeline.modelEvaluateParams, {
       modelDir: modelPath
@@ -199,7 +208,7 @@ export class PipelineService {
     // post processing the package.json
     const projPackage = await fs.readJSON(dist + '/package.json');
     projPackage.dependencies = {
-      [modelDefine.name]: modelDefine.version,
+      [modelPlugin.name]: modelPlugin.version,
     };
     if (dataProcess) {
       projPackage.dependencies[dataProcess.name] = dataProcess.version;
