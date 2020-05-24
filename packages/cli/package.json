@@ -14,8 +14,10 @@
   },
   "bin": {
     "pipcook": "./dist/bin/pipcook",
-    "pipcook-plugin": "./dist/bin/pipcook-plugin",
-    "pipcook-pipeline": "./dist/bin/pipcook-pipeline"
+    "pipcook-daemon": "./dist/bin/pipcook-daemon",
+    "pipcook-job": "./dist/bin/pipcook-job",
+    "pipcook-pipeline": "./dist/bin/pipcook-pipeline",
+    "pipcook-plugin": "./dist/bin/pipcook-plugin"
   },
   "keywords": [],
   "author": "",
