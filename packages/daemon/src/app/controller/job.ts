@@ -1,4 +1,4 @@
-import { Context, controller, inject, provide, post, get } from 'midway';
+import { Context, controller, inject, provide, post, get, del } from 'midway';
 
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
@@ -46,12 +46,12 @@ export class JobController {
     try {
       const { config, cwd } = ctx.request.body;
       const parsedConfig = await parseConfig(config);
-      const data = await this.pipelineService.initPipeline(parsedConfig);
-      const jobData = await this.pipelineService.createJob(data.id);
-      this.pipelineService.startJob(jobData, cwd);
+      const pipeline = await this.pipelineService.initPipeline(parsedConfig);
+      const job = await this.pipelineService.createJob(pipeline.id);
+      this.pipelineService.startJob(job, cwd);
       successRes(ctx, {
         message: 'create pipeline and jobs successfully',
-        data: jobData
+        data: job
       }, 201);
     } catch (err) {
       if (err.errors && err.errors[0] && err.errors[0].message) {
@@ -125,5 +125,11 @@ export class JobController {
         message: err.message
       });
     }
+  }
+
+  @del('')
+  public async deleteAll() {
+    await this.pipelineService.deleteAllJobs();
+    successRes(this.ctx, {});
   }
 }

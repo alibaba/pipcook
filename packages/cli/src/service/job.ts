@@ -1,16 +1,11 @@
-import { get, post } from '../request';
+import { get, post, remove } from '../request';
 import { route } from '../router';
 
-export const runJob = (pipelineId: string) => post(route.job, {
-  pipelineId
-});
-
+export const runJob = (pipelineId: string) => post(route.job, { pipelineId });
 
 export const getJobById = (id: string) => get(`${route.job}/${id}`);
 
-export const getJobByPipeline = (pipelineId: string) => get(route.job, {
-  pipelineId
-});
+export const getJobByPipeline = (pipelineId: string) => get(route.job, { pipelineId });
 
 export const getJobs = () => get(route.job);
 
@@ -20,3 +15,5 @@ export const startJob = (path: string, cwd: string) => post(`${route.job}/start`
   config: path,
   cwd
 });
+
+export const removeJobs = () => remove(route.job);

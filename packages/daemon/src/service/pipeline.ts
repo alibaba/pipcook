@@ -14,6 +14,7 @@ import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import PluginRuntime from '../boot/plugin';
 import { PluginPackage, RunnableResponse } from '@pipcook/costa';
+import { BootstrapArg } from '@pipcook/costa/dist/runnable';
 
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
@@ -117,19 +118,26 @@ export class PipelineService {
   async createJob(id: string): Promise<JobModel> {
     const pipelineId = await this.getPipelineId(id);
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
-    return this.job.create({
+    const job = await this.job.create({
       id: uuidv1(),
       pipelineId,
       specVersion,
       status: PipelineStatus.INIT,
       currentIndex: -1
     });
+    job.runnable = await this.pluginRT.costa.createRunnable({ id: job.id } as BootstrapArg);
+    return job;
+  }
+
+  async deleteAllJobs(): Promise<void> {
+    await JobModel.destroy({ truncate: true });
+    return null;
   }
 
   async startJob(job: JobModel, cwd: string) {
+    const { runnable } = job;
     const { costa } = this.pluginRT;
     const pipeline = await this.getPipelineById(job.pipelineId);
-    const runable = await costa.createRunnable();
     const getParams = (params: string | null, ...extra: object[]): object => {
       if (params == null) {
         return Object.assign({}, ...extra);
@@ -146,23 +154,23 @@ export class PipelineService {
     verifyPlugin('dataCollect');
     const dataCollect = await costa.fetchAndInstall(pipeline.dataCollect, cwd);
     const dataDir = path.join(costa.options.datasetDir, `${dataCollect.name}@${dataCollect.version}`);
-    const modelPath = path.join(runable.workingDir, 'model');
+    const modelPath = path.join(runnable.workingDir, 'model');
 
     // run dataCollect to download dataset.
-    await runable.start(dataCollect, getParams(pipeline.dataCollectParams, {
+    await runnable.start(dataCollect, getParams(pipeline.dataCollectParams, {
       dataDir
     }));
 
     verifyPlugin('dataAccess');
     const dataAccess = await costa.fetchAndInstall(pipeline.dataAccess, cwd);
-    let dataset = await runable.start(dataAccess, getParams(pipeline.dataAccessParams, {
+    let dataset = await runnable.start(dataAccess, getParams(pipeline.dataAccessParams, {
       dataDir
     }));
 
     let dataProcess: PluginPackage;
     if (pipeline.dataProcess) {
       dataProcess = await costa.fetchAndInstall(pipeline.dataProcess, cwd);
-      dataset = await runable.start(dataProcess, getParams(pipeline.dataProcessParams));
+      dataset = await runnable.start(dataProcess, getParams(pipeline.dataProcessParams));
     }
 
     let model: RunnableResponse;
@@ -171,10 +179,10 @@ export class PipelineService {
     // select one of `ModelDefine` and `ModelLoad`.
     if (pipeline.modelDefine) {
       modelPlugin = await costa.fetchAndInstall(pipeline.modelDefine, cwd);
-      model = await runable.start(modelPlugin, dataset, getParams(pipeline.modelDefineParams));
+      model = await runnable.start(modelPlugin, dataset, getParams(pipeline.modelDefineParams));
     } else if (pipeline.modelLoad) {
       modelPlugin = await costa.fetchAndInstall(pipeline.modelLoad, cwd);
-      model = await runable.start(modelPlugin, dataset, getParams(pipeline.modelLoadParams, {
+      model = await runnable.start(modelPlugin, dataset, getParams(pipeline.modelLoadParams, {
         // specify the recover path for model loader by default.
         recoverPath: modelPath
       }));
@@ -182,21 +190,22 @@ export class PipelineService {
 
     if (pipeline.modelTrain) {
       const modelTrain = await costa.fetchAndInstall(pipeline.modelTrain, cwd);
-      model = await runable.start(modelTrain, dataset, model, getParams(pipeline.modelTrainParams, {
+      model = await runnable.start(modelTrain, dataset, model, getParams(pipeline.modelTrainParams, {
         modelPath
       }));
     }
 
     verifyPlugin('modelEvaluate');
     const modelEvaluate = await costa.fetchAndInstall(pipeline.modelEvaluate, cwd);
-    const output = await runable.start(modelEvaluate, dataset, model, getParams(pipeline.modelEvaluateParams, {
+    const output = await runnable.start(modelEvaluate, dataset, model, getParams(pipeline.modelEvaluateParams, {
       modelDir: modelPath
     }));
 
-    const result = await runable.valueOf(output) as EvaluateResult;
+    const result = await runnable.valueOf(output) as EvaluateResult;
     job.evaluateMap = JSON.stringify(result);
     job.evaluatePass = result.pass;
     job.endTime = Date.now();
+    job.status = 1;
     await job.save();
 
     // start generates the output directory
@@ -226,13 +235,13 @@ export class PipelineService {
       fs.copy(modelPath, dist + '/model'),
       fs.copy(path.join(__dirname, '../../assets/predict.js'), `${dist}/index.js`),
       // copy logs
-      fs.copy(runable.workingDir + '/logs', `${dist}/logs`),
+      fs.copy(runnable.workingDir + '/logs', `${dist}/logs`),
       // write package.json
       fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
       // write metadata.json
       fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
     ];
-    await runable.destroy();
+    await runnable.destroy();
     console.log(`trained the model to ${dist}`);
   }
 

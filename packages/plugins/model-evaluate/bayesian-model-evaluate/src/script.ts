@@ -126,10 +126,8 @@ export const get_all_words_list = async function(filepath: string): Promise<any>
 };
 
 export const loadModel = async function (filepath: string): Promise<any> {
-  console.log('load model from', filepath);
   return boa.with(open(filepath, 'rb'), (f: any) => {
     const m = pickle.load(f);
-    console.log('>>>', m);
     return m;
   });
 };

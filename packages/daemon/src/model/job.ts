@@ -1,6 +1,7 @@
 import { STRING, INTEGER, BOOLEAN, Model, BuildOptions } from 'sequelize';
 import { providerWrapper, IApplicationContext } from 'midway';
 import DB from '../boot/database';
+import { PluginRunnable } from '@pipcook/costa';
 
 providerWrapper([
   {
@@ -13,7 +14,6 @@ export class JobModel extends Model {
   readonly id: string;
   readonly pipelineId: string;
   readonly specVersion: string;
-  readonly status: number;
   readonly metadata: number;
 
   evaluateMap: string;
@@ -21,6 +21,10 @@ export class JobModel extends Model {
   currentIndex: number;
   error: string;
   endTime: number;
+  status: number;
+
+  // runnable is for servie.
+  runnable: PluginRunnable;
 }
 
 export type JobModelStatic = typeof Model & {

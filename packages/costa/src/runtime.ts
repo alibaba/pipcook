@@ -48,6 +48,9 @@ function createRequirements(name: string, config: CondaConfig): string {
 
 export { PluginPackage } from './index';
 export { RunnableResponse } from './runnable';
+export {
+  PluginRunnable
+};
 
 /**
  * The Costa runtime is for scheduling plugins and management.
@@ -188,7 +191,7 @@ export class CostaRuntime {
     if (args?.customEnv) {
       throw new TypeError('"customEnv" is not allowed here.');
     }
-    const runnable = new PluginRunnable(this);
+    const runnable = new PluginRunnable(this, args.id);
     const pluginNodePath = path.join(this.options.installDir, 'node_modules');
     await this.linkBoa();
     await runnable.bootstrap({

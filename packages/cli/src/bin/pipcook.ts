@@ -36,7 +36,7 @@ const pkg = require('../../package.json');
     .option('--verbose', 'prints verbose logs')
     .description('run pipeline with a json file.')
     .action((filename, opts) => {
-      start(filename, opts.verbose === 'true');
+      start(filename, opts.verbose);
     });
 
   program

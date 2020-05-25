@@ -26,13 +26,17 @@ export interface BootstrapArg {
    * Add extra environment variables.
    */
   customEnv?: Record<string, string>;
+  /**
+   * The runnable id.
+   */
+  id?: string;
 }
 
 /**
  * The runnable is to represent a container to run plugins.
  */
 export class PluginRunnable {
-  private id: string = uuid.v4();
+  private id: string;
   private rt: CostaRuntime;
   private handle: ChildProcess = null;
 
@@ -58,7 +62,8 @@ export class PluginRunnable {
    * Create a runnable by the given runtime.
    * @param rt the costa runtime.
    */
-  constructor(rt: CostaRuntime) {
+  constructor(rt: CostaRuntime, id?: string) {
+    this.id = id || uuid.v1();
     this.rt = rt;
     this.workingDir = path.join(this.rt.options.componentDir, this.id);
     this.state = 'init';
