@@ -53,13 +53,6 @@ const start: StartHandler = async (filename: string, verbose: boolean) => {
       stderr.kill();
     });
   }
-
-  // const job = await startJob(filename, process.cwd());
-  // spinner.succeed(`create job ${job.id} succeeded`);
-  // if (verbose === true) {
-  //   tail(job.id, 'stdout');
-  //   tail(job.id, 'stderr');
-  // }
 };
 
 export default start;
