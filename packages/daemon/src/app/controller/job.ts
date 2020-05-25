@@ -49,7 +49,7 @@ export class JobController {
       const parsedConfig = await parseConfig(config);
       const pipeline = await this.pipelineService.initPipeline(parsedConfig);
       const job = await this.pipelineService.createJob(pipeline.id);
-      
+
       if (verbose === '1') {
         const sse = new SseStream(this.ctx.req);
         const res = this.ctx.res as NodeJS.WritableStream;
