@@ -1,8 +1,7 @@
 import ora from 'ora';
 import { existsSync } from 'fs';
 import * as path from 'path';
-import { spawn, SpawnOptions, ChildProcess } from 'child_process';
-import { startJob } from '../service/job';
+import { spawn, ChildProcess } from 'child_process';
 import { StartHandler } from '../types';
 import { Constants } from '../utils';
 import { listen, get } from '../request';
@@ -34,7 +33,7 @@ const start: StartHandler = async (filename: string, verbose: boolean) => {
     return process.exit(1);
   }
 
-  const opts =  { cwd: process.cwd(), config: filename };
+  const opts = { cwd: process.cwd(), config: filename };
   if (!verbose) {
     const job = await get(`${route.job}/start`, opts);
     spinner.succeed(`create job(${job.id}) succeeded.`);
