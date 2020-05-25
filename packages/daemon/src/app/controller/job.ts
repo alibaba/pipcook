@@ -1,4 +1,5 @@
 import { Context, controller, inject, provide, post, get, del } from 'midway';
+import SseStream from 'ssestream';
 
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
@@ -40,19 +41,31 @@ export class JobController {
     }
   }
 
-  @post('/start')
+  @get('/start')
   public async startPipeline() {
     const { ctx } = this;
     try {
-      const { config, cwd } = ctx.request.body;
+      const { config, cwd, verbose } = ctx.request.query;
       const parsedConfig = await parseConfig(config);
       const pipeline = await this.pipelineService.initPipeline(parsedConfig);
       const job = await this.pipelineService.createJob(pipeline.id);
-      this.pipelineService.startJob(job, cwd);
-      successRes(ctx, {
-        message: 'create pipeline and jobs successfully',
-        data: job
-      }, 201);
+      
+      if (verbose === '1') {
+        const sse = new SseStream(this.ctx.req);
+        const res = this.ctx.res as NodeJS.WritableStream;
+        sse.pipe(res);
+        sse.write({ event: 'job created', data: job });
+        await this.pipelineService.startJob(job, cwd);
+        sse.write({ event: 'job finished', data: job });
+        sse.write({ event: 'session', data: 'close' });
+        sse.unpipe(res);
+      } else {
+        this.pipelineService.startJob(job, cwd);
+        successRes(ctx, {
+          message: 'create pipeline and jobs successfully',
+          data: job
+        }, 201);
+      }
     } catch (err) {
       if (err.errors && err.errors[0] && err.errors[0].message) {
         err.message = err.errors[0].message;
@@ -61,6 +74,12 @@ export class JobController {
         message: err.message
       });
     }
+  }
+
+  @del('')
+  public async deleteAll() {
+    await this.pipelineService.deleteAllJobs();
+    successRes(this.ctx, {});
   }
 
   @get('/:jobId/log')
@@ -125,11 +144,5 @@ export class JobController {
         message: err.message
       });
     }
-  }
-
-  @del('')
-  public async deleteAll() {
-    await this.pipelineService.deleteAllJobs();
-    successRes(this.ctx, {});
   }
 }

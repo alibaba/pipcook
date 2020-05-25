@@ -25,11 +25,13 @@
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.16",
     "@types/command-exists": "^1.2.0",
+    "@types/eventsource": "^1.1.2",
     "@types/inquirer": "^6.5.0",
     "@types/semver": "^7.1.0",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
+    "eventsource": "^1.0.7",
     "fastify": "^2.13.1",
     "find-process": "^1.4.3",
     "fs-extra": "^8.1.0",

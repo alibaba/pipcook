@@ -2,6 +2,7 @@
 
 import program from 'commander';
 import ora from 'ora';
+import EventSource from 'eventsource';
 
 import { runJob, getJobs, getLogById, removeJobs } from '../service/job';
 import { fetchLog } from '../utils';
@@ -13,7 +14,7 @@ async function list(): Promise<void> {
   const jobs = await getJobs();
   const outputs = jobs.rows.map((row: Record<'id' | 'status' | 'createdAt' | 'endTime', any>) => ({
     id: row.id,
-    status: row.status,
+    status: PipelineStatus[row.status],
     createdAt: row.createdAt,
     endTime: row.endTime
   }));

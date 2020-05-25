@@ -5,6 +5,8 @@ import { spawn, SpawnOptions, ChildProcess } from 'child_process';
 import { startJob } from '../service/job';
 import { StartHandler } from '../types';
 import { Constants } from '../utils';
+import { listen, get } from '../request';
+import { route } from '../router';
 
 const spinner = ora();
 
@@ -32,12 +34,33 @@ const start: StartHandler = async (filename: string, verbose: boolean) => {
     return process.exit(1);
   }
 
-  const job = await startJob(filename, process.cwd());
-  spinner.succeed(`create job ${job.id} succeeded`);
-  if (verbose === true) {
-    tail(job.id, 'stdout');
-    tail(job.id, 'stderr');
+  const opts =  { cwd: process.cwd(), config: filename };
+  if (!verbose) {
+    const job = await get(`${route.job}/start`, opts);
+    spinner.succeed(`create job(${job.id}) succeeded.`);
+  } else {
+    const es = await listen(`${route.job}/start`, opts);
+    let stdout: ChildProcess, stderr: ChildProcess;
+    es.addEventListener('job created', (e: MessageEvent) => {
+      const job = JSON.parse(e.data);
+      spinner.succeed(`create job(${job.id}) succeeded.`);
+      stdout = tail(job.id, 'stdout');
+      stderr = tail(job.id, 'stderr');
+    });
+    es.addEventListener('job finished', (e: MessageEvent) => {
+      const job = JSON.parse(e.data);
+      spinner.succeed(`job(${job.id}) is finished with ${e.data}`);
+      stdout.kill();
+      stderr.kill();
+    });
   }
+
+  // const job = await startJob(filename, process.cwd());
+  // spinner.succeed(`create job ${job.id} succeeded`);
+  // if (verbose === true) {
+  //   tail(job.id, 'stdout');
+  //   tail(job.id, 'stderr');
+  // }
 };
 
 export default start;

@@ -10,4 +10,4 @@ export const daemonPackage = LOCAL ? path.join(__dirname, '../../daemon') : '@pi
 export const boardPackage = LOCAL ? path.join(__dirname, '../../pipboard') : '@pipcook/pipboard';
 
 export const pipcookLogName = 'pipcook-output';
-export const optionalNpmClients: string[] = [ 'npm', 'cnpm', 'tnpm' ];
+export const optionalNpmClients: string[] = [ 'npm', 'cnpm' ];

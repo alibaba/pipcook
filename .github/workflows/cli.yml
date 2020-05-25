@@ -61,7 +61,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook init
     - name: test client basic usage run
       run: |
-        ./packages/cli/dist/bin/pipcook run ./test/pipelines/text-bayes-classification.json
+        ./packages/cli/dist/bin/pipcook run ./test/pipelines/text-bayes-classification.json --verbose
     - name: test client basic usage plugin-dev
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect

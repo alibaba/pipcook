@@ -1,4 +1,4 @@
-import { get, post, remove } from '../request';
+import { get, post, remove, listen } from '../request';
 import { route } from '../router';
 
 export const runJob = (pipelineId: string) => post(route.job, { pipelineId });
@@ -11,7 +11,7 @@ export const getJobs = () => get(route.job);
 
 export const getLogById = (id: string) => get(`${route.job}/${id}/log`);
 
-export const startJob = (path: string, cwd: string) => post(`${route.job}/start`, {
+export const startJob = (path: string, cwd: string) => listen(`${route.job}/start`, {
   config: path,
   cwd
 });
