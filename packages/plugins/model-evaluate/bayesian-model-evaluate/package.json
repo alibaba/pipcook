@@ -38,7 +38,7 @@
     "python": "3.7",
     "dependencies": {
       "jieba": "*",
-      "sklearn": "*"
+      "scikit-learn": "*"
     }
   }
 }

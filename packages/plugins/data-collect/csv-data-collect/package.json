@@ -38,13 +38,5 @@
       "dataset": "text",
       "plugin": "dataCollect"
     }
-  },
-  "conda": {
-    "python": "3.7",
-    "dependencies": {
-      "numpy": "*",
-      "jieba": "*",
-      "sklearn": "*"
-    }
   }
 }
