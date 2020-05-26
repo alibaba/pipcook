@@ -1,9 +1,10 @@
 import { scope, ScopeEnum, provide, async, init } from 'midway';
 import { CostaRuntime } from '@pipcook/costa';
-import * as path from 'path';
-import * as os from 'os';
-
-const PIPCOOK_DIR = path.join(os.homedir(), '.pipcook');
+import {
+  PIPCOOK_PLUGIN_DIR,
+  PIPCOOK_DATASET_DIR,
+  PIPCOOK_RUN_DIR
+} from '../utils/constants';
 
 @scope(ScopeEnum.Singleton)
 @async()
@@ -14,9 +15,9 @@ export default class PluginRuntime {
   @init()
   async connect(): Promise<void> {
     this.costa = new CostaRuntime({
-      installDir: path.join(PIPCOOK_DIR, 'plugins'),
-      datasetDir: path.join(PIPCOOK_DIR, 'datasets'),
-      componentDir: path.join(PIPCOOK_DIR, 'components')
+      installDir: PIPCOOK_PLUGIN_DIR,
+      datasetDir: PIPCOOK_DATASET_DIR,
+      componentDir: PIPCOOK_RUN_DIR
     });
   }
 }

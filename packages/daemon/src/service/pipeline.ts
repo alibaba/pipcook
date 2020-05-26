@@ -8,12 +8,12 @@ import { provide, inject } from 'midway';
 import { PipelineDB, PipelineStatus, EvaluateResult } from '@pipcook/pipcook-core';
 
 import { RunParams } from '../interface';
-import { retriveLog } from '../runner/helper';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import PluginRuntime from '../boot/plugin';
 import { PluginPackage, RunnableResponse } from '@pipcook/costa';
 import { BootstrapArg } from '@pipcook/costa/dist/runnable';
+import { PIPCOOK_RUN_DIR } from '../utils/constants';
 
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
@@ -244,8 +244,13 @@ export class PipelineService {
     console.log(`trained the model to ${dist}`);
   }
 
-  getLogById(id: string): Promise<string> {
-    return retriveLog(id);
+  async getLogById(id: string): Promise<string[]> {
+    const stdout = path.join(PIPCOOK_RUN_DIR, id, 'logs/stdout.log');
+    const stderr = path.join(PIPCOOK_RUN_DIR, id, 'logs/stderr.log');
+    return [
+      await fs.readFile(stdout, 'utf8'),
+      await fs.readFile(stderr, 'utf8')
+    ];
   }
 
   async getPipelineId(id: string): Promise<string> {
