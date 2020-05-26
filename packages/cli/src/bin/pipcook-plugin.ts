@@ -6,7 +6,7 @@ import ora from 'ora';
 import { listen, get } from '../request';
 import { route } from '../router';
 
-async function install(name: string) {
+async function install(name: string): Promise<void> {
   const spinner = ora();
   spinner.start(`fetching package info ${name}`);
   let es = await listen(`${route.plugin}/install`, { name });
@@ -23,14 +23,14 @@ async function install(name: string) {
   });
 }
 
-async function uninstall(name: string) {
+async function uninstall(name: string): Promise<void> {
   const spinner = ora();
   spinner.start(`uninstalling ${name}`);
   await get(`${route.plugin}/uninstall`, { name });
   spinner.succeed(`uninstalled ${name}`);
 }
 
-async function list(opts: any) {
+async function list(opts: any): Promise<void> {
   const plugins = await get(`${route.plugin}/list`, opts) as any[];
   if (plugins.length === 0) {
     console.info('no plugin installed.');
