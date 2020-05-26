@@ -2,41 +2,35 @@
 
 import program from 'commander';
 import ora from 'ora';
-import EventSource from 'eventsource';
-
-import { runJob, getJobs, getLogById, removeJobs } from '../service/job';
-import { fetchLog } from '../utils';
+import { get } from '../request';
+import { route } from '../router';
 
 const PipelineStatus = [ 'creating', 'running', 'success', 'fail' ];
-const spinner = ora();
 
 async function list(): Promise<void> {
-  const jobs = await getJobs();
-  const outputs = jobs.rows.map((row: Record<'id' | 'status' | 'createdAt' | 'endTime', any>) => ({
-    id: row.id,
-    status: PipelineStatus[row.status],
-    createdAt: row.createdAt,
-    endTime: row.endTime
-  }));
-  console.table(outputs);
+  const jobs = await get(`${route.job}/list`);
+  console.table(jobs.map((item: any) => {
+    item.status = PipelineStatus[item.status];
+    return item;
+  }), [ 'id', 'status', 'evaluatePass', 'createdAt' ]);
 }
 
 async function run(id: string, opts: any): Promise<void> {
-  const data = await runJob(id);
+  const spinner = ora();
+  const data = await get(`${route.job}/${id}/run`);
   spinner.succeed(`create job ${data.id} succeeded`);
-  if (opts.verbose === true) {
-    fetchLog(data, '');
-  }
 }
 
 async function remove() {
-  await removeJobs();
+  const spinner = ora();
+  spinner.start('removing jobs...');
+  await get(`${route.job}/remove`);
   spinner.succeed('remove jobs succeeded');
 }
 
 async function log(id: string): Promise<void> {
-  const data = await getLogById(id);
-  console.log(data);
+  const log = await get(`${route.job}/${id}/log`);
+  console.log(log);
 }
 
 program

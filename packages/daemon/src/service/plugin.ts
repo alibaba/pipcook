@@ -14,10 +14,10 @@ class PluginNotFound extends TypeError {
   }
 }
 
-type ListPluginsFilter = {
-  datatype?: string,
-  category?: string
-};
+interface ListPluginsFilter {
+  datatype?: string;
+  category?: string;
+}
 
 @provide('PluginManager')
 export class PluginManager {

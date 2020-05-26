@@ -31,7 +31,7 @@ export class PluginController {
       await this.pluginManager.install(pkg);
       sse.write({ event: 'installed', data: pkg });
     } catch (err) {
-      sse.write({ event: 'error', data: err.message })
+      sse.write({ event: 'error', data: err.message });
     } finally {
       sse.write({ event: 'session', data: 'close' });
       sse.unpipe(res);

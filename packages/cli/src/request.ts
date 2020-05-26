@@ -36,7 +36,7 @@ function createGeneralRequest(agent: Function): Function {
 
 export const post = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.post)(host, body, params);
 export const put = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.put)(host, body, params);
-export const remove = async (host: string) => createGeneralRequest(axios.delete)(host);
+export const del = async (host: string) => createGeneralRequest(axios.delete)(host);
 export const get = async (host: string, params?: RequestParams) => {
   const uri = `${host}?${qs.stringify(params)}`;
   return createGeneralRequest(axios.get)(uri);

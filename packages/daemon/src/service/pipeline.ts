@@ -14,6 +14,14 @@ import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
 import { PIPCOOK_RUN_DIR } from '../utils/constants';
 
+interface QueryOptions {
+  limit: number;
+  offset: number;
+}
+interface SelectJobsFilter {
+  pipelineId?: string;
+}
+
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
 function getIdOrName(id: string): QueryParams {
@@ -35,7 +43,7 @@ function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
 export class PipelineService {
 
   @inject('pipelineModel')
-  model: PipelineModelStatic;
+  pipeline: PipelineModelStatic;
 
   @inject('jobModel')
   job: JobModelStatic;
@@ -43,18 +51,19 @@ export class PipelineService {
   @inject('PluginManager')
   pluginManager: PluginManager;
 
-  initPipeline(config: PipelineDB): Promise<PipelineModel> {
-    return this.model.create(config);
+  createPipeline(config: PipelineDB): Promise<PipelineModel> {
+    return this.pipeline.create(config);
   }
 
-  async getPipelineById(id: string): Promise<PipelineModel> {
-    return this.model.findOne({
+  async getPipeline(id: string): Promise<PipelineModel> {
+    return this.pipeline.findOne({
       where: getIdOrName(id)
     });
   }
 
-  async getPipelines(offset: number, limit: number): Promise<{rows: PipelineModel[], count: number}> {
-    return this.model.findAndCountAll({
+  async queryPipelines(opts?: QueryOptions): Promise<{rows: PipelineModel[], count: number}> {
+    const { offset, limit } = opts || {};
+    return this.pipeline.findAndCountAll({
       offset,
       limit,
       order: [
@@ -63,17 +72,25 @@ export class PipelineService {
     });
   }
 
-  async deletePipelineById(id: string): Promise<void> {
-    await this.model.destroy({
+  async removePipelineById(id: string): Promise<void> {
+    await this.pipeline.destroy({
       where: getIdOrName(id)
     });
   }
 
+  async removePipelines(): Promise<number> {
+    const list = await this.queryPipelines();
+    await list.rows.map(async (pipeline: PipelineModel) => {
+      await pipeline.destroy();
+    });
+    return list.count;
+  }
+
   async updatePipelineById(id: string, config: PipelineDB): Promise<PipelineModel> {
-    await this.model.update(config, {
+    await this.pipeline.update(config, {
       where: getIdOrName(id)
     });
-    return this.getPipelineById(id);
+    return this.getPipeline(id);
   }
 
   async getJobById(id: string): Promise<JobModel> {
@@ -82,27 +99,27 @@ export class PipelineService {
     });
   }
 
-  async getJobsByPipelineId(id: string, offset: number, limit: number): Promise<{rows: JobModel[], count: number}> {
-    const pipelineId = await this.getPipelineId(id);
+  async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<{rows: JobModel[], count: number}> {
+    const where = {} as any;
+    const { offset, limit } = opts || {};
+    if (typeof filter.pipelineId === 'string') {
+      where.pipelineId = filter.pipelineId;
+    }
     return this.job.findAndCountAll({
       offset,
       limit,
-      where: {
-        pipelineId
-      },
+      where,
       order: [
-        ['createdAt', 'DESC']
+        [ 'createdAt', 'DESC' ]
       ]
     });
   }
 
-  async getJobs(offset: number, limit: number): Promise<{rows: JobModel[], count: number}> {
-    return this.job.findAndCountAll({
-      offset,
-      limit,
-      order: [
-        [ 'createdAt', 'DESC' ]
-      ]
+  async removeJobs(): Promise<void> {
+    const jobs = await this.queryJobs({});
+    await jobs.rows.map(async (job: JobModel) => {
+      await job.destroy();
+      await fs.remove(`${PIPCOOK_RUN_DIR}/${job.id}`);
     });
   }
 
@@ -127,14 +144,9 @@ export class PipelineService {
     return job;
   }
 
-  async deleteAllJobs(): Promise<void> {
-    await JobModel.destroy({ truncate: true });
-    return null;
-  }
-
   async startJob(job: JobModel, cwd: string) {
     const { runnable } = job;
-    const pipeline = await this.getPipelineById(job.pipelineId);
+    const pipeline = await this.getPipeline(job.pipelineId);
     const getParams = (params: string | null, ...extra: object[]): object => {
       if (params == null) {
         return Object.assign({}, ...extra);
@@ -255,7 +267,7 @@ export class PipelineService {
     if (validate(id) as boolean) {
       return id;
     }
-    const pipeline = await this.getPipelineById(id);
+    const pipeline = await this.getPipeline(id);
     return pipeline.id;
   }
 }
