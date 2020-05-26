@@ -1,10 +1,13 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as sqlite3 from 'sqlite3';
-import * as os from 'os';
+import { PIPCOOK_STORAGE } from './constants';
 
 sqlite3.verbose();
 
-const dbHome = path.join(os.homedir(), '.pipcook', 'db');
-fs.ensureDirSync(dbHome);
-new sqlite3.Database(path.join(dbHome, 'pipcook.db'), sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
+function initSqlite() {
+  fs.ensureDirSync(path.dirname(PIPCOOK_STORAGE));
+  new sqlite3.Database(PIPCOOK_STORAGE, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
+}
+
+initSqlite();
