@@ -33,17 +33,18 @@ function createGeneralRequest(agent: Function): Function {
   };
 }
 
-export const get = async (host: string, params?: RequestParams) => createGeneralRequest(axios.get)(host, params);
+
 export const post = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.post)(host, body, params);
 export const put = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.put)(host, body, params);
 export const remove = async (host: string) => createGeneralRequest(axios.delete)(host);
+export const get = async (host: string, params?: RequestParams) => {
+  const uri = `${host}?${qs.stringify(params)}`;
+  return createGeneralRequest(axios.get)(uri);
+};
 export const listen = async (host: string, params?: RequestParams): Promise<EventSource> => {
   const uri = `${host}?${qs.stringify({ verbose: 1, ...params })}`;
   const es = new EventSource(uri);
-  return new Promise((resolve, reject) => {
-    es.addEventListener('error', (e: Event) => {
-      reject(new EventSourceError(e));
-    });
+  return new Promise((resolve) => {
     es.addEventListener('session', (e: MessageEvent) => {
       if (e.data === 'close') {
         es.close();

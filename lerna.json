@@ -19,8 +19,8 @@
       "nohoist": [
         "node-addon-api",
         "midway",
-        "egg-scripts",
         "egg-ci",
+        "egg-scripts",
         "midway-bin",
         "midway-mock",
         "ice-scripts",

@@ -126,7 +126,7 @@ export class CostaRuntime {
       debug(`install the plugin from local: ${pluginAbsName}`);
     }
     await spawnAsync('npm', [
-      'install', `${pluginAbsName}`, '--save'
+      'install', `${pluginAbsName}`, '--no-save'
     ], {
       cwd: this.options.installDir
     });
@@ -179,7 +179,7 @@ export class CostaRuntime {
       debug(`skip uninstall "${name}" because it not exists.`);
       return false;
     }
-    await spawnAsync('npm', [ 'uninstall', name, '--save' ], {
+    await spawnAsync('npm', [ 'uninstall', name, '--no-save' ], {
       cwd: this.options.installDir
     });
     return false;
@@ -263,7 +263,9 @@ export class CostaRuntime {
     pkg.pipcook.source = source;
     pkg.pipcook.target = {
       PYTHONPATH: path.join(
-        installDir, `conda_envs/${pkg.name}@${pkg.version}`, 'lib/python3.7/site-packages')
+        installDir, `conda_envs/${pkg.name}@${pkg.version}`, 'lib/python3.7/site-packages'),
+      DESTPATH: path.join(
+        installDir, `node_modules/${pkg.name}@${pkg.version}`)
     };
     return pkg;
   }

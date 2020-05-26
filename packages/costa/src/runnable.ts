@@ -240,7 +240,8 @@ export class PluginRunnable {
   private async afterDestroy(): Promise<void> {
     debug(`the runnable(${this.id}) has been destroyed.`);
     await [
-      remove(path.join(this.rt.options.componentDir, this.id)),
+      // FIXME(Yorkie): remove component directory?
+      // remove(path.join(this.rt.options.componentDir, this.id)),
       close(this.stdout),
       close(this.stderr)
     ];

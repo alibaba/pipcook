@@ -75,6 +75,7 @@ export interface PluginPackage {
      */
     target?: {
       PYTHONPATH: string;
+      DESTPATH: string;
     };
   };
   /**

@@ -13,11 +13,11 @@ const DAEMON_PORT = 6927;
 type DaemonOperator = 'start' | 'stop';
 
 function execEggScript(op: DaemonOperator, args: string[]): void {
-  const bin = DAEMON_DIR + '/node_modules/@pipcook/daemon/node_modules/.bin/egg-scripts';
+  const bin = path.join(__dirname, '../../node_modules/.bin/egg-scripts');
   const command = [ bin, op ].concat(args).join(' ');
   console.info('>', command);
   exec(command, {
-    cwd: DAEMON_DIR + '/node_modules/@pipcook/daemon'
+    cwd: `${DAEMON_DIR}/node_modules/@pipcook/daemon`
   });
 }
 

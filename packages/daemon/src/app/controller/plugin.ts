@@ -1,32 +1,46 @@
-import { Context, controller, inject, provide, post } from 'midway';
+import { Context, controller, inject, provide, get } from 'midway';
 import { successRes } from '../../utils/response';
-import PluginRuntime from '../../boot/plugin';
+import { PluginManager } from '../../service/plugin';
+import SseStream from 'ssestream';
+import Debug from 'debug';
+const debug = Debug('daemon.app.plugin');
 
 @provide()
 @controller('/plugin')
 export class PluginController {
+
   @inject()
   ctx: Context;
 
-  @inject('pluginRT')
-  pluginRT: PluginRuntime;
+  @inject('PluginManager')
+  pluginManager: PluginManager;
 
-  @post('/install')
+  @get('/install')
   public async install() {
-    const { ctx } = this;
-    const { costa } = this.pluginRT;
+    const name = this.ctx.query.name;
+    const sse = new SseStream(this.ctx.req);
+    const res = this.ctx.res as NodeJS.WritableStream;
+    sse.pipe(res);
 
-    // fetch information
-    const metadata = await costa.fetch(ctx.request.body.name);
-    // install
-    await costa.install(metadata);
-    successRes(ctx, { metadata });
+    try {
+      debug(`checking info: ${name}.`);
+      const pkg = await this.pluginManager.fetch(name);
+      sse.write({ event: 'info', data: pkg });
+
+      debug(`installing ${name}.`);
+      await this.pluginManager.install(pkg);
+      sse.write({ event: 'installed', data: pkg });
+    } catch (err) {
+      sse.write({ event: 'error', data: err.message })
+    } finally {
+      sse.write({ event: 'session', data: 'close' });
+      sse.unpipe(res);
+    }
   }
 
-  @post('/uninstall')
+  @get('/uninstall')
   public async uninstall() {
-    const { costa } = this.pluginRT;
-    await costa.uninstall(this.ctx.request.body.name);
+    await this.pluginManager.uninstall(this.ctx.query.name);
     successRes(this.ctx, {});
   }
 }
