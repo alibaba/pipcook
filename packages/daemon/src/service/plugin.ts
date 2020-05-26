@@ -14,6 +14,11 @@ class PluginNotFound extends TypeError {
   }
 }
 
+type ListPluginsFilter = {
+  datatype?: string,
+  category?: string
+};
+
 @provide('PluginManager')
 export class PluginManager {
 
@@ -25,6 +30,17 @@ export class PluginManager {
 
   async fetch(name: string): Promise<PluginPackage> {
     return this.pluginRT.costa.fetch(name);
+  }
+
+  async list(filter?: ListPluginsFilter): Promise<PluginModel[]> {
+    const where = {} as any;
+    if (filter.category) {
+      where.category = filter.category;
+    }
+    if (filter.datatype) {
+      where.datatype = filter.datatype;
+    }
+    return this.model.findAll({ where });
   }
 
   async install(pkg: PluginPackage): Promise<PluginModel> {

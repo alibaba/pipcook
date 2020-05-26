@@ -43,4 +43,13 @@ export class PluginController {
     await this.pluginManager.uninstall(this.ctx.query.name);
     successRes(this.ctx, {});
   }
+
+  @get('/list')
+  public async list() {
+    const plugins = await this.pluginManager.list({
+      datatype: this.ctx.query.datatype,
+      category: this.ctx.query.category
+    });
+    successRes(this.ctx, { data: plugins });
+  }
 }
