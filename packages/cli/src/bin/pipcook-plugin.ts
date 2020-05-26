@@ -14,7 +14,7 @@ async function install(name: string) {
     const pkg = JSON.parse(e.data);
     spinner.start(`installing ${pkg.name} from ${pkg.pipcook.source.uri}`);
   });
-  es.addEventListener('installed',(e: MessageEvent) => {
+  es.addEventListener('installed', (e: MessageEvent) => {
     const pkg = JSON.parse(e.data);
     spinner.succeed(`${pkg.name} installed.`);
   });
