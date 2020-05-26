@@ -42,7 +42,3 @@ export async function writeOutput(jobId: string, content: string, stderr = false
   const dest = path.join(PIPCOOK_LOGS, jobId, filename);
   await fs.appendFile(dest, content);
 }
-
-export function retriveLog(jobId: string): Promise<string> {
-  return fs.readFile(path.join(PIPCOOK_LOGS, jobId, 'stdout'), 'utf8');
-}

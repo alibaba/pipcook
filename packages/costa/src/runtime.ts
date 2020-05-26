@@ -1,7 +1,7 @@
 import path from 'path';
 import url from 'url';
 import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, ensureSymlink } from 'fs-extra';
-import { spawn, spawnSync, SpawnOptions } from 'child_process';
+import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
 import {
   NpmPackageMetadata,
@@ -49,7 +49,8 @@ function createRequirements(name: string, config: CondaConfig): string {
 export { PluginPackage } from './index';
 export { RunnableResponse } from './runnable';
 export {
-  PluginRunnable
+  PluginRunnable,
+  BootstrapArg
 };
 
 /**
@@ -68,10 +69,6 @@ export class CostaRuntime {
     ensureDirSync(opts.installDir);
     ensureDirSync(opts.datasetDir);
     ensureDirSync(opts.componentDir);
-    spawnSync('npm', [ 'init', '-y' ], {
-      cwd: opts.installDir,
-      stdio: 'inherit'
-    });
   }
   /**
    * fetch and check if the package name is valid.

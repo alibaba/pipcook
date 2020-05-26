@@ -1,7 +1,7 @@
 import { provide, inject } from 'midway';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
-import { PluginPackage } from '@pipcook/costa';
+import { PluginPackage, BootstrapArg, PluginRunnable } from '@pipcook/costa';
 import * as uuid from 'uuid';
 
 class PluginNotFound extends TypeError {
@@ -28,8 +28,22 @@ export class PluginManager {
   @inject('pluginRT')
   pluginRT: PluginRuntime;
 
-  async fetch(name: string): Promise<PluginPackage> {
-    return this.pluginRT.costa.fetch(name);
+  get datasetRoot() {
+    return this.pluginRT.costa.options.datasetDir;
+  }
+
+  async fetch(name: string, cwd?: string): Promise<PluginPackage> {
+    return this.pluginRT.costa.fetch(name, cwd);
+  }
+
+  async fetchAndInstall(name: string, cwd?: string): Promise<PluginPackage> {
+    const pkg = await this.fetch(name, cwd);
+    await this.install(pkg);
+    return pkg;
+  }
+
+  async createRunnable(id: string): Promise<PluginRunnable> {
+    return this.pluginRT.costa.createRunnable({ id } as BootstrapArg);
   }
 
   async list(filter?: ListPluginsFilter): Promise<PluginModel[]> {
