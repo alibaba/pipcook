@@ -21,7 +21,7 @@ async function run(id: string, opts: any): Promise<void> {
   spinner.succeed(`create job ${data.id} succeeded`);
 }
 
-async function remove() {
+async function remove(): Promise<void> {
   const spinner = ora();
   spinner.start('removing jobs...');
   await get(`${route.job}/remove`);

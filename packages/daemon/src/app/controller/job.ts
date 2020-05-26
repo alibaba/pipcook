@@ -44,35 +44,31 @@ export class JobController {
   @get('/start')
   public async start() {
     const { ctx } = this;
-    try {
-      const { config, cwd, verbose } = ctx.request.query;
-      const parsedConfig = await parseConfig(config);
-      const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-      const job = await this.pipelineService.createJob(pipeline.id);
+    const { config, cwd, verbose } = ctx.request.query;
+    const parsedConfig = await parseConfig(config);
+    const pipeline = await this.pipelineService.createPipeline(parsedConfig);
+    const job = await this.pipelineService.createJob(pipeline.id);
 
-      if (verbose === '1') {
-        const sse = new SseStream(this.ctx.req);
-        const res = this.ctx.res as NodeJS.WritableStream;
-        sse.pipe(res);
-        sse.write({ event: 'job created', data: job });
+    if (verbose === '1') {
+      const sse = new SseStream(this.ctx.req);
+      const res = this.ctx.res as NodeJS.WritableStream;
+      sse.pipe(res);
+      sse.write({ event: 'job created', data: job });
+      try {
         await this.pipelineService.startJob(job, cwd);
         sse.write({ event: 'job finished', data: job });
+      } catch (err) {
+        sse.write({ event: 'error', data: err });
+      } finally {
         sse.write({ event: 'session', data: 'close' });
         sse.unpipe(res);
-      } else {
-        this.pipelineService.startJob(job, cwd);
-        successRes(ctx, {
-          message: 'create pipeline and jobs successfully',
-          data: job
-        }, 201);
       }
-    } catch (err) {
-      if (err.errors && err.errors[0] && err.errors[0].message) {
-        err.message = err.errors[0].message;
-      }
-      failRes(ctx, {
-        message: err.message
-      });
+    } else {
+      this.pipelineService.startJob(job, cwd);
+      successRes(ctx, {
+        message: 'create pipeline and jobs successfully',
+        data: job
+      }, 201);
     }
   }
 
