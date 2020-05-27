@@ -240,6 +240,7 @@ export class PipelineService {
       job.status = PipelineStatus.FAIL;
       job.error = err.message;
       await job.save();
+      await runnable.destroy();
       throw err;
     }
   }
