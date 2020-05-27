@@ -24,14 +24,13 @@ jobs:
         npm install
         npm run build
     - name: Testing help commands
-      working-directory: ./myworkspace
       run: |
-        ../packages/cli/dist/bin/pipcook -v
-        ../packages/cli/dist/bin/pipcook -h
-        ../packages/cli/dist/bin/pipcook init --help
-        ../packages/cli/dist/bin/pipcook run --help
-        ../packages/cli/dist/bin/pipcook plugin-dev --help
-        ../packages/cli/dist/bin/pipcook serve --help
+        ./packages/cli/dist/bin/pipcook -v
+        ./packages/cli/dist/bin/pipcook -h
+        ./packages/cli/dist/bin/pipcook init --help
+        ./packages/cli/dist/bin/pipcook run --help
+        ./packages/cli/dist/bin/pipcook plugin-dev --help
+        ./packages/cli/dist/bin/pipcook serve --help
 
   basic-usage:
     name: Test Pipcook Tools main commands
