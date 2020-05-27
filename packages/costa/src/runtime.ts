@@ -149,7 +149,6 @@ export class CostaRuntime {
       if (pyIndex) {
         args = args.concat([ '-i', pyIndex ]);
       }
-      console.log(args);
       await spawnAsync(`${envDir}/bin/pip3`, args);
     } else {
       debug(`just skip the Python environment installation.`);

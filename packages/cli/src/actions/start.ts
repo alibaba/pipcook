@@ -1,33 +1,20 @@
 import ora from 'ora';
 import { existsSync } from 'fs';
 import * as path from 'path';
-import { spawn, ChildProcess } from 'child_process';
+import { ChildProcess } from 'child_process';
 import { StartHandler } from '../types';
-import { Constants } from '../utils';
 import { listen, get } from '../request';
 import { route } from '../router';
 import { tunaMirrorURI } from '../config';
-
-const spinner = ora();
-
-function tail(id: string, name: string): ChildProcess {
-  return spawn('tail',
-    [
-      '-f',
-      `${Constants.PIPCOOK_HOME}/components/${id}/logs/${name}.log`
-    ],
-    {
-      stdio: 'inherit'
-    }
-  );
-}
+import { tail } from '../utils';
 
 const start: StartHandler = async (filename: string, opts: any) => {
+  const spinner = ora();
+
   if (!filename) {
     spinner.fail('Please specify the config path');
     return process.exit(1);
   }
-
   filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
   if (!existsSync(filename)) {
     spinner.fail(`${filename} not exists`);

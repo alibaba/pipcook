@@ -85,4 +85,11 @@ program
   .description('monit the daemon logs.')
   .action(monitor);
 
+program
+  .command('logfile')
+  .description('print the path of logfile')
+  .action(() => {
+    console.info(PIPCOOK_HOME + '/daemon.access.log');
+  });
+
 program.parse(process.argv);

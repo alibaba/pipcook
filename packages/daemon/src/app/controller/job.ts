@@ -2,8 +2,8 @@ import { Context, controller, inject, provide, get } from 'midway';
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
 import { parseConfig } from '../../runner/helper';
-import { JobModel } from '../../model/job';
 import ServerSentEmitter from '../../utils/emitter';
+import { JobModel } from '../../model/job';
 
 @provide()
 @controller('/job')
@@ -16,39 +16,32 @@ export class JobController {
 
   @get('/run')
   public async run() {
-    const { ctx } = this;
-    const { pipelineId } = ctx.request.body;
-    let job: JobModel;
-    try {
-      console.log('create job with pipeline id', pipelineId);
-      job = await this.pipelineService.createJob(pipelineId);
-      this.pipelineService.startJob(job, process.cwd());
-      successRes(ctx, {
-        message: 'create run job successfully',
-        job
-      }, 201);
-    } catch (err) {
-      console.log(err?.stack);
-      if (job && job.id) {
-        await this.pipelineService.updateJobById(job.id, {
-          status: 3
-        });
-      }
-      failRes(ctx, {
-        message: err.message
-      });
-    }
+    const { pipelineId, cwd, verbose, pyIndex } = this.ctx.request.query;
+    const job = await this.pipelineService.createJob(pipelineId);
+    await this.runJobWithContext(
+      job,
+      cwd,
+      verbose === '1',
+      pyIndex
+    );
   }
 
   @get('/start')
   public async start() {
-    const { ctx } = this;
-    const { config, cwd, verbose, pyIndex } = ctx.request.query;
+    const { config, cwd, verbose, pyIndex } = this.ctx.request.query;
     const parsedConfig = await parseConfig(config);
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
     const job = await this.pipelineService.createJob(pipeline.id);
+    await this.runJobWithContext(
+      job,
+      cwd,
+      verbose === '1',
+      pyIndex
+    );
+  }
 
-    if (verbose === '1') {
+  private async runJobWithContext(job: JobModel, cwd: string, verbose: boolean, pyIndex: string) {
+    if (verbose) {
       const sse = new ServerSentEmitter(this.ctx);
       sse.emit('job created', job);
       try {
@@ -61,7 +54,7 @@ export class JobController {
       }
     } else {
       this.pipelineService.startJob(job, cwd, pyIndex);
-      successRes(ctx, {
+      successRes(this.ctx, {
         message: 'create pipeline and jobs successfully',
         data: job
       }, 201);
