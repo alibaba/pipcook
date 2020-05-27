@@ -47,25 +47,39 @@ export interface CondaConfig {
  * and some pipcook fields are also added, see below for details.
  */
 export interface PluginPackage {
+  /**
+   * the package name.
+   */
   name: string;
+  /**
+   * the package version.
+   */
   version: string;
+  /**
+   * the main script.
+   */
   main: string;
+  /**
+   * the package description.
+   */
   description?: string;
   /**
    * The following objects are used to declare some information 
    * needed by the plugin at runtime.
    */
   pipcook: {
-    types: {
-      /**
-       * The plugin type.
-       */
-      plugin: PluginTypeI;
-      /**
-       * The dataset type.
-       */
-      dataset: 'image' | 'text';
-    };
+    /**
+     * The plugin category.
+     */
+    category: PluginTypeI;
+    /**
+     * The data type of this plugin.
+     */
+    datatype: 'text' | 'image' | 'all';
+    /**
+     * The method to map for corresponding datatype.
+     */
+    method?: string;
     /**
      * The source of the plugin.
      */

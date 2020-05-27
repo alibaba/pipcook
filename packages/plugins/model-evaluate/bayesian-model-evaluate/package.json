@@ -29,10 +29,8 @@
     "access": "public"
   },
   "pipcook": {
-    "types": {
-      "dataset": "text",
-      "plugin": "modelEvaluate"
-    }
+    "category": "modelEvaluate",
+    "datatype": "text"
   },
   "conda": {
     "python": "3.7",

@@ -30,9 +30,7 @@
     "access": "public"
   },
   "pipcook": {
-    "types": {
-      "dataset": "text",
-      "plugin": "dataAccess"
-    }
+    "category": "dataAccess",
+    "datatype": "text"
   }
 }

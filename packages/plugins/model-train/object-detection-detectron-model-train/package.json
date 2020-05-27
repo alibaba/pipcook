@@ -26,5 +26,16 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pipcook": {
+    "category": "modelTrain",
+    "datatype": "image"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "torch": "*",
+      "torchvision": "*"
+    }
   }
 }

@@ -31,10 +31,8 @@
     "access": "public"
   },
   "pipcook": {
-    "types": {
-      "dataset": "text",
-      "plugin": "modelTrain"
-    }
+    "category": "modelTrain",
+    "datatype": "text"
   },
   "conda": {
     "python": "3.7",

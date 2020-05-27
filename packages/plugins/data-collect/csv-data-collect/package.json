@@ -34,9 +34,7 @@
     "access": "public"
   },
   "pipcook": {
-    "types": {
-      "dataset": "text",
-      "plugin": "dataCollect"
-    }
+    "category": "dataCollect",
+    "datatype": "text"
   }
 }

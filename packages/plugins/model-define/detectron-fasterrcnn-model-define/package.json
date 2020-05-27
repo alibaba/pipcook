@@ -26,5 +26,17 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pipcook": {
+    "category": "modelDefine",
+    "datatype": "image",
+    "method": "detect"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "torch": "*",
+      "torchvision": "*"
+    }
   }
 }

@@ -14,8 +14,8 @@ describe('create a costa runtime', () => {
   it('should fetch a plugin and install', async () => {
     collectCsv = await costa.fetch('../plugins/data-collect/csv-data-collect');
     expect(collectCsv.name).toBe('@pipcook/plugins-csv-data-collect');
-    expect(collectCsv.pipcook.types.dataset).toBe('text');
-    expect(collectCsv.pipcook.types.plugin).toBe('dataCollect');
+    expect(collectCsv.pipcook.datatype).toBe('text');
+    expect(collectCsv.pipcook.category).toBe('dataCollect');
   });
 
   it('should install the package', async () => {

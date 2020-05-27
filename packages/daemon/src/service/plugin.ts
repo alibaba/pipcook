@@ -67,8 +67,8 @@ export class PluginManager {
         id: uuid.v1(),
         name: pkg.name,
         version: pkg.version,
-        category: pkg.pipcook.types.plugin,
-        datatype: pkg.pipcook.types.dataset,
+        category: pkg.pipcook.category,
+        datatype: pkg.pipcook.datatype,
         dest: pkg.pipcook.target.DESTPATH
       }
     });

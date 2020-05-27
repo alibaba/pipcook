@@ -27,5 +27,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pipcook": {
+    "category": "modelTrain",
+    "datatype": "image"
   }
 }
