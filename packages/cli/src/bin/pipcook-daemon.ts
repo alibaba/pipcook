@@ -15,7 +15,7 @@ interface DaemonBootstrapMessage {
   event: string;
   data: {
     listen: number;
-  }
+  };
 }
 
 async function start(): Promise<void> {
