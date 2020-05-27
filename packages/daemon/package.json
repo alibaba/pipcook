@@ -40,11 +40,11 @@
     "node": ">=10.16.0"
   },
   "scripts": {
-    "start": "ts-node src/utils/dbinit.ts && egg-scripts start --daemon --title=pipcook-daemon --framework=midway --ts --port=6927 --ignore-stderr",
+    "start": "egg-scripts start --daemon --title=pipcook-daemon --framework=midway --ts --port=6927 --ignore-stderr",
     "stop": "egg-scripts stop --title=pipcook-daemon",
     "start_build": "npm run compile && cross-env NODE_ENV=development midway-bin dev --port=6927",
     "clear": "midway-bin clean",
-    "dev": "ts-node src/utils/dbinit.ts && cross-env NODE_ENV=local midway-bin dev --port=6927 --ts",
+    "dev": "cross-env NODE_ENV=local midway-bin dev --port=6927 --ts",
     "debug": "cross-env NODE_ENV=local midway-bin debug --ts",
     "cov": "midway-bin cov --ts",
     "lint": "tslint -p tsconfig.json -t stylish",
