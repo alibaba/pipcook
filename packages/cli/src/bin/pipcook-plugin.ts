@@ -9,7 +9,7 @@ import { route } from '../router';
 async function install(name: string): Promise<void> {
   const spinner = ora();
   spinner.start(`fetching package info ${name}`);
-  let es = await listen(`${route.plugin}/install`, { name }, {
+  await listen(`${route.plugin}/install`, { name }, {
     'info': (e: MessageEvent) => {
       const pkg = JSON.parse(e.data);
       spinner.start(`installing ${pkg.name} from ${pkg.pipcook.source.uri}`);

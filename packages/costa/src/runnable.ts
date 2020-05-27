@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import path from 'path';
-import { ensureDir, ensureSymlink, ensureFile, remove, open, close } from 'fs-extra';
+import { ensureDir, ensureSymlink, ensureFile, open, close } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProto, PluginOperator, PluginMessage, PluginResponse } from './proto';
 import { CostaRuntime, PluginPackage } from './index';

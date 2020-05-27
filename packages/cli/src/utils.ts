@@ -7,7 +7,7 @@ export const Constants = {
 
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
-    exec(cmd, opts, (err: ExecException, stdout: string, stderr: string) => {
+    exec(cmd, opts, (err: ExecException, stdout: string) => {
       err == null ? resolve(stdout) : reject(err);
     });
   });

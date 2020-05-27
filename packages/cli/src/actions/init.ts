@@ -1,5 +1,5 @@
 import path from 'path';
-import { execSync as exec, ExecSyncOptions } from 'child_process';
+import { execSync as exec } from 'child_process';
 import fse, { symlink, readJson, ensureDir } from 'fs-extra';
 import ora from 'ora';
 import { prompt } from 'inquirer';

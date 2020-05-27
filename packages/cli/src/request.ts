@@ -34,8 +34,7 @@ export const get = async (host: string, params?: RequestParams) => {
   return createGeneralRequest(axios.get)(uri);
 };
 
-export const listen = async (host: string, params?: RequestParams,
-                             handlers?: Record<string, EventListener>): Promise<EventSource> => {
+export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {
   return new Promise((resolve) => {
     const uri = `${host}?${qs.stringify({ verbose: 1, ...params })}`;
     const es = new EventSource(uri);
@@ -43,7 +42,7 @@ export const listen = async (host: string, params?: RequestParams,
       es.close();
       console.error('connects to daemon timeout, please run "pipcook daemon restart".');
     }, 5000);
-    const onerror = (e: Event) => {
+    const onerror = () => {
       es.close();
       clearTimeout(timeoutHandle);
       console.error('daemon is not started, run "pipcook daemon start"');
