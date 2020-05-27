@@ -43,7 +43,7 @@ export class JobController {
   @get('/start')
   public async start() {
     const { ctx } = this;
-    const { config, cwd, verbose } = ctx.request.query;
+    const { config, cwd, verbose, pyIndex } = ctx.request.query;
     const parsedConfig = await parseConfig(config);
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
     const job = await this.pipelineService.createJob(pipeline.id);
@@ -52,7 +52,7 @@ export class JobController {
       const sse = new ServerSentEmitter(this.ctx);
       sse.emit('job created', job);
       try {
-        await this.pipelineService.startJob(job, cwd);
+        await this.pipelineService.startJob(job, cwd, pyIndex);
         sse.emit('job finished', job);
       } catch (err) {
         sse.emit('error', err?.message);
@@ -60,7 +60,7 @@ export class JobController {
         sse.finish();
       }
     } else {
-      this.pipelineService.startJob(job, cwd);
+      this.pipelineService.startJob(job, cwd, pyIndex);
       successRes(ctx, {
         message: 'create pipeline and jobs successfully',
         data: job

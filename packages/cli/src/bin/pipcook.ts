@@ -34,10 +34,9 @@ const pkg = require('../../package.json');
   program
     .command('run <filename>')
     .option('--verbose', 'prints verbose logs')
+    .option('--tuna', 'use tuna mirror to install python packages')
     .description('run pipeline with a json file.')
-    .action((filename, opts) => {
-      start(filename, opts.verbose);
-    });
+    .action(start);
 
   program
     .command('daemon', 'manage pipcook daemon service')

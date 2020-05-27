@@ -153,7 +153,7 @@ export class PipelineService {
     return job;
   }
 
-  async startJob(job: JobModel, cwd: string) {
+  async startJob(job: JobModel, cwd: string, pyIndex?: string) {
     const { runnable } = job;
     const pipeline = await this.getPipeline(job.pipelineId);
     const getParams = (params: string | null, ...extra: object[]): object => {
@@ -175,7 +175,7 @@ export class PipelineService {
 
     try {
       verifyPlugin('dataCollect');
-      const dataCollect = await this.pluginManager.fetchAndInstall(pipeline.dataCollect, cwd);
+      const dataCollect = await this.pluginManager.fetchAndInstall(pipeline.dataCollect, cwd, pyIndex);
       const dataDir = path.join(this.pluginManager.datasetRoot, `${dataCollect.name}@${dataCollect.version}`);
       const modelPath = path.join(runnable.workingDir, 'model');
 
@@ -185,14 +185,14 @@ export class PipelineService {
       }));
 
       verifyPlugin('dataAccess');
-      const dataAccess = await this.pluginManager.fetchAndInstall(pipeline.dataAccess, cwd);
+      const dataAccess = await this.pluginManager.fetchAndInstall(pipeline.dataAccess, cwd, pyIndex);
       let dataset = await runnable.start(dataAccess, getParams(pipeline.dataAccessParams, {
         dataDir
       }));
 
       let dataProcess: PluginPackage;
       if (pipeline.dataProcess) {
-        dataProcess = await this.pluginManager.fetchAndInstall(pipeline.dataProcess, cwd);
+        dataProcess = await this.pluginManager.fetchAndInstall(pipeline.dataProcess, cwd, pyIndex);
         dataset = await runnable.start(dataProcess, getParams(pipeline.dataProcessParams));
       }
 
@@ -201,10 +201,10 @@ export class PipelineService {
 
       // select one of `ModelDefine` and `ModelLoad`.
       if (pipeline.modelDefine) {
-        modelPlugin = await this.pluginManager.fetchAndInstall(pipeline.modelDefine, cwd);
+        modelPlugin = await this.pluginManager.fetchAndInstall(pipeline.modelDefine, cwd, pyIndex);
         model = await runnable.start(modelPlugin, dataset, getParams(pipeline.modelDefineParams));
       } else if (pipeline.modelLoad) {
-        modelPlugin = await this.pluginManager.fetchAndInstall(pipeline.modelLoad, cwd);
+        modelPlugin = await this.pluginManager.fetchAndInstall(pipeline.modelLoad, cwd, pyIndex);
         model = await runnable.start(modelPlugin, dataset, getParams(pipeline.modelLoadParams, {
           // specify the recover path for model loader by default.
           recoverPath: modelPath
@@ -212,14 +212,14 @@ export class PipelineService {
       }
 
       if (pipeline.modelTrain) {
-        const modelTrain = await this.pluginManager.fetchAndInstall(pipeline.modelTrain, cwd);
+        const modelTrain = await this.pluginManager.fetchAndInstall(pipeline.modelTrain, cwd, pyIndex);
         model = await runnable.start(modelTrain, dataset, model, getParams(pipeline.modelTrainParams, {
           modelPath
         }));
       }
 
       verifyPlugin('modelEvaluate');
-      const modelEvaluate = await this.pluginManager.fetchAndInstall(pipeline.modelEvaluate, cwd);
+      const modelEvaluate = await this.pluginManager.fetchAndInstall(pipeline.modelEvaluate, cwd, pyIndex);
       const output = await runnable.start(modelEvaluate, dataset, model, getParams(pipeline.modelEvaluateParams, {
         modelDir: modelPath
       }));

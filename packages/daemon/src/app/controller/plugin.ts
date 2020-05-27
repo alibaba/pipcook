@@ -17,7 +17,7 @@ export class PluginController {
 
   @get('/install')
   public async install() {
-    const name = this.ctx.query.name;
+    const { name, pyIndex } = this.ctx.query;
     const sse = new ServerSentEmitter(this.ctx);
     try {
       debug(`checking info: ${name}.`);
@@ -25,7 +25,7 @@ export class PluginController {
       sse.emit('info', pkg);
 
       debug(`installing ${name}.`);
-      await this.pluginManager.install(pkg);
+      await this.pluginManager.install(pkg, pyIndex);
       sse.emit('installed', pkg);
     } catch (err) {
       sse.emit('error', err?.message);

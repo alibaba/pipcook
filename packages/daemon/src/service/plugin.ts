@@ -36,9 +36,9 @@ export class PluginManager {
     return this.pluginRT.costa.fetch(name, cwd);
   }
 
-  async fetchAndInstall(name: string, cwd?: string): Promise<PluginPackage> {
+  async fetchAndInstall(name: string, cwd?: string, pyIndex?: string): Promise<PluginPackage> {
     const pkg = await this.fetch(name, cwd);
-    await this.install(pkg);
+    await this.install(pkg, pyIndex);
     return pkg;
   }
 
@@ -57,7 +57,7 @@ export class PluginManager {
     return this.model.findAll({ where });
   }
 
-  async install(pkg: PluginPackage): Promise<PluginModel> {
+  async install(pkg: PluginPackage, pyIndex?: string): Promise<PluginModel> {
     const [ plugin ] = await this.model.findOrCreate({
       where: {
         name: pkg.name,
@@ -72,7 +72,7 @@ export class PluginManager {
         dest: pkg.pipcook.target.DESTPATH
       }
     });
-    await this.pluginRT.costa.install(pkg);
+    await this.pluginRT.costa.install(pkg, false, pyIndex);
     return plugin;
   }
 

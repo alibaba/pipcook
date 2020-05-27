@@ -5,11 +5,17 @@ import path from 'path';
 import ora from 'ora';
 import { listen, get } from '../request';
 import { route } from '../router';
+import { tunaMirrorURI } from '../config';
 
-async function install(name: string): Promise<void> {
+async function install(name: string, opts: any): Promise<void> {
   const spinner = ora();
   spinner.start(`fetching package info ${name}`);
-  await listen(`${route.plugin}/install`, { name }, {
+
+  const params = {
+    name,
+    pyIndex: opts.tuna ? tunaMirrorURI : undefined
+  };
+  await listen(`${route.plugin}/install`, params, {
     'info': (e: MessageEvent) => {
       const pkg = JSON.parse(e.data);
       spinner.start(`installing ${pkg.name} from ${pkg.pipcook.source.uri}`);
@@ -43,11 +49,12 @@ async function list(opts: any): Promise<void> {
 program
   .command('install <name>')
   .description('install the given plugin.')
-  .action((name: string) => {
+  .option('--tuna', 'use tuna mirror to install python packages')
+  .action((name: string, opts: any) => {
     if (name[0] === '.') {
       name = path.join(process.cwd(), name);
     }
-    install(name);
+    install(name, opts);
   });
 
 program

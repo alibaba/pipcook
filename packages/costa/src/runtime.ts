@@ -93,20 +93,12 @@ export class CostaRuntime {
     return pkg;
   }
   /**
-   * Get the package `PluginPackage` instance.
-   * @param name the package name
-   */
-  async fetchAndInstall(name: string, cwd?: string): Promise<PluginPackage> {
-    const pkg = await this.fetch(name, cwd);
-    await this.install(pkg);
-    return pkg;
-  }
-  /**
    * Install the given plugin by name.
    * @param name the plugin package name.
    * @param force install from new anyway.
+   * @param pyIndex the index mirror to install python packages.
    */
-  async install(pkg: PluginPackage, force = false): Promise<boolean> {
+  async install(pkg: PluginPackage, force = false, pyIndex?: string): Promise<boolean> {
     // check if the pkg is installed
     if ((await this.isInstalled(pkg.name)) && !force) {
       debug(`skip install "${pkg.name}" because it already exists`);
@@ -153,13 +145,12 @@ export class CostaRuntime {
       debug('conda environment is setup correctly, start downloading.');
       await spawnAsync(python, [ '-m', 'venv', envDir ]);
       // TODO(yorkie): check for access(pip3)
-      await spawnAsync(`${envDir}/bin/pip3`, 
-        [ 'install',
-          '-r', `${envDir}/requirements.txt`,
-          // TODO(yorkie): make this be optional
-          '-i', 'https://pypi.tuna.tsinghua.edu.cn/simple'
-        ]
-      );
+      let args = [ 'install', '-r', `${envDir}/requirements.txt` ];
+      if (pyIndex) {
+        args = args.concat([ '-i', pyIndex ]);
+      }
+      console.log(args);
+      await spawnAsync(`${envDir}/bin/pip3`, args);
     } else {
       debug(`just skip the Python environment installation.`);
     }
@@ -176,10 +167,8 @@ export class CostaRuntime {
       debug(`skip uninstall "${name}" because it not exists.`);
       return false;
     }
-    await spawnAsync('npm', [ 'uninstall', name, '--no-save' ], {
-      cwd: this.options.installDir
-    });
-    return false;
+    await remove(path.join(this.options.installDir, 'node_modules', name));
+    return true;
   }
   /**
    * create a runnable.
