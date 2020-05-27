@@ -193,7 +193,7 @@ export class PipelineService {
       let dataProcess: PluginPackage;
       if (pipeline.dataProcess) {
         dataProcess = await this.pluginManager.fetchAndInstall(pipeline.dataProcess, cwd, pyIndex);
-        dataset = await runnable.start(dataProcess, getParams(pipeline.dataProcessParams));
+        await runnable.start(dataProcess, dataset, getParams(pipeline.dataProcessParams));
       }
 
       let model: RunnableResponse;

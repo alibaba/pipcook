@@ -2,6 +2,7 @@ import * as uuid from 'uuid';
 import { PluginProto, PluginOperator, PluginMessage } from './proto';
 import { PluginPackage } from './index';
 import Debug from 'debug';
+import { UniDataset, DataLoader } from '@pipcook/pipcook-core';
 
 type MessageHandler = Record<PluginOperator, (proto: PluginProto) => void>;
 const debug = Debug('costa.client');
@@ -41,7 +42,7 @@ let previousResults: Record<string, any> = {};
  * Deserialize an argument.
  * @param arg 
  */
-function deserializeArg(arg: Record<string, any>): Record<string, any> {
+function deserializeArg(arg: Record<string, any>): any {
   if (arg.__flag__ === '__pipcook_plugin_runnable_result__' &&
     previousResults[arg.id]) {
     return previousResults[arg.id];
@@ -66,10 +67,32 @@ async function emitStart(message: PluginMessage): Promise<void> {
       boa.setenv(pkg.pipcook.target.PYTHONPATH);
       debug('setup boa environment');
     }
+
+    // get the plugin function.
     let fn = require(pkg.name);
     if (fn && typeof fn !== 'function' && typeof fn.default === 'function') {
+      // compatible with ESM default export.
       fn = fn.default;
     }
+
+    if (pkg.pipcook.category === 'dataProcess') {
+      // in "dataProcess" plugin, we need to do process them in one by one.
+      const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
+      await [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
+        .filter((loader: DataLoader) => loader != null)
+        .map(async (loader: DataLoader) => {
+          const len = await loader.len();
+          // FIXME(Yorkie): in parallel?
+          for (let i = 0; i < len; i++) {
+            const sample = await loader.getItem(i);
+            await fn(sample, dataset.metadata, args);
+          }
+        });
+      recv(PluginOperator.WRITE);
+      return;
+    }
+
+    // default handler for plugins.
     const resp = await fn(...pluginArgs.map(deserializeArg));
     if (resp) {
       const rid = uuid.v4();
