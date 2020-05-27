@@ -31,7 +31,6 @@
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
-    "egg-scripts": "2.13.0",
     "eventsource": "^1.0.7",
     "fastify": "^2.13.1",
     "find-process": "^1.4.3",

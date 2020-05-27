@@ -71,5 +71,10 @@ function prepareToReady() {
     fs.createWriteStream(PIPCOOK_HOME + '/daemon.stdout.log'));
   process.stderr.pipe(
     fs.createWriteStream(PIPCOOK_HOME + '/daemon.stderr.log'));
-  process.send('ready');
+  process.send({
+    event: 'ready',
+    data: {
+      listen: PORT
+    }
+  });
 }

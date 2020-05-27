@@ -4,40 +4,45 @@ import { execSync as exec, spawn, fork } from 'child_process';
 import os from 'os';
 import path from 'path';
 import program from 'commander';
-import { readFile, pathExists } from 'fs-extra';
+import ora from 'ora';
+import { readFile, pathExists, remove } from 'fs-extra';
 
 const PIPCOOK_HOME = path.join(os.homedir(), '.pipcook');
 const DAEMON_HOME = path.join(PIPCOOK_HOME, 'server/node_modules/@pipcook/daemon');
 const DAEMON_PIDFILE = path.join(PIPCOOK_HOME, 'daemon.pid');
 
-type DaemonOperator = 'start' | 'stop';
-
 async function start(): Promise<void> {
+  const spinner = ora();
+  spinner.start('starting Pipcook...');
+
   const daemon = fork(path.join(DAEMON_HOME, 'bootstrap.js'), [], {
     cwd: DAEMON_HOME,
-    stdio: [ 0, 'pipe', 'pipe', 'ipc' ],
+    stdio: 'ignore',
     detached: true
   });
-  const pipe = (channel: 'stdout' | 'stderr') => daemon[channel].pipe(process[channel]);
-  const unpipe = (channel: 'stdout' | 'stderr') => daemon[channel].unpipe(process[channel]);
-
-  // [ 'stdout', 'stderr' ].map(pipe);
-  daemon.on('message', (event: string) => {
-    if (event === 'ready') {
-      [ 'stdout', 'stderr' ].map(unpipe);
-      daemon.removeAllListeners('message');
+  daemon.on('message', (message: any) => {
+    if (message.event === 'ready') {
       daemon.disconnect();
       daemon.unref();
+      spinner.succeed(`Pipcook is on http://localhost:${message.data.listen}`);
     }
   });
 }
 
 async function stop(): Promise<void> {
+  const spinner = ora();
+  spinner.start('stoping Pipcook...');
   if (await pathExists(DAEMON_PIDFILE)) {
     const oldPid = parseInt(await readFile(DAEMON_PIDFILE, 'utf8'), 10);
-    exec(`kill ${oldPid}`);
+    try {
+      exec(`kill ${oldPid}`);
+      spinner.succeed('Pipcook stoped.');
+    } catch (err) {
+      await remove(DAEMON_PIDFILE);
+      spinner.succeed(`kill ${oldPid} failed, skiped and removed pidfile.`);
+    }
   } else {
-    console.error('daemon is not running.');
+    spinner.succeed('skiped, daemon is not running.');
   }
 }
 
