@@ -50,13 +50,13 @@ const start: StartHandler = async (filename: string, verbose: boolean) => {
       'job finished': (e: MessageEvent) => {
         const job = JSON.parse(e.data);
         spinner.succeed(`job(${job.id}) is finished with ${e.data}`);
-        stdout.kill();
-        stderr.kill();
+        stdout?.kill();
+        stderr?.kill();
       },
       'error': (e: MessageEvent) => {
-        spinner.fail(e.data);
-        stdout.kill();
-        stderr.kill();
+        spinner.fail(`occurrs an error ${e.data}`);
+        stdout?.kill();
+        stderr?.kill();
       }
     });
   }

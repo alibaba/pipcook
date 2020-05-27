@@ -6,7 +6,6 @@ import EventSource from 'eventsource';
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
 
-
 function createGeneralRequest(agent: Function): Function {
   const spinner = ora();
   return async (...args: any[]) => {
@@ -36,32 +35,49 @@ export const get = async (host: string, params?: RequestParams) => {
 
 export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {
   return new Promise((resolve) => {
+    let handshaked = false;
     const uri = `${host}?${qs.stringify({ verbose: 1, ...params })}`;
     const es = new EventSource(uri);
     const timeoutHandle = setTimeout(() => {
       es.close();
       console.error('connects to daemon timeout, please run "pipcook daemon restart".');
     }, 5000);
-    const onerror = () => {
-      es.close();
-      clearTimeout(timeoutHandle);
-      console.error('daemon is not started, run "pipcook daemon start"');
+    const onerror = (e: Event) => {
+      if (handshaked === false) {
+        es.close();
+        clearTimeout(timeoutHandle);
+        console.error('daemon is not started, run "pipcook daemon start"');
+        es.removeEventListener('error', onerror);
+      } else if (typeof handlers.error === 'function') {
+        // manually pass the `error` event to user-defined handler.
+        handlers.error(e);
+      }
     };
 
     es.addEventListener('error', onerror);
     es.addEventListener('session', (e: MessageEvent) => {
       if (e.data === 'close') {
+        // close the connection and mark the handshaked is disabled.
+        handshaked = false;
         es.close();
       } else if (e.data === 'start') {
+        handshaked = true;
+        // if `handlers.error` not defined, remove the listener directly.
+        if (typeof handlers.error !== 'function') {
+          es.removeEventListener('error', onerror);
+        }
+        // clear the timeout handle because handshake is finished.
         clearTimeout(timeoutHandle);
         resolve(es);
       }
-      es.removeEventListener('error', onerror);
     });
 
     // register extra handlers.
-    Object.keys(handlers).forEach((name: string) => {
-      es.addEventListener(name, handlers[name]);
-    });
+    Object.keys(handlers)
+      // handle `handlers.error` manually.
+      .filter((name: string) => name !== 'error')
+      .forEach((name: string) => {
+        es.addEventListener(name, handlers[name]);
+      });
   });
 };
