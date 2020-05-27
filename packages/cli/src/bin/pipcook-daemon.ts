@@ -11,6 +11,13 @@ const PIPCOOK_HOME = path.join(os.homedir(), '.pipcook');
 const DAEMON_HOME = path.join(PIPCOOK_HOME, 'server/node_modules/@pipcook/daemon');
 const DAEMON_PIDFILE = path.join(PIPCOOK_HOME, 'daemon.pid');
 
+interface DaemonBootstrapMessage {
+  event: string;
+  data: {
+    listen: number;
+  }
+}
+
 async function start(): Promise<void> {
   const spinner = ora();
   spinner.start('starting Pipcook...');
@@ -20,7 +27,7 @@ async function start(): Promise<void> {
     stdio: 'ignore',
     detached: true
   });
-  daemon.on('message', (message: any) => {
+  daemon.on('message', (message: DaemonBootstrapMessage): void => {
     if (message.event === 'ready') {
       daemon.disconnect();
       daemon.unref();

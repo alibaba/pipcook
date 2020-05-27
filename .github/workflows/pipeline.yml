@@ -14,7 +14,7 @@ jobs:
         pipeline: ['mnist-image-classification', 'databinding-image-classification', 'text-bayes-classification']
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node_version }}
+    - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node_version }}
@@ -22,5 +22,9 @@ jobs:
       run: npm install
     - name: compile
       run: npm run build
+    - name: initilize pipcook
+      env:
+        NODE_ENV: local
+      run: ./packages/cli/dist/bin/pipcook init
     - name: pipeline
       run: npm run test:pipeline -- ${{ matrix.pipeline }}
