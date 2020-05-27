@@ -1,10 +1,9 @@
 import { Context, controller, inject, provide, get } from 'midway';
-import SseStream from 'ssestream';
-
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
 import { parseConfig } from '../../runner/helper';
 import { JobModel } from '../../model/job';
+import ServerSentEmitter from '../../utils/emitter';
 
 @provide()
 @controller('/job')
@@ -50,18 +49,15 @@ export class JobController {
     const job = await this.pipelineService.createJob(pipeline.id);
 
     if (verbose === '1') {
-      const sse = new SseStream(this.ctx.req);
-      const res = this.ctx.res as NodeJS.WritableStream;
-      sse.pipe(res);
-      sse.write({ event: 'job created', data: job });
+      const sse = new ServerSentEmitter(this.ctx);
+      sse.emit('job created', job);
       try {
         await this.pipelineService.startJob(job, cwd);
-        sse.write({ event: 'job finished', data: job });
+        sse.emit('job finished', job);
       } catch (err) {
-        sse.write({ event: 'error', data: err });
+        sse.emit('error', err?.message);
       } finally {
-        sse.write({ event: 'session', data: 'close' });
-        sse.unpipe(res);
+        sse.finish();
       }
     } else {
       this.pipelineService.startJob(job, cwd);

@@ -67,10 +67,10 @@ function createPidfileSync(pathname) {
 })();
 
 function prepareToReady() {
-  process.stdout.pipe(
-    fs.createWriteStream(PIPCOOK_HOME + '/daemon.stdout.log'));
-  process.stderr.pipe(
-    fs.createWriteStream(PIPCOOK_HOME + '/daemon.stderr.log'));
+  // FIXME(Yorkie): monkeypatch the process.stdout(stderr) to redirect logs to the access log file.
+  const access = fs.createWriteStream(PIPCOOK_HOME + '/daemon.access.log')
+  process.stdout.write = access.write.bind(access);
+  process.stderr.write = access.write.bind(access);
   process.send({
     event: 'ready',
     data: {

@@ -9,17 +9,18 @@ import { route } from '../router';
 async function install(name: string): Promise<void> {
   const spinner = ora();
   spinner.start(`fetching package info ${name}`);
-  let es = await listen(`${route.plugin}/install`, { name });
-  es.addEventListener('info', (e: MessageEvent) => {
-    const pkg = JSON.parse(e.data);
-    spinner.start(`installing ${pkg.name} from ${pkg.pipcook.source.uri}`);
-  });
-  es.addEventListener('installed', (e: MessageEvent) => {
-    const pkg = JSON.parse(e.data);
-    spinner.succeed(`${pkg.name} installed.`);
-  });
-  es.addEventListener('error', (e: MessageEvent) => {
-    spinner.fail(`install failed with ${e?.data}`);
+  let es = await listen(`${route.plugin}/install`, { name }, {
+    'info': (e: MessageEvent) => {
+      const pkg = JSON.parse(e.data);
+      spinner.start(`installing ${pkg.name} from ${pkg.pipcook.source.uri}`);
+    },
+    'installed': (e: MessageEvent) => {
+      const pkg = JSON.parse(e.data);
+      spinner.succeed(`${pkg.name} installed.`);
+    },
+    'error': (e: MessageEvent) => {
+      spinner.fail(`install failed with ${e?.data}`);
+    }
   });
 }
 

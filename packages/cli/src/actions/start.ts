@@ -38,19 +38,26 @@ const start: StartHandler = async (filename: string, verbose: boolean) => {
     const job = await get(`${route.job}/start`, opts);
     spinner.succeed(`create job(${job.id}) succeeded.`);
   } else {
-    const es = await listen(`${route.job}/start`, opts);
     let stdout: ChildProcess, stderr: ChildProcess;
-    es.addEventListener('job created', (e: MessageEvent) => {
-      const job = JSON.parse(e.data);
-      spinner.succeed(`create job(${job.id}) succeeded.`);
-      stdout = tail(job.id, 'stdout');
-      stderr = tail(job.id, 'stderr');
-    });
-    es.addEventListener('job finished', (e: MessageEvent) => {
-      const job = JSON.parse(e.data);
-      spinner.succeed(`job(${job.id}) is finished with ${e.data}`);
-      stdout.kill();
-      stderr.kill();
+    spinner.start(`start running ${filename}...`);
+    await listen(`${route.job}/start`, opts, {
+      'job created': (e: MessageEvent) => {
+        const job = JSON.parse(e.data);
+        spinner.succeed(`create job(${job.id}) succeeded.`);
+        stdout = tail(job.id, 'stdout');
+        stderr = tail(job.id, 'stderr');
+      },
+      'job finished': (e: MessageEvent) => {
+        const job = JSON.parse(e.data);
+        spinner.succeed(`job(${job.id}) is finished with ${e.data}`);
+        stdout.kill();
+        stderr.kill();
+      },
+      'error': (e: MessageEvent) => {
+        spinner.fail(e.data);
+        stdout.kill();
+        stderr.kill();
+      }
     });
   }
 };

@@ -1,7 +1,7 @@
 import { Context, controller, inject, provide, get } from 'midway';
 import { successRes } from '../../utils/response';
 import { PluginManager } from '../../service/plugin';
-import SseStream from 'ssestream';
+import ServerSentEmitter from '../../utils/emitter';
 import Debug from 'debug';
 const debug = Debug('daemon.app.plugin');
 
@@ -18,23 +18,19 @@ export class PluginController {
   @get('/install')
   public async install() {
     const name = this.ctx.query.name;
-    const sse = new SseStream(this.ctx.req);
-    const res = this.ctx.res as NodeJS.WritableStream;
-    sse.pipe(res);
-
+    const sse = new ServerSentEmitter(this.ctx);
     try {
       debug(`checking info: ${name}.`);
       const pkg = await this.pluginManager.fetch(name);
-      sse.write({ event: 'info', data: pkg });
+      sse.emit('info', pkg);
 
       debug(`installing ${name}.`);
       await this.pluginManager.install(pkg);
-      sse.write({ event: 'installed', data: pkg });
+      sse.emit('installed', pkg);
     } catch (err) {
-      sse.write({ event: 'error', data: err.message });
+      sse.emit('error', err?.message);
     } finally {
-      sse.write({ event: 'session', data: 'close' });
-      sse.unpipe(res);
+      sse.finish();
     }
   }
 
