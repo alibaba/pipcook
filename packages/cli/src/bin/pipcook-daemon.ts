@@ -1,43 +1,44 @@
 #!/usr/bin/env node
 
-import { execSync as exec, spawn } from 'child_process';
+import { execSync as exec, spawn, fork } from 'child_process';
 import os from 'os';
 import path from 'path';
 import program from 'commander';
-import { remove } from 'fs-extra';
+import { readFile, pathExists } from 'fs-extra';
 
-const PIPCOOK_DIR = path.join(os.homedir(), '.pipcook');
-const DAEMON_DIR = path.join(PIPCOOK_DIR, 'server');
-const DAEMON_PORT = 6927;
+const PIPCOOK_HOME = path.join(os.homedir(), '.pipcook');
+const DAEMON_HOME = path.join(PIPCOOK_HOME, 'server/node_modules/@pipcook/daemon');
+const DAEMON_PIDFILE = path.join(PIPCOOK_HOME, 'daemon.pid');
 
 type DaemonOperator = 'start' | 'stop';
 
-function execEggScript(op: DaemonOperator, args: string[]): void {
-  const bin = path.join(__dirname, '../../node_modules/.bin/egg-scripts');
-  const command = [ bin, op ].concat(args).join(' ');
-  console.info('>', command);
-  exec(command, {
-    cwd: `${DAEMON_DIR}/node_modules/@pipcook/daemon`
+async function start(): Promise<void> {
+  const daemon = fork(path.join(DAEMON_HOME, 'bootstrap.js'), [], {
+    cwd: DAEMON_HOME,
+    stdio: [ 0, 'pipe', 'pipe', 'ipc' ],
+    detached: true
+  });
+  const pipe = (channel: 'stdout' | 'stderr') => daemon[channel].pipe(process[channel]);
+  const unpipe = (channel: 'stdout' | 'stderr') => daemon[channel].unpipe(process[channel]);
+
+  // [ 'stdout', 'stderr' ].map(pipe);
+  daemon.on('message', (event: string) => {
+    if (event === 'ready') {
+      [ 'stdout', 'stderr' ].map(unpipe);
+      daemon.removeAllListeners('message');
+      daemon.disconnect();
+      daemon.unref();
+    }
   });
 }
 
-async function start(): Promise<void> {
-  return execEggScript('start', [
-    '--daemon',
-    '--ts',
-    '--title=pipcook-daemon',
-    '--framework=midway',
-    '--workers=1',
-    `--port=${DAEMON_PORT}`,
-    `--stdout=${PIPCOOK_DIR}/daemon/stdout.log`,
-    `--stderr=${PIPCOOK_DIR}/daemon/stderr.log`,
-    '--ignore-stderr'
-  ]);
-}
-
 async function stop(): Promise<void> {
-  await remove(`${PIPCOOK_DIR}/daemon`);
-  return execEggScript('stop', [ '--title=pipcook-daemon' ]);
+  if (await pathExists(DAEMON_PIDFILE)) {
+    const oldPid = parseInt(await readFile(DAEMON_PIDFILE, 'utf8'), 10);
+    exec(`kill ${oldPid}`);
+  } else {
+    console.error('daemon is not running.');
+  }
 }
 
 function tail(file: string): void {
@@ -45,14 +46,22 @@ function tail(file: string): void {
 }
 
 async function monitor(): Promise<void> {
-  tail(`${PIPCOOK_DIR}/daemon/stdout.log`);
-  tail(`${PIPCOOK_DIR}/daemon/stderr.log`);
+  tail(`${PIPCOOK_HOME}/daemon.stdout.log`);
+  tail(`${PIPCOOK_HOME}/daemon.stderr.log`);
 }
 
 program
   .command('start')
   .description('start the pipcook daemon.')
   .action(start);
+
+program
+  .command('restart')
+  .description('restart pipcook daemon')
+  .action(async () => {
+    await stop();
+    await start();
+  });
 
 program
   .command('stop')
