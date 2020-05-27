@@ -31,11 +31,10 @@ const start: StartHandler = async (filename: string, opts: any) => {
     spinner.succeed(`create job(${job.id}) succeeded.`);
   } else {
     let stdout: ChildProcess, stderr: ChildProcess;
-    spinner.start(`start running ${filename}...`);
     await listen(`${route.job}/start`, params, {
       'job created': (e: MessageEvent) => {
         const job = JSON.parse(e.data);
-        spinner.succeed(`create job(${job.id}) succeeded.`);
+        spinner.succeed(`start running ${filename}...`);
         stdout = tail(job.id, 'stdout');
         stderr = tail(job.id, 'stderr');
       },

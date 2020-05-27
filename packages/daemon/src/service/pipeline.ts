@@ -186,7 +186,7 @@ export class PipelineService {
 
       verifyPlugin('dataAccess');
       const dataAccess = await this.pluginManager.fetchAndInstall(pipeline.dataAccess, cwd, pyIndex);
-      let dataset = await runnable.start(dataAccess, getParams(pipeline.dataAccessParams, {
+      const dataset = await runnable.start(dataAccess, getParams(pipeline.dataAccessParams, {
         dataDir
       }));
 

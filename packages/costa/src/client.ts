@@ -104,6 +104,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
     }
   } catch (err) {
     console.error(`occurring an error: ${err?.stack}`);
+    recv(PluginOperator.WRITE, 'error', err?.message);
   }
 }
 

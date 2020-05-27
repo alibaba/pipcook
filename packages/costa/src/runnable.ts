@@ -158,6 +158,9 @@ export class PluginRunnable {
 
     // return if the result id is provided.
     const id = resp.params[0];
+    if (id === 'error') {
+      throw new TypeError(resp.params[1]);
+    }
     return id ? new RunnableResponse(id) : null;
   }
   /**
