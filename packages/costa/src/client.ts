@@ -1,4 +1,5 @@
 import * as uuid from 'uuid';
+import * as path from 'path';
 import { PluginProto, PluginOperator, PluginMessage } from './proto';
 import { PluginPackage } from './index';
 import Debug from 'debug';
@@ -21,6 +22,8 @@ function recv(respOp: PluginOperator, ...params: string[]): void {
     params
   }));
 }
+
+let tfjsCache: any;
 
 /**
  * The id of client.
@@ -66,6 +69,23 @@ async function emitStart(message: PluginMessage): Promise<void> {
     if (pkg.pipcook?.target.PYTHONPATH) {
       boa.setenv(pkg.pipcook.target.PYTHONPATH);
       debug('setup boa environment');
+    }
+
+    // FIXME(Yorkie): handle tfjs initialization issue.
+    if (pkg.dependencies['@tensorflow/tfjs-node-gpu']) {
+      // resolve the `@tensorflow/tfjs-node-gpu` by the current plugin package.
+      const tfjsModuleName = require.resolve('@tensorflow/tfjs-node-gpu', {
+        paths: [ path.join(process.cwd(), 'node_modules', pkg.name) ]
+      });
+      if (tfjsCache) {
+        // assign the `require.cache` from cached tfjs object.
+        require.cache[tfjsModuleName] = tfjsCache;
+      } else {
+        // prepare load tfjs module.
+        require(tfjsModuleName);
+        // set tfjsCache from `require.cache`.
+        tfjsCache = require.cache[tfjsModuleName];
+      }
     }
 
     // get the plugin function.

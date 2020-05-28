@@ -98,7 +98,7 @@ export class PluginRunnable {
       env: Object.assign({}, process.env, arg.customEnv)
     });
     this.handle.on('message', this.handleMessage.bind(this));
-    this.handle.once('disconnect', this.afterDestroy.bind(this));
+    this.handle.once('exit', this.afterDestroy.bind(this));
 
     // send the first message as handshaking with client
     const ret = await this.handshake();
@@ -245,8 +245,8 @@ export class PluginRunnable {
   /**
    * Fired when the peer client is exited.
    */
-  private async afterDestroy(): Promise<void> {
-    debug(`the runnable(${this.id}) has been destroyed.`);
+  private async afterDestroy(code: number, signal: NodeJS.Signals): Promise<void> {
+    debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
     await [
       // FIXME(Yorkie): remove component directory?
       // remove(path.join(this.rt.options.componentDir, this.id)),
@@ -254,7 +254,7 @@ export class PluginRunnable {
       close(this.stderr)
     ];
     if (typeof this.onread === 'function' && typeof this.onreadfail === 'function') {
-      this.onreadfail(new TypeError('costa runtime is destroyed.'));
+      this.onreadfail(new TypeError(`costa runtime is destroyed(${signal}).`));
     }
     if (typeof this.ondestroyed === 'function') {
       this.ondestroyed();

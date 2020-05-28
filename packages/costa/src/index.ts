@@ -64,6 +64,10 @@ export interface PluginPackage {
    */
   description?: string;
   /**
+   * the package dependencies.
+   */
+  dependencies?: Record<string, string>;
+  /**
    * The following objects are used to declare some information 
    * needed by the plugin at runtime.
    */
