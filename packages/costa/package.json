@@ -1,6 +1,7 @@
 {
   "name": "@pipcook/costa",
   "version": "0.5.0",
+  "description": "The Pipcook Plugin Runtime",
   "main": "dist/runtime",
   "types": "dist/runtime",
   "files": [
@@ -38,6 +39,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "keywords": [],
-  "description": ""
+  "keywords": []
 }

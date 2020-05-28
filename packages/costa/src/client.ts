@@ -78,7 +78,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
     if (pkg.pipcook.category === 'dataProcess') {
       // in "dataProcess" plugin, we need to do process them in one by one.
       const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
-      await [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
+      const loaders = [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
         .filter((loader: DataLoader) => loader != null)
         .map(async (loader: DataLoader) => {
           const len = await loader.len();
@@ -88,6 +88,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
             await fn(sample, dataset.metadata, args);
           }
         });
+      await Promise.all(loaders);
       recv(PluginOperator.WRITE);
       return;
     }
