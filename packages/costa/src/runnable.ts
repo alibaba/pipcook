@@ -46,6 +46,7 @@ export class PluginRunnable {
 
   // private events
   private onread: Function | null;
+  private onreadfail: Function | null;
   private ondestroyed: Function | null;
 
   /**
@@ -167,6 +168,9 @@ export class PluginRunnable {
    * Destroy this runnable, this will kill process, and get notified on `afterDestory()`. 
    */
   async destroy(): Promise<void> {
+    if (!this.handle.connected) {
+      return;
+    }
     this.send(PluginOperator.WRITE, { event: 'destroy' });
     return new Promise((resolve) => {
       this.ondestroyed = resolve;
@@ -185,8 +189,9 @@ export class PluginRunnable {
    * Reads the message, it's blocking the async context util.
    */
   private async read(): Promise<PluginProto> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.onread = resolve;
+      this.onreadfail = reject;
     });
   }
   /**
@@ -248,6 +253,9 @@ export class PluginRunnable {
       close(this.stdout),
       close(this.stderr)
     ];
+    if (typeof this.onread === 'function' && typeof this.onreadfail === 'function') {
+      this.onreadfail(new TypeError('costa runtime is destroyed.'));
+    }
     if (typeof this.ondestroyed === 'function') {
       this.ondestroyed();
     }
