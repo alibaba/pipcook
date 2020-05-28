@@ -36,7 +36,8 @@
     "python": "3.7",
     "dependencies": {
       "torch": "*",
-      "torchvision": "*"
+      "torchvision": "*",
+      "detectron": "git+https://github.com/facebookresearch/detectron2.git"
     }
   }
 }

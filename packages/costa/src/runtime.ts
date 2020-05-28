@@ -33,17 +33,19 @@ function spawnAsync(command: string, args?: string[], opts: SpawnOptions = {}): 
   });
 }
 
-function createRequirements(name: string, config: CondaConfig): string {
-  let str = '';
+function createRequirements(name: string, config: CondaConfig): string[] {
+  const deps = [];
   for (let k in config.dependencies) {
     const v = config.dependencies[k];
     if (v === '*') {
-      str += `${k}\n`;
+      deps.push(k);
+    } else if (v.startsWith('git+https://') === true) {
+      deps.push(v);
     } else {
-      str += `${k}==${v}\n`;
+      deps.push(`${k}==${v}`);
     }
   }
-  return str;
+  return deps;
 }
 
 export { PluginPackage } from './index';
@@ -127,9 +129,11 @@ export class CostaRuntime {
       await ensureDir(envDir);
 
       debug(`install the Python environment for ${pluginStdName}`);
+      const requirements = createRequirements(pluginStdName, pkg.conda);
+      // just sync the copy to requirements.txt
       await writeFile(
         `${envDir}/requirements.txt`,
-        createRequirements(pluginStdName, pkg.conda),
+        requirements.join('\n')
       );
 
       let python;
@@ -145,11 +149,15 @@ export class CostaRuntime {
       debug('conda environment is setup correctly, start downloading.');
       await spawnAsync(python, [ '-m', 'venv', envDir ]);
       // TODO(yorkie): check for access(pip3)
-      let args = [ 'install', '-r', `${envDir}/requirements.txt` ];
-      if (pyIndex) {
-        args = args.concat([ '-i', pyIndex ]);
+
+      for (let name of requirements) {
+        debug(`installing python package ${name}`);
+        let args = [ 'install', name ];
+        if (pyIndex) {
+          args = args.concat([ '-i', pyIndex ]);
+        }
+        await spawnAsync(`${envDir}/bin/pip3`, args);
       }
-      await spawnAsync(`${envDir}/bin/pip3`, args);
     } else {
       debug(`just skip the Python environment installation.`);
     }

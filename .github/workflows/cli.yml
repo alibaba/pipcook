@@ -8,7 +8,7 @@ on:
     - master
 
 jobs:
-  basic-info:
+  testing-helps:
     name: Test Pipcook Tools help commands
     runs-on: ${{ matrix.os }}
     strategy:
@@ -34,7 +34,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook plugin-dev --help
         ./packages/cli/dist/bin/pipcook serve --help
 
-  basic-usage:
+  testing-runs:
     name: Test Pipcook Tools main commands
     runs-on: ${{ matrix.os }}
     strategy:
@@ -51,15 +51,19 @@ jobs:
       run: |
         npm install
         npm run build
-    - name: "pipcook init"
+    - name: pipcook init
       env:
         NODE_ENV: local
       run: |
         ./packages/cli/dist/bin/pipcook init
         ./packages/cli/dist/bin/pipcook daemon start
-    - name: "pipcook run"
+    - name: pipcook run
       run: |
         ./packages/cli/dist/bin/pipcook run ./test/pipelines/text-bayes-classification.json --verbose
+    - name: pipcook plugin install
+      run: |
+        ./packages/cli/dist/bin/pipcook plugin install ./packages/plugins/data-collect/csv-data-collect
+        ./packages/cli/dist/bin/pipcook plugin install ./packages/plugins/model-define/detectron-fasterrcnn-model-define
     - name: "pipcook plugin-dev"
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
