@@ -52,7 +52,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
     const {
       epochs = 10,
       batchSize = 16,
-      saveModel
+      modelPath
     } = args;
 
     const { trainLoader, validationLoader, metadata } = data;
@@ -81,12 +81,8 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
     }
 
     const trainModel = model.model;
-    console.log('start ...');
     await trainModel.fit(trainDataSet, boa.kwargs(trainConfig));
-
-    await saveModel(async (modelPath: string) => {
-      await trainModel.save_weights(modelPath);
-    });
+    await trainModel.save_weights(modelPath);
 
     const result: UniModel = {
       ...model,
