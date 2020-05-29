@@ -419,8 +419,8 @@ module.exports = {
    */
   'import': name => {
     const pyo = wrap(pyInst.import(name));
-    if (sharedModules.indexOf(name) === -1
-      && importedNames.indexOf(name) === -1) {
+    if (sharedModules.indexOf(name) === -1 &&
+      importedNames.indexOf(name) === -1) {
       importedNames.push(name);
     }
     return pyo;
