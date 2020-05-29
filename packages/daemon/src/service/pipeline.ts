@@ -178,7 +178,7 @@ export class PipelineService {
       const dataCollect = await this.pluginManager.fetchAndInstall(pipeline.dataCollect, cwd, pyIndex);
       const dataDir = path.join(this.pluginManager.datasetRoot, `${dataCollect.name}@${dataCollect.version}`);
       const modelPath = path.join(runnable.workingDir, 'model');
-      
+
       // ensure the model dir exists
       await fs.ensureDir(modelPath);
 
