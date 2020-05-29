@@ -1,5 +1,6 @@
 import { ImageDataset, ModelTrainType, UniModel, ModelTrainArgsType, ImageDataLoader } from '@pipcook/pipcook-core';
 import * as path from 'path';
+import * as fs from 'fs-extra';
 
 const boa = require('@pipcook/boa');
 const { tuple } = boa.builtins();
@@ -9,11 +10,11 @@ const loadImage = boa.import('loadimage');
 const tf = boa.import('tensorflow');
 const AUTOTUNE = tf.data.experimental.AUTOTUNE;
 
-const config = tf.compat.v1.ConfigProto()
-config.gpu_options.allow_growth = true
+const config = tf.compat.v1.ConfigProto();
+config.gpu_options.allow_growth = true;
 tf.compat.v1.InteractiveSession(boa.kwargs({
   config:config
-}))
+}));
 
 interface TrainConfig {
   epochs: number;
@@ -83,6 +84,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
 
     const trainModel = model.model;
     await trainModel.fit(trainDataSet, boa.kwargs(trainConfig));
+    await fs.ensureDir(modelPath);
     await trainModel.save_weights(path.join(modelPath, 'weights.h5'));
     await trainModel.save(path.join(modelPath, 'model.h5'));
 
