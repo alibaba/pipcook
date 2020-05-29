@@ -15,12 +15,7 @@ function createPidfileSync(pathname) {
     throw new TypeError(`daemon is running, please use "restart" or "stop"`);
   }
   const pid = Buffer.from(`${process.pid}\n`);
-  const fd = fs.openSync(pathname, 'w');
-  let offset = 0;
-  while (offset < pid.length) {
-    offset += fs.writeSync(fd, pid, offset, pid.length - offset);
-  }
-  fs.closeSync(fd);
+  fs.writeFileSync(pathname, pid);
 
   const cleanup = (code) => fs.unlinkSync(pathname);
   const unexpExit = () => process.exit(1);

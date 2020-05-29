@@ -82,7 +82,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
 
     const trainModel = model.model;
     await trainModel.fit(trainDataSet, boa.kwargs(trainConfig));
-    await trainModel.save_weights(modelPath);
+    await trainModel.save_weights(modelPath + '/example');
 
     const result: UniModel = {
       ...model,
