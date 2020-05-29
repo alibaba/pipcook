@@ -1,4 +1,5 @@
 import { ImageDataset, ModelTrainType, UniModel, ModelTrainArgsType, ImageDataLoader } from '@pipcook/pipcook-core';
+import * as path from 'path';
 
 const boa = require('@pipcook/boa');
 const { tuple } = boa.builtins();
@@ -82,7 +83,8 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
 
     const trainModel = model.model;
     await trainModel.fit(trainDataSet, boa.kwargs(trainConfig));
-    await trainModel.save_weights(modelPath);
+    await trainModel.save_weights(path.join(modelPath, 'weights.h5'));
+    await trainModel.save(path.join(modelPath, 'model.h5'));
 
     const result: UniModel = {
       ...model,
