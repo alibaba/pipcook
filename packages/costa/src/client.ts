@@ -1,11 +1,11 @@
 import * as uuid from 'uuid';
 import * as path from 'path';
-import { PluginProto, PluginOperator, PluginMessage } from './proto';
+import { PluginProtocol, PluginOperator, PluginMessage } from './protocol';
 import { PluginPackage } from './index';
 import Debug from 'debug';
 import { UniDataset, DataLoader } from '@pipcook/pipcook-core';
 
-type MessageHandler = Record<PluginOperator, (proto: PluginProto) => void>;
+type MessageHandler = Record<PluginOperator, (proto: PluginProtocol) => void>;
 const debug = Debug('costa.client');
 
 // Set the costa runtime title.
@@ -17,7 +17,7 @@ process.title = 'pipcook.costa';
  * @param params the parameters of response.
  */
 function recv(respOp: PluginOperator, ...params: string[]): void {
-  process.send(PluginProto.stringify(respOp, {
+  process.send(PluginProtocol.stringify(respOp, {
     event: 'pong',
     params
   }));
@@ -153,7 +153,7 @@ const handlers: MessageHandler = {
    * is counted as a complete handshake. The client process will not receive other
    * messages until the handshake is complete.
    */
-  [PluginOperator.START]: (proto: PluginProto): void => {
+  [PluginOperator.START]: (proto: PluginProtocol): void => {
     if (proto.message.event === 'handshake' &&
       typeof proto.message.params[0] === 'string') {
       clientId = proto.message.params[0];
@@ -165,7 +165,7 @@ const handlers: MessageHandler = {
    * The client process receives events from the runtime by processing the WRITE
    * message, such as executing the plug-in and ending the process.
    */
-  [PluginOperator.WRITE]: async (proto: PluginProto): Promise<void> => {
+  [PluginOperator.WRITE]: async (proto: PluginProtocol): Promise<void> => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
@@ -180,7 +180,7 @@ const handlers: MessageHandler = {
   /**
    * Use the READ command to read the value and status of some client processes.
    */
-  [PluginOperator.READ]: async (proto: PluginProto): Promise<void> => {
+  [PluginOperator.READ]: async (proto: PluginProtocol): Promise<void> => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
@@ -193,6 +193,6 @@ const handlers: MessageHandler = {
 };
 
 process.on('message', (msg): void => {
-  const proto = PluginProto.parse(msg);
+  const proto = PluginProtocol.parse(msg);
   handlers[proto.op](proto);
 });

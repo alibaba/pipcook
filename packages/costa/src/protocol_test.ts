@@ -1,4 +1,4 @@
-import { PluginOperator, PluginProto } from './proto';
+import { PluginOperator, PluginProtocol } from './protocol';
 
 describe('test the plugin operator classes', () => {
   it('should read the correct number from PluginOperator', () => {
@@ -10,7 +10,7 @@ describe('test the plugin operator classes', () => {
 
 describe('test the plugin proto', () => {
   it('should test the stringify and parse', () => {
-    const proto: PluginProto = {
+    const proto: PluginProtocol = {
       op: PluginOperator.READ,
       message: {
         event: 'test',
@@ -20,7 +20,7 @@ describe('test the plugin proto', () => {
     expect(proto.op).toBe(PluginOperator.READ);
     expect(proto.message.event).toBe('test');
 
-    const str = PluginProto.stringify(PluginOperator.START, { event: 'foobar' });
+    const str = PluginProtocol.stringify(PluginOperator.START, { event: 'foobar' });
     const jproto = JSON.parse(str);
     expect(jproto.op).toBe(PluginOperator.START);
     expect(jproto.message.event).toBe('foobar');

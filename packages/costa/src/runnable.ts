@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 import path from 'path';
 import { ensureDir, ensureSymlink, ensureFile, open, close } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
-import { PluginProto, PluginOperator, PluginMessage, PluginResponse } from './proto';
+import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
 import { CostaRuntime, PluginPackage } from './index';
 import Debug from 'debug';
 const debug = Debug('costa.runnable');
@@ -182,13 +182,13 @@ export class PluginRunnable {
    * @param msg 
    */
   private send(op: PluginOperator, msg?: PluginMessage): boolean {
-    const data = PluginProto.stringify(op, msg);
+    const data = PluginProtocol.stringify(op, msg);
     return this.handle.send(data);
   }
   /**
    * Reads the message, it's blocking the async context util.
    */
-  private async read(): Promise<PluginProto> {
+  private async read(): Promise<PluginProtocol> {
     return new Promise((resolve, reject) => {
       this.onread = resolve;
       this.onreadfail = reject;
@@ -237,7 +237,7 @@ export class PluginRunnable {
    * @param msg 
    */
   private handleMessage(msg: string) {
-    const proto = PluginProto.parse(msg) as PluginProto;
+    const proto = PluginProtocol.parse(msg);
     if (typeof this.onread === 'function') {
       this.onread(proto);
     }
