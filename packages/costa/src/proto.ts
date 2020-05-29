@@ -26,6 +26,7 @@ export enum PluginOperator {
 /**
  * Plugin Exchange Protocol.
  */
+// FIXME(Yorkie): This function is to represent the JSON type from the runnable master.
 export class PluginProto {
   op: PluginOperator;
   message: PluginMessage;

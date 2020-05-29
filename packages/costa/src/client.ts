@@ -193,6 +193,6 @@ const handlers: MessageHandler = {
 };
 
 process.on('message', (msg): void => {
-  const proto = PluginProto.parse(msg) as PluginProto;
+  const proto = PluginProto.parse(msg);
   handlers[proto.op](proto);
 });
