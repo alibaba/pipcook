@@ -68,7 +68,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
     const boa = require('@pipcook/boa');
     if (pkg.pipcook?.target.PYTHONPATH) {
       boa.setenv(pkg.pipcook.target.PYTHONPATH);
-      debug('setup boa environment');
+      debug(`setup boa environment for ${pkg.pipcook.target.PYTHONPATH}`);
     }
 
     // FIXME(Yorkie): handle tfjs initialization issue.

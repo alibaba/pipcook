@@ -6,7 +6,7 @@ const boa = require('@pipcook/boa');
 const detectronModelDefine: ModelTrainType = async (data: CocoDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
   let {
     steps = 100000,
-    modelDir
+    modelPath
   } = args;
 
   const os = boa.import('os');
@@ -27,7 +27,7 @@ const detectronModelDefine: ModelTrainType = async (data: CocoDataset, model: Un
     }
 
     cfg.SOLVER.MAX_ITER = steps;
-    cfg.OUTPUT_DIR = modelDir;
+    cfg.OUTPUT_DIR = modelPath;
     os.makedirs(cfg.OUTPUT_DIR, boa.kwargs({ "exist_ok": true }));
     const trainer = DefaultTrainer(cfg);
     trainer.resume_or_load(boa.kwargs({ "resume": true }));

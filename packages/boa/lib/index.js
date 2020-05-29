@@ -13,6 +13,8 @@ const IterIdxForSeqSymbol = Symbol('The iteration index for sequence');
 // create the instance
 let pyInst = new native.Python(process.argv.slice(1));
 const importedNames = [];
+// FIXME(Yorkie): move to costa or daemon?
+const sharedModules = ['sys', 'torch'];
 const globals = pyInst.globals();
 const builtins = pyInst.builtins();
 const delegators = DelegatorLoader.load();
@@ -417,7 +419,8 @@ module.exports = {
    */
   'import': name => {
     const pyo = wrap(pyInst.import(name));
-    if (name !== 'sys' && importedNames.indexOf(name) === -1) {
+    if (sharedModules.indexOf(name) === -1
+      && importedNames.indexOf(name) === -1) {
       importedNames.push(name);
     }
     return pyo;
