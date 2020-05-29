@@ -257,7 +257,6 @@ function _internalWrap(T, src={}) {
       configurable: true,
       enumerable: false,
       writable: false,
-      // eslint-disable-next-line no-unused-vars
       value: () => T.toString(),
     },
     /**

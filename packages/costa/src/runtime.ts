@@ -96,7 +96,7 @@ export class CostaRuntime {
   }
   /**
    * Install the given plugin by name.
-   * @param name the plugin package name.
+   * @param pkg the plugin package.
    * @param force install from new anyway.
    * @param pyIndex the index mirror to install python packages.
    */
