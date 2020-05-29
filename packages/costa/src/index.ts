@@ -1,5 +1,4 @@
 import { PluginTypeI } from '@pipcook/pipcook-core';
-import { RunnableResponse, BootstrapArg } from './runnable';
 
 /**
  * The options to configure Costa runtime.
@@ -127,68 +126,4 @@ export interface NpmPackageMetadata {
     latest: string;
   };
   versions: Record<string, NpmPackage>;
-}
-
-export declare class PluginRunnable {
-  /**
-   * the current working directory for this runnable.
-   */
-  public workingDir: string;
-  
-  /**
-   * The current state.
-   */
-  public state: 'init' | 'idle' | 'busy';
-
-  /**
-   * Get the runnable value for the given response.
-   * @param resp the value to the response.
-   */
-  valueOf(resp: RunnableResponse): Promise<object>;
-
-  /**
-   * Do start from a specific plugin.
-   * @param name the plguin name.
-   */
-  start(pkg: PluginPackage, ...args: any[]): Promise<RunnableResponse | null>;
-
-  /**
-   * Destroy this runnable, this will kill process, and get notified on `afterDestory()`. 
-   */
-  destroy(): Promise<void>;
-}
-
-/**
- * The Costa runtime is for scheduling plugins and management.
- */
-export declare class CostaRuntime {
-  /**
-   * The runtime config.
-   */
-  public options: RuntimeOptions;
-
-  /**
-   * Create a new Costa runtime by given config.
-   * @param opts the runtime config.
-   */
-  constructor(opts: RuntimeOptions);
-  /**
-   * fetch and check if the package name is valid.
-   * @param name the plugin package name.
-   * @param cwd the current working directory to fetch package
-   */
-  fetch(name: string, cwd?: string): Promise<PluginPackage>;
-  /**
-   * Install the given plugin by a `PluginPackage` object.
-   * @param pkg the plugin package name
-   */
-  install(pkg: PluginPackage, force?: boolean, pyIndex?: string): Promise<boolean>;
-  /**
-   * Uninstall matched plugins by name.
-   */
-  uninstall(name: string): Promise<boolean>;
-  /**
-   * Create a `PluginRunnable` object.
-   */
-  createRunnable(opts?: BootstrapArg): Promise<PluginRunnable>;
 }

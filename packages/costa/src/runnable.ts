@@ -3,7 +3,7 @@ import path from 'path';
 import { ensureDir, ensureSymlink, ensureFile, open, close } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
-import { CostaRuntime, PluginPackage } from './index';
+import { CostaRuntime, PluginPackage } from './runtime';
 import Debug from 'debug';
 const debug = Debug('costa.runnable');
 
