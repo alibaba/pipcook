@@ -1,17 +1,13 @@
 import { ImageDataset, ModelEvaluateType, UniModel, ModelTrainArgsType, ImageDataLoader, EvaluateResult } from '@pipcook/pipcook-core';
+import * as path from 'path';
 
 const boa = require('@pipcook/boa');
 const { tuple } = boa.builtins();
 const tf = boa.import('tensorflow');
+const sys = boa.import('sys');
+sys.path.insert(0, path.join(__dirname, '..', 'piploadlib'));
+const loadImage = boa.import('loadimage');
 const AUTOTUNE = tf.data.experimental.AUTOTUNE;
-
-function loadImage(path: string) {
-  let image = tf.io.read_file(path);
-  image = tf.image.decode_jpeg(image, boa.kwargs({
-    channels: 3
-  }));
-  return image;
-}
 
 async function createDataset(dataLoader: ImageDataLoader, labelMap: {
   [key: string]: number;
@@ -25,7 +21,7 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
     labels.push(tf.one_hot(currentData.label.categoryId, Object.keys(labelMap).length));
   }
   const pathDs = tf.data.Dataset.from_tensor_slices(imageNames);
-  const imageDs = pathDs.map(loadImage, boa.kwargs({
+  const imageDs = pathDs.map(loadImage.loadImage, boa.kwargs({
     num_parallel_calls: AUTOTUNE
   }));
   const labelDs = tf.data.Dataset.from_tensor_slices(labels);
