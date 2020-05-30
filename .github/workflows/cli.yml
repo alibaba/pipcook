@@ -1,13 +1,15 @@
 name: cli
 on:
   push:
+    branches:
+    - master
   pull_request:
     branches:
     - master
 
 jobs:
-  basic-info:
-    name: Test CLI basic info on node ${{ matrix.node_version }} and ${{ matrix.os }}
+  testing-helps:
+    name: Test Pipcook Tools help commands
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -15,31 +17,25 @@ jobs:
         os: [ubuntu-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node_version }}
+    - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node_version }}
-    - name: building
+    - name: Building Pipcook
       run: |
         npm install
         npm run build
-    - name: create workspace
-      run: mkdir -p myworkspace
-    - name: test client basic info
-      working-directory: ./myworkspace
+    - name: Testing help commands
       run: |
-        ../packages/cli/dist/bin/index.js -v
-        ../packages/cli/dist/bin/index.js --version
-        ../packages/cli/dist/bin/index.js -h
-        ../packages/cli/dist/bin/index.js --help
-        ../packages/cli/dist/bin/index.js init --help
-        ../packages/cli/dist/bin/index.js run --help
-        ../packages/cli/dist/bin/index.js plugin-dev --help
-        ../packages/cli/dist/bin/index.js bip --help
-        ../packages/cli/dist/bin/index.js serve --help
+        ./packages/cli/dist/bin/pipcook -v
+        ./packages/cli/dist/bin/pipcook -h
+        ./packages/cli/dist/bin/pipcook init --help
+        ./packages/cli/dist/bin/pipcook run --help
+        ./packages/cli/dist/bin/pipcook plugin-dev --help
+        ./packages/cli/dist/bin/pipcook serve --help
 
-  basic-usage:
-    name: Test CLI basic usage on node ${{ matrix.node_version }} and ${{ matrix.os }}
+  testing-runs:
+    name: Test Pipcook Tools main commands
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -47,21 +43,27 @@ jobs:
         os: [ubuntu-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node_version }}
+    - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node_version }}
-    - name: building
+    - name: Building Pipcook
       run: |
         npm install
         npm run build
-        cd ./packages/daemon && npm start
-    - name: test client basic usage init
+    - name: pipcook init
+      env:
+        NODE_ENV: local
       run: |
-        ./packages/cli/dist/bin/index.js init
-    - name: test client basic usage run
+        ./packages/cli/dist/bin/pipcook init
+        ./packages/cli/dist/bin/pipcook daemon start
+    - name: pipcook run
       run: |
-        ./packages/cli/dist/bin/index.js run ./test/pipelines/text-bayes-classification.json
-    - name: test client basic usage plugin-dev
+        ./packages/cli/dist/bin/pipcook run ./test/pipelines/text-bayes-classification.json --verbose
+    - name: pipcook plugin install
       run: |
-        ./packages/cli/dist/bin/index.js plugin-dev -t dataCollect
+        ./packages/cli/dist/bin/pipcook plugin install ./packages/plugins/data-collect/csv-data-collect
+        ./packages/cli/dist/bin/pipcook plugin install ./packages/plugins/model-define/detectron-fasterrcnn-model-define
+    - name: "pipcook plugin-dev"
+      run: |
+        ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect

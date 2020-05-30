@@ -1,28 +1,83 @@
+import * as qs from 'querystring';
 import axios from 'axios';
 import ora from 'ora';
-
-const spinner = ora();
+import EventSource from 'eventsource';
 
 export type RequestParams = Record<string, any>;
-
 export type ResponseParams = Record<string, any>;
 
-const createGeneralRequest = (agent: Function) => async (...args: any[]) => {
-  try {
-    let response = await agent(...args);
-    if (response.data.status === true) {
-      return response.data.data;
+function createGeneralRequest(agent: Function): Function {
+  const spinner = ora();
+  return async (...args: any[]) => {
+    try {
+      let response = await agent(...args);
+      if (response.data.status === true) {
+        return response.data.data;
+      }
+    } catch (err) {
+      if (err?.response?.data?.message) {
+        spinner.fail(err.response.data.message);
+      } else {
+        console.error('daemon is not started, run "pipcook daemon start"');
+      }
+      return process.exit(1);
     }
-  } catch (err) {
-    if (err?.response?.data?.message) {
-      spinner.fail(err.response.data.message);
-      process.exit();
-    } else {
-      throw err;
-    }
-  }
-};
-export const get = async (host: string, params?: RequestParams) => createGeneralRequest(axios.get)(host, params);
+  };
+}
+
 export const post = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.post)(host, body, params);
 export const put = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.put)(host, body, params);
-export const remove = async (host: string) => createGeneralRequest(axios.delete)(host);
+export const del = async (host: string) => createGeneralRequest(axios.delete)(host);
+export const get = async (host: string, params?: RequestParams) => {
+  const uri = `${host}?${qs.stringify(params)}`;
+  return createGeneralRequest(axios.get)(uri);
+};
+
+export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {
+  return new Promise((resolve) => {
+    let handshaked = false;
+    const uri = `${host}?${qs.stringify({ verbose: 1, ...params })}`;
+    const es = new EventSource(uri);
+    const timeoutHandle = setTimeout(() => {
+      es.close();
+      console.error('connects to daemon timeout, please run "pipcook daemon restart".');
+    }, 5000);
+    const onerror = (e: Event) => {
+      if (handshaked === false) {
+        es.close();
+        clearTimeout(timeoutHandle);
+        console.error('daemon is not started, run "pipcook daemon start"');
+        es.removeEventListener('error', onerror);
+      } else if (typeof handlers.error === 'function') {
+        // manually pass the `error` event to user-defined handler.
+        handlers.error(e);
+      }
+    };
+
+    es.addEventListener('error', onerror);
+    es.addEventListener('session', (e: MessageEvent) => {
+      if (e.data === 'close') {
+        // close the connection and mark the handshaked is disabled.
+        handshaked = false;
+        es.close();
+      } else if (e.data === 'start') {
+        handshaked = true;
+        // if `handlers.error` not defined, remove the listener directly.
+        if (typeof handlers.error !== 'function') {
+          es.removeEventListener('error', onerror);
+        }
+        // clear the timeout handle because handshake is finished.
+        clearTimeout(timeoutHandle);
+        resolve(es);
+      }
+    });
+
+    // register extra handlers.
+    Object.keys(handlers)
+      // handle `handlers.error` manually.
+      .filter((name: string) => name !== 'error')
+      .forEach((name: string) => {
+        es.addEventListener(name, handlers[name]);
+      });
+  });
+};

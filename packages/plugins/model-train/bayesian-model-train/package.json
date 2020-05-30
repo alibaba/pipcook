@@ -16,7 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.5.10",
     "@pipcook/pipcook-core": "^0.5.16",
     "@types/fs-extra": "^8.1.0",
     "@types/lodash": "^4.14.150",
@@ -30,5 +29,16 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pipcook": {
+    "category": "modelTrain",
+    "datatype": "text"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "jieba": "*",
+      "sklearn": "*"
+    }
   }
 }

@@ -36,13 +36,13 @@ const bayesianClassifierModelDefine: ModelDefineType = async (data: CsvDataset, 
     assertionTest(data);
     classifier = getBayesModel();
   } else {
-    classifier = loadModel(path.join(recoverPath, 'model', 'model.pkl'));
+    classifier = await loadModel(path.join(recoverPath, 'model.pkl'));
   }
   
   const pipcookModel: UniModel = {
     model: classifier,
     predict: async function (text: CsvSample) {
-      const processData = await processPredictData(text.data, path.join(recoverPath, 'model', 'feature_words.pkl'), path.join(recoverPath, 'model', 'stopwords.txt'));
+      const processData = await processPredictData(text.data, path.join(recoverPath, 'feature_words.pkl'), path.join(recoverPath, 'stopwords.txt'));
       const pred = this.model.predict(processData);
       return pred.toString();
     }

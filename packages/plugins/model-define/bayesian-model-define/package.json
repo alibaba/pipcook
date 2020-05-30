@@ -16,7 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.5.10",
     "@pipcook/pipcook-core": "^0.5.16"
   },
   "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
@@ -26,5 +25,17 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pipcook": {
+    "category": "modelDefine",
+    "datatype": "text",
+    "method": "classify"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "jieba": "*",
+      "scikit-learn": "*"
+    }
   }
 }

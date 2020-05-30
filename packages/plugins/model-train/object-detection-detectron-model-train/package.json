@@ -26,5 +26,20 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pipcook": {
+    "category": "modelTrain",
+    "datatype": "image"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "torch": "*",
+      "torchvision": "*",
+      "opencv-python": "*",
+      "cython": "*",
+      "cocoapi": "git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI",
+      "detectron": "git+https://github.com/facebookresearch/detectron2.git"
+    }
   }
 }

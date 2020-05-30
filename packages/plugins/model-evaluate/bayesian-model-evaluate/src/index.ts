@@ -1,6 +1,6 @@
 import { ModelEvaluateType, UniModel, CsvDataset, EvaluateResult, CsvDataLoader, CsvMetadata, ArgsType } from '@pipcook/pipcook-core';
 import * as path from 'path';
-import { TextProcessing, TextFeatures, get_all_words_list } from './script';
+import { TextProcessing, TextFeatures, get_all_words_list, loadModel } from './script';
 
 const boa = require('@pipcook/boa');
 const sys = boa.import('sys');
@@ -26,12 +26,15 @@ const bayesianModelEvaluate: ModelEvaluateType
 
     const { modelDir, expectAccuracy = 0.95 } = args;
     const { testLoader, metadata } = data;
-    const classifier = model.model;
+
+    const filename = path.join(modelDir, 'model.pkl');
+    const classifier = await loadModel(filename);
+    console.log('classify', classifier);
 
     const { rawData, rawClass } = await createDataset(testLoader, metadata);
     const text_list = TextProcessing(rawData, rawClass);
 
-    const feature_words = get_all_words_list(path.join(modelDir, 'feature_words.pkl'));
+    const feature_words = await get_all_words_list(path.join(modelDir, 'feature_words.pkl'));
     const feature_list = TextFeatures(text_list[1], feature_words);
     const accuracy = classifier.score(feature_list, text_list[2]);
     return {

@@ -1,13 +1,15 @@
 {
   "packages": [
+    "packages/boa",
     "packages/cli",
     "packages/core",
-    "packages/boa",
+    "packages/costa",
     "packages/daemon",
     "packages/pipboard",
     "packages/plugins/**/*"
   ],
   "version": "independent",
+  "loglevel": "verbose",
   "npmClient": "npm",
   "command": {
     "publishConfig": {
@@ -17,8 +19,8 @@
       "nohoist": [
         "node-addon-api",
         "midway",
-        "egg-scripts",
         "egg-ci",
+        "egg-scripts",
         "midway-bin",
         "midway-mock",
         "ice-scripts",

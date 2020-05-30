@@ -1,8 +1,9 @@
-import { Context, controller, inject, provide, post, get } from 'midway';
-
+import { Context, controller, inject, provide, get } from 'midway';
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
 import { parseConfig } from '../../runner/helper';
+import ServerSentEmitter from '../../utils/emitter';
+import { JobModel } from '../../model/job';
 
 @provide()
 @controller('/job')
@@ -13,59 +14,84 @@ export class JobController {
   @inject('pipelineService')
   pipelineService: PipelineService;
 
-  @post('')
-  public async runPipeline() {
-    const { ctx } = this;
-    const { pipelineId } = ctx.request.body;
-    let data: any;
-    try {
-      data = await this.pipelineService.createNewRun(pipelineId);
-      this.pipelineService.startRun(data);
-      successRes(ctx, {
-        message: 'create run job successfully',
-        data
-      }, 201);
-    } catch (err) {
-      if (data && data.id) {
-        await this.pipelineService.updateRunById(data.id, {
-          status: 3
-        });
-      }
-      failRes(ctx, {
-        message: err.message
-      });
-    }
+  @get('/run')
+  public async run() {
+    const { pipelineId, cwd, verbose, pyIndex } = this.ctx.request.query;
+    const job = await this.pipelineService.createJob(pipelineId);
+    await this.runJobWithContext(
+      job,
+      cwd,
+      verbose === '1',
+      pyIndex
+    );
   }
 
-  @post('/start')
-  public async startPipeline() {
-    const { ctx } = this;
-    try {
-      const { config } = ctx.request.body;
-      const parsedConfig = await parseConfig(config);
-      const data = await this.pipelineService.initPipeline(parsedConfig);
-      const jobData = await this.pipelineService.createNewRun(data.id);
-      this.pipelineService.startRun(jobData);
-      successRes(ctx, {
+  @get('/start')
+  public async start() {
+    const { config, cwd, verbose, pyIndex } = this.ctx.request.query;
+    const parsedConfig = await parseConfig(config);
+    const pipeline = await this.pipelineService.createPipeline(parsedConfig);
+    const job = await this.pipelineService.createJob(pipeline.id);
+    await this.runJobWithContext(
+      job,
+      cwd,
+      verbose === '1',
+      pyIndex
+    );
+  }
+
+  private async runJobWithContext(job: JobModel, cwd: string, verbose: boolean, pyIndex: string) {
+    if (verbose) {
+      const sse = new ServerSentEmitter(this.ctx);
+      sse.emit('job created', job);
+      try {
+        await this.pipelineService.startJob(job, cwd, pyIndex);
+        sse.emit('job finished', job);
+      } catch (err) {
+        sse.emit('error', err?.message);
+      } finally {
+        sse.finish();
+      }
+    } else {
+      this.pipelineService.startJob(job, cwd, pyIndex);
+      successRes(this.ctx, {
         message: 'create pipeline and jobs successfully',
-        data: jobData
+        data: job
       }, 201);
-    } catch (err) {
-      if (err.errors && err.errors[0] && err.errors[0].message) {
-        err.message = err.errors[0].message;
+    }
+  }
+
+  @get('/list')
+  public async list() {
+    const { ctx } = this;
+    const { pipelineId, offset, limit } = ctx.query;
+    try {
+      const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
+      if (!jobs || jobs.count === 0) {
+        throw new TypeError('job not found');
       }
+      successRes(ctx, {
+        data: jobs.rows
+      });
+    } catch (err) {
       failRes(ctx, {
         message: err.message
       });
     }
   }
 
-  @get('/:jobId/log')
-  public async getLog() {
+  @get('/remove')
+  public async remove() {
+    await this.pipelineService.removeJobs();
+    successRes(this.ctx, {});
+  }
+
+  @get('/:id/log')
+  public async viewLog() {
     const { ctx } = this;
-    const { jobId } = ctx.params;
+    const { id } = ctx.params;
     try {
-      const data = await this.pipelineService.getLogById(jobId);
+      const data = await this.pipelineService.getLogById(id);
       if (data === null || data === undefined) {
         throw new Error('log not found');
       }
@@ -81,46 +107,17 @@ export class JobController {
     }
   }
 
-  @get('/:jobId')
-  public async getRunJob() {
-    const { ctx } = this;
-    const { jobId } = ctx.params;
+  @get('/:id')
+  public async get() {
+    const { id } = this.ctx.params;
     try {
-      const data = await this.pipelineService.getRunById(jobId);
-      if (!data) {
+      const job = await this.pipelineService.getJobById(id);
+      if (!job) {
         throw new Error('job not found');
       }
-      successRes(ctx, {
-        data
-      });
+      successRes(this.ctx, { data: job });
     } catch (err) {
-      failRes(ctx, {
-        message: err.message
-      });
-    }
-  }
-
-  @get('')
-  public async getRunJobs() {
-    const { ctx } = this;
-    const { pipelineId, offset = 0, limit = 10 } = ctx.query;
-    try {
-      let data: any;
-      if (pipelineId) {
-        data = await this.pipelineService.getRunsByPipelineId(pipelineId, offset, limit);
-      } else {
-        data = await this.pipelineService.getRuns(offset, limit);
-      }
-      if (!data || data.length === 0) {
-        throw new Error('job not found');
-      }
-      successRes(ctx, {
-        data
-      });
-    } catch (err) {
-      failRes(ctx, {
-        message: err.message
-      });
+      failRes(this.ctx, { message: err.message });
     }
   }
 }

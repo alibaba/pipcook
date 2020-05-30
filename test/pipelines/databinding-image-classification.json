@@ -12,8 +12,7 @@
     "dataProcess": {
       "package": "./packages/plugins/data-process/image-data-process",
       "params": {
-        "resize": [256, 256],
-        "normalize": true
+        "resize": [256, 256]
       }
     },
     "modelDefine": {

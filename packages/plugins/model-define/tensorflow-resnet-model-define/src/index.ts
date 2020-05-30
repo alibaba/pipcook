@@ -76,7 +76,7 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
   }));
 
   if (freeze) {
-    for (let layer of model.layers.slice(0, -26)) {
+    for (let layer of model.layers.slice(0, -10)) {
       layer.trainable = false;
     }
   }
