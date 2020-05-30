@@ -27,9 +27,11 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
           InstanceMethod("__hash__", &PythonObject::Hash),
           InstanceMethod("__hasattr__", &PythonObject::HasAttr),
           InstanceMethod("__getattr__", &PythonObject::GetAttr),
-          InstanceMethod("__getitem__", &PythonObject::GetItem),
           InstanceMethod("__setattr__", &PythonObject::SetAttr),
+          InstanceMethod("__delattr__", &PythonObject::DelAttr),
+          InstanceMethod("__getitem__", &PythonObject::GetItem),
           InstanceMethod("__setitem__", &PythonObject::SetItem),
+          InstanceMethod("__delitem__", &PythonObject::DelItem),
       });
 
   constructor = Persistent(func);
@@ -226,6 +228,17 @@ std::string PythonObject::ToString() {
   return ret;
 }
 
+Napi::Value PythonObject::SetClassMethod(const CallbackInfo &info) {
+  std::string nameStr = std::string(info[0].As<String>());
+  int r = PyObject_SetAttrString(
+      _self.ptr(), nameStr.c_str(),
+      Cast(info.Env(), info[1].As<Function>(), false, true));
+  if (r == -1) {
+    PyErr_Clear();
+  }
+  return Number::New(info.Env(), r);
+}
+
 Napi::Value PythonObject::Hash(const CallbackInfo &info) {
   Py_hash_t hash = PyObject_Hash(_self.ptr());
   return Number::New(info.Env(), hash);
@@ -258,15 +271,10 @@ Napi::Value PythonObject::SetAttr(const CallbackInfo &info) {
   return Number::New(info.Env(), r);
 }
 
-Napi::Value PythonObject::SetClassMethod(const CallbackInfo &info) {
+Napi::Value PythonObject::DelAttr(const CallbackInfo &info) {
   std::string nameStr = std::string(info[0].As<String>());
-  int r = PyObject_SetAttrString(
-      _self.ptr(), nameStr.c_str(),
-      Cast(info.Env(), info[1].As<Function>(), false, true));
-  if (r == -1) {
-    PyErr_Clear();
-  }
-  return Number::New(info.Env(), r);
+  pybind::delattr(_self, nameStr.c_str());
+  return info.Env().Undefined();
 }
 
 Napi::Value PythonObject::GetItem(const CallbackInfo &info) {
@@ -318,6 +326,23 @@ Napi::Value PythonObject::SetItem(const CallbackInfo &info) {
     r = PyObject_SetItem(_self.ptr(), pybind::str(keystr).ptr(), value);
   }
 
+  if (r == -1) {
+    PyErr_Clear();
+  }
+  return Number::New(info.Env(), r);
+}
+
+Napi::Value PythonObject::DelItem(const CallbackInfo &info) {
+  int r = -1;
+  if (info[0].IsNumber()) {
+    // if item key is a number
+    auto n = info[0].As<Number>().Int32Value();
+    r = PySequence_DelItem(_self.ptr(), static_cast<ssize_t>(n));
+  } else {
+    // otherwise, assert the key must be a string.
+    auto keystr = std::string(info[0].As<String>());
+    r = PyObject_DelItem(_self.ptr(), pybind::str(keystr).ptr());
+  }
   if (r == -1) {
     PyErr_Clear();
   }

@@ -12,12 +12,17 @@ const imageDataProcess: DataProcessType = async (data: ImageSample, metadata: Me
     resize = [ 256, 256 ],
     normalize = false
   } = args;
-  let image = await Jimp.read(data.data);
-  image = image.resize(resize[0], resize[1]);
-  if (normalize) {
-    image = image.normalize();
+
+  try {
+    let image = await Jimp.read(data.data);
+    image = image.resize(resize[0], resize[1]);
+    if (normalize) {
+      image = image.normalize();
+    }
+    await image.writeAsync(data.data);
+  } catch (err) {
+    console.error(`processing ${data.data} failed with ${err?.stack}`);
   }
-  await image.writeAsync(data.data);
 
   metadata.feature = {
     shape: [ resize[0], resize[1], 3 ]

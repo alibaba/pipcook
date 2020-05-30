@@ -36,7 +36,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
   const {
     epochs = 10,
     batchSize = 16,
-    saveModel
+    modelPath
   } = args;
 
   const { trainLoader, validationLoader, metadata } = data;
@@ -62,12 +62,8 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
   }
 
   const trainModel = model.model;
-  
   await trainModel.fitDataset(ds, trainConfig);
-
-  await saveModel(async (modelPath: string) => {
-    await trainModel.save('file://' + modelPath);
-  });
+  await trainModel.save(`file://${modelPath}`);
 
   const result: TfJsLayersModel = {
     ...model,

@@ -21,7 +21,6 @@ import {
 
 export {
   Config,
-
   CommandHandler,
   DatasetCommandHandler,
   DevPluginCommandHandler,
@@ -29,7 +28,6 @@ export {
   ServeHandler,
   PredictHandler,
   StartHandler,
-
   DatasetImage,
   DatasetAnnotation,
   DatasetCategory,

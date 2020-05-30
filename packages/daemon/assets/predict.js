@@ -1,27 +1,40 @@
-const modelDefine = require('./modelDefine').default;
-const log = require('./log.json');
+'use strict';
 
-let dataProcess, model;
-const dataProcessLog = log.components.find((e) => e.type === 'dataProcess');
-if (dataProcessLog) {
-  dataProcess = require('./dataProcess').default;
+const path = require('path');
+const { cwd, pipeline, output } = require('./metadata.json');
+
+function _requirePlugin(name) {
+  const mod = require(path.join(cwd, pipeline[name]));
+  if (mod && typeof mod.default === 'function') {
+    return mod.default;
+  }
+  return mod;
 }
 
-async function predict(data) {
-  if (!model) {
-    model = await modelDefine(null, {
-      recoverPath: __dirname
+const modelDefineModule = _requirePlugin('modelDefine');
+
+let dataProcessModule;
+if (typeof pipeline.dataProcess === 'string') {
+  dataProcessModule = _requirePlugin('dataProcess');
+}
+
+const model = modelDefineModule(null, {
+  recoverPath: __dirname + '/model'
+});
+
+function predict(data) {
+  const sample = { data, label: null };
+  let future = model;
+
+  if (typeof dataProcessModule === 'function') {
+    future = future.then((m) => {
+      dataProcessModule(sample, {}, pipeline.dataProcessParams);
+      return m
     });
   }
-  const sample = {
-    data,
-    label: null
-  };
-  if (dataProcess) {
-    await dataProcess(sample, {}, dataProcessLog.params);
-  }
-  const result = await model.predict(sample);
-  return result;
-}
+  return future.then((m) => {
+    m.predict(sample);
+  });
+};
 
 module.exports = predict;

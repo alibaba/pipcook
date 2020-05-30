@@ -7,6 +7,7 @@ const boa = require('@pipcook/boa');
 
 const jieba = boa.import('jieba');
 const { MultinomialNB } = boa.import('sklearn.naive_bayes');
+
 const pickle = boa.import('pickle');
 const { open, list } = boa.builtins();
 
@@ -78,9 +79,9 @@ export const processPredictData = async function (data: any, all_words_list_path
 };
 
 export const getBayesModel = function () {
-  return MultinomialNB();
+  return pickle.dumps(MultinomialNB());
 };
 
-export const loadModel = function (filepath: string) {
-  return pickle.load(open(filepath, 'rb'));
+export const loadModel = async function (filepath: string) {
+  return boa.with(open(filepath, 'rb'), pickle.load);
 };

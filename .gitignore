@@ -1,4 +1,5 @@
 node_modules
+output
 /lerna-debug.log
 pipcook-pipeline-*
 .DS_STORE

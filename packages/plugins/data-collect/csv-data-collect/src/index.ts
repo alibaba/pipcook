@@ -87,5 +87,3 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
 };
 
 export default textClassDataCollect;
-
-

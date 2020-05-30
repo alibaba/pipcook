@@ -27,5 +27,10 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pipcook": {
+    "category": "modelDefine",
+    "datatype": "image",
+    "method": "classify"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "root",
+  "name": "pipcook",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -10,7 +10,9 @@
     "@typescript-eslint/parser": "^2.7.0",
     "docsify-cli": "^4.4.0",
     "eslint": "^6.6.0",
+    "jasmine-spec-reporter": "^5.0.2",
     "lerna": "^3.18.4",
+    "ts-node": "^8.6.2",
     "typedoc": "^0.15.4",
     "typedoc-plugin-lerna": "^0.1.0",
     "typescript": "^3.7.2"

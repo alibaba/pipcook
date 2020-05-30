@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-./packages/cli/dist/bin/index.js run ./test/pipelines/$1.json
+./packages/cli/dist/bin/pipcook run ./test/pipelines/$1.json --verbose

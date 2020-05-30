@@ -1,4 +1,5 @@
 const fs = require('fs');
+const vm = require('vm');
 const util = require('util');
 const path = require('path');
 const native = require('bindings')('boa');
@@ -11,12 +12,16 @@ const IterIdxForSeqSymbol = Symbol('The iteration index for sequence');
 
 // create the instance
 let pyInst = new native.Python(process.argv.slice(1));
+const importedNames = [];
+// FIXME(Yorkie): move to costa or daemon?
+const sharedModules = ['sys', 'torch'];
 const globals = pyInst.globals();
 const builtins = pyInst.builtins();
 const delegators = DelegatorLoader.load();
+let defaultSysPath = [];
 
 // reset some envs for Python
-setenv();
+setenv(null);
 
 function getTypeInfo(T) {
   const typeo = builtins.__getitem__('type').invoke(asHandleObject(T));
@@ -30,15 +35,32 @@ function getTypeInfo(T) {
   return tinfo;
 }
 
-function setenv() {
+function setenv(externalSearchPath) {
   // read the conda path from the .CONDA_INSTALL_DIR
   // eslint-disable-next-line no-sync
   const condaPath = fs.readFileSync(
     path.join(__dirname, '../.CONDA_INSTALL_DIR'), 'utf8');
-  const appendSysPath = pyInst.import('sys')
-    .__getattr__('path')
-    .__getattr__('append');
-  appendSysPath.invoke(path.join(condaPath, 'lib/python3.7/lib-dynload'));
+  const sys = pyInst.import('sys');
+  if (!defaultSysPath || !defaultSysPath.length) {
+    defaultSysPath = vm.runInThisContext(sys.__getattr__('path').toString()) || [];
+  }
+  const sysPath = Object.assign([], defaultSysPath);
+  sysPath.push(path.join(condaPath, 'lib/python3.7/lib-dynload'));
+  if (externalSearchPath) {
+    sysPath.push(externalSearchPath);
+  }
+  sys.__setattr__('path', sysPath);
+
+  // reset the cached modules that imported before.
+  for (let name of importedNames) {
+    name.split('.').reduce((ns, n, i) => {
+      const nss = ns + (i === 0 ? n : `.${n}`);
+      sys.__getattr__('modules').__delitem__(nss);
+      return nss;
+    }, '');
+  }
+  // set `length` to zero to release all references of the array.
+  importedNames.length = 0;
 }
 
 // shadow copy an object, and returns the new copied object.
@@ -237,8 +259,7 @@ function _internalWrap(T, src={}) {
       configurable: true,
       enumerable: false,
       writable: false,
-      // eslint-disable-next-line no-unused-vars
-      value: hint => T.toString(),
+      value: () => T.toString(),
     },
     /**
      * Implementation of ES iterator protocol, See:
@@ -385,12 +406,25 @@ function _internalWrap(T, src={}) {
 }
 
 module.exports = {
+  /**
+   * Reset the Python module environment, it clears the `sys.modules`, and
+   * add the given search paths if provided.
+   * @param {string} extraSearchPath
+   */
+  setenv,
   /*
    * Import a Python module.
    * @method import
-   * @param {string} mod - the module path.
+   * @param {string} name - the module name.
    */
-  'import': mod => wrap(pyInst.import(mod)),
+  'import': name => {
+    const pyo = wrap(pyInst.import(name));
+    if (sharedModules.indexOf(name) === -1 &&
+      importedNames.indexOf(name) === -1) {
+      importedNames.push(name);
+    }
+    return pyo;
+  },
   /*
    * Get the builtins
    * @method builtins
@@ -434,8 +468,9 @@ module.exports = {
     }
     return (async () => {
       let hitException = false;
+      let v = null;
       try {
-        await fn(ctx.__enter__());
+        v = await fn(ctx.__enter__());
       } catch (err) {
         hitException = true;
         if (!ctx.__exit__(
@@ -450,6 +485,7 @@ module.exports = {
           ctx.__exit__(null, null, null);
         }
       }
+      return v;
     })();
   },
   'eval': (strs, ...params) => {

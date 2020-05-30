@@ -1,7 +1,6 @@
 {
   "name": "@pipcook/pipcook-core",
   "version": "0.5.17",
-  "description": "",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -17,18 +16,24 @@
   "license": "ISC",
   "dependencies": {
     "@types/cli-progress": "^3.4.2",
+    "@types/debug": "^4.1.5",
     "@types/fs-extra": "^8.0.1",
+    "@types/request": "^2.48.4",
+    "@types/request-promise": "^4.1.46",
     "@types/uuid": "^7.0.2",
     "cli-progress": "^3.6.0",
+    "debug": "^4.1.1",
+    "decompress-zip": "^0.2.2",
     "extract-zip": "^1.6.7",
     "fs-extra": "^8.1.0",
     "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "rxjs": "^6.5.3",
     "systeminformation": "^4.16.0",
     "targz": "^1.0.1",
     "uuid": "^3.4.0",
     "xml2js": "^0.4.22"
   },
-  "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
     "jasmine": "^3.5.0",
@@ -37,5 +42,7 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "keywords": [],
+  "description": ""
 }

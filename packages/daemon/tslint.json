@@ -4,6 +4,7 @@
   ],
   "rules": {
     "no-unused-expression": false,
-    "no-bitwise": false
+    "no-bitwise": false,
+    "callable-types": false
   }
 }

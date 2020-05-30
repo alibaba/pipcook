@@ -1,5 +1,3 @@
-
-
 const { test } = require('tap');
 const boa = require('../../');
 const builtins = boa.builtins();
