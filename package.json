@@ -20,6 +20,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "build": "lerna run compile",
+    "docsify": "docsify serve ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon --scope @pipcook/pipboard lint",
     "pretest": "npm run lint",
     "test": "lerna run --scope @pipcook/pipcook-core --scope @pipcook/boa test",

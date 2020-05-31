@@ -21,6 +21,8 @@ Installing [Pipcook][] via NPM is easy, just run:
 $ npm install -g @pipcook/pipcook-cli
 ```
 
+Then check if installed via `pipcook --help`.
+
 ## Install via Docker
 
 Install [Pipcook Dockerfile](https://github.com/alibaba/pipcook/blob/master/Dockerfile). Then open
@@ -51,5 +53,5 @@ If you have any installation problems, please feedback to [issue tracker](https:
 
 [Install via NPM]: #install-via-npm
 [Install via Docker]: #install-via-docker
-[Build from source]: #build-from-source
+[Build from source]: contributing/guide-to-contributor#download-source
 [Pipcook]: https://github.com/alibaba/pipcook
