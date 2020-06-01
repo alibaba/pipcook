@@ -21,7 +21,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "build": "lerna run compile",
-    "docsify": "http-server -c-1 ./docs",
+    "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon --scope @pipcook/pipboard lint",
     "pretest": "npm run lint",
     "test": "lerna run --scope @pipcook/pipcook-core --scope @pipcook/boa test",

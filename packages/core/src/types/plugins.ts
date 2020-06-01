@@ -61,6 +61,7 @@ export interface PipcookPlugin {
  *   await fs.copy(uri, dataDir + '/my-own-dataset.csv');
  *   return null;
  * };
+ * export default collectTextline;
  * ```
  * 
  * @param args it does not force input parameters. In principle, the plugin can obtain data 
@@ -102,6 +103,16 @@ export interface DataAccessType extends PipcookPlugin {
  * 
  * Theoretically, you can use this kind of plugin to process your data in any form, including changes
  * to data features.
+ * 
+ * @example
+ * 
+ * ```js
+ * const doubleSize: DataProcessType = async (sample: Sample, metadata: Metadata, args?: ArgsType): Promise<void> => {
+ *   // double the data
+ *   sample.data = sample.data * 2;
+ * };
+ * export default doubleSize;
+ * ```
  * 
  * @param data The row data of which you access to the `UniDataset` instance.
  * @param metadata The metadata of which you access to the `UniDataset` instance.

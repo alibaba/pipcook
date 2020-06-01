@@ -55,63 +55,9 @@ We have defined the following plugin categories for machine learning lifecycle.
 - [`modelTrain(data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>`][] outputs the trained model and saves to configured location.
 - [`modelEvaluate(data: UniDataset, model: UniModel): Promise<EvaluateResult>`][] calls to corresponding evaluators to view how does the trained model perform.
 
-## Install
-
-Developer uses [Pipcook Tools][] to install plugin:
-
-```sh
-$ pipcook plugin install @pipcook/plugins-tfjs-mobilenet-model-define
-```
-
 ## Developing
 
-To get started with developing a new plugin, [Pipcook Tools][] provides `pipcook plugin-dev`:
-
-```sh
-$ pipcook plugin-dev --type <category> --name <plugin>
-```
-
-## Awesome Pipcook Plugin
-
-Below is the awesome list of Pipcook plugins, we welcome third-party plugin contributors to update this list via GitHub Pull Request.
-
-### `dataCollect`
-
-- @pipcook/plugins-csv-data-collect
-- @pipcook/plugins-image-classification-data-collect
-- @pipcook/plugins-mnist-data-collect
-- @pipcook/plugins-object-detection-coco-data-collect
-- @pipcook/plugins-object-detection-pascalvoc-data-collect
-
-### `dataAccess`
-
-- @pipcook/plugins-coco-data-access
-- @pipcook/plugins-csv-data-access
-- @pipcook/plugins-pascalvoc-data-access
-
-### `dataProcess`
-
-- @pipcook/plugins-image-data-process
-
-### `modelDefine`
-
-- @pipcook/plugins-bayesian-model-define
-- @pipcook/plugins-detectron-fasterrcnn-model-define
-- @pipcook/plugins-tfjs-mobilenet-model-define
-- @pipcook/plugins-tfjs-simplecnn-model-define
-
-### `modelTrain`
-
-- @pipcook/plugins-bayesian-model-train
-- @pipcook/plugins-image-classification-tfjs-model-train
-- @pipcook/plugins-object-detection-detectron-model-train
-
-### `modelEvaluate`
-
-- @pipcook/plugins-image-data-process
-- @pipcook/plugins-bayesian-model-evaluate
-- @pipcook/plugins-image-classification-tfjs-model-evaluate
-- @pipcook/plugins-object-detection-detectron-model-evaluate
+Check [this contributing documentation](../contributing/contribute-a-plugin.md) for learning how to develop a new plugin.
 
 [Pipcook]: https://github.com/alibaba/pipcook
 [Pipcook Plugin]: ../../GLOSSORY.md#pipcook-plugin
