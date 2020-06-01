@@ -46,7 +46,6 @@ export {
   ModelEvaluateType,
   ArgsType,
   ModelDefineArgsType,
-  ModelArgsType,
   ModelTrainArgsType,
   PluginTypeI,
   PipcookPlugin
