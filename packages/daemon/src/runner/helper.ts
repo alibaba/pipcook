@@ -4,6 +4,7 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
+import * as request from 'request-promise';
 import {
   RunConfigI,
   PipelineDB,
@@ -13,8 +14,13 @@ import {
 
 const { PLUGINS, PIPCOOK_LOGS } = constants;
 
-export async function parseConfig(configPath: string, generateId = true): Promise<PipelineDB> {
-  const configJson: RunConfigI = await fs.readJson(configPath);
+export async function parseConfig(config: string, generateId = true): Promise<PipelineDB> {
+  let configJson: RunConfigI = null;
+  if (/^https?:\/\/.+/.test(config)) {
+    configJson = JSON.parse(await request(config));
+  } else {
+    configJson = await fs.readJson(config);
+  }
   const result: PipelineDB = {};
 
   if (generateId) {

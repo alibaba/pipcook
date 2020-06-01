@@ -6,7 +6,7 @@ import { StartHandler } from '../types';
 import { listen, get } from '../request';
 import { route } from '../router';
 import { tunaMirrorURI } from '../config';
-import { tail } from '../utils';
+import { tail, isUrl } from '../utils';
 
 const start: StartHandler = async (filename: string, opts: any) => {
   const spinner = ora();
@@ -15,10 +15,12 @@ const start: StartHandler = async (filename: string, opts: any) => {
     spinner.fail('Please specify the config path');
     return process.exit(1);
   }
-  filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
-  if (!existsSync(filename)) {
-    spinner.fail(`${filename} not exists`);
-    return process.exit(1);
+  if (!isUrl(filename)) {
+    filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
+    if (!existsSync(filename)) {
+      spinner.fail(`${filename} not exists`);
+      return process.exit(1);
+    }
   }
 
   const params = {
