@@ -1,27 +1,27 @@
 # Dataset Specification
 
-## Background
+Dataset is an important part of machine learning. Subsequent models are built on the basis of datasets. We need to manage datasets. The following is the standard format of the dataset that Pipcook should save after the data is collected through the `DataCollectType` plugin. Our `DataAccessType` layer assumes that the data already meets the following specifications. 
 
-Data is an important part of deep learning. Subsequent models are built on the basis of datasets. We need to manage datasets. The following is the standard format of the dataset that pipcook should save after the Data is collected through the Data collection plug-in. Our Data Access layer assumes that the Data already meets the following specifications. For different dataset formats, data collection plug-ins are used to smooth the differences.
-
-## Data Types
+For different dataset formats, `DataCollectType` plugin is used to smooth the differences.
 
 #### Image
 
-Pascal VOC Dataset format, detailed directory is as follows:
+PascalVOC Dataset format, detailed directory is as follows:
 
-- dataset root directory (name should be the dataset name, such as *mnist*)
-  - annotations
-    - Train
-      - ${image_name}.xml
-      - ......
-    - Test
-    - validation
-  - images
-    - ${Image_name}.jpg
-    - ......
+```
+📂dataset
+   ┣ 📂annotations
+   ┃ ┣ 📂train
+   ┃ ┃ ┣ 📜...
+   ┃ ┃ ┗ 📜${image_name}.xml
+   ┃ ┣ 📂test
+   ┃ ┗ 📂validation
+   ┗ 📂images
+     ┣ 📜...
+     ┗ 📜${image_name}.jpg
+```
 
-or an XML description file:
+Or representing in XML:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -48,3 +48,10 @@ or an XML description file:
 
 The text category should be a CSV file. The first column is the text content, and the second column is the category name. The delimiter is ',' without a header.
 
+```csv
+name, category
+prod1, type1
+prod2, type2
+prod3, type2
+prod4, type1
+```

@@ -1,90 +1,127 @@
 # Plugin Specification
 
-Pipcook uses plugins to implement tasks in a specific machine learning cycle, which ensures that our core is simple, stable, and efficient enough. At the same time, through a set of plug-n specifications defined by pipcook, we can also allow third parties to develop plugins, which ensures the scalability of pipcook. Theoretically, through plugins, we can implement any machine learning task.
+[Pipcook][] uses plugins to achieve tasks in a specific machine learning lifecycle, which ensures that the framework is simple, stable, and efficient enough.
 
-## Plugin type
+At the same time, through a set of plugin specifications defined by [Pipcook][], we can also allow anyone to develop plugins, which ensures the scalability of [Pipcook][]. Theoretically, through plugins, we can achieve all kinds of machine learning task.
 
-We have defined six types of machine learning lifecycle plugins:
+## Plugin Package
 
-| plugin name | description |
-|-------------|-------------|
-| [Data Collect](./plugin/0-data-collect.md) | data from different sources can be collected and stored in a unified dataset format, for more information about the dataset standards required by pipcook, see here. |
-| [Data Access](./plugin/1-data-access.md) | this plugin access data to pipcook in the expected dataset format. It also describes and verifies samples to ensure that a high-quality dataset is used. |
-| [Data Process](./plugin/2-data-process.md) | processing data |
-| [Model Define](./plugin/3-model-define.md) | this plugin loads the model into the pipeline and eliminates the differences between models such as `keras` and `tensorflow`. |
-| [Model Train](./plugin/4-model-train.md) | train models |
-| [Model Evaluate](./plugin/5-model-evaluate.md) | evaluate a given model |
+[Pipcook][] uses the form of NPM as a plugin package. In addition, we have expanded the protocol that belongs to the [Pipcook Plugin][] based on NPM package.json.
 
-## Plugin features
-
-- Scalability: pipcook's capabilities are constantly extended through new plugins.
-- Plugin pluggability: the input and output of each type of plugin must comply with our prototype specifications, and all plugins must inherit the prototypes of each type, this ensures that each one is pluggable and replaceable, and developers can develop third-party plug-ins to insert according to the specifications.
-- Combination of plugins: not every life cycle in the pipeline is required, as long as the plugins with input and output can be combined together. This provides maximum flexibility in configuration and combination. For example, if you do not want to train a model but just want to evaluate another person's model with your own data, you can pull out the Model Train so that the Model Load can be directly linked to the Model Evaluate.
-
-## Specification
-
-We have defined interfaces and specifications for each type of plugins. Developers need to implement our interfaces and develop plug-ins according to the corresponding specifications, this ensures that any plugin can be seamlessly embedded into our pipeline.
-
-### Plugin Parsing Component
-
-For each plugin, we need to pass it into the corresponding type of parsers for parsing. For the above plugins, there are 6 types of parsers:
-
-```ts
-function DataCollect(plugin: PipcookPlugin, params: object);
-function DataAccess(plugin: PipcookPlugin, params: object);
-function DataProcess(plugin: PipcookPlugin, params: object);
-function ModelDefine(plugin: PipcookPlugin, params: object);
-function ModelTrain(plugin: PipcookPlugin, params: object);
-function ModelEvaluate(plugin: PipcookPlugin, params: object);
+```json
+{
+  "name": "my-own-pipcook-plugin",
+  "version": "1.0.0",
+  "description": "my own pipcook plugin",
+  "dependencies": {
+    "@pipcook/pipcook-core": "^0.5.0"
+  },
+  "pipcook": {
+    "category": "dataCollect",
+    "datatype": "image"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "tensorflow": "2.2.0"
+    }
+  }
+}
 ```
 
-### Using Plugin
+After reading the `package.json` example above, there are a few requirements:
 
-Pipcook plugins are divided into built-in, community and private. Each one is an independent npm package, and the required plugins need to be installed independently. For example, we need a model plugin loaded with `MobileNet`, we can use the following command in the project directory to install, **We will integrate the builtin plugins directly into a pipcook scaffold project. You do not need to install these builtin plugins separately.**
+- plugin package must be written in TypeScript, and compile it to JavaScript before publishing.
+- adding the `@pipcook/pipcook-core` to `dependencies` is required, which contains the unusal types for creating plugin handler.
+- adding a root field `pipcook`,
+  - `pipcook.category` is used to describe the category to which the plugin belongs, and all categories is listed [here](#plugin-category).
+  - `pipcook.datatype` is used to describe the type of data to be processed, currently supports: `common`, `image` and `text`.
+- adding an optional field `conda` for configuring Python-related dependencies,
+  - `conda.python` is used to specify the Python version, must be `3.7`.
+  - `conda.dependencies` is used to list all Python dependencies which will be installed on plugin initialization, and it supports the following kinds of version string:
+    - `x.y.z`, the specific version on [PyPI][].
+    - `*`, the same to above with the latest version.
+    - `git+https://github.com/foobar/project@master`, install from GitHub repository, it follows [pip-install(1)](https://pip.pypa.io/en/stable/reference/pip_install/#git).
+
+## Plugin Category
+
+We have defined the following plugin categories for machine learning lifecycle.
+
+- [`dataCollect(args: ArgsType): Promise<void>`][] downloads from data source, which is stored in corresponding unified dataset.
+- [`dataAccess(args: ArgsType): Promise<UniDataset>`][] gets the dataset ready in loader and compatible with later model.
+- [`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<void>`][] processes data in row.
+- [`modelLoad(data: UniDataset, args: ArgsType): Promise<UniModel>`][] loads the model into the pipeline.
+- [`modelDefine(data: UniDataset, args: ModelDefineArgsType): Promise<UniModel>`][] defines the model.
+- [`modelTrain(data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>`][] outputs the trained model and saves to configured location.
+- [`modelEvaluate(data: UniDataset, model: UniModel): Promise<EvaluateResult>`][] calls to corresponding evaluators to view how does the trained model perform.
+
+## Install
+
+Developer uses [Pipcook Tools][] to install plugin:
 
 ```sh
-$ npm install @pipcook/plugins-tfjs-mobilenet-model-define --save
+$ pipcook plugin install @pipcook/plugins-tfjs-mobilenet-model-define
 ```
 
-## Awesome Plugins
+## Developing
 
-The following is a list of plugins in different types:
+To get started with developing a new plugin, [Pipcook Tools][] provides `pipcook plugin-dev`:
 
-### DataCollect
+```sh
+$ pipcook plugin-dev --type <category> --name <plugin>
+```
 
-@pipcook/plugins-csv-data-collect
-@pipcook/plugins-image-classification-data-collect
-@pipcook/plugins-mnist-data-collect
-@pipcook/plugins-object-detection-coco-data-collect
-@pipcook/plugins-object-detection-pascalvoc-data-collect
+## Awesome Pipcook Plugin
 
+Below is the awesome list of Pipcook plugins, we welcome third-party plugin contributors to update this list via GitHub Pull Request.
 
-### DataAccess
+### `dataCollect`
 
-@pipcook/plugins-coco-data-access
-@pipcook/plugins-csv-data-access
-@pipcook/plugins-pascalvoc-data-access
+- @pipcook/plugins-csv-data-collect
+- @pipcook/plugins-image-classification-data-collect
+- @pipcook/plugins-mnist-data-collect
+- @pipcook/plugins-object-detection-coco-data-collect
+- @pipcook/plugins-object-detection-pascalvoc-data-collect
 
-### DataProcess
+### `dataAccess`
 
-@pipcook/plugins-image-data-process
+- @pipcook/plugins-coco-data-access
+- @pipcook/plugins-csv-data-access
+- @pipcook/plugins-pascalvoc-data-access
 
-### ModelDefine
+### `dataProcess`
 
-@pipcook/plugins-bayesian-model-define
-@pipcook/plugins-detectron-fasterrcnn-model-define
-@pipcook/plugins-tfjs-mobilenet-model-define
-@pipcook/plugins-tfjs-simplecnn-model-define
+- @pipcook/plugins-image-data-process
 
-### ModelTrain
+### `modelDefine`
 
-@pipcook/plugins-bayesian-model-train
-@pipcook/plugins-image-classification-tfjs-model-train
-@pipcook/plugins-object-detection-detectron-model-train
+- @pipcook/plugins-bayesian-model-define
+- @pipcook/plugins-detectron-fasterrcnn-model-define
+- @pipcook/plugins-tfjs-mobilenet-model-define
+- @pipcook/plugins-tfjs-simplecnn-model-define
 
-### ModelEvaluate
+### `modelTrain`
 
-@pipcook/plugins-image-data-process
-@pipcook/plugins-bayesian-model-evaluate
-@pipcook/plugins-image-classification-tfjs-model-evaluate
-@pipcook/plugins-object-detection-detectron-model-evaluate
+- @pipcook/plugins-bayesian-model-train
+- @pipcook/plugins-image-classification-tfjs-model-train
+- @pipcook/plugins-object-detection-detectron-model-train
+
+### `modelEvaluate`
+
+- @pipcook/plugins-image-data-process
+- @pipcook/plugins-bayesian-model-evaluate
+- @pipcook/plugins-image-classification-tfjs-model-evaluate
+- @pipcook/plugins-object-detection-detectron-model-evaluate
+
+[Pipcook]: https://github.com/alibaba/pipcook
+[Pipcook Plugin]: ../../GLOSSORY.md#pipcook-plugin
+[Pipcook Tools]: ../../manual/pipcook-tools.md
+[PyPI]: https://pypi.org
+
+[`dataCollect(args: ArgsType): Promise<void>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/datacollecttype.html
+[`dataAccess(args: ArgsType): Promise<UniDataset>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/dataaccesstype.html
+[`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<void>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/dataprocesstype.html
+[`modelLoad(data: UniDataset, args: ArgsType): Promise<UniModel>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modelloadtype.html
+[`modelDefine(data: UniDataset, args: ModelDefineArgsType): Promise<UniModel>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modeldefinetype.html
+[`modelTrain(data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modeltraintype.html
+[`modelEvaluate(data: UniDataset, model: UniModel): Promise<EvaluateResult>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modelevaluatetype.html
