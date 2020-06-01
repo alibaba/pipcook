@@ -1,6 +1,6 @@
 # Introduction to Pipeline
 
-We use a JSON to describe our pipeline of modeling from sample collection, model definition, training to model evaluation:
+In Pipcook, we use Pipeline to represent the training process of a model, so in general, what kind of pipeline is needed to train a model? Developer can use a JSON to describe pipeline of modeling from sample collection, model definition, training to model evaluation:
 
 ```js
 {
@@ -8,7 +8,7 @@ We use a JSON to describe our pipeline of modeling from sample collection, model
     "dataCollect": {
       "package": "@pipcook/plugins-csv-data-collect",
       "params": {
-        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip"
+        "url": "http://foobar"
       }
     },
     "dataAccess": {
@@ -38,34 +38,30 @@ Next, when we have defined such a pipeline, we can run it through Pipcook.
 
 ## Preparation
 
-```sh
-$ pipcook init
-```
-
-To use custom npm client:
-
-```sh
-$ pipcook init -c cnpm
-```
-
-To use [tuna mirror](https://mirrors.tuna.tsinghua.edu.cn/) for Python:
-
-```sh
-$ pipcook init --tuna
-```
+Follow the [Pipcook Tools Initlization](./pipcook-tools.md#environment-setup) to get the Pipcook ready.
 
 ## Run Pipeline
 
-Save the JSON of your pipeline in the initialized directory, and run:
+Save the above JSON of your pipeline in anywhere, and run:
 
 ```sh
-$ pipcook run /path/to/your/pipeline.json
+$ pipcook run /path/to/your/pipeline-config.json
 ```
 
-## View Pipeline
+The trained model will generate an `output` directory under [`cwd(3)`](https://linux.die.net/man/3/cwd):
 
-We provide a Web-based tool for viewing your Pipelines on your browser:
+```
+📂output
+   ┣ 📂logs
+   ┣ 📂model
+   ┣ 📜package.json
+   ┣ 📜metadata.json
+   ┗ 📜index.js
+```
 
-```sh
-$ pipcook board
+To get started with your trained model, just using:
+
+```js
+import * as predict from './output';
+predict('your input data');
 ```

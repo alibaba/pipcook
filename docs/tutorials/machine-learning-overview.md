@@ -163,24 +163,21 @@ $ pipcook run pipeline.json
 
 ## Predicting
 
-After the training is completed, we can find a `pipcook-output/{id}` directory under the current project directory, which is our trained model and a JavaScript file `main.js` to predict.
+After the training is completed, we can find a `output` directory under the current project directory, which is our trained model and a JavaScript file `index.js` to predict.
 
 ```
-📂pipcook-output
- ┗ 📂{id}
-   ┣ 📂data
+📂output
+   ┣ 📂logs
    ┣ 📂model
-   ┣ 📂deploy
-   ┃ ┣ 📜package.json
-   ┃ ┣ 📜log.json
-   ┃ ┗ 📜main.js
-   ┗ 📦deploy.tar.gz
+   ┣ 📜package.json
+   ┣ 📜metadata.json
+   ┗ 📜index.js
 ```
 
 As you can see, the deploy folder is a npm package. You can integrate it into any Node.js project and use the `predict()` method provided by it.
 
 ```js
-const predict = require('/path/to/deploy');
+const predict = require('/path/to/output');
 const app = express();
 app.post('/predict', async (req, res) => {
   const r = await predict(req.body.image);

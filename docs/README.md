@@ -53,7 +53,8 @@ Can't wait to start a [Pipcook][] project? You can follow the guidance below to 
 - [Learn how to install Pipcook?](INSTALL.md)
 - [Learn machine learning](tutorials/machine-learning-overview.md)
 - [Learn Pipcook from Pipeline](manual/intro-to-pipeline.md)
-- [Learn Pipcook from Boa](manual/intro-to-boa)
+- [Learn Pipcook from Boa](manual/intro-to-boa.md)
+- [Learn Pipcook Tools](manual/pipcook-tools.md)
 
 [Pipcook]: https://github.com/alibaba/pipcook
 [CPython]: https://github.com/python/cpython

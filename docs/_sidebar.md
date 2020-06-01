@@ -4,6 +4,7 @@
   - [Introduction to Pipeline](/manual/intro-to-pipeline.md)
   - [Introduction to Plugin](/manual/intro-to-plugin.md)
   - [Introduction to Boa](/manual/intro-to-boa.md)
+  - [Pipcook Tools](/manual/pipcook-tools.md)
 - Tutorials
   - [Machine Learning Overview](/tutorials/machine-learning-overview.md)
   <!-- - [Working with Text Data](/tutorials/working-with-text-data.md) -->
