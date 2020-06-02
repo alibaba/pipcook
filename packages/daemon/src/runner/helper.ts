@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 import * as request from 'request-promise';
+import * as url from 'url';
 import {
   RunConfigI,
   PipelineDB,
@@ -16,8 +17,17 @@ const { PLUGINS, PIPCOOK_LOGS } = constants;
 
 export async function parseConfig(config: string, generateId = true): Promise<PipelineDB> {
   let configJson: RunConfigI = null;
-  if (/^https?:\/\/.+/.test(config)) {
-    configJson = JSON.parse(await request(config));
+  let urlObj = null;
+  try {
+    urlObj = url.parse(config);
+  } catch (_) {
+  }
+  if (urlObj) {
+    if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+      configJson = JSON.parse(await request(config));
+    } else {
+      throw new Error(`protocol ${urlObj.protocol} is not supported`);
+    }
   } else {
     configJson = await fs.readJson(config);
   }
