@@ -1,30 +1,33 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Table } from '@alifd/next';
+import { observer, inject } from "mobx-react";
+import queryString from 'query-string';
 
 import {messageError} from '../../utils/message';
+import { PIPELINE_MAP, JOB_MAP } from '../../utils/config';
 
-const TABLE_TITLE = {
-  PIPELINE_ID: 'Pipeline Id',
-  DATA_COLLECT: 'Data Collect',
-  DATA_ACCESS: 'Data Access',
-  DATA_PROCESS: 'Data Process',
-  MODEL_DEFINE: 'Model Define',
-  MODEL_LOAD: 'Model Load',
-  MODEL_TRAIN: 'Model Train',
-  MODEL_EVALUATE: 'Model Evaluate',
-  CREATED_AT: 'Created At',
-};
-
-export default class Model extends Component {
+@inject("pipelineData")
+@observer
+export default class Pipeline extends Component {
 
   state = {
     models: [],
+    fields: PIPELINE_MAP // pipeline or job
   }
 
   componentDidMount = async () => {
+    let params = queryString.parse(location.hash.split('?')[1]);
+    let queryUrl = '/log/pipelines';
+    if (params.type === 'job') {
+      this.setState({
+        fields: JOB_MAP
+      });
+      queryUrl = '/log/logs';
+    }
+    
     try {
-      let response = await axios.get('/log/pipelines');
+      let response = await axios.get(queryUrl);
       response = response.data;
       if (response.status) {
         const result = response.data.rows.map((item) => {
@@ -33,30 +36,24 @@ export default class Model extends Component {
            createdAt: new Date(item.createdAt).toLocaleString(), 
           };
         });
-        this.setState({ models: result});
+        this.setState({ models: result });
       } else {
         messageError(response.msg);
       }
     } catch (err) {
       messageError(err.message);
     }
-    
   }
 
   render() {
-    const {models} = this.state;
+    const { models, fields } = this.state;
+    console.log(fields);
     return (
-      <div className="model">
+      <div className="pipeline">
         <Table dataSource={models}>
-          <Table.Column title={TABLE_TITLE.PIPELINE_ID} dataIndex="id"/>
-          <Table.Column title={TABLE_TITLE.DATA_COLLECT} dataIndex="dataCollect"/>
-          <Table.Column title={TABLE_TITLE.DATA_ACCESS} dataIndex="dataAccess"/>
-          <Table.Column title={TABLE_TITLE.DATA_PROCESS} dataIndex="dataProcess"/>
-          <Table.Column title={TABLE_TITLE.MODEL_DEFINE} dataIndex="modelDefine"/>
-          <Table.Column title={TABLE_TITLE.MODEL_LOAD} dataIndex="modelLoad"/>
-          <Table.Column title={TABLE_TITLE.MODEL_TRAIN} dataIndex="modelTrain"/>
-          <Table.Column title={TABLE_TITLE.MODEL_EVALUATE} dataIndex="modelEvaluate"/>
-          <Table.Column title={TABLE_TITLE.CREATED_AT} dataIndex="createdAt"/>
+          {
+            fields.map(field => <Table.Column key={field.name} title={field.name} dataIndex={field.field} />)
+          }
         </Table>
       </div>
     );
