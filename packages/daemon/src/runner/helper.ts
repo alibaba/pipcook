@@ -18,11 +18,8 @@ const { PLUGINS, PIPCOOK_LOGS } = constants;
 export async function parseConfig(config: string, generateId = true): Promise<PipelineDB> {
   let configJson: RunConfigI = null;
   let urlObj = null;
-  try {
-    urlObj = url.parse(config);
-  } catch (_) {
-  }
-  if (urlObj) {
+  urlObj = url.parse(config);
+  if (urlObj.protocol) {
     if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
       configJson = JSON.parse(await request(config));
     } else {

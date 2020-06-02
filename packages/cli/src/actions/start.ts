@@ -17,19 +17,13 @@ const start: StartHandler = async (filename: string, opts: any) => {
     spinner.fail('Please specify the config path');
     return process.exit(1);
   }
-  let isUrl = false;
-  try {
-    const urlObj = url.parse(filename);
-    if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
-      isUrl = true;
-    } else {
+  const urlObj = url.parse(filename);
+  if (urlObj.protocol) {
+    if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
       spinner.fail(`protocol ${urlObj.protocol} is not supported`);
       return process.exit(1);
     }
-  } catch (_) {
-    isUrl = false;
-  }
-  if (!isUrl) {
+  } else {
     filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
     if (!existsSync(filename)) {
       spinner.fail(`${filename} not exists`);
