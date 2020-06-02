@@ -70,7 +70,7 @@ Before landing pull requests, allow 24 hours for input from other collaborators.
 
 ### Testing and CI
 
-All fixes must have a test case which demonstrates the defect. The test should fail before the change, and pass after the change.
+All fixes must have a test case that demonstrates the defect. The test should fail before the change, and pass after the change.
 
 All pull requests must pass continuous integration tests. Code changes must pass on GitHub Actions.
 
@@ -86,7 +86,7 @@ Examples of breaking changes include:
 * Changing return values.
 * Removing or modifying existing properties on an options argument.
 * Adding or removing errors.
-* Altering expected timing of an event.
+* Altering expected to time of an event.
 * Changing the side effects of using a particular API.
 
 ##### Reverting commits
@@ -95,10 +95,7 @@ Revert commits with `git revert <HASH>` or `git revert <FROM>..<TO>`. The genera
 
 ## Landing Pull Requests
 
-1. Avoid landing pull requests that have someone else as an assignee. Authors
-   who wish to land their own pull requests will self-assign them. Sometimes, an
-   author will delegate to someone else. If in doubt, ask the assignee whether
-   it is okay to land.
+1. Avoid landing pull requests that have someone else as an assignee. Authors who wish to land their own pull requests will self-assign them. Sometimes, an author will delegate to someone else. If in doubt, ask the assignee whether it is okay to land.
 2. Use GitHub's green ["Merge Pull Request"][] button.
 3. Make sure CI is complete and green. If the CI is not green, check for unreliable tests and infrastructure failures.
 4. Check that the commit message adheres to [commit message guidelines][].

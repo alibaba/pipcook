@@ -1,6 +1,6 @@
 # Contribute a Plugin
 
-Pipcook welcomes developer to contribute plugins for us to extend the functions of Pipcook. This document describes how to develop a plugin. The content involved in this article is just a few suggestions, the specific plugin can run successfully in Pipcook as long as it meets our plugin prototype specifications.
+Pipcook welcomes developers to contribute plugins for us to extend the functions of Pipcook. This document describes how to develop a plugin. The content involved in this article is just a few suggestions, the specific plugin can run successfully in Pipcook as long as it meets our plugin prototype specifications.
 
 We strongly recommend that you first understand the [plugin specification](../spec/plugin.md) that we define. Only plugins that meet the interface that we define can be accepted.
 
@@ -39,7 +39,7 @@ const data = {
       shape: [1,3]
     },
     label: {
-    	name: 'test,
+      name: 'test,
       type: 'int32',
       shape: [1]
     },
@@ -59,7 +59,7 @@ export default doubleSize;
 
 You need to check the following two before releasing that:
 
-- plugin is able to run without any errors.
+- a plugin is able to run without any errors.
 - the returned value of your plugin comply with the [plugin specfication](../spec/plugin.md).
 
 After ensuring the preceding the above, you can run a real pipeline to check whether your plugin is compatible with the corresponding upstream and downstream plugins.

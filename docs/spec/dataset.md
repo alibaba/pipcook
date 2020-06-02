@@ -1,12 +1,12 @@
 # Dataset Specification
 
-Dataset is an important part of machine learning. Subsequent models are built on the basis of datasets. We need to manage datasets. The following is the standard format of the dataset that Pipcook should save after the data is collected through the `DataCollectType` plugin. Our `DataAccessType` layer assumes that the data already meets the following specifications. 
+Dataset is an important part of machine learning. Subsequent models are built based on datasets. We need to manage datasets. The following is the standard format of the dataset that Pipcook should save after the data is collected through the `DataCollectType` plugin. Our `DataAccessType` layer assumes that the data already meets the following specifications. 
 
 For different dataset formats, `DataCollectType` plugin is used to smooth the differences.
 
 #### Image
 
-PascalVOC Dataset format, detailed directory is as follows:
+PascalVOC Dataset format, the detailed directory is as follows:
 
 ```
 📂dataset

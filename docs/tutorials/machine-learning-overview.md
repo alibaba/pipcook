@@ -23,31 +23,31 @@ how_much('Node.js in Action'); // 99.0
 how_much('Dive into Node.js'); // 199.0
 ```
 
-The **Machine Learning** problem is similar, except that we can make the computer learning more intelligent through machine learning algorithms and can give real "predictions" from unknown data, for example, The following helps you get a book name which is more expensive:
+The **Machine Learning** problem is similar, except that we can make the computer learning more intelligent through machine learning algorithms and can give real "predictions" from unknown data, for example, The following helps you get a more expensive book name:
 
 ```js
 how_much('Pipcook in Action'); // 89.0
 how_much('Dive into Pipcook'); // 199.0
 ```
 
-However machine learning is not a panacea, so let's see what problems it can really solve, the following is machine learning problems fall into a few categories in given sample types(Image and Text):
+However machine learning is not a panacea, so let's see what problems it can solve, the following is machine learning problems fall into a few categories in given sample types(Image and Text):
 
 | Sample Type      | Problem Category         | Description                    |
 |------------------|--------------------------|--------------------------------|
 | Image            | Image Classification     | it does classify the image to specific classes. |
-|                  | Image Generation         | it generates image automatically. |
+|                  | Image Generation         | it generates an image automatically. |
 |                  | Object Detection         | it detects the given objects and returns class and position for each one. |
 |                  | Image Segmentation       | it returns the outline of given objects in pixel. |
 |                  | Image Clustering         | it returns clusters from images. |
 | Text             | Text Classification      | it does classify the text to specific classes. |
 |                  | Named Entity Recognition | it recognizes the named entity from a sentence. |
 |                  | Relationship Extraction  | it extracts the relationships between sentences. |
-|                  | Coreference Resolution   | it does the pronouns and other referrings to be connected with right individuals. |
-|                  | Writtng Correction       | it helps to do writting correction. |
+|                  | Coreference Resolution   | it does the pronouns and other referring to be connected with the right individuals. |
+|                  | Writing Correction       | it helps to do writing correction. |
 |                  | Machine Translation      | it translates a language to target language. |
-|                  | Question and Answering   | it generates an answer by given question. |
+|                  | Question and Answering   | it generates an answer by the given question. |
 |                  | Text Summary             | it generates a summary for your given long text. |
-|                  | Text Creation            | it generates an artwork by given portfolio. |
+|                  | Text Creation            | it generates an artwork by a given portfolio. |
 |                  | Text Clustering          | it returns clusters from words or sentences. |
 
 So how do we achieve the above prediction in our life? Let's take a look at the stages involved in a machine learning project:
@@ -70,9 +70,9 @@ So how do we achieve the above prediction in our life? Let's take a look at the 
   <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/MnistExamples.png">
 </center>
 
-Next, we will use handwritten digit recognition as an example to introduce how to complete a image classification task completely through [Pipcook][].
+Next, we will use handwritten digit recognition as an example to introduce how to complete an image classification task completely through [Pipcook][].
 
-In [Pipcook][], we use Pipeline to completely describe a machine learning task. We use different plugins in Pipeline to provide different nodes, and then connect the different plugins through Pipeline as a whole.
+In [Pipcook][], we use the pipeline to completely describe a machine learning task. We use different plugins in Pipeline to provide different nodes, and then connect the different plugins through Pipeline as a whole.
 
 In the following, we start writing a Pipeline from loading the [MNIST][] datasets:
 
@@ -113,7 +113,7 @@ In [Pipcook][], building a model for classification is also `plugins` configurat
 
 We use [PASCAL VOC][] as the dataset format in our pipeline, the "@pipcook/plugins-pascalvoc-data-access" plugin does transfer the minist dataset in [PASCAL VOC][] format.
 
-> [PASCAL VOC][] is to provide standardised image data sets for object class recognition.
+> [PASCAL VOC][] is to provide standardized image data sets for object class recognition.
 
 ```js
 {
@@ -128,7 +128,7 @@ We use [PASCAL VOC][] as the dataset format in our pipeline, the "@pipcook/plugi
 }
 ```
 
-Next, we use the plugin "@pipcook/plugins-image-data-process" to resize the image to 28x28 in our dataset, which is required for next step.
+Next, we use the plugin "@pipcook/plugins-image-data-process" to resize the image to 28x28 in our dataset, which is required for the next step.
 
 ```js
 {
@@ -163,7 +163,7 @@ $ pipcook run pipeline.json
 
 ## Predicting
 
-After the training is completed, we can find a `output` directory under the current project directory, which is our trained model and a JavaScript file `index.js` to predict.
+After the training is completed, we can find an `output` directory under the current project directory, which is our trained model and a JavaScript file `index.js` to predict.
 
 ```
 📂output
@@ -174,7 +174,7 @@ After the training is completed, we can find a `output` directory under the curr
    ┗ 📜index.js
 ```
 
-As you can see, the deploy folder is a npm package. You can integrate it into any Node.js project and use the `predict()` method provided by it.
+As you can see, the deploy folder is an npm package. You can integrate it into any Node.js project and use the `predict()` method provided by it.
 
 ```js
 const predict = require('/path/to/output');

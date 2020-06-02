@@ -2,11 +2,8 @@
 
 There are different ways to install [Pipcook][]:
 
-- [Install via NPM][]. This is the best approach for most users. It will provide
-  a stable version and pre-built packages are available for most platforms.
-- [Build from source][]. This is best for users who want the latest-and-greatest features
-  and aren’t afraid of running brand-new code. This is also needed for users who wish to contribute 
-  to the project.
+- [Install via NPM][]. This is the best approach for most users. It will provide a stable version and pre-built packages are available for most platforms.
+- [Build from source][]. This is best for users who want the latest-and-greatest features and aren’t afraid of running a brand-new code. This is also needed for users who wish to contribute to the project.
 
 Before starting the installation, please make sure the following environments are correct:
 

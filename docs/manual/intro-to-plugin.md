@@ -16,7 +16,7 @@ Next, let's take a look at the types of plugins and its plugins.
 
 #### plugin `DataCollect`
 
-It is used to collect different types of datasets into the pipeline, usually need to define parameters such as `datasetUrl` to obtain the data source. In order to facilitate the easy implementation of the following plugins, we define the output format of `DataCollect` is determined, according to the text and image:
+It is used to collect different types of datasets into the pipeline, usually need to define parameters such as `datasetUrl` to obtain the data source. To facilitate the easy implementation of the following plugins, we define the output format of `DataCollect` is determined, according to the text and image:
 
 - it outputs csv format for text tasks.
 - it outputs [coco dataset](http://cocodataset.org/) format for image tasks.
@@ -25,13 +25,13 @@ It is used to collect different types of datasets into the pipeline, usually nee
 
 #### plugin `DataAccess`
 
-It converts the dataset to the format required by the following model, and loads the data into the correspondin dataset [`DataLoader`][].
+It converts the dataset to the format required by the following model and loads the data into the corresponding dataset [`DataLoader`][].
 
 > Available plugins is [here](https://github.com/alibaba/pipcook/tree/master/packages/plugins/data-access).
 
 #### plugin `DataProcess`
 
-It is generally used after `DataAccess` and is used to perform some preprocessing on the data in the [`DataLoader`][] before training. In addition, after the model training is completed, Pipcook will use the corresponding `DataProcess` plugin to pre-process the predicted data before predicting, which can reduce the additional processing flow.
+It is generally used after `DataAccess` and is used to perform some preprocessing on the data in the [`DataLoader`][] before training. Besides, after the model training is completed, Pipcook will use the corresponding `DataProcess` plugin to pre-process the predicted data before predicting, which can reduce the additional processing flow.
 
 > Available plugins is [here](https://github.com/alibaba/pipcook/tree/master/packages/plugins/data-process).
 
@@ -46,9 +46,9 @@ We use the type of plugin to choose which model you want to use to complete the 
 
 #### plugin `ModelLoad`
 
-Sometimes, developers want to load a trained model directly in Pipeline. At this time, we can use `ModelLoad` plugin. So far, Pipcook have provided the following loaders:
+Sometimes, developers want to load a trained model directly in Pipeline. At this time, we can use `ModelLoad` plugin. So far, Pipcook has provided the following loaders:
 
-- [`@pipcook/plugins-tensorflow-model-load`][] is to load tensorflow saved model.
+- [`@pipcook/plugins-tensorflow-model-load`][] is to load the tensorflow saved model.
 
 #### plugin `ModelTrain`
 

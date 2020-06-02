@@ -26,12 +26,12 @@ console.log(list[2]); // 2
 
 ## Install Python Package
 
-By default, Boa will install a conda virtual environment under the path of Boa package. To make it easier to install python libraries, you can run:
+By default, Boa will install a conda virtual environment under the path of the Boa package. To make it easier to install python libraries, you can run:
 
 ```sh
 $ ./node_modules/.bin/bip install <package-name>
 ``` 
-> `bip` is an alias of pip which points to correct Python environment.
+> `bip` is an alias of pip that points to the correct Python environment.
 
 ## API References
 
@@ -152,7 +152,7 @@ First, check the type of the Python object under instance. If it is one of the f
 
 If the type of the object that needs to be wrapped is not in the above primitive, a temporary object will be created, and methods and properties will be defined through `Object.defineProperties`.
 
-On an instance of [`PythonObjectWrapper`](#class-PythonObjectWrapper), developers can directly obtain values through the property way, just like using those in Python. This is because we use [ES6 Proxy][], so the last step, we created a `Proxy` Object, configured with 3 trap handlers, `get`, `set` and `apply`, and finally returns this proxy object.
+On an instance of [`PythonObjectWrapper`](#class-PythonObjectWrapper), developers can directly obtain values through the property way, just like using those in Python. This is because we use [ES6 Proxy][], so the last step, we created a `Proxy` Object, configured with 3 trap handlers, `get`, `set`, `apply`, and finally returns this proxy object.
 
 #### property accessor
 

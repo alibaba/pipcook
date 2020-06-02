@@ -2,11 +2,11 @@
 
 [Pipcook][] uses plugins to achieve tasks in a specific machine learning lifecycle, which ensures that the framework is simple, stable, and efficient enough.
 
-At the same time, through a set of plugin specifications defined by [Pipcook][], we can also allow anyone to develop plugins, which ensures the scalability of [Pipcook][]. Theoretically, through plugins, we can achieve all kinds of machine learning task.
+At the same time, through a set of plugin specifications defined by [Pipcook][], we can also allow anyone to develop plugins, which ensures the scalability of [Pipcook][]. Theoretically, through plugins, we can achieve all kinds of the machine learning task.
 
 ## Plugin Package
 
-[Pipcook][] uses the form of NPM as a plugin package. In addition, we have expanded the protocol that belongs to the [Pipcook Plugin][] based on NPM package.json.
+[Pipcook][] uses the form of NPM as a plugin package. Besides, we have expanded the protocol that belongs to the [Pipcook Plugin][] based on NPM package.json.
 
 ```json
 {
@@ -32,10 +32,10 @@ At the same time, through a set of plugin specifications defined by [Pipcook][],
 After reading the `package.json` example above, there are a few requirements:
 
 - plugin package must be written in TypeScript, and compile it to JavaScript before publishing.
-- adding the `@pipcook/pipcook-core` to `dependencies` is required, which contains the unusal types for creating plugin handler.
+- adding the `@pipcook/pipcook-core` to `dependencies` is required, which contains the unusual types for creating a plugin handler.
 - adding a root field `pipcook`,
-  - `pipcook.category` is used to describe the category to which the plugin belongs, and all categories is listed [here](#plugin-category).
-  - `pipcook.datatype` is used to describe the type of data to be processed, currently supports: `common`, `image` and `text`.
+  - `pipcook.category` is used to describe the category to which the plugin belongs, and all categories are listed [here](#plugin-category).
+  - `pipcook.datatype` is used to describe the type of data to be processed, currently supports: `common`, `image`, and `text`.
 - adding an optional field `conda` for configuring Python-related dependencies,
   - `conda.python` is used to specify the Python version, must be `3.7`.
   - `conda.dependencies` is used to list all Python dependencies which will be installed on plugin initialization, and it supports the following kinds of version string:
@@ -45,7 +45,7 @@ After reading the `package.json` example above, there are a few requirements:
 
 ## Plugin Category
 
-We have defined the following plugin categories for machine learning lifecycle.
+We have defined the following plugin categories for the machine learning lifecycle.
 
 - [`dataCollect(args: ArgsType): Promise<void>`][] downloads from data source, which is stored in corresponding unified dataset.
 - [`dataAccess(args: ArgsType): Promise<UniDataset>`][] gets the dataset ready in loader and compatible with later model.

@@ -1,6 +1,6 @@
 # Introduction to Pipeline
 
-In Pipcook, we use Pipeline to represent the training process of a model, so in general, what kind of pipeline is needed to train a model? Developer can use a JSON to describe pipeline of modeling from sample collection, model definition, training to model evaluation:
+In Pipcook, we use Pipeline to represent the training process of a model, so in general, what kind of pipeline is needed to train a model? The developer can use a JSON to describe pipeline of modeling from sample collection, model definition, training to model evaluation:
 
 ```js
 {
@@ -30,7 +30,7 @@ In Pipcook, we use Pipeline to represent the training process of a model, so in 
 }
 ```
 
-As shown above, a pipeline is composed of different plugins, and we add the field `params` to each plugin to pass given parameters. Then the pipeline interpreter will perform corresponding operation(s) by its plugin type and parameters.
+As shown above, a pipeline is composed of different plugins, and we add the field `params` to each plugin to pass given parameters. Then the pipeline interpreter will perform the corresponding operation(s) by its plugin type and parameters.
 
 > See [Introduction to Plugin](./intro-to-plugin.md) for more details about plugin.
 

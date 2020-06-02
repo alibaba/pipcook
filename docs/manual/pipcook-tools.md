@@ -35,7 +35,7 @@ To run a pipeline from a config file, just type the following command:
 $ pipcook run path/to/your/pipeline-config.json
 ```
 
-> For the writing of pipeline, you can refer to [here](./intro-to-pipeline.md).
+> For the writing of the pipeline, you can refer to [here](./intro-to-pipeline.md).
 
 In the above example, each execution of the command will create a new pipeline row, which is usually not conducive to our later iteration and visualization based on the same pipeline. Then you can use the subcommand `pipcook-job(1)`:
 
@@ -43,7 +43,7 @@ In the above example, each execution of the command will create a new pipeline r
 $ pipcook job run <pipeline id>
 ```
 
-The above command will execute the task from an already created Pipeline to avoid repeated creation of pipeline. So what if you want to manually create a pipeline without directly executing it?
+The above command will execute the task from an already created Pipeline to avoid repeated creation of pipelines. So what if you want to manually create a pipeline without directly executing it?
 
 ```sh
 $ pipcook pipeline create path/to/your/pipeline-config.json
@@ -98,7 +98,7 @@ $ pipcook pipeline info <id>
 
 ## Plugins Management
 
-Generally, when creating a pipeline through above `pipcook-pipeline(1)`, the missing plugin will be installed by default, but you can also manually manage the local plugin through `pipcook-plugin(1)`.
+Generally, when creating a pipeline through the above `pipcook-pipeline(1)`, the missing plugin will be installed by default, but you can also manually manage the local plugin through `pipcook-plugin(1)`.
 
 First, get the installed list through the `list` subcommand:
 
@@ -128,7 +128,7 @@ Install a new plugin via NPM:
 $ pipcook plugin install @pipcook/plugins-csv-data-access
 ```
 
-Install a new plugin from local path
+Install a new plugin from a local path
 
 ```sh
 $ pipcook plugin install /path/to/dir/of/your/plugin
@@ -140,14 +140,14 @@ Note: when installing a plugin, you must ensure that this package of plugin comp
 
 [Pipcook Daemon][] is a process executed in the background, which helps users manage local pipelines and plugins. What if we manage it through the command line?
 
-To start or restart daemon:
+To start or restart the daemon:
 
 ```sh
 $ pipcook daemon start
 $ pipcook daemon restart
 ```
 
-To stop the current running daemon:
+To stop the currently running daemon:
 
 ```sh
 $ pipcook daemon stop
