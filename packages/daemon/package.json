@@ -6,6 +6,7 @@
     "@pipcook/costa": "^0.5.0",
     "@pipcook/pipcook-core": "^0.5.16",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
+    "@types/request-promise": "^4.1.46",
     "@types/cls-hooked": "^4.3.0",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",

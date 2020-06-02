@@ -9,7 +9,6 @@ import { tunaMirrorURI } from '../config';
 import { tail } from '../utils';
 import * as url from 'url';
 
-
 const start: StartHandler = async (filename: string, opts: any) => {
   const spinner = ora();
 
