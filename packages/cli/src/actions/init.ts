@@ -11,11 +11,7 @@ import { isLocal, optionalNpmClients, daemonPackage, boardPackage } from '../con
 
 const NPM_PUBLIC_REGISTRY = 'https://registry.npmjs.org/';
 
-async function npmInstall(npmClient: string,
-                          name: string,
-                          beta: boolean,
-                          cwd: string,
-                          env: NodeJS.ProcessEnv): Promise<void> {
+async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
   if (isLocal) {
     const pkg = await readJson(name + '/package.json');
     const dest = path.join(cwd, 'node_modules', pkg.name);
