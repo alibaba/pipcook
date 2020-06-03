@@ -17,19 +17,18 @@ const start: StartHandler = async (filename: string, opts: any) => {
     return process.exit(1);
   }
   let urlObj = url.parse(filename);
-  if (urlObj.protocol) {
-    if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
-      spinner.fail(`protocol ${urlObj.protocol} is not supported`);
-      return process.exit(1);
-    }
-  } else {
+  // file default if the protocol is null
+  if (urlObj.protocol === null) {
     filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
     if (!existsSync(filename)) {
       spinner.fail(`${filename} not exists`);
       return process.exit(1);
+    } else {
+      filename = url.parse(`file://${filename}`).href;
     }
-    urlObj = url.parse(`file://${filename}`);
-    filename = urlObj.href;
+  } else if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) === -1) {
+    spinner.fail(`protocol ${urlObj.protocol} is not supported`);
+    return process.exit(1);
   }
 
   const params = {
