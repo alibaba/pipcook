@@ -25,6 +25,6 @@ describe('start runnable in normal way', () => {
   it('should destroy the runnable', async () => {
     await runnable.destroy();
     const list = await readdir(costa.options.componentDir);
-    expect(list.length).toBe(0);
+    expect(list.length).toBe(1);
   });
 });
