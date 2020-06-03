@@ -23,8 +23,9 @@ export interface RuntimeOptions {
  */
 export interface PluginSource {
   from: 'fs' | 'npm' | null;
-  name: string;
   uri: string | null;
+  name: string;
+  schema?: NpmPackageNameSchema;
 }
 
 /**
@@ -126,4 +127,22 @@ export interface NpmPackageMetadata {
     latest: string;
   };
   versions: Record<string, NpmPackage>;
+}
+
+/**
+ * It represents the name schema for a package name string for npm. For exmaple,
+ * `@pipcook/test@1.x` outputs an object with scope(@pipcook), name(test) and
+ * version(1.x).
+ */
+export class NpmPackageNameSchema {
+  scope: string | null;
+  version: string | null;
+  name: string;
+  get packageName(): string {
+    if (this.scope) {
+      return `${this.scope}/${this.name}`;
+    } else {
+      return this.name;
+    }
+  }
 }

@@ -22,7 +22,7 @@
     "build": "lerna run compile",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon --scope @pipcook/pipboard lint",
     "pretest": "npm run lint",
-    "test": "lerna run --scope @pipcook/pipcook-core --scope @pipcook/boa test",
+    "test": "lerna run --scope @pipcook/pipcook-core --scope @pipcook/boa test --scope @pipcook/costa",
     "test:pipeline": "sh ./run_pipeline.sh",
     "typedoc": "typedoc",
     "clean": "lerna run clean",

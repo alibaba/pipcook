@@ -8,6 +8,7 @@
     "dist"
   ],
   "scripts": {
+    "pretest": "rm -rf .tests",
     "test": "ts-node ../../run_tests.ts",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
