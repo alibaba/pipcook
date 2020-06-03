@@ -23,7 +23,7 @@ export async function parseConfig(config: string, generateId = true): Promise<Pi
     if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
       configJson = JSON.parse(await request(config));
     } else {
-      throw new Error(`protocol ${urlObj.protocol} is not supported`);
+      throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
     }
   } else {
     configJson = await fs.readJson(config);
