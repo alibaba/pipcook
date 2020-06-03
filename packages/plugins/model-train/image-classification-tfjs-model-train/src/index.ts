@@ -45,7 +45,7 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: TfJsLayersM
 
   const trainConfig: any = {
     epochs: epochs,
-    batchesPerEpoch: parseInt(String(count / batchSize))
+    batchesPerEpoch: Math.floor(count / batchSize)
   };
 
   console.log('create train dataset');
