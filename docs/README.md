@@ -10,15 +10,14 @@ We are truly to design Pipcook's machine learning APIs for front-end application
 
 ## What's Pipcook
 
-The project provides toolkit components include machine learning pipeline framework, management tools, a JavaScript runtime for machine learning, and these can be also used as building blocks in conjunction with other projects.
+The project provides children projects include machine learning pipeline framework, management tools, a JavaScript runtime for machine learning, and these can be also used as building blocks in conjunction with other projects.
 
 ### Principles
 
 [Pipcook][] is an open-source project guided by strong principles, aiming to be modular and flexible on user experience. It is open to the community to help set its direction.
 
-- **Modular** the project includes lots of components that have well-defined functions and APIs that work together.
-- **Swappable** the project includes enough components to build what Pipcook has done, but its modular architecture ensures that most of the components can be swapped by different implementations.
-- **Developer Focused** The APIs are intended to be functional and useful to build powerful tools. They are not necessarily intended as end-user tools but as components aimed at developers.
+- **Modular** the project includes some of projects that have well-defined functions and APIs that work together.
+- **Swappable** the project includes enough modules to build what Pipcook has done, but its modular architecture ensures that most of the modules can be swapped by different implementations.
 
 ### Audience
 
@@ -30,7 +29,7 @@ The project provides toolkit components include machine learning pipeline framew
 
 > If you are in the above conditions, just try it via [installation guide](INSTALL.md).
 
-### Components
+### Children Projects
 
 __Pipcook Pipeline__
 
