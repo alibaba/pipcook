@@ -77,7 +77,7 @@ const getValidPair = async (dataPath: string, labelMap: Record<string, number>) 
           };
         }
         if (object.segmentation) {
-          label.segmentation = object.segmentation;
+          label.segmentation = object.segmentation[0];
         }
         pairs.push({
           annotation: fileName,

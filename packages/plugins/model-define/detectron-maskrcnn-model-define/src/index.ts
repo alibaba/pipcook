@@ -1,6 +1,6 @@
 import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset } from '@pipcook/pipcook-core';
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 
 const boa = require('@pipcook/boa');
 
@@ -14,7 +14,8 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
 
   let cfg: any;
   if (recoverPath) {
-    const log = JSON.parse(fs.readFileSync(path.join(recoverPath, 'log.json'), 'utf8'));
+    const logFile = await fs.readFile(path.join(recoverPath, 'log.json'), 'utf8');
+    const log = JSON.parse(logFile);
     const labelMap = log.metadata.labelMap;
     numClasses = Object.keys(labelMap).length;
   } else {

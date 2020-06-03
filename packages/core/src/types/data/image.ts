@@ -19,6 +19,7 @@ export interface ImageLabel {
   segmentation?: SegmentationPolygon | SegmentationRLE;
   iscrowd?: number;
 }
+
 export interface ImageMetadata extends Metadata {
   labelMap: Record<string, number>;
   isBitMask?: boolean;
