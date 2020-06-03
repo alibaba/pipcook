@@ -15,15 +15,15 @@ import {
 
 const { PLUGINS, PIPCOOK_LOGS } = constants;
 
-export async function parseConfig(config: string, generateId = true): Promise<PipelineDB> {
+export async function parseConfig(configPath: string, generateId = true): Promise<PipelineDB> {
   let configJson: RunConfigI = null;
   let urlObj = null;
-  urlObj = url.parse(config);
+  urlObj = url.parse(configPath);
   if (urlObj.protocol) {
     if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
-      configJson = JSON.parse(await request(config));
+      configJson = JSON.parse(await request(configPath));
     } else if (urlObj.protocol === 'file:') {
-      configJson = await fs.readJSON(url.fileURLToPath(config));
+      configJson = await fs.readJSON(url.fileURLToPath(configPath));
     } else {
       throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
     }
