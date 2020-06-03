@@ -101,6 +101,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="costaruntime.html#assignpackage" class="tsd-kind-icon">assign<wbr>Package</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="costaruntime.html#createrunnable" class="tsd-kind-icon">create<wbr>Runnable</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="costaruntime.html#fetch" class="tsd-kind-icon">fetch</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="costaruntime.html#getnameschema" class="tsd-kind-icon">get<wbr>Name<wbr>Schema</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="costaruntime.html#getsource" class="tsd-kind-icon">get<wbr>Source</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="costaruntime.html#install" class="tsd-kind-icon">install</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="costaruntime.html#isinstalled" class="tsd-kind-icon">is<wbr>Installed</a></li>
@@ -124,7 +125,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L62">packages/costa/src/runtime.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L77">packages/costa/src/runtime.ts:77</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -156,7 +157,7 @@
 					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/runtimeoptions.html" class="tsd-signature-type">RuntimeOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L62">packages/costa/src/runtime.ts:62</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L77">packages/costa/src/runtime.ts:77</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -173,7 +174,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L254">packages/costa/src/runtime.ts:254</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L299">packages/costa/src/runtime.ts:299</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -207,7 +208,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L183">packages/costa/src/runtime.ts:183</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L207">packages/costa/src/runtime.ts:207</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -235,7 +236,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L80">packages/costa/src/runtime.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L95">packages/costa/src/runtime.ts:95</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -263,6 +264,38 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="getnameschema" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Name<wbr>Schema</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Name<wbr>Schema<span class="tsd-signature-symbol">(</span>fullname<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="npmpackagenameschema.html" class="tsd-signature-type">NpmPackageNameSchema</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L244">packages/costa/src/runtime.ts:244</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create the <code>NpmPackageNameSchema</code> object by a package name.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>fullname: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the fullname of a package, lile &quot;@pipcook/test@1.x&quot;</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="npmpackagenameschema.html" class="tsd-signature-type">NpmPackageNameSchema</a></h4>
+							<p>the created <code>NpmPackageNameSchema</code> object.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
 					<a name="getsource" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Source</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -272,7 +305,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L220">packages/costa/src/runtime.ts:220</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L264">packages/costa/src/runtime.ts:264</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -309,7 +342,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L103">packages/costa/src/runtime.ts:103</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L126">packages/costa/src/runtime.ts:126</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -352,7 +385,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L202">packages/costa/src/runtime.ts:202</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L226">packages/costa/src/runtime.ts:226</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -382,12 +415,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L208">packages/costa/src/runtime.ts:208</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L232">packages/costa/src/runtime.ts:232</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>link the boa dependency.</p>
+									<p>Link the boa dependency.</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -404,7 +437,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L172">packages/costa/src/runtime.ts:172</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L196">packages/costa/src/runtime.ts:196</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -435,7 +468,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/f130fb9/packages/costa/src/runtime.ts#L245">packages/costa/src/runtime.ts:245</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/15a20b5/packages/costa/src/runtime.ts#L290">packages/costa/src/runtime.ts:290</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -487,6 +520,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="costaruntime.html#fetch" class="tsd-kind-icon">fetch</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="costaruntime.html#getnameschema" class="tsd-kind-icon">get<wbr>Name<wbr>Schema</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="costaruntime.html#getsource" class="tsd-kind-icon">get<wbr>Source</a>
