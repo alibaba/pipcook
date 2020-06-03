@@ -238,7 +238,7 @@ export async function convertPascal2CocoFileOutput(files: string[], targetPath: 
         id: cocoJson.annotations.length + 1,
         image_id: i + 1,
         category_id: id,
-        iscrowd: Number((item.iscrowd && item.iscrowd[0])) || 0,
+        iscrowd: Number((item.iscrowd && item.iscrowd[0])) || 0
       };
 
       if (item.segmentation && item.segmentation[0]) {
@@ -249,9 +249,9 @@ export async function convertPascal2CocoFileOutput(files: string[], targetPath: 
               Number(item.segmentation[0].size[0]),
               Number(item.segmentation[0].size[1])
             ]
-          }
+          };
         } else if (item.segmentation[0].polygon) {
-          cocoItem.segmentation = item.segmentation[0].polygon[0]
+          cocoItem.segmentation = item.segmentation[0].polygon[0];
         }
       }
 
