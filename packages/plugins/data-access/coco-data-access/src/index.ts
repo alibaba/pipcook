@@ -76,6 +76,9 @@ const getValidPair = async (dataPath: string, labelMap: Record<string, number>) 
             ymax: Number(object.bndbox[0].ymax[0])
           };
         }
+        if (object.segmentation) {
+          label.segmentation = object.segmentation;
+        }
         pairs.push({
           annotation: fileName,
           image: path.join(dataPath, imageName),
@@ -106,13 +109,16 @@ const cocoDataAccess: DataAccessType = async (args: ArgsType): Promise<CocoDatas
   const validationPair = await getValidPair(path.join(dataDir, 'validation'), labelMap);
   const testPair = await getValidPair(path.join(dataDir, 'test'), labelMap);
 
+  const isBitMask = trainPair[0].label.segmentation?.hasOwnProperty('counts');
+
   const trainLoader = new DataLoader(trainPair);
   const validationLoader = new DataLoader(validationPair);
   const testLoader = new DataLoader(testPair);
 
   const result: CocoDataset = {
     metadata: {
-      labelMap
+      labelMap,
+      isBitMask
     },
     dataStatistics: [],
     validationResult: {

@@ -1,6 +1,6 @@
 {
-  "name": "@pipcook/plugins-object-detection-detectron-model-evaluate",
-  "version": "0.5.11",
+  "name": "@pipcook/plugins-detectron-maskrcnn-model-define",
+  "version": "0.5.10",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json"
+    "compile": "tsc -b tsconfig.json && cp -r ./src/config ./dist/"
   },
   "author": "",
   "license": "ISC",
@@ -28,8 +28,9 @@
     "access": "public"
   },
   "pipcook": {
-    "category": "modelEvaluate",
-    "datatype": "image"
+    "category": "modelDefine",
+    "datatype": "image",
+    "method": "segmentation"
   },
   "conda": {
     "python": "3.7",

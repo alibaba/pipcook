@@ -1,5 +1,12 @@
 import { DataLoader, UniDataset, Metadata } from './common';
 
+export interface SegmentationRLE {
+  counts: string;
+  size: number[]; 
+}
+
+export type SegmentationPolygon = number[][];
+
 export interface ImageLabel {
   name: string;
   categoryId: number;
@@ -9,9 +16,12 @@ export interface ImageLabel {
     xmax: number;
     ymax: number;
   };
+  segmentation?: SegmentationPolygon | SegmentationRLE;
+  iscrowd?: number;
 }
 export interface ImageMetadata extends Metadata {
   labelMap: Record<string, number>;
+  isBitMask?: boolean;
 }
 
 export interface ImageSample {

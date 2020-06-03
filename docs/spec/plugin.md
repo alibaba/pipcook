@@ -80,11 +80,11 @@ The following is a list of plugins in different types:
 
 @pipcook/plugins-bayesian-model-train
 @pipcook/plugins-image-classification-tfjs-model-train
-@pipcook/plugins-object-detection-detectron-model-train
+@pipcook/plugins-detectron-model-train
 
 ### ModelEvaluate
 
 @pipcook/plugins-image-data-process
 @pipcook/plugins-bayesian-model-evaluate
 @pipcook/plugins-image-classification-tfjs-model-evaluate
-@pipcook/plugins-object-detection-detectron-model-evaluate
+@pipcook/plugins-detectron-model-evaluate
