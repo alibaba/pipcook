@@ -20,6 +20,7 @@ const start: StartHandler = async (filename: string, opts: any) => {
   // file default if the protocol is null
   if (urlObj.protocol === null) {
     filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
+    // check the filename existence
     if (!existsSync(filename)) {
       spinner.fail(`${filename} not exists`);
       return process.exit(1);

@@ -18,16 +18,15 @@ const { PLUGINS, PIPCOOK_LOGS } = constants;
 export async function parseConfig(configPath: string, generateId = true): Promise<PipelineDB> {
   let configJson: RunConfigI = null;
   const urlObj = url.parse(configPath);
-  if (urlObj.protocol) {
-    if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
-      configJson = JSON.parse(await request(configPath));
-    } else if (urlObj.protocol === 'file:') {
-      configJson = await fs.readJSON(url.fileURLToPath(configPath));
-    } else {
-      throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
-    }
-  } else {
+  if (urlObj.protocol === null) {
     throw new TypeError('config URI is not supported');
+  }
+  if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) >= 0) {
+    configJson = JSON.parse(await request(configPath));
+  } else if (urlObj.protocol === 'file:') {
+    configJson = await fs.readJSON(url.fileURLToPath(configPath));
+  } else {
+    throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
   }
   const result: PipelineDB = {};
 
