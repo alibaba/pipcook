@@ -1,14 +1,13 @@
 import { ArgsType, CsvDataLoader, CsvDataset, CsvSample, DataAccessType, Sample } from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';
-import * as path from 'path';
 
 class TextlineLoader implements CsvDataLoader {
   records: CsvSample[];
-  charsetLength: number;
+  charset: string[];
   maxLineLength: number;
 
   constructor(lines: string[]) {
-    const charset = [];
+    const charset = [] as string[];
     const inputSeqs = [] as Array<number[]>;
     let maxLineLength = 0;
 
@@ -33,17 +32,13 @@ class TextlineLoader implements CsvDataLoader {
     }
     console.info(`input seqs is ready: ${inputSeqs.length}.`);
 
-    this.charsetLength = charset.length;
+    this.charset = charset;
     this.maxLineLength = maxLineLength;
     this.records = inputSeqs.map((inputSeq) => {
       const sample = {
         data: inputSeq.slice(0, -1),
         label: inputSeq.slice(-1)[0],
       } as CsvSample;
-
-      // const onehot = new Array(charset.length).fill(0) as number[];
-      // onehot[sample.label] = 1;
-      // sample.onehot = onehot;
       return sample;
     });
   }
@@ -57,7 +52,7 @@ class TextlineLoader implements CsvDataLoader {
 
 const textlineAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset> => {
   const { dataDir } = args;
-  const lines = (await fs.readFile(`${dataDir}/input.txt`, 'utf8')).split('\n').slice(200);
+  const lines = (await fs.readFile(`${dataDir}/input.txt`, 'utf8')).split('\n').slice(0, 10);
   const loader = new TextlineLoader(lines);
   
   return {
@@ -73,7 +68,7 @@ const textlineAccess: DataAccessType = async (args: ArgsType): Promise<CsvDatase
       feature: {
         names: [],
       },
-      charsetLength: loader.charsetLength,
+      labelMap: loader.charset,
       maxLineLength: loader.maxLineLength
     }
   };

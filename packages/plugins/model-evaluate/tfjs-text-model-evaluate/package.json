@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugins-tfjs-text-lstm-model-define",
+  "name": "@pipcook/plugins-tfjs-text-model-evaluate",
   "version": "0.5.9",
   "description": "",
   "main": "dist/index",
@@ -14,11 +14,10 @@
     "compile": "tsc -b tsconfig.json"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.16",
-    "@tensorflow/tfjs-node-gpu": "1.7.0",
-    "node-pre-gyp": "^0.15.0"
+    "@tensorflow/tfjs-node-gpu": "1.7.0"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
@@ -28,8 +27,7 @@
     "access": "public"
   },
   "pipcook": {
-    "category": "modelDefine",
-    "datatype": "text",
-    "method": "creation"
+    "category": "modelEvaluate",
+    "datatype": "text"
   }
 }
