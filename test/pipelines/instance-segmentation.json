@@ -3,7 +3,7 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/object-detection-coco-data-collect",
       "params": {
-        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/train.zip"
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/instance-segmentation/data.zip"
       }
     },
     "dataAccess": {
