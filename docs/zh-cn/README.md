@@ -1,68 +1,59 @@
 # Pipcook
 
-为 JavaScript 开发者提供的机器学习工具集。
+[Pipcook][] 项目是一个开源工具包，它能让 Web 开发者更好地使用机器学习，从而开启和加速前端智能化时代！
 
-<a href="https://github.com/alibaba/pipcook/actions">
-  <img alt="Github Action Build" src="https://github.com/alibaba/pipcook/workflows/build/badge.svg?branch=master&event=push"></a>
-<a href="https://hub.docker.com/r/pipcook/pipcook">
-  <img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/pipcook/pipcook"></a>
+## 为什么要开发 Pipcook
 
-## 为什么开发 Pipcook
+它旨在使 Web 工程师能够在零门槛的前提下使用机器学习，并拥有将前端技术领域带到智能领域的视角。[Pipcook][] 的目标就是成为机器学习和前端交互的跨领域工具包。
 
-Pipcook 以前端工程师零门槛应用机器学习能力为使命，以引领前端技术领域走向智能化为愿景,  发展成为了从处理数据、训练模型到服务部署的一站式前端算法工程平台。Pipcook 将专注在前端领域，始终秉持着站在前端工程师视角开发，对前端工程师友好的原则，最终推动装上机器学习引擎的前端行业向前发展。
+我们将完全基于前端应用程序来设计 Pipcook API，并专注于前端领域，以真实解决 Web 工程师使用机器学习的痛点来开发 Pipcook。以面向 Web 友好为原则，来推动机器学习工程和前端工程师的融合。
 
-Pipcook API 完全是以开发前端机器学习应用而设计，我们聚焦于前端领域，并以前端工程师视角为根本，通过构建一套面向 JavaScript 友好的机器学习工具集，将前端领域不断推向智能化的时代。
+## 简单的介绍
 
-## 什么是 Pipcook
+[Pipcook][] 项目提供了一些工具包组件，包括机器学习工作流框架，命令行管理工具，机器学习的 JavaScript 运行时。你也可以在其他项目中使用这些工具或框架来搭建你所需要的系统。
 
-Pipcook 被分为以下3个层次。
+### 设计原则
 
-__Pipcook Application__
+在 [Pipcook][] 中，我们遵循一些基本的设计原则，来保证整个软件是模块化和灵活的，这些原则也能帮助社区来对 [Pipcook][] 未来的方向作出指导。
 
-通过定义灵活、直观的 API，帮助开发者轻松构建机器学习应用，并且无需了解任何算法和底层细节。
+- **模块化** 项目中包含了大量的组件，每一个组件都必须保证是良好定义的。
+- **可更换** 项目中包含了足够的组件来构建现在的 Pipcook，不过我们通过模块化的架构和规范，开发者可以按照自己的需要对部分组件切换为其他的实现方式。
 
-__Pipcook Core__
+### 受众
 
-它用于描述机器学习流水线（ML Pipelines），每个流水线的节点又一个插件构成。Pipecook 通过流水线机制来保证整个流程的稳定和可拓展性，并且通过插件来支持丰富的功能，包括：数据集、训练、验证和部署。
+[Pipcook][] 面向以下的 Web 工程师：
+
+- 想要学习机器学习
+- 想要训练和部署自己的模型
+- 想要优化模型的性能，比如针对一个图片分类模型，有一个更高的准确度
+
+> 如果你满足上面条件之一，那么就尝试从[安装](INSTALL.md)开始吧。
+
+### 组件
+
+__Pipcook Pipeline__
+
+它用于表达机器学习的工作流，其中包含了 Pipcook 插件，在这一层，我们需要保证整个系统的稳定性和拓展性，同时使用插件机制来支持丰富的数据集、训练、验证和部署。
+
+一条 Pipcook Pipeline 由多个插件组成，通过配置不同的插件以及参数，最终会输出一个 NPM 包，其中包含了训练好的模型和 JavaScript 函数，你就可以像使用普通 NPM 包一样使用你训练好的模型了。
+
+> 注意：在 Pipcook 中，每一个 Pipeline 仅拥有一个角色，那就是训练一个用户需要的模型，也就是说每一个 Pipeline 的最后一个节点都必须输出一个训练好的模型，否则这个 Pipeline 就是非法的。
 
 __Pipcook Bridge to Python__
 
-对于 JavaScript 工程师来说，智能化最困难之处在于，生态中缺乏成熟的机器学习工具套件。为此，我们通过桥接的方式，打通 Python 与 Node.js 的世界，为 JavaScript 引入一些 Python 生态中成熟的工具和接口，以弥补 JavaScript 生态中的缺失。
+对于 JavaScript 工程师来说，开始机器学习最苦难的一点就是缺乏一套成熟的工具集。在 Pipcook，我们提供了 **Boa**，它使用 N-API 将 [CPython][] 集成在了 Node.js 环境，从而让开发者能够通过 JavaScript 访问到 Python 生态来解决这个痛点。
 
-## 工作原理
+通过它，开发者可以毫无顾虑地在 Node.js 中使用诸如 `numpy`、`scikit-learn`、`jieba` 或 `tensorflow` 这样的 Python 包。
 
-Pipcook 的核心是一条流水线（Pipeline）， 在这个流水线中，将会有一系列插件嵌入，每个插件负责机器学习生命周期特定的环节。每个插件的输入和输出的数据将会在这个流水线中流通。Pipcook 基于 Rxjs 的响应式框架，负责对 pipeline 中的数据进行响应、调度和管理。Pipcook 的这条 pipeline 如下图所示：
+## 下一步
 
-![](https://camo.githubusercontent.com/3218a0e51ae58a09f4093fcbce153a4c46b6e248/68747470733a2f2f63646e2e6e6c61726b2e636f6d2f79757175652f302f323031392f706e672f3635343031342f313537353839373437343630352d32653561333861642d303630642d346330382d616238332d3262346661646639373361382e706e6723616c69676e3d6c65667426646973706c61793d696e6c696e65266865696768743d343835266e616d653d696d6167652e706e67266f726967696e4865696768743d393639266f726967696e57696474683d323332332673697a653d333230363838267374617475733d646f6e65267374796c653d6e6f6e652677696474683d313136312e35#align=left&display=inline&height=969&originHeight=969&originWidth=2323&status=done&style=none&width=2323)
+看到这里，已经按耐不住想要使用 [Pipcook][] 了吗？可以按照下面的介绍开始你下一步的学习之旅：
 
-我们的插件机制有很高的可扩展性，遵循着一个插件只做一件事情的原则，Pipcook 通过串联起这些插件来实现一个机器学习工程链路。同时，对于用户来讲，用户只需调用一些简单的 API，即可指定所需要的插件，搭建起一个项目来。
+- [如何安装](INSTALL.md)
+- [什么是机器学习](tutorials/machine-learning-overview.md)
+- [如何使用 Pipeline](manual/intro-to-pipeline.md)
+- [如何使用 Boa](manual/intro-to-boa.md)
+- [如何使用 Pipcook Tools](manual/pipcook-tools.md)
 
-### 基本概念
-
-- **Runner** Pipcook 核心调度，我们将所有 component 传入给 runner 启动 pipcook 工程；
-- **Pipeline** Pipcook 的插件插入到 pipeline 中，pipeline 中流通数据和模型，每个插件会拦截这些数据做处理，然后再释放数据；
-- **Plugin** 插件，我们将提供内置插件, 同时支持第三方插件，每个插件负责做一件事，负责具体的一项机器学习生命周期中的任务；
-- **Component** 是由 Pipcook 提供，负责解析插件内容，用户在使用的时候需要将 plugin 传入到 component 当中解析；
-
-## 快速开始
-
-是否已经迫不及待开始一个 Pipcook 工程?，请[参考这里来快速开始](tutorials/get-started.md)一个工程吧
-
-
-## 进阶
-
-在亲手搭建了一个机器学习项目之后，您是否想了解 Pipcook 的更多信息，您可以查看以下链接了解更多
-
-- 新手教程
-  - [新手入门——命令行工具](./tutorials/get-started-with-cli.md)
-  - [如何开发一个插件](./tutorials/how-to-develop-a-plugin.md)
-  - [Boa 文档 (如何在 node.js 中使用 Python)](./tutorials/want-to-use-python.md)
-
-- 开发者
-  - [开发者指南](./devel/developer-guide.md)
-
-- 规范
-  - [插件规范](./spec/plugin.md)
-  - [数据集规范](./spec/dataset.md)
-
-- [API](/typedoc) (only available on website)
+[Pipcook]: https://github.com/alibaba/pipcook
+[CPython]: https://github.com/python/cpython
