@@ -60,7 +60,7 @@ jobs:
     - name: pipcook run local path
       run: |
         ./packages/cli/dist/bin/pipcook run ./test/pipelines/text-bayes-classification.json --verbose
-    - name: pipcook run url
+    - name: pipcook run from url
       run: |
         ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/test/pipelines/text-bayes-classification.json --verbose
     - name: pipcook plugin install
