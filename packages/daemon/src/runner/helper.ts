@@ -16,7 +16,7 @@ import {
 const { PLUGINS, PIPCOOK_LOGS } = constants;
 
 export async function parseConfig(configPath: string, generateId = true): Promise<PipelineDB> {
-  let configJson: RunConfigI = null;
+  let configJson: RunConfigI;
   const urlObj = url.parse(configPath);
   if (urlObj.protocol === null) {
     throw new TypeError('config URI is not supported');
