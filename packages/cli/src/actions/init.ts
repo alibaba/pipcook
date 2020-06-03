@@ -18,6 +18,9 @@ async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: s
     await ensureDir(path.dirname(dest));
     await symlink(name, dest, 'dir');
   } else {
+    if (beta) {
+      name = `${name}@beta`;
+    }
     const cmd = `${npmClient} install ${name} --force --registry ${NPM_PUBLIC_REGISTRY}`;
     console.info(`exec <${cmd}>`);
     exec(cmd, { cwd, env, stdio: 'inherit' });
