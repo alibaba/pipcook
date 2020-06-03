@@ -22,7 +22,7 @@ const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, mode
     return {
       pass: true,
       result: inference_on_dataset(trainer.model, val_loader, evaluator)
-    }
+    };
   }
 
   return {
