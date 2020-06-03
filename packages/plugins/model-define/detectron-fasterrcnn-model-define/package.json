@@ -29,8 +29,7 @@
   },
   "pipcook": {
     "category": "modelDefine",
-    "datatype": "image",
-    "method": "detect"
+    "datatype": "image"
   },
   "conda": {
     "python": "3.7",

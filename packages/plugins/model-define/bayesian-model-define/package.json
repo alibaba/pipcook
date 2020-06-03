@@ -28,8 +28,7 @@
   },
   "pipcook": {
     "category": "modelDefine",
-    "datatype": "text",
-    "method": "classify"
+    "datatype": "text"
   },
   "conda": {
     "python": "3.7",

@@ -13,14 +13,13 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json && cp -r ./src/config ./dist/"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "pipcook",
+  "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/boa": "^0.5.10",
     "@pipcook/pipcook-core": "^0.5.16",
     "fs-extra": "^8.1.0"
   },
-  "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
   "devDependencies": {
     "@types/fs-extra": "^8.1.0",
     "@types/jasmine": "^3.5.7",
@@ -31,8 +30,7 @@
   },
   "pipcook": {
     "category": "modelDefine",
-    "datatype": "image",
-    "method": "segmentation"
+    "datatype": "image"
   },
   "conda": {
     "python": "3.7",
