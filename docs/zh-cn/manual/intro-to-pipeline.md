@@ -38,7 +38,7 @@
 
 ## 准备工作
 
-通过[命令行工具配置指南](./pipcook-tools.md#environment-setup)来做运行 Pipeline 前的准备。
+通过[命令行工具配置指南](./pipcook-tools.md#环境设置)来做运行 Pipeline 前的准备。
 
 ## 运行
 

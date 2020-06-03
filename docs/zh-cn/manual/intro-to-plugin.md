@@ -10,16 +10,16 @@
 
 > 上述 Pipeline 的源码定义在[这里](https://github.com/alibaba/pipcook/blob/master/example/pipelines/text-bayes-classification.json)。
 
-通过上面的例子，我们可以对于一个文本分类器的任务，我们遵循机器学习工作流，它按照不同类型的子任务顺序执行，而每个子任务就对应一个用户定义的插件，同时用户也可以以较低成本，快速地调整整个任务的 Pipeline。
+通过上面的例子，对于一个文本分类器的任务，我们遵循机器学习工作流，它按照不同类型的子任务顺序执行，而每个子任务就对应一个用户定义的插件，同时用户也可以以较低成本，快速地调整整个任务的 Pipeline。
 
 接着，我们来看看都有哪些类型的插件。
 
 #### `DataCollect` 插件
 
-它用于将不同类型的数据集收集到 Pipeline 中，通常需要定义诸如 `datasetUrl` 之类的参数来获取数据源。为了方便以下插件的方便实现，我们根据文本和图像定义了 `DataCollect` 的统一输出：
+它用于将不同类型的数据集收集到 Pipeline 中，通常需要定义诸如 `datasetUrl` 之类的参数来获取数据源。为了方便以下插件的实现，我们根据文本和图像定义了 `DataCollect` 的统一输出：
 
 - 对于文本类任务，使用 CSV 格式作为输出格式。
-- 对于图片类任务，使用 [coco dataset](http://cocodataset.org/) 作为输出格式。
+- 对于图像类任务，使用 [coco dataset](http://cocodataset.org/) 作为输出格式。
 
 > 可用的官方插件在[这里](https://github.com/alibaba/pipcook/tree/master/packages/plugins/data-collect)。
 
@@ -31,7 +31,7 @@
 
 #### `DataProcess` 插件
 
-它通常在 DataAccess 之后使用，用于在训练之前对 [`DataLoader`][] 中的数据进行一些预处理。此外，在模型训练完成，Pipcook 将使用配置好的  DataProcess 插件在预测之前对输入数据进行预处理，从而减少了额外的处理流程。
+它通常在 DataAccess 之后使用，用于在训练之前对 [`DataLoader`][] 中的数据进行一些预处理。此外，模型训练完成后，Pipcook 也会使用 DataProcess 插件在预测逻辑之前，对输入数据进行预处理，从而减少额外的数据处理流程。
 
 > 可用的官方插件在[这里](https://github.com/alibaba/pipcook/tree/master/packages/plugins/data-process)。
 
