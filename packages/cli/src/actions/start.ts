@@ -16,7 +16,7 @@ const start: StartHandler = async (filename: string, opts: any) => {
     spinner.fail('Please specify the config path');
     return process.exit(1);
   }
-  const urlObj = url.parse(filename);
+  let urlObj = url.parse(filename);
   if (urlObj.protocol) {
     if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
       spinner.fail(`protocol ${urlObj.protocol} is not supported`);
@@ -28,6 +28,8 @@ const start: StartHandler = async (filename: string, opts: any) => {
       spinner.fail(`${filename} not exists`);
       return process.exit(1);
     }
+    urlObj = url.parse(`file://${filename}`);
+    filename = urlObj.href;
   }
 
   const params = {

@@ -22,11 +22,13 @@ export async function parseConfig(config: string, generateId = true): Promise<Pi
   if (urlObj.protocol) {
     if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
       configJson = JSON.parse(await request(config));
+    } else if (urlObj.protocol === 'file:') {
+      configJson = await fs.readJSON(url.fileURLToPath(config));
     } else {
       throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
     }
   } else {
-    configJson = await fs.readJson(config);
+    throw new TypeError(`config URI is not supported`);
   }
   const result: PipelineDB = {};
 
