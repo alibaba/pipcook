@@ -25,8 +25,6 @@ const config = {
   },
 };
 
-if (process.env.DEV === 'TRUE') {
-  config.define.DEV = JSON.stringify('TRUE');
-}
+config.define.DEV = process.env.DEV === 'TRUE' ? JSON.stringify('TRUE') : JSON.stringify('FALSE');
 
 module.exports = config;
