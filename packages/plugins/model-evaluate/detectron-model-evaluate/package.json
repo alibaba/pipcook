@@ -1,6 +1,6 @@
 {
-  "name": "@pipcook/plugins-object-detection-detectron-model-train",
-  "version": "0.5.10",
+  "name": "@pipcook/plugins-detectron-model-evaluate",
+  "version": "0.5.11",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -28,7 +28,7 @@
     "access": "public"
   },
   "pipcook": {
-    "category": "modelTrain",
+    "category": "modelEvaluate",
     "datatype": "image"
   },
   "conda": {
