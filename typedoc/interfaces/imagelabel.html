@@ -81,7 +81,9 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imagelabel.html#bndbox" class="tsd-kind-icon">bndbox</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imagelabel.html#categoryid" class="tsd-kind-icon">category<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imagelabel.html#iscrowd" class="tsd-kind-icon">iscrowd</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imagelabel.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imagelabel.html#segmentation" class="tsd-kind-icon">segmentation</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,7 +97,7 @@
 					<div class="tsd-signature tsd-kind-icon">bndbox<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/1ff6074/packages/core/src/types/data/image.ts#L6">packages/core/src/types/data/image.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0ee72f8/packages/core/src/types/data/image.ts#L13">packages/core/src/types/data/image.ts:13</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -122,7 +124,17 @@
 					<div class="tsd-signature tsd-kind-icon">category<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/1ff6074/packages/core/src/types/data/image.ts#L5">packages/core/src/types/data/image.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0ee72f8/packages/core/src/types/data/image.ts#L12">packages/core/src/types/data/image.ts:12</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="iscrowd" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> iscrowd</h3>
+					<div class="tsd-signature tsd-kind-icon">iscrowd<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0ee72f8/packages/core/src/types/data/image.ts#L20">packages/core/src/types/data/image.ts:20</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -132,7 +144,17 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/1ff6074/packages/core/src/types/data/image.ts#L4">packages/core/src/types/data/image.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0ee72f8/packages/core/src/types/data/image.ts#L11">packages/core/src/types/data/image.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="segmentation" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> segmentation</h3>
+					<div class="tsd-signature tsd-kind-icon">segmentation<span class="tsd-signature-symbol">:</span> <a href="../index.html#segmentationpolygon" class="tsd-signature-type">SegmentationPolygon</a><span class="tsd-signature-symbol"> | </span><a href="segmentationrle.html" class="tsd-signature-type">SegmentationRLE</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/0ee72f8/packages/core/src/types/data/image.ts#L19">packages/core/src/types/data/image.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -160,7 +182,13 @@
 								<a href="imagelabel.html#categoryid" class="tsd-kind-icon">category<wbr>Id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="imagelabel.html#iscrowd" class="tsd-kind-icon">iscrowd</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="imagelabel.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="imagelabel.html#segmentation" class="tsd-kind-icon">segmentation</a>
 							</li>
 						</ul>
 					</li>
