@@ -91,7 +91,6 @@ export default class AssetsClassification extends Component {
       image,
     });
     response = response.data;
-    console.log(response);
     this.setState({
       imageResult: response,
     });

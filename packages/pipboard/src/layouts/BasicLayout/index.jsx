@@ -22,13 +22,16 @@ export default class Dashboard extends Component {
     location.href = `/#/${selectedKeys[0]}`;
   }
 
+  getKeyByUrl = () => {
+    
+  }
+
   render() {
-    const {selectedKeys} = this.state;
     return (
       <div className="dashboard">
-        <Nav className="basic-nav" onSelect={this.select} direction="hoz" type="primary" header={header} selectedKeys={selectedKeys} triggerType="hover">
+        <Nav className="basic-nav" onSelect={this.select} direction="hoz" type="primary" header={header} selectedKeys={[]} triggerType="hover">
           <Item key="home">Home</Item>
-          <Item key="pipelines">Pipelines</Item>
+          <Item key="pipeline">Pipelines</Item>
           <Item key="jobs">Jobs</Item>
         </Nav> 
         <Provider pipelineData={pipelineStore} >

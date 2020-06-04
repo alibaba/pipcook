@@ -1,0 +1,18 @@
+.pipeline {
+  .pipeline-create-container {
+    background-color: white;
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    .pipeline-create {
+      width: 64px;
+      height: 64px;
+    }
+  }
+
+  .pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+  }
+}

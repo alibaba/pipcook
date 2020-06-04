@@ -39,11 +39,18 @@
     .plugin-operate {
       display: flex;
       flex-direction: column;
+      position: relative;
       margin-top: 10px;
       margin-left: 20px;
       margin-right: 20px;
       .button {
         margin-bottom: 10px;
+      }
+
+      .job-info {
+        position: absolute;
+        bottom: 10px;
+        font-size: 20px;
       }
     }
   }

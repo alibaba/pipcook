@@ -17,7 +17,11 @@ export class PipelineController {
   public async create() {
     const { ctx } = this;
     try {
-      const { config, name } = ctx.request.body;
+      const { name, isFile=true } = ctx.request.body;
+      let { config } = ctx.request.body;
+      if (!isFile) {
+        config = JSON.parse(config);
+      }
       const parsedConfig = await parseConfig(config);
       if (typeof name === 'string') {
         parsedConfig.name = name;
@@ -41,7 +45,7 @@ export class PipelineController {
       const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
       successRes(this.ctx, {
         message: 'get pipeline successfully',
-        data: pipelines.rows
+        data: pipelines,
       });
     } catch (err) {
       failRes(this.ctx, {
@@ -128,7 +132,10 @@ export class PipelineController {
     const { ctx } = this;
     const { id } = ctx.params;
     try {
-      const { config } = ctx.request.body;
+      let { config, isFile=true } = ctx.request.body;
+      if (!isFile) {
+        config = JSON.parse(config);
+      }
       const parsedConfig = await parseConfig(config, false);
       const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
       successRes(ctx, {

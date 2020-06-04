@@ -12,12 +12,12 @@ export default class ChooseItem extends Component {
   }
 
   render () {
-    const {itemName, plugins, choices, currentSelect} = this.props;
+    const {itemName, plugins, choices, currentSelect, jobId} = this.props;
     const currentPlugin = plugins[itemName];
     const currentChoices = choices[itemName];
     if (currentPlugin) {
-      if (!currentChoices.includes(currentPlugin.name)) {
-        currentChoices.push(currentPlugin.name);
+      if (!currentChoices.includes(currentPlugin.package)) {
+        currentChoices.push(currentPlugin.package);
       }
     }
     return (
@@ -26,7 +26,13 @@ export default class ChooseItem extends Component {
       }}>
         <div className="item-name">{itemName}</div>
         <div className="choose-plugin">
-          <Select value={currentPlugin && currentPlugin.name || ''} autoWidth={false} onChange={this.onChange} >
+          <Select 
+            value={currentPlugin && currentPlugin.package || ''} 
+            autoWidth={false} 
+            onChange={this.onChange}
+            disabled={jobId}
+            hasClear
+          >
             {
               currentChoices.map(choice => <Option value={choice} key={choice} >{choice}</Option>)
             }

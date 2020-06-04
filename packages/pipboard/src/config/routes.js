@@ -5,7 +5,6 @@ import Mnist from '@/pages/Tutorial/Mnist';
 import AssetsClassification from '@/pages/Tutorial/AssetsClassification';
 import Home from '@/pages/Home';
 import Pipeline from '@/pages/Pipeline';
-import Job from '@/pages/Job';
 
 const routerConfig = [
   {
@@ -50,7 +49,7 @@ const routerConfig = [
       },
       {
         path: 'jobs',
-        component: Job
+        component: Pipeline
       },
       {
         path: '/',

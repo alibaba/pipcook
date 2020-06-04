@@ -11,7 +11,8 @@ import { tunaMirrorURI } from '../config';
 const PipelineStatus = [ 'creating', 'running', 'success', 'fail' ];
 
 async function list(): Promise<void> {
-  const jobs = await get(`${route.job}/list`);
+  let jobs = await get(`${route.job}/list`);
+  jobs = jobs.rows;
   console.table(jobs.map((item: any) => {
     item.status = PipelineStatus[item.status];
     return item;

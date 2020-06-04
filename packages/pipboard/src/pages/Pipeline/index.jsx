@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import { Table } from '@alifd/next';
+import { Table, Pagination, Button } from '@alifd/next';
 import { observer, inject } from "mobx-react";
-import queryString from 'query-string';
 
 import {messageError} from '../../utils/message';
-import { PIPELINE_MAP, JOB_MAP } from '../../utils/config';
+import { PIPELINE_MAP, JOB_MAP, PIPELINE_STATUS } from '../../utils/config';
+import { get } from '@/utils/request';
+
+import './index.scss';
+
+const PAGE_SIZE = 10;
 
 @inject("pipelineData")
 @observer
@@ -13,48 +16,76 @@ export default class Pipeline extends Component {
 
   state = {
     models: [],
-    fields: PIPELINE_MAP // pipeline or job
+    fields: PIPELINE_MAP, // pipeline or job,
+    currentPage: 1,
+    totalCount: 0
   }
 
-  componentDidMount = async () => {
-    let params = queryString.parse(location.hash.split('?')[1]);
-    let queryUrl = '/log/pipelines';
-    if (params.type === 'job') {
+  changePage = async (value) => {
+    await this.fetchData(value);
+  }
+
+  fetchData = async (currentPage) => {
+    let queryUrl = '/pipeline/list';
+    if (location.href.includes('jobs')) {
       this.setState({
         fields: JOB_MAP
       });
-      queryUrl = '/log/logs';
+      queryUrl = '/job/list';
     }
+
+    this.setState({
+      currentPage
+    })
     
     try {
-      let response = await axios.get(queryUrl);
-      response = response.data;
-      if (response.status) {
-        const result = response.data.rows.map((item) => {
-          return {
-           ...item,
-           createdAt: new Date(item.createdAt).toLocaleString(), 
-          };
-        });
-        this.setState({ models: result });
-      } else {
-        messageError(response.msg);
-      }
+      let response = await get(queryUrl, {
+        params: {
+          offset: (currentPage - 1) * PAGE_SIZE, 
+          limit: PAGE_SIZE
+        }
+      });
+      this.setState({
+        totalCount: response.count
+      });
+      const result = response.rows.map((item) => {
+        return {
+          ...item,
+          createdAt: new Date(item.createdAt).toLocaleString(),
+          endTime: new Date(item.endTime).toLocaleString(),
+          status: PIPELINE_STATUS[item.status]
+        };
+      });
+      this.setState({ models: result });
     } catch (err) {
       messageError(err.message);
     }
   }
 
+  componentDidMount = async () => {
+    await this.fetchData(1);
+  }
+
+  renderDetail = (value, index, record) => {
+    return <a href={`/index.html#/pipeline/info?pipelineId=${record.id}`}><Button>Detail</Button></a>
+  }
+
   render() {
-    const { models, fields } = this.state;
-    console.log(fields);
+    const { models, fields, currentPage, totalCount } = this.state;
     return (
       <div className="pipeline">
         <Table dataSource={models}>
           {
-            fields.map(field => <Table.Column key={field.name} title={field.name} dataIndex={field.field} />)
+            fields.map(field => <Table.Column key={field.name} title={field.name} dataIndex={field.field} cell={field.cell}/>)
           }
         </Table>
+        <Pagination current={currentPage} total={totalCount} pageSize={PAGE_SIZE} className="pagination-wrapper" onChange={this.changePage} />
+        <div className="pipeline-create-container" onClick={() => location.href = 'index.html#/pipeline/info'}>
+          <img 
+            className="pipeline-create" 
+            src="https://img.alicdn.com/tfs/TB1nTmRbmRLWu4jSZKPXXb6BpXa-128-128.png" 
+          />
+        </div>
       </div>
     );
   }

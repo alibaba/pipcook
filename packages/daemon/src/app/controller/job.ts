@@ -71,7 +71,7 @@ export class JobController {
         throw new TypeError('job not found');
       }
       successRes(ctx, {
-        data: jobs.rows
+        data: jobs
       });
     } catch (err) {
       failRes(ctx, {

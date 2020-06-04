@@ -7,7 +7,8 @@ import { get, post, put, del } from '../request';
 import { route } from '../router';
 
 async function list(): Promise<void> {
-  const pipelines = await get(`${route.pipeline}/list`);
+  let pipelines = await get(`${route.pipeline}/list`);
+  pipelines = pipelines.rows;
   if (pipelines.length > 0) {
     console.table(pipelines, [ 'id', 'name', 'updatedAt', 'createdAt' ]);
   } else {

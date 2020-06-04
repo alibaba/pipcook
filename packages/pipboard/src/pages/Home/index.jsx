@@ -12,7 +12,7 @@ const items = [{
   title: 'Pipeline',
   cover: 'https://img.alicdn.com/tfs/TB14AUOGNv1gK0jSZFFXXb0sXXa-715-400.jpg',
   description: 'Integratiing the machine learning Pipeline into your workflow',
-  url: '/index.html#/tutorial',
+  url: '/index.html#/pipeline',
 }];
 
 

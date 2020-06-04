@@ -13,8 +13,14 @@ import {
 
 const { PLUGINS, PIPCOOK_LOGS } = constants;
 
-export async function parseConfig(configPath: string, generateId = true): Promise<PipelineDB> {
-  const configJson: RunConfigI = await fs.readJson(configPath);
+export async function parseConfig(configPath: string | RunConfigI, generateId = true,): Promise<PipelineDB> {
+  let configJson: RunConfigI;
+  if (typeof configPath === 'string') {
+    configJson = await fs.readJson(configPath);
+  } else {
+    configJson = configPath;
+  }
+  
   const result: PipelineDB = {};
 
   if (generateId) {

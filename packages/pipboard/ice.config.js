@@ -1,6 +1,6 @@
 const path = require('path');
 
-module.exports = {
+const config = {
   entry: 'src/index.jsx',
   publicPath: './',
   plugins: [
@@ -20,4 +20,13 @@ module.exports = {
       target: 'http://127.0.0.1:6927',
     },
   },
+  define: {
+    CWD: JSON.stringify(path.join(__dirname, '..', '..'))
+  }
 };
+
+if (process.env.DEV === 'TRUE') {
+  config.define.DEV = JSON.stringify('TRUE');
+}
+
+module.exports = config;

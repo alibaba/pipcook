@@ -37,6 +37,7 @@
   },
   "scripts": {
     "start": "ice-scripts dev",
+    "dev": " DEV=TRUE ice-scripts dev",
     "compile": "ice-scripts build",
     "lint": "npm run eslint && npm run stylelint",
     "eslint": "eslint --cache --ext .js,.jsx ./",
