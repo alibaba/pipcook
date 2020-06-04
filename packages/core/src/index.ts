@@ -13,7 +13,9 @@ export {
   ImageDataLoader,
   ImageDataset,
   CocoDataset,
-  VocDataset
+  VocDataset,
+  SegmentationRLE,
+  SegmentationPolygon
 } from './types/data/image';
 
 export {

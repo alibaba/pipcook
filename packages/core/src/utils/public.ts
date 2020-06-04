@@ -238,9 +238,23 @@ export async function convertPascal2CocoFileOutput(files: string[], targetPath: 
         id: cocoJson.annotations.length + 1,
         image_id: i + 1,
         category_id: id,
-        segmentation: [],
-        iscrowd: 0
+        iscrowd: Number((item.iscrowd && item.iscrowd[0])) || 0
       };
+
+      if (item.segmentation && item.segmentation[0]) {
+        if (item.segmentation[0].counts) {
+          cocoItem.segmentation = {
+            counts: item.segmentation[0].counts[0],
+            size: [
+              Number(item.segmentation[0].size[0]),
+              Number(item.segmentation[0].size[1])
+            ]
+          };
+        } else if (item.segmentation[0].polygon) {
+          cocoItem.segmentation = item.segmentation[0].polygon[0];
+        }
+      }
+
       if (item.bndbox && item.bndbox[0]) {
         const width = parseInt(item.bndbox[0].xmax[0]) - parseInt(item.bndbox[0].xmin[0]);
         const height = parseInt(item.bndbox[0].ymax[0]) - parseInt(item.bndbox[0].ymin[0]);

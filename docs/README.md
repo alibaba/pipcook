@@ -10,7 +10,7 @@ We are truly to design Pipcook's machine learning APIs for front-end application
 
 ## What's Pipcook
 
-The project provides children projects include machine learning pipeline framework, management tools, a JavaScript runtime for machine learning, and these can be also used as building blocks in conjunction with other projects.
+The project provides subprojects include machine learning pipeline framework, management tools, a JavaScript runtime for machine learning, and these can be also used as building blocks in conjunction with other projects.
 
 ### Principles
 
@@ -29,7 +29,7 @@ The project provides children projects include machine learning pipeline framewo
 
 > If you are in the above conditions, just try it via [installation guide](INSTALL.md).
 
-### Children Projects
+### Subprojects
 
 __Pipcook Pipeline__
 

@@ -7,6 +7,7 @@ import { listen, get } from '../request';
 import { route } from '../router';
 import { tunaMirrorURI } from '../config';
 import { tail } from '../utils';
+import * as url from 'url';
 
 const start: StartHandler = async (filename: string, opts: any) => {
   const spinner = ora();
@@ -15,9 +16,19 @@ const start: StartHandler = async (filename: string, opts: any) => {
     spinner.fail('Please specify the config path');
     return process.exit(1);
   }
-  filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
-  if (!existsSync(filename)) {
-    spinner.fail(`${filename} not exists`);
+  let urlObj = url.parse(filename);
+  // file default if the protocol is null
+  if (urlObj.protocol === null) {
+    filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
+    // check the filename existence
+    if (!existsSync(filename)) {
+      spinner.fail(`${filename} not exists`);
+      return process.exit(1);
+    } else {
+      filename = url.parse(`file://${filename}`).href;
+    }
+  } else if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) === -1) {
+    spinner.fail(`protocol ${urlObj.protocol} is not supported`);
     return process.exit(1);
   }
 
