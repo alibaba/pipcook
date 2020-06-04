@@ -32,7 +32,7 @@ export async function parseConfig(configPath: string | RunConfigI, generateId = 
   } else {
     configJson = configPath;
   }
-  
+
   const result: PipelineDB = {};
 
   if (generateId) {

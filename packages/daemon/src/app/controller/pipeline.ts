@@ -17,7 +17,7 @@ export class PipelineController {
   public async create() {
     const { ctx } = this;
     try {
-      const { name, isFile=true } = ctx.request.body;
+      const { name, isFile = true } = ctx.request.body;
       let { config } = ctx.request.body;
       if (!isFile) {
         config = JSON.parse(config);
@@ -132,7 +132,8 @@ export class PipelineController {
     const { ctx } = this;
     const { id } = ctx.params;
     try {
-      let { config, isFile=true } = ctx.request.body;
+      const { isFile = true } = ctx.request.body;
+      let { config } = ctx.request.body;
       if (!isFile) {
         config = JSON.parse(config);
       }

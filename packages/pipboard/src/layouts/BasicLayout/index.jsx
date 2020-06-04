@@ -13,11 +13,7 @@ export default class Dashboard extends Component {
   select = (selectedKeys) => {
     location.href = `/#/${selectedKeys[0]}`;
   }
-
-  getKeyByUrl = () => {
-    
-  }
-
+  
   render() {
     return (
       <div className="dashboard">

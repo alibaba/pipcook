@@ -50,7 +50,7 @@ export default class Pipeline extends Component {
       this.setState({
         models: result,
         totalCount: response.count,
-        currentPage
+        currentPage,
       });
     } catch (err) {
       messageError(err.message);
