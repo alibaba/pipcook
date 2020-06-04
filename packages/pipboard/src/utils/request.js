@@ -3,14 +3,14 @@ import {messageError} from './message';
 
 const createGeneralRequest = (agent) => async (...args) => {
   try {
-    let response = await agent(...args);
+    const response = await agent(...args);
     if (response.data.status === true) {
       return response.data.data;
     } else {
-      messageError(response.data.message)
+      messageError(response.data.message);
     }
   } catch (err) {
-    messageError(err.response.data.message)
+    messageError(err.response.data.message);
   }
 };
 export const get = async (host, params) => createGeneralRequest(axios.get)(host, params);

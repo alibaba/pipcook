@@ -1,6 +1,11 @@
 import React from 'react';
 import { Button, Dialog } from '@alifd/next';
 
+/**
+ * !important: This File contains many information that should be returned by backend. For now, just remain these.
+ * Todo: queyue.crk
+ */
+
 export const DATACOLLECT = 'dataCollect';
 export const DATAACCESS = 'dataAccess';
 export const DATAPROCESS = 'dataProcess';
@@ -15,7 +20,7 @@ export const PLUGINS = [
   MODELLOAD,
   MODELDEFINE,
   MODELTRAIN,
-  MODELEVALUATE
+  MODELEVALUATE,
 ];
 
 export const PIPELINE_STATUS = ['INIT', 'RUNNING', 'SUCCESS', 'FAIL'];
@@ -23,87 +28,87 @@ export const PIPELINE_STATUS = ['INIT', 'RUNNING', 'SUCCESS', 'FAIL'];
 export const PIPELINE_MAP = [
   {
     name: 'Pipeline Id',
-    field: 'id'
+    field: 'id',
   },
   {
     name: 'Data Collect',
-    field: 'dataCollect'
+    field: 'dataCollect',
   },
   {
     name: 'Data Access',
-    field: 'dataAccess'
+    field: 'dataAccess',
   },
   {
     name: 'Data Process',
-    field: 'dataProcess'
+    field: 'dataProcess',
   },
   {
     name: 'Model Define',
-    field: 'modelDefine'
+    field: 'modelDefine',
   },
   {
     name: 'Model Load',
-    field: 'modelLoad'
+    field: 'modelLoad',
   },
   {
     name: 'Model Train',
-    field: 'modelTrain'
+    field: 'modelTrain',
   },
   {
     name: 'Model Evaluate',
-    field: 'modelEvaluate'
+    field: 'modelEvaluate',
   },
   {
     name: 'Created At',
-    field: 'createdAt'
+    field: 'createdAt',
   },
   {
     name: 'Detail',
     cell: (value, index, record) => {
-      return <a href={`/index.html#/pipeline/info?pipelineId=${record.id}`}><Button>Detail</Button></a>
-    }
-  }
-]
+      return <a href={`/index.html#/pipeline/info?pipelineId=${record.id}`}><Button>Detail</Button></a>;
+    },
+  },
+];
 
 export const JOB_MAP = [
   {
     name: 'Job Id',
-    field: 'id'
+    field: 'id',
   },
   {
     name: 'Status',
-    field: 'status'
+    field: 'status',
   },
   {
     name: 'Evaluate Pass',
     cell: (value, index, record) => {
       return record.evaluateMap ? <Button onClick={
-        () => {Dialog.show({title: 'evaluate pass', content: record.evaluateMap})}
-      }>Check</Button> : 'no evaluateMap'
-    }
+        () => {Dialog.show({title: 'evaluate pass', content: record.evaluateMap});}
+      }>Check</Button> : 'no evaluateMap';
+    },
   },
   {
     name: 'Spec Version',
-    field: 'specVersion'
+    field: 'specVersion',
   },
   {
     name: 'Error',
     cell: (value, index, record) => {
       return record.error ? <Button onClick={
-        () => {Dialog.show({title: 'error', content: record.error})}
-      }>Check</Button> : 'no error'
-    }
+        () => {Dialog.show({title: 'error', content: record.error});}
+      }>Check</Button> : 'no error';
+    },
   },
   {
     name: 'End Time',
-    field: 'endTime'
+    field: 'endTime',
   },
   {
     name: 'Check Pipeline',
     cell: (value, index, record) => {
-      return <a href={`/index.html#/pipeline/info?pipelineId=${record.pipelineId}&jobId=${record.id}`}><Button>Detail</Button></a>
-    }
-  }
+      return <a href={`/index.html#/pipeline/info?pipelineId=${record.pipelineId}&jobId=${record.id}`}><Button>Detail</Button></a>;
+    },
+  },
 ];
 
 const PLUGIN_LIST = {
@@ -112,36 +117,36 @@ const PLUGIN_LIST = {
     '@pipcook/plugins-image-classification-data-collect',
     '@pipcook/plugins-mnist-data-collect',
     '@pipcook/plugins-object-detection-coco-data-collect',
-    '@pipcook/plugins-object-detection-pascalvoc-data-collect'
+    '@pipcook/plugins-object-detection-pascalvoc-data-collect',
   ],
   dataAccess: [
     '@pipcook/plugins-coco-data-access',
     '@pipcook/plugins-csv-data-access',
-    '@pipcook/plugins-pascalvoc-data-access'
+    '@pipcook/plugins-pascalvoc-data-access',
   ],
   dataProcess: [
-    '@pipcook/plugins-image-data-process'
+    '@pipcook/plugins-image-data-process',
   ],
   modelDefine: [
     '@pipcook/plugins-bayesian-model-define',
     '@pipcook/plugins-detectron-fasterrcnn-model-define',
     '@pipcook/plugins-tensorflow-resnet-model-define',
     '@pipcook/plugins-tfjs-mobilenet-model-define',
-    '@pipcook/plugins-tfjs-simplecnn-model-define'
+    '@pipcook/plugins-tfjs-simplecnn-model-define',
   ],
   modelTrain: [
     '@pipcook/plugins-bayesian-model-train',
     '@pipcook/plugins-image-classification-tensorflow-model-train',
     '@pipcook/plugins-image-classification-tfjs-model-train',
-    '@pipcook/plugins-object-detection-detectron-model-train'
+    '@pipcook/plugins-object-detection-detectron-model-train',
   ],
   modelEvaluate: [
     '@pipcook/plugins-bayesian-model-evaluate',
     '@pipcook/plugins-image-classification-tensorflow-model-evaluate',
     '@pipcook/plugins-image-classification-tfjs-model-evaluate',
-    '@pipcook/plugins-object-detection-detectron-model-evaluate'
-  ]
-}
+    '@pipcook/plugins-object-detection-detectron-model-evaluate',
+  ],
+};
 
 const PLUGIN_LOCAL = {
   dataCollect: [
@@ -157,7 +162,7 @@ const PLUGIN_LOCAL = {
     './packages/plugins/data-access/pascalvoc-data-access',
   ],
   dataProcess: [
-    './packages/plugins/data-process/image-data-process'
+    './packages/plugins/data-process/image-data-process',
   ],
   modelDefine: [
     './packages/plugins/model-define/bayesian-model-define',
@@ -177,7 +182,7 @@ const PLUGIN_LOCAL = {
     './packages/plugins/model-evaluate/image-classification-tensorflow-model-evaluate',
     './packages/plugins/model-evaluate/image-classification-tfjs-model-evaluate',
     './packages/plugins/model-evaluate/object-detection-detectron-model-evaluate',
-  ]
-}
+  ],
+};
 
 export const pluginList = DEV === 'TRUE' ? PLUGIN_LOCAL : PLUGIN_LIST;

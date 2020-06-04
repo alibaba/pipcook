@@ -22,7 +22,7 @@ export default class ChooseItem extends Component {
     }
     return (
       <div className="choose-item" style={{
-        backgroundColor: currentSelect ? '#bdbdbd' : '#f2f2f2'
+        backgroundColor: currentSelect ? '#bdbdbd' : '#f2f2f2',
       }}>
         <div className="item-name">{itemName}</div>
         <div className="choose-plugin">

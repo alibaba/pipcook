@@ -13,8 +13,6 @@
     "classnames": "^2.2.5",
     "codemirror": "^5.52.2",
     "enquire-js": "^0.1.2",
-    "mobx": "^5.15.4",
-    "mobx-react": "^6.2.2",
     "prop-types": "^15.5.8",
     "query-string": "^6.12.1",
     "react": "^16.4.1",

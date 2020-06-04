@@ -8,7 +8,7 @@ const config = {
       themePackage: '@icedesign/theme',
     }],
     ['ice-plugin-moment-locales', {
-      locales: ['zh-cn'],
+      locales: ['en-US'],
     }],
   ],
   alias: {
@@ -21,8 +21,8 @@ const config = {
     },
   },
   define: {
-    CWD: JSON.stringify(path.join(__dirname, '..', '..'))
-  }
+    CWD: JSON.stringify(path.join(__dirname, '..', '..')),
+  },
 };
 
 if (process.env.DEV === 'TRUE') {

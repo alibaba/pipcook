@@ -1,9 +1,6 @@
 
 import React, { Component } from 'react';
 import { Nav } from '@alifd/next';
-import { observer, inject, Provider } from "mobx-react";
-
-import pipelineStore from '@/stores/pipelineStore';
 
 import './index.scss';
 
@@ -13,12 +10,7 @@ const header = <span className="header">pipcook</span>;
 
 export default class Dashboard extends Component {
 
-  state = {
-    selectedKeys: ['home'],
-  }
-
   select = (selectedKeys) => {
-    this.setState({ selectedKeys });
     location.href = `/#/${selectedKeys[0]}`;
   }
 
@@ -34,10 +26,7 @@ export default class Dashboard extends Component {
           <Item key="pipeline">Pipelines</Item>
           <Item key="jobs">Jobs</Item>
         </Nav> 
-        <Provider pipelineData={pipelineStore} >
-          {this.props.children}
-        </Provider>
-        
+        {this.props.children}
       </div>
       
     );

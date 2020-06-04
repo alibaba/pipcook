@@ -21,8 +21,8 @@ const routerConfig = [
       },
       {
         path: '/',
-        component: Tutorial
-      }
+        component: Tutorial,
+      },
     ],
   },
   {
@@ -31,13 +31,13 @@ const routerConfig = [
     children: [
       {
         path: '/info',
-        component: PipelineInfo
+        component: PipelineInfo,
       },
       {
         path: '/',
-        component: Pipeline
-      }
-    ]
+        component: Pipeline,
+      },
+    ],
   },
   {
     path: '/',
@@ -49,7 +49,7 @@ const routerConfig = [
       },
       {
         path: 'jobs',
-        component: Pipeline
+        component: Pipeline,
       },
       {
         path: '/',

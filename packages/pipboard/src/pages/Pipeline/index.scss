@@ -1,9 +1,10 @@
 .pipeline {
   .pipeline-create-container {
-    background-color: white;
     position: fixed;
     right: 40px;
     bottom: 40px;
+    background-color: white;
+    
     .pipeline-create {
       width: 64px;
       height: 64px;

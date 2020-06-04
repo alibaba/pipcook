@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Button } from '@alifd/next';
 import queryString from 'query-string';
-import ReactJson from 'react-json-view'
+import ReactJson from 'react-json-view';
 
 import { messageError, messageSuccess } from '@/utils/message';
 import { PLUGINS, pluginList, PIPELINE_STATUS } from '@/utils/config';
-import ChooseItem from '@/pages/Pipeline/PipelineInfo/components/ChooseItem'
+import ChooseItem from '@/pages/Pipeline/PipelineInfo/components/ChooseItem';
 import LogView from '@/pages/Pipeline/PipelineInfo/components/LogView';
 import { get, post, put } from '@/utils/request';
 import { addUrlParams } from '@/utils/common';
@@ -15,7 +15,6 @@ import './index.scss';
 export default class Pipeline extends Component {
 
   state = {
-    task: 'image-classification',
     isCreate: true,
     plugins: {},
     choices: {},
@@ -25,9 +24,35 @@ export default class Pipeline extends Component {
     jobStatus: 0,
     jobStdout: '',
     jobStderr: '',
-    logVisible: false
+    logVisible: false,
   }
 
+  async componentDidMount() {
+    // get pipeline if and job id from url.
+    const params = queryString.parse(location.hash.split('?')[1]);
+    if (params && params.pipelineId) {
+      const data = await get(`/pipeline/info/${params.pipelineId}`);
+      Object.keys(data.plugins).forEach(
+        key => data.plugins[key].package = data.plugins[key].name,
+      );
+      this.setState({
+        isCreate: false,
+        plugins: data.plugins,
+        pipelineId: params.pipelineId,
+      });
+    }
+    if (params && params.jobId) {
+      this.setState({
+        jobId: params.jobId,
+      });
+      await this.fetchJob(params.jobId);
+    }
+    this.setState({
+      choices: pluginList,
+    });
+  }
+
+  // setinterval to fetch status of current running job.
   fetchJob = async (jobId) => {
     const fetchInterval = async () => {
       const jobInfo = await get(`/job/${jobId}`);
@@ -35,7 +60,7 @@ export default class Pipeline extends Component {
       this.setState({
         jobStatus: PIPELINE_STATUS[jobInfo.status],
         jobStdout: jobLog.log[0],
-        jobStderr: jobLog.log[1]
+        jobStderr: jobLog.log[1],
       });
       if (jobInfo.status === 3 || jobInfo.status === 2) {
         return;
@@ -43,39 +68,9 @@ export default class Pipeline extends Component {
       setTimeout(async () => {
         await fetchInterval();
       }, 1000);
-    }
+    };
     await fetchInterval();
   }
-
-  async componentDidMount() {
-    let params = queryString.parse(location.hash.split('?')[1]);
-    if (params && params.pipelineId) {
-      const data = await get(`/pipeline/info/${params.pipelineId}`);
-      for (let key in data.plugins) {
-        data.plugins[key].package = data.plugins[key].name;
-      }
-      this.setState({
-        isCreate: false,
-        plugins: data.plugins,
-        pipelineId: params.pipelineId
-      })
-    }
-    if (params && params.jobId) {
-      this.setState({
-        jobId: params.jobId
-      });
-      await this.fetchJob(params.jobId);
-    }
-    this.setState({
-      choices: pluginList
-    })
-  }
-
-  selectTask = (task) => {
-    this.setState({
-      task
-    })
-  };
 
   changeSelectPlugin = (itemName, value) => {
     const { plugins } = this.state;
@@ -84,7 +79,7 @@ export default class Pipeline extends Component {
     } else {
       plugins[itemName] = {
         package: value,
-        params: {}
+        params: {},
       };
     }
     
@@ -103,13 +98,13 @@ export default class Pipeline extends Component {
     if (isCreate) {
       const pipelineRes = await post('/pipeline', {
         config: JSON.stringify({
-          plugins
+          plugins,
         }),
-        isFile: false
+        isFile: false,
       });
       this.setState({
         isCreate: false,
-        pipelineId: pipelineRes.id
+        pipelineId: pipelineRes.id,
       });
       messageSuccess('Create Pipeline Successfully');
       setTimeout(() => {
@@ -118,9 +113,9 @@ export default class Pipeline extends Component {
     } else {
       await put(`/pipeline/${pipelineId}`, {
         config: JSON.stringify({
-          plugins
+          plugins,
         }),
-        isFile: false
+        isFile: false,
       });
       if (showMessage) {
         messageSuccess('Update Pipeline Successfully');
@@ -138,18 +133,19 @@ export default class Pipeline extends Component {
     const job = await get('/job/run', {
       params: {
         pipelineId, 
-        cwd: CWD
-      }
+        cwd: CWD,
+      },
     });
     this.setState({
-      jobId: job.id
+      jobId: job.id,
     });
     addUrlParams(`jobId=${job.id}`);
     await this.fetchJob(job.id);
   }
 
   setVisible = () => {
-    this.setState({logVisible: !this.state.logVisible});
+    const { logVisible } = this.state;
+    this.setState({logVisible: !logVisible});
   }
 
   render() {
@@ -162,7 +158,7 @@ export default class Pipeline extends Component {
       jobStatus,
       jobStdout,
       jobStderr,
-      logVisible
+      logVisible,
     } = this.state;
     return (
       <div className="pipeline-info">
@@ -189,7 +185,7 @@ export default class Pipeline extends Component {
                     currentSelect={currentSelect === pluginId}
                     jobId={jobId}
                   />
-                </div>
+                </div>,
               )
             }
           </div>
