@@ -1,9 +1,9 @@
-import { ModelEvaluateType, UniModel, CocoDataset, ArgsType } from '@pipcook/pipcook-core';
+import { ModelEvaluateType, UniModel, CocoDataset, ArgsType, EvaluateResult } from '@pipcook/pipcook-core';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
 
-const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, model: UniModel, args: ArgsType): Promise<any> => {
+const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, model: UniModel, args: ArgsType): Promise<EvaluateResult> => {
   let { modelDir } = args;
   const { register_coco_instances } = boa.import('detectron2.data.datasets');
   const { testLoader } = data;
@@ -19,8 +19,15 @@ const detectronModelEvaluate: ModelEvaluateType = async (data: CocoDataset, mode
 
     const evaluator = COCOEvaluator('test_dataset', cfg, false, boa.kwargs({ output_dir: modelDir }));
     const val_loader = build_detection_test_loader(cfg, 'test_dataset');
-    return inference_on_dataset(trainer.model, val_loader, evaluator);
+    return {
+      pass: true,
+      result: inference_on_dataset(trainer.model, val_loader, evaluator)
+    };
   }
+
+  return {
+    pass: true
+  };
 };
 
 export default detectronModelEvaluate;

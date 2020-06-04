@@ -67,5 +67,5 @@ describe('create a costa runtime', () => {
       url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip'
     });
     await runnable.destroy();
-  }, 60 * 1000);
+  }, 30 * 1000);
 });
