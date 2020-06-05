@@ -31,10 +31,17 @@ function createPidfileSync(pathname) {
   // create pidfile firstly
   createPidfileSync(DAEMON_PIDFILE);
 
+  let midwayPathname = path.join(__dirname, 'node_modules/midway');
+  if (!fs.existsSync(midwayPathname)) {
+    midwayPathname = path.join(__dirname, '../../midway');
+  }
+  if (!fs.existsSync(midwayPathname)) {
+    throw new TypeError('daemon is not installed correctly.');
+  }
   const opts = {
     mode: 'single',
     baseDir: __dirname,
-    framework: path.join(__dirname, './node_modules/midway'),
+    framework: midwayPathname,
     typescript: true
   };
   const app = await start(opts);
