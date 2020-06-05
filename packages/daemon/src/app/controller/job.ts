@@ -4,6 +4,8 @@ import { PipelineService } from '../../service/pipeline';
 import { parseConfig } from '../../runner/helper';
 import ServerSentEmitter from '../../utils/emitter';
 import { JobModel } from '../../model/job';
+import { PluginManager } from '../../service/plugin';
+import { constants } from '@pipcook/pipcook-core';
 
 @provide()
 @controller('/job')
@@ -13,6 +15,9 @@ export class JobController {
 
   @inject('pipelineService')
   pipelineService: PipelineService;
+
+  @inject('PluginManager')
+  pluginManager: PluginManager;
 
   @get('/run')
   public async run() {
@@ -41,10 +46,21 @@ export class JobController {
   }
 
   private async runJobWithContext(job: JobModel, cwd: string, verbose: boolean, pyIndex: string) {
+    const installPlugins = async () => {
+      for (const i in constants.PLUGINS) {
+        const plugin = constants.PLUGINS[i];
+        if (!job[plugin]) {
+          continue;
+        }
+        job[plugin] = await this.pluginManager.fetch(job[plugin]);
+        await this.pluginManager.install(job[plugin], pyIndex);
+      }
+    };
     if (verbose) {
       const sse = new ServerSentEmitter(this.ctx);
-      sse.emit('job created', job);
       try {
+        await installPlugins();
+        sse.emit('job created', job);
         await this.pipelineService.startJob(job, cwd, pyIndex);
         sse.emit('job finished', job);
       } catch (err) {
@@ -53,6 +69,14 @@ export class JobController {
         sse.finish();
       }
     } else {
+      try {
+        await installPlugins();
+      } catch (err) {
+        return failRes(this.ctx, {
+          message: err?.message,
+          data: job
+        });
+      }
       this.pipelineService.startJob(job, cwd, pyIndex);
       successRes(this.ctx, {
         message: 'create pipeline and jobs successfully',
