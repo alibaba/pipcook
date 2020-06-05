@@ -1,35 +1,10 @@
-# Boa (Python Bridge Layer)
+# Boa 使用指南
 
-Using Python functions seamlessly in Node.js, it delivers any Python module for Node.js developer in lower-cost to learn or use.
+Boa 是 Pipcook 中的 Python桥接层，它可以让开发者在 Node.js 中无缝调用 Python 函数，它为 Node.js 开发人员提供了成本更低的学习和使用 Python 的任何模块。
 
-## Dependencies
+## 快速开始
 
-- Node.js 10, 12
-- Platforms
-  - MacOS
-  - Linux
-
-> Note: we integrate Python3.7 via conda, no necessary to install Python by yourself.
-
-## Virtual Environment
-
-If you are using virtualenv or conda, you can just set up your system environment PYTHONPATH to point to your site-packages folder. For instance
-
-```sh
-$ export PYTHONPATH = /Users/venv/lib/python3.7/site-packages
-```
-
-## How to install packages
-
-By default, Boa will install a conda virtual environment under the path of Boa package. To make it easier to install python libraries, you can run
-```sh
-$ ./node_modules/.bin/bip install <package-name>
-``` 
-> `bip` is an alias of pip which points to correct Python environment.
-
-## Get started
-
-Let's have a glance on how to call to Python's function:
+让我们先来看一个简单的例子：
 
 ```js
 const boa = require('@pipcook/boa');
@@ -49,36 +24,27 @@ console.log(len(list)); // 10
 console.log(list[2]); // 2
 ```
 
-## How to build
+## 安装 Python 包
 
-```bash
-# clone this project firstly.
-$ npm install
-$ npm run build
-```
+默认情况下，Boa 将在安装目录下初始化一个基于 conda 的虚拟环境。为了使安装 Python 库更容易，您可以运行：
 
-__Verify if the generated library is linked to correct Python version__
+```sh
+$ ./node_modules/.bin/bip install <package-name>
+``` 
 
-When buidling finished, use `objdump -macho -dylibs-used ./build/Release/boa.node` to check if your linked libs are correct as:
+> `bip` 是 pip 的快捷方式
 
-```bash
-/build/Release/boa.node:
-  /usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/Python (compatibility version 3.7.0, current version 3.7.0)
-  /usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 400.9.4)
-  /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1252.250.1)
-```
+## 接口文档
 
-## API Design Principle
-
-A Connection between 2 languages(ecosystems) has huge works to be done, even though this package is working only on the unilateral from Python to JavaScript. The most difficult part is that for developers, they need to understand the correspondence between the two languages and ecosystems. Therefore, a good design principle will make developers reduce learning costs.
+即使在 Boa 的实现中，我们只需要实现从 Python 到 JavaScript 的场景，要完全连接2种编程语言的生态也有很多工作要完成，对于开发者来说，最困难的部分是他们需要了解两种语言和生态系统之间的对应关系。因此，良好的设计可以让使用者降低学习成本。
 
 ### `boa`
 
-`require('@pipcook/boa')` returns the root object, which will be your entry point to all Python functions, and it provides these methods:
+`require('@pipcook/boa')` 返回根对象，它将是访问到所有 Python 函数的入口，它提供以下的方法：
 
 #### `.builtins()`
 
-Gets the Python's [built-in functions](https://docs.python.org/3/library/functions.html), for example:
+返回 [Python 内置函数](https://docs.python.org/3/library/functions.html)，使用方式如下：
 
 ```js
 const { len, range } = boa.builtins();
@@ -88,12 +54,12 @@ len(range(0, 10)); // 10
 
 #### `.import(mod)`
 
-Imports a Python module in your current environment, the module includes:
+在当前环境导入一个 Python 包，包括：
 
-- system modules like `os`, `string` and `re`.
-- third-party modules like `numpy` and `request` via [pip](https://pip.pypa.io/en/stable/installing/).
+- 系统包括，如 `os`, `string` 和 `re`。
+- 第三方包，如 `numpy` 和 `request`，可以通过查看 [PyPI](https://pypi.org)。
 
-To call the function, you should pass a `mod` argument for the module that you want to import.
+通过传入一个 `mod` 参数来告诉 Boa 你想要导入的 Python 包：
 
 ```js
 const os = boa.import('os');
@@ -101,17 +67,17 @@ const str = boa.import('string');
 const numpy = boa.import('numpy');
 ```
 
-This returns an instance of [`PythonObjectWrapper`](#class-PythonObjectWrapper) or a JavaScript primitive value for some special cases.
+它返回一个 [`PythonObjectWrapper`](#class-PythonObjectWrapper) 实例对象，或者是 JavaScript 值。
 
 #### `.kwargs(map)`
 
-Creates a Python's keyword arguments, Python provides a way to map arguments with names:
+创建一个 Python 命名参数，通过这种方式调用者可以为每个参数定义一个名字：
 
 ```python
 fs.open('./a-file-to-open', mode=0e777)
 ```
 
-Correspondingly, this function is used to represent a keyword arguments, and the specific usage is very easy to understand:
+因此，`.kwargs(map)` 用于表示一个命名参数，使用方式十分容易理解，如下：
 
 ```js
 const fs = boa.import('fs');
@@ -120,7 +86,7 @@ fs.open('./a-file-to-open', boa.kwargs({ mode: 0e777 }));
 
 #### `.with(ctx, fn)`
 
-It's equivalent to the _with-statement_ in Python, this would be called with an object `ctx` that supports the context management protocol (that is, has `__enter__()` and `__exit__()` methods). And 2nd `fn` is corresponding to the execution block, A simple example is as follows:
+等价于 Python 中的 `with` 语句，这个函数接受一个 `ctx` 对象，它支持 Python 的上下文管理协议（即实现了 `__enter__()` 和 `__exit__()` 方法）。第二个参数 `fn` 是执行块，在获取到 `ctx` 执行调用，一个简单的例子如下：
 
 ```js
 boa.with(localcontext(), (ctx) => {
@@ -131,14 +97,14 @@ boa.with(localcontext(), (ctx) => {
 
 #### `.eval(str)`
 
-Execute Python expression in the context specified, here is a simple call:
+在特定的上下文，执行 Python 表达式，如：
 
 ```js
 boa.eval('len([10, 20])');
 // 2
 ```
 
-Alternatively, developers can use [tagged template literal][] to pass variables that have been defined in JavaScript:
+另外，开发者也可以使用 [tagged template literal][]，它允许开发者向表达式中传递定义在 JavaScript 中的变量对象：
 
 ```js
 const elem = np.array([[1, 2, 3], [4, 5, 6]], np.int32);
@@ -146,18 +112,18 @@ boa.eval`${elem} + 100`;  // do matrix + operation
 boa.eval`len(${elem})`;   // equivalent to `len(elem)`
 ```
 
-For multi-line code, Python 3 does not provide a mechanism to return a value, so the `eval` function can only handle single-line Python expressions.
+由于 Python3 并不支持通过多行代码返回值，因此 `eval` 函数也只能支持执行单行的表达式。
 
 #### `.bytes(str)`
 
-A shortcut to create a Python's bytes literal from JavaScript string, it's equivalent to `b'foobar'` in Python.
+通过它，可以快速创建 Python 的 `bytes` 子面量，等价于 Python 中的 `b'foobar'`。
 
 ```js
 const { bytes } = boa;
 bytes('foobar'); // "b'foobar'"
 ```
 
-The `bytes(str)` function simply creates a plain object that is used to pass a string to a Python function as a bytes literal, but does not correspond to any Python object itself. Alternatively, you could use Python's [builtin class `bytes`](https://docs.python.org/3/library/stdtypes.html#bytes) for creating a real object:
+`bytes(str)` 函数创建一个对象，它允许开发者通过 JavaScript 的字符串来传递一个 `bytes` 子面量的参数，但它本身并不创建真正的 Python 对象。如果你想创建一个 `bytes` 对象，你应该使用 [builtin class `bytes`](https://docs.python.org/3/library/stdtypes.html#bytes)。
 
 ```js
 const { bytes } = boa.builtins();
@@ -187,7 +153,7 @@ First, check the type of the Python object under instance. If it is one of the f
 
 If the type of the object that needs to be wrapped is not in the above primitive, a temporary object will be created, and methods and properties will be defined through `Object.defineProperties`.
 
-On an instance of [`PythonObjectWrapper`](#class-PythonObjectWrapper), developers can directly obtain values through the property way, just like using those in Python. This is because we use [ES6 Proxy][], so the last step, we created a `Proxy` Object, configured with 3 trap handlers, `get`, `set` and `apply`, and finally returns this proxy object.
+On an instance of [`PythonObjectWrapper`](#class-PythonObjectWrapper), developers can directly obtain values through the property way, just like using those in Python. This is because we use [ES6 Proxy][], so the last step, we created a `Proxy` Object, configured with 3 trap handlers, `get`, `set`, `apply`, and finally returns this proxy object.
 
 #### property accessor
 
@@ -274,10 +240,12 @@ Returns the hash value of this object, internally it calls the CPython's [`PyObj
 
 Returns a corresponding primitive value for this object, see [`Symbol.toPrimitive` on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive) for more details.
 
-## Working with ECMAScript Modules
-> Requires Node.js >= `v12.11.1`
+## 使用 ECMAScript Modules
 
-Use Node.js custom loader for better import-statement.
+> 要求 Node.js >= `v12.11.1`
+
+使用 Node.js 自定义加载器提供更好的导入语句：
+
 ```js
 // app.mjs
 import { range, len } from 'py:builtins';
@@ -297,27 +265,55 @@ const arr = NumpyArray([1, 2, 3], NumpyInt32); // Create an array of int32 using
 console.log(arr[0]); // 1
 ```
 
-In `Node.js v14.x` you can specify only [`--experimental-loader`](https://nodejs.org/dist/latest-v14.x/docs/api/cli.html#cli_experimental_loader_module) to launch your application:
+在 `Node.js v14.x` 中，你只需要声明 [`--experimental-loader`](https://nodejs.org/dist/latest-v14.x/docs/api/cli.html#cli_experimental_loader_module) 即可使用：
 
 ```sh
 $ node --experimental-loader @pipcook/boa/esm/loader.mjs app.mjs
 ```
 
-In Node.js version < `v14.x`, you also need to add the [`--experimental-modules`](https://nodejs.org/dist/latest-v14.x/docs/api/cli.html#cli_experimental_modules) option:
+在 Node.js 版本小于 `v14.x`, 你还需要额外增加参数 [`--experimental-modules`](https://nodejs.org/dist/latest-v14.x/docs/api/cli.html#cli_experimental_modules)，因为 ESM 还在实验阶段：
+
 ```sh
 $ node --experimental-modules --experimental-loader @pipcook/boa/esm/loader.mjs app.mjs
 ```
 
-## Tests
+## 从源码构建
 
-To run the full tests:
+```bash
+# clone this project firstly.
+$ npm install
+$ npm run build
+```
+
+__验证你生成的动态库是否链接到正确的 Python 版本__
+
+构建完成后，使用 `objdump -macho -dylibs-used ./build/Release/boa.node` 查看链接库：
+
+```bash
+/build/Release/boa.node:
+  /usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/Python (compatibility version 3.7.0, current version 3.7.0)
+  /usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 400.9.4)
+  /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1252.250.1)
+```
+
+[Python]: https://docs.python.org/3/
+[ES6 Proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+[tagged template literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Description
+
+## 测试
+
+运行完整的测试用例:
 
 ```bash
 $ npm test
 ```
 
-See [./tests](https://github.com/alibaba/pipcook/tree/master/packages/boa/tests) for more testing details.
+看 [./tests](https://github.com/alibaba/pipcook/tree/master/packages/boa/tests) 获取更多相关的测试内容。
 
-[Python]: https://docs.python.org/3/
-[ES6 Proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
-[tagged template literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Description
+## 配置 Python 虚拟环境
+
+如果你在使用 virtualenv(venv) 或 conda，那么在使用 Boa 前使用 PYTHONPATH 指向你的 site-packages 目录即可：
+
+```sh
+$ export PYTHONPATH = /Users/venv/lib/python3.7/site-packages
+```
