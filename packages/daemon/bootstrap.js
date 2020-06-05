@@ -3,6 +3,7 @@
 const http = require('http');
 const path = require('path');
 const os = require('os');
+const { pathExists } = require('fs-extra');
 const fs = require('fs');
 const { start } = require('egg');
 
@@ -32,10 +33,10 @@ function createPidfileSync(pathname) {
   createPidfileSync(DAEMON_PIDFILE);
 
   let midwayPathname = path.join(__dirname, 'node_modules/midway');
-  if (!fs.existsSync(midwayPathname)) {
+  if (!await pathExists(midwayPathname)) {
     midwayPathname = path.join(__dirname, '../../midway');
   }
-  if (!fs.existsSync(midwayPathname)) {
+  if (!await pathExists(midwayPathname)) {
     throw new TypeError('daemon is not installed correctly.');
   }
   const opts = {
