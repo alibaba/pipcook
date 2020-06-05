@@ -22,9 +22,8 @@ const config = {
   },
   define: {
     CWD: JSON.stringify(path.join(__dirname, '..', '..')),
+    DEV: process.env.DEV === 'TRUE' ? JSON.stringify('TRUE') : JSON.stringify('FALSE'),
   },
 };
-
-config.define.DEV = process.env.DEV === 'TRUE' ? JSON.stringify('TRUE') : JSON.stringify('FALSE');
 
 module.exports = config;

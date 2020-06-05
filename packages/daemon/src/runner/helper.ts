@@ -15,9 +15,9 @@ import {
 
 const { PLUGINS, PIPCOOK_LOGS } = constants;
 
-export async function parseConfig(configPath: string | RunConfigI, generateId = true): Promise<PipelineDB> {
-  let configJson: RunConfigI;
+async function loadConfig(configPath: string | RunConfigI) {
   if (typeof configPath === 'string') {
+    let configJson: RunConfigI;
     const urlObj = url.parse(configPath);
     if (urlObj.protocol === null) {
       throw new TypeError('config URI is not supported');
@@ -29,10 +29,14 @@ export async function parseConfig(configPath: string | RunConfigI, generateId = 
     } else {
       throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
     }
+    return configJson;
   } else {
-    configJson = configPath;
+    return configPath;
   }
+}
 
+export async function parseConfig(configPath: string | RunConfigI, generateId = true): Promise<PipelineDB> {
+  const configJson = await loadConfig(configPath);
   const result: PipelineDB = {};
 
   if (generateId) {
