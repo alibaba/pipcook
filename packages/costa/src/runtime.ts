@@ -142,9 +142,18 @@ export class CostaRuntime {
 
     const npmExecOpts = { cwd: this.options.installDir };
     if (!await pathExists(`${this.options.installDir}/package.json`)) {
+      // if not init for plugin directory, just run `npm init` and install boa firstly.
+      let boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
+      if (!await pathExists(boaSrcPath)) {
+        boaSrcPath = path.join(__dirname, '../../boa');
+      }
+      if (!await pathExists(boaSrcPath)) {
+        throw new TypeError('costa is not installed correctly, please try init again');
+      }
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
+      await spawnAsync('npm', [ 'install', boaSrcPath, '-E' ], npmExecOpts);
     }
-    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E' ], npmExecOpts);
+    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production' ], npmExecOpts);
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);
@@ -186,7 +195,6 @@ export class CostaRuntime {
       debug(`just skip the Python environment installation.`);
     }
     
-    await this.linkBoa();
     return true;
   }
   /**
@@ -210,7 +218,6 @@ export class CostaRuntime {
     }
     const runnable = new PluginRunnable(this, args.id);
     const pluginNodePath = path.join(this.options.installDir, 'node_modules');
-    await this.linkBoa();
     await runnable.bootstrap({
       customEnv: {
         NODE_PATH: `${(process.env.NODE_PATH || '')}:${pluginNodePath}`
@@ -225,16 +232,6 @@ export class CostaRuntime {
    */
   private isInstalled(name: string): Promise<boolean> {
     return pathExists(`${this.options.installDir}/node_modules/${name}`);
-  }
-  /**
-   * Link the boa dependency.
-   */
-  private async linkBoa() {
-    const boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
-    const boaDstPath = path.join(this.options.installDir, '/node_modules/@pipcook/boa');
-    await remove(boaDstPath);
-    await ensureSymlink(boaSrcPath, boaDstPath);
-    debug(`linked @pipcook/boa to ${boaDstPath} <= ${boaSrcPath}`);
   }
   /**
    * Create the `NpmPackageNameSchema` object by a package name.
