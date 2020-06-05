@@ -21,3 +21,4 @@ packages/pipboard/build
 ENV
 .test
 packages/cli/assets/server/**
+packages/daemon/.github/**

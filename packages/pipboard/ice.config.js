@@ -1,6 +1,6 @@
 const path = require('path');
 
-module.exports = {
+const config = {
   entry: 'src/index.jsx',
   publicPath: './',
   plugins: [
@@ -8,7 +8,7 @@ module.exports = {
       themePackage: '@icedesign/theme',
     }],
     ['ice-plugin-moment-locales', {
-      locales: ['zh-cn'],
+      locales: ['en-US'],
     }],
   ],
   alias: {
@@ -20,4 +20,10 @@ module.exports = {
       target: 'http://127.0.0.1:6927',
     },
   },
+  define: {
+    CWD: JSON.stringify(path.join(__dirname, '..', '..')),
+    DEV: process.env.DEV === 'TRUE' ? JSON.stringify('TRUE') : JSON.stringify('FALSE'),
+  },
 };
+
+module.exports = config;

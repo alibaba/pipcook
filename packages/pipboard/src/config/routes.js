@@ -1,11 +1,14 @@
 import BasicLayout from '@/layouts/BasicLayout';
-import Dashboard from '@/pages/Dashboard';
-import Mnist from '@/pages/Showcase/Mnist';
-import AssetsClassification from '@/pages/Showcase/AssetsClassification';
+import Tutorial from '@/pages/Tutorial';
+import PipelineInfo from '@/pages/Pipeline/PipelineInfo';
+import Mnist from '@/pages/Tutorial/Mnist';
+import AssetsClassification from '@/pages/Tutorial/AssetsClassification';
+import Home from '@/pages/Home';
+import Pipeline from '@/pages/Pipeline';
 
 const routerConfig = [
   {
-    path: '/showcase',
+    path: '/tutorial',
     component: BasicLayout,
     children: [
       {
@@ -16,6 +19,24 @@ const routerConfig = [
         path: '/assets-classification',
         component: AssetsClassification,
       },
+      {
+        path: '/',
+        component: Tutorial,
+      },
+    ],
+  },
+  {
+    path: '/pipeline',
+    component: BasicLayout,
+    children: [
+      {
+        path: '/info',
+        component: PipelineInfo,
+      },
+      {
+        path: '/',
+        component: Pipeline,
+      },
     ],
   },
   {
@@ -23,12 +44,16 @@ const routerConfig = [
     component: BasicLayout,
     children: [
       {
-        path: '/dashboard',
-        component: Dashboard,
+        path: '/home',
+        redirect: '/',
+      },
+      {
+        path: 'jobs',
+        component: Pipeline,
       },
       {
         path: '/',
-        redirect: '/dashboard',
+        component: Home,
       },
     ],
   },

@@ -1,4 +1,14 @@
+* {
+  font-family: "PingFang SC";
+}
+
+#ice-container {
+  height: 100vh;
+}
+
 .dashboard{
+  height: 100%;
+  padding-top: 45px;
   .basic-nav {
     position: absolute;
     top: 0;
@@ -14,7 +24,7 @@
 
   .content {
     padding-top: 45px;
-    min-height: calc(100vh - 45px);
+    height: 100vh;
   }
 
   .plugin-iframe {

@@ -12,7 +12,7 @@ const PipelineStatus = [ 'creating', 'running', 'success', 'fail' ];
 
 async function list(): Promise<void> {
   const jobs = await get(`${route.job}/list`);
-  console.table(jobs.map((item: any) => {
+  console.table(jobs.rows.map((item: any) => {
     item.status = PipelineStatus[item.status];
     return item;
   }), [ 'id', 'status', 'evaluatePass', 'createdAt' ]);
