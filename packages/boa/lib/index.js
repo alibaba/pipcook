@@ -10,8 +10,13 @@ const DelegatorLoader = require('./delegator-loader');
 // internal symbols
 const IterIdxForSeqSymbol = Symbol('The iteration index for sequence');
 
-// create the instance
-let pyInst = new native.Python(process.argv.slice(1));
+// create the global-scoped instance
+let pyInst = global.__pipcook_boa_pyinst__;
+if (pyInst == null) {
+  pyInst = new native.Python(process.argv.slice(1));
+  global.__pipcook_boa_pyinst__ = pyInst;
+}
+
 const importedNames = [];
 // FIXME(Yorkie): move to costa or daemon?
 const sharedModules = ['sys', 'torch'];
