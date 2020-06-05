@@ -11,7 +11,7 @@ const header = <span className="header">pipcook</span>;
 export default class Dashboard extends Component {
 
   select = (selectedKeys) => {
-    location.href = `/#/${selectedKeys[0]}`;
+    location.href = `/index.html#/${selectedKeys[0]}`;
   }
   
   render() {

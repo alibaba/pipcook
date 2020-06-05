@@ -77,6 +77,8 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   const PIPCOOK_DIR = path.join(os.homedir(), '.pipcook');
   const DAEMON_DIR = path.join(PIPCOOK_DIR, 'server');
   const BOARD_DIR = path.join(PIPCOOK_DIR, 'pipboard');
+  const BOARD_BUILD = path.join(BOARD_DIR, 'node_modules', '@pipcook', 'pipboard', 'build');
+  const DAEMON_PUBLIC = path.join(DAEMON_DIR, 'node_modules', '@pipcook', 'daemon', 'src', 'app', 'public');
 
   try {
     await fse.ensureDir(DAEMON_DIR);
@@ -85,6 +87,7 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
       npmInstall(npmClient, daemonPackage, beta, DAEMON_DIR, npmInstallEnvs),
       npmInstall(npmClient, boardPackage, beta, BOARD_DIR, npmInstallEnvs)
     ];
+    await fse.copy(BOARD_BUILD, DAEMON_PUBLIC);
     spinner.succeed('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
     spinner.fail(`failed to initialize Pipcook with the error ${err && err.stack}`);

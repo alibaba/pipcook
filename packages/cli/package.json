@@ -1,11 +1,8 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "0.5.29",
+  "version": "0.6.5",
   "description": "",
   "main": "dist/bin/index.js",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
@@ -23,7 +20,7 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.16",
+    "@pipcook/pipcook-core": "^0.6.0",
     "@types/command-exists": "^1.2.0",
     "@types/eventsource": "^1.1.2",
     "@types/inquirer": "^6.5.0",
@@ -44,7 +41,8 @@
     "request": "^2.88.2",
     "semver": "^6.3.0",
     "ts-node": "^8.9.1",
-    "yaml": "^1.7.2"
+    "yaml": "^1.7.2",
+    "axios": "^0.18.1"
   },
   "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
   "devDependencies": {
