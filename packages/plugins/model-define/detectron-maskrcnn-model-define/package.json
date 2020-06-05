@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-detectron-maskrcnn-model-define",
-  "version": "0.5.10",
+  "version": "0.6.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "pipcook",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/boa": "^0.5.10",
-    "@pipcook/pipcook-core": "^0.5.16",
+    "@pipcook/boa": "^0.6.0",
+    "@pipcook/pipcook-core": "^0.6.0",
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {

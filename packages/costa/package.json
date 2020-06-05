@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/costa",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "The Pipcook Plugin Runtime",
   "main": "dist/runtime",
   "types": "dist/runtime",
@@ -16,8 +16,8 @@
   },
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/boa": "^0.5.10",
-    "@pipcook/pipcook-core": "^0.5.17",
+    "@pipcook/boa": "^0.6.0",
+    "@pipcook/pipcook-core": "^0.6.0",
     "@types/debug": "^4.1.5",
     "@types/fs-extra": "^8.0.1",
     "@types/request": "^2.48.4",

@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "0.5.29",
+  "version": "0.6.0",
   "description": "",
   "main": "dist/bin/index.js",
   "files": [
@@ -23,7 +23,7 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.16",
+    "@pipcook/pipcook-core": "^0.6.0",
     "@types/command-exists": "^1.2.0",
     "@types/eventsource": "^1.1.2",
     "@types/inquirer": "^6.5.0",

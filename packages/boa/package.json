@@ -1,12 +1,11 @@
 {
   "name": "@pipcook/boa",
-  "version": "0.5.10",
+  "version": "0.6.0",
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {
-    "clean": "rm -rf ./build && rm -rf ./node_modules",
-    "preinstall": "node tools/install-python.js && node tools/install-requirements.js",
     "clean": "sh tools/clean-python.sh",
+    "preinstall": "node tools/install-python.js && node tools/install-requirements.js",
     "postinstall": "npm run build",
     "test": "tap --no-cov ./tests/**/*.js",
     "lint": "eslint . && ./clang-format.py",
