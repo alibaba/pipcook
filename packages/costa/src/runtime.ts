@@ -130,6 +130,14 @@ export class CostaRuntime {
       return true;
     }
 
+    let boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
+    if (!await pathExists(boaSrcPath)) {
+      boaSrcPath = path.join(__dirname, '../../boa');
+    }
+    if (!await pathExists(boaSrcPath)) {
+      throw new TypeError('costa is not installed correctly, please try init again');
+    }
+
     const pluginStdName = `${pkg.name}@${pkg.version}`;
     let pluginAbsName;
     if (pkg.pipcook.source.from === 'npm') {
@@ -143,13 +151,6 @@ export class CostaRuntime {
     const npmExecOpts = { cwd: this.options.installDir };
     if (!await pathExists(`${this.options.installDir}/package.json`)) {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
-      let boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
-      if (!await pathExists(boaSrcPath)) {
-        boaSrcPath = path.join(__dirname, '../../boa');
-      }
-      if (!await pathExists(boaSrcPath)) {
-        throw new TypeError('costa is not installed correctly, please try init again');
-      }
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
       await spawnAsync('npm', [ 'install', boaSrcPath, '-E' ], npmExecOpts);
     }
@@ -171,7 +172,7 @@ export class CostaRuntime {
 
       let python;
       try {
-        const condaInstallDir = await readFile(CONDA_CONFIG, 'utf8');
+        const condaInstallDir = await readFile(`${boaSrcPath}/.CONDA_INSTALL_DIR`, 'utf8');
         python = `${condaInstallDir}/bin/python3`;
         await access(python);
       } catch (err) {
