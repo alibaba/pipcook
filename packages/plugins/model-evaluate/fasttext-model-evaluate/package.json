@@ -1,0 +1,33 @@
+{
+  "name": "@pipcook/plugins-fasttext-model-evaluate",
+  "version": "0.5.11",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pipcook/boa": "^0.5.10",
+    "@pipcook/pipcook-core": "^0.5.16"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "nyc": "14.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "pipcook": {
+    "category": "modelEvaluate",
+    "datatype": "text"
+  }
+}

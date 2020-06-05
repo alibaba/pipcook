@@ -45,8 +45,6 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
     labelColumn
   } = args;
 
-  assert.ok(labelColumn, 'please specify the column name of your label');
-
   const data: any = {
     dataStatistics: [],
     validationResult: {
@@ -58,13 +56,13 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
   };
 
   const names: string[] = [];
-  if (fs.existsSync(path.join(dataDir, 'train.csv'))) {
+  if (fs.existsSync(path.join(dataDir, 'train.csv')) && labelColumn) {
     data.trainLoader = new DataLoader(path.join(dataDir, 'train.csv'), labelColumn);
   }
-  if (fs.existsSync(path.join(dataDir, 'validation.csv'))) {
+  if (fs.existsSync(path.join(dataDir, 'validation.csv')) && labelColumn) {
     data.validationLoader = new DataLoader(path.join(dataDir, 'validation.csv'), labelColumn);
   }
-  if (fs.existsSync(path.join(dataDir, 'test.csv'))) {
+  if (fs.existsSync(path.join(dataDir, 'test.csv')) && labelColumn) {
     data.testLoader = new DataLoader(path.join(dataDir, 'test.csv'), labelColumn);
   }
 
