@@ -1,5 +1,8 @@
 import * as os from 'os';
 import { exec, spawn, ChildProcess, ExecOptions, ExecException } from 'child_process';
+import * as url from 'url';
+import { pathExists } from 'fs-extra';
+import path from 'path';
 
 export const Constants = {
   PIPCOOK_HOME: `${os.homedir()}/.pipcook`
@@ -23,4 +26,24 @@ export function tail(id: string, name: string): ChildProcess {
       stdio: 'inherit'
     }
   );
+}
+
+export async function parseConfigFilename(filename: string): Promise<string> {
+  if (!filename) {
+    throw new TypeError('Please specify the config path');
+  }
+  let urlObj = url.parse(filename);
+  // file default if the protocol is null
+  if (urlObj.protocol == null) {
+    filename = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
+    // check the filename existence
+    if (!await pathExists(filename)) {
+      throw new TypeError(`${filename} not exists`);
+    } else {
+      filename = url.parse(`file://${filename}`).href;
+    }
+  } else if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) === -1) {
+    throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
+  }
+  return filename;
 }

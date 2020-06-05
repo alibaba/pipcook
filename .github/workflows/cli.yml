@@ -67,10 +67,6 @@ jobs:
       run: |
         ./packages/cli/dist/bin/pipcook plugin install ./packages/plugins/data-collect/csv-data-collect
         ./packages/cli/dist/bin/pipcook plugin install ./packages/plugins/model-define/detectron-fasterrcnn-model-define
-    - name: pipcook plugin install from pipeline config
-      run: |
-        ./packages/cli/dist/bin/pipcook plugin installFromConfig ./test/pipelines/text-bayes-classification.json
-        ./packages/cli/dist/bin/pipcook plugin installFromConfig https://raw.githubusercontent.com/alibaba/pipcook/master/test/pipelines/text-bayes-classification.json --verbose
     - name: "pipcook plugin-dev"
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
