@@ -18,11 +18,14 @@
       mergeNavbar: true,
       relativePath: true,
       maxLevel: 5,
-      subMaxLevel: 3,
+      subMaxLevel: 2,
       name: 'Pipcook',
       repo: 'alibaba/pipcook',
       themeColor: '#e96900',
-      noCompileLinks: ['/pipcook/typedoc/'],
+      noCompileLinks: [
+        'typedoc/index.html',
+        'pipcook/typedoc/index.html'
+      ],
       search: {
         noData: {
           '/zh-cn/': '没有结果!',
@@ -32,6 +35,24 @@
         placeholder: {
           '/zh-cn/': '搜索',
           '/': 'Search'
+        }
+      },
+      markdown: {
+        smartypants: true,
+        renderer: {
+          link: function(href, title, text) {
+            const typedocPrefix = 'https://alibaba.github.io/pipcook/typedoc/';
+            if (href.startsWith(typedocPrefix)) {
+              const link = href => `<a target="_new" href="${href}">${text}</a>`;
+              const pathname = href.replace(typedocPrefix, '');
+              if (location.hostname === 'alibaba.github.io') {
+                return link(`/pipcook/typedoc/${pathname}`);
+              } else {
+                return link(`/typedoc/${pathname}`);
+              }
+            }
+            return this.origin.link.apply(this, arguments);
+          }
         }
       },
     };

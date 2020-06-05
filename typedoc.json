@@ -1,17 +1,21 @@
 {
-  "name": "Pipcook",
+  "name": "Pipcook APIs",
   "mode": "file",
   "out": "docs/typedoc",
   "theme": "default",
+  "inputFiles": ["packages/core/src"],
   "ignoreCompilerErrors": "false",
-  "preserveConstEnums": "true",
-  "externalPattern": [
-    "**/assets/**/*.ts",
-    "**/*_test.ts"
+  "exclude": [
+    "packages/cli/**/*.ts",
+    "packages/costa/**/*.ts",
+    "packages/daemon/**/*.ts",
+    "packages/pipboard/**/*.ts",
+    "packages/plugins/**/*.ts",
+    "**/*+(_test).ts"
   ],
-  "entryPoint": "packages/core/src/index.ts",
+  "preserveConstEnums": "true",
   "stripInternal": "false",
   "excludeExternals": "true",
+  "excludeNotExported": "true",
   "readme": "none"
 }
-
