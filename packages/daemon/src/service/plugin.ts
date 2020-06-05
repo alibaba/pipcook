@@ -72,7 +72,14 @@ export class PluginManager {
         dest: pkg.pipcook.target.DESTPATH
       }
     });
-    await this.pluginRT.costa.install(pkg, false, pyIndex);
+
+    try {
+      await this.pluginRT.costa.install(pkg, false, pyIndex);
+    } catch (err) {
+      // uninstall if occurring an error on installing.
+      await this.pluginRT.costa.uninstall(pkg.name);
+      throw err;
+    }
     return plugin;
   }
 
