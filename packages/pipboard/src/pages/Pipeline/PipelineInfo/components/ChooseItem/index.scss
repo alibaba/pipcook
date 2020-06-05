@@ -1,0 +1,19 @@
+.choose-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 70px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  
+  .next-select-trigger {
+    width: 250px;
+  }
+  
+  .item-name {
+    width: 120px;
+    font-size: 15px;
+  }
+}

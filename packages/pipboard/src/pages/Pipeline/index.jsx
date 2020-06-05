@@ -1,63 +1,100 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import { Table } from '@alifd/next';
+import { Table, Pagination, Button } from '@alifd/next';
 
-import {messageError} from '../../utils/message';
+import {messageError} from '@/utils/message';
+import { PIPELINE_MAP, JOB_MAP, PIPELINE_STATUS } from '@/utils/config';
+import { get } from '@/utils/request';
 
-const TABLE_TITLE = {
-  PIPELINE_ID: 'Pipeline Id',
-  DATA_COLLECT: 'Data Collect',
-  DATA_ACCESS: 'Data Access',
-  DATA_PROCESS: 'Data Process',
-  MODEL_DEFINE: 'Model Define',
-  MODEL_LOAD: 'Model Load',
-  MODEL_TRAIN: 'Model Train',
-  MODEL_EVALUATE: 'Model Evaluate',
-  CREATED_AT: 'Created At',
-};
+import './index.scss';
 
-export default class Model extends Component {
+const PAGE_SIZE = 10; // number of records in one page
+
+export default class Pipeline extends Component {
 
   state = {
     models: [],
+    fields: PIPELINE_MAP, // pipeline or job,
+    currentPage: 1,
+    totalCount: 0,
   }
 
-  componentDidMount = async () => {
+  changePage = async (value) => {
+    await this.fetchData(value);
+  }
+
+  fetchData = async (currentPage) => {
+    // check if show job or pipeline from url
+    let queryUrl = '/pipeline/list';
+    if (location.href.includes('jobs')) {
+      this.setState({
+        fields: JOB_MAP,
+      });
+      queryUrl = '/job/list';
+    }
+    
     try {
-      let response = await axios.get('/log/pipelines');
-      response = response.data;
-      if (response.status) {
-        const result = response.data.rows.map((item) => {
-          return {
-           ...item,
-           createdAt: new Date(item.createdAt).toLocaleString(), 
-          };
-        });
-        this.setState({ models: result});
-      } else {
-        messageError(response.msg);
-      }
+      const response = await get(queryUrl, {
+        params: {
+          offset: (currentPage - 1) * PAGE_SIZE, 
+          limit: PAGE_SIZE,
+        },
+      });
+      const result = response.rows.map((item) => {
+        return {
+          ...item,
+          createdAt: new Date(item.createdAt).toLocaleString(),
+          endTime: new Date(item.endTime).toLocaleString(),
+          status: PIPELINE_STATUS[item.status],
+        };
+      });
+      this.setState({
+        models: result,
+        totalCount: response.count,
+        currentPage,
+      });
     } catch (err) {
       messageError(err.message);
     }
-    
+  }
+
+  componentDidMount = async () => {
+    await this.fetchData(1);
+  }
+
+  renderDetail = (value, index, record) => {
+    return <a href={`/index.html#/pipeline/info?pipelineId=${record.id}`}>
+      <Button>Detail</Button>
+    </a>;
   }
 
   render() {
-    const {models} = this.state;
+    const { models, fields, currentPage, totalCount } = this.state;
     return (
-      <div className="model">
+      <div className="pipeline">
         <Table dataSource={models}>
-          <Table.Column title={TABLE_TITLE.PIPELINE_ID} dataIndex="id"/>
-          <Table.Column title={TABLE_TITLE.DATA_COLLECT} dataIndex="dataCollect"/>
-          <Table.Column title={TABLE_TITLE.DATA_ACCESS} dataIndex="dataAccess"/>
-          <Table.Column title={TABLE_TITLE.DATA_PROCESS} dataIndex="dataProcess"/>
-          <Table.Column title={TABLE_TITLE.MODEL_DEFINE} dataIndex="modelDefine"/>
-          <Table.Column title={TABLE_TITLE.MODEL_LOAD} dataIndex="modelLoad"/>
-          <Table.Column title={TABLE_TITLE.MODEL_TRAIN} dataIndex="modelTrain"/>
-          <Table.Column title={TABLE_TITLE.MODEL_EVALUATE} dataIndex="modelEvaluate"/>
-          <Table.Column title={TABLE_TITLE.CREATED_AT} dataIndex="createdAt"/>
+          {
+            fields.map(field => <Table.Column 
+              key={field.name}
+              title={field.name}
+              dataIndex={field.field}
+              cell={field.cell}
+            />)
+          }
         </Table>
+        <Pagination 
+          current={currentPage} 
+          total={totalCount} 
+          pageSize={PAGE_SIZE} 
+          className="pagination-wrapper" 
+          onChange={this.changePage} 
+        />
+        <div className="pipeline-create-container" onClick={() => location.href = 'index.html#/pipeline/info'}>
+          <img
+            className="pipeline-create" 
+            src="https://img.alicdn.com/tfs/TB1nTmRbmRLWu4jSZKPXXb6BpXa-128-128.png" 
+            alt="create pipeline"
+          />
+        </div>
       </div>
     );
   }
