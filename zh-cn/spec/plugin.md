@@ -1,88 +1,72 @@
 # 插件规范
 
-Pipcook 使用插件的形式来实现具体机器学习周期中的任务，这可以保证我们的核心足够精简，稳定和高效。同时，通过 Pipcook 定义的一套对于每个环节的插件规范，我们还可以允许第三方开发插件，这样就保证了 Pipcook 的可扩展性，理论上通过插件，我们可以实现任意一个机器学习的任务。
+[Pipcook][] 使用插件来完成特定机器学习任务的任务，它使得框架足够简单、稳定和高效。
 
-## 插件类型
+同时，通过定义了不同的插件规范，使得我们可以允许任何人开发插件来拓展 [Pipcook][]，理论上，我们可以通过插件来完成任何的机器学习任务。
 
-我们一共定义了七个类型机器学习生命周期的插件，他们分别是：
+## 包结构
 
-- DataCollect: 数据收集插件： 往往数据集是不一致的，分散的，通过此插件可以将不同来源的数据收集过来，并以统一的数据集格式存储, 有关 pipcook 要求的数据集标准，请参考这里
-- DataAccess: 数据接入插件： 此插件以期待的数据集格式将数据接入pipcook，同时，还会进行对样本的描述和验证，以确保我们运用了一个高质量的数据集
-- DataProcess: 数据处理插件：对数据进行处理工作
-- ModelDefine: 用于定义模型，此插件将模型加载到 pipeline 中，同时会抹平 keras，python tf 等模型的差异
-- ModelTrain: 模型训练： 训练模型
-- ModelEvaluate: 评估模型
+[Pipcook][] 使用 NPM 作为插件包的基础。另外，我们在 NPM 的 package.json 中拓展了属于 [Pipcook Plugin][] 的协议。
 
-## 插件特点
-
-- 可扩展性： Pipcook 的能力和所要解决的问题会不断的通过新的插件扩展
-- 插件可插拔性：每个类型的插件的输入和输出需要符合我们的原型规范，所有的插件需要继承我们每个类别的原型，这样就保证了每个环节都是可插拔和可更换的，开发者可以按照规范开发第三方插件插入。
-- 插件可组合性： pipeline中并不是每个环节都是必须的，只要是输入和输出相对应的插件就可以组合在一起。这样最大的提供了配置和组合的灵活性。例如：如果并不想训练模型而只是想拿自己的数据评估一下别人的模型，那么可以把 Model Train 拔出，这样 Model Load 直接和 Model Evaluate 也是可以链接的
-
-## 插件规范
-
-我们为每个类型的插件定义了接口和规范，开发者需要实现我们的接口并按照相应的规范进行开发插件，这样能保证任何插件可以无缝嵌入到我们的 pipeline 中，有关更多插件规范的信息，请移步[这里](../devel/developer-guide.md)。
-
-### 插件解析组件 (Component)
-
-对于每个插件，我们需要把它传入相应类型的解析器进行解析，对于上述7种类型的插件会有10种类型的解析器，他们分别是:
-
-```ts
-function DataCollect(plugin: EscherPlugin, params: object);
-function DataAccess(plugin: EscherPlugin, params: object);
-function DataProcess(plugin: EscherPlugin, params: object);
-function ModelDefine(plugin: EscherPlugin, params: object);
-function ModelTrain(plugin: EscherPlugin, params: object);
-function ModelEvaluate(plugin: EscherPlugin, params: object);
+```json
+{
+  "name": "my-own-pipcook-plugin",
+  "version": "1.0.0",
+  "description": "my own pipcook plugin",
+  "dependencies": {
+    "@pipcook/pipcook-core": "^0.5.0"
+  },
+  "pipcook": {
+    "category": "dataCollect",
+    "datatype": "image"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "tensorflow": "2.2.0"
+    }
+  }
+}
 ```
 
-### 使用插件
+通过上面的 `package.json` 定义，有一些 Pipcook 的要求：
 
-Pipcook 的插件分为内置插件和第三方插件，每个插件都是一个独立的 npm 包，对于所需的插件，需要独立安装，例如，我们需要一个载入 MobileNet 的模型插件，我们可以在工程目录中使用如下命令安装，**我们会将内置插件直接集成到一个 pipcook 脚手架工程里，您不需要单独安装这些内置插件**
+- 插件包必须使用 TypeScript，并且需要在发布前编译成 JavaScript。
+- 需要添加依赖 `@pipcook/pipcook-core`，它包含了创建插件所需的类型定义和工具类。
+- 需要添加一个根节点 `pipcook`，
+  - `pipcook.category` 用于描述插件类型，所有的类型可以看[这里](#分类)。
+  - `pipcook.datatype` 用于描述插件所处理的数据类型，目前支持：`common`、`image` 和 `text`。
+- 可选的节点 `conda`，用于配置 Python 相关的依赖，
+  - `conda.python` 用于声明 Python 版本，目前必须是 3.7。
+  - `conda.dependencies` 用于声明插件会使用到的 Python 包，Pipcook 会在初始化插件时进行安装，它支持以下的版本声明方式：
+    - `x.y.z` [PyPI][] 的确定版本。
+    - `*` [PyPI][] 的最新版本。
+    - `git+https://github.com/foobar/project@master` 从 GitHub 仓库安装，参考 [pip-install(1)](https://pip.pypa.io/en/stable/reference/pip_install/#git)。
 
-```sh
-$ npm install @pipcook/plugins-tfjs-mobilenet-model-define --save
-```
+## 分类
 
-## 插件列表
+下面是所有在 Pipcook 中支持的插件分类。
 
-如下是目前 Pipcook 支持的插件列表：
+- [`dataCollect(args: ArgsType): Promise<void>`][] 从数据源中下载数据，并且存储为统一的格式。
+- [`dataAccess(args: ArgsType): Promise<UniDataset>`][] 将数据加载到加载器中，兼容之后的模型插件。
+- [`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<void>`][] 按行进行数据预处理。
+- [`modelLoad(data: UniDataset, args: ArgsType): Promise<UniModel>`][] 加载预训练模型。
+- [`modelDefine(data: UniDataset, args: ModelDefineArgsType): Promise<UniModel>`][] 定义模型。
+- [`modelTrain(data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>`][] 输出训练后的模型，以及模型持久化。
+- [`modelEvaluate(data: UniDataset, model: UniModel): Promise<EvaluateResult>`][] 调用对应的模型评估函数，评估训练后的模型。
 
-### DataCollect
+## 开发
 
-@pipcook/plugins-csv-data-collect
-@pipcook/plugins-image-classification-data-collect
-@pipcook/plugins-mnist-data-collect
-@pipcook/plugins-object-detection-coco-data-collect
-@pipcook/plugins-object-detection-pascalvoc-data-collect
+查看[贡献者文档](../contributing/contribute-a-plugin.md)来学习如何开发一个新的插件。
 
+[Pipcook]: https://github.com/alibaba/pipcook
+[Pipcook Plugin]: ../GLOSSORY.md#pipcook-plugin
+[PyPI]: https://pypi.org
 
-### DataAccess
-
-@pipcook/plugins-coco-data-access
-@pipcook/plugins-csv-data-access
-@pipcook/plugins-pascalvoc-data-access
-
-### DataProcess
-
-@pipcook/plugins-image-data-process
-
-### ModelDefine
-
-@pipcook/plugins-bayesian-model-define
-@pipcook/plugins-detectron-fasterrcnn-model-define
-@pipcook/plugins-tfjs-mobilenet-model-define
-@pipcook/plugins-tfjs-simplecnn-model-define
-
-### ModelTrain
-
-@pipcook/plugins-bayesian-model-train
-@pipcook/plugins-image-classification-tfjs-model-train
-@pipcook/plugins-detectron-model-train
-
-### ModelEvaluate
-
-@pipcook/plugins-image-data-process
-@pipcook/plugins-bayesian-model-evaluate
-@pipcook/plugins-image-classification-tfjs-model-evaluate
-@pipcook/plugins-detectron-model-evaluate
+[`dataCollect(args: ArgsType): Promise<void>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/datacollecttype.html
+[`dataAccess(args: ArgsType): Promise<UniDataset>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/dataaccesstype.html
+[`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<void>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/dataprocesstype.html
+[`modelLoad(data: UniDataset, args: ArgsType): Promise<UniModel>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modelloadtype.html
+[`modelDefine(data: UniDataset, args: ModelDefineArgsType): Promise<UniModel>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modeldefinetype.html
+[`modelTrain(data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modeltraintype.html
+[`modelEvaluate(data: UniDataset, model: UniModel): Promise<EvaluateResult>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modelevaluatetype.html
