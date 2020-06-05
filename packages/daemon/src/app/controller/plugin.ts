@@ -40,7 +40,6 @@ export class PluginController {
   public async installFromConfig() {
     const { config, pyIndex } = this.ctx.query;
     const configObj = await parseConfig(config);
-    console.log(config, configObj);
     const sse = new ServerSentEmitter(this.ctx);
     try {
       for (const i in constants.PLUGINS) {
@@ -48,7 +47,6 @@ export class PluginController {
         if (!configObj[plugin]) {
           continue;
         }
-        console.log(`constants.PLUGINS.forEach ${plugin} ${configObj[plugin]}`);
         debug(`start installation: ${plugin}`);
         const pkg = await this.pluginManager.fetch(configObj[plugin]);
         sse.emit('info', pkg);

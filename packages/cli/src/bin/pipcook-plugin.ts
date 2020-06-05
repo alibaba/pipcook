@@ -89,7 +89,7 @@ async function installFromConfig(filename: string, opts: any): Promise<void> {
         const plugin = JSON.parse(e.data);
         spinner.succeed(`plugin (${plugin.name}@${plugin.version}) is installed`);
       },
-      'finished': (e: MessageEvent) => {
+      'finished': () => {
         spinner.succeed('all plugins installed');
         stdout?.kill();
         stderr?.kill();
