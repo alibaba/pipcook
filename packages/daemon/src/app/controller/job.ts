@@ -5,7 +5,6 @@ import { parseConfig } from '../../runner/helper';
 import ServerSentEmitter from '../../utils/emitter';
 import { JobModel } from '../../model/job';
 import { PluginManager } from '../../service/plugin';
-import { constants } from '@pipcook/pipcook-core';
 
 @provide()
 @controller('/job')
@@ -46,22 +45,12 @@ export class JobController {
   }
 
   private async runJobWithContext(job: JobModel, cwd: string, verbose: boolean, pyIndex: string) {
-    const installPlugins = async () => {
-      for (const i in constants.PLUGINS) {
-        const plugin = constants.PLUGINS[i];
-        if (!job[plugin]) {
-          continue;
-        }
-        job[plugin] = await this.pluginManager.fetch(job[plugin]);
-        await this.pluginManager.install(job[plugin], pyIndex);
-      }
-    };
     if (verbose) {
       const sse = new ServerSentEmitter(this.ctx);
       try {
-        await installPlugins();
+        const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
         sse.emit('job created', job);
-        await this.pipelineService.startJob(job, cwd, pyIndex);
+        await this.pipelineService.startJob(job, cwd, plugins);
         sse.emit('job finished', job);
       } catch (err) {
         sse.emit('error', err?.message);
@@ -70,14 +59,14 @@ export class JobController {
       }
     } else {
       try {
-        await installPlugins();
+        const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
+        this.pipelineService.startJob(job, cwd, plugins);
       } catch (err) {
         return failRes(this.ctx, {
           message: err?.message,
           data: job
         });
       }
-      this.pipelineService.startJob(job, cwd, pyIndex);
       successRes(this.ctx, {
         message: 'create pipeline and jobs successfully',
         data: job
@@ -108,6 +97,17 @@ export class JobController {
   public async remove() {
     await this.pipelineService.removeJobs();
     successRes(this.ctx, {});
+  }
+
+  @get('/stop')
+  public async stop() {
+    const { id } = this.ctx.query;
+    const success = this.pipelineService.stopJob(id);
+    if (success) {
+      successRes(this.ctx, {});
+    } else {
+      failRes(this.ctx, {message: 'stop job error'});
+    }
   }
 
   @get('/:id/log')

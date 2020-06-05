@@ -6,7 +6,7 @@ import { v1 as uuidv1 } from 'uuid';
 
 import { provide, inject } from 'midway';
 import { PipelineDB, PipelineStatus, EvaluateResult } from '@pipcook/pipcook-core';
-import { PluginPackage, RunnableResponse } from '@pipcook/costa';
+import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
 import { RunParams } from '../interface';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
@@ -33,6 +33,11 @@ interface GenerateOptions {
 
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
+interface PluginInfo {
+  plugin: PluginPackage;
+  params: string;
+}
+
 function getIdOrName(id: string): QueryParams {
   if (!id) {
     throw new Error('id or name cannot be empty');
@@ -47,6 +52,8 @@ function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
     });
   });
 }
+
+const runnableMap: Record<string, PluginRunnable> = {};
 
 @provide('pipelineService')
 export class PipelineService {
@@ -153,9 +160,52 @@ export class PipelineService {
     return job;
   }
 
-  async startJob(job: JobModel, cwd: string, pyIndex?: string) {
-    const { runnable } = job;
+  async installPlugins(job: JobModel, cwd: string, pyIndex?: string): Promise<Record<string, PluginInfo>> {
+    const plugins: Record<string, PluginInfo> = {};
     const pipeline = await this.getPipeline(job.pipelineId);
+    plugins.dataCollect = {
+      plugin: await this.pluginManager.fetchAndInstall(pipeline.dataCollect, cwd, pyIndex),
+      params: pipeline.dataCollectParams
+    };
+    plugins.dataAccess = {
+      plugin: await this.pluginManager.fetchAndInstall(pipeline.dataAccess, cwd, pyIndex),
+      params: pipeline.dataAccessParams
+    };
+    if (pipeline.dataProcess) {
+      plugins.dataProcess = {
+        plugin: await this.pluginManager.fetchAndInstall(pipeline.dataProcess, cwd, pyIndex),
+        params: pipeline.dataProcessParams
+      };
+    }
+    if (pipeline.modelDefine) {
+      plugins.modelDefine = {
+        plugin: await this.pluginManager.fetchAndInstall(pipeline.modelDefine, cwd, pyIndex),
+        params: pipeline.modelDefineParams
+      };
+    } else if (pipeline.modelLoad) {
+      plugins.modelLoad = {
+        plugin: await this.pluginManager.fetchAndInstall(pipeline.modelLoad, cwd, pyIndex),
+        params: pipeline.modelLoadParams
+      };
+    }
+    if (pipeline.modelTrain) {
+      plugins.modelTrain = {
+        plugin: await this.pluginManager.fetchAndInstall(pipeline.modelTrain, cwd, pyIndex),
+        params: pipeline.modelTrainParams
+      };
+    }
+    plugins.modelEvaluate = {
+      plugin: await this.pluginManager.fetchAndInstall(pipeline.modelEvaluate, cwd, pyIndex),
+      params: pipeline.modelEvaluateParams
+    };
+    return plugins;
+  }
+
+  async startJob(job: JobModel, cwd: string, plugins: Record<string, PluginInfo>) {
+    const { runnable } = job;
+    // save the runnable object
+    runnableMap[job.id] = runnable;
+
     const getParams = (params: string | null, ...extra: object[]): object => {
       if (params == null) {
         return Object.assign({}, ...extra);
@@ -164,7 +214,8 @@ export class PipelineService {
       }
     };
     const verifyPlugin = (name: string): void => {
-      if (!pipeline[name]) {
+      if (!plugins[name]) {
+        runnableMap[job.id].destroy();
         throw new TypeError(`"${name}" plugin is required`);
       }
     };
@@ -175,55 +226,49 @@ export class PipelineService {
 
     try {
       verifyPlugin('dataCollect');
-      const dataCollect = await this.pluginManager.fetchAndInstall(pipeline.dataCollect, cwd, pyIndex);
-      const dataDir = path.join(this.pluginManager.datasetRoot, `${dataCollect.name}@${dataCollect.version}`);
+      const dataDir = path.join(this.pluginManager.datasetRoot, `${plugins.dataCollect.plugin.name}@${plugins.dataCollect.plugin.version}`);
       const modelPath = path.join(runnable.workingDir, 'model');
 
       // ensure the model dir exists
       await fs.ensureDir(modelPath);
 
       // run dataCollect to download dataset.
-      await runnable.start(dataCollect, getParams(pipeline.dataCollectParams, {
+      await runnable.start(plugins.dataCollect.plugin, getParams(plugins.dataCollect.params, {
         dataDir
       }));
 
       verifyPlugin('dataAccess');
-      const dataAccess = await this.pluginManager.fetchAndInstall(pipeline.dataAccess, cwd, pyIndex);
-      const dataset = await runnable.start(dataAccess, getParams(pipeline.dataAccessParams, {
+      const dataset = await runnable.start(plugins.dataAccess.plugin, getParams(plugins.dataAccess.params, {
         dataDir
       }));
 
-      let dataProcess: PluginPackage;
-      if (pipeline.dataProcess) {
-        dataProcess = await this.pluginManager.fetchAndInstall(pipeline.dataProcess, cwd, pyIndex);
-        await runnable.start(dataProcess, dataset, getParams(pipeline.dataProcessParams));
+      if (plugins.dataProcess) {
+        await runnable.start(plugins.dataProcess.plugin, dataset, getParams(plugins.dataProcess.params));
       }
 
       let model: RunnableResponse;
       let modelPlugin: PluginPackage;
 
       // select one of `ModelDefine` and `ModelLoad`.
-      if (pipeline.modelDefine) {
-        modelPlugin = await this.pluginManager.fetchAndInstall(pipeline.modelDefine, cwd, pyIndex);
-        model = await runnable.start(modelPlugin, dataset, getParams(pipeline.modelDefineParams));
-      } else if (pipeline.modelLoad) {
-        modelPlugin = await this.pluginManager.fetchAndInstall(pipeline.modelLoad, cwd, pyIndex);
-        model = await runnable.start(modelPlugin, dataset, getParams(pipeline.modelLoadParams, {
+      if (plugins.modelDefine) {
+        modelPlugin = plugins.modelDefine.plugin;
+        model = await runnable.start(plugins.modelDefine.plugin, dataset, getParams(plugins.modelDefine.params));
+      } else if (plugins.modelLoad) {
+        modelPlugin = plugins.modelLoad.plugin;
+        model = await runnable.start(plugins.modelLoad.plugin, dataset, getParams(plugins.modelLoad.params, {
           // specify the recover path for model loader by default.
           recoverPath: modelPath
         }));
       }
 
-      if (pipeline.modelTrain) {
-        const modelTrain = await this.pluginManager.fetchAndInstall(pipeline.modelTrain, cwd, pyIndex);
-        model = await runnable.start(modelTrain, dataset, model, getParams(pipeline.modelTrainParams, {
+      if (plugins.modelTrain) {
+        model = await runnable.start(plugins.modelTrain.plugin, dataset, model, getParams(plugins.modelTrain.params, {
           modelPath
         }));
       }
 
       verifyPlugin('modelEvaluate');
-      const modelEvaluate = await this.pluginManager.fetchAndInstall(pipeline.modelEvaluate, cwd, pyIndex);
-      const output = await runnable.start(modelEvaluate, dataset, model, getParams(pipeline.modelEvaluateParams, {
+      const output = await runnable.start(plugins.modelEvaluate.plugin, dataset, model, getParams(plugins.modelEvaluate.params, {
         modelDir: modelPath
       }));
 
@@ -233,6 +278,7 @@ export class PipelineService {
       job.endTime = Date.now();
       job.status = PipelineStatus.SUCCESS;
       await job.save();
+      const pipeline = await this.getPipeline(job.pipelineId);
       await this.generateOutput(job, {
         cwd,
         modelPath,
@@ -245,6 +291,19 @@ export class PipelineService {
       await job.save();
       await runnable.destroy();
       throw err;
+    } finally {
+      delete runnableMap[job.id];
+    }
+  }
+
+  stopJob(id: string): boolean {
+    const runnable = runnableMap[id];
+    if (runnable) {
+      runnable.destroy();
+      delete runnableMap[id];
+      return true;
+    } else {
+      return false;
     }
   }
 
