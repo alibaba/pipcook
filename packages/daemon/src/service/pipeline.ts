@@ -163,14 +163,14 @@ export class PipelineService {
   async installPlugins(job: JobModel, cwd: string, pyIndex?: string): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
     const pipeline = await this.getPipeline(job.pipelineId);
     const plugins: Partial<Record<PluginTypeI, PluginInfo>> = {};
-    await Promise.all(constants.PLUGINS.map(async (type) => {
+    for (const type of constants.PLUGINS) {
       if (pipeline[type]) {
         plugins[type] = await {
           plugin: await this.pluginManager.fetchAndInstall(pipeline[type], cwd, pyIndex),
           params: pipeline[`${type}Params`]
         };
       }
-    }));
+    }
     return plugins;
   }
 
