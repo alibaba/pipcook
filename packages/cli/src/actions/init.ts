@@ -9,8 +9,6 @@ import * as os from 'os';
 import { InitCommandHandler } from '../types';
 import { isLocal, optionalNpmClients, daemonPackage, boardPackage } from '../config';
 
-const NPM_PUBLIC_REGISTRY = 'https://registry.npmjs.org/';
-
 async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
   if (isLocal) {
     const pkg = await readJson(name + '/package.json');
@@ -21,7 +19,7 @@ async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: s
     if (beta) {
       name = `${name}@beta`;
     }
-    const cmd = `${npmClient} install ${name} --force --registry ${NPM_PUBLIC_REGISTRY}`;
+    const cmd = `${npmClient} install ${name} --force`;
     console.info(`exec <${cmd}>`);
     exec(cmd, { cwd, env, stdio: 'inherit' });
   }
