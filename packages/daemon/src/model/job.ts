@@ -22,9 +22,6 @@ export class JobModel extends Model {
   error: string;
   endTime: number;
   status: number;
-
-  // runnable is for servie.
-  runnable: PluginRunnable;
 }
 
 export type JobModelStatic = typeof Model & {

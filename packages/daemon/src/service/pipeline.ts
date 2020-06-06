@@ -1,3 +1,4 @@
+import { constants } from '@pipcook/pipcook-core';
 import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as validate from 'uuid-validate';
@@ -5,7 +6,7 @@ import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
 import { provide, inject } from 'midway';
-import { PipelineDB, PipelineStatus, EvaluateResult } from '@pipcook/pipcook-core';
+import { PipelineDB, PipelineStatus, EvaluateResult, PluginTypeI } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
 import { RunParams } from '../interface';
@@ -29,6 +30,7 @@ interface GenerateOptions {
   modelPlugin: PluginPackage;
   dataProcess?: PluginPackage;
   pipeline: PipelineModel;
+  workingDir: string;
 }
 
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
@@ -156,53 +158,25 @@ export class PipelineService {
       status: PipelineStatus.INIT,
       currentIndex: -1
     });
-    job.runnable = await this.pluginManager.createRunnable(job.id);
     return job;
   }
 
-  async installPlugins(job: JobModel, cwd: string, pyIndex?: string): Promise<Record<string, PluginInfo>> {
-    const plugins: Record<string, PluginInfo> = {};
+  async installPlugins(job: JobModel, cwd: string, pyIndex?: string): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
     const pipeline = await this.getPipeline(job.pipelineId);
-    plugins.dataCollect = {
-      plugin: await this.pluginManager.fetchAndInstall(pipeline.dataCollect, cwd, pyIndex),
-      params: pipeline.dataCollectParams
-    };
-    plugins.dataAccess = {
-      plugin: await this.pluginManager.fetchAndInstall(pipeline.dataAccess, cwd, pyIndex),
-      params: pipeline.dataAccessParams
-    };
-    if (pipeline.dataProcess) {
-      plugins.dataProcess = {
-        plugin: await this.pluginManager.fetchAndInstall(pipeline.dataProcess, cwd, pyIndex),
-        params: pipeline.dataProcessParams
-      };
-    }
-    if (pipeline.modelDefine) {
-      plugins.modelDefine = {
-        plugin: await this.pluginManager.fetchAndInstall(pipeline.modelDefine, cwd, pyIndex),
-        params: pipeline.modelDefineParams
-      };
-    } else if (pipeline.modelLoad) {
-      plugins.modelLoad = {
-        plugin: await this.pluginManager.fetchAndInstall(pipeline.modelLoad, cwd, pyIndex),
-        params: pipeline.modelLoadParams
-      };
-    }
-    if (pipeline.modelTrain) {
-      plugins.modelTrain = {
-        plugin: await this.pluginManager.fetchAndInstall(pipeline.modelTrain, cwd, pyIndex),
-        params: pipeline.modelTrainParams
-      };
-    }
-    plugins.modelEvaluate = {
-      plugin: await this.pluginManager.fetchAndInstall(pipeline.modelEvaluate, cwd, pyIndex),
-      params: pipeline.modelEvaluateParams
-    };
+    const plugins: Partial<Record<PluginTypeI, PluginInfo>> = {};
+    await Promise.all(constants.PLUGINS.map(async (type) => {
+      if (pipeline[type]) {
+        plugins[type] = await {
+          plugin: await this.pluginManager.fetchAndInstall(pipeline[type], cwd, pyIndex),
+          params: pipeline[`${type}Params`]
+        };
+      }
+    }));
     return plugins;
   }
 
-  async startJob(job: JobModel, cwd: string, plugins: Record<string, PluginInfo>) {
-    const { runnable } = job;
+  async startJob(job: JobModel, cwd: string, plugins: Partial<Record<PluginTypeI, PluginInfo>>) {
+    const runnable = await this.pluginManager.createRunnable(job.id);
     // save the runnable object
     runnableMap[job.id] = runnable;
 
@@ -283,15 +257,16 @@ export class PipelineService {
         cwd,
         modelPath,
         modelPlugin,
-        pipeline
+        pipeline,
+        workingDir: runnable.workingDir
       });
     } catch (err) {
       job.status = PipelineStatus.FAIL;
       job.error = err.message;
       await job.save();
-      await runnable.destroy();
       throw err;
     } finally {
+      await runnable.destroy();
       delete runnableMap[job.id];
     }
   }
@@ -309,7 +284,6 @@ export class PipelineService {
 
   async generateOutput(job: JobModel, opts: GenerateOptions) {
     // start generates the output directory
-    const { runnable } = job;
     const dist = path.join(opts.cwd, 'output');
     await fs.remove(dist);
     await fs.ensureDir(dist);
@@ -336,13 +310,12 @@ export class PipelineService {
       fs.copy(opts.modelPath, dist + '/model'),
       fs.copy(path.join(__dirname, '../../assets/predict.js'), `${dist}/index.js`),
       // copy logs
-      fs.copy(runnable.workingDir + '/logs', `${dist}/logs`),
+      fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
       // write package.json
       fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
       // write metadata.json
       fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
     ];
-    await runnable.destroy();
     console.log(`trained the model to ${dist}`);
   }
 

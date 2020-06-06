@@ -164,16 +164,15 @@ export class PipelineController {
     const configObj = await parseConfig(config);
     const sse = new ServerSentEmitter(this.ctx);
     try {
-      for (const type in constants.PLUGINS) {
-        const plugin = constants.PLUGINS[type];
-        if (!configObj[plugin]) {
+      for (const type of constants.PLUGINS) {
+        if (!configObj[type]) {
           continue;
         }
-        debug(`start installation: ${plugin}`);
-        const pkg = await this.pluginManager.fetch(configObj[plugin]);
+        debug(`start installation: ${type}`);
+        const pkg = await this.pluginManager.fetch(configObj[type]);
         sse.emit('info', pkg);
 
-        debug(`installing ${configObj[plugin]}.`);
+        debug(`installing ${configObj[type]}.`);
         await this.pluginManager.install(pkg, pyIndex);
         sse.emit('installed', pkg);
       }
