@@ -1,7 +1,6 @@
 import { STRING, INTEGER, BOOLEAN, Model, BuildOptions } from 'sequelize';
 import { providerWrapper, IApplicationContext } from 'midway';
 import DB from '../boot/database';
-import { PluginRunnable } from '@pipcook/costa';
 
 providerWrapper([
   {

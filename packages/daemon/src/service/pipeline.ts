@@ -1,4 +1,3 @@
-import { constants } from '@pipcook/pipcook-core';
 import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as validate from 'uuid-validate';
@@ -6,7 +5,7 @@ import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
 import { provide, inject } from 'midway';
-import { PipelineDB, PipelineStatus, EvaluateResult, PluginTypeI } from '@pipcook/pipcook-core';
+import { PipelineDB, PipelineStatus, EvaluateResult, PluginTypeI, constants } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
 import { RunParams } from '../interface';
