@@ -7,7 +7,7 @@ export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
 
 function createGeneralRequest(agent: Function): Function {
-  const spinner = ora({ stream: process.stdout });
+  const spinner = ora();
   return async (...args: any[]) => {
     try {
       let response = await agent(...args);
