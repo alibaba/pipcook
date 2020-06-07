@@ -8,7 +8,7 @@ import { route } from '../router';
 import { tunaMirrorURI } from '../config';
 
 async function install(name: string, opts: any): Promise<void> {
-  const spinner = ora();
+  const spinner = ora({ stream: process.stdout });
   spinner.start(`fetching package info ${name}`);
 
   const params = {
@@ -31,7 +31,7 @@ async function install(name: string, opts: any): Promise<void> {
 }
 
 async function uninstall(name: string): Promise<void> {
-  const spinner = ora();
+  const spinner = ora({ stream: process.stdout });
   spinner.start(`uninstalling ${name}`);
   await get(`${route.plugin}/uninstall`, { name });
   spinner.succeed(`uninstalled ${name}`);

@@ -28,7 +28,7 @@ async function create(filename: string, opts: any): Promise<void> {
     config: filename,
     name: opts.name
   });
-  ora().succeed(`pipeline ${pipeline.id} created.`);
+  ora({ stream: process.stdout }).succeed(`pipeline ${pipeline.id} created.`);
 }
 
 async function update(id: string, filename: string): Promise<void> {
@@ -38,11 +38,11 @@ async function update(id: string, filename: string): Promise<void> {
   const pipeline = await put(`${route.pipeline}/${id}`, {
     config: filename
   });
-  ora().succeed(`pipeline ${pipeline.id} updated with ${filename}.`);
+  ora({ stream: process.stdout }).succeed(`pipeline ${pipeline.id} updated with ${filename}.`);
 }
 
 async function remove(id?: any): Promise<void> {
-  const spinner = ora();
+  const spinner = ora({ stream: process.stdout });
   if (typeof id === 'string' && id !== 'all') {
     await del(`${route.pipeline}/${id}`);
     spinner.succeed(`pipeline ${id} has removed.`);

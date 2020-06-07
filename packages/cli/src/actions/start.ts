@@ -10,7 +10,7 @@ import { tail } from '../utils';
 import * as url from 'url';
 
 const start: StartHandler = async (filename: string, opts: any) => {
-  const spinner = ora();
+  const spinner = ora({ stream: process.stdout });
 
   if (!filename) {
     spinner.fail('Please specify the config path');

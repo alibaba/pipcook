@@ -19,7 +19,7 @@ interface DaemonBootstrapMessage {
 }
 
 async function start(): Promise<void> {
-  const spinner = ora();
+  const spinner = ora({ stream: process.stdout });
   spinner.start('starting Pipcook...');
 
   const daemon = fork(path.join(DAEMON_HOME, 'bootstrap.js'), [], {
@@ -37,7 +37,7 @@ async function start(): Promise<void> {
 }
 
 async function stop(): Promise<void> {
-  const spinner = ora();
+  const spinner = ora({ stream: process.stdout });
   spinner.start('stoping Pipcook...');
   if (await pathExists(DAEMON_PIDFILE)) {
     const oldPid = parseInt(await readFile(DAEMON_PIDFILE, 'utf8'), 10);

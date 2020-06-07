@@ -6,7 +6,7 @@ import { constants } from '@pipcook/pipcook-core';
 import { ServeHandler, PredictHandler } from '../types';
 
 const fastify = Fastify({ logger: true });
-const spinner = ora();
+const spinner = ora({ stream: process.stdout });
 const { PIPCOOK_LOGS } = constants;
 
 const serve: ServeHandler = async function(jobId, port = 7682) {

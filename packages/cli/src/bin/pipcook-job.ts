@@ -19,7 +19,7 @@ async function list(): Promise<void> {
 }
 
 async function run(id: string, opts: any): Promise<void> {
-  const spinner = ora();
+  const spinner = ora({ stream: process.stdout });
   const params = {
     cwd: process.cwd(),
     pipelineId: id,
@@ -55,7 +55,7 @@ async function run(id: string, opts: any): Promise<void> {
 }
 
 async function remove(): Promise<void> {
-  const spinner = ora();
+  const spinner = ora({ stream: process.stdout });
   spinner.start('removing jobs...');
   await get(`${route.job}/remove`);
   spinner.succeed('remove jobs succeeded');
