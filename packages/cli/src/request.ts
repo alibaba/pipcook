@@ -1,13 +1,13 @@
 import * as qs from 'querystring';
 import axios from 'axios';
-import ora from 'ora';
 import EventSource from 'eventsource';
+import { ora } from './utils';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
 
 function createGeneralRequest(agent: Function): Function {
-  const spinner = ora();
+  const spinner = ora({ stream: process.stdout });
   return async (...args: any[]) => {
     try {
       let response = await agent(...args);

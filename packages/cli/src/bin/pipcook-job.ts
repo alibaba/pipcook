@@ -2,11 +2,11 @@
 
 import { ChildProcess } from 'child_process';
 import program from 'commander';
-import ora from 'ora';
 import { get, listen } from '../request';
 import { route } from '../router';
 import { tail } from '../utils';
 import { tunaMirrorURI } from '../config';
+import { ora } from '../utils';
 
 const PipelineStatus = [ 'creating', 'running', 'success', 'fail' ];
 
@@ -19,7 +19,7 @@ async function list(): Promise<void> {
 }
 
 async function run(id: string, opts: any): Promise<void> {
-  const spinner = ora({ stream: process.stdout });
+  const spinner = ora();
   const params = {
     cwd: process.cwd(),
     pipelineId: id,
@@ -55,7 +55,7 @@ async function run(id: string, opts: any): Promise<void> {
 }
 
 async function remove(): Promise<void> {
-  const spinner = ora({ stream: process.stdout });
+  const spinner = ora();
   spinner.start('removing jobs...');
   await get(`${route.job}/remove`);
   spinner.succeed('remove jobs succeeded');

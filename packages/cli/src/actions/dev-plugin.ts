@@ -1,9 +1,9 @@
 import fse from 'fs-extra';
-import ora from 'ora';
 import chalk from 'chalk';
 import path from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { DevPluginCommandHandler } from '../types';
+import { ora } from '../utils';
 
 const spinner = ora();
 

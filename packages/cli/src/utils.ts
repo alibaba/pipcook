@@ -1,5 +1,6 @@
 import * as os from 'os';
 import { exec, spawn, ChildProcess, ExecOptions, ExecException } from 'child_process';
+import realOra from 'ora';
 
 export const Constants = {
   PIPCOOK_HOME: `${os.homedir()}/.pipcook`
@@ -23,4 +24,8 @@ export function tail(id: string, name: string): ChildProcess {
       stdio: 'inherit'
     }
   );
+}
+
+export function ora(opts?: realOra.Options) {
+  return realOra({ stream: process.stdout, ...opts });
 }

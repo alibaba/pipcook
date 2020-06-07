@@ -1,12 +1,12 @@
 import Fastify from 'fastify';
 import path from 'path';
-import ora from 'ora';
 import childProcess from 'child_process';
 import { constants } from '@pipcook/pipcook-core';
 import { ServeHandler, PredictHandler } from '../types';
+import { ora } from '../utils';
 
 const fastify = Fastify({ logger: true });
-const spinner = ora({ stream: process.stdout });
+const spinner = ora();
 const { PIPCOOK_LOGS } = constants;
 
 const serve: ServeHandler = async function(jobId, port = 7682) {

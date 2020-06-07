@@ -4,8 +4,8 @@ import { execSync as exec, spawn, fork } from 'child_process';
 import os from 'os';
 import path from 'path';
 import program from 'commander';
-import ora from 'ora';
 import { readFile, pathExists, remove } from 'fs-extra';
+import { ora } from '../utils';
 
 const PIPCOOK_HOME = path.join(os.homedir(), '.pipcook');
 const DAEMON_HOME = path.join(PIPCOOK_HOME, 'server/node_modules/@pipcook/daemon');
@@ -19,7 +19,7 @@ interface DaemonBootstrapMessage {
 }
 
 async function start(): Promise<void> {
-  const spinner = ora({ stream: process.stdout });
+  const spinner = ora();
   spinner.start('starting Pipcook...');
 
   const daemon = fork(path.join(DAEMON_HOME, 'bootstrap.js'), [], {
@@ -37,7 +37,7 @@ async function start(): Promise<void> {
 }
 
 async function stop(): Promise<void> {
-  const spinner = ora({ stream: process.stdout });
+  const spinner = ora();
   spinner.start('stoping Pipcook...');
   if (await pathExists(DAEMON_PIDFILE)) {
     const oldPid = parseInt(await readFile(DAEMON_PIDFILE, 'utf8'), 10);

@@ -1,4 +1,3 @@
-import ora from 'ora';
 import { existsSync } from 'fs';
 import * as path from 'path';
 import { ChildProcess } from 'child_process';
@@ -8,9 +7,10 @@ import { route } from '../router';
 import { tunaMirrorURI } from '../config';
 import { tail } from '../utils';
 import * as url from 'url';
+import { ora } from '../utils';
 
 const start: StartHandler = async (filename: string, opts: any) => {
-  const spinner = ora({ stream: process.stdout });
+  const spinner = ora();
 
   if (!filename) {
     spinner.fail('Please specify the config path');
