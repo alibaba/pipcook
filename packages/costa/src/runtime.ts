@@ -235,7 +235,7 @@ export class CostaRuntime {
   }
   /**
    * Create the `NpmPackageNameSchema` object by a package name.
-   * @param fullname the fullname of a package, lile "@pipcook/test@1.x"
+   * @param fullname the fullname of a package, like "@pipcook/test@1.x"
    * @returns the created `NpmPackageNameSchema` object.
    */
   private getNameSchema(fullname: string): NpmPackageNameSchema {
