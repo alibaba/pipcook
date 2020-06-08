@@ -79,12 +79,15 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   const DAEMON_PUBLIC = path.join(DAEMON_DIR, 'node_modules', '@pipcook', 'daemon', 'src', 'app', 'public');
 
   try {
+    await fse.remove(DAEMON_DIR);
+    await fse.remove(BOARD_DIR);
+
     await fse.ensureDir(DAEMON_DIR);
     await fse.ensureDir(BOARD_DIR);
-    await [
+    await Promise.all([
       npmInstall(npmClient, daemonPackage, beta, DAEMON_DIR, npmInstallEnvs),
       npmInstall(npmClient, boardPackage, beta, BOARD_DIR, npmInstallEnvs)
-    ];
+    ]);
     await fse.copy(BOARD_BUILD, DAEMON_PUBLIC);
     spinner.succeed('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
