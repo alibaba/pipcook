@@ -1,6 +1,6 @@
 import * as os from 'os';
 import { exec, spawn, ChildProcess, ExecOptions, ExecException } from 'child_process';
-import * as realOra from 'ora';
+import realOra = require("ora");
 
 export const Constants = {
   PIPCOOK_HOME: `${os.homedir()}/.pipcook`
