@@ -31,9 +31,9 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
   assert.ok(url, 'Please specify a url of zip of your data');
 
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
-  const extention = fileName.split('.');
+  const extension = fileName.split('.');
 
-  assert.ok(extention[extention.length - 1] === 'zip', 'The dataset provided should be a zip file');
+  assert.ok(extension[extension.length - 1] === 'zip', 'The dataset provided should be a zip file');
 
   let isDownload = false;
   if (/^file:\/\/.*/.test(url)) {
