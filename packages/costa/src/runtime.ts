@@ -190,6 +190,7 @@ export class CostaRuntime {
         if (pyIndex) {
           args = args.concat([ '-i', pyIndex ]);
         }
+        args = args.concat(['--default-timeout=1000'])
         await spawnAsync(`${envDir}/bin/pip3`, args);
       }
     } else {
