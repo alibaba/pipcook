@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import ora from 'ora';
 import * as path from 'path';
 import { get, post, put, del } from '../request';
 import { route } from '../router';
+import { ora } from '../utils';
 
 async function list(): Promise<void> {
   let pipelines = (await get(`${route.pipeline}/list`)).rows;
