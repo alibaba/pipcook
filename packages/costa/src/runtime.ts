@@ -1,6 +1,6 @@
 import path from 'path';
 import url from 'url';
-import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, ensureSymlink } from 'fs-extra';
+import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
 import {
@@ -17,7 +17,6 @@ import request from 'request-promise';
 import Debug from 'debug';
 
 const debug = Debug('costa.runtime');
-const CONDA_CONFIG = path.join(__dirname, '../node_modules/@pipcook/boa/.CONDA_INSTALL_DIR');
 
 function selectNpmPackage(metadata: NpmPackageMetadata, source: PluginSource): NpmPackage {
   const { version } = source?.schema;
