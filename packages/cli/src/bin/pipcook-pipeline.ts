@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import ora from 'ora';
 import * as path from 'path';
 import { ChildProcess } from 'child_process';
 import { get, post, put, del, listen } from '../request';
 import { route } from '../router';
-import { parseConfigFilename } from '../utils';
+import { ora, parseConfigFilename } from '../utils';
 import { tunaMirrorURI } from '../config';
 
 async function list(): Promise<void> {

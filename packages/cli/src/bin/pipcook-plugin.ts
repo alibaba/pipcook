@@ -2,10 +2,10 @@
 
 import program from 'commander';
 import path from 'path';
-import ora from 'ora';
 import { listen, get } from '../request';
 import { route } from '../router';
 import { tunaMirrorURI } from '../config';
+import { ora } from '../utils';
 
 async function install(name: string, opts: any): Promise<void> {
   const spinner = ora();

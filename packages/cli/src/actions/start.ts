@@ -1,10 +1,9 @@
-import ora from 'ora';
 import { ChildProcess } from 'child_process';
 import { StartHandler } from '../types';
 import { listen, get } from '../request';
 import { route } from '../router';
 import { tunaMirrorURI } from '../config';
-import { tail, parseConfigFilename } from '../utils';
+import { ora, tail, parseConfigFilename } from '../utils';
 
 const start: StartHandler = async (filename: string, opts: any) => {
   const spinner = ora();

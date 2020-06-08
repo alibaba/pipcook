@@ -2,11 +2,11 @@
 
 import { ChildProcess } from 'child_process';
 import program from 'commander';
-import ora from 'ora';
 import { get, listen } from '../request';
 import { route } from '../router';
 import { tail } from '../utils';
 import { tunaMirrorURI } from '../config';
+import { ora } from '../utils';
 
 const PipelineStatus = [ 'creating', 'running', 'success', 'fail' ];
 

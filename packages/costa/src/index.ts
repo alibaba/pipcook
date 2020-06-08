@@ -130,7 +130,7 @@ export interface NpmPackageMetadata {
 }
 
 /**
- * It represents the name schema for a package name string for npm. For exmaple,
+ * It represents the name schema for a package name string for npm. For example,
  * `@pipcook/test@1.x` outputs an object with scope(@pipcook), name(test) and
  * version(1.x).
  */

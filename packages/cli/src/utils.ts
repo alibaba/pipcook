@@ -3,6 +3,7 @@ import { exec, spawn, ChildProcess, ExecOptions, ExecException } from 'child_pro
 import * as url from 'url';
 import { pathExists } from 'fs-extra';
 import path from 'path';
+import realOra = require("ora");
 
 export const Constants = {
   PIPCOOK_HOME: `${os.homedir()}/.pipcook`
@@ -46,4 +47,8 @@ export async function parseConfigFilename(filename: string): Promise<string> {
     throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
   }
   return filename;
+}
+
+export function ora(opts?: realOra.Options) {
+  return realOra({ stream: process.stdout, ...opts });
 }

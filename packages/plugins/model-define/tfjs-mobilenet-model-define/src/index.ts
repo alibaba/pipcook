@@ -1,5 +1,5 @@
 /**
- * @file This plugin is used to load the moblieNet for iamge classification. The input layer is modified to fit into any shape of input.
+ * @file This plugin is used to load the mobilenet for image classification. The input layer is modified to fit into any shape of input.
  * The final layer is changed to a softmax layer to match the output shape
  */
 
@@ -46,7 +46,7 @@ function argMax(array: any) {
  * Delete original input layer and original output layer. 
  * Use our own input layer and add softmax layer after global average pooling layer
  * @param inputLayer the input layer of the model
- * @param originModel original loaded moblienet
+ * @param originModel original loaded mobilenet
  */
 const applyModel = (inputLayer: tf.SymbolicTensor, originModel: tf.LayersModel) => {
   let currentLayer: any = inputLayer;
