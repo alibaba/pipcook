@@ -1,5 +1,5 @@
 /**
- * @file This plugin is used to load the moblieNet for iamge classification. The input layer is modified to fit into any shape of input.
+ * @file This plugin is used to load the mobileNet for image classification. The input layer is modified to fit into any shape of input.
  * The final layer is changed to a softmax layer to match the output shape
  */
 
