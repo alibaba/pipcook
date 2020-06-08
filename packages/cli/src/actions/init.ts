@@ -1,10 +1,10 @@
 import path from 'path';
 import { execSync as exec } from 'child_process';
 import fse, { symlink, readJson, ensureDir } from 'fs-extra';
-import ora from 'ora';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import * as os from 'os';
+import { ora } from '../utils';
 
 import { InitCommandHandler } from '../types';
 import { isLocal, optionalNpmClients, daemonPackage, boardPackage } from '../config';

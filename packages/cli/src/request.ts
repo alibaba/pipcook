@@ -1,7 +1,7 @@
 import * as qs from 'querystring';
 import axios from 'axios';
-import ora from 'ora';
 import EventSource from 'eventsource';
+import { ora } from './utils';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
