@@ -160,7 +160,7 @@ export class PipelineController {
 
   @get('/install')
   public async install() {
-    const { config, pyIndex } = this.ctx.query;
+    const { config, pyIndex, cwd  } = this.ctx.query;
     const configObj = await parseConfig(config);
     const sse = new ServerSentEmitter(this.ctx);
     try {
@@ -169,7 +169,7 @@ export class PipelineController {
           continue;
         }
         debug(`start installation: ${type}`);
-        const pkg = await this.pluginManager.fetch(configObj[type]);
+        const pkg = await this.pluginManager.fetch(configObj[type], cwd);
         sse.emit('info', pkg);
 
         debug(`installing ${configObj[type]}.`);
