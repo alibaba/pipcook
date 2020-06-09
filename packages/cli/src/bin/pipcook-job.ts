@@ -61,6 +61,13 @@ async function remove(): Promise<void> {
   spinner.succeed('remove jobs succeeded');
 }
 
+async function stop(id: string): Promise<void> {
+  const spinner = ora();
+  spinner.start('stopping jobs...');
+  const err = await get(`${route.job}/stop`, { id });
+  err ? spinner.fail(err.message) : spinner.succeed('stop job succeeded');
+}
+
 async function log(id: string): Promise<void> {
   const log = await get(`${route.job}/${id}/log`);
   console.log(log);
@@ -87,5 +94,10 @@ program
   .command('log <job>')
   .action(log)
   .description('show logs by the given job id');
+
+program
+  .command('stop <job>')
+  .action(stop)
+  .description('stop job by the given job id');
 
 program.parse(process.argv);

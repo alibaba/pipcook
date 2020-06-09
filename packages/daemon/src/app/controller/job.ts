@@ -4,6 +4,7 @@ import { PipelineService } from '../../service/pipeline';
 import { parseConfig } from '../../runner/helper';
 import ServerSentEmitter from '../../utils/emitter';
 import { JobModel } from '../../model/job';
+import { PluginManager } from '../../service/plugin';
 
 @provide()
 @controller('/job')
@@ -13,6 +14,9 @@ export class JobController {
 
   @inject('pipelineService')
   pipelineService: PipelineService;
+
+  @inject('PluginManager')
+  pluginManager: PluginManager;
 
   @get('/run')
   public async run() {
@@ -43,9 +47,10 @@ export class JobController {
   private async runJobWithContext(job: JobModel, cwd: string, verbose: boolean, pyIndex: string) {
     if (verbose) {
       const sse = new ServerSentEmitter(this.ctx);
-      sse.emit('job created', job);
       try {
-        await this.pipelineService.startJob(job, cwd, pyIndex);
+        const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
+        sse.emit('job created', job);
+        await this.pipelineService.startJob(job, cwd, plugins);
         sse.emit('job finished', job);
       } catch (err) {
         sse.emit('error', err?.message);
@@ -53,7 +58,15 @@ export class JobController {
         sse.finish();
       }
     } else {
-      this.pipelineService.startJob(job, cwd, pyIndex);
+      try {
+        const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
+        this.pipelineService.startJob(job, cwd, plugins);
+      } catch (err) {
+        return failRes(this.ctx, {
+          message: err?.message,
+          data: job
+        });
+      }
       successRes(this.ctx, {
         message: 'create pipeline and jobs successfully',
         data: job
@@ -84,6 +97,17 @@ export class JobController {
   public async remove() {
     await this.pipelineService.removeJobs();
     successRes(this.ctx, {});
+  }
+
+  @get('/stop')
+  public async stop() {
+    const { id } = this.ctx.query;
+    const success = this.pipelineService.stopJob(id);
+    if (success) {
+      successRes(this.ctx, {});
+    } else {
+      failRes(this.ctx, {message: 'stop job error'});
+    }
   }
 
   @get('/:id/log')
