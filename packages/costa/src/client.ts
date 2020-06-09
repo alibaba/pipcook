@@ -62,7 +62,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
   const { params } = message;
   const pkg = params[0] as PluginPackage;
   const [ , ...pluginArgs ] = params;
-  debug(`start loading plugin ${pkg.name}`);
+  console.info(`start loading plugin ${pkg.name}`);
 
   try {
     const boa = require('@pipcook/boa');
@@ -118,7 +118,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
     if (resp) {
       const rid = uuid.v4();
       previousResults[rid] = resp;
-      debug(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
+      console.info(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
       recv(PluginOperator.WRITE, rid);
     } else {
       recv(PluginOperator.WRITE);
