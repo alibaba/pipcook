@@ -53,5 +53,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook init
         ./packages/cli/dist/bin/pipcook daemon start
     - name: Running an example pipeline
+      env:
+        NODE_ENV: local
       run: |
         npm run test:pipeline -- text-bayes-classification
