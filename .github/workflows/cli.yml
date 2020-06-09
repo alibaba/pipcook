@@ -72,7 +72,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
 
   testing-install-from-config:
-    name: Test Pipcook Tools commands: plugin installFromConfig
+    name: Test Pipcook Tools commands pipeline install
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -96,5 +96,5 @@ jobs:
         ./packages/cli/dist/bin/pipcook daemon start
     - name: pipcook plugin install from pipeline config
       run: |
-        ./packages/cli/dist/bin/pipcook plugin installFromConfig ./test/pipelines/text-bayes-classification.json
-        ./packages/cli/dist/bin/pipcook plugin installFromConfig https://raw.githubusercontent.com/alibaba/pipcook/master/test/pipelines/text-bayes-classification.json --verbose
+        ./packages/cli/dist/bin/pipcook pipeline install ./test/pipelines/text-bayes-classification.json
+        ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/test/pipelines/text-bayes-classification.json --verbose
