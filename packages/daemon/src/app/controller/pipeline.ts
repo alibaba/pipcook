@@ -1,8 +1,13 @@
-import { Context, controller, inject, provide, post, get, put, del } from 'midway';
-import { parseConfig } from '../../runner/helper';
 
+import { constants } from '@pipcook/pipcook-core';
+import { Context, controller, inject, provide, post, get, put, del } from 'midway';
+import Debug from 'debug';
+import { PluginManager } from '../../service/plugin';
+import { parseConfig } from '../../runner/helper';
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
+import ServerSentEmitter from '../../utils/emitter';
+const debug = Debug('daemon.app.pipeline');
 
 @provide()
 @controller('/pipeline')
@@ -12,6 +17,9 @@ export class PipelineController {
 
   @inject('pipelineService')
   pipelineService: PipelineService;
+
+  @inject('PluginManager')
+  pluginManager: PluginManager;
 
   @post('')
   public async create() {
@@ -147,6 +155,32 @@ export class PipelineController {
       failRes(ctx, {
         message: err.message
       });
+    }
+  }
+
+  @get('/install')
+  public async install() {
+    const { config, pyIndex } = this.ctx.query;
+    const configObj = await parseConfig(config);
+    const sse = new ServerSentEmitter(this.ctx);
+    try {
+      for (const type of constants.PLUGINS) {
+        if (!configObj[type]) {
+          continue;
+        }
+        debug(`start installation: ${type}`);
+        const pkg = await this.pluginManager.fetch(configObj[type]);
+        sse.emit('info', pkg);
+
+        debug(`installing ${configObj[type]}.`);
+        await this.pluginManager.install(pkg, pyIndex);
+        sse.emit('installed', pkg);
+      }
+      sse.emit('finished', configObj);
+    } catch (err) {
+      sse.emit('error', err?.message);
+    } finally {
+      sse.finish();
     }
   }
 }
