@@ -1,53 +1,51 @@
 import { Project, ImportDeclaration, ts, Node, Identifier } from 'ts-morph';
 import { runInNewContext } from 'vm';
+import { nlpGen, visionGen, PipelineGenContext } from './pipelinegen';
 
-const project = new Project({
-  tsConfigFilePath: '../../tsconfig.json',
-});
+function compile(pathname: string) {
+  const project = new Project({ tsConfigFilePath: '../../tsconfig.json' });
+  const script = project.getSourceFileOrThrow(pathname);
+  // TODO: needs to verify if this imported the learnable.
+  // const app = script.getImportDeclarationOrThrow('@pipcook/app');
 
-const script = project.getSourceFileOrThrow('src/apis/index_test.ts');
-const app = script.getImportDeclarationOrThrow('./index');
+  // create the pipelinegen context to store the generated data.
+  const pipelinegenCtx = new PipelineGenContext();
 
-script.forEachChild((node: Node<ts.Node>) => {
-  if (node.getKind() === ts.SyntaxKind.VariableStatement) {
-    const call2createLearnable = findCallExpression('createLearnable', node);
-    const funcExpr = call2createLearnable.forEachChildAsArray()[1];
-    if (funcExpr.getKind() !== ts.SyntaxKind.FunctionExpression &&
-      funcExpr.getKind() !== ts.SyntaxKind.ArrowFunction) {
-      throw new TypeError('createLearnable should accept the function or arrow function.');
+  // start walking the source.
+  script.forEachChild((node: Node<ts.Node>) => {
+    if (node.getKind() === ts.SyntaxKind.VariableStatement) {
+      const call2createLearnable = findCallExpression('createLearnable', node);
+      const funcExpr = call2createLearnable.forEachChildAsArray()[1];
+      if (funcExpr.getKind() !== ts.SyntaxKind.FunctionExpression &&
+        funcExpr.getKind() !== ts.SyntaxKind.ArrowFunction) {
+        throw new TypeError('createLearnable should accept the function or arrow function.');
+      }
+      if (!getFirstChildByKindName('AsyncKeyword', funcExpr)) {
+        throw new TypeError('learnable impl function must be async function.');
+      }
+      if (funcExpr) {
+        const params = funcExpr.getFirstChildByKind(ts.SyntaxKind.Parameter);
+        const block = funcExpr.getFirstChildByKind(ts.SyntaxKind.Block);
+        const paramName = params.getFirstChildByKind(ts.SyntaxKind.Identifier).getText();
+        const wrapped = `
+          (async function learnable() {
+            ${block.getFullText()}
+          })()
+        `;
+
+        // generate pipelines by pre-executing the code block.
+        runInNewContext(ts.transpile(wrapped), {
+          [paramName]: params.getLastChild().getText(),
+          nlp: nlpGen(pipelinegenCtx),
+          vision: visionGen(pipelinegenCtx)
+        });
+      }
     }
-    if (!getFirstChildByKindName('AsyncKeyword', funcExpr)) {
-      throw new TypeError('learnable impl function must be async function.');
-    }
-    if (funcExpr) {
-      const params = funcExpr.getFirstChildByKind(ts.SyntaxKind.Parameter);
-      const block = funcExpr.getFirstChildByKind(ts.SyntaxKind.Block);
-      const paramName = params.getFirstChildByKind(ts.SyntaxKind.Identifier).getText();
-      const wrapped = `
-        (async function learnable() {
-          ${block.getFullText()}
-        })()
-      `;
+  });
 
-      // generate pipelines by pre-executing the code block.
-      runInNewContext(ts.transpile(wrapped), {
-        [paramName]: params.getLastChild().getText(),
-        nlp: {
-          classify(inputType: string) {
-            console.log('nlp.classify gets called', inputType);
-            // generate the nlp.classify pipeline
-          }
-        },
-        vision: {
-          classify(imgType: string) {
-            console.log('vision.classify gets called', imgType);
-            // generate the vision.classify pipeline
-          }
-        }
-      });
-    }
-  }
-});
+  // print the result pipelinegen context object.
+  console.log(pipelinegenCtx);
+}
 
 function findCallExpression(name: string, from: Node<ts.Node>): Node<ts.Node> {
   if (from.getKind() === ts.SyntaxKind.CallExpression &&
@@ -73,3 +71,5 @@ function getFirstChildByKindName(kind: string, from: Node<ts.Node>): Node<ts.Nod
   return from.getFirstChildByKind(ts.SyntaxKind.SyntaxList)
     .getFirstChildByKind((ts.SyntaxKind as any)[kind]);
 }
+
+compile('src/apis/index_test.ts');

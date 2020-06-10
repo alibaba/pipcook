@@ -1,4 +1,4 @@
-import { createLearnable, nlp, types, vision } from './index';
+import { createLearnable, nlp, types, vision } from '@pipcook/app';
 
 const isCooking = createLearnable(async function isCookingImpl(sentence: string) {
   return (await nlp.classify(sentence));
