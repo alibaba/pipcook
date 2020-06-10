@@ -1,12 +1,9 @@
 {
   "name": "@pipcook/plugins-image-classification-tensorflow-model-evaluate",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "evaluate for tensorflow",
   "main": "dist/index",
   "types": "dist/index",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
