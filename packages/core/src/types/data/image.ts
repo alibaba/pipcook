@@ -2,7 +2,7 @@ import { DataLoader, UniDataset, Metadata } from './common';
 
 export interface SegmentationRLE {
   counts: string;
-  size: number[]; 
+  size: number[];
 }
 
 export type SegmentationPolygon = number[][];

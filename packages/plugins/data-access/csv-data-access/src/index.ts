@@ -16,7 +16,7 @@ class DataLoader implements CsvDataLoader {
     const records = parse(fs.readFileSync(csvPath), {
       columns: true
     });
-    this.records = records.map((record: any) => {  
+    this.records = records.map((record: any) => {
       const label = record[labelColumn];
       delete record[labelColumn];
       return {
@@ -74,7 +74,7 @@ const csvDataAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset
       ...Object.keys(data.data)
     );
   }
-  
+
   const result: CsvDataset = {
     ...data,
     metadata: {

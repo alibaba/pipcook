@@ -12,8 +12,8 @@ import Jimp from 'jimp';
 
 /**
  * Transfer learning: freeze several top layers
- * @param trainableLayers 
- * @param mobilenetModified 
+ * @param trainableLayers
+ * @param mobilenetModified
  */
 const freezeModelLayers = (trainableLayers: string[], mobilenetModified: tf.LayersModel) => {
   for (const layer of mobilenetModified.layers) {
@@ -30,7 +30,7 @@ const freezeModelLayers = (trainableLayers: string[], mobilenetModified: tf.Laye
 
 /** @ignore
  * assertion test
- * @param data 
+ * @param data
  */
 const assertionTest = (data: ImageDataset) => {
   assert.ok(data.metadata.feature, 'Image feature is missing');
@@ -43,7 +43,7 @@ function argMax(array: any) {
 
 
 /**
- * Delete original input layer and original output layer. 
+ * Delete original input layer and original output layer.
  * Use our own input layer and add softmax layer after global average pooling layer
  * @param inputLayer the input layer of the model
  * @param originModel original loaded mobilenet

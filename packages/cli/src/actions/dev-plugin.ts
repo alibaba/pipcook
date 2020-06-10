@@ -31,11 +31,11 @@ const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
       return process.exit(1);
     }
     fse.ensureDirSync(path.join(dirname, 'src'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'package.json'), 
+    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'package.json'),
       path.join(dirname, 'package.json'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'tsconfig.json'), 
+    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'tsconfig.json'),
       path.join(dirname, 'tsconfig.json'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'src', `${type}.ts`), 
+    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'src', `${type}.ts`),
       path.join(dirname, 'src', `index.ts`));
     console.log('success');
   } catch (e) {

@@ -43,7 +43,7 @@ export interface CondaConfig {
 }
 
 /**
- * Usually, it is used to represent some fields of package.json, 
+ * Usually, it is used to represent some fields of package.json,
  * and some pipcook fields are also added, see below for details.
  */
 export interface PluginPackage {
@@ -68,7 +68,7 @@ export interface PluginPackage {
    */
   dependencies?: Record<string, string>;
   /**
-   * The following objects are used to declare some information 
+   * The following objects are used to declare some information
    * needed by the plugin at runtime.
    */
   pipcook: {

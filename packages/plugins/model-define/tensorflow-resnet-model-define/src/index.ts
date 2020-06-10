@@ -17,7 +17,7 @@ const { Model } = boa.import('tensorflow.keras.models');
 
 /** @ignore
  * assertion test
- * @param data 
+ * @param data
  */
 const assertionTest = (data: ImageDataset) => {
   assert.ok(data.metadata.feature, 'Image feature is missing');
@@ -71,7 +71,7 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
     activation: 'softmax'
   }))(output);
   model = Model(boa.kwargs({
-    inputs: model.input, 
+    inputs: model.input,
     outputs: outputs
   }));
 
