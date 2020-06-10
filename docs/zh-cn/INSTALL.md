@@ -22,10 +22,10 @@ $ npm install -g @pipcook/pipcook-cli
 
 ## 通过 Docker 安装
 
-首先安装 [Pipcook Dockerfile](https://github.com/alibaba/pipcook/blob/master/Dockerfile)，然后在该路径下构建镜像：
+首先安装 [Pipcook Dockerfile](https://github.com/alibaba/pipcook/blob/master/docker/Dockerfile)，然后在该路径下构建镜像：
 
 ```sh
-$ git clone https://github.com/alibaba/pipcook.git && cd pipcook
+$ git clone https://github.com/alibaba/pipcook.git && cd pipcook/docker
 $ docker build -t alibaba/pipcook .
 ```
 
