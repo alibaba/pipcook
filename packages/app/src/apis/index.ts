@@ -7,8 +7,7 @@ export interface LearnableCallback {
 };
 
 export function createLearnable(callback: LearnableCallback): Learnable {
-  const learnable = new Learnable();
-  return learnable;
+  throw new TypeError('current application is not trained.');
 };
 
 export * as vision from './vision';

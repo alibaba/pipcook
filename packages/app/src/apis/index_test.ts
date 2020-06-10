@@ -1,6 +1,6 @@
 import { createLearnable, nlp, types, vision } from './index';
 
-const isCooking = createLearnable(async (sentence: string) => {
+const isCooking = createLearnable(async function isCookingImpl(sentence: string) {
   return (await nlp.classify(sentence));
 });
 
