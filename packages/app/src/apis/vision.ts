@@ -1,17 +1,32 @@
-import { Image, Position2D } from './types';
+import { Image, VisionObject } from './types';
 
+/**
+ * Classifies the image with given label, it returns the classification of this image.
+ * @param img the input image type.
+ */
 export async function classify(img: Image): Promise<string> {
-  return '';
+  throw new TypeError('not trained method');
 }
 
+/**
+ * Generates an image by given trained images and labels.
+ */
 export async function generate(): Promise<Image> {
-  return new Image();
+  throw new TypeError('not trained method');
 }
 
-export async function detectObject(img: Image): Promise<Position2D> {
-  return { x: 0, y: 0 };
+/**
+ * It detects kinds of objects with an array of `VisionObject`.
+ * @param img the input image it contains objects.
+ */
+export async function detectObject(img: Image): Promise<VisionObject[]> {
+  throw new TypeError('not trained method');
 }
 
-export async function segmentObject(img: Image): Promise<Image> {
-  return new Image();
+/**
+ * It returns the segmentation of detected objects, it returns extra outline for each object.
+ * @param img the input image it contains objects.
+ */
+export async function segmentObject(img: Image): Promise<VisionObject[]> {
+  throw new TypeError('not trained method');
 }

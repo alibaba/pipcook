@@ -6,7 +6,7 @@ function compile(pathname: string) {
   const project = new Project({ tsConfigFilePath: '../../tsconfig.json' });
   const script = project.getSourceFileOrThrow(pathname);
   // TODO: needs to verify if this imported the learnable.
-  // const app = script.getImportDeclarationOrThrow('@pipcook/app');
+  const app = script.getImportDeclarationOrThrow('@pipcook/app');
 
   // create the pipelinegen context to store the generated data.
   const pipelinegenCtx = new PipelineGenContext();
