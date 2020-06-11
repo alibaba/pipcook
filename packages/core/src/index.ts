@@ -1,8 +1,8 @@
 // types
 export {
-  UniDataset, 
-  DataLoader, 
-  Metadata, 
+  UniDataset,
+  DataLoader,
+  Metadata,
   DataDescriptor
 } from './types/data/common';
 
@@ -29,11 +29,11 @@ export { Sample } from './types/data/common';
 
 export { UniModel, TfJsLayersModel } from './types/model';
 export { EvaluateResult, PipObject, EvaluateError } from './types/other';
-export { 
-  PipcookComponentResult, 
-  PipcookComponentOutput, 
-  PipcookComponentResultStatus, 
-  PipcookComponentOperator, 
+export {
+  PipcookComponentResult,
+  PipcookComponentOutput,
+  PipcookComponentResultStatus,
+  PipcookComponentOperator,
   PipcookLifeCycleComponent,
   PipcookLifeCycleTypes
 } from './types/component';
@@ -68,15 +68,15 @@ export {
 } from './utils/public';
 
 // expose constants
-import { 
-  PLUGINS, 
-  MODELLOAD, 
-  MODELDEFINE, 
-  DATACOLLECT, 
+import {
+  PLUGINS,
+  MODELLOAD,
+  MODELDEFINE,
+  DATACOLLECT,
   DATAACCESS,
   DATAPROCESS,
   MODELTRAIN,
-  MODELEVALUATE 
+  MODELEVALUATE
 } from './constants/plugins';
 import { PIPCOOK_PLUGINS, PIPCOOK_LOGS, PIPCOOK_DEPENDENCIES } from './constants/other';
 export const constants = {
@@ -84,7 +84,7 @@ export const constants = {
   MODELLOAD,
   MODELDEFINE,
   PIPCOOK_PLUGINS,
-  DATACOLLECT, 
+  DATACOLLECT,
   DATAACCESS,
   DATAPROCESS,
   MODELTRAIN,

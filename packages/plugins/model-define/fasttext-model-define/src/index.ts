@@ -5,7 +5,7 @@ const defineFastText: ModelDefineType = async (dataset: CsvDataset, args: ModelD
   const { recoverPath } = args;
   const fasttext = boa.import('fasttext');
   let model: any;
-  
+
   if (recoverPath) {
     model = fasttext.load_model(`${recoverPath}/model.bin`);
   }

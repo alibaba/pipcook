@@ -165,7 +165,7 @@ export class PluginRunnable {
     return id ? new RunnableResponse(id) : null;
   }
   /**
-   * Destroy this runnable, this will kill process, and get notified on `afterDestory()`. 
+   * Destroy this runnable, this will kill process, and get notified on `afterDestory()`.
    */
   async destroy(): Promise<void> {
     if (!this.handle.connected) {
@@ -178,8 +178,8 @@ export class PluginRunnable {
   }
   /**
    * Send a message with operator.
-   * @param op 
-   * @param msg 
+   * @param op
+   * @param msg
    */
   private send(op: PluginOperator, msg?: PluginMessage): boolean {
     const data = PluginProtocol.stringify(op, msg);
@@ -219,8 +219,8 @@ export class PluginRunnable {
   }
   /**
    * Send an operator with message, and waits for the response.
-   * @param op 
-   * @param msg 
+   * @param op
+   * @param msg
    */
   private async sendAndWait(op: PluginOperator, msg: PluginMessage) {
     this.send(op, msg);
@@ -234,7 +234,7 @@ export class PluginRunnable {
   }
   /**
    * handle the messages from peer client.
-   * @param msg 
+   * @param msg
    */
   private handleMessage(msg: string) {
     const proto = PluginProtocol.parse(msg);

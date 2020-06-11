@@ -34,7 +34,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   if (data.metadata.isBitMask) {
     cfg.INPUT.MASK_FORMAT = 'bitmask';
   }
-  
+
   cfg.merge_from_file(path.join(__dirname, 'config', 'mask_rcnn_R_50_C4_3x.yaml'));
   cfg.DATALOADER.NUM_WORKERS = numWorkers;
 
@@ -43,14 +43,14 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   } else {
     cfg.MODEL.WEIGHTS = "detectron2://ImageNetPretrained/MSRA/R-50.pkl";
   }
-    
+
   cfg.SOLVER.IMS_PER_BATCH = 4;
   cfg.SOLVER.BASE_LR = baseLearningRate;
 
   if (!torch.cuda.is_available()) {
     cfg.MODEL.DEVICE = 'cpu';
   }
-    
+
   cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128;
   cfg.MODEL.ROI_HEADS.NUM_CLASSES = numClasses;
 

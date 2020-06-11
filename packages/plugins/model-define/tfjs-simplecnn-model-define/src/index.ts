@@ -7,7 +7,7 @@ import Jimp from 'jimp';
 
 /** @ignore
  * assertion test
- * @param data 
+ * @param data
  */
 const assertionTest = (data: ImageDataset) => {
   assert.ok(data.metadata.feature, 'Image feature is missing');
@@ -37,7 +37,7 @@ const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: M
     outputShape,
     labelMap
   } = args;
-  
+
   let inputShape: number[];
 
   // create a new model
@@ -102,7 +102,7 @@ const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: M
     loss,
     metrics
   });
-  
+
   const result: TfJsLayersModel = {
     model,
     metrics: metrics,

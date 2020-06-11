@@ -46,7 +46,7 @@ const getLabelMap = async (dataPath: string) => {
       labelSet.add(object.name[0]);
     });
   }
-  
+
   const labelArray = Array.from(labelSet);
   const labelMap: {[key: string]: number} = {};
   labelArray.forEach((label: any, index: number) => {
@@ -90,7 +90,7 @@ const getValidPair = async (dataPath: string, labelMap: {
 };
 
 /**
- * The plugin used to access data from different sources. It will detect all possible values of labels and 
+ * The plugin used to access data from different sources. It will detect all possible values of labels and
  * merge them into numeric expressions.
  */
 const pascalVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocDataset> => {
@@ -130,7 +130,7 @@ const pascalVocDataAccess: DataAccessType = async (args: ArgsType): Promise<VocD
   if (testPair.length > 0) {
     result.testLoader = testLoader;
   }
-  
+
   return result;
 };
 

@@ -19,7 +19,7 @@ const createDataset = async (dataLoader: CsvDataLoader, metadata: CsvMetadata) =
   return { rawData, rawClass };
 };
 
-const bayesianModelEvaluate: ModelEvaluateType 
+const bayesianModelEvaluate: ModelEvaluateType
   = async (data: CsvDataset, model: UniModel, args: ArgsType): Promise<EvaluateResult> => {
 
     sys.path.insert(0, path.join(__dirname, 'assets'));
