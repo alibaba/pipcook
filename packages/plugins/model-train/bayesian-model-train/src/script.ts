@@ -54,7 +54,7 @@ export const TextProcessing = function(row_data: string[], row_class: string[]):
     data_list.push(list(word_cut));
     class_list.push(row_class[i]);
   });
-      
+
   // split train set and testing set
   const data_class_list = zip(data_list, class_list);
   random.shuffle(data_class_list);

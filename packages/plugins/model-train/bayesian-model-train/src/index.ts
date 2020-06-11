@@ -24,12 +24,12 @@ const createDataset = async (dataLoader: CsvDataLoader, metadata: CsvMetadata) =
 };
 
 /**
- * 
- * @param data Pipcook uniform data 
+ *
+ * @param data Pipcook uniform data
  * @param model Eshcer model
  */
 const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
-  const { 
+  const {
     modelPath,
     mode = 'cn'
   } = args;
@@ -37,9 +37,9 @@ const bayesianClassifierModelTrain: ModelTrainType = async (data: CsvDataset, mo
   sys.path.insert(0, path.join(__dirname, 'assets'));
 
   const { trainLoader, metadata } = data;
-  
+
   const classifier = loadModel(model.model);
-  
+
   const { rawData, rawClass } = await createDataset(trainLoader, metadata);
 
   const text_list = TextProcessing(rawData, rawClass);

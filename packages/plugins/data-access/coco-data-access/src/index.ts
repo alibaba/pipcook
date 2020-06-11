@@ -46,7 +46,7 @@ const getLabelMap = async (dataPath: string) => {
       labelSet.add(object.name[0]);
     });
   }
-  
+
   const labelArray = Array.from(labelSet);
   const labelMap: {[key: string]: number} = {};
   labelArray.forEach((label: any, index: number) => {
@@ -88,14 +88,14 @@ const getValidPair = async (dataPath: string, labelMap: Record<string, number>) 
     }
   }
   if (pairs.length > 0) {
-    await convertPascal2CocoFileOutput(Array.from(new Set(pairs.map((pair) => pair.annotation))), 
+    await convertPascal2CocoFileOutput(Array.from(new Set(pairs.map((pair) => pair.annotation))),
       path.join(dataPath, 'annotation.json'));
   }
   return pairs;
 };
 
 /**
- * The plugin used to access data from different sources. It will detect all possible values of labels and 
+ * The plugin used to access data from different sources. It will detect all possible values of labels and
  * merge them into numeric expressions.
  */
 const cocoDataAccess: DataAccessType = async (args: ArgsType): Promise<CocoDataset> => {
@@ -138,7 +138,7 @@ const cocoDataAccess: DataAccessType = async (args: ArgsType): Promise<CocoDatas
   if (testPair.length > 0) {
     result.testLoader = testLoader;
   }
-  
+
   return result;
 };
 

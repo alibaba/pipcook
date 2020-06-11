@@ -195,7 +195,7 @@ export class CostaRuntime {
     } else {
       debug(`just skip the Python environment installation.`);
     }
-    
+
     return true;
   }
   /**
@@ -229,7 +229,7 @@ export class CostaRuntime {
   }
   /**
    * Check the plugin installed
-   * @param name 
+   * @param name
    */
   private isInstalled(name: string): Promise<boolean> {
     return pathExists(`${this.options.installDir}/node_modules/${name}`);

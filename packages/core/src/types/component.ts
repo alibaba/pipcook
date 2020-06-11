@@ -15,12 +15,12 @@ interface ObserverFunc<T extends PipcookPlugin> {
   (data: UniDataset, model: UniModel |null, insertParams: InsertParams): Observable<PromisedValueOf<ReturnType<T>>>;
 }
 
-export type PipcookComponentOutput = 
+export type PipcookComponentOutput =
   | void
   | UniModel
   | UniDataset
   | EvaluateResult
-  
+
 export type PipcookComponentOperator = OperatorFunction<PipcookComponentOutput, PipcookComponentOutput>
 
 export const enum PipcookComponentResultStatus {
@@ -29,7 +29,7 @@ export const enum PipcookComponentResultStatus {
   Success = 'success',
   Failure = 'failure'
 }
-  
+
 export interface PipcookComponentResult<T extends PipcookPlugin = PipcookPlugin> {
   type: PluginTypeI;
   plugin?: PipcookPlugin;
