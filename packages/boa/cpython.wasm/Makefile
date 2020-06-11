@@ -113,7 +113,7 @@ $(CPYTHONWASM_CXX):
 	fi
 
 
-$(CPYTHONLIB): emsdk/emsdk/.complete $(PYODIDE_EMCC) $(PYODIDE_CXX)
+$(CPYTHONLIB): emsdk/emsdk/.complete $(CPYTHONWASM_EMCC) $(CPYTHONWASM_CXX)
 	make -C $(CPYTHONROOT)
 
 
