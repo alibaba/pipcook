@@ -5,7 +5,7 @@ import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
 import { provide, inject } from 'midway';
-import { PipelineDB, PipelineStatus, EvaluateResult, PluginTypeI, constants } from '@pipcook/pipcook-core';
+import { PipelineDB, PipelineStatus, EvaluateResult, PluginTypeI, constants, compressTarFile } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
 import { RunParams } from '../interface';
@@ -281,9 +281,14 @@ export class PipelineService {
     }
   }
 
+  /**
+   * Generate the output package for a given job.
+   * @param job the job model for output.
+   * @param opts the options to used for generating the output.
+   */
   async generateOutput(job: JobModel, opts: GenerateOptions) {
     // start generates the output directory
-    const dist = path.join(opts.cwd, 'output');
+    const dist = path.join(opts.workingDir, 'output');
     await fs.remove(dist);
     await fs.ensureDir(dist);
     await execAsync('npm init -y', { cwd: dist });
@@ -304,7 +309,7 @@ export class PipelineService {
       output: job.toJSON(),
     };
 
-    await [
+    await Promise.all([
       // copy base components
       fs.copy(opts.modelPath, dist + '/model'),
       fs.copy(path.join(__dirname, '../../assets/predict.js'), `${dist}/index.js`),
@@ -314,8 +319,11 @@ export class PipelineService {
       fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
       // write metadata.json
       fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
-    ];
+    ]);
     console.log(`trained the model to ${dist}`);
+
+    // packing the output directory.
+    await compressTarFile(dist, path.join(opts.workingDir, 'output.tar.gz'));
   }
 
   async getLogById(id: string): Promise<string[]> {
