@@ -134,6 +134,12 @@ $ pipcook plugin install @pipcook/plugins-csv-data-access
 $ pipcook plugin install /path/to/dir/of/your/plugin
 ```
 
+从 Git 安装
+
+```sh
+$ pipcook plugin install git+ssh://git@some.git.com/my-git-repo.git
+```
+
 注意：在安装插件时，必须保证安装的插件符合 Pipcook 插件规范。
 
 ## 服务管理
