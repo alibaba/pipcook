@@ -282,6 +282,14 @@ export class PipelineService {
   }
 
   /**
+   * Get the output tar pathname by job id.
+   * @param id the job id
+   */
+  getOutputTarByJobId(id: string): string {
+    return path.join(PIPCOOK_RUN_DIR, id, 'output.tar.gz');
+  }
+
+  /**
    * Generate the output package for a given job.
    * @param job the job model for output.
    * @param opts the options to used for generating the output.
