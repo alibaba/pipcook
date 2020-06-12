@@ -2,7 +2,7 @@ import path from 'path';
 import url from 'url';
 import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
 import tar from 'tar-stream';
-import { spawn, SpawnOptions, ChildProcess } from 'child_process';
+import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
 import {
   NpmPackageMetadata,
