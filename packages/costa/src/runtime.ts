@@ -1,6 +1,7 @@
 import path from 'path';
 import url from 'url';
 import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
+import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
 import {
@@ -44,6 +45,35 @@ function spawnAsync(command: string, args?: string[], opts: SpawnOptions = {}): 
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });
+  });
+}
+
+function fetchPackageJsonFromGit(remote: string, head: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    let packageJson = '';
+    const extract = tar.extract();
+    extract.on('entry', (header, stream, next) => {
+      if (header.name === 'package.json') {
+        stream.on('data', (buf) => packageJson += buf);
+      }
+      stream.once('end', next);
+      stream.resume();
+    });
+    extract.on('finish', () => {
+      try {
+        resolve(JSON.parse(packageJson));
+      } catch (e) {
+        reject(e);
+      }
+    });
+
+    const child = spawn('git', [
+      'archive',
+      `--remote=${remote}`,
+      head,
+      'package.json'
+    ]);
+    child.stdout.pipe(extract);
   });
 }
 
@@ -99,7 +129,11 @@ export class CostaRuntime {
       const resp = await request(source.uri);
       const meta = JSON.parse(resp) as NpmPackageMetadata;
       pkg = selectNpmPackage(meta, source);
-    } else {
+    } else if (source.from === 'git') {
+      debug(`requesting the url ${source.uri}...`);
+      const { hostname, pathname } = source.urlObject;
+      pkg = await fetchPackageJsonFromGit(`git@${hostname}:${pathname}`, 'HEAD');
+    } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
       pkg = require(`${source.uri}/package.json`);
     }
@@ -144,7 +178,7 @@ export class CostaRuntime {
       debug(`install the plugin from npm registry: ${pluginAbsName}`);
     } else {
       pluginAbsName = pkg.pipcook.source.uri;
-      debug(`install the plugin from local: ${pluginAbsName}`);
+      debug(`install the plugin from ${pluginAbsName}`);
     }
 
     const npmExecOpts = { cwd: this.options.installDir };
@@ -153,7 +187,7 @@ export class CostaRuntime {
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
       await spawnAsync('npm', [ 'install', boaSrcPath, '-E' ], npmExecOpts);
     }
-    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production' ], npmExecOpts);
+    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production', '--verbose' ], npmExecOpts);
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);
@@ -264,10 +298,15 @@ export class CostaRuntime {
     const src: PluginSource = {
       from: null,
       name,
-      uri: null
+      uri: null,
+      urlObject: urlObj
     };
     if (path.isAbsolute(name)) {
       src.from = 'fs';
+      src.uri = name;
+    } else if (/^git(\+ssh)?:$/.test(urlObj.protocol)) {
+      const { host, pathname } = urlObj;
+      src.from = 'git';
       src.uri = name;
     } else if (name[0] !== '.') {
       src.schema = this.getNameSchema(name);
