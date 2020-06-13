@@ -52,10 +52,10 @@ const pkg = require('../../package.json');
     .command('pipeline', 'operate on pipeline');
 
   program
-    .command('serve <id>')
+    .command('serve <dir>')
     .option('-p, --port <number>', 'port of server', 7682)
     .description('serve the model to predict')
-    .action((id, opts) => serve(id, opts.port));
+    .action(serve);
 
   program
     .command('bip')
