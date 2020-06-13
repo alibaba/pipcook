@@ -5,6 +5,7 @@ import { parseConfig } from '../../runner/helper';
 import ServerSentEmitter from '../../utils/emitter';
 import { JobModel } from '../../model/job';
 import { PluginManager } from '../../service/plugin';
+import { createReadStream } from 'fs';
 
 @provide()
 @controller('/job')
@@ -129,6 +130,12 @@ export class JobController {
         message: err.message
       });
     }
+  }
+
+  @get('/:id/output.tar.gz')
+  public async output() {
+    const outputPath = this.pipelineService.getOutputTarByJobId(this.ctx.params.id);
+    this.ctx.body = createReadStream(outputPath);
   }
 
   @get('/:id')
