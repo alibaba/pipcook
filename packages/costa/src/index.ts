@@ -1,3 +1,4 @@
+import * as url from 'url';
 import { PluginTypeI } from '@pipcook/pipcook-core';
 
 /**
@@ -22,8 +23,9 @@ export interface RuntimeOptions {
  * This represents a source of a plugin.
  */
 export interface PluginSource {
-  from: 'fs' | 'npm' | null;
+  from: 'fs' | 'npm' | 'git' | null;
   uri: string | null;
+  urlObject: url.UrlWithStringQuery;
   name: string;
   schema?: NpmPackageNameSchema;
 }
