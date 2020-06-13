@@ -34,24 +34,40 @@ push the whole area forward with the machine learning engineering. For this reas
 
 ## What's Pipcook
 
-Pipcook can be divided into the following 3 layers from top to bottom.
+The project provides subprojects include machine learning pipeline framework, management tools, a JavaScript runtime for machine learning, and these can be also used as building blocks in conjunction with other projects.
 
-__Pipcook Application__
+### Principles
 
-It defines flexible and intuitive APIs to build machine-learning application, even though you don't know the details 
-of algorithm.
+[Pipcook][] is an open-source project guided by strong principles, aiming to be modular and flexible on user experience. It is open to the community to help set its direction.
 
-__Pipcook Core__
+- **Modular** the project includes some of projects that have well-defined functions and APIs that work together.
+- **Swappable** the project includes enough modules to build what Pipcook has done, but its modular architecture ensures that most of the modules can be swapped by different implementations.
 
-It's used to represent ML pipelines consisting of Pipcook plugins. This layer ensures the stability and scalability 
-of the whole system, and uses a plug-in mechanism to support rich functions including: dataset, training, validations
-and deployment.
+### Audience
+
+[Pipcook][] is intended for Web engineers looking to:
+
+- learn what's machine learning.
+- train their models and serve them.
+- optimize own models for better model evaluation results, like higher accuracy for image classification.
+
+> If you are in the above conditions, just try it via [installation guide](INSTALL.md).
+
+### Subprojects
+
+__Pipcook Pipeline__
+
+It's used to represent ML pipelines consisting of Pipcook plugins. This layer ensures the stability and scalability of the whole system and uses a plug-in mechanism to support rich functions including dataset, training, validations, and deployment.
+
+A Pipcook Pipeline is generally composed of lots of plugins. Through different plugins and configurations, the final output to us is an NPM package, which contains the trained model and JavaScript functions that can be used directly.
+
+> Note: In Pipcook, each pipeline has only one role, which is to output the above-trained model you need. That is to say, the last stage of each pipeline must be the output of the trained model, otherwise, this Pipeline is invalid.
 
 __Pipcook Bridge to Python__
 
-For JavaScript engineers, the most difficult part is the lack of a mature machine learning toolset in the ecosystem.
-To this end, we have opened up the interaction between Python and Node.js at the bottom and can easily call some 
-missing APIs.
+For JavaScript engineers, the most difficult part is the lack of a mature machine learning toolset in the ecosystem. In Pipcook, a module called **Boa**, which provides access to Python packages by bridging the interface of [CPython][] using N-API.
+
+With it, developers can use packages such as `numpy`, `scikit-learn`, `jieba`, `tensorflow`, or any other Python ecology in the Node.js runtime through JavaScript.
 
 ## Quick start
 
@@ -59,23 +75,16 @@ missing APIs.
 
 Prepare the following on your machine:
 
-| Installer   | Version range |
+| Installer   | Version Range |
 |-------------|---------------|
-| [Node.js][] | >= 12     |
-| [Python][]  | >= 3.6        |
+| [Node.js][] | >= 12         |
 | [npm][]     | >= 6.1        |
 
 Install the command-line tool for managing [Pipcook][] projects:
 
 ```shell
 $ npm install -g @pipcook/pipcook-cli
-```
-
-Initialize a project:
-
-```sh
-$ mkdir pipcook-example && cd pipcook-example
-$ pipcook init
+$ pipcook init && pipcook daemon start
 ```
 
 Occuring the download problems? We use [tuna](https://mirror.tuna.tsinghua.edu.cn/help/pypi/) mirror to address this issue:
@@ -84,12 +93,18 @@ Occuring the download problems? We use [tuna](https://mirror.tuna.tsinghua.edu.c
 $ pipcook init --tuna
 ```
 
+Then run a pipeline:
+
+```shell
+$ pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
+```
+
 ### Playground
 
-If you are wondering what you can do in [Pipcook][] and where you can check your training logs and models, you could start from Pipboard
+If you are wondering what you can do in [Pipcook][] and where you can check your training logs and models, you could start from [Pipboard](https://alibaba.github.io/pipcook/#/GLOSSORY?id=pipboard):
 
-```sh
-$ pipcook board
+```
+open http://localhost:6927/index.html
 ```
 
 You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. 
@@ -109,18 +124,16 @@ See [here](./example) for complete list, and it's easy and quick to run these ex
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ pipcook run examples/pipelines/mnist-image-classification.json
+$ pipcook run ./examples/pipelines/mnist-image-classification.json
 ```
 
-__NOTICE__: The last two examples are using Boa (pipcook python bridge layer). Boa is not responsible for installing specific python packages currently. You can use `pipcook bip` as an alias for `pip` and install packages. To make pipeline-object-detection working, please make sure you have dependencies specified in [detectron2 installation reference][]. See [here](docs/tutorials/want-to-use-python.md) for more information about Boa.
-
-After the above pipeline is finished, you have already trained an awesome model and we have generated the prediction logics for you to use your model. This prediction package is stored in pipcook-output/[pipeline-id]/deploy. It's an independent npm package and can be easily integrated in your exsiting system. To just start a prediction server locally, you can run 
+After the above pipeline is completed, you have already trained a model at the current `output` directory, it's an independent NPM package and can be easily integrated in your existing system, to start a simple inference server locally, just run:
 
 ```sh
-$ pipcook serve <path of deploy folder>
+$ pipcook serve <output> -p 7682
 ```
 
-After the prediction server is started, you can use following requests to make prediction
+And send the request for result:
 
 ```curl
 curl --request POST 'http://localhost:7682' \
@@ -185,6 +198,7 @@ $ npm run build
 [Node.js]: https://nodejs.org/
 [npm]: https://npmjs.com/
 [Python]: https://www.python.org/
+[CPython]: https://github.com/python/cpython
 [machine-learning application APIs]: https://github.com/alibaba/pipcook/issues/33
 [pipeline-mnist-image-classification]: example/pipelines/mnist-image-classification.json
 [pipeline-databinding-image-classification]: example/pipelines/databinding-image-classification.json
