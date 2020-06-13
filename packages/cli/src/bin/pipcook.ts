@@ -7,6 +7,7 @@ import { execSync as exec } from 'child_process';
 import init from '../actions/init';
 import start from '../actions/start';
 import serve from '../actions/serve';
+import board from '../actions/board';
 import devPlugin from '../actions/dev-plugin';
 
 const pkg = require('../../package.json');
@@ -31,6 +32,11 @@ const pkg = require('../../package.json');
     .option('--tuna', 'use tuna mirror to download miniconda at China.')
     .description('initialize the daemon and pipboard.')
     .action(init);
+
+  program
+    .command('board')
+    .description('open the pipboard')
+    .action(board);
 
   program
     .command('run <filename>')
