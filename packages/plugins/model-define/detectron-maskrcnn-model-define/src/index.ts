@@ -7,7 +7,7 @@ const boa = require('@pipcook/boa');
 const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
     baseLearningRate = 0.00025,
-    numWorkers = 4,
+    numWorkers = 0,
     numClasses = 0,
     recoverPath
   } = args;

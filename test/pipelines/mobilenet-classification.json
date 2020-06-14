@@ -1,10 +1,10 @@
 {
   "plugins": {
     "dataCollect": {
-      "package": "./packages/plugins/data-collect/mnist-data-collect",
+      "package": "git+ssh://git@gitlab.alibaba-inc.com:pipcook/cr-data-collect.git",
       "params": {
-        "trainCount": 8000,
-        "testCount": 2000
+        "url": "https://dev.g.alicdn.com/i-front-end/cr-mock/0.0.3/index.html#/data_chart",
+        "totalNum": 100
       }
     },
     "dataAccess": {
