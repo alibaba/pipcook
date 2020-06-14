@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/daemon",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "pipcook daemon",
   "dependencies": {
     "@pipcook/costa": "^0.6.0",
