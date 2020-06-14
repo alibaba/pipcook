@@ -33,8 +33,9 @@ export interface InitCommandHandler {
   (cmdObj: InitCommandHandlerObjectParams): Promise<void>;
 }
 
+type ServeOpts = { port: number };
 export interface ServeHandler {
-  (deployPath: string, port: number): Promise<void>;
+  (outputDir: string, opts: ServeOpts): Promise<void>;
 }
 
 export interface PredictHandler {

@@ -28,6 +28,7 @@
     "fs-extra": "^8.1.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
+    "tar-stream": "^2.1.2",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
