@@ -66,7 +66,7 @@ function fetchPackageJsonFromGit(remote: string, head: string): Promise<any> {
         reject(e);
       }
     });
-    
+
     const child = spawn('git', [
       'archive',
       `--remote=${remote}`,

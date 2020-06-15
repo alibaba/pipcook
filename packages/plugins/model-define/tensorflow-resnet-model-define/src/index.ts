@@ -17,7 +17,7 @@ const { GlobalAveragePooling2D, Dropout, Dense } = boa.import('tensorflow.keras.
 const { Model } = boa.import('tensorflow.keras.models');
 
 const MODEL_WEIGHTS_NAME = 'resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5';
-const MODEL_URL = 
+const MODEL_URL =
   `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/resnet50_python/${MODEL_WEIGHTS_NAME}`;
 const MODEL_PATH = path.join(os.homedir(), '.keras', 'models', MODEL_WEIGHTS_NAME);
 

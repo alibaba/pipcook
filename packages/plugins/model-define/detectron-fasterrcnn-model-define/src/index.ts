@@ -6,15 +6,15 @@ import * as os from 'os';
 const boa = require('@pipcook/boa');
 
 const MODEL_WEIGHTS_NAME = 'R-50.pkl';
-const MODEL_URL = 
+const MODEL_URL =
   `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/detectron_r50/${MODEL_WEIGHTS_NAME}`;
 const MODEL_PATH = path.join(
-  os.homedir(), 
-  '.torch', 
-  'fvcore_cache', 
-  'detectron2', 
-  'ImageNetPretrained', 
-  'MSRA', 
+  os.homedir(),
+  '.torch',
+  'fvcore_cache',
+  'detectron2',
+  'ImageNetPretrained',
+  'MSRA',
   MODEL_WEIGHTS_NAME
 );
 
