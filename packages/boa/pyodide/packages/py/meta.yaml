@@ -1,0 +1,10 @@
+package:
+  name: py
+  version: 1.8.0
+source:
+  sha256: dc639b046a6e2cff5bbe40194ad65936d6ba360b52b3c3fe1d08a82dd50b5e53
+  url: https://files.pythonhosted.org/packages/f1/5a/87ca5909f400a2de1561f1648883af74345fe96349f34f737cdfc94eba8c/py-1.8.0.tar.gz
+test:
+  imports:
+  - py
+  - py.code

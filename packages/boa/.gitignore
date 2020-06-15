@@ -12,11 +12,3 @@ node_modules
 
 .miniconda/
 Miniconda3-*.sh
-
-downloads
-installs
-/emsdk/emsdk
-*.bc
-*.a
-*.o
-*.pyc
