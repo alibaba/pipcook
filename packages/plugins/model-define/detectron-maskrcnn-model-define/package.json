@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-detectron-maskrcnn-model-define",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "pipcook",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/boa": "^0.6.4",
-    "@pipcook/pipcook-core": "^0.6.1",
+    "@pipcook/boa": "^0.6.5",
+    "@pipcook/pipcook-core": "^0.6.2",
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {
@@ -42,5 +42,6 @@
       "cocoapi": "git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI",
       "detectron": "git+https://github.com/facebookresearch/detectron2.git"
     }
-  }
+  },
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
 }
