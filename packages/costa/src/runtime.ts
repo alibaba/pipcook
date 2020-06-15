@@ -66,7 +66,7 @@ function fetchPackageJsonFromGit(remote: string, head: string): Promise<any> {
         reject(e);
       }
     });
-
+    
     const child = spawn('git', [
       'archive',
       `--remote=${remote}`,
@@ -131,8 +131,10 @@ export class CostaRuntime {
       pkg = selectNpmPackage(meta, source);
     } else if (source.from === 'git') {
       debug(`requesting the url ${source.uri}...`);
-      const { hostname, pathname } = source.urlObject;
-      pkg = await fetchPackageJsonFromGit(`git@${hostname}:${pathname}`, 'HEAD');
+      const { hostname, auth, hash } = source.urlObject;
+      let pathname = source.urlObject.pathname.replace(/^\/:?/, '');
+      const remote = `${auth || 'git'}@${hostname}:${pathname}${hash || ''}`;
+      pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
     } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
       pkg = require(`${source.uri}/package.json`);
