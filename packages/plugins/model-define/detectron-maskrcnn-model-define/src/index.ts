@@ -1,8 +1,23 @@
-import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset } from '@pipcook/pipcook-core';
+import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset, download } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as os from 'os';
 
 const boa = require('@pipcook/boa');
+
+const MODEL_WEIGHTS_NAME = 'R-50.pkl';
+const MODEL_URL = 
+  `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/detectron_r50/${MODEL_WEIGHTS_NAME}`;
+const MODEL_PATH = path.join(
+  os.homedir(), 
+  '.torch', 
+  'fvcore_cache', 
+  'detectron2', 
+  'ImageNetPretrained', 
+  'MSRA', 
+  MODEL_WEIGHTS_NAME
+);
+
 
 const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
@@ -37,6 +52,10 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
 
   cfg.merge_from_file(path.join(__dirname, 'config', 'mask_rcnn_R_50_C4_3x.yaml'));
   cfg.DATALOADER.NUM_WORKERS = numWorkers;
+
+  if (!await fs.pathExists(MODEL_PATH)) {
+    await download(MODEL_URL, MODEL_PATH);
+  }
 
   if (recoverPath) {
     cfg.MODEL.WEIGHTS = path.join(recoverPath, 'model', 'model_final.pth');
