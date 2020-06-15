@@ -22,3 +22,4 @@ ENV
 .test
 packages/cli/assets/server/**
 packages/daemon/.github/**
+__pycache__
