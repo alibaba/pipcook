@@ -16,8 +16,8 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/boa": "^0.5.10",
-    "@pipcook/pipcook-core": "^0.5.16"
+    "@pipcook/boa": "^0.6.0",
+    "@pipcook/pipcook-core": "^0.6.0"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.7",

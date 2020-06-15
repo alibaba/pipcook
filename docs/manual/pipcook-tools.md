@@ -134,6 +134,12 @@ Install a new plugin from a local path
 $ pipcook plugin install /path/to/dir/of/your/plugin
 ```
 
+Install a new plugin from git via ssh
+
+```sh
+$ pipcook plugin install git+ssh://git@some.git.com/my-git-repo.git
+```
+
 Note: when installing a plugin, you must ensure that this package of plugin complies with our plugin specification.
 
 ## Daemon Management

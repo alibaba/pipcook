@@ -91,12 +91,12 @@ export function download(url: string, fileName: string) {
         bar1.stop();
         reject(err);
       });
-  
+
     file.on('finish', () => {
       bar1.stop();
       resolve();
     });
-  
+
     file.on('error', (err: Error) => {
       fs.unlink(fileName);
       bar1.stop();
@@ -167,10 +167,10 @@ export function transformCsv(text: string){
           newText += `""`;
         } else {
           newText += text[i];
-        }  
+        }
       }
       text = newText;
-    } 
+    }
     text = `"${text}"`;
   }
   return text;

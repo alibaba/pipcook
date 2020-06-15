@@ -40,7 +40,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   } else {
     cfg.MODEL.WEIGHTS = "detectron2://ImageNetPretrained/MSRA/R-50.pkl";
   }
-    
+
   cfg.SOLVER.IMS_PER_BATCH = 4;
   cfg.SOLVER.BASE_LR = baseLearningRate;
   cfg.SOLVER.NUM_GPUS = numGpus;
@@ -48,7 +48,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   if (!torch.cuda.is_available()) {
     cfg.MODEL.DEVICE = 'cpu';
   }
-    
+
   cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128;
   cfg.MODEL.ROI_HEADS.NUM_CLASSES = numClasses;
 
