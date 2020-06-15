@@ -189,7 +189,7 @@ export class CostaRuntime {
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
       await spawnAsync('npm', [ 'install', boaSrcPath, '-E' ], npmExecOpts);
     }
-    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production', '--verbose' ], npmExecOpts);
+    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production' ], npmExecOpts);
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);
