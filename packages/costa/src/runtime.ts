@@ -131,8 +131,10 @@ export class CostaRuntime {
       pkg = selectNpmPackage(meta, source);
     } else if (source.from === 'git') {
       debug(`requesting the url ${source.uri}...`);
-      const { hostname, pathname } = source.urlObject;
-      pkg = await fetchPackageJsonFromGit(`git@${hostname}:${pathname}`, 'HEAD');
+      const { hostname, auth, hash } = source.urlObject;
+      let pathname = source.urlObject.pathname.replace(/^\/:?/, '');
+      const remote = `${auth || 'git'}@${hostname}:${pathname}${hash || ''}`;
+      pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
     } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
       pkg = require(`${source.uri}/package.json`);
@@ -187,7 +189,7 @@ export class CostaRuntime {
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
       await spawnAsync('npm', [ 'install', boaSrcPath, '-E' ], npmExecOpts);
     }
-    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production', '--verbose' ], npmExecOpts);
+    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production' ], npmExecOpts);
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);
