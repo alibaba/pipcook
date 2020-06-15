@@ -18,7 +18,7 @@ const { Model } = boa.import('tensorflow.keras.models');
 
 
 const MODEL_WEIGHTS_NAME = 'mobilenet_v2_weights_tf_dim_ordering_tf_kernels_1.0_224_no_top.h5';
-const MODEL_URL = 
+const MODEL_URL =
   `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/mobilenet_python/${MODEL_WEIGHTS_NAME}`;
 const MODEL_PATH = path.join(os.homedir(), '.keras', 'models', MODEL_WEIGHTS_NAME);
 
