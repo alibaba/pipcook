@@ -17,12 +17,14 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@pipcook/boa": "^0.6.0",
-    "@pipcook/pipcook-core": "^0.6.0"
+    "@pipcook/pipcook-core": "^0.6.0",
+    "fs-extra": "^8.1.0"
   },
   "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
-    "nyc": "14.1.1"
+    "nyc": "14.1.1",
+    "@types/fs-extra": "^8.1.0"
   },
   "publishConfig": {
     "access": "public"

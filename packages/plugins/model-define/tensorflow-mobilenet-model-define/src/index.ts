@@ -3,10 +3,11 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel, download } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as os from 'os';
 
 const boa = require('@pipcook/boa');
 const tf = boa.import('tensorflow');
@@ -14,6 +15,12 @@ const { Adam } = boa.import('tensorflow.keras.optimizers');
 const { MobileNetV2 } = boa.import('tensorflow.keras.applications');
 const { GlobalAveragePooling2D, Dropout, Dense } = boa.import('tensorflow.keras.layers');
 const { Model } = boa.import('tensorflow.keras.models');
+
+
+const MODEL_WEIGHTS_NAME = 'mobilenet_v2_weights_tf_dim_ordering_tf_kernels_1.0_224_no_top.h5';
+const MODEL_URL = 
+  `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/mobilenet_python/${MODEL_WEIGHTS_NAME}`;
+const MODEL_PATH = path.join(os.homedir(), '.keras', 'models', MODEL_WEIGHTS_NAME);
 
 /** @ignore
  * assertion test
@@ -48,12 +55,18 @@ const mobilenetDefine: ModelDefineType = async (data: ImageDataset, args: ModelD
     outputShape = Object.keys(data.metadata.labelMap).length;
     labelMap = data.metadata.labelMap;
   } else {
-    const log = JSON.parse(fs.readFileSync(path.join(recoverPath, 'log.json'), 'utf8'));
+    const logContent = await fs.readFile(path.join(recoverPath, 'log.json'), 'utf8');
+    const log = JSON.parse(logContent);
     labelMap = log.metadata.labelMap;
     outputShape = Object.keys(labelMap).length;
   }
 
   let model: any;
+
+  if (!await fs.pathExists(MODEL_PATH)) {
+    await download(MODEL_URL, MODEL_PATH);
+  }
+
   model = MobileNetV2(boa.kwargs({
     include_top: false,
     weights: 'imagenet',
