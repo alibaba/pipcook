@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-fasttext-model-train",
-  "version": "0.5.10",
+  "version": "0.6.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/boa": "^0.6.0",
-    "@pipcook/pipcook-core": "^0.6.0"
+    "@pipcook/boa": "^0.6.4",
+    "@pipcook/pipcook-core": "^0.6.1"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.7",

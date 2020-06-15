@@ -1,10 +1,10 @@
 {
   "name": "@pipcook/daemon",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "pipcook daemon",
   "dependencies": {
-    "@pipcook/costa": "^0.6.0",
-    "@pipcook/pipcook-core": "^0.6.0",
+    "@pipcook/costa": "^0.6.4",
+    "@pipcook/pipcook-core": "^0.6.1",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
@@ -26,9 +26,9 @@
   },
   "devDependencies": {
     "@types/cls-hooked": "^4.3.0",
-    "@types/request-promise": "^4.1.46",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.5.5",
+    "@types/request-promise": "^4.1.46",
     "cross-env": "^6.0.0",
     "egg-ci": "^1.8.0",
     "midway-bin": "1",

@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-mnist-data-collect",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.6.0",
+    "@pipcook/pipcook-core": "^0.6.1",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "@types/cli-progress": "^3.4.2",
     "cli-progress": "^3.6.0",

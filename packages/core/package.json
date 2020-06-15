@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-core",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -32,10 +32,10 @@
     "@types/cli-progress": "^3.4.2",
     "@types/debug": "^4.1.5",
     "@types/fs-extra": "^8.0.1",
+    "@types/jasmine": "^3.5.7",
     "@types/request": "^2.48.4",
     "@types/request-promise": "^4.1.46",
     "@types/uuid": "^7.0.2",
-    "@types/jasmine": "^3.5.7",
     "jasmine": "^3.5.0",
     "nyc": "14.1.1",
     "ts-node": "^8.6.2"

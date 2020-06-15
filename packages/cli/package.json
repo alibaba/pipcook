@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "",
   "main": "dist/bin/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.6.0",
+    "@pipcook/pipcook-core": "^0.6.1",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
@@ -46,8 +46,8 @@
     "@types/command-exists": "^1.2.0",
     "@types/eventsource": "^1.1.2",
     "@types/inquirer": "^6.5.0",
-    "@types/semver": "^7.1.0",
     "@types/jasmine": "^3.5.7",
+    "@types/semver": "^7.1.0",
     "nyc": "14.1.1"
   },
   "publishConfig": {
