@@ -3,7 +3,7 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/image-classification-data-collect",
       "params": {
-        "url": "file:///Users/queyue/Documents/work/pipcook/1(1).zip"
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/1(1).zip"
       }
     },
     "dataAccess": {
