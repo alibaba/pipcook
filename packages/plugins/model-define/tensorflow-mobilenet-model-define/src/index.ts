@@ -3,7 +3,7 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel, download } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel, download, constants } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -20,7 +20,7 @@ const { Model } = boa.import('tensorflow.keras.models');
 const MODEL_WEIGHTS_NAME = 'mobilenet_v2_weights_tf_dim_ordering_tf_kernels_1.0_224_no_top.h5';
 const MODEL_URL =
   `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/mobilenet_python/${MODEL_WEIGHTS_NAME}`;
-const MODEL_PATH = path.join(os.homedir(), '.keras', 'models', MODEL_WEIGHTS_NAME);
+const MODEL_PATH = path.join(constants.KERAS_DIR, 'models', MODEL_WEIGHTS_NAME);
 
 /** @ignore
  * assertion test

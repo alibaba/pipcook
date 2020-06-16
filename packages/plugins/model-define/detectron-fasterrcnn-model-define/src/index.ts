@@ -1,4 +1,4 @@
-import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset, download } from '@pipcook/pipcook-core';
+import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset, download, constants } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as os from 'os';
@@ -9,8 +9,7 @@ const MODEL_WEIGHTS_NAME = 'R-50.pkl';
 const MODEL_URL =
   `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/detectron_r50/${MODEL_WEIGHTS_NAME}`;
 const MODEL_PATH = path.join(
-  os.homedir(),
-  '.torch',
+  constants.TORCH_DIR,
   'fvcore_cache',
   'detectron2',
   'ImageNetPretrained',
