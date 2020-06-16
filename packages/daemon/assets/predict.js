@@ -33,7 +33,7 @@ function predict(data) {
     });
   }
   return future.then((m) => {
-    m.predict(sample);
+    return m.predict(sample);
   });
 };
 
