@@ -1,11 +1,11 @@
 {
   "name": "@pipcook/daemon",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "pipcook daemon",
   "dependencies": {
     "@pipcook/costa": "^0.6.5",
     "@pipcook/pipcook-core": "^0.6.2",
-    "@tensorflow/tfjs-node-gpu": "1.7.0",
+    "@tensorflow/tfjs": "1.7.0",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "cls-hooked": "^4.2.2",

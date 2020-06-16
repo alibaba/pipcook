@@ -1,10 +1,9 @@
 {
   "plugins": {
     "dataCollect": {
-      "package": "./packages/plugins/data-collect/mnist-data-collect",
+      "package": "./packages/plugins/data-collect/image-classification-data-collect",
       "params": {
-        "trainCount": 8000,
-        "testCount": 2000
+        "url": "file:///Users/queyue/Documents/work/pipcook/1(1).zip"
       }
     },
     "dataAccess": {
@@ -13,7 +12,7 @@
     "dataProcess": {
       "package": "./packages/plugins/data-process/image-data-process",
       "params": {
-        "resize": [28, 28]
+        "resize": [256, 256]
       }
     },
     "modelDefine": {
