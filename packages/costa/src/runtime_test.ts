@@ -43,7 +43,7 @@ describe('create a costa runtime', () => {
       'node_modules',
       collectCsv.name
     ));
-  }, 60 * 1000);
+  }, 180 * 1000);
 
   it('should install the package with conda packages', async () => {
     const bayesClassifier = await costa.fetch('../plugins/model-define/bayesian-model-define');
@@ -58,7 +58,7 @@ describe('create a costa runtime', () => {
       'conda_envs',
       `${bayesClassifier.name}@${bayesClassifier.version}`
     ));
-  }, 60 * 1000);
+  }, 180 * 1000);
 
   it('should start the package', async () => {
     const runnable = await costa.createRunnable({ id: 'foobar' });
@@ -67,5 +67,5 @@ describe('create a costa runtime', () => {
       url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip'
     });
     await runnable.destroy();
-  }, 30 * 1000);
+  }, 180 * 1000);
 });
