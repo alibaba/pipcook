@@ -1,9 +1,10 @@
-import { Project, ImportDeclaration, ts, Node, Identifier } from 'ts-morph';
+import { Project, ts, Node } from 'ts-morph';
 import { runInNewContext } from 'vm';
 import { nlpGen, visionGen, PipelineGenContext } from './pipelinegen';
 
-function compile(pathname: string) {
-  const project = new Project({ tsConfigFilePath: '../../tsconfig.json' });
+export { PipelineGenContext };
+export function compile(pathname: string, tsconfig: string): PipelineGenContext {
+  const project = new Project({ tsConfigFilePath: tsconfig });
   const script = project.getSourceFileOrThrow(pathname);
   // TODO: needs to verify if this imported the learnable.
   const app = script.getImportDeclarationOrThrow('@pipcook/app');
@@ -42,9 +43,7 @@ function compile(pathname: string) {
       }
     }
   });
-
-  // print the result pipelinegen context object.
-  console.log(pipelinegenCtx);
+  return pipelinegenCtx;
 }
 
 function findCallExpression(name: string, from: Node<ts.Node>): Node<ts.Node> {
@@ -71,5 +70,3 @@ function getFirstChildByKindName(kind: string, from: Node<ts.Node>): Node<ts.Nod
   return from.getFirstChildByKind(ts.SyntaxKind.SyntaxList)
     .getFirstChildByKind((ts.SyntaxKind as any)[kind]);
 }
-
-compile('src/apis/index_test.ts');

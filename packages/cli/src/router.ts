@@ -1,8 +1,11 @@
 export const HOST = 'http://127.0.0.1';
 export const PORT = 6927;
 
+const getRoute = (pathname: string) => `${HOST}:${PORT}/${pathname}`;
+
 export const route = {
-  pipeline: `${HOST}:${PORT}/pipeline`,
-  job: `${HOST}:${PORT}/job`,
-  plugin: `${HOST}:${PORT}/plugin`
+  app: getRoute('app'),
+  job: getRoute('job'),
+  pipeline: getRoute('pipeline'),
+  plugin: getRoute('plugin')
 };
