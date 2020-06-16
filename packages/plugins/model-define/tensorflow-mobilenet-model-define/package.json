@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-tensorflow-mobilenet-model-define",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "mobilenet model of tensorflow",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/boa": "^0.6.5",
-    "@pipcook/pipcook-core": "^0.6.2",
+    "@pipcook/boa": "^0.6.6",
+    "@pipcook/pipcook-core": "^0.6.3",
     "fs-extra": "^8.1.0"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",

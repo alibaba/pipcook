@@ -1,10 +1,10 @@
 {
   "name": "@pipcook/daemon",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "pipcook daemon",
   "dependencies": {
-    "@pipcook/costa": "^0.6.5",
-    "@pipcook/pipcook-core": "^0.6.2",
+    "@pipcook/costa": "^0.6.6",
+    "@pipcook/pipcook-core": "^0.6.3",
     "@tensorflow/tfjs": "1.7.0",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
