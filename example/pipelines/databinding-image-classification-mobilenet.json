@@ -1,10 +1,9 @@
 {
   "plugins": {
     "dataCollect": {
-      "package": "@pipcook/plugins-mnist-data-collect",
+      "package": "@pipcook/plugins-image-classification-data-collect",
       "params": {
-        "trainCount": 8000,
-        "testCount": 2000
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip"
       }
     },
     "dataAccess": {
@@ -20,7 +19,7 @@
       "package": "@pipcook/plugins-tensorflow-mobilenet-model-define",
       "params": {
         "batchSize": 8,
-        "freeze": true
+        "freeze": false
       }
     },
     "modelTrain": {
