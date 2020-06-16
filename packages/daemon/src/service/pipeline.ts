@@ -252,7 +252,7 @@ export class PipelineService {
       job.status = PipelineStatus.SUCCESS;
       const datasetVal = await runnable.valueOf(dataset) as UniDataset;
       if (datasetVal?.metadata) {
-        job.dataDescription = JSON.stringify(datasetVal.metadata);
+        job.dataset = JSON.stringify(datasetVal.metadata);
       }
       await job.save();
       const pipeline = await this.getPipeline(job.pipelineId);
