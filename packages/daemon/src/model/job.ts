@@ -21,6 +21,7 @@ export class JobModel extends Model {
   error: string;
   endTime: number;
   status: number;
+  dataDescription: string;
 }
 
 export type JobModelStatic = typeof Model & {
@@ -66,6 +67,9 @@ export default async function model(context: IApplicationContext): Promise<JobMo
       type: INTEGER,
       allowNull: false,
       defaultValue: -1
+    },
+    dataDescription: {
+      type: STRING
     },
     error: {
       type: STRING
