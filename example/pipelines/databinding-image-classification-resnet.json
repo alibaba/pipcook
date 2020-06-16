@@ -3,7 +3,7 @@
     "dataCollect": {
       "package": "@pipcook/plugins-image-classification-data-collect",
       "params": {
-        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/eCommerceImageClassification.zip"
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip"
       }
     },
     "dataAccess": {
