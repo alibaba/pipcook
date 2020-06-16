@@ -25,7 +25,7 @@
     "modelTrain": {
       "package": "@pipcook/plugins-image-classification-tensorflow-model-train",
       "params": {
-        "epochs": 1
+        "epochs": 15
       }
     },
     "modelEvaluate": {
