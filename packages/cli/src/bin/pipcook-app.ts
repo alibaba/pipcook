@@ -9,10 +9,12 @@ program
   .command('compile <script.ts>')
   .description('compile the PipApp Script.')
   .action(async (srcPath) => {
-    console.log(srcPath);
     const src = await fs.readFile(srcPath, 'utf8');
-    const resp = await post(`${route.app}/compile`, { src });
-    console.log(resp.pipelines);
+    const { pipelines } = await post(`${route.app}/compile`, { src });
+    console.info(`generated ${pipelines.length} pipelines, please click the following links to config them:`);
+    pipelines.forEach((item: any) => {
+      console.info(`(${item.id}) > http://localhost:6927/index.html#/pipeline/info?pipelineId=${item.id}`)
+    });
   });
 
 program

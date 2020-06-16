@@ -1,5 +1,4 @@
 {
-  "name": "vision-classify",
   "plugins": {
     "dataCollect": {
       "package": "./packages/plugins/data-collect/image-classification-data-collect",

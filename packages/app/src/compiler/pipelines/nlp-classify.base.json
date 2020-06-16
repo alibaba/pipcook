@@ -1,5 +1,4 @@
 {
-  "name": "nlp-classify",
   "plugins": {
     "dataCollect": {
       "package": "./packages/plugins/data-collect/csv-data-collect",
