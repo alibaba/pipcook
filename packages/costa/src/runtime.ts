@@ -14,7 +14,7 @@ import {
   CondaConfig
 } from './index';
 
-import request from 'request-promise';
+import { get } from 'request-promise';
 import Debug from 'debug';
 
 const debug = Debug('costa.runtime');
@@ -126,8 +126,11 @@ export class CostaRuntime {
     let pkg: PluginPackage;
     if (source.from === 'npm') {
       debug(`requesting the url ${source.uri}`);
-      const resp = await request(source.uri, {
-        timeout: 5000
+      const resp = await get(source.uri, {
+        timeout: 15000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'
+        }
       });
       const meta = JSON.parse(resp) as NpmPackageMetadata;
       pkg = selectNpmPackage(meta, source);

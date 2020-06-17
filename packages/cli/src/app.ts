@@ -1,12 +1,11 @@
-import { dirname, join } from 'path';
+import { dirname, basename, join } from 'path';
 import { createGunzip } from 'zlib';
 import tar from 'tar-stream';
-import { readFile, ensureDir, pathExists, readJSON, writeJSON, remove, mkdirp, createWriteStream } from 'fs-extra';
+import { readFile, ensureDir, pathExists, readJSON, writeJSON, remove, mkdirp, createWriteStream, fstat, writeFile } from 'fs-extra';
 import { get, post, listen, getFile } from './request';
 import { route } from './router';
 import { tunaMirrorURI } from './config';
 import { PipelineStatus } from '@pipcook/pipcook-core';
-import { execAsync } from './utils';
 
 const { cwd } = process;
 
@@ -16,6 +15,7 @@ interface AppManifest {
   pipelines: any[];
   jobIds?: string[];
   executable?: boolean;
+  source?: string;
 }
 
 interface AppTrainHooks {
@@ -75,15 +75,19 @@ export class AppProject {
    */
   async compileAndSave(): Promise<void> {
     if (this.manifest.pipelines === null) {
-      const { pipelines } = await post(`${route.app}/compile`, { src: this.mainScriptSource });
+      const { pipelines, executableSource } = await post(`${route.app}/compile`, { src: this.mainScriptSource });
       this.manifest.pipelines = pipelines.map((pipeline: any) => {
         return {
           id: pipeline.id,
+          signature: pipeline.signature,
           namespace: pipeline.namespace
         };
       });
+
+      const targetFilename = basename(this.mainScriptPath).replace(/\.ts$/, '');
+      await writeFile(`${this.rootPath}/${targetFilename}.ml.ts`, executableSource, 'utf8');
+      await this.saveManifest();
     }
-    await this.saveManifest();
   }
   /**
    * Train the project via the generated pipelines.

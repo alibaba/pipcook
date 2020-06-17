@@ -4,7 +4,7 @@ import { join } from 'path';
 const { cwd } = process;
 const APP_MANIFEST = join(cwd(), '.pipcook/manifest.json');
 let executable = false;
-let manifest = null;
+let manifest: any = null;
 
 if (pathExistsSync(APP_MANIFEST)) {
   manifest = readJSONSync(APP_MANIFEST);
@@ -13,14 +13,16 @@ if (pathExistsSync(APP_MANIFEST)) {
   }
 }
 
-function impl(module: string, method: string) {
-  if (!executable) {
-    throw new TypeError('not trained method');
-  }
+function dynamicModelExports(module: string, exports: any) {
+  manifest?.pipelines.filter((pipeline: any) => {
+    return pipeline.namespace.module === module;
+  }).forEach((pipeline: any) => {
+    exports[pipeline.signature] = require(join(cwd(), '.pipcook/models', pipeline.jobId));
+  });
 }
 
 export {
   executable,
   manifest,
-  impl
+  dynamicModelExports
 };

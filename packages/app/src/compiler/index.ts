@@ -1,9 +1,9 @@
-import { Project, ts, Node } from 'ts-morph';
-import { runInNewContext } from 'vm';
-import { nlpGen, visionGen, PipelineGenContext } from './pipelinegen';
+import { Project, ts, Node, Identifier } from 'ts-morph';
+import { pseudoRandomBytes } from 'crypto';
+import { PipelineGenContext, PipelineNode, AppModule } from './pipelinegen';
 
-export { PipelineGenContext };
-export function compile(pathname: string, tsconfig: string): PipelineGenContext {
+export { PipelineGenContext, PipelineNode };
+export async function compile(pathname: string, tsconfig: string): Promise<PipelineGenContext> {
   const project = new Project({ tsConfigFilePath: tsconfig });
   const script = project.getSourceFileOrThrow(pathname);
   // TODO: needs to verify if this imported the learnable.
@@ -14,6 +14,27 @@ export function compile(pathname: string, tsconfig: string): PipelineGenContext 
 
   // start walking the source.
   script.forEachChild((node: Node<ts.Node>) => {
+    if (node.getKind() === ts.SyntaxKind.ImportDeclaration) {
+      const imports = node
+        .getFirstChildByKind(ts.SyntaxKind.ImportClause)
+        .getFirstChildByKind(ts.SyntaxKind.NamedImports)
+        .forEachChildAsArray();
+
+      imports.filter((importSpecifier) => {
+        const identifier = importSpecifier.getFirstChildByKind(ts.SyntaxKind.Identifier);
+        const identifierText = identifier.getText();
+        if (identifierText === 'nlp') {
+          findReferences(identifier).forEach((node) => {
+            pipelinegenCtx.nlpReferences.push(node);
+          });
+        } else if (identifierText === 'vision') {
+          findReferences(identifier).forEach((node) => {
+            pipelinegenCtx.visionReferences.push(node);
+          });
+        }
+      });
+    }
+
     if (node.getKind() === ts.SyntaxKind.VariableStatement) {
       const call2createLearnable = findCallExpression('createLearnable', node);
       const funcExpr = call2createLearnable.forEachChildAsArray()[1];
@@ -25,25 +46,32 @@ export function compile(pathname: string, tsconfig: string): PipelineGenContext 
         throw new TypeError('learnable impl function must be async function.');
       }
       if (funcExpr) {
-        const params = funcExpr.getFirstChildByKind(ts.SyntaxKind.Parameter);
-        const block = funcExpr.getFirstChildByKind(ts.SyntaxKind.Block);
-        const paramName = params.getFirstChildByKind(ts.SyntaxKind.Identifier).getText();
-        const wrapped = `
-          (async function learnable() {
-            ${block.getFullText()}
-          })()
-        `;
-
-        // generate pipelines by pre-executing the code block.
-        runInNewContext(ts.transpile(wrapped), {
-          [paramName]: params.getLastChild().getText(),
-          nlp: nlpGen(pipelinegenCtx),
-          vision: visionGen(pipelinegenCtx)
-        });
+        getReferencesInBlock(funcExpr, pipelinegenCtx.nlpReferences)
+          .forEach((ref) => createPipelineFromReference(pipelinegenCtx, 'nlp', ref));
+        getReferencesInBlock(funcExpr, pipelinegenCtx.visionReferences)
+          .forEach((ref) => createPipelineFromReference(pipelinegenCtx, 'vision', ref));
       }
     }
   });
+  await script.save();
   return pipelinegenCtx;
+}
+
+function createPipelineFromReference(ctx: PipelineGenContext, module: AppModule, ref: Node<ts.Node>): void {
+  const methodIdentifier = ref
+    .getNextSiblingIfKindOrThrow(ts.SyntaxKind.DotToken)
+    .getNextSiblingIfKindOrThrow(ts.SyntaxKind.Identifier);
+  const name = methodIdentifier.getText();
+  const signature = `${name}_${pseudoRandomBytes(4).toString('hex')}`
+  ctx.pipelines.push({
+    config: require(`${__dirname}/pipelines/nlp-${name}.base.json`),
+    signature,
+    namespace: {
+      module,
+      method: name
+    }
+  });
+  methodIdentifier.replaceWithText(signature);
 }
 
 function findCallExpression(name: string, from: Node<ts.Node>): Node<ts.Node> {
@@ -61,6 +89,21 @@ function findCallExpression(name: string, from: Node<ts.Node>): Node<ts.Node> {
   return found;
 }
 
+function findReferences(id: Identifier): Node<ts.Node>[] {
+  return id.findReferencesAsNodes().filter((node) => {
+    const parent = node.getParent();
+    if (parent.getKind() !== ts.SyntaxKind.PropertyAccessExpression) {
+      return false;
+    }
+    const ancestor = parent.getParent();
+    if (ancestor.getKind() === ts.SyntaxKind.CallExpression &&
+      ancestor.getFirstChild() === parent) {
+      return true;
+    }
+    return false;
+  });
+}
+
 function hasIdentifier(name: string, from: Node<ts.Node>): boolean {
   const id = from.getFirstChildByKind(ts.SyntaxKind.Identifier);
   return id.getText() === name;
@@ -69,4 +112,14 @@ function hasIdentifier(name: string, from: Node<ts.Node>): boolean {
 function getFirstChildByKindName(kind: string, from: Node<ts.Node>): Node<ts.Node> {
   return from.getFirstChildByKind(ts.SyntaxKind.SyntaxList)
     .getFirstChildByKind((ts.SyntaxKind as any)[kind]);
+}
+
+function getReferencesInBlock(block: Node<ts.Node>, refs: Node<ts.Node>[]): Node<ts.Node>[] {
+  return block.getDescendants().filter((node) => {
+    for (const ref of refs) {
+      if (ref === node) {
+        return true;
+      }
+    }
+  });
 }

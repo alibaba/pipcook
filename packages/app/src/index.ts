@@ -1,2 +1,2 @@
 export * from './apis';
-export { compile, PipelineGenContext } from './compiler';
+export { compile, PipelineGenContext, PipelineNode } from './compiler';

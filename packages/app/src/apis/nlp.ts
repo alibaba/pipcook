@@ -1,4 +1,5 @@
 import { NamedEntityProp, TextAnswer, TranslationResult } from './types';
+import { dynamicModelExports } from './executable';
 
 /**
  * Classify the given text input, it returns the label of this input.
@@ -42,3 +43,5 @@ export async function translate(input: string): Promise<TranslationResult> {
 export async function createArtwork(): Promise<string> {
   throw new TypeError('not trained method');
 }
+
+dynamicModelExports('nlp', module.exports);

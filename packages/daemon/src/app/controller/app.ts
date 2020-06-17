@@ -16,7 +16,10 @@ export class AppController {
   public async compile() {
     const result = await this.AppService.compile(this.ctx.request.body.src as string);
     successRes(this.ctx, {
-      data: result
+      data: {
+        pipelines: result.pipelines,
+        executableSource: result.executableSource
+      }
     });
   }
 

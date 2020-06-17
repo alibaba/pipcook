@@ -1,4 +1,5 @@
 import { Image, VisionObject } from './types';
+import { dynamicModelExports } from './executable';
 
 /**
  * Classifies the image with given label, it returns the classification of this image.
@@ -30,3 +31,5 @@ export async function detectObject(img: Image): Promise<VisionObject[]> {
 export async function segmentObject(img: Image): Promise<VisionObject[]> {
   throw new TypeError('not trained method');
 }
+
+dynamicModelExports('nlp', module.exports);
