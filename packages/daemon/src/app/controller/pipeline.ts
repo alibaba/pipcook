@@ -1,5 +1,5 @@
 
-import { constants } from '@pipcook/pipcook-core';
+import { constants, PipelineDB } from '@pipcook/pipcook-core';
 import { Context, controller, inject, provide, post, get, put, del } from 'midway';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
@@ -158,25 +158,36 @@ export class PipelineController {
     }
   }
 
+  @get('/:id/install')
+  public async installById() {
+    const { pyIndex, cwd } = this.ctx.query;
+    const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
+    return await this.install(pipeline, pyIndex, cwd);
+  }
+
   @get('/install')
-  public async install() {
-    const { config, pyIndex, cwd  } = this.ctx.query;
-    const configObj = await parseConfig(config);
+  public async installByConfig() {
+    const { config, pyIndex, cwd } = this.ctx.query;
+    const pipeline = await parseConfig(config);
+    return await this.install(pipeline, pyIndex, cwd);
+  }
+
+  private async install(pipeline: PipelineDB, pyIndex?: string, cwd?: string) {
     const sse = new ServerSentEmitter(this.ctx);
     try {
       for (const type of constants.PLUGINS) {
-        if (!configObj[type]) {
+        if (!pipeline[type]) {
           continue;
         }
         debug(`start installation: ${type}`);
-        const pkg = await this.pluginManager.fetch(configObj[type], cwd);
+        const pkg = await this.pluginManager.fetch(pipeline[type], cwd);
         sse.emit('info', pkg);
 
-        debug(`installing ${configObj[type]}.`);
+        debug(`installing ${pipeline[type]}.`);
         await this.pluginManager.install(pkg, pyIndex);
         sse.emit('installed', pkg);
       }
-      sse.emit('finished', configObj);
+      sse.emit('finished', pipeline);
     } catch (err) {
       sse.emit('error', err?.message);
     } finally {

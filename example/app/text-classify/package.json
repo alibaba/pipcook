@@ -1,0 +1,7 @@
+{
+  "name": "@pipcook/text-classify-pipapp-example",
+  "version": "1.0.0",
+  "dependencies": {
+    "@pipcook/app": "^0.6.0"
+  }
+}

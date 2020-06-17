@@ -125,12 +125,14 @@ export class CostaRuntime {
     const source = this.getSource(name, cwd || process.cwd());
     let pkg: PluginPackage;
     if (source.from === 'npm') {
-      debug(`requesting the url ${source.uri}...`);
-      const resp = await request(source.uri);
+      debug(`requesting the url ${source.uri}`);
+      const resp = await request(source.uri, {
+        timeout: 5000
+      });
       const meta = JSON.parse(resp) as NpmPackageMetadata;
       pkg = selectNpmPackage(meta, source);
     } else if (source.from === 'git') {
-      debug(`requesting the url ${source.uri}...`);
+      debug(`requesting the url ${source.uri}`);
       const { hostname, pathname } = source.urlObject;
       pkg = await fetchPackageJsonFromGit(`git@${hostname}:${pathname}`, 'HEAD');
     } else if (source.from === 'fs') {
@@ -185,7 +187,7 @@ export class CostaRuntime {
     if (!await pathExists(`${this.options.installDir}/package.json`)) {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
-      await spawnAsync('npm', [ 'install', boaSrcPath, '-E' ], npmExecOpts);
+      // await spawnAsync('npm', [ 'install', boaSrcPath, '-E' ], npmExecOpts);
     }
     await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production', '--verbose' ], npmExecOpts);
 

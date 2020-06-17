@@ -1,6 +1,6 @@
-export class Learnable extends Function {
-  callback: LearnableCallback;
-};
+import { executable } from './executable';
+
+export type Learnable = LearnableCallback;
 
 /**
  * The callback to represent a learnable function.
@@ -15,7 +15,12 @@ export interface LearnableCallback {
  * @param callback the learnable callback
  */
 export function createLearnable(callback: LearnableCallback): Learnable {
-  throw new TypeError('current application is not trained.');
+  if (!executable) {
+    throw new TypeError('current application is not trained.');
+  }
+  return (...inputs: any[]): Promise<any> => {
+    return callback(...inputs);
+  };
 };
 
 export * as vision from './vision';

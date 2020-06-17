@@ -14,6 +14,7 @@ export default class PluginRuntime {
 
   @init()
   async connect(): Promise<void> {
+    process.env.BOA_CONDA_MIRROR = 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda';
     this.costa = new CostaRuntime({
       installDir: PIPCOOK_PLUGIN_DIR,
       datasetDir: PIPCOOK_DATASET_DIR,

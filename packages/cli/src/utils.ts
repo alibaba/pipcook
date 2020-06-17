@@ -8,6 +8,7 @@ import realOra = require("ora");
 export const Constants = {
   PIPCOOK_HOME: `${os.homedir()}/.pipcook`
 };
+export const cwd = process.cwd;
 
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
