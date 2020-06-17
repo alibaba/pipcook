@@ -5,7 +5,11 @@ import { pseudoRandomBytes } from 'crypto';
 type PipelineGenApis = Record<string, Function>;
 type PipelineNode = {
   id?: string;
-  config: any
+  config: any;
+  namespace: {
+    module: 'vision' | 'nlp';
+    method: string;
+  };
 };
 
 export class PipelineGenContext {
@@ -17,7 +21,11 @@ export function nlpGen(ctx: PipelineGenContext): PipelineGenApis {
     gen[name] = () => {
       const pipeline = {
         id: pseudoRandomBytes(8).toString('hex'),
-        config: require(`${__dirname}/pipelines/nlp-${name}.base.json`)
+        config: require(`${__dirname}/pipelines/nlp-${name}.base.json`),
+        namespace: {
+          module: 'nlp',
+          method: name
+        }
       } as PipelineNode;
       ctx.pipelines.push(pipeline);
     };
@@ -30,7 +38,11 @@ export function visionGen(ctx: PipelineGenContext): PipelineGenApis {
     gen[name] = () => {
       const pipeline = {
         id: pseudoRandomBytes(8).toString('hex'),
-        config: require(`${__dirname}/pipelines/vision-${name}.base.json`)
+        config: require(`${__dirname}/pipelines/vision-${name}.base.json`),
+        namespace: {
+          module: 'vision',
+          method: name
+        }
       } as PipelineNode;
       ctx.pipelines.push(pipeline);
     };

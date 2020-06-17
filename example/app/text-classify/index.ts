@@ -1,16 +1,9 @@
-import { createLearnable, nlp, types, vision } from '@pipcook/app';
+import { createLearnable, nlp } from '@pipcook/app';
 
-const isCooking = createLearnable(async function isCookingImpl(sentence: string) {
+const isCooking = createLearnable(async function(sentence: string) {
   return (await nlp.classify(sentence));
-});
-
-const recognizeFace = createLearnable(async (design: types.Image) => {
-  return (await vision.classify(design));
 });
 
 (async () => {
   console.log(await isCooking('test'));
-
-  const img = new types.Image();
-  console.log(await recognizeFace(img));
 })();

@@ -12,8 +12,10 @@ const { cwd } = process;
 
 interface AppManifest {
   script: string;
-  pipelineIds: string[];
+  // FIXME(yorkie): share the pipeline type between app and cli.
+  pipelines: any[];
   jobIds?: string[];
+  executable?: boolean;
 }
 
 interface AppTrainHooks {
@@ -64,7 +66,7 @@ export class AppProject {
     } else {
       this.manifest = {
         script: this.mainScriptPath,
-        pipelineIds: null
+        pipelines: null
       };
     }
   }
@@ -72,9 +74,14 @@ export class AppProject {
    * Compile the current project, and save manifest locally.
    */
   async compileAndSave(): Promise<void> {
-    if (this.manifest.pipelineIds === null) {
+    if (this.manifest.pipelines === null) {
       const { pipelines } = await post(`${route.app}/compile`, { src: this.mainScriptSource });
-      this.manifest.pipelineIds = pipelines.map((pipeline: any) => pipeline.id);
+      this.manifest.pipelines = pipelines.map((pipeline: any) => {
+        return {
+          id: pipeline.id,
+          namespace: pipeline.namespace
+        };
+      });
     }
     await this.saveManifest();
   }
@@ -83,7 +90,8 @@ export class AppProject {
    */
   async train(hooks?: AppTrainHooks): Promise<void> {
     const jobIds = [];
-    for await (const id of this.manifest.pipelineIds) {
+    for await (const pipeline of this.manifest.pipelines) {
+      const { id } = pipeline;
       await hooks?.before(id);
       const job = await get(`${route.job}/run`, {
         cwd: cwd(),
@@ -91,6 +99,7 @@ export class AppProject {
         pyIndex: tunaMirrorURI
       });
       jobIds.push(job.id);
+      pipeline.jobId = job.id;
       await hooks?.after(id, job.id);
     }
     // save the jobIds
@@ -130,12 +139,14 @@ export class AppProject {
     }
 
     await this.downloadOutputs(jobs);
+    this.manifest.executable = true;
+    await this.saveManifest();
   }
   /**
    * Ensure the plugins for all generated pipelines.
    */
   async ensureAllPlugins(hooks?: AppInstallHooks): Promise<void> {
-    for await (const id of this.manifest.pipelineIds) {
+    for await (const { id } of this.manifest.pipelines) {
       await this.ensurePluginsByPipeline(id, hooks);
     }
   }

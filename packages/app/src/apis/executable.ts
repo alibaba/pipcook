@@ -13,7 +13,14 @@ if (pathExistsSync(APP_MANIFEST)) {
   }
 }
 
+function impl(module: string, method: string) {
+  if (!executable) {
+    throw new TypeError('not trained method');
+  }
+}
+
 export {
   executable,
-  manifest
+  manifest,
+  impl
 };
