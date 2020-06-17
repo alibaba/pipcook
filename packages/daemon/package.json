@@ -1,12 +1,12 @@
 {
   "name": "@pipcook/daemon",
-  "version": "0.6.1",
+  "version": "0.6.6",
   "description": "pipcook daemon",
   "dependencies": {
     "@pipcook/app": "^0.6.0",
-    "@pipcook/costa": "^0.6.0",
-    "@pipcook/pipcook-core": "^0.6.0",
-    "@tensorflow/tfjs-node-gpu": "1.7.0",
+    "@pipcook/costa": "^0.6.6",
+    "@pipcook/pipcook-core": "^0.6.3",
+    "@tensorflow/tfjs": "1.7.0",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "cls-hooked": "^4.2.2",
@@ -27,9 +27,9 @@
   },
   "devDependencies": {
     "@types/cls-hooked": "^4.3.0",
-    "@types/request-promise": "^4.1.46",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.5.5",
+    "@types/request-promise": "^4.1.46",
     "cross-env": "^6.0.0",
     "egg-ci": "^1.8.0",
     "midway-bin": "1",
@@ -70,5 +70,6 @@
   "midway-server-options": {
     "port": 6927,
     "mode": "single"
-  }
+  },
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
 }

@@ -10,3 +10,6 @@ ENV LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64:/usr/local/cuda-10.1/lib64:${LD_L
 
 WORKDIR /opt/pipcook
 RUN npm install @pipcook/pipcook-cli -g  && pipcook init
+RUN pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/databinding-image-classification.json
+RUN pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/object-detection.json
+RUN pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
