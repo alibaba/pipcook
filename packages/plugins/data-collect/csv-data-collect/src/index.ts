@@ -28,6 +28,9 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
     dataDir
   } = args;
 
+  await fs.remove(dataDir);
+  await fs.ensureDir(dataDir);
+  
   assert.ok(url, 'Please specify a url of zip of your data');
 
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];
