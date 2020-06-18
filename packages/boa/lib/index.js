@@ -14,7 +14,7 @@ const IterIdxForSeqSymbol = Symbol('The iteration index for sequence');
 // eslint-disable-next-line no-sync
 const condaPath = fs.readFileSync(path.join(__dirname, '../.CONDA_INSTALL_DIR'), 'utf8');
 // eslint-disable-next-line no-process-env
-process.env.PYTHONHOME = [ process.env.PYTHONHOME || '', condaPath ].join(':');
+process.env.PYTHONHOME = [process.env.PYTHONHOME || '', condaPath].join(':');
 
 // create the global-scoped instance
 let pyInst = global.__pipcook_boa_pyinst__;
