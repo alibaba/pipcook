@@ -18,6 +18,11 @@ import { get } from 'request-promise';
 import Debug from 'debug';
 
 const debug = Debug('costa.runtime');
+const UserAgent = [
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6)',
+  'AppleWebKit/537.36 (KHTML, like Gecko)',
+  'Chrome/83.0.4103.61 Safari/537.36'
+].join(' ');
 
 function selectNpmPackage(metadata: NpmPackageMetadata, source: PluginSource): NpmPackage {
   const { version } = source?.schema;
@@ -126,10 +131,11 @@ export class CostaRuntime {
     let pkg: PluginPackage;
     if (source.from === 'npm') {
       debug(`requesting the url ${source.uri}`);
+      // TODO(yorkie): support http cache
       const resp = await get(source.uri, {
         timeout: 15000,
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'
+          'User-Agent': UserAgent
         }
       });
       const meta = JSON.parse(resp) as NpmPackageMetadata;
@@ -192,7 +198,6 @@ export class CostaRuntime {
     if (!await pathExists(`${this.options.installDir}/package.json`)) {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
-      // await spawnAsync('npm', [ 'install', boaSrcPath, '-E' ], npmExecOpts);
     }
     await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production' ], npmExecOpts);
 

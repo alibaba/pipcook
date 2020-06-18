@@ -83,8 +83,8 @@ program
   });
 
 program
-  .command('generate <script.ts>')
-  .description('generate the executable from trained PipApp Project.')
+  .command('build <script.ts>')
+  .description('build the executable from trained PipApp Project.')
   .action(async (srcPath) => {
     const app = new AppProject(srcPath);
     await app.initializeOrLoad();

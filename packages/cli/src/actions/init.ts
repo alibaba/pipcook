@@ -1,4 +1,4 @@
-import path from 'path';
+import { join, dirname } from 'path';
 import { execSync as exec } from 'child_process';
 import fse, { symlink, readJson, ensureDir } from 'fs-extra';
 import { prompt } from 'inquirer';
@@ -9,11 +9,14 @@ import { ora } from '../utils';
 import { InitCommandHandler } from '../types';
 import { isLocal, optionalNpmClients, daemonPackage, boardPackage } from '../config';
 
+const BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';
+const BOA_CONDA_MIRROR = 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda';
+
 async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
   if (isLocal) {
     const pkg = await readJson(name + '/package.json');
-    const dest = path.join(cwd, 'node_modules', pkg.name);
-    await ensureDir(path.dirname(dest));
+    const dest = join(cwd, 'node_modules', pkg.name);
+    await ensureDir(dirname(dest));
     await symlink(name, dest, 'dir');
   } else {
     if (beta) {
@@ -33,8 +36,8 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   let npmClient = 'npm';
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
-    npmInstallEnvs.BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';
-    npmInstallEnvs.BOA_CONDA_MIRROR = 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda';
+    npmInstallEnvs.BOA_CONDA_INDEX = BOA_CONDA_INDEX;
+    npmInstallEnvs.BOA_CONDA_MIRROR = BOA_CONDA_MIRROR;
     spinner.info(`switch conda index: ${npmInstallEnvs.BOA_CONDA_INDEX}`);
     spinner.info(`switch conda mirror: ${npmInstallEnvs.BOA_CONDA_MIRROR}`);
   }
@@ -72,11 +75,11 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
 
   // Install the daemon and pipboard.
   // use ~/.pipcook as PIPCOOK_DIR
-  const PIPCOOK_DIR = path.join(os.homedir(), '.pipcook');
-  const DAEMON_DIR = path.join(PIPCOOK_DIR, 'server');
-  const BOARD_DIR = path.join(PIPCOOK_DIR, 'pipboard');
-  const BOARD_BUILD = path.join(BOARD_DIR, 'node_modules', '@pipcook', 'pipboard', 'build');
-  const DAEMON_PUBLIC = path.join(DAEMON_DIR, 'node_modules', '@pipcook', 'daemon', 'src', 'app', 'public');
+  const PIPCOOK_DIR = join(os.homedir(), '.pipcook');
+  const DAEMON_DIR = join(PIPCOOK_DIR, 'server');
+  const BOARD_DIR = join(PIPCOOK_DIR, 'pipboard');
+  const BOARD_BUILD = join(BOARD_DIR, 'node_modules', '@pipcook', 'pipboard', 'build');
+  const DAEMON_PUBLIC = join(DAEMON_DIR, 'node_modules', '@pipcook', 'daemon', 'src', 'app', 'public');
 
   try {
     await fse.remove(DAEMON_DIR);
@@ -84,6 +87,15 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
 
     await fse.ensureDir(DAEMON_DIR);
     await fse.ensureDir(BOARD_DIR);
+    if (tuna) {
+      // write the daemon config
+      await fse.writeJSON(join(PIPCOOK_DIR, 'daemon.config.json'), {
+        env: {
+          BOA_CONDA_MIRROR,
+        }
+      });
+    }
+
     await Promise.all([
       npmInstall(npmClient, daemonPackage, beta, DAEMON_DIR, npmInstallEnvs),
       npmInstall(npmClient, boardPackage, beta, BOARD_DIR, npmInstallEnvs)
