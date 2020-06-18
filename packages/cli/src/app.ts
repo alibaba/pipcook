@@ -85,7 +85,7 @@ export class AppProject {
       });
 
       const targetFilename = basename(this.mainScriptPath).replace(/\.ts$/, '');
-      await writeFile(`${this.rootPath}/${targetFilename}.ml.ts`, executableSource, 'utf8');
+      await writeFile(`${this.rootPath}/${targetFilename}.ml.js`, executableSource, 'utf8');
       await this.saveManifest();
     }
   }

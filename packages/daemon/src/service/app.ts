@@ -39,7 +39,7 @@ export class AppService {
     await fs.writeFile(projRoot + '/src/index.ts', source);
 
     const ctx = await compile(projRoot + '/src/index.ts', tsconfig);
-    const executableSource = await fs.readFile(projRoot + '/src/index.ts', 'utf8');
+    const executableSource = await fs.readFile(projRoot + '/dist/index.js', 'utf8');
     await fs.remove(projRoot);
 
     // create pipelines

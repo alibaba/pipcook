@@ -54,6 +54,7 @@ export async function compile(pathname: string, tsconfig: string): Promise<Pipel
     }
   });
   await script.save();
+  await script.emit();
   return pipelinegenCtx;
 }
 
