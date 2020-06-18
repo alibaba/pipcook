@@ -1,27 +1,31 @@
 # from .backend_utils import get_filter_dim
-from imageio import imread
-from skimage.transform import resize as imresize
+import cv2
 import numpy as np
 import os
+import sys
 
 class ImageGenerator(object):
     def __init__(self, root, resize=None, crop=None, flip=None):
-        self.img_list = os.listdir(root)
+        filelist = os.listdir(root)
         self.root = root
         self.resize = resize
         self.crop = crop
         self.flip = flip
 
+        self.img_list = [file for file in filelist if file.endswith('.jpg')]
+        print('self.img_list', self.img_list)
+        sys.stdout.flush()
         print('ImageGenerator from {} [{}]'.format(root, len(self.img_list)))
 
     def __call__(self, bs):
+        print()
         while True:
             try:
                 imgs = []
                 for _ in range(bs):
-                    img = imread(os.path.join(self.root, np.random.choice(self.img_list)))
-
-                    if self.resize: img = imresize(img, self.resize)
+                    image_file = np.random.choice(self.img_list)
+                    img = cv2.imread(os.path.join(self.root, image_file))
+                    if self.resize: img = cv2.resize(img, self.resize)
                     if self.crop:
                         left = np.random.randint(0, img.shape[0]-self.crop[0])
                         top  = np.random.randint(0, img.shape[1]-self.crop[1])
@@ -29,7 +33,6 @@ class ImageGenerator(object):
                     if self.flip:
                         if np.random.random() > 0.5:
                             img = img[:, ::-1, :]
-
                     imgs.append(img)
 
                 imgs = np.array(imgs)
@@ -41,4 +44,4 @@ class ImageGenerator(object):
 
                 return imgs
             except:
-                pass
+                raise

@@ -34,11 +34,7 @@
   "conda": {
     "python": "3.7",
     "dependencies": {
-      "tensorflow": "*",
-      "scipy": "*",
-      "imageio": "*",
-      "scikit-image": "*",
-      "cyclegan": "git+https://github.com/FeelyChau/CycleGAN-TensorFlow.git"
+      "tensorflow": "*"
     }
   }
 }
