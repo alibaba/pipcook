@@ -59,7 +59,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook daemon start
     - name: pipcook run from local filename
       run: |
-        ./packages/cli/dist/bin/pipcook pipeline install ./test/pipelines/text-bayes-classification.json
+        ./packages/cli/dist/bin/pipcook pipeline install ./test/pipelines/text-bayes-classification.json --verbose
         ./packages/cli/dist/bin/pipcook run ./test/pipelines/text-bayes-classification.json --verbose
     - name: pipcook run from url
       run: |
