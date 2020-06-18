@@ -9,6 +9,10 @@ sys.path.insert(0, path.join(__dirname, '..'));
 const tf = boa.import('tensorflow');
 const { CycleGAN } = boa.import('CycleGAN.models');
 const np = boa.import('numpy');
+const cv2 = boa.import('cv2');
+const base64 = boa.import('base64');
+
+type PredictType = 'a2b' | 'b2a';
 
 let opt = {
   // data
@@ -31,7 +35,7 @@ let opt = {
   lr: 0.0002,            // initial learning rate for adam
   beta1: 0.5,            // momentum term of adam
 
-  // training parameters
+  // training parameters 
   batch_size: 1,          // images in batch
   niter: 100000,          // of iter at starting learning rate
   pool_size: 50,          // the size of image buffer that stores previously generated images
@@ -67,19 +71,31 @@ let opt = {
   model: 'cycle_gan',           // which mode to run. 'cycle_gan', 'pix2pix', 'bigan', 'content_gan'
   align_data: 0,                // if > 0, use the dataloader for where the images are aligned
   resize_or_crop: 'resize_and_crop',  // resizing/cropping strategy
-  identity: 0                  // use identity mapping. Setting opt.identity other than 1 has an effect of scaling the weight of the identity mapping loss. For example, if the weight of the identity loss should be 10 times smaller than the weight of the reconstruction loss, please set opt.identity = 0.1
+  identity: 0,                  // use identity mapping. Setting opt.identity other than 1 has an effect of scaling the weight of the identity mapping loss. For example, if the weight of the identity loss should be 10 times smaller than the weight of the reconstruction loss, please set opt.identity = 0.1
+  a_to_b_model_file: '',
+  b_to_a_model_file: '',
+  dis_a_model_file: '',
+  dis_b_model_file: ''
 }
 
 const cycleGanModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   opt = {
     ...opt,
     ...args
-  }
+  };
   const model = new CycleGAN(opt);
   const pipcookModel: UniModel = {
     model,
     config: null,
-    predict: function (inputData: ImageSample) {
+    predict: function (inputData: ImageSample, predictType: PredictType) {
+      let m = predictType == 'a2b'? model.AtoB : model.BtoA;
+      let image = tf.io.read_file(inputData.data);
+      image = tf.image.decode_jpeg(image, boa.kwargs({
+        channels: 3
+      }));
+      const predictResult = m.predict(image);
+      const buffer = cv2.imencode('.jpg', predictResult)[1];
+      return base64.b64encode(buffer);
     }
   };
   return pipcookModel;

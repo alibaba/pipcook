@@ -25,16 +25,29 @@ class CycleGAN(BaseModel):
                 w.set_value(value.astype('float32'))
 
     def __init__(self, opt):
-        gen_B = defineG(opt['which_model_netG'], input_shape=opt['shapeA'], output_shape=opt['shapeB'], ngf=opt['ngf'], name='gen_B')
-        dis_B = defineD(opt['which_model_netD'], input_shape=opt['shapeB'], ndf=opt['ndf'], use_sigmoid=not opt['use_lsgan'], name='dis_B')
+        if not opt['a_to_b_model_file']:
+            gen_B = defineG(opt['which_model_netG'], input_shape=opt['shapeA'], output_shape=opt['shapeB'], ngf=opt['ngf'], name='gen_B')
+            self.init_network(gen_B)
+        else:
+            gen_B = Model.load_model(opt['a_to_b_model_file'])
 
-        gen_A = defineG(opt['which_model_netG'], input_shape=opt['shapeB'], output_shape=opt['shapeA'], ngf=opt['ngf'], name='gen_A')
-        dis_A = defineD(opt['which_model_netD'], input_shape=opt['shapeA'], ndf=opt['ndf'], use_sigmoid=not opt['use_lsgan'], name='dis_A')
+        if not opt['dis_b_model_file']:
+            dis_B = defineD(opt['which_model_netD'], input_shape=opt['shapeB'], ndf=opt['ndf'], use_sigmoid=not opt['use_lsgan'], name='dis_B')
+            self.init_network(dis_B)
+        else:
+            dis_B = Model.load_model(opt['dis_b_model_file'])
 
-        self.init_network(gen_B)
-        self.init_network(dis_B)
-        self.init_network(gen_A)
-        self.init_network(dis_A)
+        if not opt['b_to_a_model_file']:
+            gen_A = defineG(opt['which_model_netG'], input_shape=opt['shapeB'], output_shape=opt['shapeA'], ngf=opt['ngf'], name='gen_A')
+            self.init_network(gen_A)
+        else:
+            gen_A = Model.load_model(opt['b_to_a_model_file'])
+
+        if not opt['b_to_a_model_file']:
+            dis_A = defineD(opt['which_model_netD'], input_shape=opt['shapeA'], ndf=opt['ndf'], use_sigmoid=not opt['use_lsgan'], name='dis_A')
+            self.init_network(dis_A)
+        else:
+            dis_A = Model.load_model(opt['dis_a_model_file'])
 
 
         # build for generators
