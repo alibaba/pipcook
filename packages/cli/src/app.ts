@@ -116,7 +116,7 @@ export class AppProject {
    */
   async getJobs(): Promise<any[]> {
     return Promise.all(this.manifest.jobIds.map(async (id: string) => {
-      return await get(`${route.job}/${id}`)
+      return await get(`${route.job}/${id}`);
     }));
   }
   /**

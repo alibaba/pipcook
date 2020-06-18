@@ -9,6 +9,10 @@ export async function classify(input: string): Promise<string> {
   throw new TypeError('not trained method');
 }
 
+/**
+ * Get the named entity by a sentence.
+ * @param sentence the sentence for named entity
+ */
 export async function getNamedEntity(sentence: string): Promise<NamedEntityProp> {
   throw new TypeError('not trained method');
 }

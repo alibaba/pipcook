@@ -7,11 +7,11 @@ export type Learnable = LearnableCallback;
  */
 export interface LearnableCallback {
   (...inputs: any[]): Promise<any>;
-};
+}
 
 /**
  * Create the `Learnable` object with a given callback.
- * 
+ *
  * @param callback the learnable callback
  */
 export function createLearnable(callback: LearnableCallback): Learnable {
@@ -21,7 +21,7 @@ export function createLearnable(callback: LearnableCallback): Learnable {
   return (...inputs: any[]): Promise<any> => {
     return callback(...inputs);
   };
-};
+}
 
 export * as vision from './vision';
 export * as nlp from './nlp';

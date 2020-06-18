@@ -63,7 +63,7 @@ function createPipelineFromReference(ctx: PipelineGenContext, module: AppModule,
     .getNextSiblingIfKindOrThrow(ts.SyntaxKind.DotToken)
     .getNextSiblingIfKindOrThrow(ts.SyntaxKind.Identifier);
   const name = methodIdentifier.getText();
-  const signature = `${name}_${pseudoRandomBytes(4).toString('hex')}`
+  const signature = `${name}_${pseudoRandomBytes(4).toString('hex')}`;
   ctx.pipelines.push({
     config: require(`${__dirname}/pipelines/nlp-${name}.base.json`),
     signature,

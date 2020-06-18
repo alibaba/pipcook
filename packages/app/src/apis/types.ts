@@ -1,5 +1,5 @@
 /**
- * The image type. 
+ * The image type.
  */
 export class Image {
   /**
@@ -34,18 +34,11 @@ export interface Position2D {
 }
 
 /**
- * The named entity.
- */
-export interface NamedEntity {
-  // TODO
-}
-
-/**
  * The named entity props.
  */
 export interface NamedEntityProp {
   sentence: string;
-  entities: NamedEntity[];
+  entities: Record<string, string>[];
 }
 
 /**

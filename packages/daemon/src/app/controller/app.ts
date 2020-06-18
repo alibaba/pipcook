@@ -1,5 +1,4 @@
 import { Context, controller, inject, provide, post } from 'midway';
-// import { successRes, failRes } from '../../utils/response';
 import { AppService } from '../../service/app';
 import { successRes } from '../../utils/response';
 
@@ -21,10 +20,5 @@ export class AppController {
         executableSource: result.executableSource
       }
     });
-  }
-
-  @post('/train')
-  public async start() {
-    // TODO
   }
 }
