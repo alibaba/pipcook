@@ -51,7 +51,6 @@ jobs:
       run: |
         npm install
         npm run build
-        ls -la /home/runner/work/pipcook/pipcook/packages/plugins/model-train/bayesian-model-train
     - name: pipcook init
       env:
         NODE_ENV: local
@@ -61,7 +60,7 @@ jobs:
     - name: pipcook run from local filename
       run: |
         ./packages/cli/dist/bin/pipcook pipeline install ./test/pipelines/text-bayes-classification.json --verbose
-        ls -la /home/runner/work/pipcook/pipcook/packages/plugins/model-train/bayesian-model-train/node_modules
+        ls -la /home/runner/work/pipcook/pipcook/packages/plugins/model-train/bayesian-model-train/node_modules/@pipcook
         ./packages/cli/dist/bin/pipcook run ./test/pipelines/text-bayes-classification.json --verbose
     - name: pipcook run from url
       run: |
