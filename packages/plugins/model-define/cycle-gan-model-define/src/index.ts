@@ -1,4 +1,4 @@
-import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset } from '@pipcook/pipcook-core';
+import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset, ImageDataset } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -31,10 +31,10 @@ let opt = {
   lr: 0.0002,            // initial learning rate for adam
   beta1: 0.5,            // momentum term of adam
 
-  // training parameters 
-  batch_size: 1,          // // images in batch
-  niter: 100,            // //  of iter at starting learning rate
-  pool_size: 50,                // the size of image buffer that stores previously generated images
+  // training parameters
+  batch_size: 1,          // images in batch
+  niter: 100000,          // of iter at starting learning rate
+  pool_size: 50,          // the size of image buffer that stores previously generated images
   save_iter: 50,
   d_iter: 10,
 
@@ -70,7 +70,7 @@ let opt = {
   identity: 0                  // use identity mapping. Setting opt.identity other than 1 has an effect of scaling the weight of the identity mapping loss. For example, if the weight of the identity loss should be 10 times smaller than the weight of the reconstruction loss, please set opt.identity = 0.1
 }
 
-const cycleGanModelDefine: ModelDefineType = async (data: CocoDataset, args: ModelDefineArgsType): Promise<UniModel> => {
+const cycleGanModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   opt = {
     ...opt,
     ...args

@@ -150,29 +150,29 @@ class CycleGAN(BaseModel):
             print('real_A: {} fake_A: {} | real_B: {} fake_B: {}'.\
                     format(D_loss_real_A, D_loss_fake_A, D_loss_real_B, D_loss_fake_B))
 
-
             print("Dis_A")
             res = self.DisA.predict(real_A)
             print("real_A: {}".format(res.mean()))
             res = self.DisA.predict(fake_A)
             print("fake_A: {}".format(res.mean()))
-             if iteration % opt['save_iter'] == 0:
-            #     imga = real_A 
-            #     imga2b = self.AtoB.predict(imga)
-            #     imga2b2a = self.BtoA.predict(imga2b)
+            if iteration % opt['save_iter'] == 0:
+                imga = real_A 
+                imga2b = self.AtoB.predict(imga)
+                imga2b2a = self.BtoA.predict(imga2b)
 
-            #     imgb = real_B
-            #     imgb2a = self.BtoA.predict(imgb)
-            #     imgb2a2b = self.AtoB.predict(imgb2a)
+                imgb = real_B
+                imgb2a = self.BtoA.predict(imgb)
+                imgb2a2b = self.AtoB.predict(imgb2a)
 
-            #     vis_grid(np.concatenate([imga, imga2b, imga2b2a, imgb, imgb2a, imgb2a2b], 
-            #                                                                 axis=0),
-            #             (6, bs), os.path.join(opt['pic_dir'], '{}.jpg'.format(iteration)) )
+                vis_grid(np.concatenate([imga, imga2b, imga2b2a, imgb, imgb2a, imgb2a2b], 
+                                                                            axis=0),
+                        (6, bs), os.path.join(opt['pic_dir'], '{}.jpg'.format(iteration)) )
 
-                 self.AtoB.save(os.path.join(opt['pic_dir'], 'a2b.h5'))
-                 self.BtoA.save(os.path.join(opt['pic_dir'], 'b2a.h5'))
+                self.AtoB.save(os.path.join(opt['pic_dir'], 'a2b.h5'))
+                self.BtoA.save(os.path.join(opt['pic_dir'], 'b2a.h5'))
 
 #               import ipdb
 #               ipdb.set_trace()
             iteration += 1
+            print(os.path.join(opt['pic_dir']))
             sys.stdout.flush()
