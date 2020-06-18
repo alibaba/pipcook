@@ -91,7 +91,7 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
       // write the daemon config
       await fse.writeJSON(join(PIPCOOK_DIR, 'daemon.config.json'), {
         env: {
-          BOA_CONDA_MIRROR,
+          BOA_CONDA_MIRROR
         }
       });
     }

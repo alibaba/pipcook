@@ -26,11 +26,11 @@ export class AppService {
 
     await fs.ensureDir(projRoot);
     await fs.writeJSON(tsconfig, {
-      'compilerOptions': {
-        'outDir': './dist',
-        'rootDir': './src'
+      compilerOptions: {
+        outDir: './dist',
+        rootDir: './src'
       },
-      'exclude': [
+      exclude: [
         'node_modules',
         'dist'
       ]

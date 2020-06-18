@@ -162,14 +162,14 @@ export class PipelineController {
   public async installById() {
     const { pyIndex, cwd } = this.ctx.query;
     const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
-    return await this.install(pipeline, pyIndex, cwd);
+    return this.install(pipeline, pyIndex, cwd);
   }
 
   @get('/install')
   public async installByConfig() {
     const { config, pyIndex, cwd } = this.ctx.query;
     const pipeline = await parseConfig(config);
-    return await this.install(pipeline, pyIndex, cwd);
+    return this.install(pipeline, pyIndex, cwd);
   }
 
   private async install(pipeline: PipelineDB, pyIndex?: string, cwd?: string) {
