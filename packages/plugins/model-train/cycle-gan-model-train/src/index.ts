@@ -8,13 +8,7 @@ sys.path.insert(0, path.join(__dirname, '..'));
 const { ImageGenerator } = boa.import('image_loader');
 
 const cycleGANModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
-  // const {
-  //   pool_size = 50,
-  //   load_model = null
-  // } = args;
-  console.log('ImageDataset', data);
-  
-  const { trainLoader, validationLoader, metadata } = data;
+  const { trainLoader } = data;
   console.log('len', await trainLoader.len(), metadata)
   const aList = [];
   const bList = [];

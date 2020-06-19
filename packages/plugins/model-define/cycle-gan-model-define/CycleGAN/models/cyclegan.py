@@ -30,25 +30,24 @@ class CycleGAN(BaseModel):
             self.init_network(gen_B)
         else:
             gen_B = Model.load_model(opt['a_to_b_model_file'])
-
+        
         if not opt['dis_b_model_file']:
             dis_B = defineD(opt['which_model_netD'], input_shape=opt['shapeB'], ndf=opt['ndf'], use_sigmoid=not opt['use_lsgan'], name='dis_B')
             self.init_network(dis_B)
         else:
             dis_B = Model.load_model(opt['dis_b_model_file'])
-
+        
         if not opt['b_to_a_model_file']:
             gen_A = defineG(opt['which_model_netG'], input_shape=opt['shapeB'], output_shape=opt['shapeA'], ngf=opt['ngf'], name='gen_A')
             self.init_network(gen_A)
         else:
             gen_A = Model.load_model(opt['b_to_a_model_file'])
-
+        
         if not opt['b_to_a_model_file']:
             dis_A = defineD(opt['which_model_netD'], input_shape=opt['shapeA'], ndf=opt['ndf'], use_sigmoid=not opt['use_lsgan'], name='dis_A')
             self.init_network(dis_A)
         else:
             dis_A = Model.load_model(opt['dis_a_model_file'])
-
 
         # build for generators
         real_A = Input(opt['shapeA'])
@@ -183,9 +182,12 @@ class CycleGAN(BaseModel):
 
                 self.AtoB.save(os.path.join(opt['pic_dir'], 'a2b.h5'))
                 self.BtoA.save(os.path.join(opt['pic_dir'], 'b2a.h5'))
+                self.DisA.save(os.path.join(opt['pic_dir'], 'disa.h5'))
+                self.DisB.save(os.path.join(opt['pic_dir'], 'disb.h5'))
 
 #               import ipdb
 #               ipdb.set_trace()
             iteration += 1
             print(os.path.join(opt['pic_dir']))
             sys.stdout.flush()
+    
