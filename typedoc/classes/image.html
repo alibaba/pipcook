@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SegmentationRLE | Pipcook APIs</title>
+	<title>Image | Pipcook APIs</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,21 +52,28 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="segmentationrle.html">SegmentationRLE</a>
+					<a href="image.html">Image</a>
 				</li>
 			</ul>
-			<h1>Interface SegmentationRLE</h1>
+			<h1>Class Image</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The image type.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SegmentationRLE</span>
+						<span class="target">Image</span>
 					</li>
 				</ul>
 			</section>
@@ -77,8 +84,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="segmentationrle.html#counts" class="tsd-kind-icon">counts</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="segmentationrle.html#size" class="tsd-kind-icon">size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="image.html#height" class="tsd-kind-icon">height</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="image.html#pixels" class="tsd-kind-icon">pixels</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="image.html#width" class="tsd-kind-icon">width</a></li>
 							</ul>
 						</section>
 					</div>
@@ -86,25 +94,50 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="counts" class="tsd-anchor"></a>
-					<h3>counts</h3>
-					<div class="tsd-signature tsd-kind-icon">counts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="height" class="tsd-anchor"></a>
+					<h3>height</h3>
+					<div class="tsd-signature tsd-kind-icon">height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a1a4fb98/packages/core/src/types/data/image.ts#L4">packages/core/src/types/data/image.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a1a4fb98/packages/app/src/apis/types.ts#L8">packages/app/src/apis/types.ts:8</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The image height</p>
+						</div>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="size" class="tsd-anchor"></a>
-					<h3>size</h3>
-					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="pixels" class="tsd-anchor"></a>
+					<h3>pixels</h3>
+					<div class="tsd-signature tsd-kind-icon">pixels<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a1a4fb98/packages/core/src/types/data/image.ts#L5">packages/core/src/types/data/image.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a1a4fb98/packages/app/src/apis/types.ts#L16">packages/app/src/apis/types.ts:16</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>the pixels for the image.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="width" class="tsd-anchor"></a>
+					<h3>width</h3>
+					<div class="tsd-signature tsd-kind-icon">width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a1a4fb98/packages/app/src/apis/types.ts#L12">packages/app/src/apis/types.ts:12</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>the image width</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -120,14 +153,17 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="segmentationrle.html" class="tsd-kind-icon">SegmentationRLE</a>
+					<li class="current tsd-kind-class">
+						<a href="image.html" class="tsd-kind-icon">Image</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="segmentationrle.html#counts" class="tsd-kind-icon">counts</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="image.html#height" class="tsd-kind-icon">height</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="segmentationrle.html#size" class="tsd-kind-icon">size</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="image.html#pixels" class="tsd-kind-icon">pixels</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="image.html#width" class="tsd-kind-icon">width</a>
 							</li>
 						</ul>
 					</li>

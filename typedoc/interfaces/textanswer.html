@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SegmentationRLE | Pipcook APIs</title>
+	<title>TextAnswer | Pipcook APIs</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,21 +52,28 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="segmentationrle.html">SegmentationRLE</a>
+					<a href="textanswer.html">TextAnswer</a>
 				</li>
 			</ul>
-			<h1>Interface SegmentationRLE</h1>
+			<h1>Interface TextAnswer</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The text-based answer for a given question.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SegmentationRLE</span>
+						<span class="target">TextAnswer</span>
 					</li>
 				</ul>
 			</section>
@@ -77,8 +84,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="segmentationrle.html#counts" class="tsd-kind-icon">counts</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="segmentationrle.html#size" class="tsd-kind-icon">size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="textanswer.html#answer" class="tsd-kind-icon">answer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="textanswer.html#confidence" class="tsd-kind-icon">confidence</a></li>
 							</ul>
 						</section>
 					</div>
@@ -87,22 +94,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="counts" class="tsd-anchor"></a>
-					<h3>counts</h3>
-					<div class="tsd-signature tsd-kind-icon">counts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="answer" class="tsd-anchor"></a>
+					<h3>answer</h3>
+					<div class="tsd-signature tsd-kind-icon">answer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a1a4fb98/packages/core/src/types/data/image.ts#L4">packages/core/src/types/data/image.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a1a4fb98/packages/app/src/apis/types.ts#L48">packages/app/src/apis/types.ts:48</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="size" class="tsd-anchor"></a>
-					<h3>size</h3>
-					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="confidence" class="tsd-anchor"></a>
+					<h3>confidence</h3>
+					<div class="tsd-signature tsd-kind-icon">confidence<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a1a4fb98/packages/core/src/types/data/image.ts#L5">packages/core/src/types/data/image.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a1a4fb98/packages/app/src/apis/types.ts#L49">packages/app/src/apis/types.ts:49</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -121,13 +128,13 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="segmentationrle.html" class="tsd-kind-icon">SegmentationRLE</a>
+						<a href="textanswer.html" class="tsd-kind-icon">Text<wbr>Answer</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="segmentationrle.html#counts" class="tsd-kind-icon">counts</a>
+								<a href="textanswer.html#answer" class="tsd-kind-icon">answer</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="segmentationrle.html#size" class="tsd-kind-icon">size</a>
+								<a href="textanswer.html#confidence" class="tsd-kind-icon">confidence</a>
 							</li>
 						</ul>
 					</li>
