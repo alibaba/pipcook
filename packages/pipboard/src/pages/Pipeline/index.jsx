@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Pagination, Button, Icon } from '@alifd/next';
+import { Table, Pagination, Icon } from '@alifd/next';
 
 import { messageError } from '@/utils/message';
 import { PIPELINE_MAP, JOB_MAP, PIPELINE_STATUS } from '@/utils/config';
@@ -65,7 +65,10 @@ export default class Pipeline extends Component {
     const { models, fields, currentPage, totalCount } = this.state;
     return (
       <div className="pipeline">
-        <Table dataSource={models} hasBorder={false} stickyHeader={true} offsetTop={45}>
+        <Table dataSource={models}
+          hasBorder={false}
+          stickyHeader={true}
+          offsetTop={45}>
           {
             fields.map(field => <Table.Column 
               key={field.name}

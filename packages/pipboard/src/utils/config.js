@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dialog, Tag, Icon } from '@alifd/next';
+import { Button, Dialog, Tag } from '@alifd/next';
 
 /**
  * !important: This File contains many information that should be returned by backend. For now, just remain these.
@@ -60,7 +60,7 @@ export const PIPELINE_MAP = [
     name: 'Created At',
     field: 'createdAt',
     width: 50,
-    sortable: true
+    sortable: true,
   },
 ];
 
@@ -82,7 +82,7 @@ export const JOB_MAP = [
         INIT: 'yellow',
         RUNNING: 'yellow',
         SUCCESS: 'green',
-        FAIL: 'red'
+        FAIL: 'red',
       };
       return <Tag size="small" color={colors[record.status]}>{record.status}</Tag>;
     },
@@ -103,7 +103,7 @@ export const JOB_MAP = [
         const onClick = () => {
           Dialog.show({
             title: 'evaluation',
-            content
+            content,
           });
         };
         return <Button size="small" onClick={onClick}>{content.slice(0, 40)}</Button>;
@@ -133,8 +133,8 @@ export const JOB_MAP = [
       const download = () => {
         location.href = `/job/${record.id}/output.tar.gz`;
       };
-      return <Button size="small" disabled={record.status !== 'SUCCESS'} onClick={download}>Download</Button>
-    }
+      return <Button size="small" disabled={record.status !== 'SUCCESS'} onClick={download}>Download</Button>;
+    },
   },
 ];
 
