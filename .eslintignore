@@ -4,6 +4,7 @@ dist
 test
 pipcook_venv
 output
+example
 
 packages/pipcook-core/src/assets
 packages/pipcook-cli/assets

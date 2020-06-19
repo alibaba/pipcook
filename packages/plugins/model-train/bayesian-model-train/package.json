@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pipcook/boa": "^0.6.0",
     "@pipcook/pipcook-core": "^0.6.3",
     "@types/fs-extra": "^8.1.0",
     "@types/lodash": "^4.14.150",

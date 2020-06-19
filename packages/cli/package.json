@@ -10,11 +10,12 @@
     "compile": "tsc -b tsconfig.json && sh setup.sh"
   },
   "bin": {
-    "pipcook": "./dist/bin/pipcook",
-    "pipcook-daemon": "./dist/bin/pipcook-daemon",
-    "pipcook-job": "./dist/bin/pipcook-job",
-    "pipcook-pipeline": "./dist/bin/pipcook-pipeline",
-    "pipcook-plugin": "./dist/bin/pipcook-plugin"
+    "pipcook": "./dist/bin/pipcook.js",
+    "pipcook-app": "./dist/bin/pipcook-app.js",
+    "pipcook-daemon": "./dist/bin/pipcook-daemon.js",
+    "pipcook-job": "./dist/bin/pipcook-job.js",
+    "pipcook-pipeline": "./dist/bin/pipcook-pipeline.js",
+    "pipcook-plugin": "./dist/bin/pipcook-plugin.js"
   },
   "keywords": [],
   "author": "",
