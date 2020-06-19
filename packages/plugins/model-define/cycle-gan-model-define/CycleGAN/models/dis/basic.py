@@ -31,7 +31,6 @@ def basic_D(input_shape, ndf, n_layers=3, kw=4, dropout=0.0, use_sigmoid=False, 
         x = Activation('sigmoid')(x)
 
     model = Model(input, x, name=kwargs.get('name',None))
-    print('Model basic D:')
     model.summary()
 
     return model
