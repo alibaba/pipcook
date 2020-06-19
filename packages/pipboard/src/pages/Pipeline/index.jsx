@@ -67,7 +67,7 @@ export default class Pipeline extends Component {
       <div className="pipeline">
         <Table dataSource={models}
           hasBorder={false}
-          stickyHeader={true}
+          stickyHeader
           offsetTop={45}>
           {
             fields.map(field => <Table.Column 
