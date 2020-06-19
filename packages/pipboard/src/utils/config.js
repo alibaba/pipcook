@@ -88,7 +88,7 @@ export const JOB_MAP = [
     },
   },
   {
-    name: 'Result',
+    name: 'Evaluation',
     width: 100,
     cell: (value, index, record) => {
       let result = null;
@@ -125,6 +125,16 @@ export const JOB_MAP = [
     name: 'End Time',
     width: 100,
     field: 'endTime',
+  },
+  {
+    name: 'Model',
+    width: 40,
+    cell: (value, index, record) => {
+      const download = () => {
+        location.href = `/job/${record.id}/output.tar.gz`;
+      };
+      return <Button size="small" disabled={record.status !== 'SUCCESS'} onClick={download}>Download</Button>
+    }
   },
 ];
 

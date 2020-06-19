@@ -17,8 +17,6 @@ export default class Dashboard extends Component {
   }
   
   render() {
-    console.log(location.hash);
-
     return (
       <div className="dashboard">
         <Nav className="basic-nav"
