@@ -34,6 +34,9 @@ const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<v
     dataDir
   } = args;
 
+  await fs.remove(dataDir);
+  await fs.ensureDir(dataDir);
+
   assert.ok(url, 'Please specify the url of your dataset');
 
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];

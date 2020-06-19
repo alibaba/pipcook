@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-fasttext-model-evaluate",
-  "version": "0.5.11",
+  "version": "0.6.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.6.0",
-    "@pipcook/pipcook-core": "^0.6.0"
+    "@pipcook/boa": "^0.6.6",
+    "@pipcook/pipcook-core": "^0.6.3"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
@@ -29,5 +29,6 @@
   "pipcook": {
     "category": "modelEvaluate",
     "datatype": "text"
-  }
+  },
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
 }
