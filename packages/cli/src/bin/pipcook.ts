@@ -46,12 +46,6 @@ const pkg = require('../../package.json');
     .action(start);
 
   program
-    .command('daemon', 'manage pipcook daemon service')
-    .command('plugin', 'install one or more packages')
-    .command('job', 'operate the job bound to specific pipeline')
-    .command('pipeline', 'operate on pipeline');
-
-  program
     .command('serve <dir>')
     .option('-p, --port <number>', 'port of server', 7682)
     .description('serve the model to predict')
@@ -72,6 +66,13 @@ const pkg = require('../../package.json');
     .option('-n, --name <name>', 'project name')
     .description('initialize plugin development environment')
     .action(devPlugin);
+
+  program
+    .command('daemon', 'manage pipcook daemon service')
+    .command('plugin', 'install one or more packages')
+    .command('app', 'experimental PipApp Script')
+    .command('job', 'operate the job bound to specific pipeline')
+    .command('pipeline', 'operate on pipeline');
 
   program.parse(process.argv);
 })();

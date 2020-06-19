@@ -73,7 +73,6 @@ async function install(filename: string, opts: any): Promise<void> {
     spinner.succeed(`install plugins succeeded.`);
     process.exit(0);
   } else {
-    let stdout: ChildProcess, stderr: ChildProcess;
     await listen(`${route.pipeline}/install`, params, {
       'info': (e: MessageEvent) => {
         const info = JSON.parse(e.data);
@@ -85,14 +84,10 @@ async function install(filename: string, opts: any): Promise<void> {
       },
       'finished': () => {
         spinner.succeed('all plugins installed');
-        stdout?.kill();
-        stderr?.kill();
         process.exit(0);
       },
       'error': (e: MessageEvent) => {
         spinner.fail(`occurrs an error ${e.data}`);
-        stdout?.kill();
-        stderr?.kill();
         process.exit(1);
       }
     });

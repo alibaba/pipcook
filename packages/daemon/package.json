@@ -3,6 +3,7 @@
   "version": "0.6.6",
   "description": "pipcook daemon",
   "dependencies": {
+    "@pipcook/app": "^0.6.0",
     "@pipcook/costa": "^0.6.6",
     "@pipcook/pipcook-core": "^0.6.3",
     "@tensorflow/tfjs": "1.7.0",
