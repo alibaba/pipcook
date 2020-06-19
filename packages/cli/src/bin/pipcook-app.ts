@@ -85,11 +85,12 @@ program
 program
   .command('build <script.ts>')
   .description('build the executable from trained PipApp Project.')
-  .action(async (srcPath) => {
+  .option('--tuna', 'use tuna mirror to download miniconda at China.')
+  .action(async (srcPath, { tuna }) => {
     const app = new AppProject(srcPath);
     await app.initializeOrLoad();
     try {
-      await app.generateExecutable();
+      await app.buildExecutable({ tuna });
     } catch (err) {
       console.error(err.message);
     }

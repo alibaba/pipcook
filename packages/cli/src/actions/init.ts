@@ -4,13 +4,15 @@ import fse, { symlink, readJson, ensureDir } from 'fs-extra';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import * as os from 'os';
-import { ora } from '../utils';
+import { ora, Constants } from '../utils';
 
 import { InitCommandHandler } from '../types';
 import { isLocal, optionalNpmClients, daemonPackage, boardPackage } from '../config';
 
-const BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';
-const BOA_CONDA_MIRROR = 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda';
+const {
+  BOA_CONDA_INDEX,
+  BOA_CONDA_MIRROR
+} = Constants;
 
 async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
   if (isLocal) {

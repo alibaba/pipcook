@@ -1,11 +1,13 @@
 import { dirname, basename, join } from 'path';
 import { createGunzip } from 'zlib';
+import { SpawnOptions } from 'child_process';
 import tar from 'tar-stream';
 import { readFile, ensureDir, pathExists, readJSON, writeJSON, remove, mkdirp, createWriteStream, fstat, writeFile } from 'fs-extra';
 import { get, post, listen, getFile } from './request';
 import { route } from './router';
 import { tunaMirrorURI } from './config';
 import { PipelineStatus } from '@pipcook/pipcook-core';
+import { execNpm, Constants } from './utils';
 
 const { cwd } = process;
 
@@ -26,6 +28,10 @@ interface AppTrainHooks {
 interface AppInstallHooks {
   before?: (name: string, version: string) => Promise<void>;
   after?: (name: string, version: string) => Promise<void>;
+}
+
+interface BuildAppExecutableOpts {
+  tuna?: boolean
 }
 
 /**
@@ -122,7 +128,7 @@ export class AppProject {
   /**
    * Generate the PipApp executable.
    */
-  async generateExecutable() {
+  async buildExecutable({ tuna }: BuildAppExecutableOpts) {
     // fetch jobs and verify if it's able to generate exec.
     let jobs = await this.getJobs();
     jobs = jobs.filter((job) => {
@@ -142,8 +148,11 @@ export class AppProject {
       throw new TypeError('no job is finished.');
     }
 
-    await this.downloadOutputs(jobs);
+    const outputs = await this.downloadOutputs(jobs);
+    await this.buildOutputs(outputs, tuna);
     this.manifest.executable = true;
+
+    // save the manifest to sync
     await this.saveManifest();
   }
   /**
@@ -182,26 +191,49 @@ export class AppProject {
       });
     });
   }
-  private async downloadOutputs(jobs: any[]) {
+  private async downloadOutputs(jobs: any[]): Promise<string[]> {
     // cleanup the current model root
     await remove(this.modelRootPath);
-    jobs.forEach(async (job) => {
-      const modelPath = join(this.modelRootPath, job.id);
-      const extract = tar.extract();
-      extract.on('entry', async (header, stream, next) => {
-        const dist = join(modelPath, header.name);
-        if (header.type === 'directory') {
-          await mkdirp(dist);
-        } else if (header.type === 'file') {
-          stream.pipe(createWriteStream(dist));
-        }
-        stream.on('end', next);
-        stream.resume();
-      });
-      (await getFile(`${route.job}/${job.id}/output.tar.gz`))
-        .pipe(createGunzip())
-        .pipe(extract);
+    return Promise.all(jobs.map(this.downloadSingleOutput));
+  }
+  private downloadSingleOutput = async (job: any): Promise<string> => {
+    const modelPath = join(this.modelRootPath, job.id);
+    const extract = tar.extract();
+    extract.on('entry', async (header, stream, next) => {
+      const dist = join(modelPath, header.name);
+      if (header.type === 'directory') {
+        await mkdirp(dist);
+      } else if (header.type === 'file') {
+        stream.pipe(createWriteStream(dist));
+      }
+      stream.on('end', next);
+      stream.resume();
     });
+
+    (await getFile(`${route.job}/${job.id}/output.tar.gz`))
+      .pipe(createGunzip())
+      .pipe(extract);
+
+    return new Promise((resolve) => {
+      extract.on('finish', () => resolve(modelPath));
+    }); 
+  }
+  /**
+   * Build the outputs.
+   * @param outputs the outputs directory
+   */
+  private async buildOutputs(outputs: string[], tuna: boolean): Promise<void> {
+    for await (const outputDir of outputs) {
+      const opts: SpawnOptions = { cwd: outputDir };
+      if (tuna === true) {
+        opts.env = {
+          BOA_CONDA_INDEX: Constants.BOA_CONDA_INDEX,
+          BOA_CONDA_MIRROR: Constants.BOA_CONDA_MIRROR,
+          ...process.env
+        };
+      }
+      await execNpm('install', '--production', opts);
+    }
   }
   /**
    * Save the manifest
