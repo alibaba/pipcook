@@ -8,7 +8,7 @@ sys.path.insert(0, path.join(__dirname, '..'));
 const { ImageGenerator } = boa.import('image_loader');
 
 const cycleGANModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
-  const { 
+  const {
     resize = [ 143, 143 ],
     crop = [ 128, 128 ]
   } = args;
@@ -18,15 +18,15 @@ const cycleGANModelTrain: ModelTrainType = async (data: ImageDataset, model: Uni
   for (let i = 0; i < await trainLoader.len(); ++i) {
     const image = trainLoader.getItem(i);
     switch ((await image).label.name.toLowerCase()) {
-      case 'a':
-        aList.push((await image).data);
-        break;
-      case 'b':
-        bList.push((await image).data);
-        break;
-      default:
-        console.warn('unknown type of ', (await image).data);
-        break;
+    case 'a':
+      aList.push((await image).data);
+      break;
+    case 'b':
+      bList.push((await image).data);
+      break;
+    default:
+      console.warn('unknown type of ', (await image).data);
+      break;
     }
   }
 
