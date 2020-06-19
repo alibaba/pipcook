@@ -2,8 +2,6 @@
 
 > This function is experimental
 
-PipApp 可以让开发者不用关心复杂的机器学习 Pipeline，从而将更多的精力集中在编写机器学习应用逻辑，并且它能让开发者更好地将传统编程的业务逻辑与机器学习的代码更好地结合起来。
-
 PipApp can help developers from caring about complicated machine learning pipelines, so they can focus more on writing machine learning application logic, and it allows developers to better integrate traditional programming business logic and machine learning code.
 
 ## Preparation
