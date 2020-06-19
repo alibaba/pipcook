@@ -3,7 +3,7 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/image-classification-data-collect",
       "params": {
-        "url": "<TODO>"
+        "url": "input your zip url"
       }
     },
     "dataAccess": {

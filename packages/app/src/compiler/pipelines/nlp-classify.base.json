@@ -3,7 +3,7 @@
     "dataCollect": {
       "package": "@pipcook/plugins-csv-data-collect",
       "params": {
-        "url": "input your csv zip"
+        "url": "input your zip url"
       }
     },
     "dataAccess": {
