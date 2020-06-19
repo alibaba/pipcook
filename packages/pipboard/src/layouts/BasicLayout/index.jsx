@@ -6,7 +6,9 @@ import './index.scss';
 
 const { Item } = Nav;
 
-const header = <span className="header">pipcook</span>;
+const header = <a href="/index.html" style={{ color: '#000' }}>
+  <span className="header">PipBoard</span>
+</a>;
 
 export default class Dashboard extends Component {
 
@@ -15,16 +17,24 @@ export default class Dashboard extends Component {
   }
   
   render() {
+    console.log(location.hash);
+
     return (
       <div className="dashboard">
-        <Nav className="basic-nav" onSelect={this.select} direction="hoz" type="primary" header={header} selectedKeys={[]} triggerType="hover">
-          <Item key="home">Home</Item>
+        <Nav className="basic-nav"
+          onSelect={this.select}
+          direction="hoz"
+          hozAlign="left"
+          activeDirection="top"
+          type="normal"
+          header={header}
+          selectedKeys={[location.hash.replace(/#\//, '') || 'home']}
+          triggerType="hover">
           <Item key="pipeline">Pipelines</Item>
           <Item key="jobs">Jobs</Item>
         </Nav> 
         {this.props.children}
       </div>
-      
     );
   }
 }

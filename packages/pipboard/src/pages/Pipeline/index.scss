@@ -3,11 +3,15 @@
     position: fixed;
     right: 40px;
     bottom: 40px;
-    background-color: white;
     
     .pipeline-create {
-      width: 64px;
-      height: 64px;
+      background-color: #fff;
+      border-radius: 64px;
+      padding: 5px;
+      box-shadow: 1px 1px 5px #e3e3e3;
+      height: 40px;
+      width: 40px;
+      text-align: center;
     }
   }
 
