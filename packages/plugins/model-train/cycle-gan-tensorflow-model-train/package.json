@@ -11,7 +11,7 @@
     "compile": "tsc -b tsconfig.json"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/boa": "0.6.2",
     "@pipcook/pipcook-core": "^0.6.0"
