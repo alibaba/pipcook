@@ -11,6 +11,7 @@ export type PipelineNode = {
     module: AppModule;
     method: string;
   };
+  jobId?: string;
 };
 
 export type AppModule = 'vision' | 'nlp';

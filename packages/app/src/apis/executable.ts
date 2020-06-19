@@ -22,7 +22,7 @@ if (pathExistsSync(APP_MANIFEST)) {
 function dynamicModelExports(module: AppModule, exports: any) {
   manifest?.pipelines.filter((pipeline) => {
     return pipeline.namespace.module === module;
-  }).forEach((pipeline: any) => {
+  }).forEach((pipeline) => {
     exports[pipeline.signature] = require(join(cwd(), '.pipcook/models', pipeline.jobId));
   });
 }
