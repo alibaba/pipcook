@@ -15,7 +15,7 @@ import realOra = require("ora");
 export const Constants = {
   PIPCOOK_HOME: `${os.homedir()}/.pipcook`,
   BOA_CONDA_INDEX: 'https://pypi.tuna.tsinghua.edu.cn/simple',
-  BOA_CONDA_MIRROR: 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda',
+  BOA_CONDA_MIRROR: 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda'
 };
 export const cwd = process.cwd;
 
@@ -29,7 +29,7 @@ export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
 
 export function execNpm(subcmd: string, flags?: string, opts?: SpawnOptions): Promise<void> {
   return new Promise((resolve, reject) => {
-    const cli = spawn('npm', [subcmd, flags], {
+    const cli = spawn('npm', [ subcmd, flags ], {
       stdio: 'inherit',
       env: process.env,
       ...opts

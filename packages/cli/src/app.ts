@@ -31,7 +31,7 @@ interface AppInstallHooks {
 }
 
 interface BuildAppExecutableOpts {
-  tuna?: boolean
+  tuna?: boolean;
 }
 
 /**
@@ -216,7 +216,7 @@ export class AppProject {
 
     return new Promise((resolve) => {
       extract.on('finish', () => resolve(modelPath));
-    }); 
+    });
   }
   /**
    * Build the outputs.
