@@ -36,7 +36,7 @@ let opt = {
   beta1: 0.5,            // momentum term of adam
 
   // training parameters 
-  batch_size: 1,          // images in batch
+  batch_size: 5,          // images in batch
   niter: 100000,          // of iter at starting learning rate
   pool_size: 50,          // the size of image buffer that stores previously generated images
   save_iter: 50,

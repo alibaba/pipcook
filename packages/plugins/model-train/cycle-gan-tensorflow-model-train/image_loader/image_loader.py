@@ -1,4 +1,3 @@
-# from .backend_utils import get_filter_dim
 import cv2
 import numpy as np
 import os
@@ -31,9 +30,6 @@ class ImageGenerator(object):
                     imgs.append(img)
 
                 imgs = np.array(imgs)
-                # tensorflow only
-                # if get_filter_dim() == 1:
-                #     imgs = imgs.transpose(0, 3, 1, 2)
 
                 imgs = imgs/127.5-1
 

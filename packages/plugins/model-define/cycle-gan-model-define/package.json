@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugin-cycle-gan-model-define",
+  "name": "@pipcook/plugins-cycle-gan-model-define",
   "version": "0.6.0",
   "description": "",
   "main": "dist/index",

@@ -27,8 +27,6 @@ class InstanceNormalization2D(Layer):
         scale = batch_image_expand(self.scale)
         shift = batch_image_expand(self.shift)
         return scale*y + shift 
-#       else:
-#           raise NotImplemented("Please complete `CycGAN/layers/padding.py` to run on backend {}.".format(K.backend()))
 
     def compute_output_shape(self, input_shape):
         return input_shape 

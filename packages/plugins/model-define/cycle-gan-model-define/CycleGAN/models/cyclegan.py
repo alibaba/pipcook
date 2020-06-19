@@ -53,12 +53,12 @@ class CycleGAN(BaseModel):
         real_A = Input(opt['shapeA'])
         fake_B = gen_B(real_A)
         dis_fake_B = dis_B(fake_B)
-        rec_A = gen_A(fake_B) # = gen_A(gen_B(real_A))
+        rec_A = gen_A(fake_B)
 
         real_B = Input(opt['shapeB'])
         fake_A = gen_A(real_B)
         dis_fake_A = dis_A(fake_A)
-        rec_B = gen_B(fake_A) # = gen_B(gen_A(real_B))
+        rec_B = gen_B(fake_A)
 
         if opt['idloss'] > 0:
             G_trainner = Model([real_A, real_B], 
@@ -107,9 +107,7 @@ class CycleGAN(BaseModel):
         if not os.path.exists(opt['pic_dir']):
             os.mkdir(opt['pic_dir'])
         bs = opt['batch_size']
-        print('pic dir: ', opt['pic_dir'])
-        sys.stdout.flush()
-        
+
         fake_A_pool = []
         fake_B_pool = []
 
@@ -185,9 +183,6 @@ class CycleGAN(BaseModel):
                 self.DisA.save(os.path.join(opt['pic_dir'], 'disa.h5'))
                 self.DisB.save(os.path.join(opt['pic_dir'], 'disb.h5'))
 
-#               import ipdb
-#               ipdb.set_trace()
             iteration += 1
-            print(os.path.join(opt['pic_dir']))
             sys.stdout.flush()
     

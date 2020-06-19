@@ -1,6 +1,6 @@
 {
-  "name": "@pipcook/plugin-cycle-gan-model-train",
-  "version": "0.1.0",
+  "name": "@pipcook/plugins-cycle-gan-tensorflow-model-train",
+  "version": "0.6.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",

@@ -3,14 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.5.4](https://github.com/alibaba/pipcook/compare/@pipcook/plugins-detectron-fasterrcnn-model-define@0.5.3...@pipcook/plugins-detectron-fasterrcnn-model-define@0.5.4) (2020-04-24)
+## [0.6.0](https://github.com/alibaba/pipcook/compare/@pipcook/@pipcook/plugins-cycle-gan-model-define@0.6.0) (2020-06-19)
 
-**Note:** Version bump only for package @pipcook/plugins-detectron-fasterrcnn-model-define
-
-
-
-
-
-## 0.5.3 (2020-04-24)
-
-**Note:** Version bump only for package @pipcook/plugins-detectron-fasterrcnn-model-define
+**Note:** Version bump only for package @pipcook/plugins-cycle-gan-model-define

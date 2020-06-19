@@ -4,7 +4,6 @@ from tensorflow.keras.layers import Activation, Input, Dropout
 from tensorflow.keras.layers import LeakyReLU
 from tensorflow.keras.models import Model
 
-from ...utils.backend_utils import get_filter_dim
 from ...layers import ReflectPadding2D, InstanceNormalization2D
 
 padding = ReflectPadding2D

@@ -9,7 +9,7 @@ const { ImageGenerator } = boa.import('image_loader');
 
 const cycleGANModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
   const { trainLoader } = data;
-  console.log('len', await trainLoader.len(), metadata)
+  console.log('len', await trainLoader.len())
   const aList = [];
   const bList = [];
   for(let i = 0; i < await trainLoader.len(); ++i) {
