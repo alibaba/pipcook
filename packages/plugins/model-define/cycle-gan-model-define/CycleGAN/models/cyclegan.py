@@ -174,8 +174,7 @@ class CycleGAN(BaseModel):
                 imgb2a = self.BtoA.predict(imgb)
                 imgb2a2b = self.AtoB.predict(imgb2a)
 
-                vis_grid(np.concatenate([imga, imga2b, imga2b2a, imgb, imgb2a, imgb2a2b], 
-                                                                            axis=0),
+                vis_grid(np.concatenate([imga, imga2b, imga2b2a, imgb, imgb2a, imgb2a2b], axis=0),
                         (6, bs), os.path.join(opt['pic_dir'], '{}.jpg'.format(iteration)) )
 
                 self.AtoB.save(os.path.join(opt['pic_dir'], 'a2b.h5'))
@@ -185,4 +184,3 @@ class CycleGAN(BaseModel):
 
             iteration += 1
             sys.stdout.flush()
-    

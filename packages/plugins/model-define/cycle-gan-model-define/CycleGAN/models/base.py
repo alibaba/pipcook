@@ -1,5 +1,6 @@
 class BaseModel(object):
     name = 'BaseModel'
+
     def __init__(self):
         raise NotImplemented
 
