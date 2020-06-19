@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const { cwd, pipeline, output } = require('./metadata.json');
+const { pipeline, output } = require('./metadata.json');
 
 function _requirePlugin(name) {
   const mod = require(pipeline[name]);
