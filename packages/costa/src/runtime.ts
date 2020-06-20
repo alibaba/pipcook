@@ -14,7 +14,7 @@ import {
   CondaConfig
 } from './index';
 
-import request from 'request-promise';
+import { get } from 'request-promise';
 import Debug from 'debug';
 
 const debug = Debug('costa.runtime');
@@ -125,14 +125,19 @@ export class CostaRuntime {
     const source = this.getSource(name, cwd || process.cwd());
     let pkg: PluginPackage;
     if (source.from === 'npm') {
-      debug(`requesting the url ${source.uri}...`);
-      const resp = await request(source.uri);
+      debug(`requesting the url ${source.uri}`);
+      // TODO(yorkie): support http cache
+      const resp = await get(source.uri, {
+        timeout: 15000
+      });
       const meta = JSON.parse(resp) as NpmPackageMetadata;
       pkg = selectNpmPackage(meta, source);
     } else if (source.from === 'git') {
       debug(`requesting the url ${source.uri}...`);
-      const { hostname, pathname } = source.urlObject;
-      pkg = await fetchPackageJsonFromGit(`git@${hostname}:${pathname}`, 'HEAD');
+      const { hostname, auth, hash } = source.urlObject;
+      let pathname = source.urlObject.pathname.replace(/^\/:?/, '');
+      const remote = `${auth || 'git'}@${hostname}:${pathname}${hash || ''}`;
+      pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
     } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
       pkg = require(`${source.uri}/package.json`);
@@ -185,9 +190,8 @@ export class CostaRuntime {
     if (!await pathExists(`${this.options.installDir}/package.json`)) {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
-      await spawnAsync('npm', [ 'install', boaSrcPath, '-E' ], npmExecOpts);
     }
-    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production', '--verbose' ], npmExecOpts);
+    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production' ], npmExecOpts);
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);

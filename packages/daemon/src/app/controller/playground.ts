@@ -1,5 +1,5 @@
 import { Context, controller, inject, provide, post } from 'midway';
-import * as tf from '@tensorflow/tfjs-node-gpu';
+import * as tf from '@tensorflow/tfjs';
 import * as Jimp from 'jimp';
 import axios from 'axios';
 

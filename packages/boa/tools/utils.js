@@ -26,13 +26,21 @@ exports.initAndGetCondaPath = () => {
   return condaPath;
 };
 
-exports.pip = (...args) => {
+exports.py = (...args) => {
   const { run, getCondaPath } = exports;
+  const CONDA_LOCAL_PATH = getCondaPath();
+  const Python = path.join(CONDA_LOCAL_PATH, 'bin/python');
+  const cmds = [Python].concat(args);
+  return run(...cmds);
+};
+
+exports.pip = (...args) => {
+  const { py, getCondaPath } = exports;
   const CONDA_LOCAL_PATH = getCondaPath();
   const PIP = path.join(CONDA_LOCAL_PATH, 'bin/pip');
   const cmds = [PIP].concat(args);
   if (BOA_CONDA_INDEX) {
     cmds.push(`-i ${BOA_CONDA_INDEX}`);
   }
-  return run.apply(this, cmds);
+  return py(...cmds);
 };

@@ -15,7 +15,7 @@ import {
 
 const { PLUGINS, PIPCOOK_LOGS } = constants;
 
-async function loadConfig(configPath: string | RunConfigI) {
+async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
   if (typeof configPath === 'string') {
     let configJson: RunConfigI;
     const urlObj = url.parse(configPath);

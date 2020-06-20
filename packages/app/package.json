@@ -1,0 +1,33 @@
+{
+  "name": "@pipcook/app",
+  "version": "0.6.0",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "ts-node ../../run_tests.ts",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json && sh setup.sh"
+  },
+  "license": "Apache 2.0",
+  "dependencies": {
+    "ts-morph": "^7.1.1"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "jasmine": "^3.5.0",
+    "nyc": "14.1.1",
+    "ts-node": "^8.6.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "machine learning",
+    "pipcook"
+  ],
+  "description": "The Pipcook application framework for machine learning"
+}

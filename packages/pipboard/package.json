@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipboard",
-  "version": "0.6.1",
+  "version": "0.6.4",
   "description": "board for pipcook",
   "dependencies": {
     "@alifd/next": "^1.x",
@@ -54,5 +54,5 @@
     "url": "https://github.com/ice-lab/react-materials/tree/master/scaffolds/ice-design-lite"
   },
   "proxy": "http://localhost:7778",
-  "gitHead": "38b31171afad5051dc677d21a48e43dbc007b856"
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
 }

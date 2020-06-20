@@ -9,6 +9,9 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
     dataDir
   } = args;
 
+  await fs.remove(dataDir);
+  await fs.ensureDir(dataDir);
+
   assert.ok(url, 'Please specify a url of zip of your dataset');
 
   const fileName = url.split(path.sep)[url.split(path.sep).length - 1];

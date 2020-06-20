@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-tensorflow-resnet-model-define",
-  "version": "0.6.0",
+  "version": "0.6.3",
   "description": "resnet model of tensorflow",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,11 +16,13 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/boa": "^0.6.0",
-    "@pipcook/pipcook-core": "^0.6.0"
+    "@pipcook/boa": "^0.6.6",
+    "@pipcook/pipcook-core": "^0.6.3",
+    "fs-extra": "^8.1.0"
   },
-  "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
+    "@types/fs-extra": "^8.1.0",
     "@types/jasmine": "^3.5.7",
     "nyc": "14.1.1"
   },

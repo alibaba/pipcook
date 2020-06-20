@@ -22,4 +22,5 @@ ENV
 .test
 packages/cli/assets/server/**
 packages/daemon/.github/**
+.pipcook
 __pycache__

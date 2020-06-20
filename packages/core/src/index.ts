@@ -78,7 +78,7 @@ import {
   MODELTRAIN,
   MODELEVALUATE
 } from './constants/plugins';
-import { PIPCOOK_PLUGINS, PIPCOOK_LOGS, PIPCOOK_DEPENDENCIES } from './constants/other';
+import { PIPCOOK_PLUGINS, PIPCOOK_LOGS, PIPCOOK_DEPENDENCIES, KERAS_DIR, TORCH_DIR } from './constants/other';
 export const constants = {
   PLUGINS,
   MODELLOAD,
@@ -90,7 +90,9 @@ export const constants = {
   MODELTRAIN,
   MODELEVALUATE,
   PIPCOOK_LOGS,
-  PIPCOOK_DEPENDENCIES
+  PIPCOOK_DEPENDENCIES,
+  KERAS_DIR,
+  TORCH_DIR
 };
 
 export { OutputType } from './constants/other';
