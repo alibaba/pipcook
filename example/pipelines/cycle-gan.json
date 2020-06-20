@@ -1,16 +1,16 @@
 {
   "plugins": {
     "dataCollect": {
-      "package": "./packages/plugins/data-collect/image-classification-data-collect",
+      "package": "@pipcook/plugins-image-classification-data-collec",
       "params": {
         "url": "https://ai-sample.oss-cn-hangzhou.aliyuncs.com/horse2zebra.zip"
       }
     },
     "dataAccess": {
-      "package": "./packages/plugins/data-access/pascalvoc-data-access"
+      "package": "@pipcook/plugins-pascalvoc-data-access"
     },
     "modelDefine": {
-      "package": "./packages/plugins/model-define/cycle-gan-model-define",
+      "package": "@pipcook/plugins-cycle-gan-model-define",
       "params": {
         "batch_size": 10,
         "save_iter": 200,
@@ -20,7 +20,7 @@
       }
     },
     "modelTrain": {
-      "package": "./packages/plugins/model-train/cycle-gan-tensorflow-model-train"
+      "package": "@pipcook/plugins-cycle-gan-tensorflow-model-train"
     }
   }
 }
