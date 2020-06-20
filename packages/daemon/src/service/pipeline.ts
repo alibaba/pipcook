@@ -5,7 +5,7 @@ import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
 import { provide, inject } from 'midway';
-import { PipelineDB, PipelineStatus, EvaluateResult, PluginTypeI, constants, compressTarFile } from '@pipcook/pipcook-core';
+import { PipelineDB, PipelineStatus, EvaluateResult, PluginTypeI, constants, compressTarFile, UniDataset } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
 import { RunParams } from '../interface';
@@ -250,6 +250,10 @@ export class PipelineService {
       job.evaluatePass = result.pass;
       job.endTime = Date.now();
       job.status = PipelineStatus.SUCCESS;
+      const datasetVal = await runnable.valueOf(dataset) as UniDataset;
+      if (datasetVal?.metadata) {
+        job.dataset = JSON.stringify(datasetVal.metadata);
+      }
       await job.save();
       const pipeline = await this.getPipeline(job.pipelineId);
       await this.generateOutput(job, {

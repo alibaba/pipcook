@@ -1,6 +1,6 @@
 'use strict';
 
-const { run, initAndGetCondaPath, PLATFORM, ARCH } = require('./utils');
+const { run, py, initAndGetCondaPath, PLATFORM, ARCH } = require('./utils');
 const fs = require('fs');
 const path = require('path');
 
@@ -39,4 +39,4 @@ if (!fs.existsSync(path.join(CONDA_LOCAL_PATH, 'bin', 'python'))) {
 }
 
 // dump info
-run(`${CONDA_LOCAL_PATH}/bin/conda`, 'info -a');
+py(`${CONDA_LOCAL_PATH}/bin/conda`, 'info -a');
