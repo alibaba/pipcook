@@ -1,3 +1,4 @@
+import * as url from 'url';
 import { PluginTypeI } from '@pipcook/pipcook-core';
 
 /**
@@ -22,9 +23,11 @@ export interface RuntimeOptions {
  * This represents a source of a plugin.
  */
 export interface PluginSource {
-  from: 'fs' | 'npm' | null;
-  name: string;
+  from: 'fs' | 'npm' | 'git' | null;
   uri: string | null;
+  urlObject: url.UrlWithStringQuery;
+  name: string;
+  schema?: NpmPackageNameSchema;
 }
 
 /**
@@ -42,7 +45,7 @@ export interface CondaConfig {
 }
 
 /**
- * Usually, it is used to represent some fields of package.json, 
+ * Usually, it is used to represent some fields of package.json,
  * and some pipcook fields are also added, see below for details.
  */
 export interface PluginPackage {
@@ -67,7 +70,7 @@ export interface PluginPackage {
    */
   dependencies?: Record<string, string>;
   /**
-   * The following objects are used to declare some information 
+   * The following objects are used to declare some information
    * needed by the plugin at runtime.
    */
   pipcook: {
@@ -126,4 +129,22 @@ export interface NpmPackageMetadata {
     latest: string;
   };
   versions: Record<string, NpmPackage>;
+}
+
+/**
+ * It represents the name schema for a package name string for npm. For example,
+ * `@pipcook/test@1.x` outputs an object with scope(@pipcook), name(test) and
+ * version(1.x).
+ */
+export class NpmPackageNameSchema {
+  scope: string | null;
+  version: string | null;
+  name: string;
+  get packageName(): string {
+    if (this.scope) {
+      return `${this.scope}/${this.name}`;
+    } else {
+      return this.name;
+    }
+  }
 }

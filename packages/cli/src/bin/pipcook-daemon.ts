@@ -4,8 +4,8 @@ import { execSync as exec, spawn, fork } from 'child_process';
 import os from 'os';
 import path from 'path';
 import program from 'commander';
-import ora from 'ora';
 import { readFile, pathExists, remove } from 'fs-extra';
+import { ora } from '../utils';
 
 const PIPCOOK_HOME = path.join(os.homedir(), '.pipcook');
 const DAEMON_HOME = path.join(PIPCOOK_HOME, 'server/node_modules/@pipcook/daemon');

@@ -1,12 +1,13 @@
 /**
- * @file This plugin is used to load the moblieNet for iamge classification. The input layer is modified to fit into any shape of input.
+ * @file This plugin is used to load the mobileNet for image classification. The input layer is modified to fit into any shape of input.
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel, download, constants } from '@pipcook/pipcook-core';
 import * as assert from 'assert';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as os from 'os';
 
 const boa = require('@pipcook/boa');
 const tf = boa.import('tensorflow');
@@ -15,9 +16,14 @@ const { ResNet50 } = boa.import('tensorflow.keras.applications.resnet50');
 const { GlobalAveragePooling2D, Dropout, Dense } = boa.import('tensorflow.keras.layers');
 const { Model } = boa.import('tensorflow.keras.models');
 
+const MODEL_WEIGHTS_NAME = 'resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5';
+const MODEL_URL =
+  `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/resnet50_python/${MODEL_WEIGHTS_NAME}`;
+const MODEL_PATH = path.join(constants.KERAS_DIR, 'models', MODEL_WEIGHTS_NAME);
+
 /** @ignore
  * assertion test
- * @param data 
+ * @param data
  */
 const assertionTest = (data: ImageDataset) => {
   assert.ok(data.metadata.feature, 'Image feature is missing');
@@ -54,6 +60,11 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
   }
 
   let model: any;
+
+  if (!await fs.pathExists(MODEL_PATH)) {
+    await download(MODEL_URL, MODEL_PATH);
+  }
+
   model = ResNet50(boa.kwargs({
     include_top: false,
     weights: 'imagenet',
@@ -71,7 +82,7 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
     activation: 'softmax'
   }))(output);
   model = Model(boa.kwargs({
-    inputs: model.input, 
+    inputs: model.input,
     outputs: outputs
   }));
 

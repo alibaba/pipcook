@@ -1,0 +1,47 @@
+{
+  "name": "@pipcook/plugins-detectron-maskrcnn-model-define",
+  "version": "0.6.5",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json && cp -r ./src/config ./dist/"
+  },
+  "author": "pipcook",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "@pipcook/boa": "^0.6.6",
+    "@pipcook/pipcook-core": "^0.6.3",
+    "fs-extra": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^8.1.0",
+    "@types/jasmine": "^3.5.7",
+    "nyc": "14.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "pipcook": {
+    "category": "modelDefine",
+    "datatype": "image"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "torch": "*",
+      "torchvision": "*",
+      "opencv-python": "*",
+      "cython": "*",
+      "cocoapi": "git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI",
+      "detectron": "git+https://github.com/facebookresearch/detectron2.git"
+    }
+  },
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
+}

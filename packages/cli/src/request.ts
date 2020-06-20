@@ -1,7 +1,7 @@
 import * as qs from 'querystring';
 import axios from 'axios';
-import ora from 'ora';
 import EventSource from 'eventsource';
+import { ora } from './utils';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
@@ -10,7 +10,7 @@ function createGeneralRequest(agent: Function): Function {
   const spinner = ora();
   return async (...args: any[]) => {
     try {
-      let response = await agent(...args);
+      const response = await agent(...args);
       if (response.data.status === true) {
         return response.data.data;
       }
@@ -31,6 +31,15 @@ export const del = async (host: string) => createGeneralRequest(axios.delete)(ho
 export const get = async (host: string, params?: RequestParams) => {
   const uri = `${host}?${qs.stringify(params)}`;
   return createGeneralRequest(axios.get)(uri);
+};
+
+export const getFile = async (host: string, params?: RequestParams): Promise<NodeJS.ReadStream> => {
+  const resp = await axios({
+    method: 'GET',
+    url: `${host}?${qs.stringify(params)}`,
+    responseType: 'stream'
+  });
+  return resp.data as NodeJS.ReadStream;
 };
 
 export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {

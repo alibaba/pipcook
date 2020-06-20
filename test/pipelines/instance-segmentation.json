@@ -1,0 +1,25 @@
+{
+  "plugins": {
+    "dataCollect": {
+      "package": "./packages/plugins/data-collect/object-detection-coco-data-collect",
+      "params": {
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/instance-segmentation/data.zip"
+      }
+    },
+    "dataAccess": {
+      "package": "./packages/plugins/data-access/coco-data-access"
+    },
+    "modelDefine": {
+      "package": "./packages/plugins/model-define/detectron-maskrcnn-model-define"
+    },
+    "modelTrain": {
+      "package": "./packages/plugins/model-train/detectron-model-train",
+      "params": {
+        "steps": 1
+      }
+    },
+    "modelEvaluate": {
+      "package": "./packages/plugins/model-evaluate/detectron-model-evaluate"
+    }
+  }
+}

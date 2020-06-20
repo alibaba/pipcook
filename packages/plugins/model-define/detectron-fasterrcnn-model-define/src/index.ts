@@ -1,13 +1,26 @@
-import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset } from '@pipcook/pipcook-core';
+import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset, download, constants } from '@pipcook/pipcook-core';
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
+import * as os from 'os';
 
 const boa = require('@pipcook/boa');
+
+const MODEL_WEIGHTS_NAME = 'R-50.pkl';
+const MODEL_URL =
+  `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/detectron_r50/${MODEL_WEIGHTS_NAME}`;
+const MODEL_PATH = path.join(
+  constants.TORCH_DIR,
+  'fvcore_cache',
+  'detectron2',
+  'ImageNetPretrained',
+  'MSRA',
+  MODEL_WEIGHTS_NAME
+);
 
 const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
     baseLearningRate = 0.00025,
-    numWorkers = 4,
+    numWorkers = 0,
     numGpus = 2,
     numClasses = 0,
     recoverPath
@@ -35,12 +48,16 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   cfg.merge_from_file(path.join(__dirname, 'config', 'faster_rcnn_R_50_C4_3x.yaml'));
   cfg.DATALOADER.NUM_WORKERS = numWorkers;
 
+  if (!await fs.pathExists(MODEL_PATH)) {
+    await download(MODEL_URL, MODEL_PATH);
+  }
+
   if (recoverPath) {
     cfg.MODEL.WEIGHTS = path.join(recoverPath, 'model', 'model_final.pth');
   } else {
     cfg.MODEL.WEIGHTS = "detectron2://ImageNetPretrained/MSRA/R-50.pkl";
   }
-    
+
   cfg.SOLVER.IMS_PER_BATCH = 4;
   cfg.SOLVER.BASE_LR = baseLearningRate;
   cfg.SOLVER.NUM_GPUS = numGpus;
@@ -48,7 +65,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   if (!torch.cuda.is_available()) {
     cfg.MODEL.DEVICE = 'cpu';
   }
-    
+
   cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128;
   cfg.MODEL.ROI_HEADS.NUM_CLASSES = numClasses;
 

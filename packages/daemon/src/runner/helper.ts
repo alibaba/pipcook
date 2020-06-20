@@ -4,6 +4,8 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
+import * as request from 'request-promise';
+import * as url from 'url';
 import {
   RunConfigI,
   PipelineDB,
@@ -13,8 +15,28 @@ import {
 
 const { PLUGINS, PIPCOOK_LOGS } = constants;
 
-export async function parseConfig(configPath: string, generateId = true): Promise<PipelineDB> {
-  const configJson: RunConfigI = await fs.readJson(configPath);
+async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
+  if (typeof configPath === 'string') {
+    let configJson: RunConfigI;
+    const urlObj = url.parse(configPath);
+    if (urlObj.protocol === null) {
+      throw new TypeError('config URI is not supported');
+    }
+    if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) >= 0) {
+      configJson = JSON.parse(await request(configPath));
+    } else if (urlObj.protocol === 'file:') {
+      configJson = await fs.readJSON(url.fileURLToPath(configPath));
+    } else {
+      throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
+    }
+    return configJson;
+  } else {
+    return configPath;
+  }
+}
+
+export async function parseConfig(configPath: string | RunConfigI, generateId = true): Promise<PipelineDB> {
+  const configJson = await loadConfig(configPath);
   const result: PipelineDB = {};
 
   if (generateId) {

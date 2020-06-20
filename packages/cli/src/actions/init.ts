@@ -1,24 +1,30 @@
-import path from 'path';
+import { join, dirname } from 'path';
 import { execSync as exec } from 'child_process';
 import fse, { symlink, readJson, ensureDir } from 'fs-extra';
-import ora from 'ora';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import * as os from 'os';
+import { ora, Constants } from '../utils';
 
 import { InitCommandHandler } from '../types';
 import { isLocal, optionalNpmClients, daemonPackage, boardPackage } from '../config';
 
-const NPM_PUBLIC_REGISTRY = 'https://registry.npmjs.org/';
+const {
+  BOA_CONDA_INDEX,
+  BOA_CONDA_MIRROR
+} = Constants;
 
 async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
   if (isLocal) {
     const pkg = await readJson(name + '/package.json');
-    const dest = path.join(cwd, 'node_modules', pkg.name);
-    await ensureDir(path.dirname(dest));
+    const dest = join(cwd, 'node_modules', pkg.name);
+    await ensureDir(dirname(dest));
     await symlink(name, dest, 'dir');
   } else {
-    const cmd = `${npmClient} install ${name} --force --registry ${NPM_PUBLIC_REGISTRY}`;
+    if (beta) {
+      name = `${name}@beta`;
+    }
+    const cmd = `${npmClient} install ${name} --force`;
     console.info(`exec <${cmd}>`);
     exec(cmd, { cwd, env, stdio: 'inherit' });
   }
@@ -32,8 +38,8 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   let npmClient = 'npm';
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
-    npmInstallEnvs.BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';
-    npmInstallEnvs.BOA_CONDA_MIRROR = 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda';
+    npmInstallEnvs.BOA_CONDA_INDEX = BOA_CONDA_INDEX;
+    npmInstallEnvs.BOA_CONDA_MIRROR = BOA_CONDA_MIRROR;
     spinner.info(`switch conda index: ${npmInstallEnvs.BOA_CONDA_INDEX}`);
     spinner.info(`switch conda mirror: ${npmInstallEnvs.BOA_CONDA_MIRROR}`);
   }
@@ -71,17 +77,32 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
 
   // Install the daemon and pipboard.
   // use ~/.pipcook as PIPCOOK_DIR
-  const PIPCOOK_DIR = path.join(os.homedir(), '.pipcook');
-  const DAEMON_DIR = path.join(PIPCOOK_DIR, 'server');
-  const BOARD_DIR = path.join(PIPCOOK_DIR, 'pipboard');
+  const PIPCOOK_DIR = join(os.homedir(), '.pipcook');
+  const DAEMON_DIR = join(PIPCOOK_DIR, 'server');
+  const BOARD_DIR = join(PIPCOOK_DIR, 'pipboard');
+  const BOARD_BUILD = join(BOARD_DIR, 'node_modules', '@pipcook', 'pipboard', 'build');
+  const DAEMON_PUBLIC = join(DAEMON_DIR, 'node_modules', '@pipcook', 'daemon', 'src', 'app', 'public');
 
   try {
+    await fse.remove(DAEMON_DIR);
+    await fse.remove(BOARD_DIR);
+
     await fse.ensureDir(DAEMON_DIR);
     await fse.ensureDir(BOARD_DIR);
-    await [
+    if (tuna) {
+      // write the daemon config
+      await fse.writeJSON(join(PIPCOOK_DIR, 'daemon.config.json'), {
+        env: {
+          BOA_CONDA_MIRROR
+        }
+      });
+    }
+
+    await Promise.all([
       npmInstall(npmClient, daemonPackage, beta, DAEMON_DIR, npmInstallEnvs),
       npmInstall(npmClient, boardPackage, beta, BOARD_DIR, npmInstallEnvs)
-    ];
+    ]);
+    await fse.copy(BOARD_BUILD, DAEMON_PUBLIC);
     spinner.succeed('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
     spinner.fail(`failed to initialize Pipcook with the error ${err && err.stack}`);

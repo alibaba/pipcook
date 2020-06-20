@@ -1,0 +1,59 @@
+.pipeline-info {
+  padding: 40px;
+
+  .title-wrapper {
+    margin-bottom: 20px;
+    margin-left: 20px;
+    .title {
+      font-size: 25px;
+    }
+  }
+
+  .select-task {
+    margin-left: 20px;
+  }
+
+  .content-wrapper {
+    display: flex;
+    flex-direction: row;
+
+    .plugin-choose {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .plugin-config {
+      flex-grow: 1;
+      height: 610px;
+      border: 1px solid black;
+      margin-top: 10px;
+      margin-left: 20px;
+      margin-right: 20px;
+      padding: 20px;
+      font-size: 15px;
+    }
+
+    .plugin-operate {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      margin-top: 10px;
+      margin-left: 20px;
+      margin-right: 20px;
+      .button {
+        margin-bottom: 10px;
+      }
+
+      .job-info {
+        position: absolute;
+        bottom: 10px;
+        font-size: 20px;
+      }
+    }
+  }
+  
+  
+}

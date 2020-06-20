@@ -51,7 +51,10 @@ const createAnnotation = (folder: string, fileName: string, width: number, heigh
           xmax: [ object.bbox[0] + object.bbox[2] ],
           ymax: [ object.bbox[1] + object.bbox[3] ]
         }
-      ]
+      ],
+      segmentation: object.segmentation || [],
+      iscrowd: object.iscrowd || 0,
+      area: object.area || 0
     };
   });
   createAnnotationFromJson(folder, currentAnnotation);

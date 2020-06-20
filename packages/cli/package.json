@@ -1,11 +1,8 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "0.5.29",
+  "version": "0.6.8",
   "description": "",
   "main": "dist/bin/index.js",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
@@ -13,21 +10,19 @@
     "compile": "tsc -b tsconfig.json && sh setup.sh"
   },
   "bin": {
-    "pipcook": "./dist/bin/pipcook",
-    "pipcook-daemon": "./dist/bin/pipcook-daemon",
-    "pipcook-job": "./dist/bin/pipcook-job",
-    "pipcook-pipeline": "./dist/bin/pipcook-pipeline",
-    "pipcook-plugin": "./dist/bin/pipcook-plugin"
+    "pipcook": "./dist/bin/pipcook.js",
+    "pipcook-app": "./dist/bin/pipcook-app.js",
+    "pipcook-daemon": "./dist/bin/pipcook-daemon.js",
+    "pipcook-job": "./dist/bin/pipcook-job.js",
+    "pipcook-pipeline": "./dist/bin/pipcook-pipeline.js",
+    "pipcook-plugin": "./dist/bin/pipcook-plugin.js"
   },
   "keywords": [],
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.5.16",
-    "@types/command-exists": "^1.2.0",
-    "@types/eventsource": "^1.1.2",
-    "@types/inquirer": "^6.5.0",
-    "@types/semver": "^7.1.0",
+    "@pipcook/pipcook-core": "^0.6.3",
+    "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
@@ -43,12 +38,17 @@
     "ora": "^3.4.0",
     "request": "^2.88.2",
     "semver": "^6.3.0",
+    "tar-stream": "^2.1.2",
     "ts-node": "^8.9.1",
     "yaml": "^1.7.2"
   },
-  "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
+    "@types/command-exists": "^1.2.0",
+    "@types/eventsource": "^1.1.2",
+    "@types/inquirer": "^6.5.0",
     "@types/jasmine": "^3.5.7",
+    "@types/semver": "^7.1.0",
     "nyc": "14.1.1"
   },
   "publishConfig": {

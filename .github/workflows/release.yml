@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -22,7 +22,7 @@ jobs:
           npm install
           npm run build
 
-      - name: publish npm Packages
+      - name: Publish npm packages
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > ~/.npmrc
           git config --global user.name 'pipcook'

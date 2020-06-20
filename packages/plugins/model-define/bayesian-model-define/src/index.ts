@@ -12,10 +12,10 @@ const sys = boa.import('sys');
 
 /**
  * assertion test
- * @param data 
+ * @param data
  */
 const assertionTest = (data: CsvDataset) => {
-  assert.ok(data.metadata.feature && data.metadata.feature.names.length === 1, 
+  assert.ok(data.metadata.feature && data.metadata.feature.names.length === 1,
     'feature should only have one dimension which is the feature name');
 };
 
@@ -38,7 +38,7 @@ const bayesianClassifierModelDefine: ModelDefineType = async (data: CsvDataset, 
   } else {
     classifier = await loadModel(path.join(recoverPath, 'model.pkl'));
   }
-  
+
   const pipcookModel: UniModel = {
     model: classifier,
     predict: async function (text: CsvSample) {

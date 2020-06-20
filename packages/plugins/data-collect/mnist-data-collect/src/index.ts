@@ -3,6 +3,7 @@
  */
 import { DataCollectType, ArgsType, createAnnotationFile } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
+import * as fs from 'fs-extra';
 import Jimp from 'jimp';
 import * as path from 'path';
 import _cliProgress from 'cli-progress';
@@ -18,6 +19,9 @@ const imageMnistDataCollect: DataCollectType = async (args: ArgsType): Promise<v
     testCount = 500,
     dataDir
   } = args;
+
+  await fs.remove(dataDir);
+  await fs.ensureDir(dataDir);
 
   const set = mnist.set(trainCount, testCount);
   const trainingSet = set.training;

@@ -13,13 +13,13 @@
       "package": "@pipcook/plugins-detectron-fasterrcnn-model-define"
     },
     "modelTrain": {
-      "package": "@pipcook/plugins-object-detection-detectron-model-train",
+      "package": "@pipcook/plugins-detectron-model-train",
       "params": {
         "steps": 100000
       }
     },
     "modelEvaluate": {
-      "package": "@pipcook/plugins-object-detection-detectron-model-evaluate"
+      "package": "@pipcook/plugins-detectron-model-evaluate"
     }
   }
 }

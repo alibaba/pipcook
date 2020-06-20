@@ -43,7 +43,7 @@ let previousResults: Record<string, any> = {};
 
 /**
  * Deserialize an argument.
- * @param arg 
+ * @param arg
  */
 function deserializeArg(arg: Record<string, any>): any {
   if (arg.__flag__ === '__pipcook_plugin_runnable_result__' &&
@@ -54,15 +54,15 @@ function deserializeArg(arg: Record<string, any>): any {
 }
 
 /**
- * Run a plugin, before running, a clean sandbox environment will be constructed 
+ * Run a plugin, before running, a clean sandbox environment will be constructed
  * for the plug-in runtime.
- * @param message 
+ * @param message
  */
 async function emitStart(message: PluginMessage): Promise<void> {
   const { params } = message;
   const pkg = params[0] as PluginPackage;
   const [ , ...pluginArgs ] = params;
-  debug(`start loading plugin ${pkg.name}`);
+  console.info(`start loading plugin ${pkg.name}`);
 
   try {
     const boa = require('@pipcook/boa');
@@ -118,7 +118,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
     if (resp) {
       const rid = uuid.v4();
       previousResults[rid] = resp;
-      debug(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
+      console.info(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
       recv(PluginOperator.WRITE, rid);
     } else {
       recv(PluginOperator.WRITE);
@@ -139,7 +139,7 @@ async function emitDestroy(): Promise<void> {
 
 /**
  * Gets the response by a result.
- * @param message 
+ * @param message
  */
 function getResponse(message: PluginMessage): void {
   const resp = deserializeArg(message.params[0]);
@@ -148,8 +148,8 @@ function getResponse(message: PluginMessage): void {
 
 const handlers: MessageHandler = {
   /**
-   * When each client process is just started, CostaRuntime will send a handshake 
-   * command, and the client will reply with a Pong message through START, which 
+   * When each client process is just started, CostaRuntime will send a handshake
+   * command, and the client will reply with a Pong message through START, which
    * is counted as a complete handshake. The client process will not receive other
    * messages until the handshake is complete.
    */

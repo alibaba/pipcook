@@ -1,24 +1,39 @@
 import path from 'path';
 import url from 'url';
-import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, ensureSymlink } from 'fs-extra';
+import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
+import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
 import {
   NpmPackageMetadata,
   NpmPackage,
+  NpmPackageNameSchema,
   RuntimeOptions,
   PluginPackage,
   PluginSource,
   CondaConfig
 } from './index';
 
-import request from 'request-promise';
+import { get } from 'request-promise';
 import Debug from 'debug';
 
 const debug = Debug('costa.runtime');
-const CONDA_CONFIG = path.join(__dirname, '../node_modules/@pipcook/boa/.CONDA_INSTALL_DIR');
 
-function selectLatestPackage(metadata: NpmPackageMetadata): NpmPackage {
+function selectNpmPackage(metadata: NpmPackageMetadata, source: PluginSource): NpmPackage {
+  const { version } = source?.schema;
+  if (version === 'beta') {
+    if (metadata['dist-tags'].beta == null) {
+      throw TypeError(`the package "${source.name}" has no beta version.`);
+    }
+    return metadata.versions[metadata['dist-tags'].beta];
+  }
+  if (version === 'latest') {
+    return metadata.versions[metadata['dist-tags'].latest];
+  }
+  if (version) {
+    // TODO(Yorkie): support version range just like (1.0.x, ^1.0.0, ...)
+    return metadata.versions[source?.schema.version];
+  }
   return metadata.versions[metadata['dist-tags'].latest];
 }
 
@@ -30,6 +45,35 @@ function spawnAsync(command: string, args?: string[], opts: SpawnOptions = {}): 
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });
+  });
+}
+
+function fetchPackageJsonFromGit(remote: string, head: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    let packageJson = '';
+    const extract = tar.extract();
+    extract.on('entry', (header, stream, next) => {
+      if (header.name === 'package.json') {
+        stream.on('data', (buf) => packageJson += buf);
+      }
+      stream.once('end', next);
+      stream.resume();
+    });
+    extract.on('finish', () => {
+      try {
+        resolve(JSON.parse(packageJson));
+      } catch (e) {
+        reject(e);
+      }
+    });
+
+    const child = spawn('git', [
+      'archive',
+      `--remote=${remote}`,
+      head,
+      'package.json'
+    ]);
+    child.stdout.pipe(extract);
   });
 }
 
@@ -82,16 +126,33 @@ export class CostaRuntime {
     let pkg: PluginPackage;
     if (source.from === 'npm') {
       debug(`requesting the url ${source.uri}`);
-      const resp = await request(source.uri);
+      // TODO(yorkie): support http cache
+      const resp = await get(source.uri, {
+        timeout: 15000
+      });
       const meta = JSON.parse(resp) as NpmPackageMetadata;
-      pkg = selectLatestPackage(meta);
-    } else {
+      pkg = selectNpmPackage(meta, source);
+    } else if (source.from === 'git') {
+      debug(`requesting the url ${source.uri}...`);
+      const { hostname, auth, hash } = source.urlObject;
+      let pathname = source.urlObject.pathname.replace(/^\/:?/, '');
+      const remote = `${auth || 'git'}@${hostname}:${pathname}${hash || ''}`;
+      pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
+    } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
-      pkg = require(source.uri + '/package.json');
+      pkg = require(`${source.uri}/package.json`);
     }
 
-    this.validPackage(pkg);
-    this.assignPackage(pkg, source);
+    try {
+      this.validPackage(pkg);
+      this.assignPackage(pkg, source);
+    } catch (err) {
+      if (process.env.NODE_ENV === 'test') {
+        console.warn('skip the valid package and assign because NODE_ENV is set to "test".');
+      } else {
+        throw err;
+      }
+    }
     return pkg;
   }
   /**
@@ -107,6 +168,14 @@ export class CostaRuntime {
       return true;
     }
 
+    let boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
+    if (!await pathExists(boaSrcPath)) {
+      boaSrcPath = path.join(__dirname, '../../boa');
+    }
+    if (!await pathExists(boaSrcPath)) {
+      throw new TypeError('costa is not installed correctly, please try init again');
+    }
+
     const pluginStdName = `${pkg.name}@${pkg.version}`;
     let pluginAbsName;
     if (pkg.pipcook.source.from === 'npm') {
@@ -114,13 +183,15 @@ export class CostaRuntime {
       debug(`install the plugin from npm registry: ${pluginAbsName}`);
     } else {
       pluginAbsName = pkg.pipcook.source.uri;
-      debug(`install the plugin from local: ${pluginAbsName}`);
+      debug(`install the plugin from ${pluginAbsName}`);
     }
-    await spawnAsync('npm', [
-      'install', `${pluginAbsName}`, '--no-save'
-    ], {
-      cwd: this.options.installDir
-    });
+
+    const npmExecOpts = { cwd: this.options.installDir };
+    if (!await pathExists(`${this.options.installDir}/package.json`)) {
+      // if not init for plugin directory, just run `npm init` and install boa firstly.
+      await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
+    }
+    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production' ], npmExecOpts);
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);
@@ -138,7 +209,7 @@ export class CostaRuntime {
 
       let python;
       try {
-        const condaInstallDir = await readFile(CONDA_CONFIG, 'utf8');
+        const condaInstallDir = await readFile(`${boaSrcPath}/.CONDA_INSTALL_DIR`, 'utf8');
         python = `${condaInstallDir}/bin/python3`;
         await access(python);
       } catch (err) {
@@ -156,13 +227,13 @@ export class CostaRuntime {
         if (pyIndex) {
           args = args.concat([ '-i', pyIndex ]);
         }
+        args = args.concat([ '--default-timeout=1000' ]);
         await spawnAsync(`${envDir}/bin/pip3`, args);
       }
     } else {
       debug(`just skip the Python environment installation.`);
     }
-    
-    await this.linkBoa();
+
     return true;
   }
   /**
@@ -186,7 +257,6 @@ export class CostaRuntime {
     }
     const runnable = new PluginRunnable(this, args.id);
     const pluginNodePath = path.join(this.options.installDir, 'node_modules');
-    await this.linkBoa();
     await runnable.bootstrap({
       customEnv: {
         NODE_PATH: `${(process.env.NODE_PATH || '')}:${pluginNodePath}`
@@ -197,20 +267,30 @@ export class CostaRuntime {
   }
   /**
    * Check the plugin installed
-   * @param name 
+   * @param name
    */
   private isInstalled(name: string): Promise<boolean> {
     return pathExists(`${this.options.installDir}/node_modules/${name}`);
   }
   /**
-   * link the boa dependency.
+   * Create the `NpmPackageNameSchema` object by a package name.
+   * @param fullname the fullname of a package, like "@pipcook/test@1.x"
+   * @returns the created `NpmPackageNameSchema` object.
    */
-  private async linkBoa() {
-    const boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
-    const boaDstPath = path.join(this.options.installDir, '/node_modules/@pipcook/boa');
-    await remove(boaDstPath);
-    await ensureSymlink(boaSrcPath, boaDstPath);
-    debug(`linked @pipcook/boa to ${boaDstPath} <= ${boaSrcPath}`);
+  private getNameSchema(fullname: string): NpmPackageNameSchema {
+    let schema = new NpmPackageNameSchema();
+    if (fullname[0] === '@') {
+      const scopeEnds = fullname.search('/');
+      if (scopeEnds === -1) {
+        throw new TypeError(`invalid package name: ${fullname}`);
+      }
+      schema.scope = fullname.substr(0, scopeEnds);
+      fullname = fullname.substr(scopeEnds + 1);
+    }
+    const [ name, version ] = fullname.split('@');
+    schema.name = name;
+    schema.version = version ? version : null;
+    return schema;
   }
   /**
    * Get the `PluginSource` object by a package name.
@@ -222,14 +302,20 @@ export class CostaRuntime {
     const src: PluginSource = {
       from: null,
       name,
-      uri: null
+      uri: null,
+      urlObject: urlObj
     };
     if (path.isAbsolute(name)) {
       src.from = 'fs';
       src.uri = name;
+    } else if (/^git(\+ssh)?:$/.test(urlObj.protocol)) {
+      const { host, pathname } = urlObj;
+      src.from = 'git';
+      src.uri = name;
     } else if (name[0] !== '.') {
+      src.schema = this.getNameSchema(name);
       src.from = 'npm';
-      src.uri = `http://registry.npmjs.com/${name}`;
+      src.uri = `http://registry.npmjs.com/${src.schema.packageName}`;
     } else if (urlObj.protocol == null) {
       src.from = 'fs';
       src.uri = path.join(cwd, name);

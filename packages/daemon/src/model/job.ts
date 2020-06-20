@@ -1,7 +1,6 @@
 import { STRING, INTEGER, BOOLEAN, Model, BuildOptions } from 'sequelize';
 import { providerWrapper, IApplicationContext } from 'midway';
 import DB from '../boot/database';
-import { PluginRunnable } from '@pipcook/costa';
 
 providerWrapper([
   {
@@ -22,9 +21,7 @@ export class JobModel extends Model {
   error: string;
   endTime: number;
   status: number;
-
-  // runnable is for servie.
-  runnable: PluginRunnable;
+  dataset: string;
 }
 
 export type JobModelStatic = typeof Model & {
@@ -70,6 +67,9 @@ export default async function model(context: IApplicationContext): Promise<JobMo
       type: INTEGER,
       allowNull: false,
       defaultValue: -1
+    },
+    dataset: {
+      type: STRING
     },
     error: {
       type: STRING

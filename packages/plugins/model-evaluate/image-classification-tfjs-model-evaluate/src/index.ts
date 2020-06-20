@@ -26,14 +26,14 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
 }
 
 /**
- * 
+ *
  * @param data Pipcook uniform sample data
  * @param model Pipcook model
  * @param args args: specify batch size, total batches to iterate
  */
-const ModelEvalute: ModelEvaluateType = 
+const ModelEvalute: ModelEvaluateType =
   async (data: ImageDataset, model: TfJsLayersModel): Promise<EvaluateResult> => {
-  
+
     let batchSize = 16;
 
     const { testLoader, metadata } = data;

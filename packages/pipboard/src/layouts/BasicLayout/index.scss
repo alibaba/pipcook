@@ -1,0 +1,35 @@
+* {
+  font-family: "PingFang SC";
+}
+
+#ice-container {
+  height: 100vh;
+}
+
+.dashboard{
+  height: 100%;
+  padding-top: 45px;
+  .basic-nav {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 45px;
+    .header {
+      margin: 8px 20px;
+      width: 100px;
+      color: #FFFFFF;
+      font-size: 20px;
+    }
+  } 
+
+  .content {
+    padding-top: 45px;
+    height: 100vh;
+  }
+
+  .plugin-iframe {
+    min-height: 100vh;
+    width: 100%;
+    margin-top: 45px;
+  }
+}

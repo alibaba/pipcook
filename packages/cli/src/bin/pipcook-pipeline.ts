@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import ora from 'ora';
 import * as path from 'path';
-import { get, post, put, del } from '../request';
+import { ChildProcess } from 'child_process';
+import { get, post, put, del, listen } from '../request';
 import { route } from '../router';
+import { ora, parseConfigFilename } from '../utils';
+import { tunaMirrorURI } from '../config';
 
 async function list(): Promise<void> {
-  const pipelines = await get(`${route.pipeline}/list`);
+  let pipelines = (await get(`${route.pipeline}/list`)).rows;
   if (pipelines.length > 0) {
     console.table(pipelines, [ 'id', 'name', 'updatedAt', 'createdAt' ]);
   } else {
@@ -52,6 +54,46 @@ async function remove(id?: any): Promise<void> {
   }
 }
 
+async function install(filename: string, opts: any): Promise<void> {
+  const spinner = ora();
+
+  try {
+    filename = await parseConfigFilename(filename);
+  } catch (err) {
+    spinner.fail(err.message);
+    return process.exit(1);
+  }
+  const params = {
+    cwd: process.cwd(),
+    config: filename,
+    pyIndex: opts.tuna ? tunaMirrorURI : undefined
+  };
+  if (!opts.verbose) {
+    get(`${route.pipeline}/install`, params);
+    spinner.succeed(`install plugins succeeded.`);
+    process.exit(0);
+  } else {
+    await listen(`${route.pipeline}/install`, params, {
+      'info': (e: MessageEvent) => {
+        const info = JSON.parse(e.data);
+        spinner.succeed(info);
+      },
+      'installed': (e: MessageEvent) => {
+        const plugin = JSON.parse(e.data);
+        spinner.succeed(`plugin (${plugin.name}@${plugin.version}) is installed`);
+      },
+      'finished': () => {
+        spinner.succeed('all plugins installed');
+        process.exit(0);
+      },
+      'error': (e: MessageEvent) => {
+        spinner.fail(`occurrs an error ${e.data}`);
+        process.exit(1);
+      }
+    });
+  }
+}
+
 program
   .command('list')
   .description('list all pipelines')
@@ -77,5 +119,12 @@ program
   .command('remove [id]')
   .description('remove all pipelines or specific 1 pipeline via id')
   .action(remove);
+
+program
+  .command('install <pipeline>')
+  .option('--verbose', 'prints verbose logs')
+  .option('--tuna', 'use tuna mirror to install python packages')
+  .action(install)
+  .description('install the plugins from a pipeline config file or url');
 
 program.parse(process.argv);

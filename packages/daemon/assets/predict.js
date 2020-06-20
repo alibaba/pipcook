@@ -1,10 +1,10 @@
 'use strict';
 
 const path = require('path');
-const { cwd, pipeline, output } = require('./metadata.json');
+const { pipeline, output } = require('./metadata.json');
 
 function _requirePlugin(name) {
-  const mod = require(path.join(cwd, pipeline[name]));
+  const mod = require(pipeline[name]);
   if (mod && typeof mod.default === 'function') {
     return mod.default;
   }
@@ -33,7 +33,7 @@ function predict(data) {
     });
   }
   return future.then((m) => {
-    m.predict(sample);
+    return m.predict(sample);
   });
 };
 

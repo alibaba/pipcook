@@ -1,8 +1,13 @@
-import { Context, controller, inject, provide, post, get, put, del } from 'midway';
-import { parseConfig } from '../../runner/helper';
 
+import { constants, PipelineDB } from '@pipcook/pipcook-core';
+import { Context, controller, inject, provide, post, get, put, del } from 'midway';
+import Debug from 'debug';
+import { PluginManager } from '../../service/plugin';
+import { parseConfig } from '../../runner/helper';
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
+import ServerSentEmitter from '../../utils/emitter';
+const debug = Debug('daemon.app.pipeline');
 
 @provide()
 @controller('/pipeline')
@@ -13,11 +18,18 @@ export class PipelineController {
   @inject('pipelineService')
   pipelineService: PipelineService;
 
+  @inject('PluginManager')
+  pluginManager: PluginManager;
+
   @post('')
   public async create() {
     const { ctx } = this;
     try {
-      const { config, name } = ctx.request.body;
+      const { name, isFile = true } = ctx.request.body;
+      let { config } = ctx.request.body;
+      if (!isFile) {
+        config = JSON.parse(config);
+      }
       const parsedConfig = await parseConfig(config);
       if (typeof name === 'string') {
         parsedConfig.name = name;
@@ -41,7 +53,7 @@ export class PipelineController {
       const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
       successRes(this.ctx, {
         message: 'get pipeline successfully',
-        data: pipelines.rows
+        data: pipelines,
       });
     } catch (err) {
       failRes(this.ctx, {
@@ -128,7 +140,11 @@ export class PipelineController {
     const { ctx } = this;
     const { id } = ctx.params;
     try {
-      const { config } = ctx.request.body;
+      const { isFile = true } = ctx.request.body;
+      let { config } = ctx.request.body;
+      if (!isFile) {
+        config = JSON.parse(config);
+      }
       const parsedConfig = await parseConfig(config, false);
       const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
       successRes(ctx, {
@@ -139,6 +155,43 @@ export class PipelineController {
       failRes(ctx, {
         message: err.message
       });
+    }
+  }
+
+  @get('/:id/install')
+  public async installById() {
+    const { pyIndex, cwd } = this.ctx.query;
+    const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
+    return this.install(pipeline, pyIndex, cwd);
+  }
+
+  @get('/install')
+  public async installByConfig() {
+    const { config, pyIndex, cwd } = this.ctx.query;
+    const pipeline = await parseConfig(config);
+    return this.install(pipeline, pyIndex, cwd);
+  }
+
+  private async install(pipeline: PipelineDB, pyIndex?: string, cwd?: string) {
+    const sse = new ServerSentEmitter(this.ctx);
+    try {
+      for (const type of constants.PLUGINS) {
+        if (!pipeline[type]) {
+          continue;
+        }
+        debug(`start installation: ${type}`);
+        const pkg = await this.pluginManager.fetch(pipeline[type], cwd);
+        sse.emit('info', pkg);
+
+        debug(`installing ${pipeline[type]}.`);
+        await this.pluginManager.install(pkg, pyIndex);
+        sse.emit('installed', pkg);
+      }
+      sse.emit('finished', pipeline);
+    } catch (err) {
+      sse.emit('error', err?.message);
+    } finally {
+      sse.finish();
     }
   }
 }

@@ -1,23 +1,19 @@
 - [什么是 Pipcook](/zh-cn/README.md)
-
-- 新手教程
-
-  - [新手入门](/zh-cn/tutorials/get-started.md)
-  - [新手入门——命令行工具](/zh-cn/tutorials/get-started-with-cli.md)
-  - [如何开发插件](/zh-cn/tutorials/how-to-develop-a-plugin.md)
-  - [如何在 Pipcook 中使用 Python](/zh-cn/tutorials/want-to-use-python.md)
-
-- 开发者
-
-  - [开发者指南](/zh-cn/devel/developer-guide.md)
-
+- [安装](/zh-cn/INSTALL.md)
+- 用户手册
+  - [Pipeline](/zh-cn/manual/intro-to-pipeline.md)
+  - [PipApp](/zh-cn/manual/intro-to-pipapp.md)
+  - [插件](/zh-cn/manual/intro-to-plugin.md)
+  - [Boa 使用指南](/zh-cn/manual/intro-to-boa.md)
+  - [命令行工具](/zh-cn/manual/pipcook-tools.md)
+- 教程
+  - [开始机器学习](/zh-cn/tutorials/machine-learning-overview.md)
+  - [在 Node.js 中使用 Python](/zh-cn/tutorials/using-python-functions-in-nodejs.md)
+- 如何贡献
+  - [贡献者指南](/zh-cn/contributing/guide-to-contributor.md)
+  - [维护者指南](/zh-cn/contributing/guide-to-collaborator.md)
+  - [贡献插件](/zh-cn/contributing/contribute-a-plugin.md)
 - 规范
-
-  - [插件规范](/zh-cn/spec/plugin.md)
-    - [数据源插件](/zh-cn/spec/plugin/0-data-collect.md)
-    - [数据访问插件](/zh-cn/spec/plugin/1-data-access.md)
-    - [数据处理插件](/zh-cn/spec/plugin/2-data-process.md)
-    - [模型定义插件](/zh-cn/spec/plugin/3-model-define.md)
-    - [模型训练插件](/zh-cn/spec/plugin/4-model-train.md)
-    - [模型求值插件](/zh-cn/spec/plugin/5-model-evaluate.md)
-  - [数据集规范](/zh-cn/spec/dataset.md)
+  - [插件](/zh-cn/spec/plugin.md)
+  - [数据集](/zh-cn/spec/dataset.md)
+- [术语表](/zh-cn/GLOSSORY.md)
