@@ -31,7 +31,8 @@
   "conda": {
     "python": "3.7",
     "dependencies": {
-      "tensorflow": "*"
+      "tensorflow": "*",
+      "opencv-python": "*"
     }
   }
 }

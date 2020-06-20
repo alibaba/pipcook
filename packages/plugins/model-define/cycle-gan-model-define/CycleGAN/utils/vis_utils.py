@@ -1,5 +1,5 @@
 import numpy as np
-import imageio
+import cv2
 import sys
 
 
@@ -15,5 +15,5 @@ def vis_grid(X, size, save_path=None):
             break
         img[j*h:j*h+h, i*w:i*w+w, :] = x
     if save_path is not None:
-        imageio.imwrite(save_path, img)
+        cv2.imwrite(save_path, img)
     return img
