@@ -24,11 +24,11 @@ const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArg
   model.add(tf.layers.lstm({
     units: 100
   }));
-  // model.add(tf.layers.dense({
-  //   units: Math.ceil(labelMap.length / 2),
-  //   activation: 'relu',
-  //   kernelRegularizer: tf.regularizers.l2({ l2: 0.01 })
-  // }));
+  model.add(tf.layers.dense({
+    units: Math.ceil(labelMap.length / 2),
+    activation: 'relu',
+    kernelRegularizer: tf.regularizers.l2({ l2: 0.01 })
+  }));
   model.add(tf.layers.dense({
     units: labelMap.length,
     activation: 'softmax'
