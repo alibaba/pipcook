@@ -10,10 +10,10 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json"
   },
-  "author": "",
-  "license": "Apache 2.0",
+  "author": "feely",
+  "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "0.6.2",
+    "@pipcook/boa": "^0.6.2",
     "@pipcook/pipcook-core": "^0.6.0"
   },
   "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
