@@ -9,6 +9,7 @@ const { start } = require('egg');
 
 const PIPCOOK_HOME = os.homedir() + '/.pipcook';
 const DAEMON_PIDFILE = PIPCOOK_HOME + '/daemon.pid';
+const DAEMON_CONFIG = PIPCOOK_HOME + '/daemon.config.json';
 const PORT = 6927;
 
 function createPidfileSync(pathname) {
@@ -31,6 +32,15 @@ function createPidfileSync(pathname) {
 (async function bootstrap() {
   // create pidfile firstly
   createPidfileSync(DAEMON_PIDFILE);
+
+  // load config
+  if (await pathExists(DAEMON_CONFIG)) {
+    const config = require(DAEMON_CONFIG);
+    if (config && config.env) {
+      process.env.BOA_CONDA_MIRROR = config.env.BOA_CONDA_MIRROR;
+      console.info(`set env BOA_CONDA_MIRROR=${config.env.BOA_CONDA_MIRROR}`);
+    }
+  }
 
   let midwayPathname = path.join(__dirname, 'node_modules/midway');
   if (!await pathExists(midwayPathname)) {

@@ -1,0 +1,35 @@
+{
+  "plugins": {
+    "dataCollect": {
+      "package": "./packages/plugins/data-collect/image-classification-data-collect",
+      "params": {
+        "url": "input your zip url"
+      }
+    },
+    "dataAccess": {
+      "package": "./packages/plugins/data-access/pascalvoc-data-access"
+    },
+    "dataProcess": {
+      "package": "./packages/plugins/data-process/image-data-process",
+      "params": {
+        "resize": [256, 256]
+      }
+    },
+    "modelDefine": {
+      "package": "./packages/plugins/model-define/tensorflow-resnet-model-define",
+      "params": {
+        "batchSize": 16,
+        "freeze": true
+      }
+    },
+    "modelTrain": {
+      "package": "./packages/plugins/model-train/image-classification-tensorflow-model-train",
+      "params": {
+        "epochs": 15
+      }
+    },
+    "modelEvaluate": {
+      "package": "./packages/plugins/model-evaluate/image-classification-tensorflow-model-evaluate"
+    }
+  }
+}
