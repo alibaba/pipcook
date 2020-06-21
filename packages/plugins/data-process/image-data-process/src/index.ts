@@ -8,7 +8,7 @@ import { DataProcessType, Metadata, ArgsType, ImageSample, ImageProcessor } from
  */
 const imageDataProcess: DataProcessType = async (data: ImageSample, metadata: Metadata, args: ArgsType): Promise<void> => {
   const {
-    resize = [256, 256],
+    resize = [ 256, 256 ],
     normalize = false,
     minMaxNormalize = true
   } = args;
@@ -29,7 +29,7 @@ const imageDataProcess: DataProcessType = async (data: ImageSample, metadata: Me
     console.error(`processing ${data.data} failed with ${err?.stack}`);
   }
   metadata.feature = {
-    shape: [resize[0], resize[1], 3]
+    shape: [ resize[0], resize[1], 3 ]
   };
 };
 

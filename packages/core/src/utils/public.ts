@@ -19,14 +19,14 @@ const extract = require('extract-zip');
 export function requireTFJsNode() {
   let tempWarnFn = console.warn;
   process.env['TF_CPP_MIN_LOG_LEVEL'] = '2';
-  console.warn = () => { };
+  console.warn = (msg: any) => { msg; };
   const tf = require('@tensorflow/tfjs-node');
   process.env['TF_CPP_MIN_LOG_LEVEL'] = '0';
   console.warn = tempWarnFn;
   return tf;
 }
 
-const tf = requireTFJsNode()
+const tf = requireTFJsNode();
 
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
@@ -308,7 +308,7 @@ export function getOsInfo() {
 
 /**
  * common image processor
- * @param imagePath 
+ * @param imagePath
  */
 export class ImageProcessor {
   public imageData: any;
@@ -335,12 +335,12 @@ export class ImageProcessor {
    */
   public standardize(std: [number, number, number], mean: [number, number, number]): ImageProcessor {
     this.operations.push(() => {
-      this.imageData = this.imageData.sub(tf.tensor2d([mean])).div(tf.sqrt(tf.tensor2d([std])));
+      this.imageData = this.imageData.sub(tf.tensor2d([ mean ])).div(tf.sqrt(tf.tensor2d([ std ])));
     });
     return this;
   }
 
-  public resize(size: [number, number], method: string = 'bilinear'): ImageProcessor {
+  public resize(size: [number, number], method = 'bilinear'): ImageProcessor {
     this.operations.push(() => {
       if (method === 'nearest') {
         this.imageData = tf.image.resizeBilinear(this.imageData, size);
@@ -351,7 +351,7 @@ export class ImageProcessor {
     return this;
   }
 
-  public save(path: string, type: string = 'png', shouldDispose: boolean = true): Promise<void> {
+  public save(path: string, type = 'png', shouldDispose = true): Promise<void> {
     const tfImageBufferPromise = (type === 'png') ? tf.node.encodePng(this.imageData) : tf.node.encodeJpeg(this.imageData);
     return tfImageBufferPromise.then((tfImageBuffer: any) => {
       fs.writeFileSync(path, tfImageBuffer);
@@ -373,7 +373,7 @@ export class ImageProcessor {
         }
         // prevent data disopose
         return this.imageData;
-      })
+      });
     }
     return this;
   }
