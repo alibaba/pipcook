@@ -14,6 +14,21 @@ const targz = require('targz');
 const extract = require('extract-zip');
 
 /**
+ * load tfjsnode prevent binding warn log
+ */
+export function requireTFJsNode() {
+  let tempWarnFn = console.warn;
+  process.env['TF_CPP_MIN_LOG_LEVEL'] = '2';
+  console.warn = () => { };
+  const tf = require('@tensorflow/tfjs-node');
+  process.env['TF_CPP_MIN_LOG_LEVEL'] = '0';
+  console.warn = tempWarnFn;
+  return tf;
+}
+
+const tf = requireTFJsNode()
+
+/**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
  * For more info, you can check the sources codes of plugin: @pipcook/pipcook-plugins-image-class-data-collect
  * @param annotationDir : annotation directory
@@ -289,4 +304,77 @@ export function getOsInfo() {
       }
     });
   });
+}
+
+/**
+ * common image processor
+ * @param imagePath 
+ */
+export class ImageProcessor {
+  public imageData: any;
+  protected operations: Function[] = [];
+
+  constructor(imagePath: string) {
+    this.imageData = tf.node.decodeImage(fs.readFileSync(imagePath), 3, 'int32', false);
+  }
+  /**
+   * normalize the image data have values between [0, 1]
+   */
+  public normalize(): ImageProcessor {
+    this.operations.push(() => {
+      const imageDataMax = this.imageData.max();
+      const imageDataMin = this.imageData.min();
+      this.imageData = this.imageData.sub(imageDataMin).div(imageDataMax.sub(imageDataMin));
+    });
+    return this;
+  }
+  /**
+   * standardize image data by given std and mean
+   * @param std should have 3 channel data
+   * @param mean should have 3 channel data
+   */
+  public standardize(std: [number, number, number], mean: [number, number, number]): ImageProcessor {
+    this.operations.push(() => {
+      this.imageData = this.imageData.sub(tf.tensor2d([mean])).div(tf.sqrt(tf.tensor2d([std])));
+    });
+    return this;
+  }
+
+  public resize(size: [number, number], method: string = 'bilinear'): ImageProcessor {
+    this.operations.push(() => {
+      if (method === 'nearest') {
+        this.imageData = tf.image.resizeBilinear(this.imageData, size);
+      } else if (method === 'bilinear') {
+        this.imageData = tf.image.resizeNearestNeighbor(this.imageData, size);
+      }
+    });
+    return this;
+  }
+
+  public save(path: string, type: string = 'png', shouldDispose: boolean = true): Promise<void> {
+    const tfImageBufferPromise = (type === 'png') ? tf.node.encodePng(this.imageData) : tf.node.encodeJpeg(this.imageData);
+    return tfImageBufferPromise.then((tfImageBuffer: any) => {
+      fs.writeFileSync(path, tfImageBuffer);
+      if (shouldDispose) {
+        this.dispose();
+      }
+    });
+  }
+
+  public dispose(): void {
+    this.imageData.dispose();
+  }
+
+  public excute(): ImageProcessor {
+    if (this.imageData) {
+      this.imageData = tf.tidy(() => {
+        for (let optFn of this.operations) {
+          optFn();
+        }
+        // prevent data disopose
+        return this.imageData;
+      })
+    }
+    return this;
+  }
 }

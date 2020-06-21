@@ -18,8 +18,7 @@
   "dependencies": {
     "@pipcook/pipcook-core": "^0.6.3",
     "@types/cli-progress": "^3.4.2",
-    "cli-progress": "^3.6.0",
-    "jimp": "^0.10.0"
+    "cli-progress": "^3.6.0"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
