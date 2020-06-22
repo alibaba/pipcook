@@ -104,6 +104,7 @@ const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArg
           ).arraySync();
           const char = oneHotToChar(value, labelMap);
           chars += char;
+          console.log(char);
           if (char === '。') {
             break;
           }
