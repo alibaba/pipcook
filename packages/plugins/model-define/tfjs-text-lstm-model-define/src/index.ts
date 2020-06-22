@@ -27,8 +27,21 @@ function charsToInput(chars: string, charSetArray: string[], maxParagraphLen: nu
   return input
 }
 
+function oneHotToChar(onehot: number[], charSetArray: string[]): string {
+  let maxIdx = 0
+  let maxValue = onehot[0]
+  for (let i = 0; i < onehot.length; i++) {
+    if (onehot[i] > maxValue) {
+      maxValue = onehot[i]
+      maxIdx = i
+    }
+  }
+  return charSetArray[maxIdx]
+}
+
 const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
-  let { recoverPath, labelMap, maxLineLength } = args;
+  const { recoverPath } = args;
+  let { labelMap, maxLineLength } = args?.dataset || {};
   if (!recoverPath) {
     labelMap = data.metadata.labelMap;
     maxLineLength = data.metadata.maxLineLength;
@@ -86,17 +99,14 @@ const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArg
       for (let j = 0; j < sentenceLength; j++) {
         for (let i = 1; i <= maxLineLength - 1; i++) {
           const inputs = charsToInput(chars, labelMap, maxLineLength);
-          const [ predictedOnehot ] = this.model.predict(
+          const [ value ] = this.model.predict(
             tf.tensor(inputs, [1, maxLineLength - 1])
           ).arraySync();
-          console.log(predictedOnehot);
-    
-          // const predictedChar = process.oneHotToChar(
-          //   predictedOnehot,
-          //   preprocessResult.charSetArray
-          // )
-          // chars += predictedChar
-          // if (predictedChar === '。') break
+          const char = oneHotToChar(value, labelMap);
+          chars += char;
+          if (char === '。') {
+            break;
+          }
         }
       }
       return chars;
