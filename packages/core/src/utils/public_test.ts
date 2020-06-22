@@ -1,4 +1,4 @@
-import { convertPascal2CocoFileOutput, createAnnotationFromJson } from './public';
+import { convertPascal2CocoFileOutput, createAnnotationFromJson, shuffle } from './public';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as uuid from 'uuid';
@@ -56,5 +56,12 @@ describe('public utils', () => {
     expect(json.annotations[0].image_id).toBe(1);
     await fs.remove(file + '.json');
     await fs.remove(file + '.xml');
+  });
+
+  it('test if the array is shuffled', () => {
+    const array = [ 1, 2, 3, 4, 5 ];
+    shuffle(array);
+    array.sort();
+    expect(array).toEqual([ 1, 2, 3, 4, 5 ]);
   });
 });
