@@ -13,13 +13,13 @@
       "package": "./packages/plugins/model-define/tfjs-text-lstm-model-define"
     },
     "modelTrain": {
-      "package": "./packages/plugins/model-train/tfjs-text-model-train",
+      "package": "./packages/plugins/model-train/text-creation-tfjs-model-train",
       "params": {
         "epochs": 200
       }
     },
     "modelEvaluate": {
-      "package": "./packages/plugins/model-evaluate/tfjs-text-model-evaluate"
+      "package": "./packages/plugins/model-evaluate/text-creation-tfjs-model-evaluate"
     }
   }
 }

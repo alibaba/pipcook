@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugins-tfjs-text-model-evaluate",
+  "name": "@pipcook/plugins-text-creation-tfjs-model-evaluate",
   "version": "0.6.0",
   "description": "",
   "main": "dist/index",

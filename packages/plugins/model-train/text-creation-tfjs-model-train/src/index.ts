@@ -19,7 +19,7 @@ async function createDataset(loader: CsvDataLoader, labelMap: string[]): Promise
 
 const ModelTrain: ModelTrainType = async (dataset: CsvDataset, model: TfJsLayersModel, args: ModelTrainArgsType): Promise<TfJsLayersModel> => {
   const {
-    epochs = 10,
+    epochs = 30,
     batchSize = 16,
     modelPath
   } = args;

@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugins-tfjs-text-model-train",
+  "name": "@pipcook/plugins-text-creation-tfjs-model-train",
   "version": "0.6.0",
   "description": "",
   "main": "dist/index",
