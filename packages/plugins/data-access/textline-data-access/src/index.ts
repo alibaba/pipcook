@@ -52,7 +52,7 @@ class TextlineLoader implements CsvDataLoader {
 
 const textlineAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset> => {
   const { dataDir } = args;
-  const lines = (await fs.readFile(`${dataDir}/input.txt`, 'utf8')).split('\n').slice(0, 10);
+  const lines = (await fs.readFile(`${dataDir}/input.txt`, 'utf8')).split('\n').slice(0, 200);
   const loader = new TextlineLoader(lines);
   
   return {
