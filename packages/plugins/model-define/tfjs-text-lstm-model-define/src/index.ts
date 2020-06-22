@@ -24,19 +24,19 @@ function charsToInput(chars: string, charSetArray: string[], maxParagraphLen: nu
     }
     input[input.length - chars.length + i] = charSetArray.indexOf(chars[i]);
   }
-  return input
+  return input;
 }
 
 function oneHotToChar(onehot: number[], charSetArray: string[]): string {
-  let maxIdx = 0
-  let maxValue = onehot[0]
+  let maxIdx = 0;
+  let maxValue = onehot[0];
   for (let i = 0; i < onehot.length; i++) {
     if (onehot[i] > maxValue) {
-      maxValue = onehot[i]
-      maxIdx = i
+      maxValue = onehot[i];
+      maxIdx = i;
     }
   }
-  return charSetArray[maxIdx]
+  return charSetArray[maxIdx];
 }
 
 const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
@@ -104,7 +104,6 @@ const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArg
           ).arraySync();
           const char = oneHotToChar(value, labelMap);
           chars += char;
-          console.log(char);
           if (char === '。') {
             break;
           }

@@ -37,7 +37,7 @@ class TextlineLoader implements CsvDataLoader {
     this.records = inputSeqs.map((inputSeq) => {
       const sample = {
         data: inputSeq.slice(0, -1),
-        label: inputSeq.slice(-1)[0],
+        label: inputSeq.slice(-1)[0]
       } as CsvSample;
       return sample;
     });
@@ -54,19 +54,19 @@ const textlineAccess: DataAccessType = async (args: ArgsType): Promise<CsvDatase
   const { dataDir } = args;
   const lines = (await fs.readFile(`${dataDir}/input.txt`, 'utf8')).split('\n').slice(0, 200);
   const loader = new TextlineLoader(lines);
-  
+
   return {
     trainLoader: loader,
     trainCsvPath: `${dataDir}/input.txt`,
     testCsvPath: `${dataDir}/test.txt`,
     validationCsvPath: `${dataDir}/validate.txt`,
     validationResult: {
-      result: true,
+      result: true
     },
     dataStatistics: [],
     metadata: {
       feature: {
-        names: [],
+        names: []
       },
       labelMap: loader.charset,
       maxLineLength: loader.maxLineLength
