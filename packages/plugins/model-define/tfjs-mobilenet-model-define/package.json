@@ -13,8 +13,8 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "lewis617 <lewis617@163.com>",
+  "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.6.3",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
