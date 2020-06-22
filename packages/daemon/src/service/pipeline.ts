@@ -85,6 +85,11 @@ export class PipelineService {
       limit,
       order: [
         [ 'createdAt', 'DESC' ]
+      ],
+      include: [
+        {
+          all: true
+        }
       ]
     });
   }

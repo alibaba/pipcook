@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dialog } from '@alifd/next';
+import { Button, Dialog, Tag } from '@alifd/next';
 
 /**
  * !important: This File contains many information that should be returned by backend. For now, just remain these.
@@ -27,86 +27,113 @@ export const PIPELINE_STATUS = ['INIT', 'RUNNING', 'SUCCESS', 'FAIL'];
 
 export const PIPELINE_MAP = [
   {
-    name: 'Pipeline Id',
-    field: 'id',
+    name: 'ID',
+    width: 50,
+    cell: (value, index, record) => {
+      return <a href={`/index.html#/pipeline/info?pipelineId=${record.id}`}>
+        {record.id.replace(/-/g, '').slice(0, 12)}
+      </a>;
+    },
   },
   {
-    name: 'Data Collect',
-    field: 'dataCollect',
+    name: 'Dataset',
+    width: 100,
+    cell: (value, index, record) => {
+      return <Tag size="small" type="normal">{record.dataCollect}</Tag>;
+    },
   },
   {
-    name: 'Data Access',
-    field: 'dataAccess',
+    name: 'Model',
+    width: 100,
+    cell: (value, index, record) => {
+      return <Tag size="small" type="normal">{record.modelDefine}</Tag>;
+    },
   },
   {
-    name: 'Data Process',
-    field: 'dataProcess',
-  },
-  {
-    name: 'Model Define',
-    field: 'modelDefine',
-  },
-  {
-    name: 'Model Load',
-    field: 'modelLoad',
-  },
-  {
-    name: 'Model Train',
-    field: 'modelTrain',
-  },
-  {
-    name: 'Model Evaluate',
-    field: 'modelEvaluate',
+    name: 'Jobs',
+    cell: (value, index, record) => {
+      return <span>{record.jobs.length}</span>;
+    },
+    width: 30,
   },
   {
     name: 'Created At',
     field: 'createdAt',
-  },
-  {
-    name: 'Detail',
-    cell: (value, index, record) => {
-      return <a href={`/index.html#/pipeline/info?pipelineId=${record.id}`}><Button>Detail</Button></a>;
-    },
+    width: 50,
+    sortable: true,
   },
 ];
 
 export const JOB_MAP = [
   {
-    name: 'Job Id',
-    field: 'id',
-  },
-  {
-    name: 'Status',
-    field: 'status',
-  },
-  {
-    name: 'Evaluate Pass',
+    name: 'ID',
+    width: 50,
     cell: (value, index, record) => {
-      return record.evaluateMap ? <Button onClick={
-        () => {Dialog.show({title: 'evaluate pass', content: record.evaluateMap});}
-      }>Check</Button> : 'no evaluateMap';
+      return <a href={`/index.html#/pipeline/info?pipelineId=${record.pipelineId}&jobId=${record.id}`}>
+        {record.id.replace(/-/g, '').slice(0, 12)}
+      </a>;
     },
   },
   {
-    name: 'Spec Version',
-    field: 'specVersion',
+    name: 'Status',
+    width: 50,
+    cell: (value, index, record) => {
+      const colors = {
+        INIT: 'yellow',
+        RUNNING: 'yellow',
+        SUCCESS: 'green',
+        FAIL: 'red',
+      };
+      return <Tag size="small" color={colors[record.status]}>{record.status}</Tag>;
+    },
   },
   {
-    name: 'Error',
+    name: 'Evaluation',
+    width: 100,
     cell: (value, index, record) => {
-      return record.error ? <Button onClick={
-        () => {Dialog.show({title: 'error', content: record.error});}
-      }>Check</Button> : 'no error';
+      let result = null;
+      if (record.evaluateMap) {
+        result = JSON.parse(record.evaluateMap);
+        result.pass = undefined;
+      } else {
+        return <span>no result</span>;
+      }
+      if (record.evaluatePass) {
+        const content = JSON.stringify(result, null, 2);
+        const onClick = () => {
+          Dialog.show({
+            title: 'evaluation',
+            content,
+          });
+        };
+        return <Button size="small" onClick={onClick}>{content.slice(0, 40)}</Button>;
+      } else {
+        return <Tag size="small" color="red">{record.error}</Tag>;
+      }
+    },
+  },
+  {
+    name: 'Pipeline',
+    width: 50,
+    cell: (value, index, record) => {
+      return <a href={`/index.html#/pipeline/info?pipelineId=${record.pipelineId}`}>
+        {record.id.replace(/-/g, '').slice(0, 12)}
+      </a>;
     },
   },
   {
     name: 'End Time',
+    width: 100,
     field: 'endTime',
   },
   {
-    name: 'Check Pipeline',
+    name: 'Model',
+    width: 40,
     cell: (value, index, record) => {
-      return <a href={`/index.html#/pipeline/info?pipelineId=${record.pipelineId}&jobId=${record.id}`}><Button>Detail</Button></a>;
+      const download = () => {
+        location.href = `/job/${record.id}/output.tar.gz`;
+      };
+      return <Button size="small" disabled={record.status !== 'SUCCESS'} onClick={download}>Download</Button>;
     },
   },
 ];

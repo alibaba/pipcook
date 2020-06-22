@@ -300,5 +300,8 @@ export function shuffle(array: any[]) {
     const j = Math.floor(Math.random() * (i + 1));
     [ array[i], array[j] ] = [ array[j], array[i] ];
   }
+<<<<<<< HEAD
   return array;
+=======
+>>>>>>> ad0de4036068b24c6493e9eb8f991bc343ae2b27
 }

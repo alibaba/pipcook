@@ -10,14 +10,14 @@
   height: 100%;
   padding-top: 45px;
   .basic-nav {
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 100%;
     height: 45px;
+    z-index: 10;
     .header {
       margin: 8px 20px;
       width: 100px;
-      color: #FFFFFF;
       font-size: 20px;
     }
   } 
