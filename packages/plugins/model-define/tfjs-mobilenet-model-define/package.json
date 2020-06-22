@@ -20,7 +20,6 @@
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "jimp": "^0.10.0"
   },
-  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
     "nyc": "14.1.1"
