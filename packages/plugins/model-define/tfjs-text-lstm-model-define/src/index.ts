@@ -50,7 +50,7 @@ const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArg
 
   let model: tf.LayersModel = null;
   if (recoverPath) {
-    model = (await tf.loadLayersModel('file://' + join(recoverPath, 'model', 'model.json'))) as tf.LayersModel;
+    model = (await tf.loadLayersModel('file://' + join(recoverPath, 'model.json'))) as tf.LayersModel;
   } else {
     const localModel = tf.sequential();
     localModel.add(tf.layers.embedding({
