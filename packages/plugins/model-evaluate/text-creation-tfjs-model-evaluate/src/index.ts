@@ -2,7 +2,7 @@ import { CsvDataset, ModelEvaluateType, TfJsLayersModel, CsvDataLoader, Evaluate
 import * as tf from '@tensorflow/tfjs-node-gpu';
 
 /**
- * 
+ *
  * @param data Pipcook uniform sample data
  * @param model Pipcook model
  * @param args args: specify batch size, total batches to iterate

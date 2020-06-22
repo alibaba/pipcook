@@ -100,7 +100,7 @@ const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArg
         for (let i = 1; i <= maxLineLength - 1; i++) {
           const inputs = charsToInput(chars, labelMap, maxLineLength);
           const [ value ] = this.model.predict(
-            tf.tensor(inputs, [1, maxLineLength - 1])
+            tf.tensor(inputs, [ 1, maxLineLength - 1 ])
           ).arraySync();
           const char = oneHotToChar(value, labelMap);
           chars += char;
