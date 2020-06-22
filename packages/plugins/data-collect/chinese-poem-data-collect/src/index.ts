@@ -11,11 +11,16 @@ const collectData: DataCollectType = async (args: ArgsType): Promise<void> => {
   assert.ok(url, 'Please specify a url of zip of your data');
 
   const resp = JSON.parse(await request(url));
-  let lines = [];
+  let lines: string[] = [];
 
   for (const { paragraphs } of resp) {
-    const line = paragraphs.join('');
-    lines.push(line);
+    const notEmpty = (word: string) => !!word;
+    const appendDot = (word: string) => `${word}。`;
+    const line = paragraphs.join('')
+      .split('。')
+      .filter(notEmpty)
+      .map(appendDot);
+    lines = lines.concat(line);
   }
 
   // TODO(Yorkie): remove it when this gets done

@@ -17,14 +17,14 @@
   "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/pipcook-core": "^0.5.16",
-    "@types/fs-extra": "^8.1.0",
-    "@types/request-promise": "^4.1.46",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "request-promise": "^4.2.5"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
+    "@types/fs-extra": "^8.1.0",
+    "@types/request-promise": "^4.1.46",
     "nyc": "14.1.1"
   },
   "publishConfig": {

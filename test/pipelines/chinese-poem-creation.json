@@ -15,7 +15,7 @@
     "modelTrain": {
       "package": "./packages/plugins/model-train/tfjs-text-model-train",
       "params": {
-        "epochs": 1
+        "epochs": 200
       }
     },
     "modelEvaluate": {
