@@ -15,5 +15,5 @@ def vis_grid(X, size, save_path=None):
             break
         img[j*h:j*h+h, i*w:i*w+w, :] = x
     if save_path is not None:
-        cv2.imwrite(save_path, img)
+        cv2.imwrite(save_path, (img + 1)*127.5)
     return img

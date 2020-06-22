@@ -19,9 +19,10 @@
     "modelTrain": {
       "package": "./packages/plugins/model-train/image-generate-tensorflow-model-train",
       "params": {
-        "batch_size": 10,
-        "save_iter": 200,
-        "niter": 1
+        "batch_size": 1,
+        "save_iter": 10,
+        "niter": 50000,
+	"verbose": true
       }
     },
     "modelEvaluate": {

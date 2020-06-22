@@ -6,14 +6,17 @@ const { tuple } = boa.builtins();
 const sys = boa.import('sys');
 // TODO(Feely): support dot in the module name
 sys.path.insert(0, path.join(__dirname, '..'));
-const tf = boa.import('tensorflow');
 const { CycleGAN } = boa.import('CycleGAN.models');
-const cv2 = boa.import('cv2');
-const base64 = boa.import('base64');
 
 type PredictType = 'a2b' | 'b2a';
+
+interface CycleGanImageSampleData {
+  path: string;
+  predictType: PredictType;
+}
+
 interface CycleGanImageSample extends Sample {
-  data: string;
+  data: CycleGanImageSampleData;
   predictType: PredictType;
   label: any;
 }
@@ -51,10 +54,7 @@ let opt = {
   beta1: 0.5,
 
   // model file
-  a_to_b_model_file: '',
-  b_to_a_model_file: '',
-  dis_a_model_file: '',
-  dis_b_model_file: ''
+  recoverPath: ''
 };
 
 const cycleGanModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<UniModel> => {
@@ -67,14 +67,7 @@ const cycleGanModelDefine: ModelDefineType = async (data: ImageDataset, args: Mo
     model,
     config: null,
     predict: function (inputData: CycleGanImageSample) {
-      let m = inputData.predictType == 'a2b' ? model.AtoB : model.BtoA;
-      let image = tf.io.read_file(inputData.data);
-      image = tf.image.decode_jpeg(image, boa.kwargs({
-        channels: 3
-      }));
-      const predictResult = m.predict(image);
-      const buffer = cv2.imencode('.jpg', predictResult)[1];
-      return base64.b64encode(buffer);
+      return model.predict(inputData.data.path, inputData.data.predictType);
     }
   };
   return pipcookModel;

@@ -1,6 +1,7 @@
 # keras version of https://github.ckom/junyanz/CycleGAN/models/cycle_gan_model.lua
 
 import os
+import base64
 from .base import BaseModel
 from .gen import defineG
 from .dis import defineD
@@ -8,10 +9,13 @@ import tensorflow as tf
 from tensorflow.keras.layers import Input
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Model
+from tensorflow.keras.models import load_model
 import numpy as np
 import sys
+import cv2
 from ..utils.vis_utils import vis_grid
 from ..image_loader import ImageGenerator
+from ..layers import InstanceNormalization2D
 
 class CycleGAN(BaseModel):
     name = 'CycleGAN'
@@ -26,29 +30,21 @@ class CycleGAN(BaseModel):
                 w.set_value(value.astype('float32'))
 
     def __init__(self, opt):
-        if not opt['a_to_b_model_file']:
+        customObj = { 'InstanceNormalization2D': InstanceNormalization2D }
+        if opt['recoverPath']:
+            gen_B = load_model(os.path.join(opt['recoverPath'], 'a2b.h5'), custom_objects=customObj)
+            dis_B = load_model(os.path.join(opt['recoverPath'], 'disb.h5'), custom_objects=customObj)
+            gen_A = load_model(os.path.join(opt['recoverPath'], 'b2a.h5'), custom_objects=customObj)
+            dis_A = load_model(os.path.join(opt['recoverPath'], 'disa.h5'), custom_objects=customObj)
+        else:
             gen_B = defineG(opt['which_model_netG'], input_shape=opt['shapeA'], output_shape=opt['shapeB'], ngf=opt['ngf'], name='gen_B')
             self.init_network(gen_B)
-        else:
-            gen_B = Model.load_model(opt['a_to_b_model_file'])
-        
-        if not opt['dis_b_model_file']:
             dis_B = defineD(opt['which_model_netD'], input_shape=opt['shapeB'], ndf=opt['ndf'], use_sigmoid=not opt['use_lsgan'], name='dis_B')
             self.init_network(dis_B)
-        else:
-            dis_B = Model.load_model(opt['dis_b_model_file'])
-        
-        if not opt['b_to_a_model_file']:
             gen_A = defineG(opt['which_model_netG'], input_shape=opt['shapeB'], output_shape=opt['shapeA'], ngf=opt['ngf'], name='gen_A')
             self.init_network(gen_A)
-        else:
-            gen_A = Model.load_model(opt['b_to_a_model_file'])
-        
-        if not opt['b_to_a_model_file']:
             dis_A = defineD(opt['which_model_netD'], input_shape=opt['shapeA'], ndf=opt['ndf'], use_sigmoid=not opt['use_lsgan'], name='dis_A')
             self.init_network(dis_A)
-        else:
-            dis_A = Model.load_model(opt['dis_a_model_file'])
 
         # build for generators
         real_A = Input(opt['shapeA'])
@@ -101,12 +97,12 @@ class CycleGAN(BaseModel):
         self.BtoA = gen_A
         self.DisA = dis_A
         self.DisB = dis_B
-        self.opt = opt
+        self.modelOpt = opt
 
     def fit(self, img_a_list, img_b_list, opt):
         self.trainOpt = opt
-        img_A_generator = ImageGenerator(img_a_list, resize=opt['resize'], crop=opt['crop'])
-        img_B_generator = ImageGenerator(img_b_list, resize=opt['resize'], crop=opt['crop'])
+        img_A_generator = ImageGenerator(fileList=img_a_list, resize=self.modelOpt['resize'], crop=self.modelOpt['crop'])
+        img_B_generator = ImageGenerator(fileList=img_b_list, resize=self.modelOpt['resize'], crop=self.modelOpt['crop'])
         if not os.path.exists(opt['pic_dir']):
             os.mkdir(opt['pic_dir'])
         bs = opt['batch_size']
@@ -121,7 +117,6 @@ class CycleGAN(BaseModel):
             # sample
             real_A = img_A_generator(bs)
             real_B = img_B_generator(bs)
-
             # fake pool
             fake_A_pool.extend(self.BtoA.predict(real_B))
             fake_B_pool.extend(self.AtoB.predict(real_A))
@@ -144,7 +139,7 @@ class CycleGAN(BaseModel):
                     self.D_trainner.train_on_batch([real_A, fake_A, real_B, fake_B],
                         [zeros, ones*0.9, zeros, ones*0.9])
 
-            if opt['idloss'] > 0:
+            if self.modelOpt['idloss'] > 0:
                 _, G_loss_fake_B, G_loss_fake_A, G_loss_rec_A, G_loss_rec_B, G_loss_id_A, G_loss_id_B = \
                     self.G_trainner.train_on_batch([real_A, real_B],
                         [zeros, zeros, real_A, real_B, real_A, real_B])
@@ -157,7 +152,7 @@ class CycleGAN(BaseModel):
                 print('Generator Loss:')
                 print('fake_B: {} rec_A: {} | fake_A: {} rec_B: {}'.\
                         format(G_loss_fake_B, G_loss_rec_A, G_loss_fake_A, G_loss_rec_B))
-                if opt['idloss'] > 0:
+                if self.modelOpt['idloss'] > 0:
                     print('id_loss_A: {}, id_loss_B: {}'.format(G_loss_id_A, G_loss_id_B))
 
                 print('Discriminator Loss:')
@@ -191,10 +186,9 @@ class CycleGAN(BaseModel):
             sys.stdout.flush()
 
     def evaluate(self, img_a_list, img_b_list):
-        opt = self.trainOpt
-        img_A_generator = ImageGenerator(img_a_list, resize=opt['resize'], crop=opt['crop'])
-        img_B_generator = ImageGenerator(img_b_list, resize=opt['resize'], crop=opt['crop'])
-        bs = opt['batch_size']
+        img_A_generator = ImageGenerator(fileList=img_a_list, resize=self.modelOpt['resize'], crop=self.modelOpt['crop'])
+        img_B_generator = ImageGenerator(fileList=img_b_list, resize=self.modelOpt['resize'], crop=self.modelOpt['crop'])
+        bs = self.trainOpt['batch_size']
 
         fake_A_pool = []
         fake_B_pool = []
@@ -207,8 +201,8 @@ class CycleGAN(BaseModel):
         fake_A_pool.extend(self.BtoA.predict(real_B))
         fake_B_pool.extend(self.AtoB.predict(real_A))
 
-        fake_A_pool = fake_A_pool[-opt['pool_size']:]
-        fake_B_pool = fake_B_pool[-opt['pool_size']:]
+        fake_A_pool = fake_A_pool[-self.trainOpt['pool_size']:]
+        fake_B_pool = fake_B_pool[-self.trainOpt['pool_size']:]
 
         fake_A = [fake_A_pool[ind] for ind in np.random.choice(len(fake_A_pool), size=(bs,), replace=False)]
         fake_B = [fake_B_pool[ind] for ind in np.random.choice(len(fake_B_pool), size=(bs,), replace=False)]
@@ -223,7 +217,7 @@ class CycleGAN(BaseModel):
             self.D_trainner.evaluate([real_A, fake_A, real_B, fake_B],
                 [zeros, ones*0.9, zeros, ones*0.9])
 
-        if opt['idloss'] > 0:
+        if self.modelOpt['idloss'] > 0:
             _, G_loss_fake_B, G_loss_fake_A, G_loss_rec_A, G_loss_rec_B, G_loss_id_A, G_loss_id_B = \
                 self.G_trainner.evaluate([real_A, real_B],
                     [zeros, zeros, real_A, real_B, real_A, real_B])
@@ -233,4 +227,11 @@ class CycleGAN(BaseModel):
                     [zeros, zeros, real_A, real_B, ])
         return G_loss_fake_B, G_loss_rec_A, G_loss_fake_A, G_loss_rec_B, \
             G_loss_id_A, G_loss_id_B, D_loss_real_A, D_loss_fake_A, D_loss_real_B, D_loss_fake_B
-        
+
+    def predict(self, imgPath, predictType):
+        imgs = np.array([cv2.resize(cv2.imread(imgPath), self.modelOpt['crop'])])/127.5-1
+        m = self.AtoB if predictType == 'a2b' else self.BtoA
+        result = m.predict(imgs)
+        image = (result[0]+1)*127.5
+        buff = cv2.imencode('.jpg', image)[1]
+        return str(base64.b64encode(buff),'utf8')
