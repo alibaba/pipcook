@@ -3,7 +3,15 @@
  * the data is conform to expectation.
  */
 
-import { ArgsType, parseAnnotation, DataAccessType, VocDataset, ImageDataLoader, ImageLabel } from '@pipcook/pipcook-core';
+import {
+  ArgsType,
+  parseAnnotation,
+  DataAccessType,
+  VocDataset,
+  ImageDataLoader,
+  ImageLabel,
+  shuffle
+} from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -17,6 +25,7 @@ interface DataPair {
 class DataLoader implements ImageDataLoader {
   dataPairs!: DataPair[];
   constructor(dataPairs: DataPair[]) {
+    shuffle(dataPairs);
     this.dataPairs = dataPairs;
   }
 

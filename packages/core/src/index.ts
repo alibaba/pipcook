@@ -64,7 +64,8 @@ export {
   getMetadata,
   getModelDir,
   convertPascal2CocoFileOutput,
-  compressTarFile
+  compressTarFile,
+  shuffle
 } from './utils/public';
 
 // expose constants
