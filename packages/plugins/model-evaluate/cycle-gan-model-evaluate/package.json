@@ -1,22 +1,24 @@
 {
-  "name": "@pipcook/plugins-cycle-gan-tensorflow-model-train",
-  "version": "0.6.0",
+  "name": "@pipcook/plugins-cycle-gan-model-evaluate",
+  "version": "0.6.3",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json"
   },
-  "author": "feely",
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.6.2",
-    "@pipcook/pipcook-core": "^0.6.0"
+    "@pipcook/boa": "^0.6.0",
+    "@pipcook/pipcook-core": "^0.6.3"
   },
-  "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
     "nyc": "14.1.1"
@@ -25,14 +27,7 @@
     "access": "public"
   },
   "pipcook": {
-    "category": "modelTrain",
+    "category": "modelEvaluate",
     "datatype": "image"
-  },
-  "conda": {
-    "python": "3.7",
-    "dependencies": {
-      "tensorflow": "*",
-      "opencv-python": "*"
-    }
   }
 }

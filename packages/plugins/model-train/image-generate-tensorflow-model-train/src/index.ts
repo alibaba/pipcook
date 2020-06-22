@@ -1,17 +1,27 @@
 import { ModelTrainType, UniModel, ImageDataset, ModelTrainArgsType } from '@pipcook/pipcook-core';
-import * as path from 'path';
 
-const boa = require('@pipcook/boa');
-const sys = boa.import('sys');
-const { tuple, int } = boa.builtins();
-sys.path.insert(0, path.join(__dirname, '..'));
-const { ImageGenerator } = boa.import('image_loader');
+/**
+ * training parameters
+ */
+let trainOpt = {
+  verbose: false,
+  // save dir
+  pic_dir: 'model',
+  // images in batch
+  batch_size: 1,
+  // of iter at starting learning rate
+  niter: 100000,
+  // the size of image buffer that stores previously generated images
+  pool_size: 50,
+  save_iter: 50,
+  d_iter: 10
+};
 
 const cycleGANModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
-  const {
-    resize = [ 143, 143 ],
-    crop = [ 128, 128 ]
-  } = args;
+  const opt = {
+    ...trainOpt,
+    ...args
+  };
   const { trainLoader } = data;
   const aList = [];
   const bList = [];
@@ -30,21 +40,7 @@ const cycleGANModelTrain: ModelTrainType = async (data: ImageDataset, model: Uni
     }
   }
 
-  const IG_A = new ImageGenerator(
-    boa.kwargs({
-      fileList: aList,
-      resize: tuple([ int(resize[0]), int(resize[1]) ]),
-      crop: tuple([ int(crop[0]), int(crop[1]) ])
-    })
-  );
-  const IG_B = new ImageGenerator(
-    boa.kwargs({
-      fileList: bList,
-      resize: tuple([ int(resize[0]), int(resize[1]) ]),
-      crop: tuple([ int(crop[0]), int(crop[1]) ])
-    })
-  );
-  model.model.fit(IG_A, IG_B);
+  model.model.fit(aList, bList, opt);
   return model;
 };
 

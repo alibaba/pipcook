@@ -9,8 +9,8 @@ def vis_grid(X, size, save_path=None):
     h, w = X.shape[1:3]
     img = np.zeros((h*size[0], w*size[1], 3))
     for n, x in enumerate(X):
-        j = n/size[1]
-        i = n % size[1]
+        j = int(n/size[1])
+        i = int(n % size[1])
         if n >= size[0] * size[1]:
             break
         img[j*h:j*h+h, i*w:i*w+w, :] = x

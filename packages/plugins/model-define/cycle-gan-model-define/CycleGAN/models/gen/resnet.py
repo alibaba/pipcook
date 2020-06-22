@@ -76,6 +76,4 @@ def resnet_6blocks(input_shape, output_nc, ngf, **kwargs):
     x = Activation('tanh')(x)
 
     model = Model(input, x, name=kwargs.get('name', None))
-    print('Model resnet 6blocks:')
-    model.summary()
     return model

@@ -11,6 +11,7 @@ from tensorflow.keras.models import Model
 import numpy as np
 import sys
 from ..utils.vis_utils import vis_grid
+from ..image_loader import ImageGenerator
 
 class CycleGAN(BaseModel):
     name = 'CycleGAN'
@@ -102,8 +103,10 @@ class CycleGAN(BaseModel):
         self.DisB = dis_B
         self.opt = opt
 
-    def fit(self, img_A_generator, img_B_generator):
-        opt = self.opt
+    def fit(self, img_a_list, img_b_list, opt):
+        self.trainOpt = opt
+        img_A_generator = ImageGenerator(img_a_list, resize=opt['resize'], crop=opt['crop'])
+        img_B_generator = ImageGenerator(img_b_list, resize=opt['resize'], crop=opt['crop'])
         if not os.path.exists(opt['pic_dir']):
             os.mkdir(opt['pic_dir'])
         bs = opt['batch_size']
@@ -113,7 +116,8 @@ class CycleGAN(BaseModel):
 
         iteration = 0
         while iteration < opt['niter']:
-            print('iteration: {}'.format(iteration))
+            if opt["verbose"]:
+                print('iteration: {}'.format(iteration))
             # sample
             real_A = img_A_generator(bs)
             real_B = img_B_generator(bs)
@@ -149,24 +153,25 @@ class CycleGAN(BaseModel):
                     self.G_trainner.train_on_batch([real_A, real_B],
                         [zeros, zeros, real_A, real_B, ])
 
-            
-            print('Generator Loss:')
-            print('fake_B: {} rec_A: {} | fake_A: {} rec_B: {}'.\
-                    format(G_loss_fake_B, G_loss_rec_A, G_loss_fake_A, G_loss_rec_B))
-            if opt['idloss'] > 0:
-                print('id_loss_A: {}, id_loss_B: {}'.format(G_loss_id_A, G_loss_id_B))
+            if opt["verbose"]:
+                print('Generator Loss:')
+                print('fake_B: {} rec_A: {} | fake_A: {} rec_B: {}'.\
+                        format(G_loss_fake_B, G_loss_rec_A, G_loss_fake_A, G_loss_rec_B))
+                if opt['idloss'] > 0:
+                    print('id_loss_A: {}, id_loss_B: {}'.format(G_loss_id_A, G_loss_id_B))
 
-            print('Discriminator Loss:')
-            print('real_A: {} fake_A: {} | real_B: {} fake_B: {}'.\
-                    format(D_loss_real_A, D_loss_fake_A, D_loss_real_B, D_loss_fake_B))
+                print('Discriminator Loss:')
+                print('real_A: {} fake_A: {} | real_B: {} fake_B: {}'.\
+                        format(D_loss_real_A, D_loss_fake_A, D_loss_real_B, D_loss_fake_B))
 
-            print("Dis_A")
-            res = self.DisA.predict(real_A)
-            print("real_A: {}".format(res.mean()))
-            res = self.DisA.predict(fake_A)
-            print("fake_A: {}".format(res.mean()))
+            resA = self.DisA.predict(real_A)
+            resB = self.DisA.predict(fake_A)
+            if opt["verbose"]:
+                print("Dis_A")
+                print("real_A: {}".format(resA.mean()))
+                print("fake_A: {}".format(resB.mean()))
             if iteration % opt['save_iter'] == 0:
-                imga = real_A 
+                imga = real_A
                 imga2b = self.AtoB.predict(imga)
                 imga2b2a = self.BtoA.predict(imga2b)
 
@@ -184,3 +189,48 @@ class CycleGAN(BaseModel):
 
             iteration += 1
             sys.stdout.flush()
+
+    def evaluate(self, img_a_list, img_b_list):
+        opt = self.trainOpt
+        img_A_generator = ImageGenerator(img_a_list, resize=opt['resize'], crop=opt['crop'])
+        img_B_generator = ImageGenerator(img_b_list, resize=opt['resize'], crop=opt['crop'])
+        bs = opt['batch_size']
+
+        fake_A_pool = []
+        fake_B_pool = []
+
+        # sample
+        real_A = img_A_generator(bs)
+        real_B = img_B_generator(bs)
+
+        # fake pool
+        fake_A_pool.extend(self.BtoA.predict(real_B))
+        fake_B_pool.extend(self.AtoB.predict(real_A))
+
+        fake_A_pool = fake_A_pool[-opt['pool_size']:]
+        fake_B_pool = fake_B_pool[-opt['pool_size']:]
+
+        fake_A = [fake_A_pool[ind] for ind in np.random.choice(len(fake_A_pool), size=(bs,), replace=False)]
+        fake_B = [fake_B_pool[ind] for ind in np.random.choice(len(fake_B_pool), size=(bs,), replace=False)]
+        fake_A = np.array(fake_A)
+        fake_B = np.array(fake_B)
+
+        ones  = np.ones((bs,)+self.G_trainner.output_shape[0][1:])
+        zeros = np.zeros((bs, )+self.G_trainner.output_shape[0][1:])
+
+        # train
+        _, D_loss_real_A, D_loss_fake_A, D_loss_real_B, D_loss_fake_B = \
+            self.D_trainner.evaluate([real_A, fake_A, real_B, fake_B],
+                [zeros, ones*0.9, zeros, ones*0.9])
+
+        if opt['idloss'] > 0:
+            _, G_loss_fake_B, G_loss_fake_A, G_loss_rec_A, G_loss_rec_B, G_loss_id_A, G_loss_id_B = \
+                self.G_trainner.evaluate([real_A, real_B],
+                    [zeros, zeros, real_A, real_B, real_A, real_B])
+        else:
+            _, G_loss_fake_B, G_loss_fake_A, G_loss_rec_A, G_loss_rec_B = \
+                self.G_trainner.evaluate([real_A, real_B],
+                    [zeros, zeros, real_A, real_B, ])
+        return G_loss_fake_B, G_loss_rec_A, G_loss_fake_A, G_loss_rec_B, \
+            G_loss_id_A, G_loss_id_B, D_loss_real_A, D_loss_fake_A, D_loss_real_B, D_loss_fake_B
+        

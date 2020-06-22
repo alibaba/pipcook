@@ -1,4 +1,4 @@
-import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, ImageDataset } from '@pipcook/pipcook-core';
+import { ModelDefineType, UniModel, ModelDefineArgsType, Sample, ImageDataset } from '@pipcook/pipcook-core';
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
@@ -8,11 +8,15 @@ const sys = boa.import('sys');
 sys.path.insert(0, path.join(__dirname, '..'));
 const tf = boa.import('tensorflow');
 const { CycleGAN } = boa.import('CycleGAN.models');
-const np = boa.import('numpy');
 const cv2 = boa.import('cv2');
 const base64 = boa.import('base64');
 
 type PredictType = 'a2b' | 'b2a';
+interface CycleGanImageSample extends Sample {
+  data: string;
+  predictType: PredictType;
+  label: any;
+}
 
 let opt = {
   shapeA: tuple([ 128, 128, 3 ]),
@@ -46,20 +50,6 @@ let opt = {
   // momentum term of adam
   beta1: 0.5,
 
-  /**
-   * training parameters
-   */
-  // images in batch
-  batch_size: 5,
-  // of iter at starting learning rate
-  niter: 100000,
-  // the size of image buffer that stores previously generated images
-  pool_size: 50,
-  save_iter: 50,
-  d_iter: 10,
-
-  // save dir
-  pic_dir: 'model',
   // model file
   a_to_b_model_file: '',
   b_to_a_model_file: '',
@@ -76,8 +66,8 @@ const cycleGanModelDefine: ModelDefineType = async (data: ImageDataset, args: Mo
   const pipcookModel: UniModel = {
     model,
     config: null,
-    predict: function (inputData: ImageSample, predictType: PredictType) {
-      let m = predictType == 'a2b' ? model.AtoB : model.BtoA;
+    predict: function (inputData: CycleGanImageSample) {
+      let m = inputData.predictType == 'a2b' ? model.AtoB : model.BtoA;
       let image = tf.io.read_file(inputData.data);
       image = tf.image.decode_jpeg(image, boa.kwargs({
         channels: 3
