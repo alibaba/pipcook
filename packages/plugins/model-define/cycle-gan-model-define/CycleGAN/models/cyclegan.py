@@ -101,12 +101,12 @@ class CycleGAN(BaseModel):
         self.BtoA = gen_A
         self.DisA = dis_A
         self.DisB = dis_B
-        self.opt = opt
+        self.modelOpt = opt
 
     def fit(self, img_a_list, img_b_list, opt):
         self.trainOpt = opt
-        img_A_generator = ImageGenerator(img_a_list, resize=opt['resize'], crop=opt['crop'])
-        img_B_generator = ImageGenerator(img_b_list, resize=opt['resize'], crop=opt['crop'])
+        img_A_generator = ImageGenerator(img_a_list, resize=self.modelOpt['resize'], crop=self.modelOpt['crop'])
+        img_B_generator = ImageGenerator(img_b_list, resize=self.modelOpt['resize'], crop=self.modelOpt['crop'])
         if not os.path.exists(opt['pic_dir']):
             os.mkdir(opt['pic_dir'])
         bs = opt['batch_size']
@@ -144,7 +144,7 @@ class CycleGAN(BaseModel):
                     self.D_trainner.train_on_batch([real_A, fake_A, real_B, fake_B],
                         [zeros, ones*0.9, zeros, ones*0.9])
 
-            if opt['idloss'] > 0:
+            if self.modelOpt['idloss'] > 0:
                 _, G_loss_fake_B, G_loss_fake_A, G_loss_rec_A, G_loss_rec_B, G_loss_id_A, G_loss_id_B = \
                     self.G_trainner.train_on_batch([real_A, real_B],
                         [zeros, zeros, real_A, real_B, real_A, real_B])
@@ -191,10 +191,9 @@ class CycleGAN(BaseModel):
             sys.stdout.flush()
 
     def evaluate(self, img_a_list, img_b_list):
-        opt = self.trainOpt
-        img_A_generator = ImageGenerator(img_a_list, resize=opt['resize'], crop=opt['crop'])
-        img_B_generator = ImageGenerator(img_b_list, resize=opt['resize'], crop=opt['crop'])
-        bs = opt['batch_size']
+        img_A_generator = ImageGenerator(img_a_list, resize=self.modelOpt['resize'], crop=self.modelOpt['crop'])
+        img_B_generator = ImageGenerator(img_b_list, resize=self.modelOpt['resize'], crop=self.modelOpt['crop'])
+        bs = self.trainOpt['batch_size']
 
         fake_A_pool = []
         fake_B_pool = []
@@ -207,8 +206,8 @@ class CycleGAN(BaseModel):
         fake_A_pool.extend(self.BtoA.predict(real_B))
         fake_B_pool.extend(self.AtoB.predict(real_A))
 
-        fake_A_pool = fake_A_pool[-opt['pool_size']:]
-        fake_B_pool = fake_B_pool[-opt['pool_size']:]
+        fake_A_pool = fake_A_pool[-self.trainOpt['pool_size']:]
+        fake_B_pool = fake_B_pool[-self.trainOpt['pool_size']:]
 
         fake_A = [fake_A_pool[ind] for ind in np.random.choice(len(fake_A_pool), size=(bs,), replace=False)]
         fake_B = [fake_B_pool[ind] for ind in np.random.choice(len(fake_B_pool), size=(bs,), replace=False)]
@@ -223,7 +222,7 @@ class CycleGAN(BaseModel):
             self.D_trainner.evaluate([real_A, fake_A, real_B, fake_B],
                 [zeros, ones*0.9, zeros, ones*0.9])
 
-        if opt['idloss'] > 0:
+        if self.modelOpt['idloss'] > 0:
             _, G_loss_fake_B, G_loss_fake_A, G_loss_rec_A, G_loss_rec_B, G_loss_id_A, G_loss_id_B = \
                 self.G_trainner.evaluate([real_A, real_B],
                     [zeros, zeros, real_A, real_B, real_A, real_B])
