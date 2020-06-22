@@ -33,7 +33,7 @@ const ModelTrain: ModelTrainType = async (dataset: CsvDataset, model: TfJsLayers
 
   const trainDataset = await createDataset(trainLoader, metadata.labelMap as string[]);
   console.log('created train dataset', trainDataset);
-  
+
   const trainModel = model.model;
   await trainModel.fitDataset(trainDataset.repeat().batch(batchSize), trainConfig);
   await trainModel.save(`file://${modelPath}`);
