@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { Table, Pagination, Button } from '@alifd/next';
+import { Table, Pagination, Icon } from '@alifd/next';
 
-import {messageError} from '@/utils/message';
+import { messageError } from '@/utils/message';
 import { PIPELINE_MAP, JOB_MAP, PIPELINE_STATUS } from '@/utils/config';
 import { get } from '@/utils/request';
 
 import './index.scss';
 
-const PAGE_SIZE = 10; // number of records in one page
+const PAGE_SIZE = 30; // number of records in one page
 
 export default class Pipeline extends Component {
 
@@ -61,23 +61,23 @@ export default class Pipeline extends Component {
     await this.fetchData(1);
   }
 
-  renderDetail = (value, index, record) => {
-    return <a href={`/index.html#/pipeline/info?pipelineId=${record.id}`}>
-      <Button>Detail</Button>
-    </a>;
-  }
-
   render() {
     const { models, fields, currentPage, totalCount } = this.state;
     return (
       <div className="pipeline">
-        <Table dataSource={models}>
+        <Table dataSource={models}
+          hasBorder={false}
+          stickyHeader
+          offsetTop={45}>
           {
             fields.map(field => <Table.Column 
               key={field.name}
               title={field.name}
               dataIndex={field.field}
               cell={field.cell}
+              sortable={field.sortable || false}
+              width={field.width}
+              align="center"
             />)
           }
         </Table>
@@ -85,15 +85,12 @@ export default class Pipeline extends Component {
           current={currentPage} 
           total={totalCount} 
           pageSize={PAGE_SIZE} 
+          type="simple"
           className="pagination-wrapper" 
-          onChange={this.changePage} 
+          onChange={this.changePage}
         />
         <div className="pipeline-create-container" onClick={() => location.href = 'index.html#/pipeline/info'}>
-          <img
-            className="pipeline-create" 
-            src="https://img.alicdn.com/tfs/TB1nTmRbmRLWu4jSZKPXXb6BpXa-128-128.png" 
-            alt="create pipeline"
-          />
+          <Icon className="pipeline-create" type="add" size="large" />
         </div>
       </div>
     );
