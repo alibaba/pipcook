@@ -5,7 +5,7 @@
 This plugin will be used to train any models built on top of [detectron2](https://github.com/facebookresearch/detectron2).
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

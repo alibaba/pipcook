@@ -5,7 +5,7 @@
 This plugin defines object detection / instance segmentation model. This model is [maskrcnn](https://arxiv.org/abs/1703.06870). The whole staff is built on top on [detectron2](https://github.com/facebookresearch/detectron2).
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

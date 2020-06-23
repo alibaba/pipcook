@@ -7,7 +7,7 @@ You can just specify how many samples of MNIST data you would like to collect an
 
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|
@@ -25,7 +25,8 @@ You can just specify how many samples of MNIST data you would like to collect an
 "dataCollect": {
   "package": "@pipcook/plugins-mnist-data-collect",
   "params": {
-    "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/1(1).zip"
+    "trainCount": 8000,
+    "testCount": 2000
   }
 },
 ```

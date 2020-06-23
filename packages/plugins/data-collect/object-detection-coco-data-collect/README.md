@@ -28,7 +28,7 @@ You can download the file provided in example to check the correct dataset forma
 > \* means optional. you should provide coco-data annotation file for train/test/validation separately.
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

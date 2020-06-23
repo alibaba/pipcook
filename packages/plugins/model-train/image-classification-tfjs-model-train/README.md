@@ -5,7 +5,7 @@
 This plugin will be used to train image classification models built on top of Tensorflow.js.
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

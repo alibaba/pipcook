@@ -5,7 +5,7 @@
 This plugin defines object detection model. This model is [fasterrcnn](https://arxiv.org/abs/1506.01497). The whole staff is built on top on [detectron2](https://github.com/facebookresearch/detectron2).
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

@@ -6,7 +6,7 @@ This plugin is used to process image data. This means we will do some modificati
 These operations include resize, normalize and etc.
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|
@@ -17,7 +17,6 @@ These operations include resize, normalize and etc.
 | Parameter | Type | Default Value | Description |
 |:----------|:-----|:------|:-----|
 |resize|number[]| [256, 256] |the scale to resize|
-|normalize|boolean| false |whether to normalize image|
 
 ### Example
 ```json

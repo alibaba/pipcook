@@ -5,7 +5,7 @@
 This plugin is used to access csv data. You should provide and tell the model which column will be used for label.
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

@@ -4,7 +4,7 @@
 
 This plugin defines a image classification model. This model is [resnet](https://arxiv.org/abs/1512.03385). The model is built using python tensorflow.
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

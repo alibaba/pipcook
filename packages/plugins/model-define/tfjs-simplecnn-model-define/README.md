@@ -4,7 +4,7 @@
 
 This plugin defines a image classification model. This model is built on top of several convolutional blocks. This model is fit for quite simple dataset. The model is built using Tensorflow.js.
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

@@ -31,7 +31,7 @@ Notice that the url given by this plugin should be a zip file. The contents insi
 > \* means optional. [category] should be replaced by your category. You should put all your images of this category into specific category folder.
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

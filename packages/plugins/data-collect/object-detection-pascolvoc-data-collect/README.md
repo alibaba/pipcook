@@ -31,7 +31,7 @@ You can download the file provided in example to check the correct dataset forma
 > \* means optional. you should provide pascal voc annotation file for each image
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

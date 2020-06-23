@@ -16,7 +16,7 @@ Notice that the url given by this plugin should be a zip file. The contents insi
 > \* means optional. [filename] means this placeholder could be replaced by your own filename.
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

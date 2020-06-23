@@ -5,7 +5,7 @@
 This plugin is used to access Pascal Voc data. This means that whatever data provided by data-collect (no matter whether you chooose pascal voc, coco or other formats), the data will be transformed to Pascal Voc dataset and flow into model-related plugins.
 
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|

@@ -4,7 +4,7 @@
 
 This plugin will be used to evaluate the Naive Bayes classifier model. The model is generally defined by [@pipcook/plugins-bayesian-model-define](https://www.npmjs.com/package/@pipcook/plugins-bayesian-model-define).
 
-### Necessary Parameters
+### Required Parameters
 
 | Parameter | Type | Description |
 |:----------|:-----|:------------|
