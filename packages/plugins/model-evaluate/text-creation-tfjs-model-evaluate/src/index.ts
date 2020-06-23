@@ -1,6 +1,11 @@
-import { CsvDataset, ModelEvaluateType, TfJsLayersModel, CsvDataLoader, EvaluateResult } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
-import { Scalar } from '@tensorflow/tfjs-node-gpu';
+import {
+  CsvDataset,
+  ModelEvaluateType,
+  TfJsLayersModel,
+  CsvDataLoader,
+  EvaluateResult
+} from '@pipcook/pipcook-core';
 
 async function createDataset(loader: CsvDataLoader, labelMap: string[]): Promise<tf.data.Dataset<tf.TensorContainer>> {
   const inputs = [] as tf.TensorContainer[];
@@ -34,13 +39,16 @@ const evlauate: ModelEvaluateType = async (dataset: CsvDataset, uniModel: TfJsLa
   const count = await testLoader.len();
   const batches = Math.floor(count / batchSize);
   const testDataset = await createDataset(testLoader, metadata.labelMap as unknown as string[]);
-  console.info('created test dataset', testDataset, count, batches);
+  console.info('created test dataset', testDataset);
 
   const ds = testDataset.repeat().batch(batchSize) as tf.data.Dataset<{}>;
   const model: tf.LayersModel = uniModel.model;
   let result: any = await model.evaluateDataset(ds, { batches });
-  console.info(result);
+  if (!Array.isArray(result)) {
+    result = [ result ];
+  }
 
+  // update metrics
   let metrics = [ 'loss' ];
   if (model.metrics) {
     metrics = [ ...metrics, ...uniModel.metrics ];
@@ -50,7 +58,6 @@ const evlauate: ModelEvaluateType = async (dataset: CsvDataset, uniModel: TfJsLa
   metrics.forEach((metric: string, idx: number) => {
     evalRes[metric] = result[idx].dataSync();
   });
-  console.log(evalRes);
   return evalRes;
 };
 

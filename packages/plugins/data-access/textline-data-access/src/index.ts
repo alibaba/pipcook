@@ -45,7 +45,7 @@ class TextlineLoader implements CsvDataLoader {
 }
 
 const textlineAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset> => {
-  const { dataDir, trainSet = 200 } = args;
+  const { dataDir, trainRange = [ 0, 200 ], testRange = [ 200, 400 ] } = args;
   const lines = (await fs.readFile(`${dataDir}/input.txt`, 'utf8')).split('\n');
   
   // find the max line length.
@@ -56,8 +56,8 @@ const textlineAccess: DataAccessType = async (args: ArgsType): Promise<CsvDatase
     }
   }
 
-  const trainLoader = new TextlineLoader(lines.slice(0, trainSet), maxLineLength);
-  const testLoader = new TextlineLoader(lines.slice(trainSet, trainSet + 200), maxLineLength);
+  const trainLoader = new TextlineLoader(lines.slice(...trainRange), maxLineLength);
+  const testLoader = new TextlineLoader(lines.slice(...testRange), maxLineLength);
   return {
     trainLoader: trainLoader,
     trainCsvPath: `${dataDir}/input.txt`,
