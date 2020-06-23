@@ -1,13 +1,51 @@
 import { CsvDataset, ModelEvaluateType, TfJsLayersModel, CsvDataLoader, EvaluateResult } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 
+async function createDataset(loader: CsvDataLoader, labelMap: string[]): Promise<tf.data.Dataset<tf.TensorContainer>> {
+  const inputs = [] as tf.TensorContainer[];
+  const len = await loader.len();
+  const onehotLen = labelMap.length;
+  for (let i = 0; i < len; i++) {
+    const sample = await loader.getItem(i);
+    inputs.push(tf.tidy(() => {
+      return {
+        xs: tf.tidy(() => sample.data),
+        ys: tf.tidy(() => tf.oneHot(tf.scalar(sample.label, 'int32'), onehotLen))
+      };
+    }));
+  }
+  return tf.data.array(inputs);
+}
+
+
 /**
  *
  * @param data Pipcook uniform sample data
  * @param model Pipcook model
  * @param args args: specify batch size, total batches to iterate
  */
-const evlauate: ModelEvaluateType = async (data: CsvDataset, model: TfJsLayersModel): Promise<EvaluateResult> => {
+const evlauate: ModelEvaluateType = async (dataset: CsvDataset, uniModel: TfJsLayersModel): Promise<EvaluateResult> => {
+  const batchSize = 16;
+  const { testLoader, metadata } = dataset;
+  if (!testLoader) {
+    return { pass: true };
+  }
+
+  const count = await testLoader.len();
+  const batches = parseInt(String(count / batchSize));
+  const testDataset = await createDataset(testLoader, metadata.labelMap as string[]);
+  console.info('created test dataset', testDataset);
+
+  const ds = testDataset.repeat().batch(batchSize) as tf.data.Dataset<{}>;
+  const model: tf.LayersModel = uniModel.model;
+  let result = await model.evaluateDataset(ds, { batches });
+  console.log(result);
+
+  if (!Array.isArray(result)) {
+    result = [ result ];
+  }
+  console.log(result);
+
   // just skiped if no test loader.
   return { pass: true };
 };

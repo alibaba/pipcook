@@ -52,12 +52,14 @@ class TextlineLoader implements CsvDataLoader {
 
 const textlineAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset> => {
   const { dataDir } = args;
-  const lines = (await fs.readFile(`${dataDir}/input.txt`, 'utf8')).split('\n').slice(0, 200);
-  const loader = new TextlineLoader(lines);
+  const lines = (await fs.readFile(`${dataDir}/input.txt`, 'utf8')).split('\n');
+  const trainLoader = new TextlineLoader(lines.slice(0, 200));
+  const testLoader = new TextlineLoader(lines.slice(-100));
 
   return {
-    trainLoader: loader,
+    trainLoader: trainLoader,
     trainCsvPath: `${dataDir}/input.txt`,
+    testLoader: testLoader,
     testCsvPath: `${dataDir}/test.txt`,
     validationCsvPath: `${dataDir}/validate.txt`,
     validationResult: {
@@ -68,8 +70,8 @@ const textlineAccess: DataAccessType = async (args: ArgsType): Promise<CsvDatase
       feature: {
         names: []
       },
-      labelMap: loader.charset,
-      maxLineLength: loader.maxLineLength
+      labelMap: trainLoader.charset,
+      maxLineLength: trainLoader.maxLineLength
     }
   };
 };
