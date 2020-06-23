@@ -1,0 +1,32 @@
+{
+  "plugins": {
+    "dataCollect": {
+      "package": "./packages/plugins/data-collect/image-classification-data-collect",
+      "params": {
+        "url": "https://ai-sample.oss-cn-hangzhou.aliyuncs.com/horse2zebra.zip"
+      }
+    },
+    "dataAccess": {
+      "package": "./packages/plugins/data-access/pascalvoc-data-access"
+    },
+    "modelDefine": {
+      "package": "./packages/plugins/model-define/tensorflow-cycle-gan-model-define",
+      "params": {
+        "lmbd": 10,
+        "lr": 0.0002
+      }
+    },
+    "modelTrain": {
+      "package": "./packages/plugins/model-train/image-generation-tensorflow-model-train",
+      "params": {
+        "batch_size": 1,
+        "save_iter": 10,
+        "niter": 50000,
+        "verbose": true
+      }
+    },
+    "modelEvaluate": {
+      "package": "./packages/plugins/model-evaluate/image-generation-model-evaluate"
+    }
+  }
+}
