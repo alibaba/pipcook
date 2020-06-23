@@ -10,7 +10,7 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json"
   },
-  "author": "feely",
+  "author": "Feely <feely@outlook.com>",
   "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/boa": "^0.6.2",
