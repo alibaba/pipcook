@@ -6,34 +6,22 @@ class TextlineLoader implements CsvDataLoader {
   charset: string[];
   maxLineLength: number;
 
-  constructor(lines: string[]) {
-    const charset = [] as string[];
+  constructor(lines: string[], charset: string[], maxLineLength: number) {
+    this.charset = charset;
+    this.maxLineLength = maxLineLength;
     const inputSeqs = [] as Array<number[]>;
-    let maxLineLength = 0;
-
-    for (const line of lines) {
-      if (line.length > maxLineLength) {
-        maxLineLength = line.length;
-      }
-      for (const char of line) {
-        charset.push(char);
-      }
-    }
-    console.info(`charset is ready: ${charset.length} chars.`);
 
     for (const line of lines) {
       for (let i = 2; i <= line.length; i++) {
-        const seq = new Array(maxLineLength).fill(0) as number[];
+        const seq = new Array(this.maxLineLength).fill(0) as number[];
         for (let j = 0; j < i; j++) {
-          seq[seq.length - i + j] = charset.indexOf(line[j]);
+          seq[seq.length - i + j] = this.charset.indexOf(line[j]);
         }
         inputSeqs.push(seq);
       }
     }
     console.info(`input seqs is ready: ${inputSeqs.length}.`);
 
-    this.charset = charset;
-    this.maxLineLength = maxLineLength;
     this.records = inputSeqs.map((inputSeq) => {
       const sample = {
         data: inputSeq.slice(0, -1),
@@ -51,11 +39,23 @@ class TextlineLoader implements CsvDataLoader {
 }
 
 const textlineAccess: DataAccessType = async (args: ArgsType): Promise<CsvDataset> => {
-  const { dataDir } = args;
+  const { dataDir, trainSet = 200 } = args;
   const lines = (await fs.readFile(`${dataDir}/input.txt`, 'utf8')).split('\n');
-  const trainLoader = new TextlineLoader(lines.slice(0, 200));
-  const testLoader = new TextlineLoader(lines.slice(-100));
+  const charset = [] as string[];
+  let maxLineLength = 0;
 
+  for (const line of lines) {
+    if (line.length > maxLineLength) {
+      maxLineLength = line.length;
+    }
+    for (const char of line) {
+      charset.push(char);
+    }
+  }
+  console.info(`charset is ready: ${charset.length} chars and maxlinelength=${maxLineLength}`);
+
+  const trainLoader = new TextlineLoader(lines.slice(0, trainSet), charset, maxLineLength);
+  const testLoader = new TextlineLoader(lines.slice(trainSet, trainSet + 200), charset, maxLineLength);
   return {
     trainLoader: trainLoader,
     trainCsvPath: `${dataDir}/input.txt`,

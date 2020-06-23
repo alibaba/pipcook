@@ -17,7 +17,6 @@ async function createDataset(loader: CsvDataLoader, labelMap: string[]): Promise
   return tf.data.array(inputs);
 }
 
-
 /**
  *
  * @param data Pipcook uniform sample data
@@ -32,19 +31,14 @@ const evlauate: ModelEvaluateType = async (dataset: CsvDataset, uniModel: TfJsLa
   }
 
   const count = await testLoader.len();
-  const batches = parseInt(String(count / batchSize));
-  const testDataset = await createDataset(testLoader, metadata.labelMap as string[]);
-  console.info('created test dataset', testDataset);
+  const batches = Math.floor(count / batchSize);
+  const testDataset = await createDataset(testLoader, metadata.labelMap as unknown as string[]);
+  console.info('created test dataset', testDataset, count, batches);
 
   const ds = testDataset.repeat().batch(batchSize) as tf.data.Dataset<{}>;
   const model: tf.LayersModel = uniModel.model;
   let result = await model.evaluateDataset(ds, { batches });
-  console.log(result);
-
-  if (!Array.isArray(result)) {
-    result = [ result ];
-  }
-  console.log(result);
+  console.info(result);
 
   // just skiped if no test loader.
   return { pass: true };
