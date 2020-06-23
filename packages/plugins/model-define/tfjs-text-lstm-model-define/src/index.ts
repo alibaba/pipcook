@@ -40,7 +40,12 @@ function oneHotToChar(onehot: number[], charSetArray: string[]): string {
 }
 
 const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
-  const { recoverPath } = args;
+  const {
+    recoverPath,
+    loss = 'categoricalCrossentropy',
+    optimizer = 'adam',
+    metrics = [ 'accuracy' ]
+  } = args;
   let { labelMap, maxLineLength } = args?.dataset || {};
   if (!recoverPath) {
     labelMap = data.metadata.labelMap;
@@ -82,16 +87,12 @@ const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArg
     model = localModel as tf.LayersModel;
   }
 
-  model.compile({
-    loss: 'categoricalCrossentropy',
-    optimizer: 'adam',
-    metrics: [ 'accuracy' ]
-  });
+  model.compile({ loss, optimizer, metrics });
   model.summary();
 
   const result: TfJsLayersModel = {
     model,
-    metrics: [ 'accuracy' ],
+    metrics,
     predict: async function (inputData: CsvSample) {
       let chars = inputData.data || '';
       const sentenceLength = 4;
