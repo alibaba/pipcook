@@ -15,10 +15,12 @@ const collectData: DataCollectType = async (args: ArgsType): Promise<void> => {
 
   for (const { paragraphs } of resp) {
     const notEmpty = (word: string) => !!word;
+    const tooLong = (word: string) => word.length <= 12;
     const appendDot = (word: string) => `${word}。`;
     const line = paragraphs.join('')
       .split('。')
       .filter(notEmpty)
+      .filter(tooLong)
       .map(appendDot);
     lines = lines.concat(line);
   }
