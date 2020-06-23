@@ -26,7 +26,6 @@ class TextlineLoader implements CsvDataLoader {
         inputSeqs.push(seq);
       }
     }
-    console.info(`input seqs is ready: ${inputSeqs.length}.`);
 
     this.records = inputSeqs.map((inputSeq) => {
       const sample = {
