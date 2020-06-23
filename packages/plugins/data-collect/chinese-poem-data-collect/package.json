@@ -1,0 +1,37 @@
+{
+  "name": "@pipcook/plugins-chinese-poem-data-collect",
+  "version": "0.6.0",
+  "description": "data collect plugin for downloading chinese poems.",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json"
+  },
+  "author": "",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "@pipcook/pipcook-core": "^0.5.16",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0",
+    "request-promise": "^4.2.5"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "@types/fs-extra": "^8.1.0",
+    "@types/request-promise": "^4.1.46",
+    "nyc": "14.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "pipcook": {
+    "category": "dataCollect",
+    "datatype": "text"
+  }
+}

@@ -18,8 +18,10 @@ if (typeof pipeline.dataProcess === 'string') {
   dataProcessModule = _requirePlugin('dataProcess');
 }
 
+const dataset = JSON.parse(output.dataset);
 const model = modelDefineModule(null, {
-  recoverPath: __dirname + '/model'
+  recoverPath: __dirname + '/model',
+  dataset
 });
 
 function predict(data) {
