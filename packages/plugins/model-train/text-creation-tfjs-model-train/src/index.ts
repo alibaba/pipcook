@@ -31,7 +31,7 @@ const ModelTrain: ModelTrainType = async (dataset: CsvDataset, model: TfJsLayers
     batchesPerEpoch: Math.floor(count / batchSize)
   };
 
-  const trainDataset = await createDataset(trainLoader, metadata.labelMap as string[]);
+  const trainDataset = await createDataset(trainLoader, metadata.labelMap as unknown as string[]);
   console.info('created train dataset', trainDataset);
 
   const trainModel = model.model;
