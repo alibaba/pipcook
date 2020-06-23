@@ -10,7 +10,7 @@
       "package": "./packages/plugins/data-access/pascalvoc-data-access"
     },
     "modelDefine": {
-      "package": "./packages/plugins/model-define/cycle-gan-model-define",
+      "package": "./packages/plugins/model-define/tensorflow-cycle-gan-model-define",
       "params": {
         "lmbd": 10,
         "lr": 0.0002
