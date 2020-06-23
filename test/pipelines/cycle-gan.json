@@ -17,16 +17,16 @@
       }
     },
     "modelTrain": {
-      "package": "./packages/plugins/model-train/image-generate-tensorflow-model-train",
+      "package": "./packages/plugins/model-train/image-generation-tensorflow-model-train",
       "params": {
         "batch_size": 1,
         "save_iter": 10,
         "niter": 50000,
-	      "verbose": true
+        "verbose": true
       }
     },
     "modelEvaluate": {
-      "package": "./packages/plugins/model-evaluate/cycle-gan-model-evaluate"
+      "package": "./packages/plugins/model-evaluate/image-generation-model-evaluate"
     }
   }
 }
