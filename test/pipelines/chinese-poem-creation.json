@@ -1,0 +1,25 @@
+{
+  "plugins": {
+    "dataCollect": {
+      "package": "./packages/plugins/data-collect/chinese-poem-data-collect",
+      "params": {
+        "url": "https://raw.githubusercontent.com/DavidCai1993/chinese-poem-generator.js/master/test/data/poet.song.91000.json"
+      }
+    },
+    "dataAccess": {
+      "package": "./packages/plugins/data-access/textline-data-access"
+    },
+    "modelDefine": {
+      "package": "./packages/plugins/model-define/tfjs-text-lstm-model-define"
+    },
+    "modelTrain": {
+      "package": "./packages/plugins/model-train/text-creation-tfjs-model-train",
+      "params": {
+        "epochs": 200
+      }
+    },
+    "modelEvaluate": {
+      "package": "./packages/plugins/model-evaluate/text-creation-tfjs-model-evaluate"
+    }
+  }
+}

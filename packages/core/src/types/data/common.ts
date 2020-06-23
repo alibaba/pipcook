@@ -6,10 +6,10 @@ export interface DataDescriptor {
   names?: string[];
 }
 
-export interface Metadata {
+export interface Metadata extends Record<string, any> {
   feature?: DataDescriptor;
   label?: DataDescriptor;
-  labelMap?: Record<string, number>;
+  labelMap?: Record<string, number> | string[];
 }
 
 export interface Sample {

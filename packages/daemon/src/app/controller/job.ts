@@ -52,7 +52,8 @@ export class JobController {
         const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
         sse.emit('job created', job);
         await this.pipelineService.startJob(job, cwd, plugins);
-        sse.emit('job finished', job);
+        // FIXME(yorkie): only pass the id because sse owns a max body length.
+        sse.emit('job finished', { id: job.id });
       } catch (err) {
         sse.emit('error', err?.message);
       } finally {
