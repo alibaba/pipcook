@@ -24,7 +24,7 @@ function argMax(array: any) {
  * @param loss (string | string [] | {[outputName: string]: string} | LossOrMetricFn | LossOrMetricFn [] | {[outputName: string]: LossOrMetricFn}) \
  * [optional / default = 'categoricalCrossentropy'] the loss function of model
  * @param metrics (string | LossOrMetricFn | Array | {[outputName: string]: string | LossOrMetricFn}): [optional / default = ['accuracy']]
- * @param metrics (number): [optional / default = 10]
+ * @param hiddenLayerUnits (number): [optional / default = 10]
 */
 const mobilenetModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
   let {
