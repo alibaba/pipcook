@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugins-cycle-gan-model-evaluate",
+  "name": "@pipcook/plugins-image-generate-tensorflow-model-evaluate",
   "version": "0.6.3",
   "description": "",
   "main": "dist/index",
@@ -13,8 +13,8 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "feely",
+  "license": "Apache-2.0",
   "dependencies": {
     "@pipcook/boa": "^0.6.0",
     "@pipcook/pipcook-core": "^0.6.3"
