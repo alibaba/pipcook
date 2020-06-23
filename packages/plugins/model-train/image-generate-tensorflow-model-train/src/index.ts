@@ -9,11 +9,13 @@ let trainOpt = {
   pic_dir: 'model',
   // images in batch
   batch_size: 1,
-  // of iter at starting learning rate
+  // the number of training iteration
   niter: 100000,
   // the size of image buffer that stores previously generated images
   pool_size: 50,
+  // the interval for saving model
   save_iter: 50,
+  // the number of discriminator training times per iteration
   d_iter: 10
 };
 

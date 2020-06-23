@@ -22,7 +22,7 @@
         "batch_size": 1,
         "save_iter": 10,
         "niter": 50000,
-	"verbose": true
+	      "verbose": true
       }
     },
     "modelEvaluate": {

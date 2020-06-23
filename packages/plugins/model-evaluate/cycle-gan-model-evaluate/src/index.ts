@@ -5,9 +5,8 @@ const cycleGanModelEvaluate: ModelEvaluateType
     const { testLoader } = data;
     const aList = [];
     const bList = [];
-    console.log(await testLoader.len());
     for (let i = 0; i < await testLoader.len(); ++i) {
-      const image = testLoader.getItem(i);
+      const image = await testLoader.getItem(i);
       switch ((await image).label.name.toLowerCase()) {
       case 'a':
         aList.push((await image).data);
