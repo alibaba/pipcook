@@ -21,7 +21,7 @@ export default class PluginRuntime {
       const config = await readJSON(PIPCOOK_DAEMON_CONFIG);
       npmRegistryPrefix = config.npmRegistryPrefix || npmRegistryPrefix;
     } catch (err) {
-      console.warn(`${PIPCOOK_DAEMON_CONFIG} not existed.`);
+      console.warn(`read ${PIPCOOK_DAEMON_CONFIG} error: ${err.message}.`);
     }
 
     this.costa = new CostaRuntime({
