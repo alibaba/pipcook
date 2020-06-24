@@ -17,6 +17,10 @@ export interface RuntimeOptions {
    * The directory for component instance.
    */
   componentDir: string;
+  /**
+   * The npm registry host, like: https://registry.npmjs.com
+   */
+  npmRegistryPrefix: string;
 }
 
 /**

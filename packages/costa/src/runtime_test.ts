@@ -8,7 +8,8 @@ describe('create a costa runtime', () => {
   const costa = new CostaRuntime({
     installDir: path.join(__dirname, '../.tests/plugins'),
     datasetDir: path.join(__dirname, '../.tests/datasets'),
-    componentDir: path.join(__dirname, '../.tests/components')
+    componentDir: path.join(__dirname, '../.tests/components'),
+    npmRegistryPrefix: ''
   });
   let collectCsv: PluginPackage;
 

@@ -95,6 +95,8 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
         env: {
           BOA_CONDA_MIRROR
         }
+      }, {
+        spaces: 2
       });
     }
 
