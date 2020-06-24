@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-detectron-model-evaluate",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.6.6",
-    "@pipcook/pipcook-core": "^0.6.3"
+    "@pipcook/boa": "^0.7.0",
+    "@pipcook/pipcook-core": "^0.7.0"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
