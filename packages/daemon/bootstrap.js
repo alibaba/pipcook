@@ -68,8 +68,7 @@ function createPidfileSync(pathname) {
     const app = await start(opts);
     const server = http.createServer(app.callback());
     server.once('error', err => {
-      console.error('app server got error: %s, code: %s', err.message, err.code);
-      process.exit(1);
+      exitProcessWithError(`app server got error: ${err.message}, code: ${err.code}`);
     });
 
     // emit `server` event in app
@@ -80,9 +79,7 @@ function createPidfileSync(pathname) {
       server.listen(PORT, resolve);
     });
   } catch (err) {
-    // fs.writeFileSync(PIPCOOK_HOME + '/daemon.access.log', err.stack);
-    console.error(err);
-    return exitProcess(1);
+    return exitProcessWithError(err);
   }
 
   process.title = 'pipcook.daemon';
@@ -91,9 +88,18 @@ function createPidfileSync(pathname) {
   prepareToReady();
 })();
 
-function exitProcess(code) {
+function exitProcessWithError(err) {
   bootstrapProcessState.willExit = true;
-  bootstrapProcessState.exitCode = code;
+  bootstrapProcessState.exitCode = 1;
+  console.error(err);
+  // in master mode, exit directly.
+  if (!isChildMode) {
+    return exitProcess();
+  }
+}
+
+function exitProcess() {
+  return process.exit(bootstrapProcessState.exitCode)
 }
 
 function delegateStdio() {
@@ -103,11 +109,11 @@ function delegateStdio() {
    // FIXME(Yorkie): monkeypatch the process.stdout(stderr) to redirect logs to the access log file.
   const access = fs.createWriteStream(PIPCOOK_HOME + '/daemon.access.log');
   const writeLog = (msg) => {
-    access.write(msg, () => {
-      if (bootstrapProcessState.willExit === true) {
-        process.exit(bootstrapProcessState.exitCode);
-      }
-    });
+    if (bootstrapProcessState.willExit === true) {
+      process.nextTick(() => access.write(msg, exitProcess));
+    } else {
+      access.write(msg);
+    }
   };
   process.stdout.write = writeLog;
   process.stderr.write = writeLog;
