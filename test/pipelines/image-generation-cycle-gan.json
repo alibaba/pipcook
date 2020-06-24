@@ -26,7 +26,7 @@
       }
     },
     "modelEvaluate": {
-      "package": "./packages/plugins/model-evaluate/image-generation-model-evaluate"
+      "package": "./packages/plugins/model-evaluate/image-generation-tensorflow-model-evaluate"
     }
   }
 }
