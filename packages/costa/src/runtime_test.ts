@@ -9,7 +9,7 @@ describe('create a costa runtime', () => {
     installDir: path.join(__dirname, '../.tests/plugins'),
     datasetDir: path.join(__dirname, '../.tests/datasets'),
     componentDir: path.join(__dirname, '../.tests/components'),
-    npmRegistryPrefix: ''
+    npmRegistryPrefix: 'https://registry.npmjs.com/'
   });
   let collectCsv: PluginPackage;
 
