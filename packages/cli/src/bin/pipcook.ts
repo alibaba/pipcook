@@ -42,6 +42,7 @@ const pkg = require('../../package.json');
     .command('run <filename>')
     .option('--verbose', 'prints verbose logs', true)
     .option('--tuna', 'use tuna mirror to install python packages')
+    .option('--output', 'the output directory name', 'output')
     .description('run pipeline with a json file.')
     .action(start);
 
