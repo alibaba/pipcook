@@ -20,6 +20,12 @@ interface DaemonBootstrapMessage {
 
 async function start(): Promise<void> {
   const spinner = ora();
+
+  // check if the process is running...
+  if (await pathExists(DAEMON_PIDFILE)) {
+    spinner.fail('daemon is running...');
+    return;
+  }
   spinner.start('starting Pipcook...');
 
   const daemon = fork(path.join(DAEMON_HOME, 'bootstrap.js'), [], {
@@ -33,6 +39,12 @@ async function start(): Promise<void> {
       daemon.unref();
       spinner.succeed(`Pipcook is on http://localhost:${message.data.listen}`);
     }
+  });
+  daemon.on('exit', async (code: number) => {
+    spinner.fail(`Pipcook daemon starts failed with code(${code}).`);
+    // TODO(yorkie): check if this is local mode.
+    const accessLog = path.join(PIPCOOK_HOME, 'daemon.access.log');
+    console.error(await readFile(accessLog, 'utf8'));
   });
 }
 
