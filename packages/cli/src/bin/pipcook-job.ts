@@ -80,7 +80,7 @@ program
 
 program
   .command('run <pipeline>')
-  .option('--verbose', 'prints verbose logs')
+  .option('--verbose', 'prints verbose logs', true)
   .option('--tuna', 'use tuna mirror to install python packages')
   .action(run)
   .description('run a job from a pipeline id');
