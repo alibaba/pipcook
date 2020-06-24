@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-object-detection-coco-data-collect",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.6.3",
+    "@pipcook/pipcook-core": "^0.7.0",
     "@types/fs-extra": "^8.1.0",
     "@types/uuid": "^7.0.2",
     "fs-extra": "^8.1.0",

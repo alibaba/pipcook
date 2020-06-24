@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-image-classification-tensorflow-model-train",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -13,8 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.6.6",
-    "@pipcook/pipcook-core": "^0.6.3",
+    "@pipcook/boa": "^0.7.0",
+    "@pipcook/pipcook-core": "^0.7.0",
     "@types/fs-extra": "^8.0.1",
     "fs-extra": "^8.1.0"
   },

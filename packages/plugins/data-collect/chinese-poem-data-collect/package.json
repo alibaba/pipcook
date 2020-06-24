@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-chinese-poem-data-collect",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "data collect plugin for downloading chinese poems.",
   "main": "dist/index",
   "types": "dist/index",
@@ -22,8 +22,8 @@
     "request-promise": "^4.2.5"
   },
   "devDependencies": {
-    "@types/jasmine": "^3.5.7",
     "@types/fs-extra": "^8.1.0",
+    "@types/jasmine": "^3.5.7",
     "@types/request-promise": "^4.1.46",
     "nyc": "14.1.1"
   },
