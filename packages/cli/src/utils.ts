@@ -1,4 +1,3 @@
-import * as os from 'os';
 import * as url from 'url';
 import {
   exec,
@@ -10,10 +9,10 @@ import {
 } from 'child_process';
 import { pathExists } from 'fs-extra';
 import path from 'path';
-import realOra = require("ora");
+import { constants as CoreConstants } from '@pipcook/pipcook-core';
+import realOra = require('ora');
 
 export const Constants = {
-  PIPCOOK_HOME: `${os.homedir()}/.pipcook`,
   BOA_CONDA_INDEX: 'https://pypi.tuna.tsinghua.edu.cn/simple',
   BOA_CONDA_MIRROR: 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda'
 };
@@ -43,7 +42,7 @@ export function tail(id: string, name: string): ChildProcess {
   return spawn('tail',
     [
       '-f',
-      `${Constants.PIPCOOK_HOME}/components/${id}/logs/${name}.log`
+      `${CoreConstants.PIPCOOK_HOME_PATH}/components/${id}/logs/${name}.log`
     ],
     {
       stdio: 'inherit'

@@ -3,9 +3,9 @@ import { execSync as exec } from 'child_process';
 import fse, { symlink, readJson, ensureDir } from 'fs-extra';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
-import * as os from 'os';
-import { ora, Constants } from '../utils';
+import { constants as CoreConstants } from '@pipcook/pipcook-core';
 
+import { ora, Constants } from '../utils';
 import { InitCommandHandler } from '../types';
 import { isLocal, optionalNpmClients, daemonPackage, boardPackage } from '../config';
 
@@ -76,22 +76,15 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   }
 
   // Install the daemon and pipboard.
-  // use ~/.pipcook as PIPCOOK_DIR
-  const PIPCOOK_DIR = join(os.homedir(), '.pipcook');
-  const DAEMON_DIR = join(PIPCOOK_DIR, 'server');
-  const BOARD_DIR = join(PIPCOOK_DIR, 'pipboard');
-  const BOARD_BUILD = join(BOARD_DIR, 'node_modules', '@pipcook', 'pipboard', 'build');
-  const DAEMON_PUBLIC = join(DAEMON_DIR, 'node_modules', '@pipcook', 'daemon', 'src', 'app', 'public');
-
   try {
-    await fse.remove(DAEMON_DIR);
-    await fse.remove(BOARD_DIR);
+    await fse.remove(CoreConstants.PIPCOOK_DAEMON);
+    await fse.remove(CoreConstants.PIPCOOK_BOARD);
 
-    await fse.ensureDir(DAEMON_DIR);
-    await fse.ensureDir(BOARD_DIR);
+    await fse.ensureDir(CoreConstants.PIPCOOK_DAEMON);
+    await fse.ensureDir(CoreConstants.PIPCOOK_BOARD);
     if (tuna) {
       // write the daemon config
-      await fse.writeJSON(join(PIPCOOK_DIR, 'daemon.config.json'), {
+      await fse.writeJSON(join(CoreConstants.PIPCOOK_HOME_PATH, 'daemon.config.json'), {
         env: {
           BOA_CONDA_MIRROR
         }
@@ -101,15 +94,15 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     }
 
     await Promise.all([
-      npmInstall(npmClient, daemonPackage, beta, DAEMON_DIR, npmInstallEnvs),
-      npmInstall(npmClient, boardPackage, beta, BOARD_DIR, npmInstallEnvs)
+      npmInstall(npmClient, daemonPackage, beta, CoreConstants.PIPCOOK_DAEMON, npmInstallEnvs),
+      npmInstall(npmClient, boardPackage, beta, CoreConstants.PIPCOOK_BOARD, npmInstallEnvs)
     ]);
-    await fse.copy(BOARD_BUILD, DAEMON_PUBLIC);
+    await fse.copy(CoreConstants.PIPCOOK_BOARD_BUILD, CoreConstants.PIPCOOK_DAEMON_PUBLIC);
     spinner.succeed('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
     spinner.fail(`failed to initialize Pipcook with the error ${err && err.stack}`);
-    await fse.remove(DAEMON_DIR);
-    await fse.remove(BOARD_DIR);
+    await fse.remove(CoreConstants.PIPCOOK_DAEMON);
+    await fse.remove(CoreConstants.PIPCOOK_BOARD);
   }
 };
 
