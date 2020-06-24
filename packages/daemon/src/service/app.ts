@@ -1,10 +1,10 @@
 import { provide, inject } from 'midway';
 import { RunConfigI } from '@pipcook/pipcook-core';
 import { compile, PipelineNode } from '@pipcook/app';
+import { constants as CoreConstants } from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { pseudoRandomBytes } from 'crypto';
-import { PIPCOOK_APP_DIR } from '../utils/constants';
 import { PipelineService } from './pipeline';
 import { parseConfig } from '../runner/helper';
 
@@ -21,7 +21,7 @@ export class AppService {
 
   async compile(source: string): Promise<CompileResult> {
     const appId = pseudoRandomBytes(8).toString('hex');
-    const projRoot = path.join(PIPCOOK_APP_DIR, appId);
+    const projRoot = path.join(CoreConstants.PIPCOOK_APP, appId);
     const tsconfig = path.join(projRoot, 'tsconfig.json');
 
     await fs.ensureDir(projRoot);
