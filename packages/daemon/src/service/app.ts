@@ -1,7 +1,6 @@
 import { provide, inject } from 'midway';
 import { RunConfigI, constants as CoreConstants } from '@pipcook/pipcook-core';
 import { compile, PipelineNode } from '@pipcook/app';
-import { constants as CoreConstants } from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { pseudoRandomBytes } from 'crypto';
