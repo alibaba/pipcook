@@ -4,7 +4,7 @@ import * as sqlite3 from 'sqlite3';
 import { scope, ScopeEnum, provide, async, init } from 'midway';
 import { ensureDir } from 'fs-extra';
 import { dirname } from 'path';
-import { PIPCOOK_STORAGE } from '../utils/constants';
+import { constants as CoreConstants } from '@pipcook/pipcook-core';
 
 sqlite3.verbose();
 
@@ -17,13 +17,13 @@ export default class DB {
   @init()
   async connect(): Promise<void> {
     // ensure the dir firstly.
-    await ensureDir(dirname(PIPCOOK_STORAGE));
+    await ensureDir(dirname(CoreConstants.PIPCOOK_STORAGE));
 
     // create the sequelize instance.
     Sequelize.useCLS(cls.createNamespace('pipcook-cls'));
     const sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: PIPCOOK_STORAGE
+      storage: CoreConstants.PIPCOOK_STORAGE
     });
     await sequelize.sync();
     this.sequelize = sequelize;
