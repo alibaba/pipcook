@@ -28,9 +28,9 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
 
   let cfg: any;
   if (recoverPath) {
-    const logFile = await fs.readFile(path.join(recoverPath, 'log.json'), 'utf8');
+    const logFile = await fs.readFile(path.join(recoverPath, '..', 'metadata.json'), 'utf8');
     const log = JSON.parse(logFile);
-    const labelMap = log.metadata.labelMap;
+    const labelMap = log.output.dataset.labelMap;
     numClasses = Object.keys(labelMap).length;
   } else {
     numClasses = Object.keys(data.metadata.labelMap).length;
@@ -57,7 +57,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   }
 
   if (recoverPath) {
-    cfg.MODEL.WEIGHTS = path.join(recoverPath, 'model', 'model_final.pth');
+    cfg.MODEL.WEIGHTS = path.join(recoverPath, 'model_final.pth');
   } else {
     cfg.MODEL.WEIGHTS = "detectron2://ImageNetPretrained/MSRA/R-50.pkl";
   }
