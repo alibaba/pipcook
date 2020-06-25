@@ -227,7 +227,9 @@ export class PipelineService {
         dataDir
       }));
 
+      let dataProcess: PluginPackage;
       if (plugins.dataProcess) {
+        dataProcess = plugins.dataProcess.plugin;
         await runnable.start(plugins.dataProcess.plugin, dataset, getParams(plugins.dataProcess.params));
       }
 
@@ -272,6 +274,7 @@ export class PipelineService {
         cwd,
         modelPath,
         modelPlugin,
+        dataProcess,
         pipeline,
         workingDir: runnable.workingDir
       });

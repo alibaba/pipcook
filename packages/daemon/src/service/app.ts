@@ -1,5 +1,5 @@
 import { provide, inject } from 'midway';
-import { RunConfigI } from '@pipcook/pipcook-core';
+import { RunConfigI, constants as CoreConstants } from '@pipcook/pipcook-core';
 import { compile, PipelineNode } from '@pipcook/app';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';

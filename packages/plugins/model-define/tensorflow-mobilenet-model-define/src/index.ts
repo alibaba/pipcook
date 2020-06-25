@@ -55,9 +55,9 @@ const mobilenetDefine: ModelDefineType = async (data: ImageDataset, args: ModelD
     outputShape = Object.keys(data.metadata.labelMap).length;
     labelMap = data.metadata.labelMap;
   } else {
-    const logContent = await fs.readFile(path.join(recoverPath, 'log.json'), 'utf8');
+    const logContent = await fs.readFile(path.join(recoverPath, 'metadata.json'), 'utf8');
     const log = JSON.parse(logContent);
-    labelMap = log.metadata.labelMap;
+    labelMap = log.output.dataset.labelMap;
     outputShape = Object.keys(labelMap).length;
   }
 
@@ -95,7 +95,7 @@ const mobilenetDefine: ModelDefineType = async (data: ImageDataset, args: ModelD
   }
 
   if (recoverPath) {
-    model.load_weights(recoverPath);
+    model.load_weights(path.join(recoverPath, 'weights.h5'));
   }
 
   model.compile(boa.kwargs({
