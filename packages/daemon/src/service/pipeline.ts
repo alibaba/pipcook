@@ -5,14 +5,21 @@ import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
 import { provide, inject } from 'midway';
-import { PipelineDB, PipelineStatus, EvaluateResult, PluginTypeI, constants, compressTarFile, UniDataset } from '@pipcook/pipcook-core';
+import {
+  PipelineDB,
+  PipelineStatus,
+  EvaluateResult,
+  PluginTypeI,
+  compressTarFile,
+  UniDataset,
+  constants as CoreConstants
+} from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
 import { RunParams } from '../interface';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
-import { PIPCOOK_RUN_DIR } from '../utils/constants';
 
 interface QueryOptions {
   limit: number;
@@ -141,7 +148,7 @@ export class PipelineService {
     const jobs = await this.queryJobs({});
     await jobs.rows.map(async (job: JobModel) => {
       await job.destroy();
-      await fs.remove(`${PIPCOOK_RUN_DIR}/${job.id}`);
+      await fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`);
     });
   }
 
@@ -168,7 +175,7 @@ export class PipelineService {
   async installPlugins(job: JobModel, cwd: string, pyIndex?: string): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
     const pipeline = await this.getPipeline(job.pipelineId);
     const plugins: Partial<Record<PluginTypeI, PluginInfo>> = {};
-    for (const type of constants.PLUGINS) {
+    for (const type of CoreConstants.PLUGINS) {
       if (pipeline[type]) {
         plugins[type] = await {
           plugin: await this.pluginManager.fetchAndInstall(pipeline[type], cwd, pyIndex),
@@ -220,7 +227,9 @@ export class PipelineService {
         dataDir
       }));
 
+      let dataProcess: PluginPackage;
       if (plugins.dataProcess) {
+        dataProcess = plugins.dataProcess.plugin;
         await runnable.start(plugins.dataProcess.plugin, dataset, getParams(plugins.dataProcess.params));
       }
 
@@ -265,6 +274,7 @@ export class PipelineService {
         cwd,
         modelPath,
         modelPlugin,
+        dataProcess,
         pipeline,
         workingDir: runnable.workingDir
       });
@@ -295,7 +305,7 @@ export class PipelineService {
    * @param id the job id
    */
   getOutputTarByJobId(id: string): string {
-    return path.join(PIPCOOK_RUN_DIR, id, 'output.tar.gz');
+    return path.join(CoreConstants.PIPCOOK_RUN, id, 'output.tar.gz');
   }
 
   /**
@@ -344,8 +354,8 @@ export class PipelineService {
   }
 
   async getLogById(id: string): Promise<string[]> {
-    const stdout = path.join(PIPCOOK_RUN_DIR, id, 'logs/stdout.log');
-    const stderr = path.join(PIPCOOK_RUN_DIR, id, 'logs/stderr.log');
+    const stdout = path.join(CoreConstants.PIPCOOK_RUN, id, 'logs/stdout.log');
+    const stderr = path.join(CoreConstants.PIPCOOK_RUN, id, 'logs/stderr.log');
     return [
       await fs.readFile(stdout, 'utf8'),
       await fs.readFile(stderr, 'utf8')
