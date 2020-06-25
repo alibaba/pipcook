@@ -15,7 +15,7 @@ const {
 } = Constants;
 
 async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
-  exec(`${npmClient} init -f`, { cwd, env, stdio: 'ignore' });
+  exec(`"${npmClient}" init -f`, { cwd, env, stdio: 'ignore' });
   if (isLocal) {
     // FIXME(yorkie): manually make symlink to local development
     // This is because npm-install from path will not be compatible with lerna's node_modules/.staging dir.
