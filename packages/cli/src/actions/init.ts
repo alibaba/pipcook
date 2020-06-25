@@ -27,7 +27,7 @@ async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: s
     if (beta) {
       name = `${name}@beta`;
     }
-    const cmd = `${npmClient} install ${name} -E --production`;
+    const cmd = `"${npmClient}" install ${name} -E --production`;
     console.info(`exec "${cmd}"`);
     exec(cmd, { cwd, env, stdio: 'inherit' });
   }
