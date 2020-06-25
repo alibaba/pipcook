@@ -1,4 +1,5 @@
 import { scope, ScopeEnum, provide, async, init } from 'midway';
+import { readJSON } from 'fs-extra';
 import { CostaRuntime } from '@pipcook/costa';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 
@@ -10,10 +11,19 @@ export default class PluginRuntime {
 
   @init()
   async connect(): Promise<void> {
+    let npmRegistryPrefix = 'https://registry.npmjs.com/';
+    try {
+      const config = await readJSON(CoreConstants.PIPCOOK_DAEMON_CONFIG);
+      npmRegistryPrefix = config.npmRegistryPrefix || npmRegistryPrefix;
+    } catch (err) {
+      console.warn(`read ${CoreConstants.PIPCOOK_DAEMON_CONFIG} error: ${err.message}.`);
+    }
+
     this.costa = new CostaRuntime({
       installDir: CoreConstants.PIPCOOK_PLUGINS,
       datasetDir: CoreConstants.PIPCOOK_DATASET,
-      componentDir: CoreConstants.PIPCOOK_RUN
+      componentDir: CoreConstants.PIPCOOK_RUN,
+      npmRegistryPrefix
     });
   }
 }
