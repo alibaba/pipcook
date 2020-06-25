@@ -52,7 +52,8 @@
     "lint": "tslint -p tsconfig.json -t stylish",
     "ci": "npm run cov",
     "compile": "midway-bin build -c --port=6927",
-    "clean": "rm -rf src/app/public"
+    "clean": "rm -rf src/app/public",
+    "test": "midway-bin test --ts --full-trace"
   },
   "ci": {
     "version": "10"
