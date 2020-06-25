@@ -23,7 +23,7 @@ async function start(): Promise<void> {
 
   // check if the process is running...
   if (await pathExists(DAEMON_PIDFILE)) {
-    spinner.fail('daemon is running...');
+    spinner.fail('starting daemon but ${DAEMON_PIDFILE} exists.');
     return;
   }
   spinner.start('starting Pipcook...');
