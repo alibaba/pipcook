@@ -47,15 +47,15 @@ const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: M
     outputShape = Object.keys(data.metadata.labelMap).length;
     labelMap = data.metadata.labelMap;
   } else {
-    const log = JSON.parse(fs.readFileSync(path.join(recoverPath, 'log.json'), 'utf8'));
-    labelMap = log.metadata.labelMap;
+    const log = JSON.parse(fs.readFileSync(path.join(recoverPath, 'metadata.json'), 'utf8'));
+    labelMap = log.output.dataset.labelMap;
     outputShape = Object.keys(labelMap).length;
   }
 
   let model: tf.LayersModel | null = null;
   // load from former pipcook trained model
   if (recoverPath) {
-    model = (await tf.loadLayersModel('file://' + path.join(recoverPath, 'model', 'model.json'))) as tf.LayersModel;
+    model = (await tf.loadLayersModel('file://' + path.join(recoverPath, 'model.json'))) as tf.LayersModel;
   } else {
     const localModel = tf.sequential();
     localModel.add(tf.layers.conv2d({
