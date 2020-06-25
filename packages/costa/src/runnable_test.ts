@@ -7,7 +7,8 @@ describe('start runnable in normal way', () => {
   const costa = new CostaRuntime({
     installDir: path.join(__dirname, '../.tests/plugins'),
     datasetDir: path.join(__dirname, '../.tests/datasets'),
-    componentDir: path.join(__dirname, '../.tests/components')
+    componentDir: path.join(__dirname, '../.tests/components'),
+    npmRegistryPrefix: 'https://registry.npmjs.com/'
   });
   let runnable: PluginRunnable;
 
