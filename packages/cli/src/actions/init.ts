@@ -1,13 +1,13 @@
 import { join, dirname } from 'path';
 import { execSync as exec } from 'child_process';
-import fse, { symlink, readJson, ensureDir } from 'fs-extra';
+import fse, { readJson, ensureDir, symlink } from 'fs-extra';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 
 import { ora, Constants } from '../utils';
 import { InitCommandHandler } from '../types';
-import { isLocal, optionalNpmClients, daemonPackage, boardPackage } from '../config';
+import { optionalNpmClients, daemonPackage, boardPackage, isLocal } from '../config';
 
 const {
   BOA_CONDA_INDEX,
@@ -15,7 +15,10 @@ const {
 } = Constants;
 
 async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
+  exec(`"${npmClient}" init -f`, { cwd, env, stdio: 'ignore' });
   if (isLocal) {
+    // FIXME(yorkie): manually make symlink to local development
+    // This is because npm-install from path will not be compatible with lerna's node_modules/.staging dir.
     const pkg = await readJson(name + '/package.json');
     const dest = join(cwd, 'node_modules', pkg.name);
     await ensureDir(dirname(dest));
@@ -24,8 +27,8 @@ async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: s
     if (beta) {
       name = `${name}@beta`;
     }
-    const cmd = `${npmClient} install ${name} --force`;
-    console.info(`exec <${cmd}>`);
+    const cmd = `"${npmClient}" install ${name} -E --production`;
+    console.info(`exec "${cmd}"`);
     exec(cmd, { cwd, env, stdio: 'inherit' });
   }
 }
