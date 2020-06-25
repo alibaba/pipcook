@@ -4,15 +4,16 @@ import semver from 'semver';
 import chalk from 'chalk';
 import program from 'commander';
 import { execSync as exec } from 'child_process';
+import { join } from 'path';
+import { constants } from '@pipcook/pipcook-core';
+
 import init from '../actions/init';
 import start from '../actions/start';
 import serve from '../actions/serve';
 import board from '../actions/board';
 import devPlugin from '../actions/dev-plugin';
 
-const pkg = require('../../package.json');
-
-(function(): void {
+(async function(): Promise<void> {
   // check node version
   if (!semver.gte(process.version, '10.0.0')) {
     console.log(
@@ -24,7 +25,16 @@ const pkg = require('../../package.json');
     return;
   }
 
-  program.version(pkg.version, '-v, --version');
+  const pkg = require('../../package.json');
+  const daemonPkg = require(join(constants.PIPCOOK_DAEMON_SRC, 'package.json'));
+  const boardPkg = require(join(constants.PIPCOOK_BOARD_SRC, 'package.json'));
+  const versionStr = [
+    `Pipcook Tools   v${pkg.version} ${join(__dirname, '../../')}`,
+    `Pipcook Daemon  v${daemonPkg.version} ${constants.PIPCOOK_DAEMON_SRC}`,
+    `Pipboard        v${boardPkg.version} ${constants.PIPCOOK_BOARD_SRC}`
+  ].join('\n');
+
+  program.version(versionStr, '-v, --version');
   program
     .command('init')
     .option('-c, --client <string>', 'specify your npm client.')
