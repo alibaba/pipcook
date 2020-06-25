@@ -76,6 +76,9 @@ export class PipelineService {
   pluginManager: PluginManager;
 
   createPipeline(config: PipelineDB): Promise<PipelineModel> {
+    if (!config.id || validate(config.id)) {
+      config.id = uuidv1();
+    }
     return this.pipeline.create(config);
   }
 
