@@ -1,5 +1,4 @@
 'use strict';
-
 const http = require('http');
 const path = require('path');
 const os = require('os');
@@ -11,6 +10,12 @@ const PIPCOOK_HOME = os.homedir() + '/.pipcook';
 const DAEMON_PIDFILE = PIPCOOK_HOME + '/daemon.pid';
 const DAEMON_CONFIG = PIPCOOK_HOME + '/daemon.config.json';
 const PORT = 6927;
+
+const isChildMode = typeof process.send === 'function';
+const bootstrapProcessState = {
+  willExit: null,
+  exitCode: 0
+};
 
 function createPidfileSync(pathname) {
   if (fs.existsSync(DAEMON_PIDFILE)) {
@@ -30,6 +35,9 @@ function createPidfileSync(pathname) {
 }
 
 (async function bootstrap() {
+  // delegate the stdio to access log.
+  delegateStdio();
+
   // create pidfile firstly
   createPidfileSync(DAEMON_PIDFILE);
 
@@ -55,35 +63,66 @@ function createPidfileSync(pathname) {
     framework: midwayPathname,
     typescript: true
   };
-  const app = await start(opts);
 
-  const server = http.createServer(app.callback());
-  server.once('error', err => {
-    console.error('app server got error: %s, code: %s', err.message, err.code);
-    process.exit(1);
-  });
+  try {
+    const app = await start(opts);
+    const server = http.createServer(app.callback());
+    server.once('error', err => {
+      exitProcessWithError(`app server got error: ${err.message}, code: ${err.code}`);
+    });
 
-  // emit `server` event in app
-  app.emit('server', server);
+    // emit `server` event in app
+    app.emit('server', server);
 
-  // server listen
-  await new Promise(resolve => {
-    server.listen(PORT, resolve);
-  });
+    // server listen
+    await new Promise(resolve => {
+      server.listen(PORT, resolve);
+    });
+  } catch (err) {
+    return exitProcessWithError(err);
+  }
 
   process.title = 'pipcook.daemon';
   console.info('Server is listening at http://localhost:%s, cost %ss', PORT, process.uptime());
 
-  if (typeof process.send === 'function') {
-    prepareToReady();
-  }
+  prepareToReady();
 })();
 
+function exitProcessWithError(err) {
+  bootstrapProcessState.willExit = true;
+  bootstrapProcessState.exitCode = 1;
+  console.error(err);
+  // in master mode, exit directly.
+  if (!isChildMode) {
+    return exitProcess();
+  }
+}
+
+function exitProcess() {
+  return process.exit(bootstrapProcessState.exitCode)
+}
+
+function delegateStdio() {
+  if (!isChildMode) {
+    return;
+  }
+   // FIXME(Yorkie): monkeypatch the process.stdout(stderr) to redirect logs to the access log file.
+  const access = fs.createWriteStream(PIPCOOK_HOME + '/daemon.access.log');
+  const writeLog = (msg) => {
+    if (bootstrapProcessState.willExit === true) {
+      process.nextTick(() => access.write(msg, exitProcess));
+    } else {
+      access.write(msg);
+    }
+  };
+  process.stdout.write = writeLog;
+  process.stderr.write = writeLog;
+}
+
 function prepareToReady() {
-  // FIXME(Yorkie): monkeypatch the process.stdout(stderr) to redirect logs to the access log file.
-  const access = fs.createWriteStream(PIPCOOK_HOME + '/daemon.access.log')
-  process.stdout.write = access.write.bind(access);
-  process.stderr.write = access.write.bind(access);
+  if (!isChildMode) {
+    return;
+  }
   process.send({
     event: 'ready',
     data: {
