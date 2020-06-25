@@ -68,36 +68,7 @@ export {
   shuffle
 } from './utils/public';
 
-// expose constants
-import {
-  PLUGINS,
-  MODELLOAD,
-  MODELDEFINE,
-  DATACOLLECT,
-  DATAACCESS,
-  DATAPROCESS,
-  MODELTRAIN,
-  MODELEVALUATE
-} from './constants/plugins';
-import { PIPCOOK_PLUGINS, PIPCOOK_LOGS, PIPCOOK_DEPENDENCIES, KERAS_DIR, TORCH_DIR } from './constants/other';
-export const constants = {
-  PLUGINS,
-  MODELLOAD,
-  MODELDEFINE,
-  PIPCOOK_PLUGINS,
-  DATACOLLECT,
-  DATAACCESS,
-  DATAPROCESS,
-  MODELTRAIN,
-  MODELEVALUATE,
-  PIPCOOK_LOGS,
-  PIPCOOK_DEPENDENCIES,
-  KERAS_DIR,
-  TORCH_DIR
-};
-
 export { OutputType } from './constants/other';
-
 export {
   PipelineDB,
   PipelineStatus,
@@ -106,3 +77,11 @@ export {
 } from './types/database';
 
 export { RunConfigI, Config } from './types/config';
+
+// expose constants
+import * as PluginConstants from './constants/plugins';
+import * as OtherConstants from './constants/other';
+export const constants = {
+  ...PluginConstants,
+  ...OtherConstants
+};
