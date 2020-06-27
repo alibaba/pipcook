@@ -39,8 +39,8 @@
       "torchvision": "*",
       "opencv-python": "*",
       "cython": "*",
-      "cocoapi": "git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI",
-      "detectron": "git+https://github.com/facebookresearch/detectron2.git"
+      "pycocotools": "*",
+      "detectron": "git+https://gitee.com/queyue0520/detectron2.git"
     }
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
