@@ -4,8 +4,14 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const { BOA_CONDA_PREFIX, BOA_CONDA_INDEX } = process.env;
+const { BOA_CONDA_PREFIX, BOA_TUNA } = process.env;
 const CONDA_INSTALL_DIR = path.join(__dirname, '../.CONDA_INSTALL_DIR');
+let { BOA_CONDA_INDEX } = process.env;
+
+// Specify BOA_TUNA for simplifying the env setup.
+if (BOA_TUNA && !BOA_CONDA_INDEX) {
+  BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';
+}
 
 exports.run = (...args) => execSync.call(null, args.join(' '), { stdio: 'inherit' });
 exports.PLATFORM = os.platform();
