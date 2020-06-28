@@ -18,7 +18,7 @@ export async function install(filename: string, opts: any): Promise<void> {
     return process.exit(1);
   }
   const params = {
-    cwd: process.cwd(),
+    cwd: cwd(),
     config: filename,
     pyIndex: opts.tuna ? tunaMirrorURI : undefined
   };
@@ -27,8 +27,8 @@ export async function install(filename: string, opts: any): Promise<void> {
     spinner.succeed(`install plugins succeeded.`);
     return;
   } else {
-    return new Promise(async (resolve, reject) => {
-      await listen(`${route.pipeline}/install`, params, {
+    return new Promise((resolve, reject) => {
+      listen(`${route.pipeline}/install`, params, {
         'info': (e: MessageEvent) => {
           const { name, version } = JSON.parse(e.data);
           spinner.start(`installing plugin ${name}@${version}`);
