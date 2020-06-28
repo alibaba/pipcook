@@ -29,7 +29,7 @@ function predict(data) {
 
   if (typeof dataProcessModule === 'function') {
     future = future.then((m) => {
-      dataProcessModule(sample, {}, pipeline.dataProcessParams);
+      dataProcessModule(sample, {}, JSON.parse(pipeline.dataProcessParams));
       return m
     });
   }
