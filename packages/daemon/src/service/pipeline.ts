@@ -328,6 +328,9 @@ export class PipelineService {
     projPackage.dependencies = {
       [opts.modelPlugin.name]: opts.modelPlugin.version,
     };
+    projPackage.scripts = {
+      postinstall: 'node boapkg.js'
+    };
     if (opts.dataProcess) {
       projPackage.dependencies[opts.dataProcess.name] = opts.dataProcess.version;
     }
@@ -343,6 +346,7 @@ export class PipelineService {
       // copy base components
       fs.copy(opts.modelPath, dist + '/model'),
       fs.copy(path.join(__dirname, '../../assets/predict.js'), `${dist}/index.js`),
+      fs.copy(path.join(__dirname, '../../assets/boapkg.js'), `${dist}/boapkg.js`),
       // copy logs
       fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
       // write package.json
@@ -350,7 +354,7 @@ export class PipelineService {
       // write metadata.json
       fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
     ]);
-    console.log(`trained the model to ${dist}`);
+    console.info(`trained the model to ${dist}`);
 
     // packing the output directory.
     await compressTarFile(dist, path.join(opts.workingDir, 'output.tar.gz'));
