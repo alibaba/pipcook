@@ -3,8 +3,6 @@ export interface Statistic {
   metricValue: number;
 }
 
-export type PipObject = Record<string, any>
-
 export interface EvaluateResult {
   pass?: boolean;
   [key: string]: any;
@@ -18,10 +16,3 @@ export class EvaluateError extends TypeError {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PipcookMergeArray {}
-
-/**
- * Retrieve the type of fulfillment value of a Promise
- */
-export type PromisedValueOf<T extends Promise<any>> = T extends Promise<infer P> ? P : never

@@ -1,4 +1,4 @@
-import { ModelDefineType, ImageSample, ImageDataset, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageSample, ImageDataset, ModelDefineArgsType, UniModel } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -28,7 +28,7 @@ function argMax(array: any) {
  * @param modelId (string)[optional] if you want to load a model from previously trained pipcook pipeline, give the pipeline id here
  * @param modelPath (string)[optional] if you want to load a model from a local file path, give the path here
  */
-const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
+const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
     optimizer = tf.train.rmsprop(0.00005, 1e-7),
     loss = 'categoricalCrossentropy',
@@ -103,9 +103,9 @@ const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: M
     metrics
   });
 
-  const result: TfJsLayersModel = {
+  return {
     model,
-    metrics: metrics,
+    metrics,
     predict: async function (inputData: ImageSample) {
       let predict: any;
       const image = await Jimp.read(inputData.data);
@@ -126,7 +126,6 @@ const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: M
       return predict;
     }
   };
-  return result;
 };
 
 export default simpleCnnModelDefine;

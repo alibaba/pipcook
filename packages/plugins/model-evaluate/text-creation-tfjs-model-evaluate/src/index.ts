@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs-node-gpu';
 import {
   CsvDataset,
   ModelEvaluateType,
-  TfJsLayersModel,
+  UniModel,
   CsvDataLoader,
   EvaluateResult
 } from '@pipcook/pipcook-core';
@@ -29,7 +29,7 @@ async function createDataset(loader: CsvDataLoader, labelMap: string[]): Promise
  * @param model Pipcook model
  * @param args args: specify batch size, total batches to iterate
  */
-const evlauate: ModelEvaluateType = async (dataset: CsvDataset, uniModel: TfJsLayersModel): Promise<EvaluateResult> => {
+const evlauate: ModelEvaluateType = async (dataset: CsvDataset, uniModel: UniModel): Promise<EvaluateResult> => {
   const batchSize = 16;
   const { testLoader, metadata } = dataset;
   if (!testLoader) {

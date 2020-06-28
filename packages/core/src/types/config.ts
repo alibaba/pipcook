@@ -1,15 +1,23 @@
 import { PluginTypeI } from './plugins';
 
-export interface Config {
-  version: string;
-}
-
-export interface RunConfigParam {
+/**
+ * Plugin parameters.
+ */
+interface PluginConfig {
   package: string;
   params: any;
 }
 
+/**
+ * The Pipeline configure schema
+ */
 export interface RunConfigI {
-  plugins: Record<PluginTypeI, RunConfigParam>;
+  /**
+   * The pipeline name
+   */
   name: string;
+  /**
+   * The plugins configs
+   */
+  plugins: Record<PluginTypeI, PluginConfig>;
 }

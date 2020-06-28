@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { ModelDefineType, CsvDataset, ModelDefineArgsType, TfJsLayersModel, CsvSample } from '@pipcook/pipcook-core';
+import { ModelDefineType, CsvDataset, ModelDefineArgsType, UniModel, CsvSample } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 const hanzi = require('hanzi-tools');
 
@@ -39,7 +39,7 @@ function oneHotToChar(onehot: number[], charSetArray: string[]): string {
   return charSetArray[maxIdx];
 }
 
-const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
+const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   const {
     recoverPath,
     loss = 'categoricalCrossentropy',
@@ -90,7 +90,7 @@ const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArg
   model.compile({ loss, optimizer, metrics });
   model.summary();
 
-  const result: TfJsLayersModel = {
+  return {
     model,
     metrics,
     predict: async function (inputData: CsvSample) {
@@ -113,7 +113,6 @@ const lstmModel: ModelDefineType = async (data: CsvDataset, args: ModelDefineArg
       return chars;
     }
   };
-  return result;
 };
 
 export default lstmModel;
