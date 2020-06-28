@@ -40,7 +40,7 @@
       "opencv-python": "*",
       "cython": "*",
       "pycocotools": "*",
-      "detectron": "git+https://gitee.com/queyue0520/detectron2.git"
+      "detectron": "git+https://gitee.com/pipcook/detectron2.git"
     }
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
