@@ -38,6 +38,12 @@ $ npm run build
 We provide a way to use [tuna mirror](https://mirrors.tuna.tsinghua.edu.cn/) for downloading Python and packages:
 
 ```sh
+$ BOA_TUNA=1 npm install
+```
+
+Or you could specify your custom miniconda mirror and Python index page:
+
+```sh
 $ export BOA_CONDA_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda # this is for miniconda
 $ export BOA_CONDA_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple                 # this is for pip
 $ npm install
