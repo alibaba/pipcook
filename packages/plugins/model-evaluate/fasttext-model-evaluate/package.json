@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-fasttext-model-evaluate",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.7.0",
-    "@pipcook/pipcook-core": "^0.7.0"
+    "@pipcook/boa": "^0.7.1",
+    "@pipcook/pipcook-core": "^0.7.1"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.7",

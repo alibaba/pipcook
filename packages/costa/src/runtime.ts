@@ -162,6 +162,9 @@ export class CostaRuntime {
    * @param pyIndex the index mirror to install python packages.
    */
   async install(pkg: PluginPackage, force = false, pyIndex?: string): Promise<boolean> {
+    if (force === true) {
+      await this.uninstall(pkg.name);
+    }
     // check if the pkg is installed
     if ((await this.isInstalled(pkg.name)) && !force) {
       debug(`skip install "${pkg.name}" because it already exists`);
@@ -187,11 +190,16 @@ export class CostaRuntime {
     }
 
     const npmExecOpts = { cwd: this.options.installDir };
+    const npmArgs = [ 'install', pluginAbsName, '-E', '--production' ];
+
+    if (this.options.npmRegistryPrefix) {
+      npmArgs.push(`--registry=${this.options.npmRegistryPrefix}`);
+    }
     if (!await pathExists(`${this.options.installDir}/package.json`)) {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
     }
-    await spawnAsync('npm', [ 'install', `${pluginAbsName}`, '-E', '--production' ], npmExecOpts);
+    await spawnAsync('npm', npmArgs, npmExecOpts);
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);
@@ -315,7 +323,11 @@ export class CostaRuntime {
     } else if (name[0] !== '.') {
       src.schema = this.getNameSchema(name);
       src.from = 'npm';
-      src.uri = `http://registry.npmjs.com/${src.schema.packageName}`;
+      let { npmRegistryPrefix } = this.options;
+      if (npmRegistryPrefix.slice(-1) === '/') {
+        npmRegistryPrefix = npmRegistryPrefix.slice(0, -1);
+      }
+      src.uri = `${npmRegistryPrefix}/${src.schema.packageName}`;
     } else if (urlObj.protocol == null) {
       src.from = 'fs';
       src.uri = path.join(cwd, name);
