@@ -48,7 +48,7 @@ const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: M
     labelMap = data.metadata.labelMap;
   } else {
     const log = JSON.parse(fs.readFileSync(path.join(recoverPath, '..', 'metadata.json'), 'utf8'));
-    labelMap = log.output.dataset.labelMap;
+    labelMap = JSON.parse(log.output.dataset).labelMap;
     outputShape = Object.keys(labelMap).length;
   }
 
