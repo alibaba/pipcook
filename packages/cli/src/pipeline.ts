@@ -42,7 +42,7 @@ export async function install(filename: string, opts: any): Promise<void> {
       },
       'finished': () => {
         spinner.succeed('all plugins installed');
-      },
+      }
     });
   }
 }
