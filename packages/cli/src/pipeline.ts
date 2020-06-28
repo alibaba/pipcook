@@ -25,24 +25,27 @@ export async function install(filename: string, opts: any): Promise<void> {
   if (!opts.verbose) {
     get(`${route.pipeline}/install`, params);
     spinner.succeed(`install plugins succeeded.`);
-    process.exit(0);
+    return;
   } else {
-    await listen(`${route.pipeline}/install`, params, {
-      'info': (e: MessageEvent) => {
-        const { name, version } = JSON.parse(e.data);
-        spinner.start(`installing plugin ${name}@${version}`);
-      },
-      'installed': (e: MessageEvent) => {
-        const { name, version } = JSON.parse(e.data);
-        spinner.succeed(`plugin (${name}@${version}) is installed`);
-      },
-      'error': (e: MessageEvent) => {
-        spinner.fail(`occurrs an error ${e.data}`);
-        process.exit(1);
-      },
-      'finished': () => {
-        spinner.succeed('all plugins installed');
-      }
+    return new Promise(async (resolve, reject) => {
+      await listen(`${route.pipeline}/install`, params, {
+        'info': (e: MessageEvent) => {
+          const { name, version } = JSON.parse(e.data);
+          spinner.start(`installing plugin ${name}@${version}`);
+        },
+        'installed': (e: MessageEvent) => {
+          const { name, version } = JSON.parse(e.data);
+          spinner.succeed(`plugin (${name}@${version}) is installed`);
+        },
+        'error': (e: MessageEvent) => {
+          spinner.fail(`occurrs an error ${e.data}`);
+          reject(new TypeError(e.data));
+        },
+        'finished': () => {
+          spinner.succeed('all plugins installed');
+          resolve();
+        }
+      });
     });
   }
 }
