@@ -18,34 +18,40 @@ export async function install(filename: string, opts: any): Promise<void> {
     return process.exit(1);
   }
   const params = {
-    cwd: cwd(),
+    cwd: process.cwd(),
     config: filename,
     pyIndex: opts.tuna ? tunaMirrorURI : undefined
   };
-  await listen(`${route.pipeline}/install`, params, {
-    'info': (e: MessageEvent) => {
-      const info = JSON.parse(e.data);
-      spinner.succeed(info);
-    },
-    'installed': (e: MessageEvent) => {
-      const plugin = JSON.parse(e.data);
-      spinner.succeed(`plugin (${plugin.name}@${plugin.version}) is installed`);
-    },
-    'finished': () => {
-      spinner.succeed('all plugins installed');
-      process.exit(0);
-    },
-    'error': (e: MessageEvent) => {
-      spinner.fail(`occurrs an error ${e.data}`);
-      process.exit(1);
-    }
-  });
+  if (!opts.verbose) {
+    get(`${route.pipeline}/install`, params);
+    spinner.succeed(`install plugins succeeded.`);
+    process.exit(0);
+  } else {
+    await listen(`${route.pipeline}/install`, params, {
+      'info': (e: MessageEvent) => {
+        const { name, version } = JSON.parse(e.data);
+        spinner.start(`installing plugin ${name}@${version}`);
+      },
+      'installed': (e: MessageEvent) => {
+        const { name, version } = JSON.parse(e.data);
+        spinner.succeed(`plugin (${name}@${version}) is installed`);
+      },
+      'error': (e: MessageEvent) => {
+        spinner.fail(`occurrs an error ${e.data}`);
+        process.exit(1);
+      },
+      'finished': () => {
+        spinner.succeed('all plugins installed');
+      },
+    });
+  }
 }
 
 export async function run(filename: string, opts: any): Promise<void> {
   const spinner = ora();
   const cwd = process.cwd();
 
+  spinner.start('start running the pipeline...');
   try {
     filename = await parseConfigFilename(filename);
   } catch (err) {
