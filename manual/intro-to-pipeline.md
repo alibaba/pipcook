@@ -59,7 +59,19 @@ The trained model will generate an `output` directory under [`cwd(3)`](https://l
    ┗ 📜index.js
 ```
 
-To get started with your trained model, just using:
+To get started with your trained model, follow the below steps:
+
+```sh
+$ npm install
+```
+
+It will install dependencies which contain the plugins and Python packages. Pipcook provides a way to use [tuna mirror](https://mirrors.tuna.tsinghua.edu.cn/) when it downloads Python and packages:
+
+```sh
+$ BOA_TUNA=1 npm install
+```
+
+Once the output is initialized, just `import` it as the following:
 
 ```js
 import * as predict from './output';
