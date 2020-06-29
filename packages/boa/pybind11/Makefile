@@ -18,5 +18,5 @@ $(BUILD): $(TARBALL)
 
 $(TARBALL):
 	[ -d $(ROOT)/downloads ] || mkdir $(ROOT)/downloads
-	wget -q -O $@ $(URL)
+	wget -O $@ $(URL)
 	$(MD5CMD)
