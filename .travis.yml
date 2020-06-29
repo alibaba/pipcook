@@ -8,7 +8,6 @@ node_js:
 before_install:
   - npm i npminstall -g
 install:
-  - git submodule update --init --recursive
   - npminstall
 script:
   - npm run ci

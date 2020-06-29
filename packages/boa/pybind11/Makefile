@@ -9,9 +9,6 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 MD5CMD=md5sum --quiet --check checksums
 endif
-ifeq ($(UNAME_S),Darwin)
-# MD5CMD=;md5 -q $(ROOT) `cat checksums | awk '{print \$2}'`
-endif
 
 all: $(BUILD)
 
