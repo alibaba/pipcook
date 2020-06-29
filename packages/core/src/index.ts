@@ -6,6 +6,7 @@ export {
   DataDescriptor
 } from './types/data/common';
 
+export { Sample } from './types/data/common';
 export {
   ImageLabel,
   ImageMetadata,
@@ -17,27 +18,13 @@ export {
   SegmentationRLE,
   SegmentationPolygon
 } from './types/data/image';
-
 export {
   CsvDataset,
   CsvDataLoader,
   CsvSample,
   CsvMetadata
 } from './types/data/csv';
-
-export { Sample } from './types/data/common';
-
-export { UniModel, TfJsLayersModel } from './types/model';
-export { EvaluateResult, PipObject, EvaluateError } from './types/other';
-export {
-  PipcookComponentResult,
-  PipcookComponentOutput,
-  PipcookComponentResultStatus,
-  PipcookComponentOperator,
-  PipcookLifeCycleComponent,
-  PipcookLifeCycleTypes
-} from './types/component';
-
+export { UniModel } from './types/model';
 export {
   DataCollectType,
   DataAccessType,
@@ -52,6 +39,7 @@ export {
   PluginTypeI,
   PipcookPlugin
 } from './types/plugins';
+export { EvaluateResult } from './types/other';
 
 export {
   createAnnotationFile,
@@ -69,14 +57,8 @@ export {
 } from './utils/public';
 
 export { OutputType } from './constants/other';
-export {
-  PipelineDB,
-  PipelineStatus,
-  PipelineDBParams,
-  RunDB
-} from './types/database';
-
-export { RunConfigI, Config } from './types/config';
+export { PipelineDB, PipelineDBParams, PipelineStatus } from './types/database';
+export { RunConfigI } from './types/config';
 
 // expose constants
 import * as PluginConstants from './constants/plugins';

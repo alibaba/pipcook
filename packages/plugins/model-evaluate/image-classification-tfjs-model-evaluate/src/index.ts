@@ -1,4 +1,4 @@
-import { ImageDataset, ModelEvaluateType, TfJsLayersModel, ImageDataLoader, EvaluateResult } from '@pipcook/pipcook-core';
+import { ImageDataset, ModelEvaluateType, UniModel, ImageDataLoader, EvaluateResult } from '@pipcook/pipcook-core';
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
@@ -32,7 +32,7 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
  * @param args args: specify batch size, total batches to iterate
  */
 const ModelEvalute: ModelEvaluateType =
-  async (data: ImageDataset, model: TfJsLayersModel): Promise<EvaluateResult> => {
+  async (data: ImageDataset, model: UniModel): Promise<EvaluateResult> => {
 
     let batchSize = 16;
 

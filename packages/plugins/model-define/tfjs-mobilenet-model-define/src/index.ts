@@ -1,4 +1,4 @@
-import { ModelDefineType, ImageSample, ImageDataset, ModelDefineArgsType, TfJsLayersModel } from '@pipcook/pipcook-core';
+import { ModelDefineType, ImageSample, ImageDataset, ModelDefineArgsType, UniModel } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as assert from 'assert';
 import Jimp from 'jimp';
@@ -26,7 +26,7 @@ function argMax(array: any) {
  * @param metrics (string | LossOrMetricFn | Array | {[outputName: string]: string | LossOrMetricFn}): [optional / default = ['accuracy']]
  * @param hiddenLayerUnits (number): [optional / default = 10]
 */
-const mobilenetModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<TfJsLayersModel> => {
+const mobilenetModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
     optimizer = tf.train.adam(),
     loss = 'categoricalCrossentropy',
@@ -72,9 +72,9 @@ const mobilenetModelDefine: ModelDefineType = async (data: ImageDataset, args: M
     metrics
   });
 
-  const result: TfJsLayersModel = {
+  return {
     model,
-    metrics: metrics,
+    metrics,
     predict: async function (inputData: ImageSample) {
       let predict: any;
       const image = await Jimp.read(inputData.data);
@@ -95,7 +95,6 @@ const mobilenetModelDefine: ModelDefineType = async (data: ImageDataset, args: M
       return predict;
     }
   };
-  return result;
 };
 
 export default mobilenetModelDefine;
