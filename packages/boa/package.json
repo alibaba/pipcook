@@ -12,7 +12,8 @@
     "build": "node-gyp configure && node-gyp build",
     "pretest": "npm run lint",
     "codecov": "nyc report --reporter=lcovonly && codecov",
-    "htmlcov": "nyc report --reporter=html"
+    "htmlcov": "nyc report --reporter=html",
+    "compile": "node-gyp configure && node-gyp build"
   },
   "bin": {
     "bip": "./tools/bip.js"
