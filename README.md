@@ -167,7 +167,7 @@ After the above, now build the project:
 $ npm run build
 ```
 
-- Developer Documentation [English](./docs/devel/developer-guide.md) | [中文](./docs/zh-cn/devel/developer-guide.md)
+- Developer Documentation [English](./docs/contributing/contribute-a-plugin.md) | [中文](./docs/zh-cn/contributing/contribute-a-plugin.md)
 - [Project Guide](./docs/meta/PROJECT_GUIDE.md)
 - [Roadmap, 2020](https://github.com/alibaba/pipcook/issues/30)
 
