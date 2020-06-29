@@ -22,25 +22,16 @@ $ npm install -g @pipcook/pipcook-cli
 
 ## 通过 Docker 安装
 
-首先安装 [Pipcook Dockerfile](https://github.com/alibaba/pipcook/blob/master/docker/Dockerfile)，然后在该路径下构建镜像：
+我们提供了阿里源 docker 镜像，您可以运行如下命令安装
 
 ```sh
-$ git clone https://github.com/alibaba/pipcook.git && cd pipcook/docker
-$ docker build -t alibaba/pipcook .
+$ docker pull docker pull registry.cn-beijing.aliyuncs.com/pipcook/pipcook:latest
 ```
 
-检查是否成功构建：
+安装完成之后，可以运行如下命令启动 docker
 
 ```sh
-$ docker images
-REPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZE
-alibaba/pipcook                               latest              c297c73d62d4        7 hours ago         3.67GB
-```
-
-然后运行:
-
-```sh
-$ docker run -it --name pipcook_test alibaba/pipcook /bin/bash
+$ docker run -it -p 6927:6927 registry.cn-beijing.aliyuncs.com/pipcook/pipcook:latest /bin/bash
 ```
 
 ## 疑难排查

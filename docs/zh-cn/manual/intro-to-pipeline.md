@@ -45,7 +45,7 @@
 将上面的 Pipeline 保存在任何地方，然后执行：
 
 ```sh
-$ pipcook run /path/to/your/pipeline-config.json
+$ pipcook run /path/to/your/pipeline-config.json --tuna
 ```
 
 执行完成后，训练好的模型会生成在当前[工作目录](https://linux.die.net/man/3/cwd)下的 `output` 中。
