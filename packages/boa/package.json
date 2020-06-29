@@ -9,11 +9,11 @@
     "postinstall": "npm run build",
     "test": "tap --no-cov ./tests/**/*.js",
     "lint": "eslint . && ./clang-format.py",
-    "build": "node-gyp configure && node-gyp build",
+    "build": "make -C ./pybind11/ && node-gyp configure && node-gyp build",
     "pretest": "npm run lint",
     "codecov": "nyc report --reporter=lcovonly && codecov",
     "htmlcov": "nyc report --reporter=html",
-    "compile": "node-gyp configure && node-gyp build"
+    "compile": "npm run build"
   },
   "bin": {
     "bip": "./tools/bip.js"
