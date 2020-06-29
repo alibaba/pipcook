@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipboard",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "board for pipcook",
   "dependencies": {
     "@alifd/next": "^1.x",
