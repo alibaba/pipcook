@@ -1,4 +1,4 @@
-import { CsvDataset, ModelTrainType, TfJsLayersModel, ModelTrainArgsType, CsvDataLoader } from '@pipcook/pipcook-core';
+import { CsvDataset, ModelTrainType, UniModel, ModelTrainArgsType, CsvDataLoader } from '@pipcook/pipcook-core';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 
 async function createDataset(loader: CsvDataLoader, labelMap: string[]): Promise<tf.data.Dataset<tf.TensorContainer>> {
@@ -17,7 +17,7 @@ async function createDataset(loader: CsvDataLoader, labelMap: string[]): Promise
   return tf.data.array(inputs);
 }
 
-const ModelTrain: ModelTrainType = async (dataset: CsvDataset, model: TfJsLayersModel, args: ModelTrainArgsType): Promise<TfJsLayersModel> => {
+const ModelTrain: ModelTrainType = async (dataset: CsvDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
   const {
     epochs = 200,
     batchSize = 16,
@@ -38,11 +38,10 @@ const ModelTrain: ModelTrainType = async (dataset: CsvDataset, model: TfJsLayers
   await trainModel.fitDataset(trainDataset.repeat().batch(batchSize), trainConfig);
   await trainModel.save(`file://${modelPath}`);
 
-  const result: TfJsLayersModel = {
+  return {
     ...model,
     model: trainModel
   };
-  return result;
 };
 
 export default ModelTrain;

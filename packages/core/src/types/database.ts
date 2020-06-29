@@ -1,26 +1,33 @@
 import { PluginTypeI } from './plugins';
 
+/**
+ * The Pipeline status
+ */
 export enum PipelineStatus {
+  /**
+   * Init status.
+   */
   INIT,
+  /**
+   * It represents the pipeline is running.
+   */
   RUNNING,
+  /**
+   * It represents the pipeline is finished successfully.
+   */
   SUCCESS,
+  /**
+   * It represents the pipeline is failed.
+   */
   FAIL
 }
 
-export type PipelineDBParams = 'dataCollectParams' | 'dataAccessParams' | 'dataProcessParams' |
-  'modelDefineParams' | 'modelLoadParams' | 'modelTrainParams' | 'modelEvaluateParams';
+/**
+ * The pipeline database parameters list.
+ */
+export type PipelineDBParams = 'dataCollectParams' | 'dataAccessParams' | 'dataProcessParams' | 'modelDefineParams' | 'modelLoadParams' | 'modelTrainParams' | 'modelEvaluateParams';
 
-export type PipelineDB = Partial<Record<'id' | 'name' | PluginTypeI | PipelineDBParams, string>>
-
-export interface RunDB {
-  id: string;
-  name?: string;
-  pipelineId: string;
-  coreVersion: string;
-  status: PipelineStatus;
-  evaluateMap?: string;
-  evaluatePass?: boolean;
-  currentIndex: number;
-  error?: string;
-  endTime?: number;
-}
+/**
+ * The pipeline database schema.
+ */
+export type PipelineDB = Partial<Record<'id' | 'name' | PluginTypeI | PipelineDBParams, string>>;
