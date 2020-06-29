@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-detectron-model-train",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^0.8.0",
-    "@pipcook/pipcook-core": "^0.8.0"
+    "@pipcook/boa": "^1.0.0",
+    "@pipcook/pipcook-core": "^1.0.0"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
