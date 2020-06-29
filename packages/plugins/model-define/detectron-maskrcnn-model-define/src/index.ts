@@ -30,7 +30,7 @@ const detectronModelDefine: ModelDefineType = async (data: CocoDataset, args: Mo
   if (recoverPath) {
     const logFile = await fs.readFile(path.join(recoverPath, '..', 'metadata.json'), 'utf8');
     const log = JSON.parse(logFile);
-    const labelMap = log.output.dataset.labelMap;
+    const labelMap = JSON.parse(log.output.dataset).labelMap;
     numClasses = Object.keys(labelMap).length;
   } else {
     numClasses = Object.keys(data.metadata.labelMap).length;

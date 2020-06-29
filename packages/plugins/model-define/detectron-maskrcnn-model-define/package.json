@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-detectron-maskrcnn-model-define",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
