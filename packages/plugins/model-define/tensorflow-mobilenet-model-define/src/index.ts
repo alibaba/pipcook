@@ -116,7 +116,7 @@ const mobilenetDefine: ModelDefineType = async (data: ImageDataset, args: ModelD
         channels: 3
       }));
       const shape = tf.shape(image).numpy();
-      return this.model.predict(tf.reshape(image, [ 1 ].concat(shape.slice(0, 3)))).toString();
+      return this.model.predict(tf.reshape(image, [ 1 ].concat(...shape.slice(0, 3)))).toString();
     }
   };
   return result;
