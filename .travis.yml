@@ -8,7 +8,7 @@ node_js:
 git:
   submodules: false
 before_install:
-  - git submodule update --init --remote --recursive
+  - git submodule update --init --recursive
   - npm i npminstall -g
 install:
   - npminstall
