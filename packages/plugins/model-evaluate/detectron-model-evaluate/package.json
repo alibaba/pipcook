@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-detectron-model-evaluate",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -39,7 +39,7 @@
       "opencv-python": "*",
       "cython": "*",
       "pycocotools": "*",
-      "detectron": "https://gitee.com/pipcook/detectron2.git"
+      "detectron": "git+https://gitee.com/pipcook/detectron2.git"
     }
   }
 }
