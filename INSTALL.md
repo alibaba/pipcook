@@ -22,26 +22,16 @@ Then check if installed via `pipcook --help`.
 
 ## Install via Docker
 
-Install [Pipcook Dockerfile](https://github.com/alibaba/pipcook/blob/master/docker/Dockerfile). Then open
-Dockerfile's path and install the docker image.
+You could also install pipcook with Docker. Just run command:
 
 ```sh
-$ git clone https://github.com/alibaba/pipcook.git && cd pipcook/docker
-$ docker build -t alibaba/pipcook .
+$ docker pull docker pull pipcook/pipcook:latest
 ```
 
-Check if the docker image is installed successfully.
+After pulling successfully, run command below to start:
 
 ```sh
-$ docker images
-REPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZE
-alibaba/pipcook                               latest              c297c73d62d4        7 hours ago         3.67GB
-```
-
-And run:
-
-```sh
-$ docker run -it --name pipcook_test alibaba/pipcook /bin/bash
+$ docker run -it -p 6927:6927 pipcook/pipcook:latest /bin/bash
 ```
 
 ## Troubleshooting
