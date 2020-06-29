@@ -5,7 +5,10 @@ node_js:
   - '10'
   - '12'
   - '14'
+git:
+  submodules: false
 before_install:
+  - git submodule update --init --remote --recursive
   - npm i npminstall -g
 install:
   - npminstall
