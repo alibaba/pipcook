@@ -145,7 +145,7 @@ curl --request POST 'http://localhost:7682' \
 
 ## Documentation
 
-Please refer to [English](docs/) | [中文](docs/zh-cn/)
+Please refer to [English](https://alibaba.github.io/pipcook/#/) | [中文](https://alibaba.github.io/pipcook/#/zh-cn/)
 
 ## Developers
 
@@ -167,7 +167,8 @@ After the above, now build the project:
 $ npm run build
 ```
 
-- Developer Documentation [English](./docs/contributing/contribute-a-plugin.md) | [中文](./docs/zh-cn/contributing/contribute-a-plugin.md)
+
+- Developer Documentation [English](./docs/contributing/guide-to-contributor.md) | [中文](./docs/zh-cn/contributing/guide-to-contributor.md)
 - [Project Guide](./docs/meta/PROJECT_GUIDE.md)
 - [Roadmap, 2020](https://github.com/alibaba/pipcook/issues/30)
 
