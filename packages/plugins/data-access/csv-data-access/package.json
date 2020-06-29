@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-csv-data-access",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^0.8.0",
+    "@pipcook/pipcook-core": "^1.0.0",
     "csv-parse": "^4.8.8",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0"
