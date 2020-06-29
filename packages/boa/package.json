@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "sh tools/clean-python.sh",
     "preinstall": "node tools/install-python.js && node tools/install-requirements.js",
+    "postinstall": "npm run build",
     "test": "tap --no-cov ./tests/**/*.js",
     "lint": "eslint . && ./clang-format.py",
     "build": "make -C ./pybind11/ && node-gyp configure && node-gyp build",
