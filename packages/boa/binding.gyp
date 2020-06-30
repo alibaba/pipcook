@@ -23,7 +23,7 @@
       ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
-        "pybind11/include",
+        "pybind11/src/include",
         "<!@(cat .CONDA_INSTALL_DIR)/include/python3.7m",
       ],
       "library_dirs": [
