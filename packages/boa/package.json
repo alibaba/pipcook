@@ -6,14 +6,14 @@
   "scripts": {
     "clean": "sh tools/clean-python.sh",
     "preinstall": "make -C ./pybind11/ && node tools/install-python.js && node tools/install-requirements.js",
-    "postinstall": "npm run build",
+    "postinstall": "npm run compile",
     "test": "tap --no-cov ./tests/**/*.js",
     "lint": "eslint . && ./clang-format.py",
-    "build": "node-gyp configure && node-gyp build",
+    "build": "npm run compile",
     "pretest": "npm run lint",
     "codecov": "nyc report --reporter=lcovonly && codecov",
     "htmlcov": "nyc report --reporter=html",
-    "compile": "npm run build"
+    "compile": "node-gyp configure && node-gyp build"
   },
   "bin": {
     "bip": "./tools/bip.js"
