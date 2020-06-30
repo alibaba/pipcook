@@ -46,6 +46,7 @@ export {
   parseAnnotation,
   unZipData,
   download,
+  downloadAndExtractTo,
   getOsInfo,
   transformCsv,
   createAnnotationFromJson,
