@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { randomBytes } from 'crypto';
 import _cliProgress from 'cli-progress';
-import { PIPCOOK_LOGS } from '../constants/other';
+import { PIPCOOK_LOGS, PIPCOOK_TMPDIR } from '../constants/other';
 
 const xml2js = require('xml2js');
 const request = require('request');
@@ -113,7 +113,7 @@ export async function downloadAndExtractTo(resUrl: string): Promise<string> {
   const extname = path.extname(filename);
 
   const { protocol, pathname } = url.parse(resUrl);
-  const destPath = path.join(process.env.TMPDIR, randomBytes(8).toString('hex'));
+  const destPath = path.join(PIPCOOK_TMPDIR, randomBytes(8).toString('hex'));
   const pkgName = path.join(destPath, filename);
 
   if (protocol === 'file:' && extname !== '.zip') {
