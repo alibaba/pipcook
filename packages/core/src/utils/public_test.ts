@@ -1,4 +1,10 @@
-import { convertPascal2CocoFileOutput, createAnnotationFromJson, shuffle } from './public';
+import {
+  convertPascal2CocoFileOutput,
+  createAnnotationFromJson,
+  shuffle,
+  // download utils
+  downloadAndExtractTo
+} from './public';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as uuid from 'uuid';
@@ -63,5 +69,28 @@ describe('public utils', () => {
     shuffle(array);
     array.sort();
     expect(array).toEqual([ 1, 2, 3, 4, 5 ]);
+  });
+});
+
+describe('test downloading utils', () => {
+  it('download a remote zip package and extract to tmp dir', async () => {
+    const tmpDir = await downloadAndExtractTo('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip');
+    expect(await fs.pathExists(tmpDir + '/test')).toEqual(true);
+    expect(await fs.pathExists(tmpDir + '/train')).toEqual(true);
+    await fs.remove(tmpDir);
+  });
+  it('download a remote json file to tmp dir', async () => {
+    const tmpDir = await downloadAndExtractTo('https://raw.githubusercontent.com/DavidCai1993/chinese-poem-generator.js/master/test/data/poet.song.91000.json');
+    expect(tmpDir.indexOf('poet.song.91000.json') !== -1).toEqual(true);
+    expect(await fs.pathExists(tmpDir)).toEqual(true);
+    await fs.remove(tmpDir);
+  });
+  it('download from local directory', async () => {
+    const tmpDir = await downloadAndExtractTo('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip');
+    const tmpDir2 = await downloadAndExtractTo(`file://${tmpDir}`);
+    expect(await fs.pathExists(tmpDir2 + '/test')).toEqual(true);
+    expect(await fs.pathExists(tmpDir2 + '/train')).toEqual(true);
+    await fs.remove(tmpDir);
+    await fs.remove(tmpDir2);
   });
 });
