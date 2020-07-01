@@ -52,6 +52,11 @@ export const PIPCOOK_BOARD_SRC = join(PIPCOOK_BOARD, 'node_modules/@pipcook/pipb
 export const PIPCOOK_BOARD_BUILD = join(PIPCOOK_BOARD_SRC, 'build');
 
 /**
+ * Pipcook TMPDIR.
+ */
+export const PIPCOOK_TMPDIR = process.env.TMPDIR || join(PIPCOOK_HOME_PATH, '.tmp');
+
+/**
  * keras directory to store pre-trained models.
  */
 export const KERAS_DIR = join(homedir(), '.keras');
