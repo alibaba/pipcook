@@ -159,5 +159,25 @@ $ pipcook daemon restart
 $ pipcook daemon stop
 ```
 
+查看服务历史日志：
+
+```sh
+$ cat `pipcook daemon logfile`
+```
+
+通过如下命令，查看服务的实时日志：
+
+```sh
+$ pipcook daemon monit
+```
+
+有时候为了调试服务，需要前台运行服务：
+
+```sh
+$ pipcook daemon debug
+```
+
+这种模式下，服务是运行在当前进程，当命令行工具的生命周期结束后，服务也会退出。
+
 [Pipcook Daemon]: ../GLOSSORY.md#pipcook-daemon
 [Pipboard]: ../GLOSSORY.md#pipboard
