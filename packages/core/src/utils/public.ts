@@ -1,11 +1,10 @@
-/**
- * @file This file contains useful utils for plugin developers.
- */
-
+import * as assert from 'assert';
+import * as url from 'url';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import { randomBytes } from 'crypto';
 import _cliProgress from 'cli-progress';
-import { PIPCOOK_LOGS } from '../constants/other';
+import { PIPCOOK_LOGS, PIPCOOK_TMPDIR } from '../constants/other';
 
 const xml2js = require('xml2js');
 const request = require('request');
@@ -103,6 +102,36 @@ export function download(url: string, fileName: string) {
       reject(err);
     });
   });
+}
+
+/**
+ * Download the dataset from specific URL and extract to a generated path as the returned value.
+ * @param resUrl the resource url, support http://, https://, file:///.
+ */
+export async function downloadAndExtractTo(resUrl: string): Promise<string> {
+  const filename = resUrl.split(path.sep)[resUrl.split(path.sep).length - 1];
+  const extname = path.extname(filename);
+
+  const { protocol, pathname } = url.parse(resUrl);
+  const destPath = path.join(PIPCOOK_TMPDIR, randomBytes(8).toString('hex'));
+  const pkgName = path.join(destPath, filename);
+
+  if (protocol === 'file:' && extname !== '.zip') {
+    await fs.copy(pathname, destPath);
+    return destPath;
+  }
+  if (protocol === 'http:' || protocol === 'https:') {
+    await download(resUrl, pkgName);
+  } else if (protocol === 'file:') {
+    await fs.copyFile(pathname, pkgName);
+  }
+  if (extname === '.zip') {
+    await unZipData(pkgName, destPath);
+    await fs.remove(pkgName);
+  } else {
+    return pkgName;
+  }
+  return destPath;
 }
 
 export function compressTarFile(sourcePath: string, targetPath: string) {
