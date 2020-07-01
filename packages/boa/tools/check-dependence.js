@@ -1,7 +1,8 @@
 'use strict';
 const { run, PLATFORM } = require('./utils');
+const version = process.version.split('.')[0];
 
-if (process.version < 'v12.0.0') {
+if (parseInt(version.substr(1)) < 12) {
   throw new TypeError(`require Node.js >= v12.0.0, but ${process.version} found`);
 }
 
