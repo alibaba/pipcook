@@ -15,4 +15,3 @@ export class EvaluateError extends TypeError {
     this.result = r;
   }
 }
-

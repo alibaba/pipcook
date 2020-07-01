@@ -37,6 +37,7 @@ interface GenerateOptions {
   dataProcess?: PluginPackage;
   pipeline: PipelineModel;
   workingDir: string;
+  template: string;
 }
 
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
@@ -279,7 +280,8 @@ export class PipelineService {
         modelPlugin,
         dataProcess,
         pipeline,
-        workingDir: runnable.workingDir
+        workingDir: runnable.workingDir,
+        template: 'node' // set node by default
       });
     } catch (err) {
       job.status = PipelineStatus.FAIL;
@@ -345,8 +347,8 @@ export class PipelineService {
     await Promise.all([
       // copy base components
       fs.copy(opts.modelPath, dist + '/model'),
-      fs.copy(path.join(__dirname, '../../assets/predict.js'), `${dist}/index.js`),
-      fs.copy(path.join(__dirname, '../../assets/boapkg.js'), `${dist}/boapkg.js`),
+      fs.copy(path.join(__dirname, `../../templates/${opts.template}/predict.js`), `${dist}/index.js`),
+      fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boapkg.js`),
       // copy logs
       fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
       // write package.json
