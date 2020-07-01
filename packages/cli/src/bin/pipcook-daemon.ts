@@ -75,6 +75,7 @@ async function monitor(): Promise<void> {
 
 async function debugDaemon(): Promise<void> {
   await stop();
+  process.env.DEBUG = 'costa*';
   require(path.join(DAEMON_HOME, 'bootstrap.js'));
 }
 
@@ -111,7 +112,6 @@ program
 program
   .command('debug')
   .description('start the pipcook daemon in foreground for debugging.')
-  .option('--verbose', 'open the verbose/debug logs')
   .action(debugDaemon);
 
 program.parse(process.argv);
