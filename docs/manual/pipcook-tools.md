@@ -159,5 +159,25 @@ To stop the currently running daemon:
 $ pipcook daemon stop
 ```
 
+Check out the daemon logs via:
+
+```sh
+$ cat `pipcook daemon logfile`
+```
+
+To monit the daemon process, run the following command:
+
+```sh
+$ pipcook daemon monit
+```
+
+To start the daemon process in foreground mode for debugging:
+
+```sh
+$ pipcook daemon debug
+```
+
+This will run the daemon service in the current process, and it would be shutdown after the Pipcook Tools session is end.
+
 [Pipcook Daemon]: ../GLOSSORY.md#pipcook-daemon
 [Pipboard]: ../GLOSSORY.md#pipboard
