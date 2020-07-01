@@ -23,7 +23,7 @@ async function start(): Promise<void> {
 
   // check if the process is running...
   if (await pathExists(DAEMON_PIDFILE)) {
-    spinner.fail('starting daemon but ${DAEMON_PIDFILE} exists.');
+    spinner.fail(`starting daemon but ${DAEMON_PIDFILE} exists.`);
     return;
   }
   spinner.start('starting Pipcook...');
@@ -70,8 +70,13 @@ function tail(file: string): void {
 }
 
 async function monitor(): Promise<void> {
-  tail(`${PIPCOOK_HOME}/daemon.stdout.log`);
-  tail(`${PIPCOOK_HOME}/daemon.stderr.log`);
+  tail(`${PIPCOOK_HOME}/daemon.access.log`);
+}
+
+async function debugDaemon(): Promise<void> {
+  await stop();
+  process.env.DEBUG = 'costa*';
+  require(path.join(DAEMON_HOME, 'bootstrap.js'));
 }
 
 program
@@ -103,5 +108,10 @@ program
   .action(() => {
     console.info(PIPCOOK_HOME + '/daemon.access.log');
   });
+
+program
+  .command('debug')
+  .description('start the pipcook daemon in foreground for debugging.')
+  .action(debugDaemon);
 
 program.parse(process.argv);
