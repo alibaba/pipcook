@@ -9,6 +9,7 @@
     "@icedesign/layout": "^1.x",
     "@icedesign/notification": "^1.0.5",
     "@icedesign/theme": "^1.0.0",
+    "jimp": "^0.10.0",
     "axios": "^0.18.1",
     "classnames": "^2.2.5",
     "codemirror": "^5.52.2",

@@ -19,6 +19,7 @@
     "typescript": "^3.7.2"
   },
   "scripts": {
+    "preinstall": "node -e \"console.log(process.env)\"",
     "postinstall": "lerna bootstrap",
     "build": "lerna run compile",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
