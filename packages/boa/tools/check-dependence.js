@@ -23,4 +23,3 @@ cmds.forEach(cmd => {
     throw new TypeError(`command ${cmd} check failed: ${err}`);
   }
 })
-
