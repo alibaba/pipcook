@@ -36,8 +36,8 @@
   "conda": {
     "python": "3.7",
     "dependencies": {
-      "torch": "*",
-      "torchvision": "*",
+      "torch": "1.4.0",
+      "torchvision": "0.5.0",
       "opencv-python": "*",
       "cython": "*",
       "pycocotools": "*",
