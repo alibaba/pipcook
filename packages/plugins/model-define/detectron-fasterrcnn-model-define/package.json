@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-detectron-fasterrcnn-model-define",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
