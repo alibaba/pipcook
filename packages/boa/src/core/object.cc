@@ -295,7 +295,7 @@ Napi::Value PythonObject::GetItem(const CallbackInfo &info) {
       std::string keystr = std::string(info[0].As<String>());
       if (PyModule_Check(_self.ptr())) {
         pybind::dict dict = pybind::reinterpret_borrow<pybind::dict>(
-          PyModule_GetDict(_self.ptr()));
+            PyModule_GetDict(_self.ptr()));
         if (dict.contains(keystr.c_str())) {
           pybind::object submodule = dict[keystr.c_str()];
           if (submodule && PyModule_Check(submodule.ptr()))
