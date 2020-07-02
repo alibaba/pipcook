@@ -3,7 +3,7 @@ import CanvasDraw from 'react-canvas-draw';
 import { Button } from '@alifd/next';
 import * as Jimp from 'jimp';
 
-import { messageSuccess, messageError } from '../../../utils/message';
+import { messageSuccess } from '../../../utils/message';
 import './index.scss';
 
 export default class Mnist extends Component {
@@ -43,12 +43,12 @@ export default class Mnist extends Component {
     let number = -1;
     let prob = -1;
     const prediction = res.dataSync();
-    for (const key in prediction) {
+    Object.keys(prediction).forEach((key) => {
       if (prediction[key] > prob) {
         number = parseInt(key, 10);
         prob = prediction[key];
       }
-    }
+    });
     messageSuccess(`I guess the digit you draw is ${number}, ${Math.floor(prob * 100, 3)}%`);
    
   }
@@ -71,7 +71,7 @@ export default class Mnist extends Component {
             brushColor="#000"
             brushRadius={25}
           />
-          <img height="128" width="128" src={this.state.image} className="input-image" />
+          <img alt="mnist" height="128" width="128" src={this.state.image} className="input-image" />
         </div>
         <Button type="primary" className="predict-button" size="large" onClick={this.predict}>Predict</Button>
       </div>

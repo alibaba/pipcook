@@ -39,7 +39,7 @@ export default class AssetsClassification extends Component {
       'brand logo',
       'item image',
       'pure background',
-      'pure picture'
+      'pure picture',
     ];
     this.state = {
       imageResult: {},
@@ -108,7 +108,7 @@ export default class AssetsClassification extends Component {
     let img = await Jimp.read(input);
     img = img.resize(256, 256);
 
-    let arr = [];
+    const arr = [];
     for (let i = 0; i < 256; i++) {
       for (let j = 0; j < 256; j++) {
         arr.push(Jimp.intToRGBA(img.getPixelColor(i, j)).r / 255 - this.means[i][j][0]);
@@ -129,8 +129,8 @@ export default class AssetsClassification extends Component {
     this.setState({
       imageResult: {
         type: this.labels[num],
-        prob
-      }
+        prob,
+      },
     });
     messageHide();
   };
@@ -148,7 +148,6 @@ export default class AssetsClassification extends Component {
     const files = this.inputElement.files;
     const ab = await new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.readAs
       reader.readAsArrayBuffer(files[0]);
       reader.onload = () => resolve(reader.result);
       reader.onerror = error => reject(error);
