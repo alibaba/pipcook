@@ -293,10 +293,20 @@ Napi::Value PythonObject::GetItem(const CallbackInfo &info) {
     } else {
       // otherwise, assert the key must be a string.
       std::string keystr = std::string(info[0].As<String>());
-      itemVal = _self[keystr.c_str()];
+      if (PyModule_Check(_self.ptr())) {
+        pybind::dict dict = pybind::reinterpret_borrow<pybind::dict>(PyModule_GetDict(_self.ptr()));
+        if (dict.contains(keystr.c_str())) {
+          pybind::object submodule = dict[keystr.c_str()];
+          if (submodule && PyModule_Check(submodule.ptr()))
+            itemVal = submodule;
+        }
+        if (!itemVal)
+          itemVal = ((pybind::module)_self).def_submodule(keystr.c_str());
+      } else
+        itemVal = _self[keystr.c_str()];
     }
 
-    if (itemVal.ptr() == NULL) {
+    if (!itemVal) {
       return info.Env().Null();
     } else {
       return PythonObject::NewInstance(info.Env(), itemVal);
