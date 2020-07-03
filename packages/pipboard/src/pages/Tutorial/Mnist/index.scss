@@ -22,9 +22,18 @@
     height: 100%;
   }
 
+  .contents {
+    display: flex;
+    flex-direction: row;
+  }
+
   .predict-button {
     position: absolute;
     right: 30px;
     top: 30px;
+  }
+
+  .input-image {
+    position: relative;
   }
 }
