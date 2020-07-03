@@ -120,12 +120,12 @@ export default class AssetsClassification extends Component {
     let num = -1;
     let prob = -1;
     const prediction = res.dataSync();
-    for (const key in prediction) {
+    Object.keys(prediction).forEach((key) => {
       if (prediction[key] > prob) {
         num = parseInt(key, 10);
         prob = prediction[key];
       }
-    }
+    });
     this.setState({
       imageResult: {
         type: this.labels[num],

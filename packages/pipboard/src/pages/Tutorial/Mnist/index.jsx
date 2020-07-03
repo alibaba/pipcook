@@ -40,17 +40,16 @@ export default class Mnist extends Component {
       }
     }
     const res = this.model.predict(tf.tensor4d(arr, [1, 28, 28, 1]));
-    let number = -1;
+    let num = -1;
     let prob = -1;
     const prediction = res.dataSync();
     Object.keys(prediction).forEach((key) => {
       if (prediction[key] > prob) {
-        number = parseInt(key, 10);
+        num = parseInt(key, 10);
         prob = prediction[key];
       }
     });
-    messageSuccess(`I guess the digit you draw is ${number}, ${Math.floor(prob * 100, 3)}%`);
-   
+    messageSuccess(`I guess the digit you draw is ${num}, ${Math.floor(prob * 100, 3)}%`);
   }
 
   clear = () => {
@@ -73,7 +72,6 @@ export default class Mnist extends Component {
           />
           <img alt="mnist" height="128" width="128" src={this.state.image} className="input-image" />
         </div>
-        <Button type="primary" className="predict-button" size="large" onClick={this.predict}>Predict</Button>
       </div>
     );
   }
