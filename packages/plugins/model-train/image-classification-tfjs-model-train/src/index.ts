@@ -3,25 +3,42 @@ import { ImageDataset, ModelTrainType, UniModel, ModelTrainArgsType, ImageDataLo
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 
+async function dateIterator(dataLoader: ImageDataLoader, labelMap: {
+  [key: string]: number;
+}) {
+  let index = 0;
+  const numElements = 10;
+  const count = await dataLoader.len();
+  const iterator = {
+    next: async () => {
+      if (index === count) {
+        return {value: null, done: true};
+      }
+      let dataFlows: any = [];
+      const currentIndex = index;
+      for(; index < count && index < currentIndex + numElements; index++) {
+        const currentData = await dataLoader.getItem(index);
+        let image = await Jimp.read(currentData.data);
+        const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
+        const imageArray = new Uint8Array(trainImageBuffer);
+        let label: number = currentData.label.categoryId;
+        let ys: tf.Tensor<tf.Rank>;
+        ys = tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(labelMap).length));
+        dataFlows.push(tf.tidy(() => ({
+          xs: tf.tidy(() => tf.cast(tf.node.decodeImage(imageArray, 3), 'float32')),
+          ys
+        })));
+      }
+      return {value: tf.data.array(dataFlows), done: false};
+    }
+  };
+  return iterator;
+}
+
 async function createDataset(dataLoader: ImageDataLoader, labelMap: {
   [key: string]: number;
 }) {
-  let dataFlows: any = [];
-  const count = await dataLoader.len();
-  for (let i = 0; i < count; i++) {
-    const currentData = await dataLoader.getItem(i);
-    let image = await Jimp.read(currentData.data);
-    const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
-    const imageArray = new Uint8Array(trainImageBuffer);
-    let label: number = currentData.label.categoryId;
-    let ys: tf.Tensor<tf.Rank>;
-    ys = tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(labelMap).length));
-    dataFlows.push(tf.tidy(() => ({
-      xs: tf.tidy(() => tf.cast(tf.node.decodeImage(imageArray, 3), 'float32')),
-      ys
-    })));
-  }
-  return tf.data.array(dataFlows);
+  return tf.data.generator(dateIterator);
 }
 
 /**
