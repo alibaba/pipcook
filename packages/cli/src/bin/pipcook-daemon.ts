@@ -55,7 +55,6 @@ async function stop(): Promise<void> {
     const oldPid = parseInt(await readFile(DAEMON_PIDFILE, 'utf8'), 10);
     try {
       process.kill(oldPid, 'SIGINT');
-      // exec(`kill -SIGINT ${oldPid}`);
       spinner.succeed('Pipcook stoped.');
     } catch (err) {
       await remove(DAEMON_PIDFILE);
