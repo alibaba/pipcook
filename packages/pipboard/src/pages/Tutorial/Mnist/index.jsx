@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import { Button } from '@alifd/next';
 import * as Jimp from 'jimp';
+import * as tf from '@tensorflow/tfjs';
 
 import { messageSuccess } from '../../../utils/message';
 import './index.scss';

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import * as Jimp from 'jimp';
+import * as tf from '@tensorflow/tfjs';
 
 import { messageLoading, messageHide } from '../../../utils/message';
 import './index.scss';
