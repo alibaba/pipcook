@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
+import * as Jimp from 'jimp';
+import * as tf from '@tensorflow/tfjs';
 
 import { messageLoading, messageHide } from '../../../utils/message';
 import './index.scss';
@@ -18,8 +20,8 @@ async function createImage(url) {
       canvas.height = this.naturalHeight;
       canvas.width = this.naturalWidth;
       ctx.drawImage(this, 0, 0);
-      const dataURL = canvas.toDataURL('image/jpeg', 1.0);
-      resolve(dataURL);
+      // const dataURL = canvas.toDataURL('image/jpeg', 1.0);
+      canvas.toBlob(resolve);
     };
     img.src = url;
   });
@@ -30,6 +32,16 @@ async function createImage(url) {
 export default class AssetsClassification extends Component {
   constructor(props) {
     super(props);
+    this.labels = [
+      'avator',
+      'blured background',
+      'icon',
+      'label',
+      'brand logo',
+      'item image',
+      'pure background',
+      'pure picture',
+    ];
     this.state = {
       imageResult: {},
       imageList: [
@@ -85,21 +97,48 @@ export default class AssetsClassification extends Component {
     };
   }
 
-  onPredict = async image => {
+  async componentDidMount() {
+    messageLoading('loading model from assetsClassification...');
+    this.model = await tf.loadGraphModel('/playground/model/assetsClassification/model.json');
+    this.means = (await axios.get('/playground/model/assetsClassification/mean.json')).data;
+    messageHide();
+  }
+
+  onPredict = async (input) => {
     messageLoading('Please give us some time to predict the result ...');
-    let response = await axios.post('/playground/asset-classification', {
-      image,
+    let img = await Jimp.read(input);
+    img = img.resize(256, 256);
+
+    const arr = [];
+    for (let i = 0; i < 256; i++) {
+      for (let j = 0; j < 256; j++) {
+        arr.push(Jimp.intToRGBA(img.getPixelColor(i, j)).r / 255 - this.means[i][j][0]);
+        arr.push(Jimp.intToRGBA(img.getPixelColor(i, j)).g / 255 - this.means[i][j][1]);
+        arr.push(Jimp.intToRGBA(img.getPixelColor(i, j)).b / 255 - this.means[i][j][2]);
+      }
+    }
+    const res = this.model.predict(tf.tensor4d(arr, [1, 256, 256, 3]));
+    let num = -1;
+    let prob = -1;
+    const prediction = res.dataSync();
+    Object.keys(prediction).forEach((key) => {
+      if (prediction[key] > prob) {
+        num = parseInt(key, 10);
+        prob = prediction[key];
+      }
     });
-    response = response.data;
     this.setState({
-      imageResult: response,
+      imageResult: {
+        type: this.labels[num],
+        prob,
+      },
     });
     messageHide();
   };
 
   onClickImg = async item => {
-    const base64 = await createImage(item);
-    this.onPredict(base64);
+    const blob = await createImage(item);
+    this.onPredict(await blob.arrayBuffer());
   };
 
   onClick = () => {
@@ -108,15 +147,13 @@ export default class AssetsClassification extends Component {
 
   onIptChange = async () => {
     const files = this.inputElement.files;
-    const prom = new Promise((resolve, reject) => {
+    const ab = await new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.readAsDataURL(files[0]);
+      reader.readAsArrayBuffer(files[0]);
       reader.onload = () => resolve(reader.result);
       reader.onerror = error => reject(error);
     });
-    let base64 = await prom;
-    base64 = await createImage(base64);
-    this.onPredict(base64);
+    this.onPredict(ab);
   };
 
   render() {
@@ -126,7 +163,7 @@ export default class AssetsClassification extends Component {
     return (
       <div className="asset-classification">
         <div className="experienceInner">
-          <h3 className="pageTitle">Front-end Assets Classification for Taobao</h3>
+          <h3 className="pageTitle">Front-end Assets Classification</h3>
           <p className="pageDescription" />
           <div style={{ display: 'flex', flexDirection: 'space-between' }}>
             <div className="content-item">
