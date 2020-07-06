@@ -90,7 +90,7 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
   const imageDir = path.join(dataDir, 'images');
   console.log('unzip and collecting data...');
   await unZipData(url, imageDir);
-  const annotationPaths = await glob(path.join(imageDir, '**','+(train|validation|test)', 'annotation.json'));
+  const annotationPaths = await glob(path.join(imageDir, '**', '+(train|validation|test)', 'annotation.json'));
   annotationPaths.forEach((annotationPath) => {
     const splitString = annotationPath.split(path.sep);
     const trainType = splitString[splitString.length - 2];

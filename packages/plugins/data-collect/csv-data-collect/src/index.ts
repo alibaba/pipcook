@@ -32,7 +32,7 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
   await fs.ensureDir(dataDir);
 
   const tempDir = await downloadAndExtractTo(url);
-  const csvPaths = await glob(path.join(tempDir, '**','+(train|validation|test)', '*.csv'));
+  const csvPaths = await glob(path.join(tempDir, '**', '+(train|validation|test)', '*.csv'));
   const trainData: any[] = [];
   const validationData: any[] = [];
   const testData: any[] = [];

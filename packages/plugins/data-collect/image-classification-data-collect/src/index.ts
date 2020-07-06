@@ -58,7 +58,7 @@ const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<v
   const imageDir = path.join(dataDir, 'images');
   console.log('unzip and collecting data...');
   await unZipData(url, imageDir);
-  const imagePaths = await glob(path.join(imageDir, '**','+(train|validation|test)', '*', '*.+(jpg|jpeg|png)'));
+  const imagePaths = await glob(path.join(imageDir, '**', '+(train|validation|test)', '*', '*.+(jpg|jpeg|png)'));
   console.log('create annotation file...');
   imagePaths.forEach((imagePath: string) => {
     const splitString = imagePath.split(path.sep);
