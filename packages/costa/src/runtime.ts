@@ -1,10 +1,9 @@
 import path from 'path';
 import url from 'url';
-import fs from 'fs';
 import { createUnzip } from 'zlib';
 import { Readable } from 'stream';
 import { randomBytes } from 'crypto';
-import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
+import { createReadStream, ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
 import { download, constants } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
@@ -85,8 +84,8 @@ function fetchPackageJsonFromGit(remote: string, head: string): Promise<any> {
   return extractPackageJsonFromReadable(child.stdout, 'package.json');
 }
 
-function uncompressPackageJsonFromTgz(filename: string): Promise<any> {
-  const stream = fs.createReadStream(filename);
+function fetchPackageJsonFromTgz(filename: string): Promise<any> {
+  const stream = createReadStream(filename);
   return extractPackageJsonFromReadable(stream.pipe(createUnzip()), 'package/package.json');
 }
 
@@ -154,10 +153,10 @@ export class CostaRuntime {
     } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
       pkg = require(`${source.uri}/package.json`);
-    } else if (source.from === 'tarballUrl') {
+    } else if (source.from === 'tarball') {
       debug(`downloading the url ${source.uri}`);
       await download(source.name, source.uri);
-      pkg = await uncompressPackageJsonFromTgz(source.uri);
+      pkg = await fetchPackageJsonFromTgz(source.uri);
     }
 
     try {
@@ -338,7 +337,7 @@ export class CostaRuntime {
       src.from = 'git';
       src.uri = name;
     } else if ([ 'https:', 'http:' ].indexOf(urlObj.protocol) !== -1) {
-      src.from = 'tarballUrl';
+      src.from = 'tarball';
       src.uri = path.join(constants.PIPCOOK_TMPDIR, randomBytes(8).toString('hex'), path.basename(urlObj.pathname));
     } else if (name[0] !== '.') {
       src.schema = this.getNameSchema(name);
