@@ -1,5 +1,4 @@
 import path from 'path';
-import path from 'path';
 import { CostaRuntime } from './runtime';
 import { PluginPackage } from '.';
 import { stat } from 'fs-extra';
