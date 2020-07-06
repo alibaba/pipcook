@@ -37,6 +37,12 @@ describe('create a costa runtime', () => {
     expect(collectCsvOnBare.version).toBe(collectCsvLatest.version);
   }, 30 * 1000);
 
+  it('should fetch a plugin from tarball', async () => {
+    const collectCsvWithSpecificVer = await costa.fetch('https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-0.5.8.tgz');
+    expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-csv-data-collect');
+    expect(collectCsvWithSpecificVer.version).toBe('0.5.8');
+  }, 30 * 1000);
+
   it('should install the package without conda packages', async () => {
     await costa.install(collectCsv);
     await stat(path.join(
