@@ -34,7 +34,7 @@ push the whole area forward with the machine learning engineering. For this reas
 
 ## What's Pipcook
 
-The project provides subprojects include machine learning pipeline framework, management tools, a JavaScript runtime for machine learning, and these can be also used as building blocks in conjunction with other projects.
+The project provides subprojects including machine learning pipeline framework, management tools, a JavaScript runtime for machine learning, and these can be also used as building blocks in conjunction with other projects.
 
 ### Principles
 
@@ -113,9 +113,9 @@ You will see a web page prompt in your browser, and there is a MNIST showcase on
 
 If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the examples below.
 
-- [pipeline-mnist-image-classification][]: pipeline for classific Mnist image classification problem.
-- [pipeline-databinding-image-classification][]: pipeline example to train the iamge classification task which is 
-  to classifify [imgcook](https://www.imgcook.com/) databinding pictures.
+- [pipeline-mnist-image-classification][]: pipeline for classific MNIST image classification problem.
+- [pipeline-databinding-image-classification][]: pipeline example to train the image classification task which is 
+  to classify [imgcook](https://www.imgcook.com/) databinding pictures.
 - [pipeline-object-detection][]: pipeline example to train object detection task which is for component recognition 
   used by imgcook.
 - [pipeline-text-bayes-classification][]: pipeline example to train text classification task with bayes
