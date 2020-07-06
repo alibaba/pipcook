@@ -1,6 +1,11 @@
 import path from 'path';
 import url from 'url';
+import fs from 'fs';
+import { createUnzip } from 'zlib';
+import { Readable } from 'stream';
+import { randomBytes } from 'crypto';
 import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
+import { download, constants } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
@@ -48,12 +53,12 @@ function spawnAsync(command: string, args?: string[], opts: SpawnOptions = {}): 
   });
 }
 
-function fetchPackageJsonFromGit(remote: string, head: string): Promise<any> {
+function extractPackageJsonFromReadable(readable: Readable, pkgFilename: string): Promise<any> {
   return new Promise((resolve, reject) => {
     let packageJson = '';
     const extract = tar.extract();
     extract.on('entry', (header, stream, next) => {
-      if (header.name === 'package.json') {
+      if (header.name === pkgFilename) {
         stream.on('data', (buf) => packageJson += buf);
       }
       stream.once('end', next);
@@ -66,15 +71,23 @@ function fetchPackageJsonFromGit(remote: string, head: string): Promise<any> {
         reject(e);
       }
     });
-
-    const child = spawn('git', [
-      'archive',
-      `--remote=${remote}`,
-      head,
-      'package.json'
-    ]);
-    child.stdout.pipe(extract);
+    readable.pipe(extract);
   });
+}
+
+function fetchPackageJsonFromGit(remote: string, head: string): Promise<any> {
+  const child = spawn('git', [
+    'archive',
+    `--remote=${remote}`,
+    head,
+    'package.json'
+  ]);
+  return extractPackageJsonFromReadable(child.stdout, 'package.json');
+}
+
+function uncompressPackageJsonFromTgz(filename: string): Promise<any> {
+  const stream = fs.createReadStream(filename);
+  return extractPackageJsonFromReadable(stream.pipe(createUnzip()), 'package/package.json');
 }
 
 function createRequirements(name: string, config: CondaConfig): string[] {
@@ -141,6 +154,10 @@ export class CostaRuntime {
     } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
       pkg = require(`${source.uri}/package.json`);
+    } else if (source.from === 'tarballUrl') {
+      debug(`downloading the url ${source.uri}`);
+      await download(source.name, source.uri);
+      pkg = await uncompressPackageJsonFromTgz(source.uri);
     }
 
     try {
@@ -320,6 +337,9 @@ export class CostaRuntime {
       const { host, pathname } = urlObj;
       src.from = 'git';
       src.uri = name;
+    } else if ([ 'https:', 'http:' ].indexOf(urlObj.protocol) !== -1) {
+      src.from = 'tarballUrl';
+      src.uri = path.join(constants.PIPCOOK_TMPDIR, randomBytes(8).toString('hex'), path.basename(urlObj.pathname));
     } else if (name[0] !== '.') {
       src.schema = this.getNameSchema(name);
       src.from = 'npm';

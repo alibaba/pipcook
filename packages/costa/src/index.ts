@@ -27,7 +27,7 @@ export interface RuntimeOptions {
  * This represents a source of a plugin.
  */
 export interface PluginSource {
-  from: 'fs' | 'npm' | 'git' | null;
+  from: 'fs' | 'npm' | 'git' | 'tarballUrl' | null;
   uri: string | null;
   urlObject: url.UrlWithStringQuery;
   name: string;
