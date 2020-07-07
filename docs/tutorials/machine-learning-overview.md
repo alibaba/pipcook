@@ -7,7 +7,7 @@ From this article, we will introduce what is machine learning and how to complet
 In general, a learning problem considers a set of n samples of data and then tries to returns the corresponding result by given input. The following example shows how we can teach a program about Node.js books and prices:
 
 ```ts
-const BookPriceModel: Record<string, number> = {}
+const BookPriceModel: Record<string, number> = {};
 const learnBookPrice = (book: string, price: number) => BookPriceModel[book] = price;
 const predictBookPrice = (book: string) => BookPriceModel[book];
 
