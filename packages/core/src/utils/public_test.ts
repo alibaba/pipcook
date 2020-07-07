@@ -92,5 +92,5 @@ describe('test downloading utils', () => {
     expect(await fs.pathExists(tmpDir2 + '/train')).toEqual(true);
     await fs.remove(tmpDir);
     await fs.remove(tmpDir2);
-  });
+  }, 10 * 1000);
 });
