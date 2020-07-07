@@ -26,8 +26,8 @@ predictBookPrice('Dive into Node.js'); // 199.0
 The **Machine Learning** problem is similar, except that we can make the computer learning more intelligent through machine learning algorithms and can give real "predictions" from unknown data, for example, The following helps you get a more expensive book name:
 
 ```js
-how_much('Pipcook in Action'); // 89.0
-how_much('Dive into Pipcook'); // 199.0
+predictBookPrice('Pipcook in Action'); // 89.0
+predictBookPrice('Dive into Pipcook'); // 199.0
 ```
 
 However machine learning is not a panacea, so let's see what problems it can solve, the following is machine learning problems fall into a few categories in given sample types(Image and Text):
