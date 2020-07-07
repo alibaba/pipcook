@@ -7,7 +7,7 @@
 一般来说，一个学习问题就是将 N 个样本集数据输入，然后输出与输入相关联对应的结果，下面的例子将展示，如何教会一个程序学会 Node.js 书籍和售价的关系：
 
 ```ts
-const BookPriceModel: Record<string, number> = {}
+const BookPriceModel: Record<string, number> = {};
 const learnBookPrice = (book: string, price: number) => BookPriceModel[book] = price;
 const predictBookPrice = (book: string) => BookPriceModel[book];
 
