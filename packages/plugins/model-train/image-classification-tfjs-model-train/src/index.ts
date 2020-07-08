@@ -5,40 +5,34 @@ import Jimp from 'jimp';
 
 async function dateIterator(dataLoader: ImageDataLoader, labelMap: {
   [key: string]: number;
-}) {
-  let index = 0;
-  const numElements = 10;
+}): Promise<any> {
   const count = await dataLoader.len();
-  const iterator = {
-    next: async () => {
-      if (index === count) {
-        return {value: null, done: true};
-      }
-      let dataFlows: any = [];
-      const currentIndex = index;
-      for(; index < count && index < currentIndex + numElements; index++) {
+  return (): AsyncIterator<tf.TensorContainer> => {
+    let index = 0;
+    return {
+      async next(): Promise<IteratorResult<tf.TensorContainer>> {
+        if (index >= count) {
+          return { value: null, done: true };
+        }
         const currentData = await dataLoader.getItem(index);
-        let image = await Jimp.read(currentData.data);
+        const image = await Jimp.read(currentData.data);
         const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
         const imageArray = new Uint8Array(trainImageBuffer);
-        let label: number = currentData.label.categoryId;
-        let ys: tf.Tensor<tf.Rank>;
-        ys = tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(labelMap).length));
-        dataFlows.push(tf.tidy(() => ({
+        const label: number = currentData.label.categoryId;
+        index++;
+        return { value: tf.tidy(() => ({
           xs: tf.tidy(() => tf.cast(tf.node.decodeImage(imageArray, 3), 'float32')),
-          ys
-        })));
+          ys: tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(labelMap).length))
+        })), done: false };
       }
-      return {value: tf.data.array(dataFlows), done: false};
-    }
+    };
   };
-  return iterator;
 }
 
 async function createDataset(dataLoader: ImageDataLoader, labelMap: {
   [key: string]: number;
 }) {
-  return tf.data.generator(dateIterator);
+  return tf.data.generator(await dateIterator(dataLoader, labelMap));
 }
 
 /**
