@@ -1,7 +1,7 @@
+const path = require('path');
+const { readJson } = require('fs-extra');
 const { test } = require('tap');
 const { PipcookClient } = require('../');
-const { readJson } = require('fs-extra');
-const path = require('path');
 
 test('pipeline api.job test', async t => {
   const client = new PipcookClient('http://localhost', 6927);
