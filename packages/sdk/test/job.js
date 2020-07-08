@@ -5,13 +5,15 @@ const path = require('path');
 
 test('pipeline api.job test', async t => {
   const client = new PipcookClient('http://localhost', 6927);
+  const name = 'bayes-job-test';
+  const pipelineFile = path.join(__dirname, 'text-bayes-classification.json');
+  const config = await readJson(pipelineFile);
+  
   // prepare
   await client.job.remove();
   await client.pipeline.remove();
-  const name = 'bayes-job-test';
-  const pipelineFile = path.join(__dirname, 'text-bayes-classification.json');
   //create pipeline
-  let pipeline = await client.pipeline.create(readJson(pipelineFile), { name });
+  let pipeline = await client.pipeline.create(config, { name });
   t.equal(typeof pipeline, 'object');
   t.equal(typeof pipeline.id, 'string');
   // create job

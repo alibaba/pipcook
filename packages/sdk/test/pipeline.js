@@ -7,7 +7,7 @@ test('pipeline api.pipeline test', async t => {
 
   const name = 'bayes';
   const pipelineFile = path.join(__dirname, 'text-bayes-classification.json');
-  const config = readJson(pipelineFile);
+  const config = await readJson(pipelineFile);
   // prepare
   await client.job.remove();
   await client.pipeline.remove();
