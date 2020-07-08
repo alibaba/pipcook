@@ -3,7 +3,7 @@ import { ImageDataset, ModelTrainType, UniModel, ModelTrainArgsType, ImageDataLo
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 
-async function dateIterator(dataLoader: ImageDataLoader, labelMap: {
+async function dataIterator(dataLoader: ImageDataLoader, labelMap: {
   [key: string]: number;
 }): Promise<any> {
   const count = await dataLoader.len();
@@ -32,7 +32,7 @@ async function dateIterator(dataLoader: ImageDataLoader, labelMap: {
 async function createDataset(dataLoader: ImageDataLoader, labelMap: {
   [key: string]: number;
 }) {
-  return tf.data.generator(await dateIterator(dataLoader, labelMap));
+  return tf.data.generator(await dataIterator(dataLoader, labelMap));
 }
 
 /**
