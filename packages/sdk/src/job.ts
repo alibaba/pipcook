@@ -1,4 +1,4 @@
-import { get } from './request';
+import { get, getFile } from './request';
 import { tunaMirrorURI } from './utils';
 import { JobModel, JobRunOption } from './interface';
 
@@ -61,5 +61,15 @@ export class Job {
       pyIndex: opts.tuna ? tunaMirrorURI : undefined
     };
     return await get(`${this.route}/run`, prarms, { timeout: opts.timeout ? opts.timeout : 180 * 1000 });
+  }
+
+  // TODO browser not work
+  /**
+   * download model by job id
+   * you should check the job status before downloading
+   * @param id job id
+   */
+  async downloadModel(id: string): Promise<NodeJS.ReadStream> {
+    return getFile(`${this.route}/${id}/output.tar.gz`);
   }
 }
