@@ -25,6 +25,12 @@ test('pipeline api.job test', async t => {
   const jobInfoObj = await client.job.info(jobObj.id);
   t.equal(typeof jobInfoObj, 'object');
   t.equal(typeof jobInfoObj.id, 'string');
+
+  // list
+  const jobs = await client.job.list();
+  t.ok(Array.isArray(jobs));
+  t.equal(jobInfoObj.id, jobs[0].id);
+
   // stop
   if (jobInfoObj.status === 1) {
     await client.job.stop(jobInfoObj.id);

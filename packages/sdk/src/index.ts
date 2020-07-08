@@ -7,7 +7,8 @@ export class PipcookClient {
   job: Job;
 
   constructor(host: string, port = 6927) {
-    this.pipeline = new Pipeline(host, port);
-    this.job = new Job(host, port);
+    const url = `${host}:${port}`;
+    this.pipeline = new Pipeline(url);
+    this.job = new Job(url);
   }
 }

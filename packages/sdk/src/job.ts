@@ -1,19 +1,20 @@
 import { get } from './request';
 import { tunaMirrorURI } from './utils';
+import { JobModel, JobRunOption } from './interface';
 
 /**
  * API for job
  */
 export class Job {
   route: string;
-  constructor(host: string, port: number) {
-    this.route = `${host}:${port}/job`;
+  constructor(url: string) {
+    this.route = `${url}/job`;
   }
 
   /**
    * list all jobs
    */
-  async list(): Promise<any[]> {
+  async list(): Promise<JobModel[]> {
     const jobs = await get(`${this.route}/list`);
     return jobs.rows;
   }
@@ -45,7 +46,7 @@ export class Job {
    * get job info by job id
    * @param id job id
    */
-  async info(id: string): Promise<any> {
+  async info(id: string): Promise<JobModel> {
     return await get(`${this.route}/${id}`);
   }
 
@@ -53,7 +54,7 @@ export class Job {
    * start to run a pipeline by pipeline id
    * @param opts piplineId: pipeline id, tuna: is using tuna mirror, timeout: query timeout
    */
-  async run(opts: any): Promise<any> {
+  async run(opts: JobRunOption): Promise<JobModel> {
     const prarms = {
       pipelineId: opts.pipelineId,
       verbose: '0',

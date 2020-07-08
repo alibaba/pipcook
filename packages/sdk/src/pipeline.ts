@@ -1,19 +1,20 @@
 import { get, post, put, del, listen } from './request';
 import { tunaMirrorURI } from './utils';
+import { PipelineModel, PipelineInstallOption } from './interface';
 
 /**
  * API for pipeline
  */
 export class Pipeline {
   route: string;
-  constructor(host: string, port: number) {
-    this.route = `${host}:${port}/pipeline`;
+  constructor(url: string) {
+    this.route = `${url}/pipeline`;
   }
 
   /**
    * list all pipelines
    */
-  async list(): Promise<any[]> {
+  async list(): Promise<PipelineModel[]> {
     return (await get(`${this.route}/list`)).rows;
   }
 
@@ -21,7 +22,7 @@ export class Pipeline {
    * get pipeline info by pipeline id
    * @param id pipeline id
    */
-  async info(id: string): Promise<any> {
+  async info(id: string): Promise<PipelineModel> {
     return await get(`${this.route}/info/${id}`);
   }
 
@@ -30,7 +31,7 @@ export class Pipeline {
    * @param config pipeline config
    * @param opts name: pipeline name
    */
-  async create(config: object, opts: any): Promise<any> {
+  async create(config: object, opts: any): Promise<PipelineModel> {
     return await post(`${this.route}`, {
       config,
       name: opts.name,
@@ -43,7 +44,7 @@ export class Pipeline {
    * @param id pipeline id
    * @param config pipeline config
    */
-  async update(id: string, config: object): Promise<any> {
+  async update(id: string, config: object): Promise<PipelineModel> {
     return await put(`${this.route}/${id}`, {
       config,
       isFile: false
@@ -67,7 +68,7 @@ export class Pipeline {
    * @param id pipeline id
    * @param opt tuna: is using tuna mirror
    */
-  async install(id: string, opt?: any): Promise<void> {
+  async install(id: string, opt?: PipelineInstallOption): Promise<void> {
     return new Promise((resolve, reject) => {
       listen(`${this.route}/${id}/install`, { pyIndex: opt?.tuna ? tunaMirrorURI : undefined }, {
         'error': (e: MessageEvent) => {
