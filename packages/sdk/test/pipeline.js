@@ -1,9 +1,12 @@
 const { test } = require('tap');
-const { api } = require('../');
+const { API } = require('../');
 
 test('pipeline api.pipeline test', async t => {
+  const api = new API('http://127.0.0.1', 6927);
+
   const name = 'bayes';
   const pipelineFile = './test/pipelines/text-bayes-classification.json';
+  await api.job.remove();
   await api.pipeline.remove();
   // create
   let pipeline = await api.pipeline.create(pipelineFile, { name });

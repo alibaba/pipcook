@@ -1,10 +1,12 @@
-// types
-
-import * as job from './job';
-import * as pipeline from './pipeline';
+import { Job } from './job';
+import { Pipeline } from './pipeline';
 export { JobStatus } from './utils';
 
-export const api = {
-  job,
-  pipeline
+export class API {
+  pipeline: Pipeline;
+  job: Job;
+  constructor(host: string, port: number = 6927) {
+    this.pipeline = new Pipeline(host, port);
+    this.job = new Job(host, port);
+  }  
 };

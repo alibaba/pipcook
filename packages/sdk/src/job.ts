@@ -1,35 +1,39 @@
 import { get } from './request';
-import { route } from './router';
 import { tunaMirrorURI } from './utils';
 
-const PipelineStatus = [ 'creating', 'running', 'success', 'fail' ];
+export class Job {
+  route: string;
+  constructor(host: string, port: number) {
+    this.route = `${host}:${port}/job`;
+  }
 
-export async function list(): Promise<void> {
-  const jobs = await get(`${route.job}/list`);
-  return jobs.rows;
-}
+  async list(): Promise<void> {
+    const jobs = await get(`${this.route}/list`);
+    return jobs.rows;
+  }
 
-export async function remove(): Promise<void> {
-  return await get(`${route.job}/remove`);
-}
+  async remove(): Promise<void> {
+    return await get(`${this.route}/remove`);
+  }
 
-export async function stop(id: string): Promise<void> {
-  return await get(`${route.job}/stop`, { id });
-}
+  async stop(id: string): Promise<void> {
+    return await get(`${this.route}/stop`, { id });
+  }
 
-export async function log(id: string): Promise<void> {
-  return await get(`${route.job}/${id}/log`);
-}
+  async log(id: string): Promise<void> {
+    return await get(`${this.route}/${id}/log`);
+  }
 
-export async function info(id: string): Promise<any> {
-  return await get(`${route.job}/${id}`);
-}
+  async info(id: string): Promise<any> {
+    return await get(`${this.route}/${id}`);
+  }
 
-export async function run(opts: any): Promise<void> {
-  const prarms = {
-    pipelineId: opts.pipelineId,
-    verbose: '0',
-    pyIndex: opts.pyIndex ? tunaMirrorURI : undefined
-  };
-  return await get(`${route.job}/run`, prarms);
+  async run(opts: any): Promise<void> {
+    const prarms = {
+      pipelineId: opts.pipelineId,
+      verbose: '0',
+      pyIndex: opts.pyIndex ? tunaMirrorURI : undefined
+    };
+    return await get(`${this.route}/run`, prarms);
+  }
 }
