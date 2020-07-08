@@ -7,15 +7,15 @@ export class Pipeline {
   constructor(host: string, port: number) {
     this.route = `${host}:${port}/pipeline`;
   }
-  async list(): Promise<void> {
+  async list(): Promise<any[]> {
     return (await get(`${this.route}/list`)).rows;
   }
 
-  async info(id: string): Promise<void> {
+  async info(id: string): Promise<any> {
     return await get(`${this.route}/info/${id}`);
   }
 
-  async create(filename: string, opts: any): Promise<void> {
+  async create(filename: string, opts: any): Promise<any> {
     const config = await readJson(filename);
     return await post(`${this.route}`, {
       config,
@@ -24,7 +24,7 @@ export class Pipeline {
     });
   }
 
-  async update(id: string, filename: string): Promise<void> {
+  async update(id: string, filename: string): Promise<any> {
     const config = await readJson(filename);
     return await put(`${this.route}/${id}`, {
       config,
@@ -40,7 +40,7 @@ export class Pipeline {
     }
   }
 
-  async install(id: string, opt?: any): Promise<any> {
+  async install(id: string, opt?: any): Promise<void> {
     return new Promise((resolve, reject) => {
       listen(`${this.route}/${id}/install`, { pyIndex: opt?.tuna ? tunaMirrorURI : undefined }, {
         'error': (e: MessageEvent) => {

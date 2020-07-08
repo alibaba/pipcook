@@ -7,20 +7,20 @@ export class Job {
     this.route = `${host}:${port}/job`;
   }
 
-  async list(): Promise<void> {
+  async list(): Promise<any[]> {
     const jobs = await get(`${this.route}/list`);
     return jobs.rows;
   }
 
-  async remove(): Promise<void> {
+  async remove(): Promise<number> {
     return await get(`${this.route}/remove`);
   }
 
   async stop(id: string): Promise<void> {
-    return await get(`${this.route}/stop`, { id });
+    await get(`${this.route}/stop`, { id });
   }
 
-  async log(id: string): Promise<void> {
+  async log(id: string): Promise<any> {
     return await get(`${this.route}/${id}/log`);
   }
 
@@ -28,7 +28,7 @@ export class Job {
     return await get(`${this.route}/${id}`);
   }
 
-  async run(opts: any): Promise<void> {
+  async run(opts: any): Promise<any> {
     const prarms = {
       pipelineId: opts.pipelineId,
       verbose: '0',

@@ -106,7 +106,7 @@ export class PipelineService {
   }
 
   async removePipelineById(id: string): Promise<number> {
-    return await this.pipeline.destroy({
+    return this.pipeline.destroy({
       where: getIdOrName(id)
     });
   }
