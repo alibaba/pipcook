@@ -6,28 +6,28 @@
 
 一般来说，一个学习问题就是将 N 个样本集数据输入，然后输出与输入相关联对应的结果，下面的例子将展示，如何教会一个程序学会 Node.js 书籍和售价的关系：
 
-```js
-const model = Record<string, number>;
-const learn = (book: string, price: number) => model[book] = price;
-const how_much = (book: string) => model[book];
+```ts
+const BookPriceModel: Record<string, number> = {};
+const learnBookPrice = (book: string, price: number) => BookPriceModel[book] = price;
+const predictBookPrice = (book: string) => BookPriceModel[book];
 
 // prediction without learning.
-how_much('Node.js in Action'); // undefined, because the program don't know nothing
+predictBookPrice('Node.js in Action'); // undefined, because the program don't know nothing
 
 // learn "Node.js in Action" and "Dive into Node.js".
-learn('Node.js in Action', 99.0);
-learn('Dive into Node.js', 199.0);
+learnBookPrice('Node.js in Action', 99.0);
+learnBookPrice('Dive into Node.js', 199.0);
 
 // prediction after learning.
-how_much('Node.js in Action'); // 99.0
-how_much('Dive into Node.js'); // 199.0
+predictBookPrice('Node.js in Action'); // 99.0
+predictBookPrice('Dive into Node.js'); // 199.0
 ```
 
 **机器学习**问题也是类似的，只不过可以通过机器学习算法让机器能更“智能”地学习，能够对于一些未知数据作出真正的预测结果，比如可以帮助作者决定写一本什么样的书能够卖得更贵：
 
 ```js
-how_much('Pipcook in Action'); // 89.0
-how_much('Dive into Pipcook'); // 199.0
+predictBookPrice('Pipcook in Action'); // 89.0
+predictBookPrice('Dive into Pipcook'); // 199.0
 ```
 
 机器学习并非万能灵药，因此接下来看看它到底能解决哪些问题，下面我们按照数据类型分为不同的任务类型：
