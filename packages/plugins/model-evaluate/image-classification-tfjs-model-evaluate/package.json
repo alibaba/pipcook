@@ -1,7 +1,7 @@
 {
   "name": "@pipcook/plugins-image-classification-tfjs-model-evaluate",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin will be used to evaluate image classification models built on top of Tensorflow.js.",
   "main": "dist/index",
   "types": "dist/index",
   "files": [

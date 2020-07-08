@@ -1,7 +1,7 @@
 {
   "name": "@pipcook/plugins-image-data-process",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin is used to process image data. This means we will do some modifications on the original image data you provide from data-collect.",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -31,6 +31,11 @@
   },
   "pipcook": {
     "category": "dataProcess",
-    "datatype": "image"
+    "datatype": "image",
+    "params": [{
+      "name": "resize",
+      "type": "number[2]",
+      "description": "the scale to resize"
+    }]
   }
 }

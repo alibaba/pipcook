@@ -1,6 +1,6 @@
 import path from 'path';
 import url from 'url';
-import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
+import { ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, readJSON } from 'fs-extra';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
@@ -140,7 +140,7 @@ export class CostaRuntime {
       pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
     } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
-      pkg = require(`${source.uri}/package.json`);
+      pkg = await readJSON(`${source.uri}/package.json`);
     }
 
     try {

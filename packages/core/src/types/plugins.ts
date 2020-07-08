@@ -14,7 +14,7 @@ export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'modelL
 /**
  * The base type which represents the `Record` from pipeline config file.
  */
-export type ArgsType = InsertParams & Record<string, any>
+export type ArgsType = InsertParams & Record<string, any>;
 
 /**
  * The `ArgsType`-based object to be used for defining a model.

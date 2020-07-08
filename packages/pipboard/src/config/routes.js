@@ -1,12 +1,14 @@
 import BasicLayout from '@/layouts/BasicLayout';
 import Tutorial from '@/pages/Tutorial';
-import PipelineInfo from '@/pages/Pipeline/PipelineInfo';
 import Mnist from '@/pages/Tutorial/Mnist';
 import AssetsClassification from '@/pages/Tutorial/AssetsClassification';
 import Home from '@/pages/Home';
-import Pipeline from '@/pages/Pipeline';
+import PipelineList from '@/pages/Pipeline';
+import PipelineDetail from '@/pages/Pipeline/Detail';
+import JobList from '@/pages/Job';
+import JobDetail from '@/pages/Job/Detail';
 
-const routerConfig = [
+export default [
   {
     path: '/tutorial',
     component: BasicLayout,
@@ -31,13 +33,27 @@ const routerConfig = [
     children: [
       {
         path: '/info',
-        component: PipelineInfo,
+        component: PipelineDetail,
       },
       {
         path: '/',
-        component: Pipeline,
+        component: PipelineList,
       },
     ],
+  },
+  {
+    path: '/job',
+    component: BasicLayout,
+    children: [
+      {
+        path: '/info',
+        component: JobDetail,
+      },
+      {
+        path: '/',
+        component: JobList
+      }
+    ]
   },
   {
     path: '/',
@@ -48,15 +64,9 @@ const routerConfig = [
         redirect: '/',
       },
       {
-        path: 'jobs',
-        component: Pipeline,
-      },
-      {
         path: '/',
         component: Home,
       },
     ],
   },
 ];
-
-export default routerConfig;

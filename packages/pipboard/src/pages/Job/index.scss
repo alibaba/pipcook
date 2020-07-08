@@ -1,0 +1,23 @@
+.job {
+  .job-create-container {
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    
+    .job-create {
+      background-color: #fff;
+      border-radius: 64px;
+      padding: 5px;
+      box-shadow: 1px 1px 5px #e3e3e3;
+      height: 40px;
+      width: 40px;
+      text-align: center;
+    }
+  }
+
+  .pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+  }
+}

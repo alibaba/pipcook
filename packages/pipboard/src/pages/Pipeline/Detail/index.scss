@@ -1,0 +1,77 @@
+.pipeline-info {
+  padding: 40px;
+
+  .title-wrapper {
+    margin-bottom: 20px;
+    margin-left: 20px;
+    .title {
+      font-size: 25px;
+      margin-right: 10px;
+    }
+  }
+
+  .select-task {
+    margin-left: 20px;
+  }
+
+  .content-wrapper {
+    display: flex;
+    flex-direction: row;
+
+    .plugin-choose {
+      display: block;
+      margin: 0 20px;
+
+      .plugin-choose-title {
+        font-size: 15px;
+        cursor: pointer;
+      }
+      .plugin-choose-selector {
+        width: 260px;
+      }
+
+      .plugin-choose-actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        button {
+          width: 80px;
+        }
+      }
+    }
+
+    .plugin-config {
+      flex-grow: 1;
+      min-height: 500px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 0 0 3px #ddd;
+      margin: 10px 20px;
+      padding: 10px;
+      font-size: 15px;
+    }
+
+    .plugin-operate {
+      display: flex;
+      width: 320px;
+      flex-direction: column;
+      position: relative;
+      margin-top: 10px;
+      margin-left: 20px;
+      margin-right: 20px;
+
+      .plugin-operate-jobs {
+        .plugin-operate-jobs-header {
+          .next-select {
+            margin-left: 10px;
+          }
+        }
+        button {
+          margin: 0 5px;
+        }
+      }
+    }
+  }
+  
+  
+}

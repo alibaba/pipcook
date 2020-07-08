@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { Button } from '@alifd/next';
+import { Button, Timeline } from '@alifd/next';
 import queryString from 'query-string';
 import ReactJson from 'react-json-view';
 
 import { messageError, messageSuccess } from '@/utils/message';
 import { PLUGINS, pluginList, PIPELINE_STATUS } from '@/utils/config';
-import ChooseItem from '@/pages/Pipeline/PipelineInfo/components/ChooseItem';
-import LogView from '@/pages/Pipeline/PipelineInfo/components/LogView';
+import ChooseItem from '@/components/ChooseItem';
+import LogView from '@/components/LogView';
 import { get, post, put } from '@/utils/request';
 import { addUrlParams } from '@/utils/common';
-
 import './index.scss';
 
-export default class Pipeline extends Component {
+export default class JobDetailPage extends Component {
 
   state = {
     isCreate: true,
@@ -171,7 +170,6 @@ export default class Pipeline extends Component {
         <div className="title-wrapper" >
           <span className="title">{isCreate ? 'Create a new Pipeline' : (jobId ? 'Job Detail' : 'Pipeline Configuration')}</span>
         </div>
-         
         <div className="content-wrapper">
           <div className="plugin-choose">
             {

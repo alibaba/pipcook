@@ -2,6 +2,15 @@ import React from 'react';
 import { Button, Dialog, Tag } from '@alifd/next';
 
 /**
+ * Pipeline templates
+ */
+import ImageClassificationPipeline from '@/config/pipelines/image-classification.json';
+import ObjectDetectionPipeline from '@/config/pipelines/object-detection.json';
+import ImageStyleTransferPipeline from '@/config/pipelines/image-style-transfer.json';
+import TextClassificationPipeline from '@/config/pipelines/text-classification.json';
+import TextCreationPipeline from '@/config/pipelines/text-creation.json';
+
+/**
  * !important: This File contains many information that should be returned by backend. For now, just remain these.
  * Todo: queyue.crk
  */
@@ -13,18 +22,31 @@ export const MODELLOAD = 'modelLoad';
 export const MODELDEFINE = 'modelDefine';
 export const MODELTRAIN = 'modelTrain';
 export const MODELEVALUATE = 'modelEvaluate';
-export const PLUGINS = [
-  DATACOLLECT,
-  DATAACCESS,
-  DATAPROCESS,
-  MODELLOAD,
-  MODELDEFINE,
-  MODELTRAIN,
-  MODELEVALUATE,
-];
+
+export const PLUGINS = [{
+  id: DATACOLLECT,
+  title: 'Select a dataset',
+}, {
+  id: DATAACCESS,
+  title: 'Access the dataset',
+}, {
+  id: DATAPROCESS,
+  title: 'Process the sample',
+}, {
+  id: MODELLOAD,
+  title: 'Load a model',
+}, {
+  id: MODELDEFINE,
+  title: 'Define a model',
+}, {
+  id: MODELTRAIN,
+  title: 'Train',
+}, {
+  id: MODELEVALUATE,
+  title: 'Evaluate',
+}];
 
 export const PIPELINE_STATUS = ['INIT', 'RUNNING', 'SUCCESS', 'FAIL'];
-
 export const PIPELINE_MAP = [
   {
     name: 'ID',
@@ -136,6 +158,39 @@ export const JOB_MAP = [
       return <Button size="small" disabled={record.status !== 'SUCCESS'} onClick={download}>Download</Button>;
     },
   },
+];
+
+export const PIPELINE_TEMPLATES = [
+  {
+    title: 'Image Classification',
+    category: 'vision',
+    description: 'The image classification accepts the given input images and produces output for identifying whether the type is or not.',
+    template: ImageClassificationPipeline
+  },
+  {
+    title: 'Object Detection',
+    category: 'vision',
+    description: 'The object detection detects the given objects and returns class and position for each one.',
+    template: ObjectDetectionPipeline
+  },
+  {
+    title: 'Image Style Transfer',
+    category: 'vision',
+    description: 'The image style transfer generates an image automatically.',
+    template: ImageStyleTransferPipeline
+  },
+  {
+    title: 'Text Classification',
+    category: 'nlp',
+    description: 'The text classification does classify the text to specific classes.',
+    template: TextClassificationPipeline
+  },
+  {
+    title: 'Text Creation',
+    category: 'nlp',
+    description: 'The text creation generates an artwork by a given portfolio.',
+    template: TextCreationPipeline
+  }
 ];
 
 const PLUGIN_LIST = {

@@ -1,7 +1,7 @@
 {
   "name": "@pipcook/plugins-image-classification-tfjs-model-train",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin will be used to train image classification models built on top of Tensorflow.js.",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -30,6 +30,15 @@
   },
   "pipcook": {
     "category": "modelTrain",
-    "datatype": "image"
+    "datatype": "image",
+    "params": [{
+      "name": "epochs",
+      "type": "number",
+      "description": "how many epochs to train."
+    }, {
+      "name": "batchSize",
+      "type": "number",
+      "description": "dataset batch size to be trained for every iteration."
+    }]
   }
 }

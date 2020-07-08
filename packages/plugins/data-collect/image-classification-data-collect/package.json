@@ -1,7 +1,7 @@
 {
   "name": "@pipcook/plugins-image-classification-data-collect",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin is used to collect image classification dataset. ",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -34,6 +34,11 @@
   },
   "pipcook": {
     "category": "dataCollect",
-    "datatype": "image"
+    "datatype": "image",
+    "params": [{
+      "name": "url",
+      "type": "string",
+      "description": "url or path of your zip file. If it's a local file, add prefix file://."
+    }]
   }
 }

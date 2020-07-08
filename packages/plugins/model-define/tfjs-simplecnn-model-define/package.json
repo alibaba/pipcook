@@ -1,7 +1,7 @@
 {
   "name": "@pipcook/plugins-tfjs-simplecnn-model-define",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin defines a image classification model. This model is built on top of several convolutional blocks. This model is fit for quite simple dataset. The model is built using Tensorflow.js.",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -30,6 +30,37 @@
   },
   "pipcook": {
     "category": "modelDefine",
-    "datatype": "image"
+    "datatype": "image",
+    "params": [{
+      "name": "loss",
+      "type": "string[]",
+      "options": [
+        "meanSquaredError",
+        "meanAbsoluteError",
+        "meanAbsolutePercentageError",
+        "meanSquaredLogarithmicError",
+        "squaredHinge",
+        "hinge",
+        "categoricalHinge",
+        "logcosh",
+        "categoricalCrossentropy",
+        "sparseCategoricalCrossentropy",
+        "binaryCrossentropy",
+        "kullbackLeiblerDivergence",
+        "poisson",
+        "cosineProximity"
+      ],
+      "defaultValue": [ "categoricalCrossentropy" ],
+      "description": "the loss function to be defined"
+    }, {
+      "name": "metrics",
+      "type": "string[]",
+      "options": [
+        "accuracy",
+        "recall"
+      ],
+      "defaultValue": [ "accuracy" ],
+      "description": "metrics used to evaluate model."
+    }]
   }
 }

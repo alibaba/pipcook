@@ -2,18 +2,17 @@ import React, { Component } from 'react';
 import { Table, Pagination, Icon } from '@alifd/next';
 
 import { messageError } from '@/utils/message';
-import { PIPELINE_MAP, JOB_MAP, PIPELINE_STATUS } from '@/utils/config';
+import { JOB_MAP, PIPELINE_STATUS } from '@/utils/config';
 import { get } from '@/utils/request';
-
 import './index.scss';
 
 const PAGE_SIZE = 30; // number of records in one page
 
-export default class Pipeline extends Component {
+export default class JobPage extends Component {
 
   state = {
     models: [],
-    fields: PIPELINE_MAP, // pipeline or job,
+    fields: JOB_MAP, // pipeline or job,
     currentPage: 1,
     totalCount: 0,
   }
@@ -24,16 +23,8 @@ export default class Pipeline extends Component {
 
   fetchData = async (currentPage) => {
     // check if show job or pipeline from url
-    let queryUrl = '/pipeline/list';
-    if (location.href.includes('jobs')) {
-      this.setState({
-        fields: JOB_MAP,
-      });
-      queryUrl = '/job/list';
-    }
-    
     try {
-      const response = await get(queryUrl, {
+      const response = await get('/job/list', {
         params: {
           offset: (currentPage - 1) * PAGE_SIZE, 
           limit: PAGE_SIZE,
@@ -64,7 +55,7 @@ export default class Pipeline extends Component {
   render() {
     const { models, fields, currentPage, totalCount } = this.state;
     return (
-      <div className="pipeline">
+      <div className="job">
         <Table dataSource={models}
           hasBorder={false}
           stickyHeader
@@ -89,6 +80,9 @@ export default class Pipeline extends Component {
           className="pagination-wrapper" 
           onChange={this.changePage}
         />
+        <div className="job-create-container" onClick={() => location.href = 'index.html#/job/info'}>
+          <Icon className="job-create" type="add" size="large" />
+        </div>
       </div>
     );
   }
