@@ -1,0 +1,29 @@
+{
+    "plugins": {
+      "dataCollect": {
+        "package": "../../packages/plugins/data-collect/csv-data-collect",
+        "params": {
+          "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip"
+        }
+      },
+      "dataAccess": {
+        "package": "../../packages/plugins/data-access/csv-data-access",
+        "params": {
+          "labelColumn": "output"
+        }
+      },
+      "modelDefine": {
+        "package": "../../packages/plugins/model-define/bayesian-model-define"
+      },
+      "modelTrain": {
+        "package": "../../packages/plugins/model-train/bayesian-model-train"
+      },
+      "modelEvaluate": {
+        "package": "../../packages/plugins/model-evaluate/bayesian-model-evaluate",
+        "params": {
+          "expectAccracy": 0.9
+        }
+      }
+    }
+  }
+  

@@ -1,5 +1,6 @@
 const { test } = require('tap');
 const { API } = require('../');
+const path = require('path');
 
 test('pipeline api.job test', async t => {
   const api = new API('http://localhost', 6927);
@@ -7,7 +8,7 @@ test('pipeline api.job test', async t => {
   await api.job.remove();
   await api.pipeline.remove();
   const name = 'bayes-job-test';
-  const pipelineFile = './test/pipelines/text-bayes-classification.json';
+  const pipelineFile = path.join(__dirname, 'text-bayes-classification.json');
   //create pipeline
   let pipeline = await api.pipeline.create(pipelineFile, { name });
   t.equal(typeof pipeline, 'object');

@@ -1,11 +1,12 @@
 const { test } = require('tap');
 const { API } = require('../');
+const path = require('path');
 
 test('pipeline api.pipeline test', async t => {
   const api = new API('http://127.0.0.1', 6927);
 
   const name = 'bayes';
-  const pipelineFile = './test/pipelines/text-bayes-classification.json';
+  const pipelineFile = path.join(__dirname, 'text-bayes-classification.json');
 
   // prepare
   await api.job.remove();
