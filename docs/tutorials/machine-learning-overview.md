@@ -6,28 +6,28 @@ From this article, we will introduce what is machine learning and how to complet
 
 In general, a learning problem considers a set of n samples of data and then tries to returns the corresponding result by given input. The following example shows how we can teach a program about Node.js books and prices:
 
-```js
-const model = Record<string, number>;
-const learn = (book: string, price: number) => model[book] = price;
-const how_much = (book: string) => model[book];
+```ts
+const BookPriceModel: Record<string, number> = {};
+const learnBookPrice = (book: string, price: number) => BookPriceModel[book] = price;
+const predictBookPrice = (book: string) => BookPriceModel[book];
 
 // prediction without learning.
-how_much('Node.js in Action'); // undefined, because the program don't know nothing
+predictBookPrice('Node.js in Action'); // undefined, because the program don't know nothing
 
 // learn "Node.js in Action" and "Dive into Node.js".
-learn('Node.js in Action', 99.0);
-learn('Dive into Node.js', 199.0);
+learnBookPrice('Node.js in Action', 99.0);
+learnBookPrice('Dive into Node.js', 199.0);
 
 // prediction after learning.
-how_much('Node.js in Action'); // 99.0
-how_much('Dive into Node.js'); // 199.0
+predictBookPrice('Node.js in Action'); // 99.0
+predictBookPrice('Dive into Node.js'); // 199.0
 ```
 
 The **Machine Learning** problem is similar, except that we can make the computer learning more intelligent through machine learning algorithms and can give real "predictions" from unknown data, for example, The following helps you get a more expensive book name:
 
 ```js
-how_much('Pipcook in Action'); // 89.0
-how_much('Dive into Pipcook'); // 199.0
+predictBookPrice('Pipcook in Action'); // 89.0
+predictBookPrice('Dive into Pipcook'); // 199.0
 ```
 
 However machine learning is not a panacea, so let's see what problems it can solve, the following is machine learning problems fall into a few categories in given sample types(Image and Text):
