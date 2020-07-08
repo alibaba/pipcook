@@ -1,6 +1,5 @@
 import * as qs from 'querystring';
-import axios from 'axios';
-import { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import EventSource from 'eventsource';
 
 export type RequestParams = Record<string, any>;

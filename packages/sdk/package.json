@@ -1,7 +1,7 @@
 {
   "name": "@pipcook/sdk",
   "version": "1.0.0",
-  "description": "pipcook sdk for daemon",
+  "description": "JavaScript SDK for accessing Pipcook Daemon",
   "main": "dist/index.js",
   "scripts": {
     "build": "npm run clean && npm run compile",

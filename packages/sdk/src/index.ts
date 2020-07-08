@@ -2,7 +2,7 @@ import { Job } from './job';
 import { Pipeline } from './pipeline';
 export { JobStatus } from './utils';
 
-export class API {
+export class PipcookClient {
   pipeline: Pipeline;
   job: Job;
 
