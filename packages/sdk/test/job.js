@@ -17,7 +17,7 @@ test('pipeline api.job test', async t => {
   t.equal(typeof pipeline, 'object');
   t.equal(typeof pipeline.id, 'string');
   // create job
-  const jobObj = await client.job.run({pipelineId: pipeline.id, tuna: true});
+  const jobObj = await client.job.run({pipelineId: pipeline.id});
   t.equal(typeof jobObj, 'object');
   t.equal(typeof jobObj.id, 'string');
 

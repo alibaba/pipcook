@@ -22,7 +22,7 @@ test('pipeline api.pipeline test', async t => {
   // info
   t.strictEqual((await client.pipeline.info(pipeline.id)).name, name);
   // install
-  await client.pipeline.install(pipeline.id, { tuna: true });
+  await client.pipeline.install(pipeline.id, {});
 
   // update
   pipeline = await client.pipeline.update(pipeline.id, config);
