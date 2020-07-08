@@ -34,6 +34,6 @@ export class Job {
       verbose: '0',
       pyIndex: opts.pyIndex ? tunaMirrorURI : undefined
     };
-    return await get(`${this.route}/run`, prarms);
+    return await get(`${this.route}/run`, prarms, { timeout: opts.timeout ? opts.timeout : 180 * 1000 });
   }
 }

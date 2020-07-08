@@ -3,7 +3,7 @@ const { API } = require('../');
 
 test('pipeline api.job test', async t => {
   const api = new API('http://localhost', 6927);
-  await api.job.list();
+  // prepare
   await api.job.remove();
   await api.pipeline.remove();
   const name = 'bayes-job-test';

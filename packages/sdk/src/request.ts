@@ -1,5 +1,6 @@
 import * as qs from 'querystring';
 import axios from 'axios';
+import { AxiosRequestConfig } from 'axios';
 import EventSource from 'eventsource';
 
 export type RequestParams = Record<string, any>;
@@ -21,12 +22,12 @@ function createGeneralRequest(agent: Function): Function {
   };
 }
 
-export const post = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.post)(host, body, params);
-export const put = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.put)(host, body, params);
+export const post = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig) => createGeneralRequest(axios.post)(host, body, params, config);
+export const put = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig) => createGeneralRequest(axios.put)(host, body, params, config);
 export const del = async (host: string) => createGeneralRequest(axios.delete)(host);
-export const get = async (host: string, params?: RequestParams) => {
+export const get = async (host: string, params?: RequestParams, config?: AxiosRequestConfig) => {
   const uri = `${host}?${qs.stringify(params)}`;
-  return createGeneralRequest(axios.get)(uri);
+  return createGeneralRequest(axios.get)(uri, config);
 };
 
 export const getFile = async (host: string, params?: RequestParams): Promise<NodeJS.ReadStream> => {

@@ -6,6 +6,8 @@ test('pipeline api.pipeline test', async t => {
 
   const name = 'bayes';
   const pipelineFile = './test/pipelines/text-bayes-classification.json';
+
+  // prepare
   await api.job.remove();
   await api.pipeline.remove();
   // create
