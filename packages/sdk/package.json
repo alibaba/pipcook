@@ -14,9 +14,7 @@
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {
-    "eslint": "^6.7.2",
     "@types/fs-extra": "^9.0.1",
-    "jasmine": "^3.5.0",
-    "ts-node": "^8.6.2"
+    "typescript": "^3.7.2"
   }
 }

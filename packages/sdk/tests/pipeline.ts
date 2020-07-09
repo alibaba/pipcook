@@ -32,8 +32,8 @@ describe('pipeline api.pipeline test', () => {
     expect((await client.pipeline.info(pipeline.id)).name).toBe(name);
   });
   it('install pipeline', async () => {
-    // install
-    await client.pipeline.install(pipeline.id);
+    // install Plugins
+    await client.pipeline.installPlugins(pipeline.id);
   });
   it('update pipeline', async () => {
     // update

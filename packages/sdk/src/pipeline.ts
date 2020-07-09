@@ -68,7 +68,7 @@ export class Pipeline {
    * @param id pipeline id
    * @param opt tuna: is using tuna mirror
    */
-  async install(id: string, opt?: PipelineInstallOption): Promise<void> {
+  async installPlugins(id: string, opt?: PipelineInstallOption): Promise<void> {
     return new Promise((resolve, reject) => {
       listen(`${this.route}/${id}/install`, { pyIndex: opt?.tuna ? tunaMirrorURI : undefined }, {
         'error': (e: MessageEvent) => {

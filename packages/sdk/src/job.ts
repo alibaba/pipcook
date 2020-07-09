@@ -70,7 +70,7 @@ export class Job {
    * you should check the job status before downloading
    * @param id job id
    */
-  async downloadModel(id: string): Promise<NodeJS.ReadStream> {
+  async downloadOutput(id: string): Promise<NodeJS.ReadStream> {
     return getFile(`${this.route}/${id}/output.tar.gz`);
   }
 }
