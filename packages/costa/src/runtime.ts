@@ -8,6 +8,7 @@ import { download, constants } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
+import LRUCache from './lrucache';
 import {
   NpmPackageMetadata,
   NpmPackage,
@@ -108,6 +109,9 @@ function createRequirements(name: string, config: CondaConfig): string[] {
   return deps;
 }
 
+// TODO(Yorkie): support config this?
+const HTTP_CACHE_LIMIT = 1000;
+
 // TODO(Yorkie): support save caches in disk?
 /**
  * The HTTP Cache in memory.
@@ -121,7 +125,7 @@ interface HTTPCache {
 /**
  * `HTTPCache` with the uri key.
  */
-const httpCacheByURI: Record<string, HTTPCache> = {};
+const httpCacheByURI = new LRUCache<HTTPCache>(HTTP_CACHE_LIMIT);
 
 /**
  * This function uses etag to cache the response body with `HTTPCache`, the cache key is
@@ -130,7 +134,7 @@ const httpCacheByURI: Record<string, HTTPCache> = {};
  * @param uri The requested uri.
  */
 async function requestHttpGetWithCache(uri: string): Promise<any> {
-  const cache = httpCacheByURI[uri];
+  const cache = httpCacheByURI.get(uri);
   const options: RequestPromiseOptions = {
     timeout: 15000,
     simple: false,
@@ -146,11 +150,11 @@ async function requestHttpGetWithCache(uri: string): Promise<any> {
   const resp = await get(uri, options);
   if (resp.statusCode === 200) {
     const body = JSON.parse(resp.body);
-    httpCacheByURI[uri] = {
+    httpCacheByURI.put(uri, {
       etag: resp.headers.etag,
       lastModified: resp.headers['last-modified'],
       body
-    };
+    });
     return body;
   } else if (resp.statusCode === 304) {
     debug(`using cached response for ${uri}.`);
