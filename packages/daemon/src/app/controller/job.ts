@@ -7,6 +7,7 @@ import { JobModel } from '../../model/job';
 import { PluginManager } from '../../service/plugin';
 import { createReadStream } from 'fs';
 import { PluginTypeI, PipelineStatus } from '@pipcook/pipcook-core';
+
 @provide()
 @controller('/job')
 export class JobController {
@@ -67,7 +68,7 @@ export class JobController {
         } catch (err) {
           job.status = PipelineStatus.FAIL;
           job.error = err.message;
-          return await job.save();
+          return job.save();
         }
         this.pipelineService.startJob(job, cwd, plugins);
       };
