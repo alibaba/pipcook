@@ -5,7 +5,7 @@ import { PipcookClient, PipelineModel, JobModel } from '../../packages/sdk';
 describe('pipeline api.job test', () => {
   const client = new PipcookClient('http://localhost', 6927);
   const name = 'bayes-job-test';
-  const pipelineFile = path.join(__dirname, '../pipelines/text-bayes-classification.json');
+  const pipelineFile = path.join(__dirname, 'text-bayes-classification.json');
   let config: any;
   let pipeline: PipelineModel;
   let jobObj: JobModel;

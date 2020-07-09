@@ -6,7 +6,7 @@ describe('pipeline api.pipeline test', () => {
   const client = new PipcookClient('http://127.0.0.1', 6927);
 
   const name = 'bayes';
-  const pipelineFile = path.join(__dirname, '../pipelines/text-bayes-classification.json');
+  const pipelineFile = path.join(__dirname, 'text-bayes-classification.json');
   let config: any;
   let pipeline: PipelineModel;
   it('prepare', async () => {
