@@ -82,9 +82,6 @@ export class JobController {
     const { pipelineId, offset, limit } = ctx.query;
     try {
       const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
-      if (!jobs || jobs.count === 0) {
-        throw new TypeError('job not found');
-      }
       successRes(ctx, {
         data: jobs
       });
@@ -97,8 +94,11 @@ export class JobController {
 
   @get('/remove')
   public async remove() {
-    await this.pipelineService.removeJobs();
-    successRes(this.ctx, {});
+    const count = await this.pipelineService.removeJobs();
+    successRes(this.ctx, {
+      message: 'remove jobs successfully',
+      data: count
+    });
   }
 
   @get('/stop')

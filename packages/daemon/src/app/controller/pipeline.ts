@@ -27,7 +27,7 @@ export class PipelineController {
     try {
       const { name, isFile = true } = ctx.request.body;
       let { config } = ctx.request.body;
-      if (!isFile) {
+      if (!isFile && typeof config !== 'object') {
         config = JSON.parse(config);
       }
       const parsedConfig = await parseConfig(config);
@@ -82,10 +82,16 @@ export class PipelineController {
     const { id } = this.ctx.params;
     try {
       const count = await this.pipelineService.removePipelineById(id);
-      successRes(this.ctx, {
-        message: 'get pipeline successfully',
-        data: count
-      });
+      if (count > 0) {
+        successRes(this.ctx, {
+          message: 'remove pipeline successfully',
+          data: count
+        });
+      } else {
+        failRes(this.ctx, {
+          message: 'remove pipeline error, id not exists',
+        });
+      }
     } catch (err) {
       failRes(this.ctx, {
         message: err.message
@@ -142,7 +148,7 @@ export class PipelineController {
     try {
       const { isFile = true } = ctx.request.body;
       let { config } = ctx.request.body;
-      if (!isFile) {
+      if (!isFile && typeof config !== 'object') {
         config = JSON.parse(config);
       }
       const parsedConfig = await parseConfig(config, false);

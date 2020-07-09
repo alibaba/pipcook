@@ -7,7 +7,8 @@
     "packages/costa",
     "packages/daemon",
     "packages/pipboard",
-    "packages/plugins/**/*"
+    "packages/plugins/**/*",
+    "packages/sdk"
   ],
   "version": "independent",
   "loglevel": "verbose",
