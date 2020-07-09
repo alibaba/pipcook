@@ -63,6 +63,7 @@ export class Pipeline {
     }
   }
 
+  // TODO(feely): offer event notification about install progress.
   /**
    * install plugins defined in pipeline
    * @param id pipeline id
