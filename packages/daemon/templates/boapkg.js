@@ -12,7 +12,6 @@ try {
   condaInstallDir = fs.readFileSync(`${boaSrcPath}/.CONDA_INSTALL_DIR`, 'utf8');
   fs.accessSync(condaInstallDir);
 } catch (err) {
-  console.error(err);
   console.warn('no @pipcook/boa installed, just skip');
   return process.exit(0);
 }
