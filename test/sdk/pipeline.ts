@@ -34,7 +34,7 @@ describe('pipeline api.pipeline test', () => {
   it('install pipeline', async () => {
     // install Plugins
     await client.pipeline.installPlugins(pipeline.id);
-  });
+  }, 180 * 1000);
   it('update pipeline', async () => {
     // update
     pipeline = await client.pipeline.update(pipeline.id, config);

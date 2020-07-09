@@ -27,7 +27,7 @@ describe('pipeline api.job test', () => {
     jobObj = await client.job.run({ pipelineId: pipeline.id });
     expect(typeof jobObj).toBe('object');
     expect(typeof jobObj.id).toBe('string');
-  });
+  }, 180 * 1000);
   it('query job info', async () => {
     // info
     jobInfoObj = await client.job.info(jobObj.id);
