@@ -11,7 +11,7 @@ describe('pipeline api.job test', () => {
   let jobObj: JobModel;
   let jobInfoObj: JobModel;
   it('prepare', async () => {
-    config = await readJson(pipelineFile)
+    config = await readJson(pipelineFile);
     // prepare
     await client.job.remove();
     await client.pipeline.remove();
