@@ -105,8 +105,8 @@ export class PipelineService {
     });
   }
 
-  async removePipelineById(id: string): Promise<void> {
-    await this.pipeline.destroy({
+  async removePipelineById(id: string): Promise<number> {
+    return this.pipeline.destroy({
       where: getIdOrName(id)
     });
   }
@@ -148,12 +148,13 @@ export class PipelineService {
     });
   }
 
-  async removeJobs(): Promise<void> {
+  async removeJobs(): Promise<number> {
     const jobs = await this.queryJobs({});
     await jobs.rows.map(async (job: JobModel) => {
       await job.destroy();
       await fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`);
     });
+    return jobs.rows.length;
   }
 
   async updateJobById(id: string, data: RunParams): Promise<JobModel> {

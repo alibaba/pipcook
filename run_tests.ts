@@ -9,7 +9,7 @@ process.on('unhandledRejection', (e) => {
 
 const runner = new JasmineCtor();
 runner.loadConfig({
-  spec_files: [ 'src/**/*_test.ts' ],
+  spec_files: [ 'src/**/*_test.ts', 'test/**/*.ts' ],
   random: false
 });
 runner.clearReporters();
