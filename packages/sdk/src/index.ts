@@ -12,12 +12,12 @@ export class PipcookClient {
   job: Job;
 
   /**
-   * the constructor for PipcookClient
-   * @param host the daemon host, like 'http://192.168.1.50'
+   * The constructor for PipcookClient
+   * @param protocolWithHostname the daemon hostname with protocol, like 'http://192.168.1.50'
    * @param port the port
    */
-  constructor(host: string, port = 6927) {
-    const url = `${host}:${port}`;
+  constructor(protocolWithHostname: string, port = 6927) {
+    const url = `${protocolWithHostname}:${port}`;
     this.pipeline = new Pipeline(url);
     this.job = new Job(url);
   }
