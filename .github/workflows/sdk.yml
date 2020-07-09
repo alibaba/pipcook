@@ -30,7 +30,7 @@ jobs:
         NODE_ENV: local
       run: |
         ./packages/cli/dist/bin/pipcook init
-        ./packages/cli/dist/bin/pipcook daemon start
+        node ./packages/daemon/bootstrap.js 2>&1 &
     - name: pipcook sdk test
       run: |
         npx ts-node ./run_tests.ts
