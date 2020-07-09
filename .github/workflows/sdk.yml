@@ -33,4 +33,4 @@ jobs:
         ./packages/cli/dist/bin/pipcook daemon start
     - name: pipcook sdk test
       run: |
-        npx ts-node ./run_tests.ts --cwd packages/sdk/
+        npx ts-node ./run_tests.ts
