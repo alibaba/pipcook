@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Divider, Timeline, Select, List, Icon, Form, Input, NumberPicker, Card, Grid } from '@alifd/next';
+import { Button, Divider, Timeline, Select, List, Loading, Icon, Form, Input, NumberPicker, Card, Grid } from '@alifd/next';
 import queryString from 'query-string';
 // import ReactJson from 'react-json-view';
 
@@ -12,12 +12,12 @@ import './index.scss';
 export default class PipelineDetail extends Component {
 
   state = {
-    isCreate: true,
+    loading: true,
     plugins: {},
     choices: pluginList,
     jobs: [],
     currentSelect: 'dataCollect',
-    pipelineId: null,
+    pipelineId: null
   }
 
   async componentDidMount() {
@@ -26,13 +26,12 @@ export default class PipelineDetail extends Component {
     if (params && params.pipelineId) {
       const id = params.pipelineId;
       const pipeline = await get(`/pipeline/info/${id}`);
-      console.log(pipeline);
       Object.keys(pipeline.plugins).forEach(
         key => pipeline.plugins[key].package = pipeline.plugins[key].name,
       );
 
       this.setState({
-        isCreate: false,
+        loading: false,
         plugins: pipeline.plugins,
         pipelineId: params.pipelineId
       });
@@ -240,6 +239,7 @@ export default class PipelineDetail extends Component {
         </div>
         <div className="content-wrapper">
           <div className="plugin-choose">
+            {this.state.loading && <Loading className="plugin-choose-loading" tip="fetching pipeline..." ></Loading>}
             <Timeline>
               {
                 PLUGINS.filter(({ id }) => {

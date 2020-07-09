@@ -21,6 +21,13 @@
     .plugin-choose {
       display: block;
       margin: 0 20px;
+      width: 300px;
+
+      .plugin-choose-loading {
+        width: 100%;
+        height: 200px;
+        text-align: center;
+      }
 
       .plugin-choose-title {
         font-size: 15px;
