@@ -14,7 +14,7 @@
     "compile": "tsc -b tsconfig.json"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/pipcook-core": "^1.0.1",
     "csv-parse": "^4.8.8",
