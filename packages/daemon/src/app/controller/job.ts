@@ -1,12 +1,12 @@
 import { Context, controller, inject, provide, get } from 'midway';
 import { successRes, failRes } from '../../utils/response';
-import { PipelineService } from '../../service/pipeline';
+import { PipelineService, PluginInfo } from '../../service/pipeline';
 import { parseConfig } from '../../runner/helper';
 import ServerSentEmitter from '../../utils/emitter';
 import { JobModel } from '../../model/job';
 import { PluginManager } from '../../service/plugin';
 import { createReadStream } from 'fs';
-
+import { PluginTypeI, PipelineStatus } from '@pipcook/pipcook-core';
 @provide()
 @controller('/job')
 export class JobController {
@@ -60,15 +60,18 @@ export class JobController {
         sse.finish();
       }
     } else {
-      try {
-        const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
+      const run = async () => {
+        let plugins: Partial<Record<PluginTypeI, PluginInfo>>;
+        try {
+          plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
+        } catch (err) {
+          job.status = PipelineStatus.FAIL;
+          job.error = err.message;
+          return await job.save();
+        }
         this.pipelineService.startJob(job, cwd, plugins);
-      } catch (err) {
-        return failRes(this.ctx, {
-          message: err?.message,
-          data: job
-        });
-      }
+      };
+      run();
       successRes(this.ctx, {
         message: 'create pipeline and jobs successfully',
         data: job
