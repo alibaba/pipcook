@@ -18,7 +18,7 @@ import {
   CondaConfig
 } from './index';
 
-import { get } from 'request-promise';
+import { get, RequestPromiseOptions } from 'request-promise';
 import Debug from 'debug';
 
 const debug = Debug('costa.runtime');
@@ -108,6 +108,58 @@ function createRequirements(name: string, config: CondaConfig): string[] {
   return deps;
 }
 
+// TODO(Yorkie): support save caches in disk?
+/**
+ * The HTTP Cache in memory.
+ */
+interface HTTPCache {
+  etag: string;
+  lastModified: string;
+  body: any;
+}
+
+/**
+ * `HTTPCache` with the uri key.
+ */
+const httpCacheByURI: Record<string, HTTPCache> = {};
+
+/**
+ * This function uses etag to cache the response body with `HTTPCache`, the cache key is
+ * the request uri. (This requires the requested server to support the etag cache control)
+ *
+ * @param uri The requested uri.
+ */
+async function requestHttpGetWithCache(uri: string): Promise<any> {
+  const cache = httpCacheByURI[uri];
+  const options: RequestPromiseOptions = {
+    timeout: 15000,
+    simple: false,
+    resolveWithFullResponse: true
+  };
+  if (cache?.body) {
+    options.headers = {
+      'Cache-Control': 'max-age=0',
+      'If-Modified-Since': cache?.lastModified,
+      'If-None-Match': cache?.etag ? `W/${cache.etag}` : undefined
+    };
+  }
+  const resp = await get(uri, options);
+  if (resp.statusCode === 200) {
+    const body = JSON.parse(resp.body);
+    httpCacheByURI[uri] = {
+      etag: resp.headers.etag,
+      lastModified: resp.headers['last-modified'],
+      body
+    };
+    return body;
+  } else if (resp.statusCode === 304) {
+    debug(`using cached response for ${uri}.`);
+    return cache.body;
+  } else {
+    throw new TypeError(resp.message);
+  }
+}
+
 export { PluginPackage } from './index';
 export { RunnableResponse } from './runnable';
 export {
@@ -143,10 +195,8 @@ export class CostaRuntime {
     if (source.from === 'npm') {
       debug(`requesting the url ${source.uri}`);
       // TODO(yorkie): support http cache
-      const resp = await get(source.uri, {
-        timeout: 15000
-      });
-      const meta = JSON.parse(resp) as NpmPackageMetadata;
+      const resp = await requestHttpGetWithCache(source.uri);
+      const meta = resp as NpmPackageMetadata;
       pkg = selectNpmPackage(meta, source);
     } else if (source.from === 'git') {
       debug(`requesting the url ${source.uri}...`);
