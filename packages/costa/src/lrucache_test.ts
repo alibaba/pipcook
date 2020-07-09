@@ -18,7 +18,7 @@ describe('test lru cache', () => {
   });
 
   it('should create an object lrucache', () => {
-    interface MO { id: string };
+    interface MO { id: string }
     const cache = new LRUCache<MO>(2);
     cache.put('m1', { id: '1' });
     expect(cache.get('m1').id).toEqual('1');

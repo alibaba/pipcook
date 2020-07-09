@@ -1,5 +1,5 @@
 export default class LruCache<T> {
-  private values: Map<string, T> = new Map<string, T>();
+  private values = new Map<string, T>();
   private maxEntries: number;
 
   constructor(maxEntries = 100) {
