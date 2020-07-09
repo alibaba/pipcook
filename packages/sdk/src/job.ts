@@ -19,6 +19,7 @@ export class Job {
     return jobs.rows;
   }
 
+  // TODO(feely): support remove by id
   /**
    * remove all jobs
    */
@@ -63,7 +64,7 @@ export class Job {
     return await get(`${this.route}/run`, prarms, { timeout: opts.timeout ? opts.timeout : 180 * 1000 });
   }
 
-  // TODO browser not work
+  // TODO(feely): browser not working
   /**
    * download model by job id
    * you should check the job status before downloading

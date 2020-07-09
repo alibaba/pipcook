@@ -1,4 +1,4 @@
-
+// TODO: move these defines to core or somewhere to share with daemon
 export interface JobModel {
   id: string;
   pipelineId: string;
@@ -34,8 +34,8 @@ export interface PipelineModel {
 
 export interface JobRunOption {
   pipelineId: string;
-  timeout: number;
-  tuna: boolean;
+  timeout?: number;
+  tuna?: boolean;
 }
 
 export interface PipelineInstallOption {

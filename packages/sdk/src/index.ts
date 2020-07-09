@@ -1,6 +1,7 @@
 import { Job } from './job';
 import { Pipeline } from './pipeline';
 export { JobStatus } from './utils';
+export { JobModel, PipelineModel, JobRunOption, PipelineInstallOption } from './interface';
 
 export class PipcookClient {
   pipeline: Pipeline;

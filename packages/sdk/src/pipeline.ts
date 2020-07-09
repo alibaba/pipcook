@@ -27,7 +27,7 @@ export class Pipeline {
   }
 
   /**
-   * create a pipeline by pipeline file
+   * create a pipeline by pipeline config object
    * @param config pipeline config
    * @param opts name: pipeline name
    */
@@ -52,7 +52,7 @@ export class Pipeline {
   }
 
   /**
-   * remove pipeline by id, if id is undefined or 'all', remove all
+   * remove pipeline by id, if the id is undefined or 'all', remove all
    * @param id pipline id or 'all'
    */
   async remove(id?: any): Promise<number> {
