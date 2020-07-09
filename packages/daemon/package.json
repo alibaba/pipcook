@@ -1,11 +1,11 @@
 {
   "name": "@pipcook/daemon",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "pipcook daemon",
   "dependencies": {
-    "@pipcook/app": "^1.0.1",
-    "@pipcook/costa": "^1.0.2",
-    "@pipcook/pipcook-core": "^1.0.1",
+    "@pipcook/app": "^1.0.3",
+    "@pipcook/costa": "^1.0.3",
+    "@pipcook/pipcook-core": "^1.0.3",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "cls-hooked": "^4.2.2",

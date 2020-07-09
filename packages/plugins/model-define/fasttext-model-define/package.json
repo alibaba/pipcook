@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-fasttext-model-define",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^1.0.1",
-    "@pipcook/pipcook-core": "^1.0.1"
+    "@pipcook/boa": "^1.0.3",
+    "@pipcook/pipcook-core": "^1.0.3"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
