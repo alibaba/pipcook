@@ -61,7 +61,11 @@ export class JobController {
         sse.finish();
       }
     } else {
-      const run = async () => {
+      successRes(this.ctx, {
+        message: 'create pipeline and jobs successfully',
+        data: job
+      }, 201);
+      process.nextTick(async () => {
         let plugins: Partial<Record<PluginTypeI, PluginInfo>>;
         try {
           plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
@@ -71,12 +75,7 @@ export class JobController {
           return job.save();
         }
         this.pipelineService.startJob(job, cwd, plugins);
-      };
-      run();
-      successRes(this.ctx, {
-        message: 'create pipeline and jobs successfully',
-        data: job
-      }, 201);
+      });
     }
   }
 
