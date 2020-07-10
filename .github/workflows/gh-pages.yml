@@ -17,6 +17,13 @@ jobs:
           node_modules
           */*/node_modules
         key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json') }}
+      - name: restore miniconda
+        uses: actions/cache@v2
+        with:
+          path: |
+            */*/.miniconda
+            */*/Miniconda3-latest*.sh
+          key: ${{ runner.os }}-miniconda
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
