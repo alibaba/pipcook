@@ -63,7 +63,7 @@ export class JobController {
     } else {
       process.nextTick(async () => {
         try {
-          let plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
+          const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
           this.pipelineService.startJob(job, cwd, plugins);
         } catch (err) {
           job.status = PipelineStatus.FAIL;
