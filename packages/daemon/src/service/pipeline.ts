@@ -42,7 +42,7 @@ interface GenerateOptions {
 
 type QueryParams = { id: string, name?: string } | { id?: string, name: string };
 
-export interface PluginInfo {
+interface PluginInfo {
   plugin: PluginPackage;
   params: string;
 }
