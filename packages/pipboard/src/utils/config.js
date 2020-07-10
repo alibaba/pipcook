@@ -94,11 +94,13 @@ export const JOB_MAP = [
       let result = null;
       if (record.evaluateMap) {
         result = JSON.parse(record.evaluateMap);
-        result.pass = undefined;
+        if (result?.pass) {
+          result.pass = undefined;
+        }
       } else {
         return <span>no result</span>;
       }
-      if (record.evaluatePass) {
+      if (record.evaluatePass || record.evaluateMap) {
         const content = JSON.stringify(result, null, 2);
         const onClick = () => {
           Dialog.show({
