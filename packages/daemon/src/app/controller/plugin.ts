@@ -12,7 +12,7 @@ export class PluginController {
   @inject()
   ctx: Context;
 
-  @inject('PluginManager')
+  @inject('pluginManager')
   pluginManager: PluginManager;
 
   @get('/install')
