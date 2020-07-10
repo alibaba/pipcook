@@ -61,10 +61,6 @@ export class JobController {
         sse.finish();
       }
     } else {
-      successRes(this.ctx, {
-        message: 'create pipeline and jobs successfully',
-        data: job
-      }, 201);
       process.nextTick(async () => {
         let plugins: Partial<Record<PluginTypeI, PluginInfo>>;
         try {
@@ -76,6 +72,10 @@ export class JobController {
         }
         this.pipelineService.startJob(job, cwd, plugins);
       });
+      successRes(this.ctx, {
+        message: 'create pipeline and jobs successfully',
+        data: job
+      }, 201);
     }
   }
 
