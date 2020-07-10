@@ -23,7 +23,7 @@ export default class DB {
     Sequelize.useCLS(cls.createNamespace('pipcook-cls'));
     const sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: CoreConstants.PIPCOOK_STORAGE
+      storage: process.env.PIPCOOK_STORAGE || CoreConstants.PIPCOOK_STORAGE
     });
     await sequelize.sync();
     this.sequelize = sequelize;
