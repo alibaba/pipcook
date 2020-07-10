@@ -3,25 +3,36 @@ import { ImageDataset, ModelTrainType, UniModel, ModelTrainArgsType, ImageDataLo
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import Jimp from 'jimp';
 
+async function dataIterator(dataLoader: ImageDataLoader, labelMap: {
+  [key: string]: number;
+}): Promise<any> {
+  const count = await dataLoader.len();
+  return (): AsyncIterator<tf.TensorContainer> => {
+    let index = 0;
+    return {
+      async next(): Promise<IteratorResult<tf.TensorContainer>> {
+        if (index >= count) {
+          return { value: null, done: true };
+        }
+        const currentData = await dataLoader.getItem(index);
+        const image = await Jimp.read(currentData.data);
+        const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
+        const imageArray = new Uint8Array(trainImageBuffer);
+        const label: number = currentData.label.categoryId;
+        index++;
+        return { value: tf.tidy(() => ({
+          xs: tf.tidy(() => tf.cast(tf.node.decodeImage(imageArray, 3), 'float32')),
+          ys: tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(labelMap).length))
+        })), done: false };
+      }
+    };
+  };
+}
+
 async function createDataset(dataLoader: ImageDataLoader, labelMap: {
   [key: string]: number;
 }) {
-  let dataFlows: any = [];
-  const count = await dataLoader.len();
-  for (let i = 0; i < count; i++) {
-    const currentData = await dataLoader.getItem(i);
-    let image = await Jimp.read(currentData.data);
-    const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
-    const imageArray = new Uint8Array(trainImageBuffer);
-    let label: number = currentData.label.categoryId;
-    let ys: tf.Tensor<tf.Rank>;
-    ys = tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(labelMap).length));
-    dataFlows.push(tf.tidy(() => ({
-      xs: tf.tidy(() => tf.cast(tf.node.decodeImage(imageArray, 3), 'float32')),
-      ys
-    })));
-  }
-  return tf.data.array(dataFlows);
+  return tf.data.generator(await dataIterator(dataLoader, labelMap));
 }
 
 /**
