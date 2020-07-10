@@ -18,7 +18,7 @@ export class PipelineController {
   @inject('pipelineService')
   pipelineService: PipelineService;
 
-  @inject('PluginManager')
+  @inject('pluginManager')
   pluginManager: PluginManager;
 
   @post('')
