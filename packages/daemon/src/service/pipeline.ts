@@ -73,7 +73,7 @@ export class PipelineService {
   @inject('jobModel')
   job: JobModelStatic;
 
-  @inject('PluginManager')
+  @inject('pluginManager')
   pluginManager: PluginManager;
 
   createPipeline(config: PipelineDB): Promise<PipelineModel> {

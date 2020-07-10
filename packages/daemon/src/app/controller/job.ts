@@ -16,7 +16,7 @@ export class JobController {
   @inject('pipelineService')
   pipelineService: PipelineService;
 
-  @inject('PluginManager')
+  @inject('pluginManager')
   pluginManager: PluginManager;
 
   @get('/run')
