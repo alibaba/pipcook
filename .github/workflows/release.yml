@@ -12,6 +12,14 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - name: restore lerna
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
