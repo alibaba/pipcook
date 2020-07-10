@@ -15,4 +15,4 @@ const r = new PluginRunnable(costa);
 (async () => {
   await r.bootstrap({});
   r.destroy();
-})()
+})();
