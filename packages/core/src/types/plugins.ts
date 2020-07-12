@@ -175,6 +175,17 @@ export interface ModelDefineType extends PipcookPlugin {
 }
 
 /**
+ * The `ModelInferenceType` is used to define model inferencing.
+ *
+ * @param recoverPath The model path to load.
+ * @param dataset The `UniDataset` to be trained, in this plugin, you could fetch some metadata.
+ * @returns an `UniModel` instance.
+ */
+export interface ModelInferenceType extends PipcookPlugin {
+  (recoverPath: string, dataset: UniDataset): Promise<any>;
+}
+
+/**
  * The `ModelTrainType` plugin is used to train the model. This interface provides the ability
  * to configure basic parameters of the training model, but these parameters should not be
  * required, allows plugin developers to define the appropriate hyper-parameters within the plugin.

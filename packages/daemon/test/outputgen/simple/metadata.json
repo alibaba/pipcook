@@ -1,0 +1,26 @@
+{
+  "cwd": "./",
+  "pipeline": {
+    "id": "foobar",
+    "name": null,
+    "dataProcess": "./own-data-process",
+    "dataProcessParams": null,
+    "modelDefine": "./own-model-define",
+    "modelDefineParams": "{}",
+    "createdAt": "2020-07-15T02:30:05.534Z",
+    "updatedAt": "2020-07-15T02:30:05.534Z"
+  },
+  "output": {
+    "id": "foobar",
+    "pipelineId": "foobar",
+    "specVersion": "1.0.3",
+    "status": 2,
+    "currentIndex": -1,
+    "updatedAt": "2020-07-15T02:30:29.466Z",
+    "createdAt": "2020-07-15T02:30:05.546Z",
+    "evaluateMap": "{\"pass\":true,\"accuracy\":0.927570093457944}",
+    "evaluatePass": true,
+    "endTime": 1594780229435,
+    "dataset": "{\"feature\":{\"names\":[\"test\"]}}"
+  }
+}
