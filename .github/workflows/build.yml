@@ -44,7 +44,7 @@ jobs:
         npm test
     - uses: actions/upload-artifact@v2
       with:
-        name: pipcook-artifact-${{ GITHUB_SHA }}
+        name: pipcook-artifact-${{ github.sha }}
         path: ${{ github.workspace }}
   pipeline:
     name: Run the pipeline on ${{ matrix.os }}
