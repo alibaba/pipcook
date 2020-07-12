@@ -1,40 +1,40 @@
-name: gh-pages
+# name: gh-pages
 
-on:
-  push:
-    branches:
-      - master
+# on:
+#   push:
+#     branches:
+#       - master
 
-jobs:
-  deployment:
-    runs-on: macOS-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: restore lerna
-      uses: actions/cache@v2
-      with:
-        path: |
-          node_modules
-          */*/node_modules
-        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json') }}
-      - name: restore miniconda
-        uses: actions/cache@v2
-        with:
-          path: |
-            */*/.miniconda
-            */*/Miniconda3-latest*.sh
-          key: ${{ runner.os }}-miniconda
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Build documentation
-        run: |
-          npm install
-          npm run typedoc
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_SECRET_TOKEN }}
-          publish_dir: ./docs
-          publish_branch: gh-pages
+# jobs:
+#   deployment:
+#     runs-on: macOS-latest
+#     steps:
+#       - uses: actions/checkout@v1
+#       - name: restore lerna
+#       uses: actions/cache@v2
+#       with:
+#         path: |
+#           node_modules
+#           */*/node_modules
+#         key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json') }}
+#       - name: restore miniconda
+#         uses: actions/cache@v2
+#         with:
+#           path: |
+#             */*/.miniconda
+#             */*/Miniconda3-latest*.sh
+#           key: ${{ runner.os }}-miniconda
+#       - name: Use Node.js
+#         uses: actions/setup-node@v1
+#         with:
+#           node-version: 12
+#       - name: Build documentation
+#         run: |
+#           npm install
+#           npm run typedoc
+#       - name: Deploy to GitHub Pages
+#         uses: peaceiris/actions-gh-pages@v3
+#         with:
+#           github_token: ${{ secrets.GITHUB_SECRET_TOKEN }}
+#           publish_dir: ./docs
+#           publish_branch: gh-pages

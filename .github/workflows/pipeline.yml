@@ -1,44 +1,44 @@
-name: pipeline
-on:
-  schedule:
-  - cron: "0 2 * * *"
+# name: pipeline
+# on:
+#   schedule:
+#   - cron: "0 2 * * *"
 
-jobs:
-  universal:
-    name: Run ${{ matrix.pipeline }} on node ${{ matrix.node_version }} and ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node_version: ['12']
-        os: [ubuntu-latest]
-        pipeline: ['mnist-image-classification', 'databinding-image-classification', 'text-bayes-classification', 'fasttext']
-    steps:
-    - uses: actions/checkout@v1
-    - name: restore lerna
-      uses: actions/cache@v2
-      with:
-        path: |
-          node_modules
-          */*/node_modules
-        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json') }}
-    - name: restore miniconda
-      uses: actions/cache@v2
-      with:
-        path: |
-          */*/.miniconda
-          */*/Miniconda3-latest*.sh
-        key: ${{ runner.os }}-miniconda
-    - name: Using Node.js ${{ matrix.node_version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node_version }}
-    - name: install
-      run: npm install
-    - name: compile
-      run: npm run build
-    - name: initilize pipcook
-      env:
-        NODE_ENV: local
-      run: ./packages/cli/dist/bin/pipcook init
-    - name: pipeline
-      run: npm run test:pipeline -- ${{ matrix.pipeline }}
+# jobs:
+#   universal:
+#     name: Run ${{ matrix.pipeline }} on node ${{ matrix.node_version }} and ${{ matrix.os }}
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         node_version: ['12']
+#         os: [ubuntu-latest]
+#         pipeline: ['mnist-image-classification', 'databinding-image-classification', 'text-bayes-classification', 'fasttext']
+#     steps:
+#     - uses: actions/checkout@v1
+#     - name: restore lerna
+#       uses: actions/cache@v2
+#       with:
+#         path: |
+#           node_modules
+#           */*/node_modules
+#         key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json') }}
+#     - name: restore miniconda
+#       uses: actions/cache@v2
+#       with:
+#         path: |
+#           */*/.miniconda
+#           */*/Miniconda3-latest*.sh
+#         key: ${{ runner.os }}-miniconda
+#     - name: Using Node.js ${{ matrix.node_version }}
+#       uses: actions/setup-node@v1
+#       with:
+#         node-version: ${{ matrix.node_version }}
+#     - name: install
+#       run: npm install
+#     - name: compile
+#       run: npm run build
+#     - name: initilize pipcook
+#       env:
+#         NODE_ENV: local
+#       run: ./packages/cli/dist/bin/pipcook init
+#     - name: pipeline
+#       run: npm run test:pipeline -- ${{ matrix.pipeline }}
