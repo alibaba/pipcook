@@ -45,6 +45,16 @@ export class JobController {
     );
   }
 
+  @get('/restart')
+  public async restart() {
+    const { jobId, cwd, pyIndex } = this.ctx.request.query;
+    const job = await this.pipelineService.getJobById(jobId);
+    if (!job) {
+      throw new TypeError(`the job(${jobId}) not exists.`);
+    }
+    await this.runJobWithContext(job, cwd, false, pyIndex);
+  }
+
   private async runJobWithContext(job: JobModel, cwd: string, verbose: boolean, pyIndex: string) {
     if (verbose) {
       const sse = new ServerSentEmitter(this.ctx);

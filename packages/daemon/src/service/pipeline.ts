@@ -302,15 +302,17 @@ export class PipelineService {
     }
   }
 
-  stopJob(id: string): boolean {
-    const runnable = runnableMap[id];
-    if (runnable) {
-      runnable.destroy();
-      delete runnableMap[id];
-      return true;
-    } else {
-      return false;
+  async stopJob(id: string): Promise<boolean> {
+    // update the job state
+    const job = await this.getJobById(id);
+    if (job) {
+      job.status = PipelineStatus.FAIL;
+      job.error = 'stoped';
+      await job.save();
     }
+    // stopping runnable.
+    const runnable = runnableMap[id];
+    return runnable ? true : false;
   }
 
   /**

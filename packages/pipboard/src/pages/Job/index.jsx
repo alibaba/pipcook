@@ -80,9 +80,6 @@ export default class JobPage extends Component {
           className="pagination-wrapper" 
           onChange={this.changePage}
         />
-        <div className="job-create-container" onClick={() => location.href = 'index.html#/job/info'}>
-          <Icon className="job-create" type="add" size="large" />
-        </div>
       </div>
     );
   }

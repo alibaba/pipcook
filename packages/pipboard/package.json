@@ -15,6 +15,7 @@
     "codemirror": "^5.52.2",
     "enquire-js": "^0.1.2",
     "jimp": "^0.10.0",
+    "luxon": "^1.24.1",
     "prop-types": "^15.5.8",
     "query-string": "^6.12.1",
     "react": "^16.4.1",

@@ -1,4 +1,5 @@
 import React from 'react';
+import { DateTime, Interval } from 'luxon';
 import { Button, Dialog, Tag } from '@alifd/next';
 
 /**
@@ -80,7 +81,10 @@ export const PIPELINE_MAP = [
   },
   {
     name: 'Created At',
-    field: 'createdAt',
+    cell: (value, index, record) => {
+      const date = DateTime.fromFormat(record.createdAt, 'M/d/yyyy, h:m:s a');
+      return <span>{date.toRelative()}</span>;
+    },
     width: 50,
     sortable: true,
   },
@@ -148,7 +152,14 @@ export const JOB_MAP = [
   {
     name: 'End Time',
     width: 100,
-    field: 'endTime',
+    cell: (value, index, { endTime }) => {
+      if (endTime === '1/1/1970, 8:00:00 AM') {
+        return <span>-</span>;
+      } else {
+        const date = DateTime.fromFormat(endTime, 'M/d/yyyy, h:m:s a');
+        return <span>{date.toRelative()}</span>;
+      }
+    }
   },
   {
     name: 'Model',

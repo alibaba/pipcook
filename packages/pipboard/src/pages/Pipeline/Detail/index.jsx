@@ -276,8 +276,8 @@ export default class PipelineDetail extends Component {
           <div className="plugin-operate">
             <List className="plugin-operate-jobs" size="small" header={
               <div className="plugin-operate-jobs-header">
-                Jobs
-                <Select defaultValue="all">
+                Jobs({jobs.length})
+                <Select defaultValue="all" disabled>
                   {PIPELINE_STATUS.map((status) => {
                     return <Select.Option key={status} value={status}>{status}</Select.Option>;
                   })}

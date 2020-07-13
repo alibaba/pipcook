@@ -54,8 +54,9 @@
     }
 
     .job-outputs {
+      display: flex;
       flex: 1;
-      overflow-x: scroll;
+      overflow-x: hidden;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-shadow: 0 0 0 3px #ddd;
@@ -63,10 +64,21 @@
       padding: 10px;
       font-size: 15px;
 
+      .job-outputs-box {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .next-tabs-content {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        overflow-x: scroll;
+      }
+
       .job-logview {
+        flex-direction: column;
         width: auto;
-        min-height: 450px;
-        overflow: scroll;
         margin-bottom: 0;
       }
     }

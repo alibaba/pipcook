@@ -94,16 +94,22 @@ export default class JobDetailPage extends Component {
   }
 
   restart = async () => {
-    // const { pipelineId } = this.state;
-    // const job = await get('/job/run', {
-    //   params: {
-    //     pipelineId, 
-    //     cwd: CWD,
-    //   },
-    // });
-    // this.setState({
-    //   jobId: job.id,
-    // });
+    const { jobId } = this.state;
+    const job = await get('/job/restart', {
+      params: {
+        jobId, 
+        cwd: CWD,
+      },
+    });
+    location.reload();
+  }
+
+  stop = async () => {
+    const { jobId } = this.state;
+    const job = await get('/job/stop', {
+      params: { id: jobId }
+    });
+    messageSuccess('job is not running.');
   }
 
   render() {
@@ -153,7 +159,8 @@ export default class JobDetailPage extends Component {
               <Button size="medium" type="secondary"
                 onClick={this.restart}>Restart</Button>
               <Button size="medium" warning
-                onClick={this.stopJob}>Stop</Button>
+                disabled={!job || job.status > 1}
+                onClick={this.stop}>Stop</Button>
             </div>
             <Divider />
             <div className="plugin-choose-actions">
@@ -161,7 +168,7 @@ export default class JobDetailPage extends Component {
             </div>
           </div>
           <div className="job-outputs">
-            <Tab>
+            <Tab className="job-outputs-box">
               <Tab.Item title="stdout">{renderLogView(job?.stdout)}</Tab.Item>
               <Tab.Item title="stderr">{renderLogView(job?.stderr)}</Tab.Item>
               <Tab.Item title="dataset"><pre className="job-logview">{job?.dataset}</pre></Tab.Item>
