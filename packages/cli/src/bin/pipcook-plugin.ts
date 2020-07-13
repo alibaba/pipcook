@@ -62,8 +62,7 @@ async function upload(localPluginsPath: string, opts: any): Promise<void> {
     spinner.fail(`read package.json error: ${err.message}`);
     process.exit(1);
   }
-  const awagnOpts: SpawnOptionsWithoutStdio = { cwd: localPluginsPath };
-  const output = spawnSync('npm', [ 'pack' ], awagnOpts);
+  const output = spawnSync('npm', [ 'pack' ], { cwd: localPluginsPath });
   let tarball: string;
   if (output.status !== 0) {
     spinner.fail(output.stderr.toString());
