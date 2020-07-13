@@ -3,7 +3,8 @@ import { CostaRuntime } from './runtime';
 import { PluginPackage } from '.';
 import { stat } from 'fs-extra';
 
-console.log(process.env.NODE_ENV);
+const INSTALL_SPECS_TIMEOUT = 180 * 1000;
+
 describe('create a costa runtime', () => {
   const costa = new CostaRuntime({
     installDir: path.join(__dirname, '../.tests/plugins'),
@@ -24,7 +25,20 @@ describe('create a costa runtime', () => {
       'node_modules',
       collectCsv.name
     ));
-  }, 180 * 1000);
+  }, INSTALL_SPECS_TIMEOUT);
+
+  it('should fetch a python plugin and install fron local', async () => {
+    const bayesClassifier = await costa.fetch('../plugins/model-define/bayesian-model-define');
+    expect(bayesClassifier.name).toBe('@pipcook/plugins-bayesian-model-define');
+    expect(bayesClassifier.pipcook.category).toBe('modelDefine');
+    await costa.install(bayesClassifier);
+    // make sure js packages are installed.
+    await stat(path.join(costa.options.installDir, 'node_modules', bayesClassifier.name));
+    // make sure python packages are installed.
+    await stat(path.join(costa.options.installDir, 'conda_envs', `${bayesClassifier.name}@${bayesClassifier.version}`));
+    // make sure python caches are used.
+    await stat(path.join(costa.options.installDir, '.pip/selfcheck.json'));
+  }, INSTALL_SPECS_TIMEOUT);
 
   it('should fetch a plugin and install from tarball', async () => {
     const collectCsvWithSpecificVer = await costa.fetch('https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-0.5.8.tgz');
@@ -36,7 +50,7 @@ describe('create a costa runtime', () => {
       'node_modules',
       collectCsvWithSpecificVer.name
     ));
-  }, 180 * 1000);
+  }, INSTALL_SPECS_TIMEOUT);
 
   it('should fetch a plugin from npm', async () => {
     const collectCsvWithSpecificVer = await costa.fetch('@pipcook/plugins-csv-data-collect@0.5.8');
@@ -62,7 +76,7 @@ describe('create a costa runtime', () => {
       'node_modules',
       collectCsv.name
     ));
-  }, 180 * 1000);
+  }, INSTALL_SPECS_TIMEOUT);
 
   it('should install the package with conda packages', async () => {
     const bayesClassifier = await costa.fetch('../plugins/model-define/bayesian-model-define');
@@ -77,7 +91,7 @@ describe('create a costa runtime', () => {
       'conda_envs',
       `${bayesClassifier.name}@${bayesClassifier.version}`
     ));
-  }, 180 * 1000);
+  }, INSTALL_SPECS_TIMEOUT);
 
   it('should start the package', async () => {
     const runnable = await costa.createRunnable({ id: 'foobar' });
@@ -86,5 +100,5 @@ describe('create a costa runtime', () => {
       url: 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip'
     });
     await runnable.destroy();
-  }, 180 * 1000);
+  }, INSTALL_SPECS_TIMEOUT);
 });
