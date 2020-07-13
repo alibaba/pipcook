@@ -13,12 +13,30 @@ describe('create a costa runtime', () => {
   });
   let collectCsv: PluginPackage;
 
-  it('should fetch a plugin and install', async () => {
+  it('should fetch a plugin and install from local', async () => {
     collectCsv = await costa.fetch('../plugins/data-collect/csv-data-collect');
     expect(collectCsv.name).toBe('@pipcook/plugins-csv-data-collect');
     expect(collectCsv.pipcook.datatype).toBe('text');
     expect(collectCsv.pipcook.category).toBe('dataCollect');
-  });
+    await costa.install(collectCsv);
+    await stat(path.join(
+      costa.options.installDir,
+      'node_modules',
+      collectCsv.name
+    ));
+  }, 180 * 1000);
+
+  it('should fetch a plugin and install from tarball', async () => {
+    const collectCsvWithSpecificVer = await costa.fetch('https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-0.5.8.tgz');
+    expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-csv-data-collect');
+    expect(collectCsvWithSpecificVer.version).toBe('0.5.8');
+    await costa.install(collectCsvWithSpecificVer);
+    await stat(path.join(
+      costa.options.installDir,
+      'node_modules',
+      collectCsvWithSpecificVer.name
+    ));
+  }, 180 * 1000);
 
   it('should fetch a plugin from npm', async () => {
     const collectCsvWithSpecificVer = await costa.fetch('@pipcook/plugins-csv-data-collect@0.5.8');

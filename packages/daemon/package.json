@@ -1,11 +1,11 @@
 {
   "name": "@pipcook/daemon",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "pipcook daemon",
   "dependencies": {
-    "@pipcook/app": "^1.0.0",
-    "@pipcook/costa": "^1.0.0",
-    "@pipcook/pipcook-core": "^1.0.0",
+    "@pipcook/app": "^1.0.3",
+    "@pipcook/costa": "^1.0.3",
+    "@pipcook/pipcook-core": "^1.0.3",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "cls-hooked": "^4.2.2",
@@ -16,7 +16,6 @@
     "glob-promise": "^3.4.0",
     "midway": "^1.19.0",
     "request-promise": "^4.2.5",
-    "rxjs": "^6.5.3",
     "sequelize": "^5.21.7",
     "sqlite3": "^4.1.1",
     "ssestream": "^1.1.0",

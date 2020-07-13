@@ -7,9 +7,14 @@ process.on('unhandledRejection', (e) => {
   throw e;
 });
 
+let spec: string[] = undefined;
+const indexSpec = process.argv.indexOf('--spec');
+if (indexSpec !== -1 && process.argv[indexSpec + 1]) {
+  spec = [ process.argv[indexSpec + 1] ];
+}
 const runner = new JasmineCtor();
 runner.loadConfig({
-  spec_files: [ 'src/**/*_test.ts' ],
+  spec_files: spec || [ 'src/**/*_test.ts', 'test/**/*.ts' ],
   random: false
 });
 runner.clearReporters();

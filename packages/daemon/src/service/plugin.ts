@@ -19,7 +19,7 @@ interface ListPluginsFilter {
   category?: string;
 }
 
-@provide('PluginManager')
+@provide('pluginManager')
 export class PluginManager {
 
   @inject('pluginModel')
