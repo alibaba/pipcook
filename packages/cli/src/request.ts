@@ -1,6 +1,8 @@
 import * as qs from 'querystring';
 import axios from 'axios';
+import fs from 'fs';
 import EventSource from 'eventsource';
+import FormData from 'form-data';
 import { ora } from './utils';
 
 export type RequestParams = Record<string, any>;
@@ -40,6 +42,25 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Nod
     responseType: 'stream'
   });
   return resp.data as NodeJS.ReadStream;
+};
+
+export const uploadFile = async (host: string, file: string, params?: RequestParams): Promise<any> => {
+  let stream = fs.createReadStream(file);
+  const form = new FormData();
+  form.append('media', stream);
+
+  let getHeaders = (form: FormData): Promise<FormData.Headers> => {
+    return new Promise((resolve, reject) => {
+      form.getLength((err, length) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(Object.assign({ 'Content-Length': length }, form.getHeaders()));
+      });
+    });
+  };
+  const headers = await getHeaders(form);
+  return axios.post(host, form, { headers });
 };
 
 export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {

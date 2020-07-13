@@ -1,4 +1,4 @@
-import { Context, controller, inject, provide, get } from 'midway';
+import { Context, controller, inject, provide, get, post } from 'midway';
 import { successRes } from '../../utils/response';
 import { PluginManager } from '../../service/plugin';
 import ServerSentEmitter from '../../utils/emitter';
@@ -8,7 +8,6 @@ const debug = Debug('daemon.app.plugin');
 @provide()
 @controller('/plugin')
 export class PluginController {
-
   @inject()
   ctx: Context;
 
@@ -47,5 +46,36 @@ export class PluginController {
       category: this.ctx.query.category
     });
     successRes(this.ctx, { data: plugins });
+  }
+
+  @post('/upload')
+  public async upload() {
+    const fs = await this.ctx.getFileStream();
+    const id = await this.pluginManager.installFromTarStream(fs);
+    successRes(this.ctx, { id });
+  }
+
+  @get('/log')
+  public async log() {
+    const logStream = await this.pluginManager.getInstallLogStream(this.ctx.query.id);
+    const sse = new ServerSentEmitter(this.ctx);
+    if (logStream) {
+      await new Promise(() => {
+        logStream.on('data', data => {
+          sse.emit('info', data.toString());
+        });
+        logStream.on('end', () => {
+          sse.emit('finished', undefined);
+        });
+        // FIXME(feely): it's not working, stream end first, then trigger the error event
+        logStream.on('error', err => {
+          sse.emit('error', err);
+        });
+      });
+      sse.finish();
+    } else {
+      sse.emit('error', 'no log found');
+      sse.finish();
+    }
   }
 }
