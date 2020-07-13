@@ -124,7 +124,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
       recv(PluginOperator.WRITE);
     }
   } catch (err) {
-    recv(PluginOperator.WRITE, 'error', err?.message);
+    recv(PluginOperator.WRITE, 'error', err?.stack);
   }
 }
 

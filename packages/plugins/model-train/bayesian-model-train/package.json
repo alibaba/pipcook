@@ -14,7 +14,7 @@
     "compile": "tsc -b tsconfig.json && cp -r ./src/assets ./dist/"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "dependencies": {
     "@pipcook/boa": "^1.0.3",
     "@pipcook/pipcook-core": "^1.0.3",
@@ -39,7 +39,7 @@
     "python": "3.7",
     "dependencies": {
       "jieba": "*",
-      "sklearn": "*"
+      "scikit-learn": "*"
     }
   }
 }
