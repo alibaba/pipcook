@@ -16,8 +16,11 @@ export default (appInfo: EggAppInfo) => {
   config.keys = appInfo.name + '_1587976396334_3860';
 
   // add your config here
-  config.middleware = [
-  ];
+  config.middleware = [];
+  config.cors = {
+    origin: '*',
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
+  };
 
   config.security = {
     csrf: {

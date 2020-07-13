@@ -31,6 +31,11 @@
   },
   "pipcook": {
     "category": "dataAccess",
-    "datatype": "text"
+    "datatype": "text",
+    "params": [{
+      "name": "labelColumn",
+      "type": "string",
+      "description": "which column in the csv file will be used for label."
+    }]
   }
 }

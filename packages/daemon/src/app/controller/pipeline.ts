@@ -129,7 +129,10 @@ export class PipelineController {
         updatePluginNode('modelEvaluate')
       ]);
 
-      // update the `name` node
+      // update the `id` node.
+      json.id = pipeline.id;
+
+      // update the `name` node.
       if (pipeline.name) {
         json.name = pipeline.name;
       }

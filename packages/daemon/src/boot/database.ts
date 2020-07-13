@@ -1,12 +1,12 @@
 import { Sequelize } from 'sequelize';
 import * as cls from 'cls-hooked';
-import * as sqlite3 from 'sqlite3';
+// import * as sqlite3 from 'sqlite3';
 import { scope, ScopeEnum, provide, async, init } from 'midway';
 import { ensureDir } from 'fs-extra';
 import { dirname } from 'path';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 
-sqlite3.verbose();
+// sqlite3.verbose();
 
 @scope(ScopeEnum.Singleton)
 @async()

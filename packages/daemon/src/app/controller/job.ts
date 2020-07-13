@@ -113,7 +113,7 @@ export class JobController {
   }
 
   @get('/:id/log')
-  public async viewLog() {
+  public async openlog() {
     const { ctx } = this;
     const { id } = ctx.params;
     try {

@@ -5,8 +5,7 @@ import queryString from 'query-string';
 
 import { messageError, messageSuccess } from '@/utils/message';
 import { PLUGINS, pluginList, PIPELINE_STATUS } from '@/utils/config';
-import { get, post, put } from '@/utils/request';
-import { addUrlParams } from '@/utils/common';
+import { get, put } from '@/utils/request';
 import './index.scss';
 
 export default class PipelineDetail extends Component {
@@ -26,6 +25,12 @@ export default class PipelineDetail extends Component {
     if (params && params.pipelineId) {
       const id = params.pipelineId;
       const pipeline = await get(`/pipeline/info/${id}`);
+      if (!pipeline) {
+        messageError('timeout to request the pipeline and plugins.');
+        this.setState({ loading: false });
+        return;
+      }
+
       Object.keys(pipeline.plugins).forEach(
         key => pipeline.plugins[key].package = pipeline.plugins[key].name,
       );
@@ -82,24 +87,16 @@ export default class PipelineDetail extends Component {
     }
   }
 
-  runJob = async () => {
-    const { isCreate, pipelineId } = this.state;
-    if (isCreate) {
-      messageError('Please Create Pipeline Firstly');
-      return;
-    }
+  startJob = async () => {
+    const { pipelineId } = this.state;
     await this.savePipeline(false);
     const job = await get('/job/run', {
       params: {
-        pipelineId, 
+        pipelineId,
         cwd: CWD,
       },
     });
-    this.setState({
-      jobId: job.id,
-    });
-    addUrlParams(`jobId=${job.id}`);
-    // await this.fetchJob(job.id);
+    location.href = `#/job/info?jobId=${job.id}`;
   }
 
   deletePipeline = async () => {
@@ -265,20 +262,12 @@ export default class PipelineDetail extends Component {
             </Timeline>
             <Divider />
             <div className="plugin-choose-actions">
-              <Button 
-                className="button"
-                size="medium" 
-                type="secondary" 
-                onClick={this.savePipeline}>
-                {isCreate ? 'Create' : 'Save'}
-              </Button>
-              <Button 
-                className="button" 
-                size="medium" 
-                type="secondary" 
-                onClick={this.runJob}>Start
-              </Button>
-              <Button className="button" size="medium" onClick={this.deletePipeline} warning>Delete</Button>
+              <Button size="medium" type="secondary"
+                onClick={this.savePipeline}>Save</Button>
+              <Button size="medium" type="secondary"
+                onClick={this.startJob}>Start</Button>
+              <Button size="medium" warning
+                onClick={this.deletePipeline}>Delete</Button>
             </div>
           </div>
           <div className="plugin-config">
@@ -305,10 +294,13 @@ export default class PipelineDetail extends Component {
                 } else if (job.status === 2) {
                   description = <div>
                     <Icon type="success" size="small" />
-                    <Button size="small">download the model</Button>
+                    <Button size="small">download output</Button>
                   </div>;
+                } else if (job.status === 3) {
+                  description = 'failed';
                 }
-                return <List.Item title={`${job.createdAt}`} key={job.id}>{description}</List.Item>;
+                const titleNode = <a href={`#/job/info?jobId=${job.id}`}>{job.createdAt}</a>;
+                return <List.Item title={titleNode} key={job.id}>{description}</List.Item>;
               })}
             </List>
           </div>

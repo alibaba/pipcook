@@ -48,7 +48,8 @@
     }
 
     .plugin-config {
-      flex-grow: 1;
+      flex: 1;
+      overflow-x: scroll;
       min-height: 500px;
       border: 1px solid #ccc;
       border-radius: 4px;
@@ -60,7 +61,7 @@
 
     .plugin-operate {
       display: flex;
-      width: 320px;
+      width: 260px;
       flex-direction: column;
       position: relative;
       margin-top: 10px;

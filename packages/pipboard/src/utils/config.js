@@ -91,7 +91,7 @@ export const JOB_MAP = [
     name: 'ID',
     width: 50,
     cell: (value, index, record) => {
-      return <a href={`/index.html#/pipeline/info?pipelineId=${record.pipelineId}&jobId=${record.id}`}>
+      return <a href={`/index.html#/job/info?jobId=${record.id}`}>
         {record.id.replace(/-/g, '').slice(0, 12)}
       </a>;
     },

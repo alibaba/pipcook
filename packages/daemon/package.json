@@ -11,6 +11,7 @@
     "cls-hooked": "^4.2.2",
     "debug": "^4.1.1",
     "egg": "^2.26.1",
+    "egg-cors": "^2.2.3",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
@@ -19,6 +20,7 @@
     "sequelize": "^5.21.7",
     "sqlite3": "^4.1.1",
     "ssestream": "^1.1.0",
+    "tailing-stream": "^0.2.0",
     "uuid": "^8.0.0",
     "uuid-validate": "^0.0.3"
   },

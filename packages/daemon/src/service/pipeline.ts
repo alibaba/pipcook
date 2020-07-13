@@ -16,10 +16,14 @@ import {
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
+// no types
+const TailingReadableStream = require('tailing-stream');
+
 import { RunParams } from '../interface';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
+import { Readable } from 'stream';
 
 interface QueryOptions {
   limit: number;
@@ -128,7 +132,10 @@ export class PipelineService {
 
   async getJobById(id: string): Promise<JobModel> {
     return this.job.findOne({
-      where: { id }
+      where: { id },
+      include: [
+        { all: true }
+      ]
     });
   }
 
@@ -369,6 +376,15 @@ export class PipelineService {
     return [
       await fs.readFile(stdout, 'utf8'),
       await fs.readFile(stderr, 'utf8')
+    ];
+  }
+
+  getLogStreamById(id: string): Readable[] {
+    const stdout = path.join(CoreConstants.PIPCOOK_RUN, id, 'logs/stdout.log');
+    const stderr = path.join(CoreConstants.PIPCOOK_RUN, id, 'logs/stderr.log');
+    return [
+      TailingReadableStream.createReadStream(stdout, { timeout: 0 }),
+      TailingReadableStream.createReadStream(stderr, { timeout: 0 })
     ];
   }
 

@@ -36,6 +36,11 @@
   },
   "pipcook": {
     "category": "dataCollect",
-    "datatype": "text"
+    "datatype": "text",
+    "params": [{
+      "name": "url",
+      "type": "string",
+      "description": "url or path of your zip file. If it's a local file, add prefix file://."
+    }]
   }
 }

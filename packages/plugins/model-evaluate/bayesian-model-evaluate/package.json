@@ -31,7 +31,12 @@
   },
   "pipcook": {
     "category": "modelEvaluate",
-    "datatype": "text"
+    "datatype": "text",
+    "params": [{
+      "name": "expectAccuracy",
+      "type": "number",
+      "description": "expected accuracy given by model."
+    }]
   },
   "conda": {
     "python": "3.7",

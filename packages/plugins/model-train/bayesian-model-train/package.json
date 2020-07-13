@@ -33,7 +33,17 @@
   },
   "pipcook": {
     "category": "modelTrain",
-    "datatype": "text"
+    "datatype": "text",
+    "params": [{
+      "name": "mode",
+      "type": "string[1]",
+      "options": [
+        "cn",
+        "en"
+      ],
+      "defaultValue": "cn",
+      "description": "Chinese text classification or English text classification, the value can be en or cn"
+    }]
   },
   "conda": {
     "python": "3.7",

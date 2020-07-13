@@ -1,74 +1,72 @@
 import React, { Component } from 'react';
-import { Button, Timeline } from '@alifd/next';
+import { Button, Timeline, Select, Divider, Tab, Icon } from '@alifd/next';
 import queryString from 'query-string';
-import ReactJson from 'react-json-view';
 
 import { messageError, messageSuccess } from '@/utils/message';
 import { PLUGINS, pluginList, PIPELINE_STATUS } from '@/utils/config';
-import ChooseItem from '@/components/ChooseItem';
-import LogView from '@/components/LogView';
-import { get, post, put } from '@/utils/request';
+import { get } from '@/utils/request';
 import { addUrlParams } from '@/utils/common';
 import './index.scss';
+
+function formatJSON(str) {
+  return JSON.stringify(
+    JSON.parse(str),
+    null, 2
+  );
+}
 
 export default class JobDetailPage extends Component {
 
   state = {
-    isCreate: true,
     plugins: {},
-    choices: {},
+    choices: pluginList,
     currentSelect: 'dataCollect',
     pipelineId: null,
     jobId: null,
-    jobStatus: 0,
-    jobStdout: '',
-    jobStderr: '',
-    logVisible: false,
+    job: {
+      stdout: '',
+      stderr: '',
+      evaluate: {
+        pass: null,
+        maps: null
+      }
+    }
+  };
+
+  async componentWillMount() {
+    const { jobId } = queryString.parse(location.hash.split('?')[1]);
+    const job = await get(`/job/${jobId}`);
+    const pipeline = await get(`/pipeline/info/${job.pipelineId}`);
+
+    this.setState({
+      plugins: pipeline.plugins,
+      pipelineId: job.pipelineId,
+      jobId
+    });
+    this.updateJobState();
   }
 
-  async componentDidMount() {
-    // get pipeline if and job id from url.
-    const params = queryString.parse(location.hash.split('?')[1]);
-    if (params && params.pipelineId) {
-      const data = await get(`/pipeline/info/${params.pipelineId}`);
-      Object.keys(data.plugins).forEach(
-        key => data.plugins[key].package = data.plugins[key].name,
-      );
-      this.setState({
-        isCreate: false,
-        plugins: data.plugins,
-        pipelineId: params.pipelineId,
-      });
-    }
-    if (params && params.jobId) {
-      this.setState({
-        jobId: params.jobId,
-      });
-      await this.fetchJob(params.jobId);
+  updateJobState = async () => {
+    const job = await get(`/job/${this.state.jobId}`);
+    const logs = await get(`/job/${this.state.jobId}/log`);
+    if (!logs) {
+      return;
     }
     this.setState({
-      choices: pluginList,
-    });
-  }
-
-  // setinterval to fetch status of current running job.
-  fetchJob = async (jobId) => {
-    const fetchInterval = async () => {
-      const jobInfo = await get(`/job/${jobId}`);
-      const jobLog = await get(`/job/${jobId}/log`);
-      this.setState({
-        jobStatus: PIPELINE_STATUS[jobInfo.status],
-        jobStdout: jobLog.log[0],
-        jobStderr: jobLog.log[1],
-      });
-      if (jobInfo.status === 3 || jobInfo.status === 2) {
-        return;
+      job: {
+        stdout: logs?.log[0],
+        stderr: logs?.log[1],
+        evaluate: {
+          pass: job.evaluatePass,
+          maps: formatJSON(job.evaluateMap)
+        },
+        dataset: formatJSON(job.dataset),
+        status: job.status
       }
-      setTimeout(async () => {
-        await fetchInterval();
-      }, 1000);
-    };
-    await fetchInterval();
+    });
+    if (job.status < 2) {
+      setTimeout(this.updateJobState, 1000);
+    }
   }
 
   changeSelectPlugin = (itemName, value) => {
@@ -91,136 +89,84 @@ export default class JobDetailPage extends Component {
     this.setState({ plugins });
   }
 
-  updatePipeline = async (showMessage=true) => {
-    const { plugins, isCreate, pipelineId } = this.state;
-
-    if (isCreate) {
-      const pipelineRes = await post('/pipeline', {
-        config: JSON.stringify({
-          plugins,
-        }),
-        isFile: false,
-      });
-      this.setState({
-        isCreate: false,
-        pipelineId: pipelineRes.id,
-      });
-      messageSuccess('Create Pipeline Successfully');
-      setTimeout(() => {
-        addUrlParams(`pipelineId=${pipelineRes.id}`);
-      }, 2000);
-    } else {
-      await put(`/pipeline/${pipelineId}`, {
-        config: JSON.stringify({
-          plugins,
-        }),
-        isFile: false,
-      });
-      if (showMessage) {
-        messageSuccess('Update Pipeline Successfully');
-      }
-    }
+  downloadOutput = () => {
+    location.href = `/job/${this.state.jobId}/output.tar.gz`;
   }
 
-  runJob = async () => {
-    const { isCreate, pipelineId } = this.state;
-    if (isCreate) {
-      messageError('Please Create Pipeline Firstly');
-      return;
-    }
-    await this.updatePipeline(false);
-    const job = await get('/job/run', {
-      params: {
-        pipelineId, 
-        cwd: CWD,
-      },
-    });
-    this.setState({
-      jobId: job.id,
-    });
-    addUrlParams(`jobId=${job.id}`);
-    await this.fetchJob(job.id);
-  }
-
-  setVisible = () => {
-    const { logVisible } = this.state;
-    this.setState({logVisible: !logVisible});
+  restart = async () => {
+    // const { pipelineId } = this.state;
+    // const job = await get('/job/run', {
+    //   params: {
+    //     pipelineId, 
+    //     cwd: CWD,
+    //   },
+    // });
+    // this.setState({
+    //   jobId: job.id,
+    // });
   }
 
   render() {
-    const { 
-      plugins, 
-      choices, 
-      currentSelect, 
-      isCreate, 
-      jobId,
-      jobStatus,
-      jobStdout,
-      jobStderr,
-      logVisible,
-    } = this.state;
+    const { job, plugins, choices } = this.state;
+    const renderTimelineItem = (title, extra) => {
+      const titleNode = <span className="plugin-choose-title">{title}</span>;
+      return <Timeline.Item  title={titleNode} {...extra}></Timeline.Item>;
+    };
+    const renderLogView = (logs) => {
+      return <pre className="job-logview">
+        {logs}
+        {job?.status === 1 && <Icon type="loading" />}
+      </pre>;
+    };
+
     return (
-      <div className="pipeline-info">
-        <LogView 
-          visible={logVisible} 
-          setVisible={this.setVisible} 
-          stdout={jobStdout} 
-          stderr={jobStderr} 
-        />
+      <div className="job-info">
         <div className="title-wrapper" >
-          <span className="title">{isCreate ? 'Create a new Pipeline' : (jobId ? 'Job Detail' : 'Pipeline Configuration')}</span>
+          <span className="title">job({this.state.jobId})</span>
         </div>
         <div className="content-wrapper">
           <div className="plugin-choose">
-            {
-              PLUGINS.map(pluginId => choices[pluginId] && choices[pluginId].length > 0 
-                && <div key={pluginId} onClick={() => this.setState({currentSelect: pluginId})}>
-                  <ChooseItem 
-                    itemName={pluginId} 
-                    plugins={plugins}
-                    choices={choices}
-                    changeSelectPlugin={this.changeSelectPlugin}
-                    currentSelect={currentSelect === pluginId}
-                    jobId={jobId}
-                  />
-                </div>,
-              )
-            }
-          </div>
-          <div className="plugin-config">
-            {
-              plugins[currentSelect] ? <ReactJson 
-                  onEdit={e => this.updateParams(e, currentSelect)}
-                  onAdd={e => this.updateParams(e, currentSelect)}
-                  onDelete={e => this.updateParams(e, currentSelect)}
-                  src={plugins[currentSelect].params}
-                  name={false}
-                  displayDataTypes={false}
-                /> : <span>Please choose a plugin</span>
-            }
-          </div>
-          <div className="plugin-operate">
-            {
-                !jobId && <Button 
-                  className="button" 
-                  size="large" 
-                  type="primary" 
-                  onClick={this.updatePipeline}
-                  >{isCreate ? 'Create Pipeline' : 'Update Pipeline'}
-                </Button>
+            <Timeline className="plugin-choose-timeline">
+              {
+                PLUGINS.filter(({ id }) => {
+                  return choices[id] && plugins[id];
+                }).map(({ id, title }) => {
+                  const plugin = plugins[id].plugin;
+                  const selectNode = <Select className="plugin-choose-selector" value={plugin.name} disabled>
+                    <Select.Option key={plugin.name} value={plugin.name}>{plugin.name}</Select.Option>
+                  </Select>;
+                  return renderTimelineItem(title, {
+                    key: id,
+                    state: 'done',
+                    content: selectNode,
+                  });
+                })
               }
-            {
-              !jobId && <Button 
-                className="button" 
-                size="large" 
-                type="primary" 
-                onClick={this.runJob}
-                >Run Job
-              </Button>
-            }
-            {!jobId && <Button className="button" size="large" type="primary" warning>Delete</Button> }
-            {jobId && <Button className="button" size="large" onClick={() => this.setState({logVisible: true})}>View Logs</Button> }
-            {jobId && <div className="job-info">Status: {jobStatus}</div>}
+            </Timeline>
+            <Divider />
+            <div className="plugin-choose-actions">
+              <Button size="medium"
+                type="secondary"
+                onClick={() => {
+                  location.href = `#/pipeline/info?pipelineId=${this.state.pipelineId}`;
+                }}>View Pipeline</Button>
+              <Button size="medium" type="secondary"
+                onClick={this.restart}>Restart</Button>
+              <Button size="medium" warning
+                onClick={this.stopJob}>Stop</Button>
+            </div>
+            <Divider />
+            <div className="plugin-choose-actions">
+              <Button size="medium" disabled={job?.evaluate.pass !== true} onClick={this.downloadOutput}>Download Output</Button>
+            </div>
+          </div>
+          <div className="job-outputs">
+            <Tab>
+              <Tab.Item title="stdout">{renderLogView(job?.stdout)}</Tab.Item>
+              <Tab.Item title="stderr">{renderLogView(job?.stderr)}</Tab.Item>
+              <Tab.Item title="dataset"><pre className="job-logview">{job?.dataset}</pre></Tab.Item>
+              <Tab.Item title="summary"><pre className="job-logview">{job?.evaluate?.maps}</pre></Tab.Item>
+            </Tab>
           </div>
         </div>
       </div>
