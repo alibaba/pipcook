@@ -67,7 +67,7 @@ export class PipelineService {
   pluginManager: PluginManager;
 
   createPipeline(config: PipelineDB): Promise<PipelineModel> {
-    if (typeof config.id === 'string') {
+    if (typeof config.id !== 'string') {
       config.id = generate();
     }
     return this.pipeline.create(config);
