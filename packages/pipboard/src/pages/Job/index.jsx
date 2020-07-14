@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Pagination, Icon } from '@alifd/next';
+import { Table, Pagination } from '@alifd/next';
 
 import { messageError } from '@/utils/message';
 import { JOB_MAP, PIPELINE_STATUS } from '@/utils/config';

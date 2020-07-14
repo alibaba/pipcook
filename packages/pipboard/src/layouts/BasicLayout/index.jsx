@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Nav, Icon, Button, Box, Badge, Card, Dialog, Divider } from '@alifd/next';
+import { Nav, Icon, Button, Badge, Dialog, Divider } from '@alifd/next';
 import NewPipelineBox from '@/components/NewPipelineBox';
 import './index.scss';
 
@@ -34,7 +34,7 @@ export default class Dashboard extends Component {
   )
 
   state = {
-    newPipelineDialogVisible: false
+    newPipelineDialogVisible: false,
   }
 
   select = (selectedKeys) => {

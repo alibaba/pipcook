@@ -16,7 +16,7 @@ export default class PipelineDetail extends Component {
     choices: pluginList,
     jobs: [],
     currentSelect: 'dataCollect',
-    pipelineId: null
+    pipelineId: null,
   }
 
   async componentDidMount() {
@@ -38,7 +38,7 @@ export default class PipelineDetail extends Component {
       this.setState({
         loading: false,
         plugins: pipeline.plugins,
-        pipelineId: params.pipelineId
+        pipelineId: params.pipelineId,
       });
 
       // fetch the jobs data in async.
@@ -47,7 +47,7 @@ export default class PipelineDetail extends Component {
   }
 
   fetchJobs = async (id) => {
-    let jobResp = await get(`/job/list?pipelineId=${id}`);
+    const jobResp = await get(`/job/list?pipelineId=${id}`);
     let jobs = [];
     if (jobResp) {
       jobs = jobResp.rows;
@@ -108,7 +108,7 @@ export default class PipelineDetail extends Component {
     this.setState({logVisible: !logVisible});
   }
 
-  renderPluginEditor({ plugin, params }) {
+  renderPluginEditor({ plugin }) {
     if (!plugin) {
       return;
     }
@@ -118,11 +118,11 @@ export default class PipelineDetail extends Component {
 
     const formItemLayout = {
       labelCol: {
-        fixedSpan: 6
+        fixedSpan: 6,
       },
       wrapperCol: {
-        span: 16
-      }
+        span: 16,
+      },
     };
 
     let author = plugin.author;
@@ -190,7 +190,7 @@ export default class PipelineDetail extends Component {
                           onChange={createChangeHandler(i)}
                         />
                       </Form.Item>
-                    </Grid.Col>
+                    </Grid.Col>,
                   );
                 }
                 input = <Grid.Row gutter={arrayMatch[2]}>{cols}</Grid.Row>;
@@ -201,7 +201,7 @@ export default class PipelineDetail extends Component {
                   mode: 'multiple',
                   defaultValue,
                   value: valueInState,
-                  onChange: createChangeHandler()
+                  onChange: createChangeHandler(),
                 };
                 if (arrayMatch[2] === '1') {
                   selectOpts.mode = 'single';
@@ -214,9 +214,9 @@ export default class PipelineDetail extends Component {
             }
           }
           const itemExtra = <span style={{ fontSize: 12, color: '#666' }}>{description}</span>;
-          return <Form.Item label={name} extra={itemExtra}>{input}</Form.Item>
+          return <Form.Item label={name} extra={itemExtra}>{input}</Form.Item>;
         })}
-      </Form>
+      </Form>,
     ];
   }
 
@@ -226,7 +226,6 @@ export default class PipelineDetail extends Component {
       choices,
       jobs,
       currentSelect,
-      isCreate,
     } = this.state;
 
     return (
@@ -236,7 +235,7 @@ export default class PipelineDetail extends Component {
         </div>
         <div className="content-wrapper">
           <div className="plugin-choose">
-            {this.state.loading && <Loading className="plugin-choose-loading" tip="fetching pipeline..." ></Loading>}
+            {this.state.loading && <Loading className="plugin-choose-loading" tip="fetching pipeline..."  />}
             <Timeline>
               {
                 PLUGINS.filter(({ id }) => {
@@ -256,7 +255,7 @@ export default class PipelineDetail extends Component {
                     key={id}
                     title={titleNode}
                     content={selectNode}
-                    state={currentSelect === id ? 'process' : 'done'}></Timeline.Item>;
+                    state={currentSelect === id ? 'process' : 'done'} />;
                 })
               }
             </Timeline>

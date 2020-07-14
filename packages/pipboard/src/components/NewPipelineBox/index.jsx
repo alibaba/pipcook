@@ -8,16 +8,18 @@ export default class NewPipelineBox extends Component {
   state = {
     selected: null,
   }
+
   async create() {
     const { template } = PIPELINE_TEMPLATES[this.state.selected];
     const pipelineRes = await post('/pipeline', {
       config: JSON.stringify(template),
       isFile: false,
     });
-    location.href = '/index.html#/pipeline/info?pipelineId=' + pipelineRes.id;
+    location.href = `/index.html#/pipeline/info?pipelineId=${  pipelineRes.id}`;
   }
+
   render() {
-    return <Box direction="row" spacing={20} wrap={true} style={{ width: 1000 }}>
+    return <Box direction="row" spacing={20} wrap style={{ width: 1000 }}>
       {PIPELINE_TEMPLATES.map(({ title, category, description }, index) => {
         const cardClassNames = [ 'new-pipeline-card' ];
         if (index === this.state.selected) {

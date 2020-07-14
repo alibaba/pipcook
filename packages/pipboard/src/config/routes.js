@@ -53,7 +53,7 @@ export default [
       },
       {
         path: '/',
-        component: JobList
+        component: JobList,
       },
     ],
   },
@@ -63,7 +63,7 @@ export default [
     children: [
       {
         path: '/',
-        component: PluginList
+        component: PluginList,
       },
     ],
   },
@@ -73,7 +73,7 @@ export default [
     children: [
       {
         path: '/',
-        component: Setting
+        component: Setting,
       },
     ],
   },

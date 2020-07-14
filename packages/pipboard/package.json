@@ -31,6 +31,7 @@
   "devDependencies": {
     "@ice/spec": "^0.1.1",
     "@types/jasmine": "^3.5.7",
+    "eslint": "^7.4.0",
     "ice-plugin-fusion": "^0.1.4",
     "ice-plugin-moment-locales": "^0.1.0",
     "ice-scripts": "^2.0.0",

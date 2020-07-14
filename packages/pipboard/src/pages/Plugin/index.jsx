@@ -8,17 +8,22 @@ import './index.scss';
 export default class PluginList extends Component {
 
   localPlugins = []
+
   state = {
     loading: true,
     plugins: [],
     filter: {
       category: undefined,
-      datatype: undefined
+      datatype: undefined,
     },
     searchKey: null,
     pluginDialogVisible: false,
     pluginDialogTitle: '',
-    pluginDialogContent: null
+    pluginDialogContent: null,
+  }
+
+  async componentWillMount() {
+    await this.fetch();
   }
 
   fetch = async () => {
@@ -26,25 +31,27 @@ export default class PluginList extends Component {
     this.localPlugins = await get('/plugin/list');
     this.setState({
       plugins: Object.assign([], this.localPlugins),
-      loading: false
+      loading: false,
     });
   }
 
   createFilterHandler = (type) => {
     return (val) => {
-      const newFilter = Object.assign({}, this.state.filter);
-      newFilter[type] = val;
-
-      const newPlugins = this.localPlugins.filter((plugin) => {
-        if (newFilter.category && newFilter.category !== plugin.category) {
-          return false;
-        }
-        if (newFilter.datatype && newFilter.datatype !== plugin.datatype) {
-          return false;
-        }
-        return true;
+      this.setState(({ filter }) => {
+        const newFilter = Object.assign({}, filter);
+        newFilter[type] = val;
+        // create new plugins.
+        const newPlugins = this.localPlugins.filter((plugin) => {
+          if (newFilter.category && newFilter.category !== plugin.category) {
+            return false;
+          }
+          if (newFilter.datatype && newFilter.datatype !== plugin.datatype) {
+            return false;
+          }
+          return true;
+        });
+        return { filter: newFilter, plugins: newPlugins };
       });
-      this.setState({ filter: newFilter, plugins: newPlugins });
     };
   }
 
@@ -53,22 +60,22 @@ export default class PluginList extends Component {
     return () => handler(value);
   }
 
-  onSearch = async (e) => {
+  onSearch = async () => {
     await this.openPluginDialog(this.state.searchKey);
   }
 
   openPluginDialog = async (name) => {
     this.setState({ pluginDialogVisible: true });
     const plugin = await get('/plugin/metadata', {
-      params: { name }
+      params: { name },
     });
     const onClickSource = () => {
       if (plugin?.pipcook.source.from === 'npm') {
-        window.open('https://npmjs.com/package/' + plugin.name);
+        window.open(`https://npmjs.com/package/${  plugin.name}`);
       } else {
-        messageError('unsupported source' + plugin?.pipcook.source.from);
+        messageError(`unsupported source${  plugin?.pipcook.source.from}`);
       }
-    }
+    };
     console.log(plugin);
     const content = (
       <Box className="plugin-dialog-box">
@@ -88,19 +95,15 @@ export default class PluginList extends Component {
     );
     this.setState({
       pluginDialogTitle: plugin.name,
-      pluginDialogContent: content
+      pluginDialogContent: content,
     });
   }
 
   closePluginDialog = () => {
     this.setState({
       pluginDialogVisible: false,
-      pluginDialogContent: null
+      pluginDialogContent: null,
     });
-  }
-
-  async componentWillMount() {
-    await this.fetch();
   }
 
   renderPluginList() {
@@ -108,13 +111,13 @@ export default class PluginList extends Component {
     const headerNode = <Box className="plugin-list-header" direction="row" spacing={10}>
       <Select placeholder="select plugin category"
         value={this.state.filter.category}
-        hasClear={true}
+        hasClear
         onChange={this.createFilterHandler('category')}>
         {PLUGINS.map((val, index) => <Select.Option key={index} value={val}>category: {val}</Select.Option>)}
       </Select>
       <Select placeholder="select data type"
         value={this.state.filter.datatype}
-        hasClear={true}
+        hasClear
         onChange={this.createFilterHandler('datatype')}>
         <Select.Option value="image">data: image</Select.Option>
         <Select.Option value="text">data: text</Select.Option>
@@ -129,8 +132,8 @@ export default class PluginList extends Component {
           const title = <h3 className="plugin-item-title" onClick={() => this.openPluginDialog(plugin.name)}>{plugin.name}</h3>;
 
           // TODO
-          const upgradePlugin = async (e) => {};
-          const uninstallPlugin = async (e) => {};
+          const upgradePlugin = async () => {};
+          const uninstallPlugin = async () => {};
 
           return <List.Item extra={extra} title={title} key={index}>
             <div className="plugin-item-container">
@@ -142,7 +145,7 @@ export default class PluginList extends Component {
                 </Tag>
                 <Tag type="normal" size="small"
                   onClick={this.createFilterSetter('category', plugin.category)}>
-                  category: "{plugin.category}"
+                  category: {plugin.category}
                 </Tag>
               </Tag.Group>
               <Box className="plugin-item-actions" spacing={10} direction="row">

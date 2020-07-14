@@ -11,7 +11,7 @@ import './index.scss';
 function formatJSON(str) {
   return JSON.stringify(
     JSON.parse(str),
-    null, 2
+    null, 2,
   );
 }
 
@@ -20,7 +20,6 @@ export default class JobDetailPage extends Component {
   state = {
     plugins: {},
     choices: pluginList,
-    currentSelect: 'dataCollect',
     pipelineId: null,
     jobId: null,
     job: {
@@ -28,9 +27,9 @@ export default class JobDetailPage extends Component {
       stderr: '',
       evaluate: {
         pass: null,
-        maps: null
-      }
-    }
+        maps: null,
+      },
+    },
   };
 
   async componentWillMount() {
@@ -41,14 +40,15 @@ export default class JobDetailPage extends Component {
     this.setState({
       plugins: pipeline.plugins,
       pipelineId: job.pipelineId,
-      jobId
+      jobId,
     });
     this.updateJobState();
   }
 
   updateJobState = async () => {
-    const job = await get(`/job/${this.state.jobId}`);
-    const logs = await get(`/job/${this.state.jobId}/log`);
+    const { jobId } = this.state;
+    const job = await get(`/job/${jobId}`);
+    const logs = await get(`/job/${jobId}/log`);
     if (!logs) {
       return;
     }
@@ -58,11 +58,11 @@ export default class JobDetailPage extends Component {
         stderr: logs?.log[1],
         evaluate: {
           pass: job.evaluatePass,
-          maps: formatJSON(job.evaluateMap)
+          maps: formatJSON(job.evaluateMap),
         },
         dataset: formatJSON(job.dataset),
-        status: job.status
-      }
+        status: job.status,
+      },
     });
     if (job.status < 2) {
       setTimeout(this.updateJobState, 1000);
@@ -94,7 +94,7 @@ export default class JobDetailPage extends Component {
 
   restart = async () => {
     const { jobId } = this.state;
-    const job = await get('/job/restart', {
+    await get('/job/restart', {
       params: {
         jobId, 
         cwd: CWD,
@@ -104,9 +104,8 @@ export default class JobDetailPage extends Component {
   }
 
   stop = async () => {
-    const { jobId } = this.state;
-    const job = await get('/job/stop', {
-      params: { id: jobId }
+    await get('/job/stop', {
+      params: { id: this.state.jobId },
     });
     messageSuccess('job is not running.');
   }
@@ -115,7 +114,7 @@ export default class JobDetailPage extends Component {
     const { job, plugins, choices } = this.state;
     const renderTimelineItem = (title, extra) => {
       const titleNode = <span className="plugin-choose-title">{title}</span>;
-      return <Timeline.Item  title={titleNode} {...extra}></Timeline.Item>;
+      return <Timeline.Item  title={titleNode} {...extra} />;
     };
     const renderLogView = (logs) => {
       return <pre className="job-logview">

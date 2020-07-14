@@ -6,7 +6,7 @@ import './index.scss';
 class OverviewSetting extends Component {
 
   state = {
-    versions: { daemon: null, pipboard: null }
+    versions: { daemon: null, pipboard: null },
   }
 
   async componentWillMount() {
@@ -14,14 +14,14 @@ class OverviewSetting extends Component {
     this.setState({ versions });
   }
 
-  render() {
+  render () {
     const formItemLayout = {
       labelCol: {
-        fixedSpan: 10
+        fixedSpan: 10,
       },
       wrapperCol: {
-        span: 14
-      }
+        span: 14,
+      },
     };
     return <Form {...formItemLayout}>
       <Form.Item label="Daemon" help="the pipcook daemon.">
@@ -39,41 +39,43 @@ class DaemonSetting extends Component {
     config: {
       npmRegistryPrefix: '',
       pythonIndexMirror: '',
-      pythonCondaMirror: ''
-    }
+      pythonCondaMirror: '',
+    },
   }
 
-  async componentWillMount() {
+  async componentWillMount () {
     const config = await get('/config');
     this.setState({ config });
   }
 
   createConfigSetter = (name) => {
     return (v) => {
-      const newConfig = Object.assign({}, this.state.config);
-      newConfig[name] = v;
-      this.setState({ config: newConfig });
-    }
+      this.setState(({ config }) => {
+        const newConfig = Object.assign({}, config);
+        newConfig[name] = v;
+        return { config: newConfig };
+      });
+    };
   }
 
-  render() {
+  render () {
     const formItemLayout = {
       labelCol: {
-        fixedSpan: 10
+        fixedSpan: 10,
       },
       wrapperCol: {
-        span: 14
-      }
+        span: 14,
+      },
     };
     return <Form {...formItemLayout}>
       <Form.Item label="NPM Registry" help="The NPM registry prefix to install all plugin.">
-        <Input value={this.state.config.npmRegistryPrefix} onChange={this.createConfigSetter('npmRegistryPrefix')}></Input>
+        <Input value={this.state.config.npmRegistryPrefix} onChange={this.createConfigSetter('npmRegistryPrefix')} />
       </Form.Item>
       <Form.Item label="Python Index" help="The index page to install Python packages.">
-        <Input value={this.state.config.pythonIndexMirror} onChange={this.createConfigSetter('pythonIndexMirror')}></Input>
+        <Input value={this.state.config.pythonIndexMirror} onChange={this.createConfigSetter('pythonIndexMirror')} />
       </Form.Item>
       <Form.Item label="Python Interrupter Mirror" help="The mirror address to install Python interrupter.">
-        <Input value={this.state.config.pythonCondaMirror} onChange={this.createConfigSetter('pythonCondaMirror')}></Input>
+        <Input value={this.state.config.pythonCondaMirror} onChange={this.createConfigSetter('pythonCondaMirror')} />
       </Form.Item>
     </Form>;
   }
@@ -84,14 +86,14 @@ class PluginSetting extends Component {
     // TODO
   }
 
-  render() {
+  render () {
     const formItemLayout = {
       labelCol: {
-        fixedSpan: 10
+        fixedSpan: 10,
       },
       wrapperCol: {
-        span: 14
-      }
+        span: 14,
+      },
     };
     return <Form {...formItemLayout}>
       <Form.Item label="Installed plugins">
@@ -104,25 +106,21 @@ class PluginSetting extends Component {
   }
 }
 
-export default class Setting extends Component {
-
-  render() {
-    return (
-      <div className="setting">
-        <h1>Settings</h1>
-        <Tab className="setting-container" tabPosition="left" shape="wrapped">
-          <Tab.Item title="Overview">
-            <OverviewSetting />
-          </Tab.Item>
-          <Tab.Item title="Daemon">
-            <DaemonSetting />
-          </Tab.Item>
-          <Tab.Item title="Plugins">
-            <PluginSetting />
-          </Tab.Item>
-        </Tab>
-      </div>
-    );
-  }
-  
+export default function () {
+  return (
+    <div className="setting">
+      <h1>Settings</h1>
+      <Tab className="setting-container" tabPosition="left" shape="wrapped">
+        <Tab.Item title="Overview">
+          <OverviewSetting />
+        </Tab.Item>
+        <Tab.Item title="Daemon">
+          <DaemonSetting />
+        </Tab.Item>
+        <Tab.Item title="Plugins">
+          <PluginSetting />
+        </Tab.Item>
+      </Tab>
+    </div>
+  );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DateTime, Interval } from 'luxon';
+import { DateTime } from 'luxon';
 import { Button, Dialog, Tag } from '@alifd/next';
 
 /**
@@ -159,7 +159,7 @@ export const JOB_MAP = [
         const date = DateTime.fromFormat(endTime, 'M/d/yyyy, h:m:s a');
         return <span>{date.toRelative()}</span>;
       }
-    }
+    },
   },
   {
     name: 'Model',
@@ -178,32 +178,32 @@ export const PIPELINE_TEMPLATES = [
     title: 'Image Classification',
     category: 'vision',
     description: 'The image classification accepts the given input images and produces output for identifying whether the type is or not.',
-    template: ImageClassificationPipeline
+    template: ImageClassificationPipeline,
   },
   {
     title: 'Object Detection',
     category: 'vision',
     description: 'The object detection detects the given objects and returns class and position for each one.',
-    template: ObjectDetectionPipeline
+    template: ObjectDetectionPipeline,
   },
   {
     title: 'Image Style Transfer',
     category: 'vision',
     description: 'The image style transfer generates an image automatically.',
-    template: ImageStyleTransferPipeline
+    template: ImageStyleTransferPipeline,
   },
   {
     title: 'Text Classification',
     category: 'nlp',
     description: 'The text classification does classify the text to specific classes.',
-    template: TextClassificationPipeline
+    template: TextClassificationPipeline,
   },
   {
     title: 'Text Creation',
     category: 'nlp',
     description: 'The text creation generates an artwork by a given portfolio.',
-    template: TextCreationPipeline
-  }
+    template: TextCreationPipeline,
+  },
 ];
 
 const PLUGIN_LIST = {
