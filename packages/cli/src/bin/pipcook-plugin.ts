@@ -2,7 +2,7 @@
 
 import program from 'commander';
 import path from 'path';
-import { spawnSync, SpawnOptionsWithoutStdio } from 'child_process';
+import { spawnSync } from 'child_process';
 import fs from 'fs-extra';
 import { listen, get, post, uploadFile } from '../request';
 import { route } from '../router';
