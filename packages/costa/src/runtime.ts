@@ -42,19 +42,22 @@ function selectNpmPackage(metadata: NpmPackageMetadata, source: PluginSource): N
   return metadata.versions[metadata['dist-tags'].latest];
 }
 
-function spawnAsync(command: string, args?: string[], opts: SpawnOptions = {}, logWriteStream?: Writable): Promise<string> {
+interface LogWriter {
+  stdout: Writable;
+  stderr: Writable;
+}
+
+interface CostaSpawnOptions extends SpawnOptions {
+  logWriter: LogWriter;
+}
+
+function spawnAsync(command: string, args: string[], opts: CostaSpawnOptions): Promise<string> {
   return new Promise((resolve, reject) => {
-    if (logWriteStream === undefined) {
-      opts.stdio = 'inherit';
-    } else {
-      opts.stdio = [ null, 'pipe', 'pipe' ];
-    }
+    opts.stdio = [ null, 'pipe', 'pipe' ];
     opts.detached = false;
     const child = spawn(command, args, opts);
-    if (logWriteStream !== undefined) {
-      child.stdout.pipe(logWriteStream);
-      child.stderr.pipe(logWriteStream);
-    }
+    child.stdout.pipe(opts.logWriter.stdout);
+    child.stderr.pipe(opts.logWriter.stderr);
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });
@@ -180,7 +183,8 @@ export { PluginPackage } from './index';
 export { RunnableResponse } from './runnable';
 export {
   PluginRunnable,
-  BootstrapArg
+  BootstrapArg,
+  LogWriter
 };
 
 /**
@@ -202,43 +206,56 @@ export class CostaRuntime {
   }
   /**
    * fetch and check if the package name is valid.
-   * @param name the plugin package name or ReadStream for npm package tarball.
+   * @param name the plugin package name.
    * @param cwd the current working directory.
    */
-  async fetch(name: string | Readable, cwd?: string): Promise<PluginPackage> {
+  async fetch(name: string, cwd?: string): Promise<PluginPackage> {
     let pkg: PluginPackage;
-    let source: PluginSource;
-    if (typeof name === 'string') {
-      source = this.getSource(name, cwd || process.cwd());
-      if (source.from === 'npm') {
-        debug(`requesting the url ${source.uri}`);
-        // TODO(yorkie): support http cache
-        const resp = await requestHttpGetWithCache(source.uri);
-        const meta = resp as NpmPackageMetadata;
-        pkg = selectNpmPackage(meta, source);
-      } else if (source.from === 'git') {
-        debug(`requesting the url ${source.uri}...`);
-        const { hostname, auth, hash } = source.urlObject;
-        let pathname = source.urlObject.pathname.replace(/^\/:?/, '');
-        const remote = `${auth || 'git'}@${hostname}:${pathname}${hash || ''}`;
-        pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
-      } else if (source.from === 'fs') {
-        debug(`linking the url ${source.uri}`);
-        pkg = require(`${source.uri}/package.json`);
-      } else if (source.from === 'tarball') {
-        debug(`downloading the url ${source.uri}`);
-        await download(source.name, source.uri);
-        pkg = await fetchPackageJsonFromTarball(source.uri);
-      }
-    } else {
-      source = {
-        from: 'tarball',
-        uri: null,
-        urlObject: undefined,
-        name: 'uploadedPackage'
-      };
-      pkg = await fetchPackageJsonFromTarballStream(name);
+    const source = this.getSource(name, cwd || process.cwd());
+    if (source.from === 'npm') {
+      debug(`requesting the url ${source.uri}`);
+      // TODO(yorkie): support http cache
+      const resp = await requestHttpGetWithCache(source.uri);
+      const meta = resp as NpmPackageMetadata;
+      pkg = selectNpmPackage(meta, source);
+    } else if (source.from === 'git') {
+      debug(`requesting the url ${source.uri}...`);
+      const { hostname, auth, hash } = source.urlObject;
+      let pathname = source.urlObject.pathname.replace(/^\/:?/, '');
+      const remote = `${auth || 'git'}@${hostname}:${pathname}${hash || ''}`;
+      pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
+    } else if (source.from === 'fs') {
+      debug(`linking the url ${source.uri}`);
+      pkg = require(`${source.uri}/package.json`);
+    } else if (source.from === 'tarball') {
+      debug(`downloading the url ${source.uri}`);
+      await download(source.name, source.uri);
+      pkg = await fetchPackageJsonFromTarball(source.uri);
     }
+
+    try {
+      this.validPackage(pkg);
+      this.assignPackage(pkg, source);
+    } catch (err) {
+      if (process.env.NODE_ENV === 'test') {
+        console.warn('skip the valid package and assign because NODE_ENV is set to "test".');
+      } else {
+        throw err;
+      }
+    }
+    return pkg;
+  }
+  /**
+   * fetch and check if the package name is valid.
+   * @param name the plugin package readstream for npm package tarball.
+   * @param cwd the current working directory.
+   */
+  async fetchByStream(stream :Readable, cwd?: string): Promise<PluginPackage> {
+    const source: PluginSource = {
+      from: 'tarball',
+      name: 'uploadedPackage'
+    };
+    const pkg = await fetchPackageJsonFromTarballStream(stream);
 
     try {
       this.validPackage(pkg);
@@ -258,7 +275,7 @@ export class CostaRuntime {
    * @param force install from new anyway.
    * @param pyIndex the index mirror to install python packages.
    */
-  async install(pkg: PluginPackage, force = false, pyIndex?: string, logWriteStream?: Writable): Promise<boolean> {
+  async install(pkg: PluginPackage, logWriter: LogWriter, force = false, pyIndex?: string): Promise<boolean> {
     if (force === true) {
       await this.uninstall(pkg.name);
     }
@@ -286,7 +303,7 @@ export class CostaRuntime {
       debug(`install the plugin from ${pluginAbsName}`);
     }
 
-    const npmExecOpts = { cwd: this.options.installDir };
+    const npmExecOpts = { cwd: this.options.installDir, logWriter };
     const npmArgs = [ 'install', pluginAbsName, '-E', '--production' ];
 
     if (this.options.npmRegistryPrefix) {
@@ -294,9 +311,9 @@ export class CostaRuntime {
     }
     if (!await pathExists(`${this.options.installDir}/package.json`)) {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
-      await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts, logWriteStream);
+      await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
     }
-    await spawnAsync('npm', npmArgs, npmExecOpts, logWriteStream);
+    await spawnAsync('npm', npmArgs, npmExecOpts);
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);
@@ -323,7 +340,7 @@ export class CostaRuntime {
       }
 
       debug('conda environment is setup correctly, start downloading.');
-      await spawnAsync(python, [ '-m', 'venv', envDir ], {}, logWriteStream);
+      await spawnAsync(python, [ '-m', 'venv', envDir ], { logWriter });
       // TODO(yorkie): check for access(pip3)
 
       for (let name of requirements) {
@@ -336,7 +353,7 @@ export class CostaRuntime {
           '--default-timeout=1000',
           `--cache-dir=${this.options.installDir}/.pip`
         ]);
-        await spawnAsync(`${envDir}/bin/pip3`, args, {}, logWriteStream);
+        await spawnAsync(`${envDir}/bin/pip3`, args, { logWriter });
       }
     } else {
       debug(`just skip the Python environment installation.`);

@@ -3,6 +3,7 @@ import { successRes } from '../../utils/response';
 import { PluginManager } from '../../service/plugin';
 import ServerSentEmitter from '../../utils/emitter';
 import Debug from 'debug';
+import { Readable } from 'stream';
 const debug = Debug('daemon.app.plugin');
 
 @provide()
@@ -51,27 +52,41 @@ export class PluginController {
   @post('/upload')
   public async upload() {
     const fs = await this.ctx.getFileStream();
-    const id = await this.pluginManager.installFromTarStream(fs);
-    successRes(this.ctx, { id });
+    successRes(this.ctx, await this.pluginManager.installFromTarStream(fs));
   }
 
-  @get('/log')
-  public async log() {
-    const logStream = await this.pluginManager.getInstallLogStream(this.ctx.query.id);
-    const sse = new ServerSentEmitter(this.ctx);
-    if (logStream) {
-      await new Promise(() => {
-        logStream.on('data', data => {
-          sse.emit('info', data.toString());
-        });
-        logStream.on('end', () => {
-          sse.emit('finished', undefined);
-        });
-        // FIXME(feely): it's not working, stream end first, then trigger the error event
-        logStream.on('error', err => {
-          sse.emit('error', err);
-        });
+  private async linkLog(logStream: Readable, type: 'info' | 'error', sse: ServerSentEmitter): Promise<void> {
+    if (logStream.readable) {
+      logStream.on('data', data => {
+        sse.emit(type, data.toString());
       });
+      return new Promise(resolveEnd => {
+        logStream.on('end', () => {
+          process.nextTick(resolveEnd);
+        });
+        logStream.on('error', err => {
+          sse.emit('fail', err.message);
+          resolveEnd();
+        });
+      });        
+    } else {
+      return Promise.resolve();
+    }
+  }
+  @get('/log/:id')
+  public async log() {
+    const logReader = await this.pluginManager.getInstallLogStream(this.ctx.params.id);
+    const sse = new ServerSentEmitter(this.ctx);
+    if (logReader) {
+      if (!logReader.stdout.readable && !logReader.stderr.readable) {
+        sse.emit('error', 'no log to read');
+      } else {
+        const futures = [
+          this.linkLog(logReader.stdout, 'info', sse),
+          this.linkLog(logReader.stderr, 'error', sse)
+        ];
+        await Promise.all(futures);
+      }
       sse.finish();
     } else {
       sse.emit('error', 'no log found');

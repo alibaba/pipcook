@@ -4,10 +4,8 @@ import { Readable } from 'stream';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
 import { PluginPackage, BootstrapArg, PluginRunnable } from '@pipcook/costa';
-import { LogManager, LogWriteStream } from './log-manager';
+import { LogManager, LogObject } from './log-manager';
 import { Context } from 'midway';
-import process = require('process');
-
 
 class PluginNotFound extends TypeError {
   status: number;
@@ -22,6 +20,16 @@ class PluginNotFound extends TypeError {
 interface ListPluginsFilter {
   datatype?: string;
   category?: string;
+}
+
+interface PluginAndLog {
+  logId: string;
+  plugin: PluginPackage;
+}
+
+interface LogReader {
+  stdout: Readable;
+  stderr: Readable;
 }
 
 @provide('pluginManager')
@@ -39,18 +47,28 @@ export class PluginManager {
   @inject()
   ctx: Context;
 
-  logWriteStream: LogWriteStream;
+  logObject: LogObject;
 
   get datasetRoot() {
     return this.pluginRT.costa.options.datasetDir;
   }
 
-  async fetch(name: string | Readable, cwd?: string): Promise<PluginPackage> {
+  async fetch(name: string, cwd?: string): Promise<PluginPackage> {
     return this.pluginRT.costa.fetch(name, cwd);
   }
 
-  async fetchAndInstall(name: string | Readable, cwd?: string, pyIndex?: string): Promise<PluginPackage> {
+  async fetchByStream(stream: Readable, cwd?: string): Promise<PluginPackage> {
+    return this.pluginRT.costa.fetchByStream(stream, cwd);
+  }
+
+  async fetchAndInstall(name: string, cwd?: string, pyIndex?: string): Promise<PluginPackage> {
     const pkg = await this.fetch(name, cwd);
+    await this.install(pkg, pyIndex);
+    return pkg;
+  }
+
+  async fetchAndInstallByStream(stream: Readable, cwd?: string, pyIndex?: string): Promise<PluginPackage> {
+    const pkg = await this.fetchByStream(stream, cwd);
     await this.install(pkg, pyIndex);
     return pkg;
   }
@@ -87,7 +105,7 @@ export class PluginManager {
     });
 
     try {
-      await this.pluginRT.costa.install(pkg, false, pyIndex, this.logWriteStream?.stream);
+      await this.pluginRT.costa.install(pkg, this.logObject.logTransfroms, false, pyIndex);
     } catch (err) {
       // uninstall if occurring an error on installing.
       await this.pluginRT.costa.uninstall(pkg.name);
@@ -110,21 +128,22 @@ export class PluginManager {
     });
   }
 
-  async installFromTarStream(tarball: Readable): Promise<string> {
-    this.logWriteStream = this.logManager.createLogStream();
+  async installFromTarStream(tarball: Readable): Promise<PluginAndLog> {
+    this.logObject = this.logManager.createLogStream();
+    const pkg = await this.fetchByStream(tarball);
     process.nextTick(async () => {
       try {
-        await this.fetchAndInstall(tarball, undefined, undefined);
-        this.logManager.destroyLog(this.logWriteStream.id);
+        await this.install(pkg);
+        this.logManager.destroyLog(this.logObject.id);
       } catch (err) {
         console.error('install plugin from tarball error', err.message);
-        this.logManager.destroyLog(this.logWriteStream.id, err);
+        this.logManager.destroyLog(this.logObject.id, err);
       }
     });
-    return this.logWriteStream.id;
+    return { logId: this.logObject.id, plugin: pkg };
   }
 
-  async getInstallLogStream(id: string): Promise<Readable> {
-    return this.logManager.getLog(id).stream;
+  async getInstallLogStream(id: string): Promise<LogReader> {
+    return this.logManager.getLog(id).logTransfroms;
   }
 }

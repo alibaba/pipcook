@@ -1,49 +1,47 @@
-import { Writable, Transform, Readable, TransformCallback } from 'stream';
+import { Transform, TransformCallback } from 'stream';
 import { randomBytes } from 'crypto';
 import { provide, scope, ScopeEnum } from 'midway';
 
-export interface LogWriteStream {
-  stream: Writable;
-  id: string;
-}
-
-export interface LogReadStream {
-  stream: Readable;
+export interface LogObject {
+  logTransfroms: LogTransfroms;
   id: string;
 }
 
 class LogTransform extends Transform {
   constructor() {
-    super();
+    super({ objectMode: true });
   }
   _transform(chunk: any, encoding: string, callback: TransformCallback): void {
     callback(undefined, chunk);
   }
 }
 
+interface LogTransfroms {
+  stdout: LogTransform;
+  stderr: LogTransform;
+}
+
 @scope(ScopeEnum.Singleton)
 @provide('logManager')
 export class LogManager {
-  logMap: Map<string, LogTransform> = new Map<string, LogTransform>();
+  logMap: Map<string, LogTransfroms> = new Map<string, LogTransfroms>();
 
-  createLogStream(): LogWriteStream {
+  createLogStream(): LogObject {
     const id = randomBytes(8).toString('hex');
-    const stream = new LogTransform();
-    console.log('createLogStream size', this.logMap.size);
-    this.logMap.set(id, stream);
-    return { id, stream };
+    const logTransfroms: LogTransfroms = { stdout: new LogTransform(), stderr: new LogTransform() };
+    this.logMap.set(id, logTransfroms);
+    return { id, logTransfroms };
   }
 
-  getLog(id: string): LogReadStream {
-    const stream = this.logMap.get(id);
-    return { id, stream };
+  getLog(id: string): LogObject {
+    const logTransfroms = this.logMap.get(id);
+    return { id, logTransfroms };
   }
 
   destroyLog(id: string, err?: Error) {
+    const logs = this.logMap.get(id);
     if (err) {
-      this.logMap.get(id).emit('error', err);
-    } else {
-      this.logMap.get(id).emit('end');
+      logs.stdout.emit('error', err);
     }
     return this.logMap.delete(id);
   }
