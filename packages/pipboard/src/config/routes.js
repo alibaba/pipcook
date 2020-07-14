@@ -8,6 +8,7 @@ import PipelineDetail from '@/pages/Pipeline/Detail';
 import JobList from '@/pages/Job';
 import JobDetail from '@/pages/Job/Detail';
 import PluginList from '@/pages/Plugin';
+import Setting from '@/pages/Setting';
 
 export default [
   {
@@ -63,6 +64,16 @@ export default [
       {
         path: '/',
         component: PluginList
+      },
+    ],
+  },
+  {
+    path: '/setting',
+    component: BasicLayout,
+    children: [
+      {
+        path: '/',
+        component: Setting
       },
     ],
   },

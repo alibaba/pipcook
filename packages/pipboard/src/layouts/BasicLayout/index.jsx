@@ -15,8 +15,8 @@ export default class Dashboard extends Component {
   footer = (
     <div className="footer">
       <span className="footer-left">
-        <Button text>
-          <Badge dot>
+        <Button text onClick={() => location.href = '#/setting'}>
+          <Badge>
             <Icon type="set" />
           </Badge>
         </Button>

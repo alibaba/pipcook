@@ -157,7 +157,7 @@ export default class PluginList extends Component {
           </List.Item>;
         })}
       </List>
-    )
+    );
   }
 
   render() {

@@ -1,0 +1,11 @@
+.setting {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  margin: 20px 5%;
+
+  .setting-container {
+    width: 80%;
+  }
+}
