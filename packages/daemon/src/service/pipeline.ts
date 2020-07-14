@@ -154,8 +154,7 @@ export class PipelineService {
     return this.getJobById(id);
   }
 
-  async createJob(id: string): Promise<JobModel> {
-    const pipelineId = await this.getPipelineId(id);
+  async createJob(pipelineId: string): Promise<JobModel> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
     const job = await this.job.create({
       id: generate(),
@@ -360,10 +359,5 @@ export class PipelineService {
       await fs.readFile(stdout, 'utf8'),
       await fs.readFile(stderr, 'utf8')
     ];
-  }
-
-  async getPipelineId(id: string): Promise<string> {
-    const pipeline = await this.getPipeline(id);
-    return pipeline.id;
   }
 }
