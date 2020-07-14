@@ -23,6 +23,7 @@
         "midway",
         "egg-ci",
         "egg-scripts",
+        "egg-cors",
         "midway-bin",
         "midway-mock",
         "ice-scripts",

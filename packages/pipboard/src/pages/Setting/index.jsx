@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Tab, Tag, Form } from '@alifd/next';
+import { Input, Tab, Tag, Form, Button } from '@alifd/next';
 import { get } from '@/utils/request';
 import './index.scss';
 
@@ -35,7 +35,6 @@ class OverviewSetting extends Component {
 }
 
 class DaemonSetting extends Component {
-
   state = {
     config: {
       npmRegistryPrefix: '',
@@ -80,6 +79,31 @@ class DaemonSetting extends Component {
   }
 }
 
+class PluginSetting extends Component {
+  state = {
+    // TODO
+  }
+
+  render() {
+    const formItemLayout = {
+      labelCol: {
+        fixedSpan: 10
+      },
+      wrapperCol: {
+        span: 14
+      }
+    };
+    return <Form {...formItemLayout}>
+      <Form.Item label="Installed plugins">
+        <p>10 plugins are installed</p>
+      </Form.Item>
+      <Form.Item label="Operations" help="This removes all installed plugins.">
+        <Button warning>Remove All Plugins</Button>
+      </Form.Item>
+    </Form>;
+  }
+}
+
 export default class Setting extends Component {
 
   render() {
@@ -92,6 +116,9 @@ export default class Setting extends Component {
           </Tab.Item>
           <Tab.Item title="Daemon">
             <DaemonSetting />
+          </Tab.Item>
+          <Tab.Item title="Plugins">
+            <PluginSetting />
           </Tab.Item>
         </Tab>
       </div>
