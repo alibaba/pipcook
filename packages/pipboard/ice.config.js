@@ -13,6 +13,7 @@ const config = {
   ],
   alias: {
     '@': path.resolve(__dirname, './src/'),
+    '@pipcook/pipcook-core': path.resolve(__dirname, 'node_modules/@pipcook/pipcook-core/dist'),
   },
   proxy: {
     '/**': {

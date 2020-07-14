@@ -13,7 +13,7 @@ const createGeneralRequest = (agent) => async (...args) => {
       messageError(response.data.message);
     }
   } catch (err) {
-    messageError(err.response.data.message);
+    messageError(err?.response.data.message);
   }
 };
 export const get = async (host, params) => createGeneralRequest(axios.get)(host, params);

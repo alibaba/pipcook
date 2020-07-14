@@ -1,0 +1,25 @@
+.plugin-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 20px;
+
+  .search-input, .plugin-list-comp {
+    width: 80%;
+  }
+  .plugin-list-header {
+    .next-select {
+      width: 200px;
+    }
+  }
+  .plugin-item-title {
+    cursor: pointer;
+  }
+  .plugin-item-actions {
+    margin-top: 10px;
+  }
+}
+
+.plugin-dialog {
+  width: 60%;
+}

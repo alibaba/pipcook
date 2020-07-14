@@ -41,6 +41,18 @@ export {
 } from './types/plugins';
 export { EvaluateResult } from './types/other';
 
+export { OutputType } from './constants/other';
+export { PipelineDB, PipelineDBParams, PipelineStatus } from './types/database';
+export { RunConfigI } from './types/config';
+
+// expose constants
+import * as PluginConstants from './constants/plugins';
+import * as OtherConstants from './constants/other';
+export const constants = {
+  ...PluginConstants,
+  ...OtherConstants
+};
+
 export {
   createAnnotationFile,
   parseAnnotation,
@@ -56,15 +68,3 @@ export {
   compressTarFile,
   shuffle
 } from './utils/public';
-
-export { OutputType } from './constants/other';
-export { PipelineDB, PipelineDBParams, PipelineStatus } from './types/database';
-export { RunConfigI } from './types/config';
-
-// expose constants
-import * as PluginConstants from './constants/plugins';
-import * as OtherConstants from './constants/other';
-export const constants = {
-  ...PluginConstants,
-  ...OtherConstants
-};

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Timeline, Select, Divider, Tab, Icon } from '@alifd/next';
+import { Button, Timeline, Select, Divider, Tab, Icon, Affix } from '@alifd/next';
 import queryString from 'query-string';
+import { PipelineStatus } from '@pipcook/pipcook-core/types/database';
 
-import { messageError, messageSuccess } from '@/utils/message';
-import { PLUGINS, pluginList, PIPELINE_STATUS } from '@/utils/config';
+import { messageSuccess } from '@/utils/message';
+import { PLUGINS, pluginList } from '@/utils/config';
 import { get } from '@/utils/request';
-import { addUrlParams } from '@/utils/common';
 import './index.scss';
 
 function formatJSON(str) {
@@ -79,7 +79,6 @@ export default class JobDetailPage extends Component {
         params: {},
       };
     }
-    
     this.setState({plugins});
   }
 
@@ -132,40 +131,44 @@ export default class JobDetailPage extends Component {
         </div>
         <div className="content-wrapper">
           <div className="plugin-choose">
-            <Timeline className="plugin-choose-timeline">
-              {
-                PLUGINS.filter(({ id }) => {
-                  return choices[id] && plugins[id];
-                }).map(({ id, title }) => {
-                  const plugin = plugins[id].plugin;
-                  const selectNode = <Select className="plugin-choose-selector" value={plugin.name} disabled>
-                    <Select.Option key={plugin.name} value={plugin.name}>{plugin.name}</Select.Option>
-                  </Select>;
-                  return renderTimelineItem(title, {
-                    key: id,
-                    state: 'done',
-                    content: selectNode,
-                  });
-                })
-              }
-            </Timeline>
-            <Divider />
-            <div className="plugin-choose-actions">
-              <Button size="medium"
-                type="secondary"
-                onClick={() => {
-                  location.href = `#/pipeline/info?pipelineId=${this.state.pipelineId}`;
-                }}>View Pipeline</Button>
-              <Button size="medium" type="secondary"
-                onClick={this.restart}>Restart</Button>
-              <Button size="medium" warning
-                disabled={!job || job.status > 1}
-                onClick={this.stop}>Stop</Button>
-            </div>
-            <Divider />
-            <div className="plugin-choose-actions">
-              <Button size="medium" disabled={job?.evaluate.pass !== true} onClick={this.downloadOutput}>Download Output</Button>
-            </div>
+            <Affix offsetTop={70}>
+              <Timeline className="plugin-choose-timeline">
+                {
+                  PLUGINS.filter(({ id }) => {
+                    return choices[id] && plugins[id];
+                  }).map(({ id, title }) => {
+                    const plugin = plugins[id].plugin;
+                    const selectNode = <Select className="plugin-choose-selector" value={plugin.name} disabled>
+                      <Select.Option key={plugin.name} value={plugin.name}>{plugin.name}</Select.Option>
+                    </Select>;
+                    return renderTimelineItem(title, {
+                      key: id,
+                      state: 'done',
+                      content: selectNode,
+                    });
+                  })
+                }
+              </Timeline>
+              <Divider />
+              <div className="plugin-choose-actions">
+                <Button size="medium"
+                  type="secondary"
+                  onClick={() => {
+                    location.href = `#/pipeline/info?pipelineId=${this.state.pipelineId}`;
+                  }}>View Pipeline</Button>
+                <Button size="medium" type="secondary"
+                  onClick={this.restart}>Restart</Button>
+                <Button size="medium" warning
+                  disabled={!job || job.status > PipelineStatus.RUNNING}
+                  onClick={this.stop}>Stop</Button>
+              </div>
+              <Divider />
+              <div className="plugin-choose-actions">
+                <Button size="medium"
+                  disabled={job?.status <= PipelineStatus.RUNNING}
+                  onClick={this.downloadOutput}>Download Output</Button>
+              </div>
+            </Affix>
           </div>
           <div className="job-outputs">
             <Tab className="job-outputs-box">

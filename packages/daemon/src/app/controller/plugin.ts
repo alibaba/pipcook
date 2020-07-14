@@ -48,4 +48,11 @@ export class PluginController {
     });
     successRes(this.ctx, { data: plugins });
   }
+
+  @get('/metadata')
+  public async getMetadata() {
+    const { name } = this.ctx.query;
+    const plugin = await this.pluginManager.fetch(name);
+    successRes(this.ctx, { data: plugin });
+  }
 }
