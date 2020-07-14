@@ -121,10 +121,6 @@ export default class PluginList extends Component {
       </Select>
       {this.state.loading ?
         <Icon type="loading" /> : <span>{pluginLength} plugins are displayed.</span>}
-      <Box flex={1} spacing={10} direction="row" justify="flex-end">
-        <Button disabled><Icon type="copy" />Install from pipeline</Button>
-        <Button type="primary" warning><Icon type="ashbin" />Uninstall All</Button>
-      </Box>
     </Box>;
     return (
       <List className="plugin-list-comp" header={headerNode}>
