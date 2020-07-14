@@ -64,7 +64,7 @@ const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<v
     const splitString = imagePath.split(path.sep);
     const trainType = splitString[splitString.length - 3];
     const category = splitString[splitString.length - 2];
-    const imageName = uuidv1() + splitString[splitString.length - 1];
+    const imageName = generate() + splitString[splitString.length - 1];
     const annotationDir = path.join(dataDir, trainType);
     createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
     fs.moveSync(imagePath, path.join(annotationDir, imageName), { overwrite: true });

@@ -363,9 +363,6 @@ export class PipelineService {
   }
 
   async getPipelineId(id: string): Promise<string> {
-    if (validate(id) as boolean) {
-      return id;
-    }
     const pipeline = await this.getPipeline(id);
     return pipeline.id;
   }

@@ -116,7 +116,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
     // default handler for plugins.
     const resp = await fn(...pluginArgs.map(deserializeArg));
     if (resp) {
-      const rid = uuid.v4();
+      const rid = generate();
       previousResults[rid] = resp;
       console.info(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
       recv(PluginOperator.WRITE, rid);
