@@ -1,5 +1,5 @@
-import * as uuid from 'uuid';
 import * as path from 'path';
+import { generate } from 'shortid';
 import { PluginProtocol, PluginOperator, PluginMessage } from './protocol';
 import { PluginPackage } from './index';
 import Debug from 'debug';

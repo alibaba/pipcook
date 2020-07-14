@@ -1,9 +1,8 @@
 import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
-import * as validate from 'uuid-validate';
 import * as fs from 'fs-extra';
-import { v1 as uuidv1 } from 'uuid';
-
+import { generate } from 'shortid';
+import { Op } from 'sequelize';
 import { provide, inject } from 'midway';
 import {
   PipelineDB,
@@ -40,18 +39,9 @@ interface GenerateOptions {
   template: string;
 }
 
-type QueryParams = { id: string, name?: string } | { id?: string, name: string };
-
 interface PluginInfo {
   plugin: PluginPackage;
   params: string;
-}
-
-function getIdOrName(id: string): QueryParams {
-  if (!id) {
-    throw new Error('id or name cannot be empty');
-  }
-  return validate(id) as boolean ? { id } : { name: id };
 }
 
 function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
@@ -77,15 +67,15 @@ export class PipelineService {
   pluginManager: PluginManager;
 
   createPipeline(config: PipelineDB): Promise<PipelineModel> {
-    if (!config.id || validate(config.id)) {
-      config.id = uuidv1();
+    if (typeof config.id === 'string') {
+      config.id = generate();
     }
     return this.pipeline.create(config);
   }
 
-  async getPipeline(id: string): Promise<PipelineModel> {
+  async getPipeline(idOrName: string): Promise<PipelineModel> {
     return this.pipeline.findOne({
-      where: getIdOrName(id)
+      where: { [Op.or]: [ { id: idOrName }, {name: idOrName } ] }
     });
   }
 
@@ -107,7 +97,7 @@ export class PipelineService {
 
   async removePipelineById(id: string): Promise<number> {
     return this.pipeline.destroy({
-      where: getIdOrName(id)
+      where: { id }
     });
   }
 
@@ -121,7 +111,7 @@ export class PipelineService {
 
   async updatePipelineById(id: string, config: PipelineDB): Promise<PipelineModel> {
     await this.pipeline.update(config, {
-      where: getIdOrName(id)
+      where: { id }
     });
     return this.getPipeline(id);
   }
@@ -168,7 +158,7 @@ export class PipelineService {
     const pipelineId = await this.getPipelineId(id);
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
     const job = await this.job.create({
-      id: uuidv1(),
+      id: generate(),
       pipelineId,
       specVersion,
       status: PipelineStatus.INIT,
