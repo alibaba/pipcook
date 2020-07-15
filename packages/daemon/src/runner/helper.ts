@@ -3,7 +3,7 @@
  */
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { v1 as uuidv1 } from 'uuid';
+import { generate } from 'shortid';
 import * as request from 'request-promise';
 import * as url from 'url';
 import {
@@ -40,7 +40,7 @@ export async function parseConfig(configPath: string | RunConfigI, generateId = 
   const result: PipelineDB = {};
 
   if (generateId) {
-    result.id = uuidv1();
+    result.id = generate();
   }
   if (configJson.name) {
     result.name = configJson.name;

@@ -7,12 +7,12 @@ import {
 } from './public';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as uuid from 'uuid';
+import { generate } from 'shortid';
 
 describe('public utils', () => {
   it('should generate correct coco json from pascal voc format', async () => {
     const dir = process.cwd();
-    const file = uuid.v1();
+    const file = generate();
     await createAnnotationFromJson(dir, {
       annotation: {
         folder: [

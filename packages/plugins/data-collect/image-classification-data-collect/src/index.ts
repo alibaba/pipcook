@@ -9,7 +9,7 @@ import glob from 'glob-promise';
 import * as path from 'path';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
-import { v1 as uuidv1 } from 'uuid';
+import { generate } from 'shortid';
 
 /**
  * collect the data either from remote url or local file system. It expects a zip
@@ -48,7 +48,7 @@ const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<v
   if (/^file:\/\/.*/.test(url)) {
     url = url.substring(7);
   } else {
-    const targetPath = path.join(dataDir, uuidv1() + '.zip');
+    const targetPath = path.join(dataDir, generate() + '.zip');
     console.log('downloading dataset ...');
     await download(url, targetPath);
     url = targetPath;
@@ -64,7 +64,7 @@ const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<v
     const splitString = imagePath.split(path.sep);
     const trainType = splitString[splitString.length - 3];
     const category = splitString[splitString.length - 2];
-    const imageName = uuidv1() + splitString[splitString.length - 1];
+    const imageName = generate() + splitString[splitString.length - 1];
     const annotationDir = path.join(dataDir, trainType);
     createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
     fs.moveSync(imagePath, path.join(annotationDir, imageName), { overwrite: true });

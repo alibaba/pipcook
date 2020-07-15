@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as url from 'url';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { randomBytes } from 'crypto';
+import { generate } from 'shortid';
 import _cliProgress from 'cli-progress';
 import { PIPCOOK_LOGS, PIPCOOK_TMPDIR } from '../constants/other';
 
@@ -113,7 +113,7 @@ export async function downloadAndExtractTo(resUrl: string): Promise<string> {
   const extname = path.extname(filename);
 
   const { protocol, pathname } = url.parse(resUrl);
-  const destPath = path.join(PIPCOOK_TMPDIR, randomBytes(8).toString('hex'));
+  const destPath = path.join(PIPCOOK_TMPDIR, generate());
   const pkgName = path.join(destPath, filename);
 
   if (protocol === 'file:' && extname !== '.zip') {
