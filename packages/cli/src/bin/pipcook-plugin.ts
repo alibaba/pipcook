@@ -54,9 +54,6 @@ async function list(opts: any): Promise<void> {
 
 async function upload(localPluginsPath: string, opts: any): Promise<void> {
   const spinner = ora();
-  const params = {
-    pyIndex: opts.tuna ? tunaMirrorURI : undefined
-  };
   try {
     const pkg = await fs.readJSON(path.join(localPluginsPath, 'package.json'));
     spinner.start(`installing ${pkg.name} from ${localPluginsPath}`);
@@ -66,6 +63,9 @@ async function upload(localPluginsPath: string, opts: any): Promise<void> {
   } catch (err) {
     failExit(spinner, `read package.json error: ${err.message}`);
   }
+  const params = {
+    pyIndex: opts.tuna ? tunaMirrorURI : undefined
+  };
   const output = spawnSync('npm', [ 'pack' ], { cwd: localPluginsPath });
   let tarball: string;
   if (output.status !== 0) {

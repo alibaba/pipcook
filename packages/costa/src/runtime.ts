@@ -58,7 +58,7 @@ interface CostaSpawnOptions extends SpawnOptions {
  * @param read child process stdout/stderr
  * @param write the log stream
  */
-function pair(read: Readable, write: Writable) {
+function pair(read: Readable, write: Writable): void {
   read.on('error', (err) => {
     write.emit('error', err);
   });
@@ -67,7 +67,7 @@ function pair(read: Readable, write: Writable) {
   });
 }
 
-function pipeLog(stdout: Readable, stderr: Readable, logStdout: Writable, logStderr: Writable) {
+function pipeLog(stdout: Readable, stderr: Readable, logStdout: Writable, logStderr: Writable):void {
   pair(stdout, logStdout);
   pair(stderr, logStderr);
 }
