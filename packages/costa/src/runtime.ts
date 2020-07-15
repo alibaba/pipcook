@@ -204,6 +204,25 @@ export class CostaRuntime {
     ensureDirSync(opts.datasetDir);
     ensureDirSync(opts.componentDir);
   }
+
+  /**
+   * valid package info and assgin with source
+   * @param pkg plugin package info
+   * @param source source info
+   */
+  validAndAssign(pkg: PluginPackage, source: PluginSource) {
+    try {
+      this.validPackage(pkg);
+      this.assignPackage(pkg, source);
+    } catch (err) {
+      if (process.env.NODE_ENV === 'test') {
+        console.warn('skip the valid package and assign because NODE_ENV is set to "test".');
+      } else {
+        throw err;
+      }
+    }
+    return pkg;
+  }
   /**
    * fetch and check if the package name is valid.
    * @param name the plugin package name.
@@ -232,25 +251,14 @@ export class CostaRuntime {
       await download(source.name, source.uri);
       pkg = await fetchPackageJsonFromTarball(source.uri);
     }
-
-    try {
-      this.validPackage(pkg);
-      this.assignPackage(pkg, source);
-    } catch (err) {
-      if (process.env.NODE_ENV === 'test') {
-        console.warn('skip the valid package and assign because NODE_ENV is set to "test".');
-      } else {
-        throw err;
-      }
-    }
-    return pkg;
+    return this.validAndAssign(pkg, source);
   }
   /**
    * fetch and check if the package name is valid.
    * @param name the plugin package readstream for npm package tarball.
    * @param cwd the current working directory.
    */
-  async fetchByStream(stream: Readable, cwd?: string): Promise<PluginPackage> {
+  async fetchByStream(stream: Readable): Promise<PluginPackage> {
     const fileDir = path.join(constants.PIPCOOK_TMPDIR, randomBytes(8).toString('hex'));
     const filename = path.join(fileDir, 'pkg.tgz');
     await mkdirp(fileDir);
@@ -270,17 +278,7 @@ export class CostaRuntime {
       name: `${pkg.name}@${pkg.version}`,
       uri: filename
     };
-    try {
-      this.validPackage(pkg);
-      this.assignPackage(pkg, source);
-    } catch (err) {
-      if (process.env.NODE_ENV === 'test') {
-        console.warn('skip the valid package and assign because NODE_ENV is set to "test".');
-      } else {
-        throw err;
-      }
-    }
-    return pkg;
+    return this.validAndAssign(pkg, source);
   }
   /**
    * Install the given plugin by name.

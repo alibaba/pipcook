@@ -1,5 +1,5 @@
 import path from 'path';
-import http, { IncomingMessage } from 'http';
+import axios from 'axios';
 import { CostaRuntime } from './runtime';
 import { PluginPackage } from '.';
 import { stat } from 'fs-extra';
@@ -96,17 +96,20 @@ describe('create a costa runtime', () => {
   }, INSTALL_SPECS_TIMEOUT);
 
   it('should fetch a plugin from tarball readstream', async () => {
-    http.get("https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-0.5.8.tgz", async (response: IncomingMessage) => {
-      const collectCsvWithSpecificVer = await costa.fetchByStream(response);
-      expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-csv-data-collect');
-      expect(collectCsvWithSpecificVer.version).toBe('0.5.8');
-      await costa.install(collectCsvWithSpecificVer, logWrite);
-      await stat(path.join(
-        costa.options.installDir,
-        'node_modules',
-        collectCsvWithSpecificVer.name
-      ));
+    const resp = await axios({
+      method: 'GET',
+      url: 'https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-0.5.8.tgz',
+      responseType: 'stream'
     });
+    const collectCsvWithSpecificVer = await costa.fetchByStream(resp.data as NodeJS.ReadStream);
+    expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-csv-data-collect');
+    expect(collectCsvWithSpecificVer.version).toBe('0.5.8');
+    await costa.install(collectCsvWithSpecificVer, logWrite);
+    await stat(path.join(
+      costa.options.installDir,
+      'node_modules',
+      collectCsvWithSpecificVer.name
+    ));
   }, 180 * 1000);
 
   it('should start the package', async () => {
