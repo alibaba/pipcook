@@ -25,6 +25,8 @@ jobs:
     - name: initilize pipcook
       env:
         NODE_ENV: local
-      run: ./packages/cli/dist/bin/pipcook init
+      run: |
+        ./packages/cli/dist/bin/pipcook init
+        ./packages/cli/dist/bin/pipcook daemon start
     - name: pipeline
       run: npm run test:pipeline -- ${{ matrix.pipeline }}
