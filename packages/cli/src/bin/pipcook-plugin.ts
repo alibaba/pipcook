@@ -7,7 +7,7 @@ import fs from 'fs-extra';
 import { listen, get, uploadFile } from '../request';
 import { route } from '../router';
 import { tunaMirrorURI } from '../config';
-import { ora, failExit } from '../utils';
+import { ora, abort } from '../utils';
 
 async function install(name: string, opts: any): Promise<void> {
   if (name.startsWith('.') || path.isAbsolute(name)) {
@@ -30,7 +30,7 @@ async function install(name: string, opts: any): Promise<void> {
         spinner.succeed(`${pkg.name} installed.`);
       },
       'error': (e: MessageEvent) => {
-        spinner.fail(`install failed with ${e?.data}`);
+        abort(spinner, `install failed with ${e?.data}`);
       }
     });
   }
@@ -58,10 +58,10 @@ async function upload(localPluginsPath: string, opts: any): Promise<void> {
     const pkg = await fs.readJSON(path.join(localPluginsPath, 'package.json'));
     spinner.start(`installing ${pkg.name} from ${localPluginsPath}`);
     if (!pkg?.pipcook) {
-      failExit(spinner, 'invalid plugin package');
+      return abort(spinner, 'invalid plugin package');
     }
   } catch (err) {
-    failExit(spinner, `read package.json error: ${err.message}`);
+    return abort(spinner, `read package.json error: ${err.message}`);
   }
   const params = {
     pyIndex: opts.tuna ? tunaMirrorURI : undefined
@@ -69,7 +69,7 @@ async function upload(localPluginsPath: string, opts: any): Promise<void> {
   const output = spawnSync('npm', [ 'pack' ], { cwd: localPluginsPath });
   let tarball: string;
   if (output.status !== 0) {
-    failExit(spinner, output.stderr.toString());
+    return abort(spinner, output.stderr.toString());
   } else {
     spinner.info(output.stdout.toString());
     tarball = output.stdout.toString().replace(/[\n\r]/g, '');
@@ -86,11 +86,10 @@ async function upload(localPluginsPath: string, opts: any): Promise<void> {
         spinner.warn(e.data);
       },
       'fail': (e: MessageEvent) => {
-        failExit(spinner, e.data);
+        abort(spinner, e.data);
       },
       'finished': (e: MessageEvent) => {
         resolve();
-        process.exit(0);
       }
     });
   });

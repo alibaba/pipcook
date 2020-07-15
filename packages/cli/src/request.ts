@@ -46,7 +46,7 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Nod
 
 // FIXME(feely): params is not working
 export const uploadFile = async (host: string, file: string, params?: RequestParams): Promise<any> => {
-  let stream = fs.createReadStream(file);
+  const stream = fs.createReadStream(file);
   const form = new FormData();
   for (const param in params) {
     if (params[param]) {
