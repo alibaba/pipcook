@@ -21,12 +21,13 @@
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
-    "uuid": "^7.0.2"
+    "shortid": "^2.2.15"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
     "@types/uuid": "^7.0.0",
+    "@types/shortid": "^0.0.29",
     "nyc": "14.1.1"
   },
   "publishConfig": {

@@ -1,5 +1,5 @@
-import * as uuid from 'uuid';
 import path from 'path';
+import { generate } from 'shortid';
 import { ensureDir, ensureSymlink, ensureFile, open, close } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
@@ -64,7 +64,7 @@ export class PluginRunnable {
    * @param rt the costa runtime.
    */
   constructor(rt: CostaRuntime, id?: string) {
-    this.id = id || uuid.v1();
+    this.id = id || generate();
     this.rt = rt;
     this.workingDir = path.join(this.rt.options.componentDir, this.id);
     this.state = 'init';

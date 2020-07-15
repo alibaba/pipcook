@@ -3,9 +3,7 @@
  */
 import { DataCollectType, ArgsType, downloadAndExtractTo } from '@pipcook/pipcook-core';
 import * as path from 'path';
-import * as assert from 'assert';
 import * as fs from 'fs-extra';
-import { v1 as uuidv1 } from 'uuid';
 import glob from 'glob-promise';
 import parse from 'csv-parse/lib/sync';
 import stringify from 'csv-stringify/lib/sync';
