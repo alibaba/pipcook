@@ -51,8 +51,8 @@ export class PluginManager {
     return this.pluginRT.costa.fetch(name, cwd);
   }
 
-  async fetchByStream(stream: Readable, cwd?: string): Promise<PluginPackage> {
-    return this.pluginRT.costa.fetchByStream(stream, cwd);
+  async fetchByStream(stream: Readable): Promise<PluginPackage> {
+    return this.pluginRT.costa.fetchByStream(stream);
   }
 
   async fetchAndInstall(name: string, cwd?: string, pyIndex?: string): Promise<PluginPackage> {
