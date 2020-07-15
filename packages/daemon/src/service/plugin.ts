@@ -112,12 +112,12 @@ export class PluginManager {
     });
   }
 
-  async installFromTarStream(tarball: Readable): Promise<PluginAndLog> {
+  async installFromTarStream(tarball: Readable, pyIndex?: string): Promise<PluginAndLog> {
     const logObject = this.logManager.createLogStream();
     const pkg = await this.fetchByStream(tarball);
     process.nextTick(async () => {
       try {
-        await this.install(pkg, logObject.logTransfroms);
+        await this.install(pkg, logObject.logTransfroms, pyIndex);
         this.logManager.destroyLog(logObject.id);
       } catch (err) {
         console.error('install plugin from tarball error', err.message);

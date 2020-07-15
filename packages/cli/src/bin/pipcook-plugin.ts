@@ -11,7 +11,7 @@ import { ora } from '../utils';
 
 async function install(name: string, opts: any): Promise<void> {
   if (name.startsWith('./') || path.isAbsolute(name)) {
-    upload(name, opts);
+    await upload(name, opts);
   } else {
     const spinner = ora();
     spinner.start(`fetching package info ${name}`);

@@ -53,7 +53,7 @@ export const uploadFile = async (host: string, file: string, params?: RequestPar
       form.append(param, params[param]);
     }
   }
-  form.append('media', stream);
+  form.append('file', stream);
 
   let getHeaders = (form: FormData): Promise<FormData.Headers> => {
     return new Promise((resolve, reject) => {

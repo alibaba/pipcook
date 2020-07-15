@@ -52,7 +52,8 @@ export class PluginController {
   @post('/upload')
   public async upload() {
     const fs = await this.ctx.getFileStream();
-    successRes(this.ctx, await this.pluginManager.installFromTarStream(fs));
+    const { pyIndex = undefined } = fs.fields;
+    successRes(this.ctx, await this.pluginManager.installFromTarStream(fs, pyIndex));
   }
 
   private async linkLog(logStream: Readable, type: 'info' | 'error', sse: ServerSentEmitter): Promise<void> {
