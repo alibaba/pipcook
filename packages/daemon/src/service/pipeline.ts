@@ -75,7 +75,7 @@ export class PipelineService {
 
   async getPipeline(idOrName: string): Promise<PipelineModel> {
     return this.pipeline.findOne({
-      where: { [Op.or]: [ { id: idOrName }, {name: idOrName } ] }
+      where: { [Op.or]: [ { id: idOrName }, { name: idOrName } ] }
     });
   }
 
