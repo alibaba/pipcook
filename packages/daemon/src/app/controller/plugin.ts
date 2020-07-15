@@ -2,7 +2,6 @@ import { Context, controller, inject, provide, get, post } from 'midway';
 import { successRes } from '../../utils/response';
 import { PluginManager } from '../../service/plugin';
 import ServerSentEmitter from '../../utils/emitter';
-import { LogObject } from '../../service/log-manager';
 import Debug from 'debug';
 import { Readable } from 'stream';
 const debug = Debug('daemon.app.plugin');
