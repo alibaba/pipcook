@@ -14,7 +14,9 @@ Another example is in the scenario of automated testing. We need an ability to i
 
 ## Examples
 For example, in the scenario where the forms are automatically generated, we need to identify which components are column charts or pie charts, as shown in the following figure:
+
 ![image.png](https://img.alicdn.com/tfs/TB17LbHNQL0gK0jSZFAXXcA9pXa-293-172.png)
+
 ![image.png](https://gw.alicdn.com/tfs/TB13I2LNQY2gK0jSZFgXXc5OFXa-442-369.png) 
 
 After the training is completed, for each picture, the model will eventually give us the prediction results we want. For example, when we enter the line chart of Figure 1, the model will give prediction results similar to the following
@@ -161,7 +163,7 @@ npm install
 ```
 After installing the environment , we can start to predict:
 
-```json
+```js
 const predict = require('./output');
 (async () => {
   const v1 = await predict('./test.jpg');

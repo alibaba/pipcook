@@ -10,10 +10,13 @@ This kind of detection is very useful. For example, in the research of code gene
 
 This tutorial will teach you how to train a model to do such a detection task.
 
-## 场景示例
-For example, as shown in the following, this picture contains multiple components, including buttons, switches, input boxes, etc., we want to identify their location and type：![image.png](https://gw.alicdn.com/tfs/TB1YxdPfz39YK4jSZPcXXXrUFXa-1300-140.png)
+## Scenario
+For example, as shown in the following, this picture contains multiple components, including buttons, switches, input boxes, etc., we want to identify their location and type：
+
+![image.png](https://gw.alicdn.com/tfs/TB1YxdPfz39YK4jSZPcXXXrUFXa-1300-140.png)
+
 For the trained model, after inputting this picture, the model will output the following prediction results:
-```json
+```js
 {
   boxes: [
     [83, 31, 146, 71],  // xmin, ymin, xmax, ymax
@@ -38,8 +41,6 @@ At the same time, we will generate a labelmap during training. Labelmap is a map
 }
 ```
 Let’s explain the above prediction results
-
-：<br />
 
 - boxes：This field describes the position of each component identified, displayed in the order of the upper left and lower right corners, such as [83, 31, 146, 71], indicating that the coordinates of the upper left corner of this component are (83, 13), lower right corner are (146, 71)
 - classes: This field describes the category of each component. Combined with labelmap, we can see that the identified components are buttons, switches, input boxes and input boxes.
@@ -216,7 +217,7 @@ BOA_TUNA=1 npm install
 ```
 After installing the environment, we can start to predict:
 First install dependencies:
-```json
+```js
 const predict = require('./output');
 (async () => {
   const v1 = await predict('./test.jpg');

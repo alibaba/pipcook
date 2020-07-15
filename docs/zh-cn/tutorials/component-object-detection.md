@@ -12,9 +12,9 @@
 这篇教程将会教你如何训练出一个模型来做这样一个检测任务。
 
 ## 场景示例
-举个例子，如下图所示，这个图片包含着多个组件，包括按钮，开关，输入框等，我们想要识别出他们的位置和类型：![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/218635/1593347941959-4004b8a8-a173-41a9-870b-b783f79a7607.png#align=left&display=inline&height=70&margin=%5Bobject%20Object%5D&name=image.png&originHeight=140&originWidth=1300&size=61017&status=done&style=none&width=650)
+举个例子，如下图所示，这个图片包含着多个组件，包括按钮，开关，输入框等，我们想要识别出他们的位置和类型：![image.png](https://img.alicdn.com/tfs/TB1YxdPfz39YK4jSZPcXXXrUFXa-1300-140.png)
 对于训练好的模型来说，在输入这张图片之后，模型会输出如下的预测结果：
-```json
+```js
 {
   boxes: [
     [83, 31, 146, 71],  // xmin, ymin, xmax, ymax
@@ -207,7 +207,7 @@ cd output
 BOA_TUNA=1 npm install
 ```
 安装好环境之后，我们就可以开始预测了：
-```json
+```js
 const predict = require('./output');
 (async () => {
   const v1 = await predict('./test.jpg');

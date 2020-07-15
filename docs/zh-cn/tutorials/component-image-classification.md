@@ -15,8 +15,10 @@
 
 ## 场景示例
 举个例子，我们在中后台表单自动生成的场景里，我们需要识别哪些组件是折线图，哪些是柱状图，饼图或是环形图，如下图所示：
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/218635/1592981268966-d67f0ff3-b9e7-4bcb-b2c7-f5c9d2d765c8.png#align=left&display=inline&height=206&margin=%5Bobject%20Object%5D&name=image.png&originHeight=323&originWidth=429&size=45044&status=done&style=none&width=274)![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/218635/1592981302180-d4b0955f-8f0b-468a-8705-cd4a5db950f2.png#align=left&display=inline&height=219&margin=%5Bobject%20Object%5D&name=image.png&originHeight=298&originWidth=338&size=64378&status=done&style=none&width=248) 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/218635/1592988564802-1a4e7019-5a05-4fc0-a8bf-3bf50ead6562.png#align=left&display=inline&height=215&margin=%5Bobject%20Object%5D&name=image.png&originHeight=240&originWidth=304&size=46368&status=done&style=none&width=272)![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/218635/1592988583242-38b6ee25-b0b3-40e0-9c98-1dee16bd5603.png#align=left&display=inline&height=204&margin=%5Bobject%20Object%5D&name=image.png&originHeight=319&originWidth=437&size=58838&status=done&style=none&width=280)
+![image.png](https://img.alicdn.com/tfs/TB1EkmVamslXu8jSZFuXXXg7FXa-429-323.png)
+![image.png](https://img.alicdn.com/tfs/TB1azNlN7L0gK0jSZFtXXXQCXXa-338-298.png) 
+![image.png](https://img.alicdn.com/tfs/TB1FnjUeA9l0K4jSZFKXXXFjpXa-304-240.png)
+![image.png](https://img.alicdn.com/tfs/TB1MZWRbMgP7K4jSZFqXXamhVXa-437-319.png)
 
 训练完成之后，对于每一张图片，模型最终会给出我们想要的预测结果。例如，当我们输入图 1 的折线图时，模型会给出类似于以下的预测结果
 ```json
@@ -131,7 +133,7 @@
 > CUDA，Compute Unified Device Architecture的简称，是由NVIDIA公司创立的基于他们公司生产的图形处理器GPUs（Graphics Processing Units,可以通俗的理解为显卡）的一个并行计算平台和编程模型。
 > 通过CUDA，GPUs可以很方便地被用来进行通用计算（有点像在CPU中进行的数值计算等等）。在没有CUDA之前，GPUs一般只用来进行图形渲染（如通过OpenGL，DirectX）。
 
-```json
+```
 pipcook run image-classification.json --verbose --tuna
 ```
 往往模型在 10-20 个 epoch 时就会收敛，当然，这取决于您的数据集复杂度。模型收敛是指 loss (损失值) 已经足够低并且准确度已经足够高了，在这种情况，每一个 epoch 对于模型的表现得改变已经不明显了。<br />
@@ -156,7 +158,7 @@ cd output
 BOA_TUNA=1 npm install
 ```
 安装好环境之后（设置 BOA_TUNA 使用清华镜像源来下载 Python 相关的依赖），我们就可以开始预测啦：
-```json
+```js
 const predict = require('./output');
 (async () => {
   const v1 = await predict('./test.jpg');
