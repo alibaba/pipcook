@@ -8,4 +8,3 @@ export default {
     domainWhiteList: [ 'http://localhost:4444' ]
   }
 };
-
