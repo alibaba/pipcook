@@ -48,9 +48,16 @@ interface LogWriter {
 }
 
 interface CostaSpawnOptions extends SpawnOptions {
-  logWriter: LogWriter;
+  stdout: Writable;
+  stderr: Writable;
 }
 
+/**
+ * pipe a stream to another one, because we fork multi child processes here,
+ * so we can't pipe the enn event.
+ * @param read child process stdout/stderr
+ * @param write the log stream
+ */
 function pair(read: Readable, write: Writable) {
   read.on('error', (err) => {
     write.emit('error', err);
@@ -60,9 +67,9 @@ function pair(read: Readable, write: Writable) {
   });
 }
 
-function pipeLog(stdout: Readable, stderr: Readable, logWrite: LogWriter) {
-  pair(stdout, logWrite.stdout);
-  pair(stderr, logWrite.stderr);
+function pipeLog(stdout: Readable, stderr: Readable, logStdout: Writable, logStderr: Writable) {
+  pair(stdout, logStdout);
+  pair(stderr, logStderr);
 }
 
 function spawnAsync(command: string, args: string[], opts: CostaSpawnOptions): Promise<string> {
@@ -70,7 +77,7 @@ function spawnAsync(command: string, args: string[], opts: CostaSpawnOptions): P
     opts.stdio = [ null, 'pipe', 'pipe' ];
     opts.detached = false;
     const child = spawn(command, args, opts);
-    pipeLog(child.stdout, child.stderr, opts.logWriter);
+    pipeLog(child.stdout, child.stderr, opts.stdout, opts.stderr);
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });
@@ -223,7 +230,7 @@ export class CostaRuntime {
    * @param pkg plugin package info
    * @param source source info
    */
-  validAndAssign(pkg: PluginPackage, source: PluginSource) {
+  validAndAssign(pkg: PluginPackage, source: PluginSource): PluginPackage {
     try {
       this.validPackage(pkg);
       this.assignPackage(pkg, source);
@@ -327,7 +334,7 @@ export class CostaRuntime {
       debug(`install the plugin from ${pluginAbsName}`);
     }
 
-    const npmExecOpts = { cwd: this.options.installDir, logWriter };
+    const npmExecOpts = { cwd: this.options.installDir, ...logWriter };
     const npmArgs = [ 'install', pluginAbsName, '-E', '--production' ];
 
     if (this.options.npmRegistryPrefix) {
@@ -364,7 +371,7 @@ export class CostaRuntime {
       }
 
       debug('conda environment is setup correctly, start downloading.');
-      await spawnAsync(python, [ '-m', 'venv', envDir ], { logWriter });
+      await spawnAsync(python, [ '-m', 'venv', envDir ], { ...logWriter });
       // TODO(yorkie): check for access(pip3)
 
       for (let name of requirements) {
@@ -377,7 +384,7 @@ export class CostaRuntime {
           '--default-timeout=1000',
           `--cache-dir=${this.options.installDir}/.pip`
         ]);
-        await spawnAsync(`${envDir}/bin/pip3`, args, { logWriter });
+        await spawnAsync(`${envDir}/bin/pip3`, args, { ...logWriter });
       }
     } else {
       debug(`just skip the Python environment installation.`);

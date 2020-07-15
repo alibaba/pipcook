@@ -7,10 +7,10 @@ import fs from 'fs-extra';
 import { listen, get, uploadFile } from '../request';
 import { route } from '../router';
 import { tunaMirrorURI } from '../config';
-import { ora } from '../utils';
+import { ora, failExit } from '../utils';
 
 async function install(name: string, opts: any): Promise<void> {
-  if (name.startsWith('./') || path.isAbsolute(name)) {
+  if (name.startsWith('.') || path.isAbsolute(name)) {
     await upload(name, opts);
   } else {
     const spinner = ora();
@@ -54,25 +54,22 @@ async function list(opts: any): Promise<void> {
 
 async function upload(localPluginsPath: string, opts: any): Promise<void> {
   const spinner = ora();
-  spinner.start(`upload plugin: ${localPluginsPath}`);
   const params = {
     pyIndex: opts.tuna ? tunaMirrorURI : undefined
   };
   try {
     const pkg = await fs.readJSON(path.join(localPluginsPath, 'package.json'));
+    spinner.start(`installing ${pkg.name} from ${localPluginsPath}`);
     if (!pkg?.pipcook) {
-      spinner.fail('invalid plugin package');
-      process.exit(1);
+      failExit(spinner, 'invalid plugin package');
     }
   } catch (err) {
-    spinner.fail(`read package.json error: ${err.message}`);
-    process.exit(1);
+    failExit(spinner, `read package.json error: ${err.message}`);
   }
   const output = spawnSync('npm', [ 'pack' ], { cwd: localPluginsPath });
   let tarball: string;
   if (output.status !== 0) {
-    spinner.fail(output.stderr.toString());
-    process.exit(1);
+    failExit(spinner, output.stderr.toString());
   } else {
     spinner.info(output.stdout.toString());
     tarball = output.stdout.toString().replace(/[\n\r]/g, '');
@@ -89,8 +86,7 @@ async function upload(localPluginsPath: string, opts: any): Promise<void> {
         spinner.warn(e.data);
       },
       'fail': (e: MessageEvent) => {
-        spinner.fail(e.data);
-        process.exit(1);
+        failExit(spinner, e.data);
       },
       'finished': (e: MessageEvent) => {
         resolve();

@@ -70,6 +70,11 @@ export async function parseConfigFilename(filename: string): Promise<string> {
   return filename;
 }
 
-export function ora(opts?: realOra.Options) {
+export function ora(opts?: realOra.Options): realOra.Ora {
   return realOra({ stream: process.stdout, ...opts });
+}
+
+export function failExit(spinner :realOra.Ora, message: string): void {
+  spinner.fail(message);
+  process.exit(1);
 }
