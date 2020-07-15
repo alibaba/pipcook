@@ -5,7 +5,6 @@ import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
 import { PluginPackage, BootstrapArg, PluginRunnable, LogWriter } from '@pipcook/costa';
 import { LogManager, LogObject } from './log-manager';
-import { Context } from 'midway';
 import process = require('process');
 
 class PluginNotFound extends TypeError {
@@ -39,9 +38,6 @@ export class PluginManager {
 
   @inject('pluginRT')
   pluginRT: PluginRuntime;
-
-  @inject()
-  ctx: Context;
 
   get datasetRoot() {
     return this.pluginRT.costa.options.datasetDir;

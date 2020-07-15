@@ -68,7 +68,7 @@ export class PluginController {
           sse.emit('fail', err.message);
           resolveEnd();
         });
-      });        
+      });
     } else {
       return Promise.resolve();
     }
