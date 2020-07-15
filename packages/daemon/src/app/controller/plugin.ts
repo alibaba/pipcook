@@ -2,6 +2,7 @@ import { Context, controller, inject, provide, get, post } from 'midway';
 import { successRes } from '../../utils/response';
 import { PluginManager } from '../../service/plugin';
 import ServerSentEmitter from '../../utils/emitter';
+import { LogObject } from '../../service/log-manager';
 import Debug from 'debug';
 import { Readable } from 'stream';
 const debug = Debug('daemon.app.plugin');
@@ -55,7 +56,8 @@ export class PluginController {
     successRes(this.ctx, await this.pluginManager.installFromTarStream(fs));
   }
 
-  private async linkLog(logStream: Readable, type: 'info' | 'error', sse: ServerSentEmitter): Promise<void> {
+  private async linkLog(logObject: LogObject, logStream: Readable,
+    type: 'info' | 'error', sse: ServerSentEmitter): Promise<void> {
     if (logStream.readable) {
       logStream.on('data', data => {
         sse.emit(type, data.toString());
@@ -86,8 +88,8 @@ export class PluginController {
         }
       } else {
         const futures = [
-          this.linkLog(logObject.logTransfroms.stdout, 'info', sse),
-          this.linkLog(logObject.logTransfroms.stderr, 'error', sse)
+          this.linkLog(logObject, logObject.logTransfroms.stdout, 'info', sse),
+          this.linkLog(logObject, logObject.logTransfroms.stderr, 'error', sse)
         ];
         await Promise.all(futures);
       }

@@ -51,13 +51,26 @@ interface CostaSpawnOptions extends SpawnOptions {
   logWriter: LogWriter;
 }
 
+function pair(read: Readable, write: Writable) {
+  read.on('error', err => {
+    write.emit('error', err);
+  });
+  read.on('data', data => {
+    write.write(data);
+  });
+}
+
+function pipeLog(stdout: Readable, stderr: Readable, logWrite: LogWriter) {
+  pair(stdout, logWrite.stdout);
+  pair(stderr, logWrite.stderr);
+}
+
 function spawnAsync(command: string, args: string[], opts: CostaSpawnOptions): Promise<string> {
   return new Promise((resolve, reject) => {
     opts.stdio = [ null, 'pipe', 'pipe' ];
     opts.detached = false;
     const child = spawn(command, args, opts);
-    child.stdout.pipe(opts.logWriter.stdout);
-    child.stderr.pipe(opts.logWriter.stderr);
+    pipeLog(child.stdout, child.stderr, opts.logWriter);
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });

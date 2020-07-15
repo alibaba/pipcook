@@ -1,6 +1,7 @@
 import { Transform, TransformCallback } from 'stream';
 import { randomBytes } from 'crypto';
 import { provide, scope, ScopeEnum } from 'midway';
+import { StringDecoder } from 'string_decoder';
 
 export interface LogObject {
   logTransfroms: LogTransfroms;
@@ -10,11 +11,29 @@ export interface LogObject {
 }
 
 class LogTransform extends Transform {
+  decoder = new StringDecoder('utf8');
+  last: string;
   constructor() {
     super({ objectMode: true });
   }
   _transform(chunk: any, encoding: string, callback: TransformCallback): void {
-    callback(undefined, chunk);
+    if ( this.last === undefined ) {
+      this.last = '';
+    }
+    this.last += this.decoder.write(chunk);
+    let list = this.last.split(/\n|\r/);
+    this.last = list.pop();
+    list.forEach(line => {
+      this.push(line);
+    });
+    callback();
+  }
+  _flush(callback: TransformCallback) {
+    this.last += this.decoder.end();
+    if (this.last) {
+      this.push(this.last);
+    }
+    callback();
   }
 }
 
@@ -47,6 +66,8 @@ export class LogManager {
       logs.logTransfroms.stderr.emit('error', err);
       logs.error = err;
     }
+    logs.logTransfroms.stderr.emit('end');
+    logs.logTransfroms.stdout.emit('end');
     return setTimeout(() => this.logMap.delete(id), 2000);
   }
 }
