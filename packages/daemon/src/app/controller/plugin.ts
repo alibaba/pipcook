@@ -75,15 +75,19 @@ export class PluginController {
   }
   @get('/log/:id')
   public async log() {
-    const logReader = await this.pluginManager.getInstallLogStream(this.ctx.params.id);
+    const logObject = await this.pluginManager.getInstallLogStream(this.ctx.params.id);
     const sse = new ServerSentEmitter(this.ctx);
-    if (logReader) {
-      if (!logReader.stdout.readable && !logReader.stderr.readable) {
-        sse.emit('error', 'no log to read');
+    if (logObject.logTransfroms) {
+      if (logObject.finished) {
+        if (logObject.error) {
+          sse.emit('fail', `install plugin error: ${logObject.error.message}`);
+        } else {
+          sse.emit('info', 'plugin installed');
+        }
       } else {
         const futures = [
-          this.linkLog(logReader.stdout, 'info', sse),
-          this.linkLog(logReader.stderr, 'error', sse)
+          this.linkLog(logObject.logTransfroms.stdout, 'info', sse),
+          this.linkLog(logObject.logTransfroms.stderr, 'error', sse)
         ];
         await Promise.all(futures);
       }

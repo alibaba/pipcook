@@ -3,7 +3,7 @@ import url from 'url';
 import { createUnzip } from 'zlib';
 import { Readable, Writable } from 'stream';
 import { randomBytes } from 'crypto';
-import { createReadStream, ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
+import { createReadStream, createWriteStream, ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, mkdirp } from 'fs-extra';
 import { download, constants } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
@@ -250,13 +250,26 @@ export class CostaRuntime {
    * @param name the plugin package readstream for npm package tarball.
    * @param cwd the current working directory.
    */
-  async fetchByStream(stream :Readable, cwd?: string): Promise<PluginPackage> {
+  async fetchByStream(stream: Readable, cwd?: string): Promise<PluginPackage> {
+    const fileDir = path.join(constants.PIPCOOK_TMPDIR, randomBytes(8).toString('hex'));
+    const filename = path.join(fileDir, 'pkg.tgz');
+    await mkdirp(fileDir);
+    await new Promise((resolve, reject) => {
+      const writeStream = createWriteStream(filename);
+      stream.pipe(writeStream);
+      stream.on('end', () => {
+        resolve();
+      });
+      stream.on('error', (err) => {
+        reject(err);
+      });
+    });
+    const pkg = await fetchPackageJsonFromTarball(filename);
     const source: PluginSource = {
       from: 'tarball',
-      name: 'uploadedPackage'
+      name: `${pkg.name}@${pkg.version}`,
+      uri: filename
     };
-    const pkg = await fetchPackageJsonFromTarballStream(stream);
-
     try {
       this.validPackage(pkg);
       this.assignPackage(pkg, source);
