@@ -1,5 +1,5 @@
 import { Transform, TransformCallback } from 'stream';
-import { randomBytes } from 'crypto';
+import { generate } from 'shortid';
 import { provide, scope, ScopeEnum } from 'midway';
 import { StringDecoder } from 'string_decoder';
 
@@ -48,7 +48,7 @@ export class LogManager {
   logMap = new Map<string, LogObject>();
 
   createLogStream(): LogObject {
-    const id = randomBytes(8).toString('hex');
+    const id = generate();
     const logTransfroms: LogTransfroms = { stdout: new LogTransform(), stderr: new LogTransform() };
     const logObj: LogObject = {id, finished: false, logTransfroms };
     this.logMap.set(id, logObj);

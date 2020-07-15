@@ -1,11 +1,11 @@
 import { provide, inject } from 'midway';
-import * as uuid from 'uuid';
 import { Readable } from 'stream';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
 import { PluginPackage, BootstrapArg, PluginRunnable, LogWriter } from '@pipcook/costa';
 import { LogManager, LogObject } from './log-manager';
 import process = require('process');
+import { generate } from 'shortid';
 
 class PluginNotFound extends TypeError {
   status: number;
@@ -79,7 +79,7 @@ export class PluginManager {
         version: pkg.version
       },
       defaults: {
-        id: uuid.v1(),
+        id: generate(),
         name: pkg.name,
         version: pkg.version,
         category: pkg.pipcook.category,
