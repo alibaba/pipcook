@@ -56,7 +56,7 @@ export class PluginController {
     successRes(this.ctx, await this.pluginManager.installFromTarStream(fs));
   }
 
-  private async linkLog(logObject: LogObject, logStream: Readable,
+  private async linkLog(logStream: Readable,
     type: 'info' | 'error', sse: ServerSentEmitter): Promise<void> {
     if (logStream.readable) {
       logStream.on('data', data => {
