@@ -88,8 +88,8 @@ export class PluginController {
         }
       } else {
         const futures = [
-          this.linkLog(logObject, logObject.logTransfroms.stdout, 'info', sse),
-          this.linkLog(logObject, logObject.logTransfroms.stderr, 'error', sse)
+          this.linkLog(logObject.logTransfroms.stdout, 'info', sse),
+          this.linkLog(logObject.logTransfroms.stderr, 'error', sse)
         ];
         await Promise.all(futures);
       }
