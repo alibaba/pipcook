@@ -67,7 +67,7 @@ function pair(read: Readable, write: Writable): void {
   });
 }
 
-function pipeLog(stdout: Readable, stderr: Readable, logStdout: Writable, logStderr: Writable):void {
+function pipeLog(stdout: Readable, stderr: Readable, logStdout: Writable, logStderr: Writable): void {
   pair(stdout, logStdout);
   pair(stderr, logStderr);
 }

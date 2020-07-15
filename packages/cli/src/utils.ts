@@ -74,7 +74,7 @@ export function ora(opts?: realOra.Options): realOra.Ora {
   return realOra({ stream: process.stdout, ...opts });
 }
 
-export function abort(spinner :realOra.Ora, message: string): void {
+export function abort(spinner: realOra.Ora, message: string): void {
   spinner.fail(message);
   process.exit(1);
 }
