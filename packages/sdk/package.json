@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/sdk",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "description": "JavaScript SDK for accessing Pipcook Daemon",
   "main": "dist/index.js",
   "scripts": {
