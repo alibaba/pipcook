@@ -52,10 +52,10 @@ interface CostaSpawnOptions extends SpawnOptions {
 }
 
 function pair(read: Readable, write: Writable) {
-  read.on('error', err => {
+  read.on('error', (err) => {
     write.emit('error', err);
   });
-  read.on('data', data => {
+  read.on('data', (data) => {
     write.write(data);
   });
 }

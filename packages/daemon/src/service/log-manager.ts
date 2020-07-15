@@ -17,11 +17,11 @@ class LogTransform extends Transform {
     super({ objectMode: true });
   }
   _transform(chunk: any, encoding: string, callback: TransformCallback): void {
-    if ( this.last === undefined ) {
+    if (this.last === undefined) {
       this.last = '';
     }
     this.last += this.decoder.write(chunk);
-    let list = this.last.split(/\n|\r/);
+    const list = this.last.split(/\n|\r/);
     this.last = list.pop();
     list.forEach(line => {
       this.push(line);
