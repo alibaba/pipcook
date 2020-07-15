@@ -5,6 +5,10 @@ import { ora } from './utils';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
+type ErrorEvent = {
+  status?: number;
+  message: string;
+} & Event;
 
 function createGeneralRequest(agent: Function): Function {
   const spinner = ora();
@@ -51,12 +55,18 @@ export const listen = async (host: string, params?: RequestParams, handlers?: Re
       es.close();
       console.error('connects to daemon timeout, please run "pipcook daemon restart".');
     }, 5000);
-    const onerror = (e: Event) => {
+    const onerror = (e: ErrorEvent) => {
       if (handshaked === false) {
         es.close();
         clearTimeout(timeoutHandle);
-        console.error('daemon is not started, run "pipcook daemon start"');
         es.removeEventListener('error', onerror);
+
+        // print error
+        if (typeof e?.status === 'number') {
+          console.error('occurrs an daemon error with the following response:\n', e);
+        } else {
+          console.error(`daemon is not started(${e.message}), run "pipcook daemon start".`);
+        }
       } else if (typeof handlers.error === 'function') {
         // manually pass the `error` event to user-defined handler.
         handlers.error(e);
