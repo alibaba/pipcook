@@ -10,13 +10,7 @@ import { tunaMirrorURI } from '../config';
 import { ora, abort } from '../utils';
 
 async function install(name: string, opts: any): Promise<void> {
-  let stat: fs.Stats;
-  try {
-    stat = await fs.stat(name);
-  } catch (err) {
-    // ignore this error, we just test if name is a local directory
-  }
-  if (stat?.isDirectory) {
+  if (await fs.pathExists(name) && await (await fs.stat(name)).isDirectory()) {
     await upload(name, opts);
   } else {
     const spinner = ora();
@@ -82,7 +76,6 @@ async function upload(pathname: string, opts: any): Promise<void> {
   }
 
   const resp = await uploadFile(`${route.plugin}/upload`, path.join(pathname, tarball), params);
-  console.log(resp);
   spinner.info(`installing plugin ${resp.data?.plugin.name}@${resp.data?.plugin.version}`);
   let errMsg: string;
   await new Promise((resolve) => {
@@ -104,9 +97,7 @@ async function upload(pathname: string, opts: any): Promise<void> {
         errMsg = e.data;
         resolve();
       },
-      'finished': () => {
-        resolve();
-      }
+      'finished': resolve
     });
   });
   const pluginInfoResp = await get(`${route.plugin}/${resp.data.plugin.id}`);

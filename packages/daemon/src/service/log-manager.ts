@@ -72,9 +72,9 @@ export class LogManager {
    * @param err error if have
    */
   destroy(id: string, err?: Error) {
-    const logs = this.logMap.get(id);
-    logs.stderr.destroy(err);
-    logs.stdout.destroy();
+    const log = this.logMap.get(id);
+    log.stderr.destroy(err);
+    log.stdout.destroy();
     return this.logMap.delete(id);
   }
 }

@@ -3,7 +3,6 @@ import { successRes } from '../../utils/response';
 import { PluginManager } from '../../service/plugin';
 import ServerSentEmitter from '../../utils/emitter';
 import Debug from 'debug';
-import { Readable } from 'stream';
 const debug = Debug('daemon.app.plugin');
 
 @provide()
@@ -25,7 +24,7 @@ export class PluginController {
       sse.emit('info', pkg);
 
       debug(`installing ${name}.`);
-      const plugin = await this.pluginManager.queryOrCreateByPkg(pkg);
+      const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
       try {
         await this.pluginManager.install(pkg, pyIndex);
         sse.emit('installed', pkg);
@@ -56,7 +55,7 @@ export class PluginController {
   }
   @get('/:id')
   public async info() {
-    const plugin = await this.pluginManager.queryById(this.ctx.params.id);
+    const plugin = await this.pluginManager.findById(this.ctx.params.id);
     successRes(this.ctx, { data: plugin });
   }
   @post('/upload')
@@ -66,7 +65,7 @@ export class PluginController {
     successRes(this.ctx, await this.pluginManager.installFromTarStream(fs, pyIndex, force));
   }
 
-  private linkLog(logStream: Readable, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
+  private linkLog(logStream: NodeJS.ReadStream, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
     return new Promise(resolve => {
       logStream.on('data', data => {
         sse.emit('log', { level, data });
@@ -86,11 +85,10 @@ export class PluginController {
       sse.emit('error', 'no log found');
       return sse.finish();
     }
-    const futures = [
+    await Promise.all([
       this.linkLog(log.stdout, 'info', sse),
       this.linkLog(log.stderr, 'warn', sse)
-    ];
-    await Promise.all(futures);
+    ]);
     return sse.finish();
   }
 }

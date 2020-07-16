@@ -1,5 +1,4 @@
 import { provide, inject } from 'midway';
-import { Readable } from 'stream';
 import { generate } from 'shortid';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
 import { LogManager, LogObject } from './log-manager';
@@ -42,13 +41,13 @@ export class PluginManager {
     return this.pluginRT.costa.fetch(name, cwd);
   }
 
-  async fetchByStream(stream: Readable): Promise<PluginPackage> {
+  async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
     return this.pluginRT.costa.fetchByStream(stream);
   }
 
   async fetchAndInstall(name: string, cwd?: string, pyIndex?: string): Promise<PluginPackage> {
     const pkg = await this.fetch(name, cwd);
-    const plugin = await this.queryOrCreateByPkg(pkg);
+    const plugin = await this.findOrCreateByPkg(pkg);
     try {
       await this.install(pkg, { pyIndex, force: false, stdout: process.stdout, stderr: process.stderr });
     } catch (err) {
@@ -84,7 +83,7 @@ export class PluginManager {
     return this.model.findAll({ where });
   }
 
-  async queryById(id: string): Promise<PluginModel> {
+  async findById(id: string): Promise<PluginModel> {
     return this.model.findOne({ where: { id } });
   }
 
@@ -92,7 +91,7 @@ export class PluginManager {
     return this.model.destroy({ where: { id } });
   }
 
-  async queryOrCreateByPkg(pkg: PluginPackage): Promise<PluginModel> {
+  async findOrCreateByPkg(pkg: PluginPackage): Promise<PluginModel> {
     const [ plugin ] = await this.model.findOrCreate({
       where: {
         name: pkg.name,
@@ -134,10 +133,10 @@ export class PluginManager {
     });
   }
 
-  async installFromTarStream(tarball: Readable, pyIndex?: string, force?: boolean): Promise<PluginInstall> {
+  async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<PluginInstall> {
     const logObject = this.logManager.create();
     const pkg = await this.fetchByStream(tarball);
-    const plugin = await this.queryOrCreateByPkg(pkg);
+    const plugin = await this.findOrCreateByPkg(pkg);
     process.nextTick(async () => {
       try {
         await this.install(pkg, { pyIndex, force, stdout: logObject.stdout, stderr: logObject.stderr });
@@ -152,7 +151,7 @@ export class PluginManager {
     return { plugin: plugin.toJSON() as IPluginModel, logId: logObject.id };
   }
 
-  async getInstallLog(id: string): Promise<LogObject> {
+  getInstallLog(id: string): LogObject {
     return this.logManager.get(id);
   }
 }

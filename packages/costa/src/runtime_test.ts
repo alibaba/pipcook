@@ -5,7 +5,6 @@ import { PluginPackage } from '.';
 import { stat } from 'fs-extra';
 
 const INSTALL_SPECS_TIMEOUT = 180 * 1000;
-const logWrite = { stdout: process.stdout, stderr: process.stderr };
 
 describe('create a costa runtime', () => {
   const costa = new CostaRuntime({
@@ -21,7 +20,7 @@ describe('create a costa runtime', () => {
     expect(collectCsv.name).toBe('@pipcook/plugins-csv-data-collect');
     expect(collectCsv.pipcook.datatype).toBe('text');
     expect(collectCsv.pipcook.category).toBe('dataCollect');
-    await costa.install(collectCsv, logWrite);
+    await costa.install(collectCsv, process);
     await stat(path.join(
       costa.options.installDir,
       'node_modules',
@@ -33,7 +32,7 @@ describe('create a costa runtime', () => {
     const bayesClassifier = await costa.fetch('../plugins/model-define/bayesian-model-define');
     expect(bayesClassifier.name).toBe('@pipcook/plugins-bayesian-model-define');
     expect(bayesClassifier.pipcook.category).toBe('modelDefine');
-    await costa.install(bayesClassifier, logWrite);
+    await costa.install(bayesClassifier, process);
     // make sure js packages are installed.
     await stat(path.join(costa.options.installDir, 'node_modules', bayesClassifier.name));
     // make sure python packages are installed.
@@ -46,7 +45,7 @@ describe('create a costa runtime', () => {
     const collectCsvWithSpecificVer = await costa.fetch('https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-0.5.8.tgz');
     expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-csv-data-collect');
     expect(collectCsvWithSpecificVer.version).toBe('0.5.8');
-    await costa.install(collectCsvWithSpecificVer, logWrite);
+    await costa.install(collectCsvWithSpecificVer, process);
     await stat(path.join(
       costa.options.installDir,
       'node_modules',
@@ -72,7 +71,7 @@ describe('create a costa runtime', () => {
   }, 30 * 1000);
 
   it('should install the package without conda packages', async () => {
-    await costa.install(collectCsv, logWrite);
+    await costa.install(collectCsv, process);
     await stat(path.join(
       costa.options.installDir,
       'node_modules',
@@ -82,7 +81,7 @@ describe('create a costa runtime', () => {
 
   it('should install the package with conda packages', async () => {
     const bayesClassifier = await costa.fetch('../plugins/model-define/bayesian-model-define');
-    await costa.install(bayesClassifier, logWrite);
+    await costa.install(bayesClassifier, process);
     await stat(path.join(
       costa.options.installDir,
       'node_modules',
@@ -104,7 +103,7 @@ describe('create a costa runtime', () => {
     const collectCsvWithSpecificVer = await costa.fetchByStream(resp.data as NodeJS.ReadStream);
     expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-csv-data-collect');
     expect(collectCsvWithSpecificVer.version).toBe('0.5.8');
-    await costa.install(collectCsvWithSpecificVer, logWrite);
+    await costa.install(collectCsvWithSpecificVer, process);
     await stat(path.join(
       costa.options.installDir,
       'node_modules',

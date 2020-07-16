@@ -280,7 +280,7 @@ export class CostaRuntime {
    * @param name the plugin package readstream for npm package tarball.
    * @param cwd the current working directory.
    */
-  async fetchByStream(stream: Readable): Promise<PluginPackage> {
+  async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
     const fileDir = path.join(constants.PIPCOOK_TMPDIR, generate());
     const filename = path.join(fileDir, 'pkg.tgz');
     await mkdirp(fileDir);
