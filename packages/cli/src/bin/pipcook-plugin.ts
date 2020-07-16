@@ -10,7 +10,13 @@ import { tunaMirrorURI } from '../config';
 import { ora, abort } from '../utils';
 
 async function install(name: string, opts: any): Promise<void> {
-  if (name.startsWith('.') || path.isAbsolute(name)) {
+  let stat: fs.Stats;
+  try {
+    stat = await fs.stat(name);
+  } catch (err) {
+    // ignore this error, we just test if name is a local directory
+  }
+  if (stat?.isDirectory) {
     await upload(name, opts);
   } else {
     const spinner = ora();
@@ -52,11 +58,11 @@ async function list(opts: any): Promise<void> {
   }
 }
 
-async function upload(localPluginsPath: string, opts: any): Promise<void> {
+async function upload(pathname: string, opts: any): Promise<void> {
   const spinner = ora();
   try {
-    const pkg = await fs.readJSON(path.join(localPluginsPath, 'package.json'));
-    spinner.start(`installing ${pkg.name} from ${localPluginsPath}`);
+    const pkg = await fs.readJSON(path.join(pathname, 'package.json'));
+    spinner.start(`installing ${pkg.name} from ${pathname}`);
     if (!pkg?.pipcook) {
       return abort(spinner, 'invalid plugin package');
     }
@@ -66,7 +72,7 @@ async function upload(localPluginsPath: string, opts: any): Promise<void> {
   const params = {
     pyIndex: opts.tuna ? tunaMirrorURI : undefined
   };
-  const output = spawnSync('npm', [ 'pack' ], { cwd: localPluginsPath });
+  const output = spawnSync('npm', [ 'pack' ], { cwd: pathname });
   let tarball: string;
   if (output.status !== 0) {
     return abort(spinner, output.stderr.toString());
@@ -75,24 +81,44 @@ async function upload(localPluginsPath: string, opts: any): Promise<void> {
     tarball = output.stdout.toString().replace(/[\n\r]/g, '');
   }
 
-  const resp = await uploadFile(`${route.plugin}/upload`, path.join(localPluginsPath, tarball), params);
-  spinner.info(`installing plugin ${resp.data?.plugin?.name}@${resp.data?.plugin?.version}`);
-  return new Promise((resolve) => {
+  const resp = await uploadFile(`${route.plugin}/upload`, path.join(pathname, tarball), params);
+  console.log(resp);
+  spinner.info(`installing plugin ${resp.data?.plugin.name}@${resp.data?.plugin.version}`);
+  let errMsg: string;
+  await new Promise((resolve) => {
     listen(`${route.plugin}/log/${resp.data.logId}`, {}, {
-      'info': (e: MessageEvent) => {
-        spinner.info(e.data);
+      'log': (e: MessageEvent) => {
+        const log = JSON.parse(e.data);
+        switch (log.level) {
+        case 'info':
+          spinner.info(log.data);
+          break;
+        case 'warn':
+          spinner.warn(log.data);
+          break;
+        default:
+          spinner.info(e.data.data);
+        }
       },
       'error': (e: MessageEvent) => {
-        spinner.warn(e.data);
+        errMsg = e.data;
+        resolve();
       },
-      'fail': (e: MessageEvent) => {
-        abort(spinner, e.data);
-      },
-      'finished': (e: MessageEvent) => {
+      'finished': () => {
         resolve();
       }
     });
   });
+  const pluginInfoResp = await get(`${route.plugin}/${resp.data.plugin.id}`);
+  if (typeof pluginInfoResp?.id === 'string') {
+    spinner.info(`install plugin ${pluginInfoResp.name}@${pluginInfoResp.version} successfully`);
+  } else {
+    if (errMsg) {
+      abort(spinner, `install plugin failed with error: ${errMsg}`);
+    } else {
+      abort(spinner, 'install plugin failed');
+    }
+  }
 }
 
 program

@@ -3,14 +3,19 @@ import { generate } from 'shortid';
 import { provide, scope, ScopeEnum } from 'midway';
 import { StringDecoder } from 'string_decoder';
 
+/**
+ * Log obejct for plugin installing and pipeline running.
+ */
 export interface LogObject {
+  // log id
   id: string;
-  transfroms: LogTransfroms;
-  finished: boolean;
-  error?: Error;
+  // stdout stream for log pipe
+  stdout: LogPassthrough;
+  // stderr stream for log pipe
+  stderr: LogPassthrough;
 }
 
-class LogTransform extends Transform {
+class LogPassthrough extends Transform {
   decoder = new StringDecoder('utf8');
   last: string;
   constructor() {
@@ -37,11 +42,6 @@ class LogTransform extends Transform {
   }
 }
 
-export interface LogTransfroms {
-  stdout: LogTransform;
-  stderr: LogTransform;
-}
-
 @scope(ScopeEnum.Singleton)
 @provide('logManager')
 export class LogManager {
@@ -52,8 +52,7 @@ export class LogManager {
    */
   create(): LogObject {
     const id = generate();
-    const transfroms = { stdout: new LogTransform(), stderr: new LogTransform() };
-    const logObj: LogObject = {id, finished: false, transfroms };
+    const logObj: LogObject = { id, stdout: new LogPassthrough(), stderr: new LogPassthrough() };
     this.logMap.set(id, logObj);
     return logObj;
   }
@@ -74,13 +73,8 @@ export class LogManager {
    */
   destroy(id: string, err?: Error) {
     const logs = this.logMap.get(id);
-    logs.finished = true;
-    if (err) {
-      logs.transfroms.stderr.emit('error', err);
-      logs.error = err;
-    }
-    logs.transfroms.stderr.emit('end');
-    logs.transfroms.stdout.emit('end');
-    return setTimeout(() => this.logMap.delete(id), 2000);
+    logs.stderr.destroy(err);
+    logs.stdout.destroy();
+    return this.logMap.delete(id);
   }
 }

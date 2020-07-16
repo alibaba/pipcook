@@ -53,33 +53,33 @@ interface InstallOptions {
   stderr: Writable;
 }
 
-interface InstallSpawnOpts extends SpawnOptions {
+interface LogStdio {
   stdout: Writable;
   stderr: Writable;
 }
 
 /**
- * pipe a stream to another one, because we fork multi child processes here,
- * so we can't pipe the event directly.
- * @param read child process stdout/stderr
- * @param write the log stream
+ * pipe a stream to another one, we fork multi child processes serially here,
+ * Readable.pipi() will close the target pipe when end, we should ignore the end event.
+ * @param readable child process stdout/stderr
+ * @param writable the log stream
  */
-function pair(read: Readable, write: Writable): void {
-  read.on('error', (err) => {
-    write.emit('error', err);
+function pipe(readable: Readable, writable: Writable): void {
+  readable.on('error', (err) => {
+    writable.emit('error', err);
   });
-  read.on('data', (data) => {
-    write.write(data);
+  readable.on('data', (data) => {
+    writable.write(data);
   });
 }
 
-function spawnAsync(command: string, args: string[], opts: InstallSpawnOpts): Promise<string> {
+function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio: LogStdio): Promise<string> {
   return new Promise((resolve, reject) => {
     opts.stdio = [ null, 'pipe', 'pipe' ];
     opts.detached = false;
     const child = spawn(command, args, opts);
-    pair(child.stdout, opts.stdout);
-    pair(child.stderr, opts.stderr);
+    pipe(child.stdout, stdio.stdout);
+    pipe(child.stderr, stdio.stderr);
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });
@@ -330,8 +330,8 @@ export class CostaRuntime {
       pluginAbsName = pkg.pipcook.source.uri;
       debug(`install the plugin from ${pluginAbsName}`);
     }
-
-    const npmExecOpts = { cwd: this.options.installDir, stdout: opts.stdout, stderr: opts.stderr };
+    const stdio = { stdout: opts.stdout, stderr: opts.stderr };
+    const npmExecOpts = { cwd: this.options.installDir };
     const npmArgs = [ 'install', pluginAbsName, '-E', '--production' ];
 
     if (this.options.npmRegistryPrefix) {
@@ -339,9 +339,9 @@ export class CostaRuntime {
     }
     if (!await pathExists(`${this.options.installDir}/package.json`)) {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
-      await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts);
+      await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts, stdio);
     }
-    await spawnAsync('npm', npmArgs, npmExecOpts);
+    await spawnAsync('npm', npmArgs, npmExecOpts, stdio);
 
     if (pkg.conda?.dependencies) {
       debug(`prepare the Python environment for ${pluginStdName}`);
@@ -368,7 +368,7 @@ export class CostaRuntime {
       }
 
       debug('conda environment is setup correctly, start downloading.');
-      await spawnAsync(python, [ '-m', 'venv', envDir ], { stdout: opts.stdout, stderr: opts.stderr });
+      await spawnAsync(python, [ '-m', 'venv', envDir ], {}, stdio);
       // TODO(yorkie): check for access(pip3)
 
       for (let name of requirements) {
@@ -381,7 +381,7 @@ export class CostaRuntime {
           '--default-timeout=1000',
           `--cache-dir=${this.options.installDir}/.pip`
         ]);
-        await spawnAsync(`${envDir}/bin/pip3`, args, { stdout: process.stdout, stderr: process.stderr });
+        await spawnAsync(`${envDir}/bin/pip3`, args, {}, stdio);
       }
     } else {
       debug(`just skip the Python environment installation.`);

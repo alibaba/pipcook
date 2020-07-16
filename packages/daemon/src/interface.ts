@@ -1,3 +1,4 @@
+import { IPluginModel } from './model/plugin';
 export interface RunParams {
   status: number;
   currentIndex?: number;
@@ -5,4 +6,9 @@ export interface RunParams {
   evaluatePass?: boolean;
   endTime?: number;
   error?: string;
+}
+
+export interface PluginInstall {
+  logId: string;
+  plugin: IPluginModel;
 }

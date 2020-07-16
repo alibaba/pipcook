@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import EventSource from 'eventsource';
 import FormData from 'form-data';
 import { ora } from './utils';
+import { promisify } from 'util';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
@@ -55,17 +56,9 @@ export const uploadFile = async (host: string, file: string, params?: RequestPar
   }
   form.append('file', stream);
 
-  const getHeaders = (form: FormData): Promise<FormData.Headers> => {
-    return new Promise((resolve, reject) => {
-      form.getLength((err, length) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(Object.assign({ 'Content-Length': length }, form.getHeaders()));
-      });
-    });
-  };
-  const headers = await getHeaders(form);
+  const getLength = promisify(form.getLength.bind(form));
+  const length = await getLength();
+  const headers = Object.assign({ 'Content-Length': length }, form.getHeaders());
   return axios.post(host, form, { headers });
 };
 

@@ -190,15 +190,21 @@ export class PipelineController {
         sse.emit('info', pkg);
 
         debug(`installing ${pipeline[type]}.`);
-        await this.pluginManager.install(pkg, {
-          pyIndex,
-          force: false,
-          stdout: process.stdout,
-          stderr: process.stderr
-        });
-        sse.emit('installed', pkg);
+        const plugin = await this.pluginManager.queryOrCreateByPkg(pkg);
+        try {
+          await this.pluginManager.install(pkg, {
+            pyIndex,
+            force: false,
+            stdout: process.stdout,
+            stderr: process.stderr
+          });
+          sse.emit('installed', pkg);
+        } catch (err) {
+          this.pluginManager.deleteById(plugin.id);
+          throw err;
+        }
+        sse.emit('finished', pipeline);
       }
-      sse.emit('finished', pipeline);
     } catch (err) {
       sse.emit('error', err?.message);
     } finally {

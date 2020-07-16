@@ -9,7 +9,17 @@ providerWrapper([
   }
 ]);
 
-export class PluginModel extends Model {
+export interface IPluginModel {
+  id: string;
+  name: string;
+  version: string;
+  category: string;
+  datatype: string;
+  namespace: string;
+  dest: string;
+}
+
+export class PluginModel extends Model implements IPluginModel {
   readonly id: string;
   readonly name: string;
   readonly version: string;

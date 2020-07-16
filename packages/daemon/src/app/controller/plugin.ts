@@ -25,8 +25,14 @@ export class PluginController {
       sse.emit('info', pkg);
 
       debug(`installing ${name}.`);
-      await this.pluginManager.install(pkg, pyIndex);
-      sse.emit('installed', pkg);
+      const plugin = await this.pluginManager.queryOrCreateByPkg(pkg);
+      try {
+        await this.pluginManager.install(pkg, pyIndex);
+        sse.emit('installed', pkg);
+      } catch (err) {
+        await this.pluginManager.deleteById(plugin.id);
+        throw err;
+      }
     } catch (err) {
       sse.emit('error', err?.message);
     } finally {
@@ -48,55 +54,43 @@ export class PluginController {
     });
     successRes(this.ctx, { data: plugins });
   }
-
+  @get('/:id')
+  public async info() {
+    const plugin = await this.pluginManager.queryById(this.ctx.params.id);
+    successRes(this.ctx, { data: plugin });
+  }
   @post('/upload')
   public async upload() {
     const fs = await this.ctx.getFileStream();
-    const { pyIndex = undefined } = fs.fields;
-    const res = await this.pluginManager.installFromTarStream(fs, pyIndex);
-    successRes(this.ctx, { logId: res.logObject.id, plugin: res.plugin });
+    const { pyIndex, force } = fs.fields;
+    successRes(this.ctx, await this.pluginManager.installFromTarStream(fs, pyIndex, force));
   }
 
-  private async linkLog(logStream: Readable, type: 'info' | 'error', sse: ServerSentEmitter): Promise<void> {
-    if (logStream.readable) {
-      return new Promise(resolve => {
-        logStream.on('data', data => {
-          sse.emit(type, data.toString());
-        });
-        logStream.on('end', () => {
-          process.nextTick(resolve);
-        });
-        logStream.on('error', err => {
-          sse.emit('fail', err.message);
-          resolve();
-        });
+  private linkLog(logStream: Readable, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
+    return new Promise(resolve => {
+      logStream.on('data', data => {
+        sse.emit('log', { level, data });
       });
-    } else {
-      return Promise.resolve();
-    }
+      logStream.on('close', resolve);
+      logStream.on('error', err => {
+        sse.emit('error', err.message);
+      });
+    });
   }
+
   @get('/log/:id')
   public async log() {
     const sse = new ServerSentEmitter(this.ctx);
     const log = await this.pluginManager.getInstallLog(this.ctx.params.id);
-    if (log?.transfroms) {
-      if (log.finished) {
-        if (log.error) {
-          sse.emit('fail', `install plugin error: ${log.error.message}`);
-        } else {
-          sse.emit('info', 'plugin installed');
-        }
-      } else {
-        const futures = [
-          this.linkLog(log.transfroms.stdout, 'info', sse),
-          this.linkLog(log.transfroms.stderr, 'error', sse)
-        ];
-        await Promise.all(futures);
-      }
-      sse.finish();
-    } else {
+    if (!log) {
       sse.emit('error', 'no log found');
-      sse.finish();
+      return sse.finish();
     }
+    const futures = [
+      this.linkLog(log.stdout, 'info', sse),
+      this.linkLog(log.stderr, 'warn', sse)
+    ];
+    await Promise.all(futures);
+    return sse.finish();
   }
 }
