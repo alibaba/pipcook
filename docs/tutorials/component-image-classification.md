@@ -1,4 +1,4 @@
-# How to classify images of UI components using Pipcook?
+# Classify images of UI components
 
 ## Background
 Have you encountered such a scenario in the front-end business: there are some images in your hand, and you want an automatic way to identify what front-end components these images are, whether it is a button, a navigation bar, or a form? This is a typical image classification task.
@@ -21,7 +21,7 @@ For example, in the scenario where the forms are automatically generated, we nee
 
 After the training is completed, for each picture, the model will eventually give us the prediction results we want. For example, when we enter the line chart of Figure 1, the model will give prediction results similar to the following
 
-```json
+```
 [[0.1, 0.9]]
 ```
 
@@ -36,7 +36,7 @@ At the same time, we will generate a labelmap during training. Labelmap is a map
 
 First, why is the prediction result a two-dimensional array? First of all, the model allows prediction of multiple pictures at once. For each picture, the model will also give an array, this array describes the possibility of each classification, as shown in the labelmap, the classification is arranged in the order of column chart and pie chart, then corresponding to the prediction result of the model, We can see that the column chart has the highest confidence, which is 0.9, so this picture is predicted to be a column chart, that is, the prediction is correct.
 
-<a name="kv3Dw"></a>
+
 ## Data Preparation
 When we are doing image classification tasks similar to this one, we need to organize our dataset in a certain format
 
@@ -79,7 +79,7 @@ In the training/validation/test set, we will organize the data according to the 
       - ...
 
 We have prepared such a dataset, you can download it and check it out：[Download here](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip)
-<a name="vWpTg"></a>
+
 ## Start Training
 After the dataset is ready, we can start training. Using Pipcook can be very convenient for the training of image classification. You only need to build the following pipeline,
 ```json
@@ -136,13 +136,13 @@ Through the above plugins, we can see that they are used separately
 
 > With CUDA, GPUs can be conveniently used for general purpose calculations (a bit like numerical calculations performed in the CPU, etc.). Before CUDA, GPUs were generally only used for graphics rendering (such as through OpenGL, DirectX).
 
-```json
-pipcook run image-classification.json --verbose --tuna
+```shell
+$ pipcook run image-classification.json -- --tuna
 ```
 Often the model will converge at 10-20 epochs. Of course, it depends on the complexity of your dataset. Model convergence means that the loss (loss value) is low enough and the accuracy is high enough.
 
 Logs are as following:
-```json
+```
 Epoch 1/15
 187/187 [==============================] - 12s 65ms/step - loss: 0.0604 - accuracy: 0.9823 - val_loss: 8.8755 - val_accuracy: 0.4112
 Epoch 2/15
@@ -157,9 +157,10 @@ Epoch 15/15
 187/187 [==============================] - 11s 61ms/step - loss: 5.1657e-05 - accuracy: 1.0000 - val_loss: 1.9073e-08 - val_accuracy: 1.0000
 ```
 After the training is completed, output will be generated in the current directory, which is a brand-new npm package, then we first install dependencies:
-```json
-cd output
-npm install
+
+```shell
+$ cd output
+$ npm install
 ```
 After installing the environment , we can start to predict:
 
@@ -174,5 +175,5 @@ const predict = require('./output');
 Note that the prediction result we give is the probability of each category. You can process this probability to the result you want.
 
 ## Conclusion
-In this way, the component recognition task based on the image classification model is completed. After completing the pipeline in our example, if you are interested in such tasks, you can also start preparing your own dataset for training. We have already introduced the format of the dataset in detail in the data preparation chapter. You only need to follow the file directory to easily prepare the data that matches our image classification pipeline. <br />
+In this way, the component recognition task based on the image classification model is completed. After completing the pipeline in our example, if you are interested in such tasks, you can also start preparing your own dataset for training. We have already introduced the format of the dataset in detail in the data preparation chapter. You only need to follow the file directory to easily prepare the data that matches our image classification pipeline.
 

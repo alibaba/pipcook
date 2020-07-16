@@ -1,4 +1,4 @@
-# Use Pipcook to detect front-end components in pictures
+# Detect the UI components from a design draft
 
 ## Background
 
@@ -46,7 +46,6 @@ Let’s explain the above prediction results
 - classes: This field describes the category of each component. Combined with labelmap, we can see that the identified components are buttons, switches, input boxes and input boxes.
 - scores: The confidence of each identified component. The confidence is how much information the model has for the results it has identified. Generally, we will set a threshold. We only take the results with confidence greater than this threshold.
 
-<a name="ret6z"></a>
 ## Data Preparation
 
 When we want to do such a task of object detection, we need to make, collect and store our dataset according to certain specifications. There are two main types of datasets for object detection in the industry today, which are [Coco Data Set] (https ://cocodataset.org/) and [Pascal Voc](http://host.robots.ox.ac.uk/pascal/VOC/) datasets. We also provide corresponding data collection plugins to collect these two data formats. We take Pascal Voc format as an example, the file directory is
@@ -146,8 +145,8 @@ This xml annotation file is mainly composed of the following parts：
    - bndbox: position of component
 
 
-<br />We have prepared such a data set, you can download it and check it out: [Download](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/component-recognition-detection.zip)
-<a name="TLNga"></a>
+We have prepared such a data set, you can download it and check it out: [Download](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/component-recognition-detection.zip)
+
 ## Start Training
 After the dataset is ready, we can start training. Using Pipcook can be very convenient for object detection training. You only need to build the pipeline like this,
 
@@ -179,7 +178,7 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
 }
 
 ```
-Through the above plugins, we can see that they are used separately: <br />
+Through the above plugins, we can see that they are used separately:
 
 1. **@pipcook/plugins-object-detection-pascalvoc-data-collect** This plugin is used to download the dataset in Pascal Voc format. Generally, we need to provide the url parameter. We provide the address of the dataset we prepared above.
 1. **@pipcook/plugins-coco-data-access** Now that we have downloaded the dataset, we need to connect the dataset into the format required by the subsequent model. Since the detectron2 framework used by our model requires the coco format, we use this plugin.
@@ -190,10 +189,12 @@ Through the above plugins, we can see that they are used separately: <br />
 Since the object detection model, especially the model of the rcnn family is very large, it needs to be trained on a machine prepared with nvidia GPU and cuda 10.1 environment:
 
 ```shell
-pipcook run object-detection.json --verbose --tuna
+$ pipcook run object-detection.json --verbose --tuna
 ```
+
 The model will print out the loss of each iteration in real time during the training process. Please pay attention to the log to determine the model convergence:
-```shell
+
+```
 [06/28 10:26:57 d2.data.build]: Distribution of instances among all 14 categories:
 |   category   | #instances   |  category   | #instances   |  category  | #instances   |
 |:------------:|:-------------|:-----------:|:-------------|:----------:|:-------------|
@@ -208,15 +209,18 @@ The model will print out the loss of each iteration in real time during the trai
 [06/28 10:29:32 d2.utils.events]:  iter: 0  total_loss: 4.249  loss_cls: 2.198  loss_box_reg: 0.056  loss_rpn_cls: 0.711  loss_rpn_loc: 1.084  data_time: 0.1073  lr: 0.000000  
 ...
 [06/28 12:28:32 d2.utils.events]:  iter: 100000  total_loss: 0.032 loss_cls: 0.122  loss_box_reg: 0.056  loss_rpn_cls: 0.711  loss_rpn_loc: 1.084  data_time: 0.1073  lr: 0.000000  
+```
 
-```
 After the training is completed, output will be generated in the current directory, which is a brand-new npm package, then we first install dependencies:
-```json
-cd output
-BOA_TUNA=1 npm install
+
+```shell
+$ cd output
+$ BOA_TUNA=1 npm install
 ```
+
 After installing the environment, we can start to predict:
 First install dependencies:
+
 ```js
 const predict = require('./output');
 (async () => {
@@ -251,9 +255,9 @@ After reading the above description, are you already ready to use object detecti
 This step is easier to understand. To have your own training data, you need to find a way to collect enough training pictures. In this step, you don’t need to label your own pictures. You only need to mark the original pictures. it is good
 
 ### Labelling
-There are many labeling tools now, you can use these labeling tools to mark which components are on your original picture, what the locations are and what types are of each component, Let's take [labelimg](https://github.com/tzutalin/labelImg) as example<br />
+There are many labeling tools now, you can use these labeling tools to mark which components are on your original picture, what the locations are and what types are of each component, Let's take [labelimg](https://github.com/tzutalin/labelImg) as example
 
-![image.png](https://gw.alicdn.com/tfs/TB1nB4lN4z1gK0jSZSgXXavwpXa-799-401.png)<br />
+![image.png](https://gw.alicdn.com/tfs/TB1nB4lN4z1gK0jSZSgXXavwpXa-799-401.png)
 
 You can install the software from the official labelimg website above, and then follow the steps below:
 
