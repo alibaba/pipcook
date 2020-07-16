@@ -79,7 +79,7 @@ export class PluginController {
   public async log() {
     const sse = new ServerSentEmitter(this.ctx);
     const log = await this.pluginManager.getInstallLog(this.ctx.params.id);
-    if (log?.logTransfroms) {
+    if (log?.transfroms) {
       if (log.finished) {
         if (log.error) {
           sse.emit('fail', `install plugin error: ${log.error.message}`);
@@ -88,8 +88,8 @@ export class PluginController {
         }
       } else {
         const futures = [
-          this.linkLog(log.logTransfroms.stdout, 'info', sse),
-          this.linkLog(log.logTransfroms.stderr, 'error', sse)
+          this.linkLog(log.transfroms.stdout, 'info', sse),
+          this.linkLog(log.transfroms.stderr, 'error', sse)
         ];
         await Promise.all(futures);
       }

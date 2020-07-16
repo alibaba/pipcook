@@ -117,7 +117,7 @@ export class PluginManager {
     const pkg = await this.fetchByStream(tarball);
     process.nextTick(async () => {
       try {
-        await this.install(pkg, { pyIndex, force: false, ...logObject.logTransfroms });
+        await this.install(pkg, { pyIndex, force: false, ...logObject.transfroms });
         this.logManager.destroy(logObject.id);
       } catch (err) {
         console.error('install plugin from tarball error', err.message);

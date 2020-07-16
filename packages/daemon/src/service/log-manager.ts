@@ -5,7 +5,7 @@ import { StringDecoder } from 'string_decoder';
 
 export interface LogObject {
   id: string;
-  logTransfroms: LogTransfroms;
+  transfroms: LogTransfroms;
   finished: boolean;
   error?: Error;
 }
@@ -52,8 +52,8 @@ export class LogManager {
    */
   create(): LogObject {
     const id = generate();
-    const logTransfroms: LogTransfroms = { stdout: new LogTransform(), stderr: new LogTransform() };
-    const logObj: LogObject = {id, finished: false, logTransfroms };
+    const transfroms = { stdout: new LogTransform(), stderr: new LogTransform() };
+    const logObj: LogObject = {id, finished: false, transfroms };
     this.logMap.set(id, logObj);
     return logObj;
   }
@@ -76,11 +76,11 @@ export class LogManager {
     const logs = this.logMap.get(id);
     logs.finished = true;
     if (err) {
-      logs.logTransfroms.stderr.emit('error', err);
+      logs.transfroms.stderr.emit('error', err);
       logs.error = err;
     }
-    logs.logTransfroms.stderr.emit('end');
-    logs.logTransfroms.stdout.emit('end');
+    logs.transfroms.stderr.emit('end');
+    logs.transfroms.stdout.emit('end');
     return setTimeout(() => this.logMap.delete(id), 2000);
   }
 }
