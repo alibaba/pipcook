@@ -21,13 +21,13 @@
 ![image.png](https://img.alicdn.com/tfs/TB1FnjUeA9l0K4jSZFKXXXFjpXa-304-240.png)
 ![image.png](https://img.alicdn.com/tfs/TB1MZWRbMgP7K4jSZFqXXamhVXa-437-319.png)
 
-训练完成之后，对于每一张图片，模型最终会给出我们想要的预测结果。例如，当我们输入图 1 的折线图时，模型会给出类似于以下的预测结果
+训练完成之后，对于每一张图片，模型最终会给出我们想要的预测结果。例如，当我们输入图 1 的折线图时，模型会给出类似于以下的预测结果：
 
 ```
 [[0.1, 0.9, 0.05, 0.05]]
 ```
 
-同时，我们会在训练的时候生成 labelmap，labelmap 是一个序号和实际类型的一个映射关系，这个的生成主要是由于现实世界我们的分类名是文本的，但是在进入模型之前，我们需要将文本转成数字。下面就是一个 labelmap
+同时，我们会在训练的时候生成 labelmap，labelmap 是一个序号和实际类型的一个映射关系，这个的生成主要是由于现实世界我们的分类名是文本的，但是在进入模型之前，我们需要将文本转成数字。下面就是一个 labelmap：
 
 ```json
 {
@@ -42,9 +42,7 @@
 
 ## 数据准备
 
-当做类似于这样的图片分类任务时，我们需要按照一定格式组织我们的数据集
-
-我们需要按照一定比例把我们的数据集分成训练集 (train)，验证集 (validation) 和测试集 (test)，其中，训练集主要用来训练模型，验证集和测试集用来评估模型。验证集主要用来在训练过程中评估模型，以方便查看模型过拟合和收敛情况，测试集是在全部训练结束之后用来对模型进行一个总体的评估的。
+当做类似于这样的图片分类任务时，我们需要按照一定格式组织我们的数据集，我们需要按照一定比例把我们的数据集分成训练集 (train)，验证集 (validation) 和测试集 (test)，其中，训练集主要用来训练模型，验证集和测试集用来评估模型。验证集主要用来在训练过程中评估模型，以方便查看模型过拟合和收敛情况，测试集是在全部训练结束之后用来对模型进行一个总体的评估的。
 
 在训练/验证/测试集里面，我们会按照分类的类别组织数据，例如，我们现在有两个分类，line 和 ring, 那么，我们可以创建两个文件夹分别为这两个分类名，在相应的文件夹下面放置图片。总体目录结构为：
 
@@ -82,11 +80,11 @@
    - pie
       - ...
 
-我们已经准备好了一个这样的数据集，您可以下载下来查看一下：[下载地址](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip)
+我们已经准备好了一个这样的数据集，您可以下载下来查看一下：[下载地址](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip)。
 
 ## 开始训练
 
-在准备好数据集之后，我们就可以开始训练了，使用 Pipcook 可以很方便的进行图片分类的训练，您只需搭建下面这样的 pipeline，
+在准备好数据集之后，我们就可以开始训练了，使用 Pipcook 可以很方便的进行图片分类的训练，您只需搭建下面这样的 pipeline：
 
 ```json
 {
@@ -126,16 +124,16 @@
 }
 
 ```
-通过上面的插件，我们可以看到分别使用了
+通过上面的插件，我们可以看到分别使用了：
 
-1. **@pipcook/plugins-image-classification-data-collect** 这个插件用于下载符合上面描述的图片分类的数据集，主要，我们需要提供 url 参数，我们提供了上面我们准备好的数据集地址
-1. **@pipcook/plugins-pascalvoc-data-access **我们现在已经下载好了数据集，我们需要将数据集接入成 pipcook 的格式，以便后续进入模型
-1. **@pipcook/plugins-image-data-process** 在进行图片分类时，我们需要对原始的数据进入一些必要的操作，比如，图片分类要求所有的图片是一样大小的，所以我们使用这个插件把图片 resize 成统一大小
-1. **@pipcook/plugins-tensorflow-mobilenet-model-define** 我们这里选用 mobilenet 模型来进行训练，这个模型一般用于训练中等复杂的数据，对于更复杂的数据集，推荐您选用 @pipcook/plugins-tensorflow-resnet-model-define 插件
-1. **@pipcook/plugins-image-classification-tensorflow-model-train **我们使用此插件来进行训练，这是一个图片分类基于 TensorFlow 的通用插件，和上一阶段具体选择的模型无关
-1. **@pipcook/plugins-image-classification-tensorflow-model-train **我们使用此插件来进行模型的评估，模型的评估是指在测试集上模型的表现效果，这是一个图片分类基于 TensorFlow 的通用插件，和上一阶段具体选择的模型无关
+1. **@pipcook/plugins-image-classification-data-collect** 这个插件用于下载符合上面描述的图片分类的数据集，主要，我们需要提供 url 参数，我们提供了上面我们准备好的数据集地址。
+1. **@pipcook/plugins-pascalvoc-data-access **我们现在已经下载好了数据集，我们需要将数据集接入成 pipcook 的格式，以便后续进入模型。
+1. **@pipcook/plugins-image-data-process** 在进行图片分类时，我们需要对原始的数据进入一些必要的操作，比如，图片分类要求所有的图片是一样大小的，所以我们使用这个插件把图片 resize 成统一大小。
+1. **@pipcook/plugins-tensorflow-mobilenet-model-define** 我们这里选用 mobilenet 模型来进行训练，这个模型一般用于训练中等复杂的数据，对于更复杂的数据集，推荐您选用 @pipcook/plugins-tensorflow-resnet-model-define 插件。
+1. **@pipcook/plugins-image-classification-tensorflow-model-train **我们使用此插件来进行训练，这是一个图片分类基于 TensorFlow 的通用插件，和上一阶段具体选择的模型无关。
+1. **@pipcook/plugins-image-classification-tensorflow-model-train **我们使用此插件来进行模型的评估，模型的评估是指在测试集上模型的表现效果，这是一个图片分类基于 TensorFlow 的通用插件，和上一阶段具体选择的模型无关。
 
-[mobilenet](https://zhuanlan.zhihu.com/p/31551004) 是轻量级模型，可以在 cpu 上进行训练，如果使用的是 [resnet](https://zhuanlan.zhihu.com/p/31852747)，由于模型本身比较大，因此在执行这个 Pipeline 之前推荐在有 cuda 环境的 GPU 机器上运行
+[mobilenet](https://zhuanlan.zhihu.com/p/31551004) 是轻量级模型，可以在 cpu 上进行训练，如果使用的是 [resnet](https://zhuanlan.zhihu.com/p/31852747)，由于模型本身比较大，因此在执行这个 Pipeline 之前推荐在有 cuda 环境的 GPU 机器上运行。
 
 > CUDA，Compute Unified Device Architecture的简称，是由NVIDIA公司创立的基于他们公司生产的图形处理器GPUs（Graphics Processing Units,可以通俗的理解为显卡）的一个并行计算平台和编程模型。
 > 通过CUDA，GPUs可以很方便地被用来进行通用计算（有点像在CPU中进行的数值计算等等）。在没有CUDA之前，GPUs一般只用来进行图形渲染（如通过OpenGL，DirectX）。

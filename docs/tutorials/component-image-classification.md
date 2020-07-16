@@ -4,7 +4,7 @@
 
 Have you encountered such a scenario in the front-end business: there are some images in your hand, and you want an automatic way to identify what front-end components these images are, whether it is a button, a navigation bar, or a form? This is a typical image classification task.
 
-> The task of predicting image categories is called image classification. The purpose of training the image classification model is to identify various types of images
+> The task of predicting image categories is called image classification. The purpose of training the image classification model is to identify various types of images.
 
 This identification is very useful. You can use this identification information for code generation or automated testing.
 
@@ -20,13 +20,13 @@ For example, in the scenario where the forms are automatically generated, we nee
 
 ![image.png](https://gw.alicdn.com/tfs/TB13I2LNQY2gK0jSZFgXXc5OFXa-442-369.png) 
 
-After the training is completed, for each picture, the model will eventually give us the prediction results we want. For example, when we enter the line chart of Figure 1, the model will give prediction results similar to the following
+After the training is completed, for each picture, the model will eventually give us the prediction results we want. For example, when we enter the line chart of Figure 1, the model will give prediction results similar to the following:
 
 ```
 [[0.1, 0.9]]
 ```
 
-At the same time, we will generate a labelmap during training. Labelmap is a mapping relationship between the serial number and the actual type. This generation is mainly due to the fact that our classification name is text, but before entering the model, we need to convert the text Into numbers. Here is a labelmap
+At the same time, we will generate a labelmap during training. Labelmap is a mapping relationship between the serial number and the actual type. This generation is mainly due to the fact that our classification name is text, but before entering the model, we need to convert the text Into numbers. Here is a labelmap:
 
 ```json
 {
@@ -39,7 +39,7 @@ First, why is the prediction result a two-dimensional array? First of all, the m
 
 ## Data Preparation
 
-When we are doing image classification tasks similar to this one, we need to organize our dataset in a certain format
+When we are doing image classification tasks similar to this one, we need to organize our dataset in a certain format.
 
 We need to divide our dataset into a training set (train), a validation set (validation) and a test set (test) according to a certain proportion. Among them, the training set is mainly used to train the model, and the validation set and the test set are used to evaluate the model. The validation set is mainly used to evaluate the model during the training process to facilitate viewing of the model's overfitting and convergence. The test set is used to perform an overall evaluation of the model after all training is completed.
 
@@ -79,11 +79,11 @@ In the training/validation/test set, we will organize the data according to the 
    - pie
       - ...
 
-We have prepared such a dataset, you can download it and check it out：[Download here](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip)
+We have prepared such a dataset, you can download it and check it out：[Download here](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip).
 
 ## Start Training
 
-After the dataset is ready, we can start training. Using Pipcook can be very convenient for the training of image classification. You only need to build the following pipeline,
+After the dataset is ready, we can start training. Using Pipcook can be very convenient for the training of image classification. You only need to build the following pipeline:
 ```json
 {
   "plugins": {
@@ -121,7 +121,7 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
   }
 }
 ```
-Through the above plugins, we can see that they are used separately
+Through the above plugins, we can see that they are used separately:
 
 1. **@pipcook/plugins-image-classification-data-collect** This plug-in is used to download the dataset that meets the image classification described above. Mainly, we need to provide the url parameter, and we provide the dataset address that we prepared above
 1. **@pipcook/plugins-pascalvoc-data-access** Now that we have downloaded the dataset, we need to convert the dataset to pipcook format so that we can use the model later
@@ -132,13 +132,14 @@ Through the above plugins, we can see that they are used separately
 
 [mobilenet](https://arxiv.org/abs/1704.04861) is a lightweight model which can be trained on CPU. If you are using [resnet](https://arxiv.org/abs/1512.03385)，since the model is quite large, we recommend use to train on GPU. 
 
-> CUDA, short for Compute Unified Device Architecture, is a parallel computing platform and programming model founded by NVIDIA based on the GPUs (Graphics Processing Units, which can be popularly understood as graphics cards)
+> CUDA, short for Compute Unified Device Architecture, is a parallel computing platform and programming model founded by NVIDIA based on the GPUs (Graphics Processing Units, which can be popularly understood as graphics cards).
 
 > With CUDA, GPUs can be conveniently used for general purpose calculations (a bit like numerical calculations performed in the CPU, etc.). Before CUDA, GPUs were generally only used for graphics rendering (such as through OpenGL, DirectX).
 
 ```shell
 $ pipcook run image-classification.json -- --tuna
 ```
+
 Often the model will converge at 10-20 epochs. Of course, it depends on the complexity of your dataset. Model convergence means that the loss (loss value) is low enough and the accuracy is high enough.
 
 Logs are as following:

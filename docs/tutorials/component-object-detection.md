@@ -4,7 +4,7 @@
 
 Have you ever encountered such a scenario in the front-end business: there are some pictures in your hand, and you want an automatic way to identify which components are included in this picture, where these components are located in the picture, and which type components are of. This kind of task are generally called object detection in the field of deep learning.
 
-> Object detection refers to finding targets from a scene (picture), including two processes: where and what
+> Object detection refers to finding targets from a scene (picture), including two processes: where and what.
 
 This kind of detection is very useful. For example, in the research of code generation from image, the front-end code is mainly composed of div, img and span. We can identify the shape, bitmap, and text position in the image, and then directly generate the corresponding codes.
 
@@ -34,7 +34,8 @@ For the trained model, after inputting this picture, the model will output the f
 }
 
 ```
-At the same time, we will generate a labelmap during training. Labelmap is a mapping relationship between the serial number and the actual type. This generation is mainly due to the fact that our classification name is text, but before entering the model, we need to convert the text into numbers. Here is a labelmap
+At the same time, we will generate a labelmap during training. Labelmap is a mapping relationship between the serial number and the actual type. This generation is mainly due to the fact that our classification name is text, but before entering the model, we need to convert the text into numbers. Here is a labelmap:
+
 ```json
 {
   "button": 0,
@@ -43,7 +44,7 @@ At the same time, we will generate a labelmap during training. Labelmap is a map
 }
 ```
 
-Let’s explain the above prediction results
+Let’s explain the above prediction results:
 
 - boxes：This field describes the position of each component identified, displayed in the order of the upper left and lower right corners, such as [83, 31, 146, 71], indicating that the coordinates of the upper left corner of this component are (83, 13), lower right corner are (146, 71)
 - classes: This field describes the category of each component. Combined with labelmap, we can see that the identified components are buttons, switches, input boxes and input boxes.
@@ -51,7 +52,7 @@ Let’s explain the above prediction results
 
 ## Data Preparation
 
-When we want to do such a task of object detection, we need to make, collect and store our dataset according to certain specifications. There are two main types of datasets for object detection in the industry today, which are [Coco Data Set] (https ://cocodataset.org/) and [Pascal Voc](http://host.robots.ox.ac.uk/pascal/VOC/) datasets. We also provide corresponding data collection plugins to collect these two data formats. We take Pascal Voc format as an example, the file directory is
+When we want to do such a task of object detection, we need to make, collect and store our dataset according to certain specifications. There are two main types of datasets for object detection in the industry today, which are [Coco Data Set] (https ://cocodataset.org/) and [Pascal Voc](http://host.robots.ox.ac.uk/pascal/VOC/) datasets. We also provide corresponding data collection plugins to collect these two data formats. We take Pascal Voc format as an example, the file directory is:
 
 - train
    - 1.jpg
@@ -145,11 +146,11 @@ This xml annotation file is mainly composed of the following parts：
    - name: component category
    - bndbox: position of component
 
-We have prepared such a data set, you can download it and check it out: [Download](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/component-recognition-detection.zip)
+We have prepared such a data set, you can download it and check it out: [Download](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/component-recognition-detection.zip).
 
 ## Start Training
 
-After the dataset is ready, we can start training. Using Pipcook can be very convenient for object detection training. You only need to build the pipeline like this,
+After the dataset is ready, we can start training. Using Pipcook can be very convenient for object detection training. You only need to build the pipeline like this:
 
 ```json
 {
@@ -251,26 +252,26 @@ Note that the results given contain three parts:
 
 ## Make your own dataset
 
-After reading the above description, are you already ready to use object detection to solve your own problems? If you want to make your own data set, there are mainly the following steps
+After reading the above description, are you already ready to use object detection to solve your own problems? If you want to make your own data set, there are mainly the following steps.
 
 ### Collect images
 
-This step is easier to understand. To have your own training data, you need to find a way to collect enough training pictures. In this step, you don’t need to label your own pictures. You only need to mark the original pictures. it is good
+This step is easier to understand. To have your own training data, you need to find a way to collect enough training pictures. In this step, you don’t need to label your own pictures. You only need to mark the original pictures.
 
 ### Labelling
 
-There are many labeling tools now, you can use these labeling tools to mark which components are on your original picture, what the locations are and what types are of each component, Let's take [labelimg](https://github.com/tzutalin/labelImg) as example
+There are many labeling tools now, you can use these labeling tools to mark which components are on your original picture, what the locations are and what types are of each component, Let's take [labelimg](https://github.com/tzutalin/labelImg) as example:
 
 ![image.png](https://gw.alicdn.com/tfs/TB1nB4lN4z1gK0jSZSgXXavwpXa-799-401.png)
 
 You can install the software from the official labelimg website above, and then follow the steps below:
 
 - Build and launch using the instructions above.
-- Click 'Change default saved annotation folder' in Menu/File
-- Click 'Open Dir'
-- Click 'Create RectBox'
-- Click and release left mouse to select a region to annotate the rect box
-- You can use right mouse to drag the rect box to copy or move it
+- Click 'Change default saved annotation folder' in Menu/File.
+- Click 'Open Dir'.
+- Click 'Create RectBox'.
+- Click and release left mouse to select a region to annotate the rect box.
+- You can use right mouse to drag the rect box to copy or move it.
 
 ### Training
 

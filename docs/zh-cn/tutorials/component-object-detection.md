@@ -4,7 +4,7 @@
 
 您是否在前端业务中遇到过这样的场景：手中有一些图片，您想有一种自动的方式来识别这些图片这个图片里都包含哪些组件，这些组件都在图片的什么位置，属于哪种类型的组件，这种类型的任务一般在深度学习领域称为目标检测。
 
-> 目标检测与识别是指从一幅场景（图片）中找出目标，包括检测（where) 和识别（what) 两个过程
+> 目标检测与识别是指从一幅场景（图片）中找出目标，包括检测（where) 和识别（what) 两个过程。
 
 这种检测是非常有用的，例如，在图片生成代码的研究里，前端代码主要就是由 div, img, span 组成的，我们可以识别图片里的形状，位图，和文本的位置，然后直接生成相应的描述代码即可。
 
@@ -73,7 +73,6 @@
    - 2.xml
    - ...
 
-
 我们需要按照一定比例把我们的数据集分成训练集 (train)，验证集 (validation) 和测试集 (test)，其中，训练集主要用来训练模型，验证集和测试集用来评估模型。验证集主要用来在训练过程中评估模型，以方便查看模型过拟合和收敛情况，测试集是在全部训练结束之后用来对模型进行一个总体的评估的。
 
 对于每一张图片，Pascal Voc 都指定有一个 xml 注解文件来记录这个图片里有哪些组件和每个组件的位置，一个典型的 xml 文件内容为：
@@ -139,7 +138,7 @@
 </annotation>
 ```
 
-这个 xml 注解文件主要由以下几个部分组成
+这个 xml 注解文件主要由以下几个部分组成：
 
 - folder / filename: 这两个字段主要定义了注解对应的图片位置和名称
 - size: 图片的宽高
@@ -147,11 +146,11 @@
    - name: 组件的类别名
    - bndbox: 组件的位置
 
-我们已经准备好了一个这样的数据集，您可以下载下来查看一下：[下载地址](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/component-recognition-detection.zip)
+我们已经准备好了一个这样的数据集，您可以下载下来查看一下：[下载地址](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/component-recognition-detection.zip)。
 
 ## 开始训练
 
-在准备好数据集之后，我们就可以开始训练了，使用 Pipcook 可以很方便的进行目标检测的训练，您只需搭建下面这样的 pipeline，
+在准备好数据集之后，我们就可以开始训练了，使用 Pipcook 可以很方便的进行目标检测的训练，您只需搭建下面这样的 pipeline：
 ```json
 {
   "plugins": {
@@ -187,7 +186,6 @@
 1. **@pipcook/plugins-detectron-fasterrcnn-model-define** 我们基于 detectron2 框架构建了 faster rcnn 模型，这个模型在目标检测的精准度方面有着非常不错的表现
 1. **@pipcook/plugins-detectron-model-train** 这个插件用于启动所有基于 detectron2 构建的模型的训练，我们设置了 iteration 为 100000，如果您的数据集非常复杂，则需要调高迭代次数
 1. **@pipcook/plugins-detectron-model-evaluate** 我们使用此插件来进行模型训练效果的评估，只有提供了 test 测试集，此插件才会有效，最终给出的是各个类别的 average precision
-
 
 由于目标监测模型，尤其是 rcnn 家族的模型非常大，需要在有 nvidia gpu 并且 cuda 10.2 环境预备好的机器上进行训练：
 
@@ -256,22 +254,22 @@ const predict = require('./output');
 
 ### 收集图片
 
-这一步比较好理解，要想有自己的训练数据，您需要先想办法收集到足够的训练图片，这一步，您不需要让您自己的图片有相应的标注，只需要原始的图片进行标注就好
+这一步比较好理解，要想有自己的训练数据，您需要先想办法收集到足够的训练图片，这一步，您不需要让您自己的图片有相应的标注，只需要原始的图片进行标注就好。
 
 ### 标注
 
-现在市面上有很多的标注工具，您可以使用这些标注工具在您原始的图片上标注出有哪些组件，每个组件的位置和类型是什么，下面我们拿 [labelimg](https://github.com/tzutalin/labelImg) 为例，详细的介绍一下
+现在市面上有很多的标注工具，您可以使用这些标注工具在您原始的图片上标注出有哪些组件，每个组件的位置和类型是什么，下面我们拿 [labelimg](https://github.com/tzutalin/labelImg) 为例，详细的介绍一下：
 
 ![image.png](https://img.alicdn.com/tfs/TB11qTXNVP7gK0jSZFjXXc5aXXa-799-401.png)
 
 您可以先从上面的 labelimg 官网上安装软件，然后按照以下步骤操作：
 
 - 按照官网的说明进行构建和启动。
-- 在菜单/文件中单击“更改默认保存的注释文件夹”
-- 点击“打开目录”
-- 点击“创建RectBox”
-- 单击并释放鼠标左键以选择一个区域来标注矩形框
-- 您可以使用鼠标右键拖动矩形框来复制或移动它
+- 在菜单/文件中单击“更改默认保存的注释文件夹”。
+- 点击“打开目录”。
+- 点击“创建RectBox”。
+- 单击并释放鼠标左键以选择一个区域来标注矩形框。
+- 您可以使用鼠标右键拖动矩形框来复制或移动它。
 
 ### 训练
 
