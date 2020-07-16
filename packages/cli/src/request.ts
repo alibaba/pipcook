@@ -62,7 +62,7 @@ export const listen = async (host: string, params?: RequestParams, handlers?: Re
         es.removeEventListener('error', onerror);
 
         // print error
-        if (typeof e?.status === 'number') {
+        if (typeof e.status === 'number') {
           console.error('occurrs an daemon error with the following response:\n', e);
         } else {
           console.error(`daemon is not started(${e.message}), run "pipcook daemon start".`);
