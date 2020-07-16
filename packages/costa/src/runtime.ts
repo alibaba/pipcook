@@ -2,7 +2,7 @@ import path from 'path';
 import url from 'url';
 import { createUnzip } from 'zlib';
 import { Readable } from 'stream';
-import { randomBytes } from 'crypto';
+import { generate } from 'shortid';
 import { createReadStream, ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access } from 'fs-extra';
 import { download, constants } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
@@ -399,7 +399,7 @@ export class CostaRuntime {
       src.uri = name;
     } else if ([ 'https:', 'http:' ].indexOf(urlObj.protocol) !== -1) {
       src.from = 'tarball';
-      src.uri = path.join(constants.PIPCOOK_TMPDIR, randomBytes(8).toString('hex'), path.basename(urlObj.pathname));
+      src.uri = path.join(constants.PIPCOOK_TMPDIR, generate(), path.basename(urlObj.pathname));
     } else if (name[0] !== '.') {
       src.schema = this.getNameSchema(name);
       src.from = 'npm';

@@ -24,7 +24,7 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "tar-stream": "^2.1.2",
-    "uuid": "^3.4.0"
+    "shortid": "^2.2.15"
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
@@ -33,7 +33,7 @@
     "@types/request": "^2.48.4",
     "@types/request-promise": "^4.1.46",
     "@types/tar-stream": "^2.1.0",
-    "@types/uuid": "^7.0.2",
+    "@types/shortid": "^0.0.29",
     "jasmine": "^3.5.0",
     "nyc": "14.1.1",
     "ts-node": "^8.6.2",
