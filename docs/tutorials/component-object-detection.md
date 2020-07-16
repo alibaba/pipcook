@@ -11,6 +11,7 @@ This kind of detection is very useful. For example, in the research of code gene
 This tutorial will teach you how to train a model to do such a detection task.
 
 ## Scenario
+
 For example, as shown in the following, this picture contains multiple components, including buttons, switches, input boxes, etc., we want to identify their location and type：
 
 ![image.png](https://gw.alicdn.com/tfs/TB1YxdPfz39YK4jSZPcXXXrUFXa-1300-140.png)
@@ -31,6 +32,7 @@ For the trained model, after inputting this picture, the model will output the f
   	0.95, 0.93, 0.96, 0.99 // scores
   ]
 }
+
 ```
 At the same time, we will generate a labelmap during training. Labelmap is a mapping relationship between the serial number and the actual type. This generation is mainly due to the fact that our classification name is text, but before entering the model, we need to convert the text into numbers. Here is a labelmap
 ```json
@@ -40,6 +42,7 @@ At the same time, we will generate a labelmap during training. Labelmap is a map
   "input": 2
 }
 ```
+
 Let’s explain the above prediction results
 
 - boxes：This field describes the position of each component identified, displayed in the order of the upper left and lower right corners, such as [83, 31, 146, 71], indicating that the coordinates of the upper left corner of this component are (83, 13), lower right corner are (146, 71)
@@ -69,9 +72,7 @@ When we want to do such a task of object detection, we need to make, collect and
    - 2.xml
    - ...
 
-
 We need to divide our dataset into a training set (train), a validation set (validation) and a test set (test) according to a certain proportion. Among them, the training set is mainly used to train the model, and the validation set and the test set are used to evaluate the model. The validation set is mainly used to evaluate the model during the training process to facilitate viewing of the model's overfitting and convergence. The test set is used to perform an overall evaluation of the model after all training is completed.
-
 
 For each picture, Pascal Voc specifies an xml annotation file to record which components and the location of each component in this picture. A typical xml file content is:
 
@@ -135,19 +136,19 @@ For each picture, Pascal Voc specifies an xml annotation file to record which co
    </object>
 </annotation>
 ```
+
 This xml annotation file is mainly composed of the following parts：
 
 - folder / filename: These two fields mainly define the image position and type corresponding to the annotation
-
 - size: width and height of image
 - object:
    - name: component category
    - bndbox: position of component
 
-
 We have prepared such a data set, you can download it and check it out: [Download](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/component-recognition-detection.zip)
 
 ## Start Training
+
 After the dataset is ready, we can start training. Using Pipcook can be very convenient for object detection training. You only need to build the pipeline like this,
 
 ```json
@@ -179,7 +180,6 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
 
 ```
 Through the above plugins, we can see that they are used separately:
-
 1. **@pipcook/plugins-object-detection-pascalvoc-data-collect** This plugin is used to download the dataset in Pascal Voc format. Generally, we need to provide the url parameter. We provide the address of the dataset we prepared above.
 1. **@pipcook/plugins-coco-data-access** Now that we have downloaded the dataset, we need to connect the dataset into the format required by the subsequent model. Since the detectron2 framework used by our model requires the coco format, we use this plugin.
 1. **@pipcook/plugins-detectron-fasterrcnn-model-define** We built a faster rcnn model based on the detectron2 framework. This model has a very good performance in the accuracy of object detection
@@ -241,6 +241,7 @@ const predict = require('./output');
   //   ]
   // }
 })();
+
 ```
 Note that the results given contain three parts:
 
@@ -249,18 +250,20 @@ Note that the results given contain three parts:
 - classes：This attribute is an array, and each element is the corresponding predicted category
 
 ## Make your own dataset
+
 After reading the above description, are you already ready to use object detection to solve your own problems? If you want to make your own data set, there are mainly the following steps
 
 ### Collect images
+
 This step is easier to understand. To have your own training data, you need to find a way to collect enough training pictures. In this step, you don’t need to label your own pictures. You only need to mark the original pictures. it is good
 
 ### Labelling
+
 There are many labeling tools now, you can use these labeling tools to mark which components are on your original picture, what the locations are and what types are of each component, Let's take [labelimg](https://github.com/tzutalin/labelImg) as example
 
 ![image.png](https://gw.alicdn.com/tfs/TB1nB4lN4z1gK0jSZSgXXavwpXa-799-401.png)
 
 You can install the software from the official labelimg website above, and then follow the steps below:
-
 
 - Build and launch using the instructions above.
 - Click 'Change default saved annotation folder' in Menu/File
@@ -270,7 +273,9 @@ You can install the software from the official labelimg website above, and then 
 - You can use right mouse to drag the rect box to copy or move it
 
 ### Training
+
 After making the above data set, organize the file structure according to the introduction in the previous chapter. After that, you can start the pipeline for training.
 
 ## Conclusion
+
 Readers have learned how to identify multiple front-end components in a image, which can be applied to some more general scenarios. So in an article, we will introduce a more interesting example, how to use Pipcook to achieve the transfer of picture style, such as replacing the oranges in the picture with apples, or replacing the realistic photo style with oil painting style.

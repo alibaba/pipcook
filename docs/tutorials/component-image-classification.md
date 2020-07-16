@@ -1,6 +1,7 @@
 # Classify images of UI components
 
 ## Background
+
 Have you encountered such a scenario in the front-end business: there are some images in your hand, and you want an automatic way to identify what front-end components these images are, whether it is a button, a navigation bar, or a form? This is a typical image classification task.
 
 > The task of predicting image categories is called image classification. The purpose of training the image classification model is to identify various types of images
@@ -11,8 +12,8 @@ Taking code generation as an example, suppose we have a sketch design draft and 
 
 Another example is in the scenario of automated testing. We need an ability to identify the type of each layer. For the button that is recognized, we can automatically click to see if the button works. For the list component that we recognize, we can automatically track loading speed to monitor performance, etc.
 
-
 ## Examples
+
 For example, in the scenario where the forms are automatically generated, we need to identify which components are column charts or pie charts, as shown in the following figure:
 
 ![image.png](https://img.alicdn.com/tfs/TB17LbHNQL0gK0jSZFAXXcA9pXa-293-172.png)
@@ -36,8 +37,8 @@ At the same time, we will generate a labelmap during training. Labelmap is a map
 
 First, why is the prediction result a two-dimensional array? First of all, the model allows prediction of multiple pictures at once. For each picture, the model will also give an array, this array describes the possibility of each classification, as shown in the labelmap, the classification is arranged in the order of column chart and pie chart, then corresponding to the prediction result of the model, We can see that the column chart has the highest confidence, which is 0.9, so this picture is predicted to be a column chart, that is, the prediction is correct.
 
-
 ## Data Preparation
+
 When we are doing image classification tasks similar to this one, we need to organize our dataset in a certain format
 
 We need to divide our dataset into a training set (train), a validation set (validation) and a test set (test) according to a certain proportion. Among them, the training set is mainly used to train the model, and the validation set and the test set are used to evaluate the model. The validation set is mainly used to evaluate the model during the training process to facilitate viewing of the model's overfitting and convergence. The test set is used to perform an overall evaluation of the model after all training is completed.
@@ -81,6 +82,7 @@ In the training/validation/test set, we will organize the data according to the 
 We have prepared such a dataset, you can download it and check it out：[Download here](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip)
 
 ## Start Training
+
 After the dataset is ready, we can start training. Using Pipcook can be very convenient for the training of image classification. You only need to build the following pipeline,
 ```json
 {
@@ -122,13 +124,11 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
 Through the above plugins, we can see that they are used separately
 
 1. **@pipcook/plugins-image-classification-data-collect** This plug-in is used to download the dataset that meets the image classification described above. Mainly, we need to provide the url parameter, and we provide the dataset address that we prepared above
-
 1. **@pipcook/plugins-pascalvoc-data-access** Now that we have downloaded the dataset, we need to convert the dataset to pipcook format so that we can use the model later
 1. **@pipcook/plugins-image-data-process** When performing image classification, we need to have some necessary operations on the original data. For example, image classification requires that all pictures are of the same size, so we use this plugin to resize the pictures to a uniform size
 1. **@pipcook/plugins-tensorflow-mobilenet-model-define**  We use this plugin to choose the model. The models are genrally defined in model-define plugins.
 1. **@pipcook/plugins-image-classification-tensorflow-model-train**  We use this plugin for training. This is a general plugin for image classification based on TensorFlow, which has nothing to do with the model selected in the previous stage.
 1. **@pipcook/plugins-image-classification-tensorflow-model-train** We use this plugin for evaluating. This step is to give out the performance of the model we have trained on previous step
-
 
 [mobilenet](https://arxiv.org/abs/1704.04861) is a lightweight model which can be trained on CPU. If you are using [resnet](https://arxiv.org/abs/1512.03385)，since the model is quite large, we recommend use to train on GPU. 
 
@@ -175,5 +175,5 @@ const predict = require('./output');
 Note that the prediction result we give is the probability of each category. You can process this probability to the result you want.
 
 ## Conclusion
-In this way, the component recognition task based on the image classification model is completed. After completing the pipeline in our example, if you are interested in such tasks, you can also start preparing your own dataset for training. We have already introduced the format of the dataset in detail in the data preparation chapter. You only need to follow the file directory to easily prepare the data that matches our image classification pipeline.
 
+In this way, the component recognition task based on the image classification model is completed. After completing the pipeline in our example, if you are interested in such tasks, you can also start preparing your own dataset for training. We have already introduced the format of the dataset in detail in the data preparation chapter. You only need to follow the file directory to easily prepare the data that matches our image classification pipeline.
