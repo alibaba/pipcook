@@ -137,7 +137,7 @@ Through the above plugins, we can see that they are used separately:
 > With CUDA, GPUs can be conveniently used for general purpose calculations (a bit like numerical calculations performed in the CPU, etc.). Before CUDA, GPUs were generally only used for graphics rendering (such as through OpenGL, DirectX).
 
 ```shell
-$ pipcook run image-classification.json -- --tuna
+$ pipcook run image-classification.json
 ```
 
 Often the model will converge at 10-20 epochs. Of course, it depends on the complexity of your dataset. Model convergence means that the loss (loss value) is low enough and the accuracy is high enough.

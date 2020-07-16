@@ -26,15 +26,15 @@ For the trained model, after inputting this picture, the model will output the f
     [717, 41, 966, 83]
   ],
   classes: [
-  	0, 1, 2, 2  // class index
+    0, 1, 2, 2  // class index
   ],
   scores: [
-  	0.95, 0.93, 0.96, 0.99 // scores
+    0.95, 0.93, 0.96, 0.99 // scores
   ]
 }
-
 ```
-At the same time, we will generate a labelmap during training. Labelmap is a mapping relationship between the serial number and the actual type. This generation is mainly due to the fact that our classification name is text, but before entering the model, we need to convert the text into numbers. Here is a labelmap:
+
+At the same time, we will generate a `labelmap` during training. Labelmap is a mapping relationship between the serial number and the actual type. This generation is mainly due to the fact that our classification name is text, but before entering the model, we need to convert the text into numbers. Here is a labelmap:
 
 ```json
 {
@@ -52,7 +52,7 @@ Let’s explain the above prediction results:
 
 ## Data Preparation
 
-When we want to do such a task of object detection, we need to make, collect and store our dataset according to certain specifications. There are two main types of datasets for object detection in the industry today, which are [Coco Data Set] (https ://cocodataset.org/) and [Pascal Voc](http://host.robots.ox.ac.uk/pascal/VOC/) datasets. We also provide corresponding data collection plugins to collect these two data formats. We take Pascal Voc format as an example, the file directory is:
+When we want to do such a task of object detection, we need to make, collect and store our dataset according to certain specifications. There are two main types of datasets for object detection in the industry today, which are [Coco Dataset] (https ://cocodataset.org/) and [Pascal Voc](http://host.robots.ox.ac.uk/pascal/VOC/) datasets. We also provide corresponding data collection plugins to collect these two data formats. We take Pascal Voc format as an example, the file directory is:
 
 - train
    - 1.jpg
@@ -75,7 +75,7 @@ When we want to do such a task of object detection, we need to make, collect and
 
 We need to divide our dataset into a training set (train), a validation set (validation) and a test set (test) according to a certain proportion. Among them, the training set is mainly used to train the model, and the validation set and the test set are used to evaluate the model. The validation set is mainly used to evaluate the model during the training process to facilitate viewing of the model's overfitting and convergence. The test set is used to perform an overall evaluation of the model after all training is completed.
 
-For each picture, Pascal Voc specifies an xml annotation file to record which components and the location of each component in this picture. A typical xml file content is:
+For each picture, Pascal Voc specifies an XML annotation file to record which components and the location of each component in this picture. A typical XML file content is:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -138,7 +138,7 @@ For each picture, Pascal Voc specifies an xml annotation file to record which co
 </annotation>
 ```
 
-This xml annotation file is mainly composed of the following parts：
+This XML annotation file is mainly composed of the following parts：
 
 - folder / filename: These two fields mainly define the image position and type corresponding to the annotation
 - size: width and height of image
@@ -146,7 +146,7 @@ This xml annotation file is mainly composed of the following parts：
    - name: component category
    - bndbox: position of component
 
-We have prepared such a data set, you can download it and check it out: [Download](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/component-recognition-detection.zip).
+We have prepared such a dataset, you can download it and check it out: [Download](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/component-recognition-detection.zip).
 
 ## Start Training
 
@@ -190,7 +190,7 @@ Through the above plugins, we can see that they are used separately:
 Since the object detection model, especially the model of the rcnn family is very large, it needs to be trained on a machine prepared with nvidia GPU and cuda 10.1 environment:
 
 ```shell
-$ pipcook run object-detection.json --verbose --tuna
+$ pipcook run object-detection.json
 ```
 
 The model will print out the loss of each iteration in real time during the training process. Please pay attention to the log to determine the model convergence:
@@ -216,11 +216,10 @@ After the training is completed, output will be generated in the current directo
 
 ```shell
 $ cd output
-$ BOA_TUNA=1 npm install
+$ npm install
 ```
 
 After installing the environment, we can start to predict:
-First install dependencies:
 
 ```js
 const predict = require('./output');
@@ -252,7 +251,7 @@ Note that the results given contain three parts:
 
 ## Make your own dataset
 
-After reading the above description, are you already ready to use object detection to solve your own problems? If you want to make your own data set, there are mainly the following steps.
+After reading the above description, are you already ready to use object detection to solve your own problems? If you want to make your own dataset, there are mainly the following steps.
 
 ### Collect images
 
@@ -275,7 +274,7 @@ You can install the software from the official labelimg website above, and then 
 
 ### Training
 
-After making the above data set, organize the file structure according to the introduction in the previous chapter. After that, you can start the pipeline for training.
+After making the above dataset, organize the file structure according to the introduction in the previous chapter. After that, you can start the pipeline for training.
 
 ## Conclusion
 
