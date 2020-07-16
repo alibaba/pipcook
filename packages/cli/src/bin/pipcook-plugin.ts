@@ -5,11 +5,10 @@ import path from 'path';
 import { listen, get } from '../request';
 import { route } from '../router';
 import { tunaMirrorURI } from '../config';
-import { ora } from '../utils';
+import { logStart, logSuccess, logFail } from '../utils';
 
 async function install(name: string, opts: any): Promise<void> {
-  const spinner = ora();
-  spinner.start(`fetching package info ${name}`);
+  logStart(`fetching package info ${name}`);
 
   const params = {
     name,
@@ -18,23 +17,22 @@ async function install(name: string, opts: any): Promise<void> {
   await listen(`${route.plugin}/install`, params, {
     'info': (e: MessageEvent) => {
       const pkg = JSON.parse(e.data);
-      spinner.start(`installing ${pkg.name} from ${pkg.pipcook.source.uri}`);
+      logStart(`installing ${pkg.name} from ${pkg.pipcook.source.uri}`);
     },
     'installed': (e: MessageEvent) => {
       const pkg = JSON.parse(e.data);
-      spinner.succeed(`${pkg.name} installed.`);
+      logSuccess(`${pkg.name} installed.`);
     },
     'error': (e: MessageEvent) => {
-      spinner.fail(`install failed with ${e?.data}`);
+      logFail(`install failed with ${e?.data}`);
     }
   });
 }
 
 async function uninstall(name: string): Promise<void> {
-  const spinner = ora();
-  spinner.start(`uninstalling ${name}`);
+  logStart(`uninstalling ${name}`);
   await get(`${route.plugin}/uninstall`, { name });
-  spinner.succeed(`uninstalled ${name}`);
+  logSuccess(`uninstalled ${name}`);
 }
 
 async function list(opts: any): Promise<void> {

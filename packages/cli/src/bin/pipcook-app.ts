@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { ora } from '../utils';
+import { logInfo, logStart, logSuccess, logFail } from '../utils';
 import { AppProject } from '../app';
 import { PipelineStatus } from '@pipcook/pipcook-core';
 import { getFile } from '../request';
@@ -25,34 +25,33 @@ program
   .command('train <script.ts>')
   .description('start training the configured PipApp Script.')
   .action(async (srcPath) => {
-    const spinner = ora();
     const app = new AppProject(srcPath);
     await app.initializeOrLoad();
 
     try {
       // ensure all plugins.
-      spinner.info(`checking and installing plugins for "${srcPath}"`);
+      logInfo(`checking and installing plugins for "${srcPath}"`);
       await app.ensureAllPlugins({
         before: async (name: string, version: string): Promise<void> => {
-          spinner.start(`installing plugin ${name}@${version}`);
+          logStart(`installing plugin ${name}@${version}`);
         },
         after: async (name: string, version: string): Promise<void> => {
-          spinner.succeed(`${name}@${version} is installed.`);
+          logSuccess(`${name}@${version} is installed.`);
         }
       });
-      spinner.info('all plugins are installed.');
+      logInfo('all plugins are installed.');
 
       // and start running pipelines one by one.
       await app.train({
         before: async (id: string): Promise<void> => {
-          spinner.start(`start running the pipeline(${id})`);
+          logStart(`start running the pipeline(${id})`);
         },
         after: async (id: string, jobId: string): Promise<void> => {
-          spinner.succeed(`pipeline is scheduled at job(${jobId})`);
+          logSuccess(`pipeline is scheduled at job(${jobId})`);
         }
       });
     } catch (err) {
-      spinner.fail(err.message);
+      logFail(err.message);
       process.exit(1);
     }
   });

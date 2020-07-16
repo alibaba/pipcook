@@ -1,13 +1,12 @@
 import * as qs from 'querystring';
 import axios from 'axios';
 import EventSource from 'eventsource';
-import { ora } from './utils';
+import { logFail } from './utils';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
 
 function createGeneralRequest(agent: Function): Function {
-  const spinner = ora();
   return async (...args: any[]) => {
     try {
       const response = await agent(...args);
@@ -16,7 +15,7 @@ function createGeneralRequest(agent: Function): Function {
       }
     } catch (err) {
       if (err?.response?.data?.message) {
-        spinner.fail(err.response.data.message);
+        logFail(err.response.data.message);
       } else {
         console.error('daemon is not started, run "pipcook daemon start"');
       }

@@ -12,6 +12,8 @@ import path from 'path';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 import realOra = require('ora');
 
+const spinner = realOra({ stream: process.stdout });
+
 export const Constants = {
   BOA_CONDA_INDEX: 'https://pypi.tuna.tsinghua.edu.cn/simple',
   BOA_CONDA_MIRROR: 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda'
@@ -70,6 +72,22 @@ export async function parseConfigFilename(filename: string): Promise<string> {
   return filename;
 }
 
-export function ora(opts?: realOra.Options) {
-  return realOra({ stream: process.stdout, ...opts });
+export function logSuccess(message: string) {
+  spinner.succeed(message);
+}
+
+export function logFail(message: string) {
+  spinner.fail(message);
+}
+
+export function logStart(message: string) {
+  if (process.stdout.columns == 0 && process.stdout.rows == 0) {
+    console.log(message);
+  } else {
+    spinner.start(message);
+  }
+}
+
+export function logInfo(message: string) {
+  spinner.info(message);
 }

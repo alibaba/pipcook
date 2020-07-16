@@ -5,7 +5,7 @@ import * as path from 'path';
 import { install } from '../pipeline';
 import { get, post, put, del } from '../request';
 import { route } from '../router';
-import { ora } from '../utils';
+import { logSuccess } from '../utils';
 
 async function list(): Promise<void> {
   let pipelines = (await get(`${route.pipeline}/list`)).rows;
@@ -29,7 +29,7 @@ async function create(filename: string, opts: any): Promise<void> {
     config: filename,
     name: opts.name
   });
-  ora().succeed(`pipeline ${pipeline.id} created.`);
+  logSuccess(`pipeline ${pipeline.id} created.`);
 }
 
 async function update(id: string, filename: string): Promise<void> {
@@ -39,17 +39,16 @@ async function update(id: string, filename: string): Promise<void> {
   const pipeline = await put(`${route.pipeline}/${id}`, {
     config: filename
   });
-  ora().succeed(`pipeline ${pipeline.id} updated with ${filename}.`);
+  logSuccess(`pipeline ${pipeline.id} updated with ${filename}.`);
 }
 
 async function remove(id?: any): Promise<void> {
-  const spinner = ora();
   if (typeof id === 'string' && id !== 'all') {
     await del(`${route.pipeline}/${id}`);
-    spinner.succeed(`pipeline ${id} has removed.`);
+    logSuccess(`pipeline ${id} has removed.`);
   } else {
     const n = await del(route.pipeline);
-    spinner.succeed(`${n} pipelines has removed.`);
+    logSuccess(`${n} pipelines has removed.`);
   }
 }
 

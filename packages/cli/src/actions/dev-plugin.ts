@@ -3,9 +3,8 @@ import chalk from 'chalk';
 import path from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { DevPluginCommandHandler } from '../types';
-import { ora } from '../utils';
+import { logFail } from '../utils';
 
-const spinner = ora();
 
 /**
  * prepare a working dir for developer to develop plugins
@@ -27,7 +26,7 @@ const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
   try {
     dirname = path.join(process.cwd(), name);
     if (fse.existsSync(dirname)) {
-      spinner.fail(`a directory or file called ${name} already exists. Please use a new working directory`);
+      logFail(`a directory or file called ${name} already exists. Please use a new working directory`);
       return process.exit(1);
     }
     fse.ensureDirSync(path.join(dirname, 'src'));
