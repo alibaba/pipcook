@@ -190,7 +190,12 @@ export class PipelineController {
         sse.emit('info', pkg);
 
         debug(`installing ${pipeline[type]}.`);
-        await this.pluginManager.install(pkg, { stdout: process.stdout, stderr: process.stderr }, pyIndex);
+        await this.pluginManager.install(pkg, {
+          pyIndex,
+          force: false,
+          stdout: process.stdout,
+          stderr: process.stderr
+        });
         sse.emit('installed', pkg);
       }
       sse.emit('finished', pipeline);

@@ -42,19 +42,25 @@ function selectNpmPackage(metadata: NpmPackageMetadata, source: PluginSource): N
   return metadata.versions[metadata['dist-tags'].latest];
 }
 
-interface LogWriter {
+interface InstallOptions {
+  // the index mirror to install python packages.
+  pyIndex?: string;
+  // install from new anyway.
+  force?: boolean;
+  // install process stdout
   stdout: Writable;
+  // install process stderr
   stderr: Writable;
 }
 
-interface CostaSpawnOptions extends SpawnOptions {
+interface InstallSpawnOpts extends SpawnOptions {
   stdout: Writable;
   stderr: Writable;
 }
 
 /**
  * pipe a stream to another one, because we fork multi child processes here,
- * so we can't pipe the enn event.
+ * so we can't pipe the event directly.
  * @param read child process stdout/stderr
  * @param write the log stream
  */
@@ -67,17 +73,13 @@ function pair(read: Readable, write: Writable): void {
   });
 }
 
-function pipeLog(stdout: Readable, stderr: Readable, logStdout: Writable, logStderr: Writable): void {
-  pair(stdout, logStdout);
-  pair(stderr, logStderr);
-}
-
-function spawnAsync(command: string, args: string[], opts: CostaSpawnOptions): Promise<string> {
+function spawnAsync(command: string, args: string[], opts: InstallSpawnOpts): Promise<string> {
   return new Promise((resolve, reject) => {
     opts.stdio = [ null, 'pipe', 'pipe' ];
     opts.detached = false;
     const child = spawn(command, args, opts);
-    pipeLog(child.stdout, child.stderr, opts.stdout, opts.stderr);
+    pair(child.stdout, opts.stdout);
+    pair(child.stderr, opts.stderr);
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });
@@ -204,7 +206,7 @@ export { RunnableResponse } from './runnable';
 export {
   PluginRunnable,
   BootstrapArg,
-  LogWriter
+  InstallOptions
 };
 
 /**
@@ -285,12 +287,8 @@ export class CostaRuntime {
     await new Promise((resolve, reject) => {
       const writeStream = createWriteStream(filename);
       stream.pipe(writeStream);
-      stream.on('end', () => {
-        resolve();
-      });
-      stream.on('error', (err) => {
-        reject(err);
-      });
+      stream.on('end', resolve);
+      stream.on('error', reject);
     });
     const pkg = await fetchPackageJsonFromTarball(filename);
     const source: PluginSource = {
@@ -303,15 +301,14 @@ export class CostaRuntime {
   /**
    * Install the given plugin by name.
    * @param pkg the plugin package.
-   * @param force install from new anyway.
-   * @param pyIndex the index mirror to install python packages.
+   * @param opts install options
    */
-  async install(pkg: PluginPackage, logWriter: LogWriter, force = false, pyIndex?: string): Promise<boolean> {
-    if (force === true) {
+  async install(pkg: PluginPackage, opts: InstallOptions): Promise<boolean> {
+    if (opts.force === true) {
       await this.uninstall(pkg.name);
     }
     // check if the pkg is installed
-    if ((await this.isInstalled(pkg.name)) && !force) {
+    if ((await this.isInstalled(pkg.name)) && !opts.force) {
       debug(`skip install "${pkg.name}" because it already exists`);
       return true;
     }
@@ -334,7 +331,7 @@ export class CostaRuntime {
       debug(`install the plugin from ${pluginAbsName}`);
     }
 
-    const npmExecOpts = { cwd: this.options.installDir, ...logWriter };
+    const npmExecOpts = { cwd: this.options.installDir, stdout: opts.stdout, stderr: opts.stderr };
     const npmArgs = [ 'install', pluginAbsName, '-E', '--production' ];
 
     if (this.options.npmRegistryPrefix) {
@@ -371,20 +368,20 @@ export class CostaRuntime {
       }
 
       debug('conda environment is setup correctly, start downloading.');
-      await spawnAsync(python, [ '-m', 'venv', envDir ], { ...logWriter });
+      await spawnAsync(python, [ '-m', 'venv', envDir ], { stdout: opts.stdout, stderr: opts.stderr });
       // TODO(yorkie): check for access(pip3)
 
       for (let name of requirements) {
         debug(`installing python package ${name}`);
         let args = [ 'install', name ];
-        if (pyIndex) {
-          args = args.concat([ '-i', pyIndex ]);
+        if (opts.pyIndex) {
+          args = args.concat([ '-i', opts.pyIndex ]);
         }
         args = args.concat([
           '--default-timeout=1000',
           `--cache-dir=${this.options.installDir}/.pip`
         ]);
-        await spawnAsync(`${envDir}/bin/pip3`, args, { ...logWriter });
+        await spawnAsync(`${envDir}/bin/pip3`, args, { stdout: process.stdout, stderr: process.stderr });
       }
     } else {
       debug(`just skip the Python environment installation.`);

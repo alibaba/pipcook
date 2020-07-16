@@ -48,18 +48,18 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Nod
 export const uploadFile = async (host: string, file: string, params?: RequestParams): Promise<any> => {
   const stream = fs.createReadStream(file);
   const form = new FormData();
-  for (const param in params) {
-    if (params[param]) {
-      form.append(param, params[param]);
+  for (const key in params) {
+    if (params[key]) {
+      form.append(key, params[key]);
     }
   }
   form.append('file', stream);
 
-  let getHeaders = (form: FormData): Promise<FormData.Headers> => {
+  const getHeaders = (form: FormData): Promise<FormData.Headers> => {
     return new Promise((resolve, reject) => {
       form.getLength((err, length) => {
         if (err) {
-          reject(err);
+          return reject(err);
         }
         resolve(Object.assign({ 'Content-Length': length }, form.getHeaders()));
       });

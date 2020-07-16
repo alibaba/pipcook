@@ -4,10 +4,10 @@ import { provide, scope, ScopeEnum } from 'midway';
 import { StringDecoder } from 'string_decoder';
 
 export interface LogObject {
-  logTransfroms: LogTransfroms;
-  error?: Error;
-  finished: boolean;
   id: string;
+  logTransfroms: LogTransfroms;
+  finished: boolean;
+  error?: Error;
 }
 
 class LogTransform extends Transform {
@@ -47,7 +47,10 @@ export interface LogTransfroms {
 export class LogManager {
   logMap = new Map<string, LogObject>();
 
-  createLogStream(): LogObject {
+  /**
+   * create a log object, must call the destory function to clean it up.
+   */
+  create(): LogObject {
     const id = generate();
     const logTransfroms: LogTransfroms = { stdout: new LogTransform(), stderr: new LogTransform() };
     const logObj: LogObject = {id, finished: false, logTransfroms };
@@ -55,11 +58,21 @@ export class LogManager {
     return logObj;
   }
 
-  getLog(id: string): LogObject {
+  /**
+   * get the log object by log id.
+   * @param id log id
+   */
+  get(id: string): LogObject {
     return this.logMap.get(id);
   }
 
-  destroyLog(id: string, err?: Error) {
+  /**
+   * clean the log object up, emit the end event,
+   * if the log progress ends with error, it'll be emitted before end event.
+   * @param id log id
+   * @param err error if have
+   */
+  destroy(id: string, err?: Error) {
     const logs = this.logMap.get(id);
     logs.finished = true;
     if (err) {

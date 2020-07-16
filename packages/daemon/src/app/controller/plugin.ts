@@ -53,21 +53,22 @@ export class PluginController {
   public async upload() {
     const fs = await this.ctx.getFileStream();
     const { pyIndex = undefined } = fs.fields;
-    successRes(this.ctx, await this.pluginManager.installFromTarStream(fs, pyIndex));
+    const res = await this.pluginManager.installFromTarStream(fs, pyIndex);
+    successRes(this.ctx, { logId: res.logObject.id, plugin: res.plugin });
   }
 
   private async linkLog(logStream: Readable, type: 'info' | 'error', sse: ServerSentEmitter): Promise<void> {
     if (logStream.readable) {
-      logStream.on('data', data => {
-        sse.emit(type, data.toString());
-      });
-      return new Promise(resolveEnd => {
+      return new Promise(resolve => {
+        logStream.on('data', data => {
+          sse.emit(type, data.toString());
+        });
         logStream.on('end', () => {
-          process.nextTick(resolveEnd);
+          process.nextTick(resolve);
         });
         logStream.on('error', err => {
           sse.emit('fail', err.message);
-          resolveEnd();
+          resolve();
         });
       });
     } else {
@@ -76,19 +77,19 @@ export class PluginController {
   }
   @get('/log/:id')
   public async log() {
-    const logObject = await this.pluginManager.getInstallLogStream(this.ctx.params.id);
     const sse = new ServerSentEmitter(this.ctx);
-    if (logObject.logTransfroms) {
-      if (logObject.finished) {
-        if (logObject.error) {
-          sse.emit('fail', `install plugin error: ${logObject.error.message}`);
+    const log = await this.pluginManager.getInstallLog(this.ctx.params.id);
+    if (log?.logTransfroms) {
+      if (log.finished) {
+        if (log.error) {
+          sse.emit('fail', `install plugin error: ${log.error.message}`);
         } else {
           sse.emit('info', 'plugin installed');
         }
       } else {
         const futures = [
-          this.linkLog(logObject.logTransfroms.stdout, 'info', sse),
-          this.linkLog(logObject.logTransfroms.stderr, 'error', sse)
+          this.linkLog(log.logTransfroms.stdout, 'info', sse),
+          this.linkLog(log.logTransfroms.stderr, 'error', sse)
         ];
         await Promise.all(futures);
       }
