@@ -190,7 +190,7 @@ export class PipelineController {
         sse.emit('info', pkg);
 
         debug(`installing ${pipeline[type]}.`);
-        const plugin = await this.pluginManager.queryOrCreateByPkg(pkg);
+        const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
         try {
           await this.pluginManager.install(pkg, {
             pyIndex,
