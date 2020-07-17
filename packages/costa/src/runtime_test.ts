@@ -1,8 +1,9 @@
 import path from 'path';
-import axios from 'axios';
 import { CostaRuntime } from './runtime';
 import { PluginPackage } from '.';
 import { stat } from 'fs-extra';
+import { spawnSync } from 'child_process';
+import { createReadStream } from 'fs-extra';
 
 const INSTALL_SPECS_TIMEOUT = 180 * 1000;
 
@@ -28,7 +29,7 @@ describe('create a costa runtime', () => {
     ));
   }, INSTALL_SPECS_TIMEOUT);
 
-  it('should fetch a python plugin and install fron local', async () => {
+  it('should fetch a python plugin and install from local', async () => {
     const bayesClassifier = await costa.fetch('../plugins/model-define/bayesian-model-define');
     expect(bayesClassifier.name).toBe('@pipcook/plugins-bayesian-model-define');
     expect(bayesClassifier.pipcook.category).toBe('modelDefine');
@@ -95,14 +96,13 @@ describe('create a costa runtime', () => {
   }, INSTALL_SPECS_TIMEOUT);
 
   it('should fetch a plugin from tarball readstream', async () => {
-    const resp = await axios({
-      method: 'GET',
-      url: 'https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-0.5.8.tgz',
-      responseType: 'stream'
-    });
-    const collectCsvWithSpecificVer = await costa.fetchByStream(resp.data as NodeJS.ReadStream);
-    expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-csv-data-collect');
-    expect(collectCsvWithSpecificVer.version).toBe('0.5.8');
+    const pathname = path.join(__dirname, '../../plugins/data-collect/chinese-poem-data-collect');
+    let packName = spawnSync('npm', [ 'pack' ], { cwd: pathname }).stdout.toString();
+    console.log('packname', packName);
+    packName = packName.replace(/\r|\n/g, '');
+    const packageStream = createReadStream(path.join(pathname, packName));
+    const collectCsvWithSpecificVer = await costa.fetchByStream(packageStream);
+    expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-chinese-poem-data-collect');
     await costa.install(collectCsvWithSpecificVer, process);
     await stat(path.join(
       costa.options.installDir,
