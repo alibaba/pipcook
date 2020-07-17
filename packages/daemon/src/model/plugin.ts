@@ -20,7 +20,7 @@ export class PluginModel extends Model {
 }
 
 export type PluginModelStatic = typeof Model & {
-  new(values?: object, options?: BuildOptions): PluginModel;
+  new (values?: object, options?: BuildOptions): PluginModel;
 };
 
 export default async function model(context: IApplicationContext): Promise<PluginModelStatic> {
