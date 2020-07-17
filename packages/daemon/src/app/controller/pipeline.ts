@@ -6,6 +6,7 @@ import { PluginManager } from '../../service/plugin';
 import { parseConfig } from '../../runner/helper';
 import { successRes, failRes } from '../../utils/response';
 import { PipelineService } from '../../service/pipeline';
+import { LogManager } from '../../service/log-manager';
 import ServerSentEmitter from '../../utils/emitter';
 const debug = Debug('daemon.app.pipeline');
 
@@ -20,6 +21,9 @@ export class PipelineController {
 
   @inject('pluginManager')
   pluginManager: PluginManager;
+
+  @inject('logManager')
+  logManager: LogManager;
 
   @post('')
   public async create() {
@@ -180,6 +184,16 @@ export class PipelineController {
 
   private async install(pipeline: PipelineDB, pyIndex?: string, cwd?: string) {
     const sse = new ServerSentEmitter(this.ctx);
+    const log = this.logManager.create();
+    log.stderr.on('data', (data) => {
+      sse.emit('log', { level: 'warn', data });
+    });
+    log.stdout.on('data', (data) => {
+      sse.emit('log', { level: 'info', data });
+    });
+    log.stderr.on('error', (err) => {
+      sse.emit('error', err.message);
+    });
     try {
       for (const type of constants.PLUGINS) {
         if (!pipeline[type]) {
@@ -195,18 +209,19 @@ export class PipelineController {
           await this.pluginManager.install(pkg, {
             pyIndex,
             force: false,
-            stdout: process.stdout,
-            stderr: process.stderr
+            stdout: log.stdout,
+            stderr: log.stderr
           });
           sse.emit('installed', pkg);
         } catch (err) {
           this.pluginManager.removeById(plugin.id);
           throw err;
         }
-        sse.emit('finished', pipeline);
       }
+      sse.emit('finished', pipeline);
+      this.logManager.destroy(log.id);
     } catch (err) {
-      sse.emit('error', err?.message);
+      this.logManager.destroy(log.id, err);
     } finally {
       sse.finish();
     }
