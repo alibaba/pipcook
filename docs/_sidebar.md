@@ -11,6 +11,8 @@
   <!-- - [Working with Text Data](/tutorials/working-with-text-data.md) -->
   <!-- - [Working with Image Data](/tutorials/working-with-image-data.md) -->
   - [Using Python functions in Node.js](/tutorials/using-python-functions-in-nodejs.md)
+  - [Classify images of UI components](/tutorials/component-image-classification.md)
+  - [Detect the UI components from a design draft](/tutorials/component-object-detection.md)
 - Contributing
   - [Contributor guide](/contributing/guide-to-contributor.md)
   - [Collaborator guide](/contributing/guide-to-collaborator.md)
