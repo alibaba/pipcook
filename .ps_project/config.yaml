@@ -1,6 +1,6 @@
 version: 2
 workflows:
-  run-pipcook-pipeline:
+  run-pipeline:
     steps:
       -
         name: "run image classification"
@@ -9,6 +9,6 @@ workflows:
           command: nvidia-smi
           container: pipcook/pipcook:latest
           machineType: "K80"
-      triggers:
-        branches:
-          only: integrate/gpu-ci
+    triggers:
+      branches:
+        only: integrate/gpu-ci
