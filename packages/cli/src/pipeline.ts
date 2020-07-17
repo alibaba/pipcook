@@ -10,7 +10,6 @@ import { remove, createWriteStream, mkdirp } from 'fs-extra';
 
 export async function install(filename: string, opts: any): Promise<void> {
   const spinner = ora();
-
   try {
     filename = await parseConfigFilename(filename);
   } catch (err) {
@@ -22,6 +21,7 @@ export async function install(filename: string, opts: any): Promise<void> {
     config: filename,
     pyIndex: opts.tuna ? tunaMirrorURI : undefined
   };
+
   if (!opts.verbose) {
     get(`${route.pipeline}/install`, params);
     spinner.succeed(`install plugins succeeded.`);
@@ -29,6 +29,19 @@ export async function install(filename: string, opts: any): Promise<void> {
   } else {
     return new Promise((resolve, reject) => {
       listen(`${route.pipeline}/install`, params, {
+        'log': (e: MessageEvent) => {
+          const { level, data } = JSON.parse(e.data);
+          switch (level) {
+          case 'info':
+            spinner.info(data);
+            break;
+          case 'warn':
+            spinner.warn(data);
+            break;
+          default:
+            spinner.info(data);
+          }
+        },
         'info': (e: MessageEvent) => {
           const { name, version } = JSON.parse(e.data);
           spinner.start(`installing plugin ${name}@${version}`);

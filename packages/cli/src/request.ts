@@ -1,6 +1,9 @@
 import * as qs from 'querystring';
+import { promisify } from 'util';
 import axios from 'axios';
+import fs from 'fs-extra';
 import EventSource from 'eventsource';
+import FormData from 'form-data';
 import { ora } from './utils';
 
 export type RequestParams = Record<string, any>;
@@ -44,6 +47,23 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Nod
     responseType: 'stream'
   });
   return resp.data as NodeJS.ReadStream;
+};
+
+// FIXME(feely): params is not working
+export const uploadFile = async (host: string, file: string, params?: RequestParams): Promise<any> => {
+  const stream = fs.createReadStream(file);
+  const form = new FormData();
+  for (const key in params) {
+    if (params[key]) {
+      form.append(key, params[key]);
+    }
+  }
+  form.append('file', stream);
+
+  const getLength = promisify(form.getLength.bind(form));
+  const length = await getLength();
+  const headers = Object.assign({ 'Content-Length': length }, form.getHeaders());
+  return axios.post(host, form, { headers });
 };
 
 export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {
