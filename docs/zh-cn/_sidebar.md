@@ -9,6 +9,8 @@
 - 教程
   - [开始机器学习](/zh-cn/tutorials/machine-learning-overview.md)
   - [在 Node.js 中使用 Python](/zh-cn/tutorials/using-python-functions-in-nodejs.md)
+  - [分类图片中的前端组件](/zh-cn/tutorials/component-image-classification.md)
+  - [识别图片中的前端组件](/zh-cn/tutorials/component-object-detection.md)
 - 如何贡献
   - [贡献者指南](/zh-cn/contributing/guide-to-contributor.md)
   - [维护者指南](/zh-cn/contributing/guide-to-collaborator.md)
