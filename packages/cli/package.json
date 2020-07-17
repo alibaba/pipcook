@@ -40,7 +40,8 @@
     "semver": "^6.3.0",
     "tar-stream": "^2.1.2",
     "ts-node": "^8.9.1",
-    "yaml": "^1.7.2"
+    "yaml": "^1.7.2",
+    "form-data": "^3.0.0"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {

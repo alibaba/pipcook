@@ -1,4 +1,4 @@
-import { Context, controller, inject, provide, get } from 'midway';
+import { Context, controller, inject, provide, get, post } from 'midway';
 import { successRes } from '../../utils/response';
 import { PluginManager } from '../../service/plugin';
 import ServerSentEmitter from '../../utils/emitter';
@@ -8,7 +8,6 @@ const debug = Debug('daemon.app.plugin');
 @provide()
 @controller('/plugin')
 export class PluginController {
-
   @inject()
   ctx: Context;
 
@@ -25,8 +24,14 @@ export class PluginController {
       sse.emit('info', pkg);
 
       debug(`installing ${name}.`);
-      await this.pluginManager.install(pkg, pyIndex);
-      sse.emit('installed', pkg);
+      const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
+      try {
+        await this.pluginManager.install(pkg, pyIndex);
+        sse.emit('installed', pkg);
+      } catch (err) {
+        await this.pluginManager.removeById(plugin.id);
+        throw err;
+      }
     } catch (err) {
       sse.emit('error', err?.message);
     } finally {
@@ -47,5 +52,43 @@ export class PluginController {
       category: this.ctx.query.category
     });
     successRes(this.ctx, { data: plugins });
+  }
+  @get('/:id')
+  public async info() {
+    const plugin = await this.pluginManager.findById(this.ctx.params.id);
+    successRes(this.ctx, { data: plugin });
+  }
+  @post('/upload')
+  public async upload() {
+    const fs = await this.ctx.getFileStream();
+    const { pyIndex, force } = fs.fields;
+    successRes(this.ctx, await this.pluginManager.installFromTarStream(fs, pyIndex, force));
+  }
+
+  private linkLog(logStream: NodeJS.ReadStream, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
+    return new Promise(resolve => {
+      logStream.on('data', data => {
+        sse.emit('log', { level, data });
+      });
+      logStream.on('close', resolve);
+      logStream.on('error', err => {
+        sse.emit('error', err.message);
+      });
+    });
+  }
+
+  @get('/log/:id')
+  public async log() {
+    const sse = new ServerSentEmitter(this.ctx);
+    const log = await this.pluginManager.getInstallLog(this.ctx.params.id);
+    if (!log) {
+      sse.emit('error', 'no log found');
+      return sse.finish();
+    }
+    await Promise.all([
+      this.linkLog(log.stdout, 'info', sse),
+      this.linkLog(log.stderr, 'warn', sse)
+    ]);
+    return sse.finish();
   }
 }
