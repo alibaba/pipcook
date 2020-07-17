@@ -75,11 +75,11 @@ async function upload(pathname: string, opts: any): Promise<void> {
     tarball = output.stdout.toString().replace(/[\n\r]/g, '');
   }
 
-  const resp = await uploadFile(`${route.plugin}/upload`, path.join(pathname, tarball), params);
-  spinner.info(`installing plugin ${resp.data?.plugin.name}@${resp.data?.plugin.version}`);
+  const installingResp = await uploadFile(`${route.plugin}/upload`, path.join(pathname, tarball), params);
+  spinner.info(`installing plugin ${installingResp.data?.name}@${installingResp.data?.version}`);
   let errMsg: string;
   await new Promise((resolve) => {
-    listen(`${route.plugin}/log/${resp.data.logId}`, {}, {
+    listen(`${route.plugin}/log/${installingResp.data.logId}`, {}, {
       'log': (e: MessageEvent) => {
         const log = JSON.parse(e.data);
         switch (log.level) {
@@ -100,7 +100,7 @@ async function upload(pathname: string, opts: any): Promise<void> {
       'finished': resolve
     });
   });
-  const pluginInfoResp = await get(`${route.plugin}/${resp.data.plugin.id}`);
+  const pluginInfoResp = await get(`${route.plugin}/${installingResp.data?.id}`);
   if (typeof pluginInfoResp?.id === 'string') {
     spinner.info(`install plugin ${pluginInfoResp.name}@${pluginInfoResp.version} successfully`);
   } else {

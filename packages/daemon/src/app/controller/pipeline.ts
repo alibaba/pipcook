@@ -200,7 +200,7 @@ export class PipelineController {
           });
           sse.emit('installed', pkg);
         } catch (err) {
-          this.pluginManager.deleteById(plugin.id);
+          this.pluginManager.removeById(plugin.id);
           throw err;
         }
         sse.emit('finished', pipeline);

@@ -29,7 +29,7 @@ export class PluginController {
         await this.pluginManager.install(pkg, pyIndex);
         sse.emit('installed', pkg);
       } catch (err) {
-        await this.pluginManager.deleteById(plugin.id);
+        await this.pluginManager.removeById(plugin.id);
         throw err;
       }
     } catch (err) {

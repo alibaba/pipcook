@@ -9,17 +9,7 @@ providerWrapper([
   }
 ]);
 
-export interface IPluginModel {
-  id: string;
-  name: string;
-  version: string;
-  category: string;
-  datatype: string;
-  namespace: string;
-  dest: string;
-}
-
-export class PluginModel extends Model implements IPluginModel {
+export class PluginModel extends Model {
   readonly id: string;
   readonly name: string;
   readonly version: string;
@@ -30,7 +20,7 @@ export class PluginModel extends Model implements IPluginModel {
 }
 
 export type PluginModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): PluginModel;
+  new(values?: object, options?: BuildOptions): PluginModel;
 };
 
 export default async function model(context: IApplicationContext): Promise<PluginModelStatic> {

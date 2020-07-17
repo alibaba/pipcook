@@ -1,14 +1,13 @@
-import { IPluginModel } from './model/plugin';
-export interface RunParams {
-  status: number;
-  currentIndex?: number;
-  evaluateMap?: string;
-  evaluatePass?: boolean;
-  endTime?: number;
-  error?: string;
-}
 
-export interface PluginInstall {
+export interface PluginResp {
+  id: string;
+  name: string;
+  version: string;
+  category: string;
+  datatype: string;
+  namespace: string;
+  dest: string;
+}
+export interface PluginInstallingResp extends PluginResp {
   logId: string;
-  plugin: IPluginModel;
 }

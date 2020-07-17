@@ -3,8 +3,8 @@ import { generate } from 'shortid';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
 import { LogManager, LogObject } from './log-manager';
 import PluginRuntime from '../boot/plugin';
-import { PluginModelStatic, PluginModel, IPluginModel } from '../model/plugin';
-import { PluginInstall } from '../interface';
+import { PluginModelStatic, PluginModel } from '../model/plugin';
+import { PluginInstallingResp, PluginResp } from '../interface';
 
 class PluginNotFound extends TypeError {
   status: number;
@@ -51,7 +51,7 @@ export class PluginManager {
     try {
       await this.install(pkg, { pyIndex, force: false, stdout: process.stdout, stderr: process.stderr });
     } catch (err) {
-      this.deleteById(plugin.id);
+      this.removeById(plugin.id);
       throw err;
     }
     return pkg;
@@ -87,7 +87,7 @@ export class PluginManager {
     return this.model.findOne({ where: { id } });
   }
 
-  async deleteById(id: string): Promise<number> {
+  async removeById(id: string): Promise<number> {
     return this.model.destroy({ where: { id } });
   }
 
@@ -133,7 +133,7 @@ export class PluginManager {
     });
   }
 
-  async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<PluginInstall> {
+  async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<PluginInstallingResp> {
     const logObject = this.logManager.create();
     const pkg = await this.fetchByStream(tarball);
     const plugin = await this.findOrCreateByPkg(pkg);
@@ -142,13 +142,12 @@ export class PluginManager {
         await this.install(pkg, { pyIndex, force, stdout: logObject.stdout, stderr: logObject.stderr });
         this.logManager.destroy(logObject.id);
       } catch (err) {
-        this.deleteById(plugin.id);
+        this.removeById(plugin.id);
         console.error('install plugin from tarball error', err.message);
         this.logManager.destroy(logObject.id, err);
       }
     });
-    console.log({ plugin: plugin.toJSON() as IPluginModel, logId: logObject.id });
-    return { plugin: plugin.toJSON() as IPluginModel, logId: logObject.id };
+    return { ...(plugin.toJSON() as PluginResp), logId: logObject.id };
   }
 
   getInstallLog(id: string): LogObject {
