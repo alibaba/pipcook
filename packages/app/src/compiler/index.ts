@@ -7,7 +7,6 @@ export async function compile(pathname: string, tsconfig: string): Promise<Pipel
   const project = new Project({ tsConfigFilePath: tsconfig });
   const script = project.getSourceFileOrThrow(pathname);
   // TODO: needs to verify if this imported the learnable.
-  const _app = script.getImportDeclarationOrThrow('@pipcook/app');
 
   // create the pipelinegen context to store the generated data.
   const pipelinegenCtx = new PipelineGenContext();
