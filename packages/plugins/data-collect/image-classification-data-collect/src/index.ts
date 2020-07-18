@@ -60,20 +60,20 @@ const imageClassDataCollect: DataCollectType = async (args: ArgsType): Promise<v
   await unZipData(url, imageDir);
   const imagePaths = await glob(path.join(imageDir, '**', '+(train|validation|test)', '*', '*.+(jpg|jpeg|png)'));
   console.log('create annotation file...');
-  imagePaths.forEach((imagePath: string) => {
+  for(const imagePath of imagePaths) {
     const splitString = imagePath.split(path.sep);
     const trainType = splitString[splitString.length - 3];
     const category = splitString[splitString.length - 2];
     const imageName = generate() + splitString[splitString.length - 1];
     const annotationDir = path.join(dataDir, trainType);
-    createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
-    fs.moveSync(imagePath, path.join(annotationDir, imageName), { overwrite: true });
-  });
+    await createAnnotationFile(annotationDir, imageName, splitString.slice(0, splitString.length - 1).join(path.sep), category);
+    await fs.move(imagePath, path.join(annotationDir, imageName), { overwrite: true });
+  }
 
   if (isDownload) {
-    fs.removeSync(url);
+    await fs.remove(url);
   }
-  fs.removeSync(path.join(dataDir, 'images'));
+  await fs.remove(path.join(dataDir, 'images'));
 };
 
 export default imageClassDataCollect;

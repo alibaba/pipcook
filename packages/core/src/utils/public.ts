@@ -18,7 +18,7 @@ const extractAsync = promisify(extract);
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
  * For more info, you can check the sources codes of plugin: @pipcook/pipcook-plugins-image-class-data-collect
  * @param annotationDir : annotation directory
- * @param filename : iamge file name
+ * @param filename : image file name
  * @param url : image path
  * @param category : image classification category name
  */
