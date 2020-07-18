@@ -107,7 +107,7 @@ describe('public utils', () => {
   });
   it('test os info', async () => {
     const os = await getOsInfo();
-    switch(platform()) {
+    switch (platform()) {
     case 'linux':
       expect(os).toBe('linux');
       break;
