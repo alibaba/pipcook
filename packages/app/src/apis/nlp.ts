@@ -3,41 +3,41 @@ import { dynamicModelExports } from './executable';
 
 /**
  * Classify the given text input, it returns the label of this input.
- * @param _Input the input text.
+ * @param _input the input text.
  */
-export async function classify(_Input: string): Promise<string> {
+export async function classify(_input: string): Promise<string> {
   throw new TypeError('not trained method');
 }
 
 /**
  * Get the named entity by a sentence.
- * @param _Sentence the sentence for named entity
+ * @param _sentence the sentence for named entity
  */
-export async function getNamedEntity(_Sentence: string): Promise<NamedEntityProp> {
+export async function getNamedEntity(_sentence: string): Promise<NamedEntityProp> {
   throw new TypeError('not trained method');
 }
 
 /**
  * Get answers by given question, every anwser has the text and its confidence.
- * @param _Question the question text.
+ * @param _question the question text.
  */
-export async function getAnswers(_Question: string): Promise<TextAnswer[]> {
+export async function getAnswers(_question: string): Promise<TextAnswer[]> {
   throw new TypeError('not trained method');
 }
 
 /**
  * Get the summary of the given input.
- * @param _Input the input text.
+ * @param _input the input text.
  */
-export async function getSummary(_Input: string): Promise<string> {
+export async function getSummary(_input: string): Promise<string> {
   throw new TypeError('not trained method');
 }
 
 /**
  * Returns the translated language.
- * @param ignoreInput the input text to be translated.
+ * @param _input the input text to be translated.
  */
-export async function translate(_Input: string): Promise<TranslationResult> {
+export async function translate(_input: string): Promise<TranslationResult> {
   throw new TypeError('not trained method');
 }
 
