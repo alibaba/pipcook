@@ -4,7 +4,6 @@ import program from 'commander';
 import { ora } from '../utils';
 import { AppProject } from '../app';
 import { PipelineStatus } from '@pipcook/pipcook-core';
-import { getFile } from '../request';
 
 program
   .command('compile <script.ts>')

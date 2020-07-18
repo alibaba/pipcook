@@ -1,7 +1,6 @@
 import { ModelDefineType, UniModel, ModelDefineArgsType, ImageSample, CocoDataset, download, constants } from '@pipcook/pipcook-core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as os from 'os';
 
 const boa = require('@pipcook/boa');
 

@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as url from 'url';
 import * as path from 'path';
 import * as fs from 'fs-extra';

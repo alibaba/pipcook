@@ -45,6 +45,7 @@ module.exports = {
     'arrow-spacing': [ 'error', { before: true, after: true } ],
     'block-spacing': 'error',
     'brace-style': [ 'error', '1tbs', { allowSingleLine: true } ],
-    'comma-style': 'error'
+    'comma-style': 'error',
+    "@typescript-eslint/no-unused-vars": [ "error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" } ]
   }
 };

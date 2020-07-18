@@ -1,7 +1,7 @@
 import { ModelEvaluateType, UniModel, ImageDataset, EvaluateResult, ArgsType } from '@pipcook/pipcook-core';
 
 const cycleGanModelEvaluate: ModelEvaluateType
-  = async (data: ImageDataset, model: UniModel, args: ArgsType): Promise<EvaluateResult> => {
+  = async (data: ImageDataset, model: UniModel, _args: ArgsType): Promise<EvaluateResult> => {
     const { testLoader } = data;
     const aList = [];
     const bList = [];

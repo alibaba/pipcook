@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { execSync as exec, spawn, fork } from 'child_process';
+import { spawn, fork } from 'child_process';
 import os from 'os';
 import path from 'path';
 import program from 'commander';

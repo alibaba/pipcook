@@ -2,7 +2,7 @@ import { dirname, basename, join } from 'path';
 import { createGunzip } from 'zlib';
 import { SpawnOptions } from 'child_process';
 import tar from 'tar-stream';
-import { readFile, ensureDir, pathExists, readJSON, writeJSON, remove, mkdirp, createWriteStream, fstat, writeFile } from 'fs-extra';
+import { readFile, ensureDir, pathExists, readJSON, writeJSON, remove, mkdirp, createWriteStream, writeFile } from 'fs-extra';
 import { get, post, listen, getFile } from './request';
 import { route } from './router';
 import { tunaMirrorURI } from './config';
