@@ -162,7 +162,7 @@ describe('test downloading utils', () => {
   }, 10 * 1000);
   it('test if remote file was downloaded', async () => {
     const jsonFile = path.join(constants.PIPCOOK_TMPDIR, generate() + '.json');
-    download('https://raw.githubusercontent.com/DavidCai1993/chinese-poem-generator.js/master/test/data/poet.song.91000.json', jsonFile);
+    await download('https://raw.githubusercontent.com/DavidCai1993/chinese-poem-generator.js/master/test/data/poet.song.91000.json', jsonFile);
     expect(await fs.pathExists(jsonFile)).toBe(true);
     const stats = await fs.stat(jsonFile);
     expect(stats.size).toBeGreaterThan(0);
