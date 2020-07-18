@@ -1,5 +1,5 @@
-import * as assert from 'assert';
 import * as url from 'url';
+import { promisify } from 'util';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { generate } from 'shortid';
@@ -12,15 +12,17 @@ const si = require('systeminformation');
 const targz = require('targz');
 const extract = require('extract-zip');
 
+const compressAsync = promisify(targz.compress);
+const extractAsync = promisify(extract);
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
  * For more info, you can check the sources codes of plugin: @pipcook/pipcook-plugins-image-class-data-collect
  * @param annotationDir : annotation directory
- * @param filename : iamge file name
+ * @param filename : image file name
  * @param url : image path
  * @param category : image classification category name
  */
-export function createAnnotationFile(annotationDir: string, filename: string, url: string, category: string) {
+export async function createAnnotationFile(annotationDir: string, filename: string, url: string, category: string): Promise<void> {
   const json = {
     annotation: {
       filename: [ filename ],
@@ -36,7 +38,7 @@ export function createAnnotationFile(annotationDir: string, filename: string, ur
   filename = fileNameSplit.slice(0, fileNameSplit.length - 1).join('.');
 
   const xml = (new xml2js.Builder()).buildObject(json);
-  fs.outputFileSync(path.join(annotationDir, `${filename}.xml`), xml);
+  await fs.outputFile(path.join(annotationDir, `${filename}.xml`), xml);
 }
 
 /**
@@ -45,20 +47,20 @@ export function createAnnotationFile(annotationDir: string, filename: string, ur
  * @param annotationDir : annotation directory
  * @param json : json file that will be filled into xml
  */
-export function createAnnotationFromJson(annotationDir: string, json: any) {
+export async function createAnnotationFromJson(annotationDir: string, json: any): Promise<void> {
   let filename = json.annotation.filename[0];
   const fileNameSplit = filename.split('.');
   filename = fileNameSplit.slice(0, fileNameSplit.length - 1).join('.');
   const xml = (new xml2js.Builder()).buildObject(json);
-  fs.outputFileSync(path.join(annotationDir, `${filename}.xml`), xml);
+  await fs.outputFile(path.join(annotationDir, `${filename}.xml`), xml);
 }
 
 /**
  * parse the xml file and read into json data
  * filename: file path of xml file
  */
-export async function parseAnnotation(filename: string) {
-  const fileContent = fs.readFileSync(filename);
+export async function parseAnnotation(filename: string): Promise<any> {
+  const fileContent = await fs.readFile(filename);
   const parser = new xml2js.Parser();
   const jsonData = await parser.parseStringPromise(fileContent);
   return jsonData;
@@ -69,8 +71,8 @@ export async function parseAnnotation(filename: string) {
  * @param url: url of the file
  * @param: full path of file that will be stored
  */
-export function download(url: string, fileName: string) {
-  fs.ensureFileSync(fileName);
+export async function download(url: string, fileName: string): Promise<void> {
+  await fs.ensureFile(fileName);
   return new Promise((resolve, reject) => {
     const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
     const file = fs.createWriteStream(fileName);
@@ -134,19 +136,8 @@ export async function downloadAndExtractTo(resUrl: string): Promise<string> {
   return destPath;
 }
 
-export function compressTarFile(sourcePath: string, targetPath: string) {
-  return new Promise((resolve, reject) => {
-    targz.compress({
-      src: sourcePath,
-      dest: targetPath
-    }, (err: Error) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+export function compressTarFile(sourcePath: string, targetPath: string): Promise<void> {
+  return compressAsync({ src: sourcePath, dest: targetPath });
 }
 
 /**
@@ -154,23 +145,15 @@ export function compressTarFile(sourcePath: string, targetPath: string) {
  * @param filePath : path of zip
  * @param targetPath : target full path
  */
-export function unZipData(filePath: string, targetPath: string) {
-  return new Promise((resolve, reject) => {
-    extract(filePath, { dir: targetPath }, function (err: Error) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+export function unZipData(filePath: string, targetPath: string): Promise<void> {
+  return extractAsync(filePath, { dir: targetPath });
 }
 
 /**
  * get pipcook model path
  */
 
-export function getModelDir(jobId: string) {
+export function getModelDir(jobId: string): string {
   return path.join(PIPCOOK_LOGS, jobId, 'model');
 }
 
@@ -178,7 +161,7 @@ export function getModelDir(jobId: string) {
  * get pipcook log's sample data's metadata according to modelId
  */
 
-export function getMetadata(jobId: string) {
+export function getMetadata(jobId: string): any {
   const json = require(path.join(PIPCOOK_LOGS, jobId, `log.json`));
   return json && json.metadata;
 }
@@ -187,7 +170,7 @@ export function getMetadata(jobId: string) {
  * transform a string to its csv suitable format
  * @param text the text to be converted
  */
-export function transformCsv(text: string){
+export function transformCsv(text: string): string {
   if (text.includes(',')){
     if (text.includes('"')) {
       let newText = '';
@@ -210,7 +193,7 @@ export function transformCsv(text: string){
  * @param files : paths of xml files
  * @param targetPath target output path
  */
-export async function convertPascal2CocoFileOutput(files: string[], targetPath: string) {
+export async function convertPascal2CocoFileOutput(files: string[], targetPath: string): Promise<void> {
   const cocoJson: any = {
     info: {
       "description": "dataset generated by pipcook",
@@ -293,14 +276,14 @@ export async function convertPascal2CocoFileOutput(files: string[], targetPath: 
       cocoJson.annotations.push(cocoItem);
     });
   }
-  fs.outputJSONSync(targetPath, cocoJson);
+  await fs.outputJSON(targetPath, cocoJson);
 }
 
 /**
  * return that current system is:
  * mac / linux / windows / other
  */
-export function getOsInfo() {
+export function getOsInfo(): Promise<string> {
   return new Promise((resolve, reject) => {
     si.osInfo((info: any, err: Error) => {
       if (err) {
@@ -324,7 +307,7 @@ export function getOsInfo() {
  * Shuffles array in place. ES6 version. This method is based on Fisher-Yates shuffle algorithm
  * @param array An array containing the items.
  */
-export function shuffle(array: any[]) {
+export function shuffle(array: any[]): void {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [ array[i], array[j] ] = [ array[j], array[i] ];
