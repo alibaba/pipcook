@@ -22,6 +22,7 @@ module.exports = {
         'functions': false,
       }
     ],
+    "@typescript-eslint/no-unused-vars": [ "error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" } ],
     'comma-spacing': [
       'error',
       {
@@ -46,6 +47,6 @@ module.exports = {
     'block-spacing': 'error',
     'brace-style': [ 'error', '1tbs', { allowSingleLine: true } ],
     'comma-style': 'error',
-    "@typescript-eslint/no-unused-vars": [ "error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" } ]
+    "no-unused-vars": [ "error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" } ],
   }
 };
