@@ -10,7 +10,7 @@ import * as assert from 'assert';
 import * as fs from 'fs-extra';
 import { v1 as uuidv1 } from 'uuid';
 
-const createAnnotation = (folder: string, fileName: string, width: number, height: number, objects: any, annotation: any) => {
+const createAnnotation = async (folder: string, fileName: string, width: number, height: number, objects: any, annotation: any) => {
   const currentAnnotation: any = {
     annotation: {
       folder: [
@@ -57,7 +57,7 @@ const createAnnotation = (folder: string, fileName: string, width: number, heigh
       area: object.area || 0
     };
   });
-  createAnnotationFromJson(folder, currentAnnotation);
+  await createAnnotationFromJson(folder, currentAnnotation);
 };
 
 const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promise<void> => {
@@ -91,26 +91,26 @@ const imageDetectionDataCollect: DataCollectType = async (args: ArgsType): Promi
   console.log('unzip and collecting data...');
   await unZipData(url, imageDir);
   const annotationPaths = await glob(path.join(imageDir, '**', '+(train|validation|test)', 'annotation.json'));
-  annotationPaths.forEach((annotationPath) => {
+  for (const annotationPath of annotationPaths) {
     const splitString = annotationPath.split(path.sep);
     const trainType = splitString[splitString.length - 2];
 
-    const annotation = fs.readJSONSync(annotationPath);
-    annotation.images.forEach((image: any) => {
-      if (fs.existsSync(path.join(imageDir, trainType, image.file_name))) {
+    const annotation = await fs.readJSON(annotationPath);
+    for (const image of annotation.images) {
+      if (await fs.pathExists(path.join(imageDir, trainType, image.file_name))) {
         const objects = annotation.annotations.filter((e: any) => e.image_id == image.id);
         if (objects.length > 0) {
-          fs.moveSync(path.join(imageDir, trainType, image.file_name), path.join(dataDir, trainType, image.file_name));
+          await fs.move(path.join(imageDir, trainType, image.file_name), path.join(dataDir, trainType, image.file_name));
           createAnnotation(path.join(dataDir, trainType), image.file_name, image.width, image.height, objects, annotation);
         }
       }
-    });
-  });
+    }
+  }
 
   if (isDownload) {
-    fs.removeSync(url);
+    await fs.remove(url);
   }
-  fs.removeSync(imageDir);
+  await fs.remove(imageDir);
 };
 
 export default imageDetectionDataCollect;
