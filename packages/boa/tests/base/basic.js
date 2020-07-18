@@ -127,7 +127,6 @@ test('iteration protocols', t => {
   t.equal(i0[0], i0[1]);
   t.equal(iter2.length, 9);
   t.throws(() => {
-    // eslint-disable-next-line no-unused-vars
     const [_] = builtins;
     // Should throw the error
   }, TypeError);

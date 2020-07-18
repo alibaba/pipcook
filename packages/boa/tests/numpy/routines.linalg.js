@@ -3,7 +3,6 @@
 const { test } = require('tap');
 const boa = require('../../');
 const np = boa.import('numpy');
-// eslint-disable-next-line no-unused-vars
 const { _len, _tuple } = boa.builtins();
 
 test('the dot function', t => {
