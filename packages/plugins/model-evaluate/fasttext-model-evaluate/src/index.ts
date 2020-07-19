@@ -4,7 +4,7 @@ const evaluate: ModelEvaluateType = async (dataset: CsvDataset, model: UniModel,
   const { expect = 0.5 } = args;
   if (dataset.testCsvPath) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [ _samples, precision, recall ] = model.model.test(dataset.testCsvPath);
+    const [ samples, precision, recall ] = model.model.test(dataset.testCsvPath);
     return {
       pass: precision >= expect,
       result: { precision, recall }
