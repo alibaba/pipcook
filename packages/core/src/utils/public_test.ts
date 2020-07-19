@@ -132,18 +132,19 @@ describe('test compress utils', () => {
   });
 });
 describe('test downloading utils', () => {
+  const TIMEOUT = 30 * 1000;
   it('download a remote zip package and extract to tmp dir', async () => {
     const tmpDir = await downloadAndExtractTo('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip');
     expect(await fs.pathExists(tmpDir + '/test')).toEqual(true);
     expect(await fs.pathExists(tmpDir + '/train')).toEqual(true);
     await fs.remove(tmpDir);
-  }, 10 * 1000);
+  }, TIMEOUT);
   it('download a remote json file to tmp dir', async () => {
     const tmpDir = await downloadAndExtractTo('https://raw.githubusercontent.com/DavidCai1993/chinese-poem-generator.js/master/test/data/poet.song.91000.json');
     expect(tmpDir.indexOf('poet.song.91000.json') !== -1).toEqual(true);
     expect(await fs.pathExists(tmpDir)).toEqual(true);
     await fs.remove(tmpDir);
-  }, 10 * 1000);
+  }, TIMEOUT);
   it('download from local directory', async () => {
     const tmpDir = await downloadAndExtractTo('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip');
     const tmpDir2 = await downloadAndExtractTo(`file://${tmpDir}`);
@@ -151,7 +152,7 @@ describe('test downloading utils', () => {
     expect(await fs.pathExists(tmpDir2 + '/train')).toEqual(true);
     await fs.remove(tmpDir);
     await fs.remove(tmpDir2);
-  }, 10 * 1000);
+  }, TIMEOUT);
   it('download from local directory', async () => {
     const tmpDir = await downloadAndExtractTo('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip');
     const tmpDir2 = await downloadAndExtractTo(`file://${tmpDir}`);
@@ -159,7 +160,7 @@ describe('test downloading utils', () => {
     expect(await fs.pathExists(tmpDir2 + '/train')).toEqual(true);
     await fs.remove(tmpDir);
     await fs.remove(tmpDir2);
-  }, 10 * 1000);
+  }, TIMEOUT);
   it('test if remote file was downloaded', async () => {
     const jsonFile = path.join(constants.PIPCOOK_TMPDIR, generate() + '.json');
     await download('https://raw.githubusercontent.com/DavidCai1993/chinese-poem-generator.js/master/test/data/poet.song.91000.json', jsonFile);
