@@ -3,7 +3,7 @@
 const { test } = require('tap');
 const boa = require('../../');
 const np = boa.import('numpy');
-const { _len, tuple, type } = boa.builtins();
+const { tuple, type } = boa.builtins();
 
 // load the numpy.matlib
 boa.import('numpy.matlib');

@@ -3,7 +3,6 @@
 const { test } = require('tap');
 const boa = require('../../');
 const np = boa.import('numpy');
-const { _len, _tuple } = boa.builtins();
 
 test('numpy.fv: future value', t => {
   const r = np.fv(0.05 / 12, 10 * 12, -100, -100);

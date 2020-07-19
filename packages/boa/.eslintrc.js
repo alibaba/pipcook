@@ -46,6 +46,7 @@ module.exports = {
     "capitalized-comments": "off",
     "class-methods-use-this": "error",
     "comma-dangle": "off",
+    '@typescript-eslint/no-unused-vars': 'off',
     "comma-spacing": [
       "error",
       {
