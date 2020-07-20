@@ -2,7 +2,7 @@ import { ChildProcess } from 'child_process';
 import { createGunzip } from 'zlib';
 import { join } from 'path';
 import tar from 'tar-stream';
-import { logSuccess, logFail, logStart, parseConfigFilename, cwd, tail } from "./utils";
+import { logSuccess, logFail, logStart, logInfo, logWarn, parseConfigFilename, cwd, tail } from "./utils";
 import { tunaMirrorURI } from "./config";
 import { route } from "./router";
 import { listen, get, getFile } from "./request";
@@ -32,13 +32,13 @@ export async function install(filename: string, opts: any): Promise<void> {
           const { level, data } = JSON.parse(e.data);
           switch (level) {
           case 'info':
-            spinner.info(data);
+            logInfo(data);
             break;
           case 'warn':
-            spinner.warn(data);
+            logWarn(data);
             break;
           default:
-            spinner.info(data);
+            logInfo(data);
           }
         },
         'info': (e: MessageEvent) => {
