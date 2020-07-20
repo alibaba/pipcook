@@ -1,10 +1,17 @@
 import * as qs from 'querystring';
+import { promisify } from 'util';
 import axios from 'axios';
+import fs from 'fs-extra';
 import EventSource from 'eventsource';
 import { logFail } from './utils';
+import FormData from 'form-data';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
+type ErrorEvent = {
+  status?: number;
+  message: string;
+} & Event;
 
 function createGeneralRequest(agent: Function): Function {
   return async (...args: any[]) => {
@@ -41,6 +48,23 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Nod
   return resp.data as NodeJS.ReadStream;
 };
 
+// FIXME(feely): params is not working
+export const uploadFile = async (host: string, file: string, params?: RequestParams): Promise<any> => {
+  const stream = fs.createReadStream(file);
+  const form = new FormData();
+  for (const key in params) {
+    if (params[key]) {
+      form.append(key, params[key]);
+    }
+  }
+  form.append('file', stream);
+
+  const getLength = promisify(form.getLength.bind(form));
+  const length = await getLength();
+  const headers = Object.assign({ 'Content-Length': length }, form.getHeaders());
+  return axios.post(host, form, { headers });
+};
+
 export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {
   return new Promise((resolve) => {
     let handshaked = false;
@@ -50,12 +74,18 @@ export const listen = async (host: string, params?: RequestParams, handlers?: Re
       es.close();
       console.error('connects to daemon timeout, please run "pipcook daemon restart".');
     }, 5000);
-    const onerror = (e: Event) => {
+    const onerror = (e: ErrorEvent) => {
       if (handshaked === false) {
         es.close();
         clearTimeout(timeoutHandle);
-        console.error('daemon is not started, run "pipcook daemon start"');
         es.removeEventListener('error', onerror);
+
+        // print error
+        if (typeof e.status === 'number') {
+          console.error('occurrs an daemon error with the following response:\n', e);
+        } else {
+          console.error(`daemon is not started(${e.message}), run "pipcook daemon start".`);
+        }
       } else if (typeof handlers.error === 'function') {
         // manually pass the `error` event to user-defined handler.
         handlers.error(e);

@@ -15,7 +15,6 @@ import {
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
-import { RunParams } from '../interface';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
@@ -145,13 +144,6 @@ export class PipelineService {
       await fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`);
     });
     return jobs.rows.length;
-  }
-
-  async updateJobById(id: string, data: RunParams): Promise<JobModel> {
-    await this.job.update(data, {
-      where: { id }
-    });
-    return this.getJobById(id);
   }
 
   async createJob(pipelineId: string): Promise<JobModel> {

@@ -91,3 +91,17 @@ export function logStart(message: string) {
 export function logInfo(message: string) {
   spinner.info(message);
 }
+
+export function logWarn(message: string) {
+  spinner.warn(message);
+}
+
+/**
+ * leave a message and abort the process
+ * @param spinner spinner object
+ * @param message last message
+ */
+export function abort(message: string): void {
+  logFail(message);
+  process.exit(1);
+}

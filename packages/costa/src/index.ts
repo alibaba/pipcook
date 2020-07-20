@@ -28,8 +28,8 @@ export interface RuntimeOptions {
  */
 export interface PluginSource {
   from: 'fs' | 'npm' | 'git' | 'tarball' | null;
-  uri: string | null;
-  urlObject: url.UrlWithStringQuery;
+  uri?: string;
+  urlObject?: url.UrlWithStringQuery;
   name: string;
   schema?: NpmPackageNameSchema;
 }
