@@ -4,7 +4,7 @@ import program from 'commander';
 import { get } from '../request';
 import { run } from '../pipeline';
 import { route } from '../router';
-import { logStart, logSuccess, logFail } from '../utils';
+import { logger } from '../utils';
 
 const PipelineStatus = [ 'creating', 'running', 'success', 'fail' ];
 
@@ -17,15 +17,15 @@ async function list(): Promise<void> {
 }
 
 async function remove(): Promise<void> {
-  logStart('removing jobs...');
+  logger.start('removing jobs...');
   await get(`${route.job}/remove`);
-  logSuccess('remove jobs succeeded');
+  logger.success('remove jobs succeeded');
 }
 
 async function stop(id: string): Promise<void> {
-  logStart('stopping jobs...');
+  logger.start('stopping jobs...');
   const err = await get(`${route.job}/stop`, { id });
-  err ? logFail(err.message) : logSuccess('stop job succeeded');
+  err ? logger.fail(err.message, 1) : logger.success('stop job succeeded');
 }
 
 async function log(id: string): Promise<void> {

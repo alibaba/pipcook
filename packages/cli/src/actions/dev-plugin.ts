@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import path from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { DevPluginCommandHandler } from '../types';
-import { logFail } from '../utils';
+import { logger } from '../utils';
 
 
 /**
@@ -26,8 +26,7 @@ const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
   try {
     dirname = path.join(process.cwd(), name);
     if (fse.existsSync(dirname)) {
-      logFail(`a directory or file called ${name} already exists. Please use a new working directory`);
-      return process.exit(1);
+      return logger.fail(`a directory or file called ${name} already exists. Please use a new working directory`, 1);
     }
     fse.ensureDirSync(path.join(dirname, 'src'));
     fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'package.json'),

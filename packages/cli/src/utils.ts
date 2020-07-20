@@ -12,8 +12,6 @@ import path from 'path';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 import realOra = require('ora');
 
-const spinner = realOra({ stream: process.stdout });
-
 export const Constants = {
   BOA_CONDA_INDEX: 'https://pypi.tuna.tsinghua.edu.cn/simple',
   BOA_CONDA_MIRROR: 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda'
@@ -72,36 +70,44 @@ export async function parseConfigFilename(filename: string): Promise<string> {
   return filename;
 }
 
-export function logSuccess(message: string) {
-  spinner.succeed(message);
-}
+class Logger {
+  spinner: realOra.Ora;
 
-export function logFail(message: string) {
-  spinner.fail(message);
-}
+  constructor() {
+    this.spinner = realOra({ stream: process.stdout });
+  }
 
-export function logStart(message: string) {
-  if (process.stdout.columns == 0 && process.stdout.rows == 0) {
-    console.log(message);
-  } else {
-    spinner.start(message);
+  success(message: string) {
+    this.spinner.succeed(message);
+  }
+
+  fail(message: string, code?: number) {
+    this.spinner.fail(message);
+    if (code !== undefined) {
+      process.exit(code);
+    }
+  }
+
+  info(message: string) {
+    this.spinner.info(message);
+  }
+
+  warn(message: string) {
+    this.spinner.warn(message);
   }
 }
 
-export function logInfo(message: string) {
-  spinner.info(message);
+class DefaultLogger extends Logger {
+  start(message: string) {
+    console.log(message);
+  }
 }
 
-export function logWarn(message: string) {
-  spinner.warn(message);
+class TtyLogger extends Logger {
+  start(message: string) {
+    this.spinner.start(message);
+  }
 }
 
-/**
- * leave a message and abort the process
- * @param spinner spinner object
- * @param message last message
- */
-export function abort(message: string): void {
-  logFail(message);
-  process.exit(1);
-}
+const { rows, columns, isTTY } = process.stdout;
+export const logger = isTTY && rows > 0 && columns > 0 ? new DefaultLogger() : new TtyLogger();

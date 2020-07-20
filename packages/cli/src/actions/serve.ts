@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import path from 'path';
 import childProcess from 'child_process';
 import { ServeHandler, PredictHandler } from '../types';
-import { logFail } from '../utils';
+import { logger } from '../utils';
 
 const fastify = Fastify({ logger: true });
 
@@ -12,8 +12,7 @@ const serve: ServeHandler = async function serve(dir, { port = 7682 }) {
   try {
     predictFn = require(model);
   } catch (err) {
-    logFail(`the path specified is not a valid pipcook deploy path`);
-    return process.exit(1);
+    return logger.fail(`the path specified is not a valid pipcook deploy path`, 1);
   }
   childProcess.execSync('npm install', {
     cwd: model,

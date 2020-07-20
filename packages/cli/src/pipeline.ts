@@ -2,7 +2,7 @@ import { ChildProcess } from 'child_process';
 import { createGunzip } from 'zlib';
 import { join } from 'path';
 import tar from 'tar-stream';
-import { logSuccess, logFail, logStart, logInfo, logWarn, parseConfigFilename, cwd, tail } from "./utils";
+import { logger, parseConfigFilename, cwd, tail } from "./utils";
 import { tunaMirrorURI } from "./config";
 import { route } from "./router";
 import { listen, get, getFile } from "./request";
@@ -12,8 +12,7 @@ export async function install(filename: string, opts: any): Promise<void> {
   try {
     filename = await parseConfigFilename(filename);
   } catch (err) {
-    logFail(err.message);
-    return process.exit(1);
+    return logger.fail(err.message, 1);
   }
   const params = {
     cwd: cwd(),
@@ -23,7 +22,7 @@ export async function install(filename: string, opts: any): Promise<void> {
 
   if (!opts.verbose) {
     get(`${route.pipeline}/install`, params);
-    logSuccess(`install plugins succeeded.`);
+    logger.success(`install plugins succeeded.`);
     return;
   } else {
     return new Promise((resolve, reject) => {
@@ -32,29 +31,29 @@ export async function install(filename: string, opts: any): Promise<void> {
           const { level, data } = JSON.parse(e.data);
           switch (level) {
           case 'info':
-            logInfo(data);
+            logger.info(data);
             break;
           case 'warn':
-            logWarn(data);
+            logger.warn(data);
             break;
           default:
-            logInfo(data);
+            logger.info(data);
           }
         },
         'info': (e: MessageEvent) => {
           const { name, version } = JSON.parse(e.data);
-          logStart(`installing plugin ${name}@${version}`);
+          logger.start(`installing plugin ${name}@${version}`);
         },
         'installed': (e: MessageEvent) => {
           const { name, version } = JSON.parse(e.data);
-          logSuccess(`plugin (${name}@${version}) is installed`);
+          logger.success(`plugin (${name}@${version}) is installed`);
         },
         'error': (e: MessageEvent) => {
-          logFail(`occurrs an error ${e.data}`);
+          logger.fail(`occurrs an error ${e.data}`);
           reject(new TypeError(e.data));
         },
         'finished': () => {
-          logFail('all plugins installed');
+          logger.success('all plugins installed');
           resolve();
         }
       });
@@ -65,12 +64,11 @@ export async function install(filename: string, opts: any): Promise<void> {
 export async function run(filename: string, opts: any): Promise<void> {
   const cwd = process.cwd();
 
-  logStart('start running the pipeline...');
+  logger.start('start running the pipeline...');
   try {
     filename = await parseConfigFilename(filename);
   } catch (err) {
-    logFail(err.message);
-    return process.exit(1);
+    return logger.fail(err.message);
   }
 
   const params = {
@@ -80,19 +78,19 @@ export async function run(filename: string, opts: any): Promise<void> {
   };
   if (!opts.verbose) {
     const job = await get(`${route.job}/start`, params);
-    logSuccess(`create job(${job.id}) succeeded.`);
+    logger.success(`create job(${job.id}) succeeded.`);
   } else {
     let stdout: ChildProcess, stderr: ChildProcess;
     await listen(`${route.job}/start`, params, {
       'job created': (e: MessageEvent) => {
         const job = JSON.parse(e.data);
-        logSuccess(`start running ${filename}...`);
+        logger.success(`start running ${filename}...`);
         stdout = tail(job.id, 'stdout');
         stderr = tail(job.id, 'stderr');
       },
       'job finished': async (e: MessageEvent) => {
         const job = JSON.parse(e.data);
-        logSuccess(`job(${job.id}) is finished with ${e.data}`);
+        logger.success(`job(${job.id}) is finished with ${e.data}`);
         stdout?.kill();
         stderr?.kill();
 
@@ -115,7 +113,7 @@ export async function run(filename: string, opts: any): Promise<void> {
         (await getFile(`${route.job}/${job.id}/output.tar.gz`)).pipe(createGunzip()).pipe(extract);
       },
       'error': (e: MessageEvent) => {
-        logFail(`occurrs an error ${e.data}`);
+        logger.fail(`occurrs an error ${e.data}`);
         stdout?.kill();
         stderr?.kill();
         process.exit(1);

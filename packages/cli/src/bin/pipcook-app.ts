@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { logInfo, logStart, logSuccess, logFail } from '../utils';
+import { logger } from '../utils';
 import { AppProject } from '../app';
 import { PipelineStatus } from '@pipcook/pipcook-core';
-import { getFile } from '../request';
 
 program
   .command('compile <script.ts>')
@@ -30,29 +29,28 @@ program
 
     try {
       // ensure all plugins.
-      logInfo(`checking and installing plugins for "${srcPath}"`);
+      logger.info(`checking and installing plugins for "${srcPath}"`);
       await app.ensureAllPlugins({
         before: async (name: string, version: string): Promise<void> => {
-          logStart(`installing plugin ${name}@${version}`);
+          logger.start(`installing plugin ${name}@${version}`);
         },
         after: async (name: string, version: string): Promise<void> => {
-          logSuccess(`${name}@${version} is installed.`);
+          logger.success(`${name}@${version} is installed.`);
         }
       });
-      logInfo('all plugins are installed.');
+      logger.info('all plugins are installed.');
 
       // and start running pipelines one by one.
       await app.train({
         before: async (id: string): Promise<void> => {
-          logStart(`start running the pipeline(${id})`);
+          logger.start(`start running the pipeline(${id})`);
         },
         after: async (id: string, jobId: string): Promise<void> => {
-          logSuccess(`pipeline is scheduled at job(${jobId})`);
+          logger.success(`pipeline is scheduled at job(${jobId})`);
         }
       });
     } catch (err) {
-      logFail(err.message);
-      process.exit(1);
+      logger.fail(err.message, 1);
     }
   });
 

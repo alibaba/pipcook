@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import axios from 'axios';
 import fs from 'fs-extra';
 import EventSource from 'eventsource';
-import { logFail } from './utils';
+import { logger } from './utils';
 import FormData from 'form-data';
 
 export type RequestParams = Record<string, any>;
@@ -22,7 +22,7 @@ function createGeneralRequest(agent: Function): Function {
       }
     } catch (err) {
       if (err?.response?.data?.message) {
-        logFail(err.response.data.message);
+        logger.fail(err.response.data.message);
       } else {
         console.error('daemon is not started, run "pipcook daemon start"');
       }

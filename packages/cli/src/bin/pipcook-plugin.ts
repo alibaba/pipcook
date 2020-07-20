@@ -7,13 +7,13 @@ import fs from 'fs-extra';
 import { listen, get, uploadFile } from '../request';
 import { route } from '../router';
 import { tunaMirrorURI } from '../config';
-import { logStart, logSuccess, logInfo, logWarn, abort } from '../utils';
+import { logger } from '../utils';
 
 async function install(name: string, opts: any): Promise<void> {
   if (await fs.pathExists(name) && await (await fs.stat(name)).isDirectory()) {
     await upload(name, opts);
   } else {
-    logStart(`fetching package info ${name}`);
+    logger.start(`fetching package info ${name}`);
 
     const params = {
       name,
@@ -22,23 +22,23 @@ async function install(name: string, opts: any): Promise<void> {
     await listen(`${route.plugin}/install`, params, {
       'info': (e: MessageEvent) => {
         const pkg = JSON.parse(e.data);
-        logStart(`installing ${pkg.name} from ${pkg.pipcook.source.uri}`);
+        logger.start(`installing ${pkg.name} from ${pkg.pipcook.source.uri}`);
       },
       'installed': (e: MessageEvent) => {
         const pkg = JSON.parse(e.data);
-        logSuccess(`${pkg.name} installed.`);
+        logger.success(`${pkg.name} installed.`);
       },
       'error': (e: MessageEvent) => {
-        abort(`install failed with ${e?.data}`);
+        logger.fail(`install failed with ${e?.data}`, 1);
       }
     });
   }
 }
 
 async function uninstall(name: string): Promise<void> {
-  logStart(`uninstalling ${name}`);
+  logger.start(`uninstalling ${name}`);
   await get(`${route.plugin}/uninstall`, { name });
-  logSuccess(`uninstalled ${name}`);
+  logger.success(`uninstalled ${name}`);
 }
 
 async function list(opts: any): Promise<void> {
@@ -53,12 +53,12 @@ async function list(opts: any): Promise<void> {
 async function upload(pathname: string, opts: any): Promise<void> {
   try {
     const pkg = await fs.readJSON(path.join(pathname, 'package.json'));
-    logStart(`installing ${pkg.name} from ${pathname}`);
+    logger.start(`installing ${pkg.name} from ${pathname}`);
     if (!pkg?.pipcook) {
-      return abort('invalid plugin package');
+      return logger.fail('invalid plugin package', 1);
     }
   } catch (err) {
-    return abort(`read package.json error: ${err.message}`);
+    return logger.fail(`read package.json error: ${err.message}`, 1);
   }
   const params = {
     pyIndex: opts.tuna ? tunaMirrorURI : undefined
@@ -66,14 +66,14 @@ async function upload(pathname: string, opts: any): Promise<void> {
   const output = spawnSync('npm', [ 'pack' ], { cwd: pathname });
   let tarball: string;
   if (output.status !== 0) {
-    return abort(output.stderr.toString());
+    return logger.fail(output.stderr.toString(), 1);
   } else {
-    logInfo(output.stdout.toString());
+    logger.info(output.stdout.toString());
     tarball = output.stdout.toString().replace(/[\n\r]/g, '');
   }
 
   const installingResp = await uploadFile(`${route.plugin}/upload`, path.join(pathname, tarball), params);
-  logInfo(`installing plugin ${installingResp.data?.name}@${installingResp.data?.version}`);
+  logger.info(`installing plugin ${installingResp.data?.name}@${installingResp.data?.version}`);
   let errMsg: string;
   await new Promise((resolve) => {
     listen(`${route.plugin}/log/${installingResp.data.logId}`, {}, {
@@ -81,13 +81,13 @@ async function upload(pathname: string, opts: any): Promise<void> {
         const log = JSON.parse(e.data);
         switch (log.level) {
         case 'info':
-          logInfo(log.data);
+          logger.info(log.data);
           break;
         case 'warn':
-          logWarn(log.data);
+          logger.warn(log.data);
           break;
         default:
-          logInfo(e.data.data);
+          logger.info(e.data.data);
         }
       },
       'error': (e: MessageEvent) => {
@@ -99,12 +99,12 @@ async function upload(pathname: string, opts: any): Promise<void> {
   });
   const pluginInfoResp = await get(`${route.plugin}/${installingResp.data?.id}`);
   if (typeof pluginInfoResp?.id === 'string') {
-    logInfo(`install plugin ${pluginInfoResp.name}@${pluginInfoResp.version} successfully`);
+    logger.info(`install plugin ${pluginInfoResp.name}@${pluginInfoResp.version} successfully`);
   } else {
     if (errMsg) {
-      abort(`install plugin failed with error: ${errMsg}`);
+      logger.fail(`install plugin failed with error: ${errMsg}`, 1);
     } else {
-      abort('install plugin failed');
+      logger.fail('install plugin failed', 1);
     }
   }
 }
