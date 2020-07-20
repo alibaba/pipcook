@@ -68,7 +68,7 @@ export async function run(filename: string, opts: any): Promise<void> {
   try {
     filename = await parseConfigFilename(filename);
   } catch (err) {
-    return logger.fail(err.message);
+    return logger.fail(err.message, 1);
   }
 
   const params = {
