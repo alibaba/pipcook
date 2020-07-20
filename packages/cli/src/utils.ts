@@ -70,7 +70,14 @@ export async function parseConfigFilename(filename: string): Promise<string> {
   return filename;
 }
 
-class Logger {
+interface Logger {
+  success(message: string): void;
+  fail(message: string, code?: number): void;
+  info(message: string): void;
+  warn(message: string): void;
+}
+
+class TtyLogger implements Logger {
   spinner: realOra.Ora;
 
   constructor() {
@@ -95,19 +102,36 @@ class Logger {
   warn(message: string) {
     this.spinner.warn(message);
   }
-}
 
-class DefaultLogger extends Logger {
-  start(message: string) {
-    console.log(message);
-  }
-}
-
-class TtyLogger extends Logger {
   start(message: string) {
     this.spinner.start(message);
   }
 }
 
+class DefaultLogger implements Logger {
+  success(message: string) {
+    console.log('[success]: ' + message);
+  }
+
+  fail(message: string, code?: number) {
+    console.error('[fail]: ' + message);
+    if (code !== undefined) {
+      process.exit(code);
+    }
+  }
+
+  info(message: string) {
+    console.log('[info]: ' + message);
+  }
+
+  warn(message: string) {
+    console.warn('[warn]: ' + message);
+  }
+
+  start(message: string) {
+    console.log('[start]: ' + message);
+  }
+}
+
 const { rows, columns, isTTY } = process.stdout;
-export const logger = isTTY && rows > 0 && columns > 0 ? new DefaultLogger() : new TtyLogger();
+export const logger = isTTY && rows > 0 && columns > 0 ? new TtyLogger() : new DefaultLogger();
