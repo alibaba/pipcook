@@ -29,7 +29,7 @@ async function install(name: string, opts: any): Promise<void> {
         logger.success(`${pkg.name} installed.`);
       },
       'error': (e: MessageEvent) => {
-        logger.fail(`install failed with ${e?.data}`, 1);
+        logger.fail(`install failed with ${e?.data}`);
       }
     });
   }
@@ -55,10 +55,10 @@ async function upload(pathname: string, opts: any): Promise<void> {
     const pkg = await fs.readJSON(path.join(pathname, 'package.json'));
     logger.start(`installing ${pkg.name} from ${pathname}`);
     if (!pkg?.pipcook) {
-      return logger.fail('invalid plugin package', 1);
+      return logger.fail('invalid plugin package');
     }
   } catch (err) {
-    return logger.fail(`read package.json error: ${err.message}`, 1);
+    return logger.fail(`read package.json error: ${err.message}`);
   }
   const params = {
     pyIndex: opts.tuna ? tunaMirrorURI : undefined
@@ -66,7 +66,7 @@ async function upload(pathname: string, opts: any): Promise<void> {
   const output = spawnSync('npm', [ 'pack' ], { cwd: pathname });
   let tarball: string;
   if (output.status !== 0) {
-    return logger.fail(output.stderr.toString(), 1);
+    return logger.fail(output.stderr.toString());
   } else {
     logger.info(output.stdout.toString());
     tarball = output.stdout.toString().replace(/[\n\r]/g, '');
@@ -102,9 +102,9 @@ async function upload(pathname: string, opts: any): Promise<void> {
     logger.info(`install plugin ${pluginInfoResp.name}@${pluginInfoResp.version} successfully`);
   } else {
     if (errMsg) {
-      logger.fail(`install plugin failed with error: ${errMsg}`, 1);
+      logger.fail(`install plugin failed with error: ${errMsg}`);
     } else {
-      logger.fail('install plugin failed', 1);
+      logger.fail('install plugin failed');
     }
   }
 }

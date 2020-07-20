@@ -22,7 +22,7 @@ function createGeneralRequest(agent: Function): Function {
       }
     } catch (err) {
       if (err?.response?.data?.message) {
-        logger.fail(err.response.data.message);
+        logger.fail(err.response.data.message, false);
       } else {
         console.error('daemon is not started, run "pipcook daemon start"');
       }

@@ -26,7 +26,7 @@ const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
   try {
     dirname = path.join(process.cwd(), name);
     if (fse.existsSync(dirname)) {
-      return logger.fail(`a directory or file called ${name} already exists. Please use a new working directory`, 1);
+      return logger.fail(`a directory or file called ${name} already exists. Please use a new working directory`);
     }
     fse.ensureDirSync(path.join(dirname, 'src'));
     fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'package.json'),

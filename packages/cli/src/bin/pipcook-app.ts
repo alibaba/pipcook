@@ -50,7 +50,7 @@ program
         }
       });
     } catch (err) {
-      logger.fail(err.message, 1);
+      logger.fail(err.message);
     }
   });
 

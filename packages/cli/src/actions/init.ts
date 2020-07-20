@@ -48,7 +48,7 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
   if (client) {
     npmClient = client;
     if (!optionalNpmClients.includes(npmClient)) {
-      return logger.fail(`uknown npm client: ${npmClient}, available clients: ${optionalNpmClients.join(',')}.`, 1);
+      return logger.fail(`uknown npm client: ${npmClient}, available clients: ${optionalNpmClients.join(',')}.`);
     }
   } else {
     const clientChoices = [];
@@ -71,7 +71,7 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
       ]);
       npmClient = answer.client;
     } else {
-      return logger.fail(`no npm client detected`, 1);
+      return logger.fail(`no npm client detected`);
     }
   }
 
@@ -100,7 +100,7 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     await fse.copy(CoreConstants.PIPCOOK_BOARD_BUILD, CoreConstants.PIPCOOK_DAEMON_PUBLIC);
     logger.success('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
-    logger.fail(`failed to initialize Pipcook with the error ${err && err.stack}`);
+    logger.fail(`failed to initialize Pipcook with the error ${err && err.stack}`, false);
     await fse.remove(CoreConstants.PIPCOOK_DAEMON);
     await fse.remove(CoreConstants.PIPCOOK_BOARD);
   }

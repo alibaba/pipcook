@@ -12,7 +12,7 @@ const serve: ServeHandler = async function serve(dir, { port = 7682 }) {
   try {
     predictFn = require(model);
   } catch (err) {
-    return logger.fail(`the path specified is not a valid pipcook deploy path`, 1);
+    return logger.fail(`the path specified is not a valid pipcook deploy path`);
   }
   childProcess.execSync('npm install', {
     cwd: model,

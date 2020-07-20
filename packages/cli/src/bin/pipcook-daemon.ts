@@ -21,7 +21,7 @@ interface DaemonBootstrapMessage {
 async function start(): Promise<void> {
   // check if the process is running...
   if (await pathExists(DAEMON_PIDFILE)) {
-    return logger.fail(`starting daemon but ${DAEMON_PIDFILE} exists.`, 1);
+    return logger.fail(`starting daemon but ${DAEMON_PIDFILE} exists.`);
   }
   logger.start('starting Pipcook...');
 
@@ -38,7 +38,7 @@ async function start(): Promise<void> {
     }
   });
   daemon.on('exit', async (code: number) => {
-    logger.fail(`Pipcook daemon starts failed with code(${code}).`);
+    logger.fail(`Pipcook daemon starts failed with code(${code}).`, false);
     // TODO(yorkie): check if this is local mode.
     const accessLog = path.join(PIPCOOK_HOME, 'daemon.access.log');
     console.error(await readFile(accessLog, 'utf8'));

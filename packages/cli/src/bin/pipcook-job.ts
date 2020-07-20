@@ -25,7 +25,7 @@ async function remove(): Promise<void> {
 async function stop(id: string): Promise<void> {
   logger.start('stopping jobs...');
   const err = await get(`${route.job}/stop`, { id });
-  err ? logger.fail(err.message, 1) : logger.success('stop job succeeded');
+  err ? logger.fail(err.message) : logger.success('stop job succeeded');
 }
 
 async function log(id: string): Promise<void> {

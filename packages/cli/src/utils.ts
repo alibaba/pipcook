@@ -72,7 +72,7 @@ export async function parseConfigFilename(filename: string): Promise<string> {
 
 interface Logger {
   success(message: string): void;
-  fail(message: string, code?: number): void;
+  fail(message: string, exit: boolean, code: number): void;
   info(message: string): void;
   warn(message: string): void;
 }
@@ -88,9 +88,9 @@ class TtyLogger implements Logger {
     this.spinner.succeed(message);
   }
 
-  fail(message: string, code?: number) {
+  fail(message: string, exit = true, code = 1) {
     this.spinner.fail(message);
-    if (code !== undefined) {
+    if (exit) {
       process.exit(code);
     }
   }
@@ -113,9 +113,9 @@ class DefaultLogger implements Logger {
     console.log('[success]: ' + message);
   }
 
-  fail(message: string, code?: number) {
+  fail(message: string, exit = true, code = 1) {
     console.error('[fail]: ' + message);
-    if (code !== undefined) {
+    if (exit) {
       process.exit(code);
     }
   }

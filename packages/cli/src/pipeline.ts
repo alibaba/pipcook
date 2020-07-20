@@ -12,7 +12,7 @@ export async function install(filename: string, opts: any): Promise<void> {
   try {
     filename = await parseConfigFilename(filename);
   } catch (err) {
-    return logger.fail(err.message, 1);
+    return logger.fail(err.message);
   }
   const params = {
     cwd: cwd(),
@@ -49,7 +49,7 @@ export async function install(filename: string, opts: any): Promise<void> {
           logger.success(`plugin (${name}@${version}) is installed`);
         },
         'error': (e: MessageEvent) => {
-          logger.fail(`occurrs an error ${e.data}`);
+          logger.fail(`occurrs an error ${e.data}`, false);
           reject(new TypeError(e.data));
         },
         'finished': () => {
@@ -68,7 +68,7 @@ export async function run(filename: string, opts: any): Promise<void> {
   try {
     filename = await parseConfigFilename(filename);
   } catch (err) {
-    return logger.fail(err.message, 1);
+    return logger.fail(err.message);
   }
 
   const params = {
@@ -113,7 +113,7 @@ export async function run(filename: string, opts: any): Promise<void> {
         (await getFile(`${route.job}/${job.id}/output.tar.gz`)).pipe(createGunzip()).pipe(extract);
       },
       'error': (e: MessageEvent) => {
-        logger.fail(`occurrs an error ${e.data}`);
+        logger.fail(`occurrs an error ${e.data}`, false);
         stdout?.kill();
         stderr?.kill();
         process.exit(1);
