@@ -1,4 +1,4 @@
-import { ArgsType, CsvDataLoader, CsvDataset, CsvSample, DataAccessType, Sample } from '@pipcook/pipcook-core';
+import { ArgsType, CsvDataLoader, CsvDataset, CsvSample, DataAccessType } from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';
 
 class TextlineLoader implements CsvDataLoader {

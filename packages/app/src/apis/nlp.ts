@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: "off"*/
 import { NamedEntityProp, TextAnswer, TranslationResult } from './types';
 import { dynamicModelExports } from './executable';
 
