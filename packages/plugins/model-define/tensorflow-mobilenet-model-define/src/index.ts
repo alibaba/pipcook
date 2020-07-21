@@ -7,7 +7,6 @@ import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniMod
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as os from 'os';
 
 const boa = require('@pipcook/boa');
 const tf = boa.import('tensorflow');

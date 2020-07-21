@@ -462,7 +462,6 @@ export class CostaRuntime {
       src.from = 'fs';
       src.uri = name;
     } else if (/^git(\+ssh)?:$/.test(urlObj.protocol)) {
-      const { host, pathname } = urlObj;
       src.from = 'git';
       src.uri = name;
     } else if ([ 'https:', 'http:' ].indexOf(urlObj.protocol) !== -1) {

@@ -8,7 +8,7 @@
     "preinstall": "node tools/check-dependence.js && make -C ./pybind11/ && node tools/install-python.js && node tools/install-requirements.js",
     "postinstall": "npm run build",
     "test": "tap --no-cov ./tests/**/*.js",
-    "lint": "eslint . && ./clang-format.py",
+    "lint": "eslint . -c .eslintrc.js --no-eslintrc && ./clang-format.py",
     "build": "npm run compile",
     "pretest": "npm run lint",
     "codecov": "nyc report --reporter=lcovonly && codecov",
