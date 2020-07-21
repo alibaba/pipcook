@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 import program from 'commander';
 import { readFile, pathExists, remove } from 'fs-extra';
-import { ora } from '../utils';
+import { logger } from '../utils';
 
 const PIPCOOK_HOME = path.join(os.homedir(), '.pipcook');
 const DAEMON_HOME = path.join(PIPCOOK_HOME, 'server/node_modules/@pipcook/daemon');
@@ -19,14 +19,11 @@ interface DaemonBootstrapMessage {
 }
 
 async function start(): Promise<void> {
-  const spinner = ora();
-
   // check if the process is running...
   if (await pathExists(DAEMON_PIDFILE)) {
-    spinner.fail(`starting daemon but ${DAEMON_PIDFILE} exists.`);
-    return;
+    return logger.fail(`starting daemon but ${DAEMON_PIDFILE} exists.`);
   }
-  spinner.start('starting Pipcook...');
+  logger.start('starting Pipcook...');
 
   const daemon = fork(path.join(DAEMON_HOME, 'bootstrap.js'), [], {
     cwd: DAEMON_HOME,
@@ -37,11 +34,11 @@ async function start(): Promise<void> {
     if (message.event === 'ready') {
       daemon.disconnect();
       daemon.unref();
-      spinner.succeed(`Pipcook is on http://localhost:${message.data.listen}`);
+      logger.success(`Pipcook is on http://localhost:${message.data.listen}`);
     }
   });
   daemon.on('exit', async (code: number) => {
-    spinner.fail(`Pipcook daemon starts failed with code(${code}).`);
+    logger.fail(`Pipcook daemon starts failed with code(${code}).`, false);
     // TODO(yorkie): check if this is local mode.
     const accessLog = path.join(PIPCOOK_HOME, 'daemon.access.log');
     console.error(await readFile(accessLog, 'utf8'));
@@ -49,19 +46,18 @@ async function start(): Promise<void> {
 }
 
 async function stop(): Promise<void> {
-  const spinner = ora();
-  spinner.start('stoping Pipcook...');
+  logger.start('stoping Pipcook...');
   if (await pathExists(DAEMON_PIDFILE)) {
     const oldPid = parseInt(await readFile(DAEMON_PIDFILE, 'utf8'), 10);
     try {
       process.kill(oldPid, 'SIGINT');
-      spinner.succeed('Pipcook stoped.');
+      logger.success('Pipcook stoped.');
     } catch (err) {
       await remove(DAEMON_PIDFILE);
-      spinner.succeed(`kill ${oldPid} failed, skiped and removed pidfile.`);
+      logger.success(`kill ${oldPid} failed, skiped and removed pidfile.`);
     }
   } else {
-    spinner.succeed('skiped, daemon is not running.');
+    logger.success('skiped, daemon is not running.');
   }
 }
 

@@ -3,8 +3,8 @@ import { promisify } from 'util';
 import axios from 'axios';
 import fs from 'fs-extra';
 import EventSource from 'eventsource';
+import { logger } from './utils';
 import FormData from 'form-data';
-import { ora } from './utils';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
@@ -14,7 +14,6 @@ type ErrorEvent = {
 } & Event;
 
 function createGeneralRequest(agent: Function): Function {
-  const spinner = ora();
   return async (...args: any[]) => {
     try {
       const response = await agent(...args);
@@ -23,7 +22,7 @@ function createGeneralRequest(agent: Function): Function {
       }
     } catch (err) {
       if (err?.response?.data?.message) {
-        spinner.fail(err.response.data.message);
+        logger.fail(err.response.data.message, false);
       } else {
         console.error('daemon is not started, run "pipcook daemon start"');
       }

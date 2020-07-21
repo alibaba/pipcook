@@ -5,7 +5,7 @@ import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 
-import { ora, Constants } from '../utils';
+import { Constants, logger } from '../utils';
 import { InitCommandHandler } from '../types';
 import { optionalNpmClients, daemonPackage, boardPackage, isLocal } from '../config';
 
@@ -37,20 +37,18 @@ async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: s
  * install all dependencies of pipcook into working dir
  */
 const init: InitCommandHandler = async ({ client, beta, tuna }) => {
-  const spinner = ora();
   let npmClient = 'npm';
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
     npmInstallEnvs.BOA_CONDA_INDEX = BOA_CONDA_INDEX;
     npmInstallEnvs.BOA_CONDA_MIRROR = BOA_CONDA_MIRROR;
-    spinner.info(`switch conda index: ${npmInstallEnvs.BOA_CONDA_INDEX}`);
-    spinner.info(`switch conda mirror: ${npmInstallEnvs.BOA_CONDA_MIRROR}`);
+    logger.info(`switch conda index: ${npmInstallEnvs.BOA_CONDA_INDEX}`);
+    logger.info(`switch conda mirror: ${npmInstallEnvs.BOA_CONDA_MIRROR}`);
   }
   if (client) {
     npmClient = client;
     if (!optionalNpmClients.includes(npmClient)) {
-      spinner.fail(`uknown npm client: ${npmClient}, available clients: ${optionalNpmClients.join(',')}.`);
-      return process.exit(1);
+      return logger.fail(`uknown npm client: ${npmClient}, available clients: ${optionalNpmClients.join(',')}.`);
     }
   } else {
     const clientChoices = [];
@@ -73,8 +71,7 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
       ]);
       npmClient = answer.client;
     } else {
-      spinner.fail(`no npm client detected`);
-      return process.exit(1);
+      return logger.fail(`no npm client detected`);
     }
   }
 
@@ -101,9 +98,9 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
       npmInstall(npmClient, boardPackage, beta, CoreConstants.PIPCOOK_BOARD, npmInstallEnvs)
     ]);
     await fse.copy(CoreConstants.PIPCOOK_BOARD_BUILD, CoreConstants.PIPCOOK_DAEMON_PUBLIC);
-    spinner.succeed('Pipcook is ready, you can try "pipcook --help" to get started.');
+    logger.success('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
-    spinner.fail(`failed to initialize Pipcook with the error ${err && err.stack}`);
+    logger.fail(`failed to initialize Pipcook with the error ${err && err.stack}`, false);
     await fse.remove(CoreConstants.PIPCOOK_DAEMON);
     await fse.remove(CoreConstants.PIPCOOK_BOARD);
   }

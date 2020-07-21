@@ -4,7 +4,7 @@ import program from 'commander';
 import { get } from '../request';
 import { run } from '../pipeline';
 import { route } from '../router';
-import { ora } from '../utils';
+import { logger } from '../utils';
 
 const PipelineStatus = [ 'creating', 'running', 'success', 'fail' ];
 
@@ -17,17 +17,15 @@ async function list(): Promise<void> {
 }
 
 async function remove(): Promise<void> {
-  const spinner = ora();
-  spinner.start('removing jobs...');
+  logger.start('removing jobs...');
   await get(`${route.job}/remove`);
-  spinner.succeed('remove jobs succeeded');
+  logger.success('remove jobs succeeded');
 }
 
 async function stop(id: string): Promise<void> {
-  const spinner = ora();
-  spinner.start('stopping jobs...');
+  logger.start('stopping jobs...');
   const err = await get(`${route.job}/stop`, { id });
-  err ? spinner.fail(err.message) : spinner.succeed('stop job succeeded');
+  err ? logger.fail(err.message) : logger.success('stop job succeeded');
 }
 
 async function log(id: string): Promise<void> {
