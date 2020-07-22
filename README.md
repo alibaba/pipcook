@@ -1,22 +1,22 @@
 <p align="center">
   <a href="https://alibaba.github.io/pipcook/">
-    <img alt="pipcook" src="https://img.alicdn.com/tfs/TB1Bng1OAY2gK0jSZFgXXc5OFXa-300-72.png" width="160">
+    <img alt="pipcook" src="./logo.png" width="160">
   </a>
 </p>
 
 <p align="center">
-A JavaScript application framework for machine learning and its engineering.
+  A JavaScript application framework for machine learning and its engineering.
 </p>
 
 <p align="center">
-<a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
-  <img alt="npm" src="https://img.shields.io/npm/v/@pipcook/pipcook-core"></a>
-<a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
-  <img alt="npm" src="https://img.shields.io/npm/dm/@pipcook/pipcook-core"></a>
-<a href="https://github.com/alibaba/pipcook">
-  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/alibaba/pipcook"></a>
-<a href="https://opensource.org/licenses/Apache-2.0">
-  <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
+  <a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
+    <img alt="npm" src="https://img.shields.io/npm/v/@pipcook/pipcook-core"></a>
+  <a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
+    <img alt="npm" src="https://img.shields.io/npm/dm/@pipcook/pipcook-core"></a>
+  <a href="https://github.com/alibaba/pipcook">
+    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/alibaba/pipcook"></a>
+  <a href="https://opensource.org/licenses/Apache-2.0">
+    <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
 </p>
 
 ## Builds
