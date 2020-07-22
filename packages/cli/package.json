@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/bin/index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^1.0.3",
+    "@pipcook/pipcook-core": "^1.0.4",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
@@ -29,6 +29,7 @@
     "eventsource": "^1.0.7",
     "fastify": "^2.13.1",
     "find-process": "^1.4.3",
+    "form-data": "^3.0.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
@@ -40,8 +41,7 @@
     "semver": "^6.3.0",
     "tar-stream": "^2.1.2",
     "ts-node": "^8.9.1",
-    "yaml": "^1.7.2",
-    "form-data": "^3.0.0"
+    "yaml": "^1.7.2"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
