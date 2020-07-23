@@ -4,7 +4,7 @@ import {
     ModelDefineArgsType,
     UniModel,
     Sample
-} from "@pipcook/pipcook-core";
+} from '@pipcook/pipcook-core';
 
 const templateModelDefine: ModelDefineType = async (data: UniDataset, args: ModelDefineArgsType): Promise <UniModel> => {
 
