@@ -8,7 +8,7 @@ import {
 
 const templateModelDefine: ModelDefineType = async (data: UniDataset, args: ModelDefineArgsType): Promise <UniModel> => {
 
-  let model = {}; // Some model defination
+  const model = {}; // Some model defination
 
   const retModelDefine: UniModel = {
     model,
