@@ -15,8 +15,8 @@
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {
-    "@types/eventsource": "^1.1.2",
     "@types/fs-extra": "^9.0.1",
+    "@types/eventsource": "^1.1.2",
     "typescript": "^3.7.2"
   }
 }
