@@ -1,6 +1,6 @@
 # 分类图片中的前端组件
 
-使用 **Google Colab Notebook** 的免费GPU训练: <a href="https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_image_classification.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+使用 **Google Colab Notebook** 的免费 GPU/TPU 训练: <a href="https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_image_classification.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
 
 ## 背景
 

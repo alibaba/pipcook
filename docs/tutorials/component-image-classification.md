@@ -1,6 +1,6 @@
 # Classify images of UI components
 
-Have a try in **Google Colab Notebook** with free GPU: <a href="https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_image_classification.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+Have a try in **Google Colab Notebook** with free GPU/TPU: <a href="https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_image_classification.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
 
 ## Background
 
