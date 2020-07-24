@@ -11,12 +11,12 @@
   "dependencies": {
     "@pipcook/pipcook-core": "^1.0.3",
     "axios": "^0.18.1",
-    "fs-extra": "^8.1.0",
-    "eventsource": "^1.0.7"
+    "eventsource": "^1.0.7",
+    "fs-extra": "^8.1.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "^9.0.1",
     "@types/eventsource": "^1.1.2",
+    "@types/fs-extra": "^9.0.1",
     "typescript": "^3.7.2"
   }
 }
