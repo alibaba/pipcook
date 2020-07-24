@@ -1,5 +1,7 @@
 # Detect the UI components from a design draft
 
+Have a try in **Google Colab Notebook** with free GPU/TPU: <a href="https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_object_detection.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+
 ## Background
 
 Have you ever encountered such a scenario in the front-end business: there are some pictures in your hand, and you want an automatic way to identify which components are included in this picture, where these components are located in the picture, and which type components are of. This kind of task are generally called object detection in the field of deep learning.
