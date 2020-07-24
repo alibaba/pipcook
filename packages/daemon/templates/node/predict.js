@@ -18,24 +18,22 @@ if (typeof pipeline.dataProcess === 'string') {
 }
 
 const dataset = JSON.parse(output.dataset);
-const model = modelDefineModule(null, {
+const modelDefine = modelDefineModule(null, {
   recoverPath: __dirname + '/model',
   dataset
 });
 
-function predict(data) {
-  const sample = { data, label: null };
-  let future = model;
+let model;
 
-  if (typeof dataProcessModule === 'function') {
-    future = future.then((m) => {
-      dataProcessModule(sample, {}, JSON.parse(pipeline.dataProcessParams));
-      return m
-    });
+async function predict(data) {
+  if (!model) {
+    model = await modelDefine;
   }
-  return future.then((m) => {
-    return m.predict(sample);
-  });
+  const sample = { data, label: null };
+  if (typeof dataProcessModule === 'function') {
+    await dataProcessModule(sample, {}, JSON.parse(pipeline.dataProcessParams));
+  }
+  return await model.predict(sample);
 };
 
 module.exports = predict;
