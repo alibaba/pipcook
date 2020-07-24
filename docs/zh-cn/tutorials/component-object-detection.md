@@ -1,5 +1,7 @@
 # 识别图片中的前端组件
 
+使用 **Google Colab Notebook** 的免费 GPU/TPU 训练: <a href="https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_object_detection.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+
 ## 背景
 
 您是否在前端业务中遇到过这样的场景：手中有一些图片，您想有一种自动的方式来识别这些图片这个图片里都包含哪些组件，这些组件都在图片的什么位置，属于哪种类型的组件，这种类型的任务一般在深度学习领域称为目标检测。
