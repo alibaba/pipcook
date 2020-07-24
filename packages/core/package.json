@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-core",
-  "version": "1.0.3",
+  "version": "1.1.0-alpha.0",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -23,10 +23,10 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "rxjs": "^6.5.3",
+    "shortid": "^2.2.15",
     "systeminformation": "^4.16.0",
     "targz": "^1.0.1",
-    "xml2js": "^0.4.22",
-    "shortid": "^2.2.15"
+    "xml2js": "^0.4.22"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.4.2",
