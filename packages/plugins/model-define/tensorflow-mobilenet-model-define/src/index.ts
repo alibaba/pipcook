@@ -3,7 +3,15 @@
  * The final layer is changed to a softmax layer to match the output shape
  */
 
-import { ModelDefineType, ImageDataset, ImageSample, ModelDefineArgsType, UniModel, download, constants } from '@pipcook/pipcook-core';
+import {
+  ModelDefineType,
+  ImageDataset,
+  ImageSample,
+  ModelDefineArgsType,
+  UniModel,
+  download,
+  constants
+} from '@pipcook/pipcook-core';
 import * as assert from 'assert';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -15,10 +23,8 @@ const { MobileNetV2 } = boa.import('tensorflow.keras.applications');
 const { GlobalAveragePooling2D, Dropout, Dense } = boa.import('tensorflow.keras.layers');
 const { Model } = boa.import('tensorflow.keras.models');
 
-
 const MODEL_WEIGHTS_NAME = 'mobilenet_v2_weights_tf_dim_ordering_tf_kernels_1.0_224_no_top.h5';
-const MODEL_URL =
-  `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/mobilenet_python/${MODEL_WEIGHTS_NAME}`;
+const MODEL_URL = `http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/models/mobilenet_python/${MODEL_WEIGHTS_NAME}`;
 const MODEL_PATH = path.join(constants.KERAS_DIR, 'models', MODEL_WEIGHTS_NAME);
 
 /** @ignore
@@ -37,7 +43,7 @@ const assertionTest = (data: ImageDataset) => {
 const mobilenetDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<UniModel> => {
   let {
     loss = 'categorical_crossentropy',
-    metrics = [ 'accuracy' ],
+    metrics = ['accuracy'],
     learningRate = 0.001,
     decay = 0.05,
     recoverPath,
@@ -62,30 +68,50 @@ const mobilenetDefine: ModelDefineType = async (data: ImageDataset, args: ModelD
 
   let model: any;
 
-  if (!await fs.pathExists(MODEL_PATH)) {
+  if (!(await fs.pathExists(MODEL_PATH))) {
     await download(MODEL_URL, MODEL_PATH);
   }
 
-  model = MobileNetV2(boa.kwargs({
-    include_top: false,
-    weights: 'imagenet',
-    input_shape: inputShape
-  }));
+  if (recoverPath) {
+    model = MobileNetV2(
+      boa.kwargs({
+        include_top: false,
+        weights: 'none',
+        input_shape: inputShape
+      })
+    );
+  } else {
+    model = MobileNetV2(
+      boa.kwargs({
+        include_top: false,
+        weights: 'imagenet',
+        input_shape: inputShape
+      })
+    );
+  }
 
   let output = model.output;
   output = GlobalAveragePooling2D()(output);
-  output = Dense(1024, boa.kwargs({
-    activation: 'relu'
-  }))(output);
+  output = Dense(
+    1024,
+    boa.kwargs({
+      activation: 'relu'
+    })
+  )(output);
   output = Dropout(0.5)(output);
 
-  const outputs = Dense(outputShape, boa.kwargs({
-    activation: 'softmax'
-  }))(output);
-  model = Model(boa.kwargs({
-    inputs: model.input,
-    outputs: outputs
-  }));
+  const outputs = Dense(
+    outputShape,
+    boa.kwargs({
+      activation: 'softmax'
+    })
+  )(output);
+  model = Model(
+    boa.kwargs({
+      inputs: model.input,
+      outputs: outputs
+    })
+  );
 
   if (freeze) {
     for (let layer of model.layers.slice(0, -10)) {
@@ -97,25 +123,32 @@ const mobilenetDefine: ModelDefineType = async (data: ImageDataset, args: ModelD
     model.load_weights(path.join(recoverPath, 'weights.h5'));
   }
 
-  model.compile(boa.kwargs({
-    optimizer: Adam(boa.kwargs({
-      lr: learningRate,
-      decay
-    })),
-    loss: loss,
-    metrics: metrics
-  }));
+  model.compile(
+    boa.kwargs({
+      optimizer: Adam(
+        boa.kwargs({
+          lr: learningRate,
+          decay
+        })
+      ),
+      loss: loss,
+      metrics: metrics
+    })
+  );
 
   const result: UniModel = {
     model,
     metrics: metrics,
-    predict: async function (inputData: ImageSample) {
+    predict: async function(inputData: ImageSample) {
       let image = tf.io.read_file(inputData.data);
-      image = tf.image.decode_jpeg(image, boa.kwargs({
-        channels: 3
-      }));
+      image = tf.image.decode_jpeg(
+        image,
+        boa.kwargs({
+          channels: 3
+        })
+      );
       const shape = tf.shape(image).numpy();
-      return this.model.predict(tf.reshape(image, [ 1 ].concat(...shape.slice(0, 3)))).toString();
+      return this.model.predict(tf.reshape(image, [1].concat(...shape.slice(0, 3)))).toString();
     }
   };
   return result;
