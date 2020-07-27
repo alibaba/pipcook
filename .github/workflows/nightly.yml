@@ -2,7 +2,7 @@ name: Nightly Build Packages
 on:
   push:
     tags:
-      - 'nightly'
+      - '**alpha**'
 
 jobs:
   release:
