@@ -12,6 +12,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - name: Exit if not nightly branch
+        if: endsWith(gihtub.ref, 'nightly') == false
+        run: exit -1
+
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
