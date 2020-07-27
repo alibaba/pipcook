@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, Tab } from '@alifd/next';
 
-export default function({ visible, setVisible, stdout, stderr }) {
+export default function logview({ visible, setVisible, stdout, stderr }) {
   return (
     <Dialog
       title="Log View"
