@@ -24,6 +24,12 @@ async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> 
     }
     if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) >= 0) {
       configJson = JSON.parse(await request(configPath));
+      for (const key in configJson.plugins) {
+        const plugin = configJson.plugins[key];
+        if (path.isAbsolute(plugin.package) || plugin.package.startsWith('.')) {
+          throw new TypeError(`local path is invalid for plugin package: ${plugin.package}`);
+        }
+      }
     } else if (urlObj.protocol === 'file:') {
       configJson = await fs.readJSON(url.fileURLToPath(configPath));
     } else {
