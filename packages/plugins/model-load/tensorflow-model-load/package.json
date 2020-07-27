@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-tensorflow-model-load",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "uniform model loader for tensorflow",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/boa": "^1.0.3",
-    "@pipcook/pipcook-core": "^1.0.3"
+    "@pipcook/boa": "^1.0.4",
+    "@pipcook/pipcook-core": "^1.0.4"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
