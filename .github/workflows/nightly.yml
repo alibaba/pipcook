@@ -27,16 +27,11 @@ jobs:
           ref: nightly
       - name:  Activity check
         run: |
-            curl -sL https://api.github.com/repos/${{github.repository}}/commits | jq -r '[.[]' > $HOME/commit.json
-            date="$(jq -r '.commit.author.date' $HOME/commit.json)"
-            timestamp=$(date --utc -d "$date" +%s)
-
-            days=$(( ( $(date --utc +%s) - $timestamp ) / 86400 ))
-            rm -f $HOME/commit.json
+            curl -sL https://api.github.com/repos/${{github.repository}}/commits?since=yesterday | jq -r '.[0]' > $HOME/commit.json
+            date="$(jq -r '.commit.committer.date' $HOME/commit.json)"
+            echo "Last commit is made @ $date"
             
-            echo "Last commit is made $days"
-
-            if [ $days -le 1 ]; then
+            if [ -z "${date}" ]; then
               echo ::set-env name=UPDATED::true
             fi
         shell: bash
