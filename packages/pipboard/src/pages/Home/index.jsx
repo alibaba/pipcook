@@ -16,7 +16,7 @@ const items = [{
 }];
 
 
-export default function() {
+export default function home() {
   return (
     <div className="home">
         <Card items = {items} />
