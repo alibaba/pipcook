@@ -1,20 +1,31 @@
 name: Nightly Build Packages
 on:
   push:
-    tags:
-      - '**alpha**'
+    branches:
+      - 'master'
 
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
+      - name: Delete branch
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{github.token}}
+          branches: nightly
 
-      - name: Exit if not nightly branch
-        if: endsWith(gihtub.ref, 'nightly') == false
-        run: exit -1
+      - name: Create Nightly Branch
+        uses: peterjgrainger/action-create-branch@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: 'nightly'
+
+      - name: Checkout nightly
+        uses: actions/checkout@v2
+        with:
+          ref: nightly
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
