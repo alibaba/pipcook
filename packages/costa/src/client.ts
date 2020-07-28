@@ -113,7 +113,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
       return;
     }
 
-    if (pkg.pipcook.category === 'globalDataProcess') {
+    if (pkg.pipcook.category === 'datasetProcess') {
       const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
       await fn(dataset, args);
       recv(PluginOperator.WRITE);

@@ -19,8 +19,8 @@ export class PipelineModel extends Model {
   readonly dataAccessParams: string;
   readonly dataProcess: string;
   readonly dataProcessParams: string;
-  readonly globalDataProcess: string;
-  readonly globalDataProcessParams: string;
+  readonly datasetProcess: string;
+  readonly datasetProcessParams: string;
   readonly modelDefine: string;
   readonly modelDefineParams: string;
   readonly modelLoad: string;
@@ -67,10 +67,10 @@ export default async function model(context: IApplicationContext): Promise<Pipel
     dataProcessParams: {
       type: STRING
     },
-    globalDataProcess: {
+    datasetProcess: {
       type: STRING
     },
-    globalDataProcessParams: {
+    datasetProcessParams: {
       type: STRING
     },
     modelDefine: {

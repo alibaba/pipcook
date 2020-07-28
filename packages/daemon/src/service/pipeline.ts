@@ -33,7 +33,7 @@ interface GenerateOptions {
   modelPath: string;
   modelPlugin: PluginPackage;
   dataProcess?: PluginPackage;
-  globalDataProcess?: PluginPackage;
+  datasetProcess?: PluginPackage;
   pipeline: PipelineModel;
   workingDir: string;
   template: string;
@@ -214,10 +214,10 @@ export class PipelineService {
         dataDir
       }));
 
-      let globalDataProcess: PluginPackage;
-      if (plugins.globalDataProcess) {
-        globalDataProcess = plugins.globalDataProcess.plugin;
-        await runnable.start(plugins.globalDataProcess.plugin, dataset, getParams(plugins.globalDataProcess.params));
+      let datasetProcess: PluginPackage;
+      if (plugins.datasetProcess) {
+        datasetProcess = plugins.datasetProcess.plugin;
+        await runnable.start(plugins.datasetProcess.plugin, dataset, getParams(plugins.datasetProcess.params));
       }
 
       let dataProcess: PluginPackage;
@@ -268,7 +268,7 @@ export class PipelineService {
         modelPath,
         modelPlugin,
         dataProcess,
-        globalDataProcess,
+        datasetProcess,
         pipeline,
         workingDir: runnable.workingDir,
         template: 'node' // set node by default

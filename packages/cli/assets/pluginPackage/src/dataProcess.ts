@@ -1,6 +1,6 @@
-import { DataProcessType, ArgsType, Sample } from '@pipcook/pipcook-core'
+import { DataProcessType, ArgsType, Sample, Metadata } from '@pipcook/pipcook-core'
 
-const templateDataProcess: DataProcessType = async (data: Sample, args: ArgsType): Promise<void> => {
+const templateDataProcess: DataProcessType = async (data: Sample, metadata: Metadata, args: ArgsType): Promise<void> => {
 }
 
 export default templateDataProcess;
