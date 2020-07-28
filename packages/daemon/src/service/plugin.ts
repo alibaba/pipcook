@@ -149,7 +149,7 @@ export class PluginManager {
    * install by package name or tarball url or git url
    * @param pkgName string package name, tarball url, git url
    * @param pyIndex string python package index
-   * @param force boolean 
+   * @param force boolean if true, the installed plugin will be reinstall
    */
   async installByName(pkgName: string, pyIndex?: string, force?: boolean): Promise<PluginInstallingResp> {
     const pkg = await this.fetch(pkgName);
