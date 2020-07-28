@@ -47,8 +47,8 @@ export interface Sample {
 export interface DataLoader {
   len: () => Promise<number>;
   getItem: (id: number) => Promise<Sample>;
-  next: () => Promise<Sample>;
-  nextBatch: (batchSize: number) => Promise<Array<Sample>>;
+  next?: () => Promise<Sample>;
+  nextBatch?: (batchSize: number) => Promise<Array<Sample>>;
 }
 
 /**
