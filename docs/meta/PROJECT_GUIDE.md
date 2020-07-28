@@ -77,18 +77,18 @@ Community plugins can also be submitted as built-in plugins through pull request
 
 ### Nightly Release
 
-The Nightly release will be built and published to npm every midnight if there is any commit in the past day.
-The aim to have such a release is to provide a quick fix to existig bugs and access to new/experimental features that are not suitable to deploy under the production environment.
+The nightly release will be built and published to npm every midnight if there is any commit in the past day.
+The aim to have such a release is to provide a quick fix to existing bugs and access to new/experimental features that are not suitable to deploy under the production environment.
 
 #### Usage
 
 You can directly use the following command:
 ```bash
-npm install @pipcook/pipcook-cli@nightly
+$ npm install @pipcook/pipcook-cli@beta
 ```
 
 Or
 
 ```bash
-npm install --tag nightly @pipcook/pipcook-cli
+$ npm install --tag beta @pipcook/pipcook-cli
 ```
