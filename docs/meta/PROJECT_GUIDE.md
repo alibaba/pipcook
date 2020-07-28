@@ -84,11 +84,11 @@ The aim of having such a release is to provide a quick fix to existing bugs and 
 
 You can directly use the following command:
 ```bash
-$ npm install @pipcook/pipcook-cli@beta
+$ npm install @pipcook/pipcook-cli@beta -g
 ```
 
 Or
 
 ```bash
-$ npm install --tag beta @pipcook/pipcook-cli
+$ npm install --tag beta @pipcook/pipcook-cli -g
 ```
