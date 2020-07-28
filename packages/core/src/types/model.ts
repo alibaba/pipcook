@@ -5,10 +5,10 @@ import { Sample } from "..";
  */
 interface Predictable {
   /**
-   * @param sample the input sample.
+   * @param sample the input sample or an array of samples for batch predicting.
    * @returns the result by trained model.
    */
-  (sample: Sample): any;
+  (sample: Sample | Array<Sample>): any;
 }
 
 /**
