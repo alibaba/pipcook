@@ -1,5 +1,5 @@
 import { controller, inject, provide, get, post, del, put } from 'midway';
-import { BaseController } from './base-controller';
+import { BaseController } from './base';
 import { PluginManager } from '../../service/plugin';
 import ServerSentEmitter from '../../utils/emitter';
 import { PluginInstallingResp } from '../../interface';
@@ -13,17 +13,20 @@ export class PluginController extends BaseController {
   @inject('pluginManager')
   pluginManager: PluginManager;
 
-  // TODO(feely): check if the plugin was installed
+  // TODO(feely): check if the plugin has been installed
+  /**
+   * create plugin and install it
+   */
   @post()
   public async install() {
-    const { name, pyIndex } = this.ctx.query;
+    const { name, pyIndex } = this.ctx.request.body;
     let response: PluginInstallingResp;
     debug(`checking info: ${name}.`);
     try {
       response = await this.pluginManager.installByName(name, pyIndex, false);
-      this.successRes(response);
+      this.success(response);
     } catch (err) {
-      this.failRes(`plugin installation failed with error: ${err.message}`);
+      this.fail(`plugin installation failed with error: ${err.message}`);
     }
   }
 
@@ -37,37 +40,56 @@ export class PluginController extends BaseController {
     debug(`checking info: ${name}.`);
     try {
       response = await this.pluginManager.installByName(name, pyIndex, true);
-      this.successRes(response);
+      this.success(response);
     } catch (err) {
-      this.failRes(`plugin installation failed with error: ${err.message}`);
+      this.fail(`plugin installation failed with error: ${err.message}`);
     }
   }
 
   /**
    * delete plugin by name
    */
-  @del('/:name')
-  public async delete() {
+  @del('/:id')
+  public async remove() {
     try {
-      if (typeof this.ctx.params.name === 'string' && this.ctx.params.name) {
-        await this.pluginManager.uninstall(this.ctx.params.name);
-        this.successRes(undefined, 204);
+      if (typeof this.ctx.params.id === 'string' && this.ctx.params.id) {
+        const plugin = await this.pluginManager.findById(this.ctx.params.id);
+        await this.pluginManager.uninstall(plugin.name);
+        this.success(undefined, 204);
       } else {
         // not implemented
-        this.failRes('no name value found', 400);
+        this.fail('no name value found', 400);
       }
     } catch (err) {
-      this.failRes(err.message, 404);
+      this.fail(err.message, 404);
     }
   }
-
+  /**
+   * delete all plugins
+   */
+  @del()
+  public async removeAll() {
+    try {
+      const plugins = await this.pluginManager.list();
+      for (const plugin of plugins) {
+        await this.pluginManager.uninstall(plugin.name);
+      }
+      this.success(undefined, 204);
+    } catch (err) {
+      this.fail(err.message, 404);
+    }
+  }
   /**
    * find a plugin by id
    */
   @get('/:id')
   public async get() {
     const plugin = await this.pluginManager.findById(this.ctx.params.id);
-    this.successRes(plugin);
+    if (plugin) {
+      this.success(plugin);
+    } else {
+      this.fail('no plugin found', 404);
+    }
   }
 
   /**
@@ -79,15 +101,17 @@ export class PluginController extends BaseController {
       datatype: this.ctx.query.datatype,
       category: this.ctx.query.category
     });
-    this.successRes(plugins);
+    this.success(plugins);
   }
 
-  // create a plugin by tarball stream
+  /**
+   * create a plugin by tarball stream
+   */
   @post('/tarball')
   public async uploadPackage() {
     const fs = await this.ctx.getFileStream();
     const { pyIndex, force } = fs.fields;
-    this.successRes(await this.pluginManager.installFromTarStream(fs, pyIndex, force));
+    this.success(await this.pluginManager.installFromTarStream(fs, pyIndex, force));
   }
 
   private linkLog(logStream: NodeJS.ReadStream, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
@@ -105,12 +129,11 @@ export class PluginController extends BaseController {
   /**
    * trace log
    */
-  @get('/log/:id')
+  @get('/log/:logId')
   public async log() {
     const sse = new ServerSentEmitter(this.ctx);
-    const log = await this.pluginManager.getInstallLog(this.ctx.params.id);
+    const log = this.pluginManager.getInstallLog(this.ctx.params.logId);
     if (!log) {
-      sse.emit('error', 'no log found');
       return sse.finish();
     }
     await Promise.all([

@@ -250,9 +250,9 @@ export class CostaRuntime {
    * @param name the plugin package name.
    * @param cwd the current working directory.
    */
-  async fetch(name: string, cwd?: string): Promise<PluginPackage> {
+  async fetch(name: string): Promise<PluginPackage> {
     let pkg: PluginPackage;
-    const source = this.getSource(name, cwd || process.cwd());
+    const source = this.getSource(name);
     if (source.from === 'npm') {
       debug(`requesting the url ${source.uri}`);
       // TODO(yorkie): support http cache
@@ -450,7 +450,7 @@ export class CostaRuntime {
    * @param name the package name.
    * @param cwd the current working dir.
    */
-  private getSource(name: string, cwd: string): PluginSource {
+  private getSource(name: string): PluginSource {
     const urlObj = url.parse(name);
     const src: PluginSource = {
       from: null,
@@ -475,9 +475,9 @@ export class CostaRuntime {
         npmRegistryPrefix = npmRegistryPrefix.slice(0, -1);
       }
       src.uri = `${npmRegistryPrefix}/${src.schema.packageName}`;
-    } else if (urlObj.protocol == null) {
+    } else if (urlObj.protocol == null && path.isAbsolute(name)) {
       src.from = 'fs';
-      src.uri = path.join(cwd, name);
+      src.uri = name;
     } else {
       throw new TypeError(`Unsupported resolving plugin name: ${name}`);
     }

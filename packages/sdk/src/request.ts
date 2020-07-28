@@ -11,10 +11,10 @@ function createGeneralRequest(agent: Function): Function {
     try {
       response = await agent(...args);
     } catch (err) {
-      throw new Error(err?.response?.data?.message || err.message);
+      throw new Error(response?.data?.message || err.message);
     }
-    if (response.data.status === true) {
-      return response.data.data;
+    if (response.status >= 200 && response.status < 300) {
+      return response.data;
     } else {
       throw new Error(response?.data?.message);
     }
@@ -39,20 +39,20 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Nod
 };
 
 export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     let handshaked = false;
-    const uri = `${host}?${qs.stringify({ verbose: 1, ...params })}`;
+    const uri = `${host}${params ? `?${qs.stringify(params)}` : ''}`;
     const es = new EventSource(uri);
     const timeoutHandle = setTimeout(() => {
       es.close();
-      console.error('connects to daemon timeout, please run "pipcook daemon restart".');
+      reject(new Error(`listen timeout: ${uri}`));
     }, 5000);
     const onerror = (e: Event) => {
       if (handshaked === false) {
         es.close();
         clearTimeout(timeoutHandle);
-        console.error('daemon is not started, run "pipcook daemon start"');
         es.removeEventListener('error', onerror);
+        reject(new Error(`listen error: ${e.type}`));
       } else if (typeof handlers.error === 'function') {
         // manually pass the `error` event to user-defined handler.
         handlers.error(e);
@@ -65,6 +65,9 @@ export const listen = async (host: string, params?: RequestParams, handlers?: Re
         // close the connection and mark the handshaked is disabled.
         handshaked = false;
         es.close();
+        if (typeof handlers.close === 'function') {
+          handlers.close(e);
+        }
       } else if (e.data === 'start') {
         handshaked = true;
         // if `handlers.error` not defined, remove the listener directly.

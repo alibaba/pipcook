@@ -1,5 +1,5 @@
 import { Context, controller, inject, provide, get } from 'midway';
-import { BaseController } from './base-controller';
+import { BaseController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { parseConfig } from '../../runner/helper';
 import ServerSentEmitter from '../../utils/emitter';
@@ -21,11 +21,10 @@ export class JobController extends BaseController {
 
   @get('/run')
   public async run() {
-    const { pipelineId, cwd, verbose, pyIndex } = this.ctx.request.query;
+    const { pipelineId, verbose, pyIndex } = this.ctx.request.query;
     const job = await this.pipelineService.createJob(pipelineId);
     await this.runJobWithContext(
       job,
-      cwd,
       verbose === '1',
       pyIndex
     );
@@ -33,25 +32,24 @@ export class JobController extends BaseController {
 
   @get('/start')
   public async start() {
-    const { config, cwd, verbose, pyIndex } = this.ctx.request.query;
+    const { config, verbose, pyIndex } = this.ctx.request.query;
     const parsedConfig = await parseConfig(config);
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
     const job = await this.pipelineService.createJob(pipeline.id);
     await this.runJobWithContext(
       job,
-      cwd,
       verbose === '1',
       pyIndex
     );
   }
 
-  private async runJobWithContext(job: JobModel, cwd: string, verbose: boolean, pyIndex: string) {
+  private async runJobWithContext(job: JobModel, verbose: boolean, pyIndex: string) {
     if (verbose) {
       const sse = new ServerSentEmitter(this.ctx);
       try {
-        const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
+        const plugins = await this.pipelineService.installPlugins(job, pyIndex);
         sse.emit('job created', job);
-        await this.pipelineService.startJob(job, cwd, plugins);
+        await this.pipelineService.startJob(job, plugins);
         // FIXME(yorkie): only pass the id because sse owns a max body length.
         sse.emit('job finished', { id: job.id });
       } catch (err) {
@@ -61,12 +59,12 @@ export class JobController extends BaseController {
       }
     } else {
       try {
-        const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
-        this.pipelineService.startJob(job, cwd, plugins);
+        const plugins = await this.pipelineService.installPlugins(job, pyIndex);
+        this.pipelineService.startJob(job, plugins);
       } catch (err) {
-        return this.failRes(err?.message);
+        return this.fail(err?.message);
       }
-      this.successRes(job, 201);
+      this.success(job, 201);
     }
   }
 
@@ -75,18 +73,18 @@ export class JobController extends BaseController {
     const { pipelineId, offset, limit } = this.ctx.query;
     try {
       const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
-      this.successRes({
+      this.success({
         data: jobs
       });
     } catch (err) {
-      this.failRes(err.message);
+      this.fail(err.message);
     }
   }
 
   @get('/remove')
   public async remove() {
     const count = await this.pipelineService.removeJobs();
-    this.successRes({
+    this.success({
       message: 'remove jobs successfully',
       data: count
     });
@@ -97,9 +95,9 @@ export class JobController extends BaseController {
     const { id } = this.ctx.query;
     const success = this.pipelineService.stopJob(id);
     if (success) {
-      this.successRes(undefined);
+      this.success(undefined);
     } else {
-      this.failRes('stop job error');
+      this.fail('stop job error');
     }
   }
 
@@ -112,13 +110,13 @@ export class JobController extends BaseController {
       if (data === null || data === undefined) {
         throw new Error('log not found');
       }
-      this.successRes({
+      this.success({
         data: {
           log: data
         }
       });
     } catch (err) {
-      this.failRes(err.message);
+      this.fail(err.message);
     }
   }
 
@@ -136,9 +134,9 @@ export class JobController extends BaseController {
       if (!job) {
         throw new Error('job not found');
       }
-      this.successRes(job);
+      this.success(job);
     } catch (err) {
-      this.failRes(err.message);
+      this.fail(err.message);
     }
   }
 }

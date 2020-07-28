@@ -38,16 +38,16 @@ export class PluginManager {
     return this.pluginRT.costa.options.datasetDir;
   }
 
-  async fetch(name: string, cwd?: string): Promise<PluginPackage> {
-    return this.pluginRT.costa.fetch(name, cwd);
+  async fetch(name: string): Promise<PluginPackage> {
+    return this.pluginRT.costa.fetch(name);
   }
 
   async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
     return this.pluginRT.costa.fetchByStream(stream);
   }
 
-  async fetchAndInstall(name: string, cwd?: string, pyIndex?: string): Promise<PluginPackage> {
-    const pkg = await this.fetch(name, cwd);
+  async fetchAndInstall(name: string, pyIndex?: string): Promise<PluginPackage> {
+    const pkg = await this.fetch(name);
     const plugin = await this.findOrCreateByPkg(pkg);
     try {
       await this.install(pkg, { pyIndex, force: false, stdout: process.stdout, stderr: process.stderr });
@@ -64,10 +64,10 @@ export class PluginManager {
 
   async list(filter?: ListPluginsFilter): Promise<PluginModel[]> {
     const where = {} as any;
-    if (filter.category) {
+    if (filter?.category) {
       where.category = filter.category;
     }
-    if (filter.datatype) {
+    if (filter?.datatype) {
       where.datatype = filter.datatype;
     }
     return this.model.findAll({ where });

@@ -1,6 +1,6 @@
 import { controller, inject, provide, get } from 'midway';
 
-import { BaseController } from './base-controller';
+import { BaseController } from './base';
 import { PipelineService } from '../../service/pipeline';
 
 @provide()
@@ -13,6 +13,6 @@ export class LogController extends BaseController {
   public async view() {
     const { id } = this.ctx.params;
     const data = await this.pipelineService.getLogById(id);
-    this.successRes(data);
+    this.success(data);
   }
 }

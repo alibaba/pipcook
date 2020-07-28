@@ -30,5 +30,8 @@ export default (appInfo: EggAppInfo) => {
     dir: staticDir,
   };
 
+  // sequelize logger: boolean or function
+  config.sequelizeLogger = false;
+
   return config;
 };

@@ -29,7 +29,6 @@ interface SelectJobsFilter {
 }
 
 interface GenerateOptions {
-  cwd: string;
   modelPath: string;
   modelPlugin: PluginPackage;
   dataProcess?: PluginPackage;
@@ -158,13 +157,13 @@ export class PipelineService {
     return job;
   }
 
-  async installPlugins(job: JobModel, cwd: string, pyIndex?: string): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
+  async installPlugins(job: JobModel, pyIndex?: string): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
     const pipeline = await this.getPipeline(job.pipelineId);
     const plugins: Partial<Record<PluginTypeI, PluginInfo>> = {};
     for (const type of CoreConstants.PLUGINS) {
       if (pipeline[type]) {
         plugins[type] = await {
-          plugin: await this.pluginManager.fetchAndInstall(pipeline[type], cwd, pyIndex),
+          plugin: await this.pluginManager.fetchAndInstall(pipeline[type], pyIndex),
           params: pipeline[`${type}Params`]
         };
       }
@@ -172,7 +171,7 @@ export class PipelineService {
     return plugins;
   }
 
-  async startJob(job: JobModel, cwd: string, plugins: Partial<Record<PluginTypeI, PluginInfo>>) {
+  async startJob(job: JobModel, plugins: Partial<Record<PluginTypeI, PluginInfo>>) {
     const runnable = await this.pluginManager.createRunnable(job.id);
     // save the runnable object
     runnableMap[job.id] = runnable;
@@ -257,7 +256,6 @@ export class PipelineService {
       await job.save();
       const pipeline = await this.getPipeline(job.pipelineId);
       await this.generateOutput(job, {
-        cwd,
         modelPath,
         modelPlugin,
         dataProcess,
@@ -321,7 +319,6 @@ export class PipelineService {
 
     const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
     const metadata = {
-      cwd: opts.cwd,
       pipeline: opts.pipeline.toJSON(),
       output: job.toJSON(),
     };

@@ -1,5 +1,5 @@
 import { controller, inject, provide, post } from 'midway';
-import { BaseController } from './base-controller';
+import { BaseController } from './base';
 import { AppService } from '../../service/app';
 
 @provide()
@@ -11,7 +11,7 @@ export class AppController extends BaseController {
   @post('/compile')
   public async compile() {
     const result = await this.AppService.compile(this.ctx.request.body.src as string);
-    this.successRes({
+    this.success({
       pipelines: result.pipelines,
       executableSource: result.executableSource
     });

@@ -1,7 +1,15 @@
 import { Job } from './job';
 import { Pipeline } from './pipeline';
+import { Plugin } from './plugin';
 export { JobStatus } from './utils';
-export { JobModel, PipelineModel, JobRunOption, PipelineInstallOption } from './interface';
+export {
+  JobModel,
+  PipelineModel,
+  JobRunOption,
+  PipelineInstallOption,
+  PluginResp,
+  PluginInstallingResp
+} from './interface';
 
 /**
  * Pipcook daemon sdk for javascript
@@ -10,6 +18,7 @@ export { JobModel, PipelineModel, JobRunOption, PipelineInstallOption } from './
 export class PipcookClient {
   pipeline: Pipeline;
   job: Job;
+  plugin: Plugin;
 
   /**
    * The constructor for PipcookClient
@@ -20,5 +29,6 @@ export class PipcookClient {
     const url = `${protocolWithHostname}:${port}`;
     this.pipeline = new Pipeline(url);
     this.job = new Job(url);
+    this.plugin = new Plugin(url);
   }
 }

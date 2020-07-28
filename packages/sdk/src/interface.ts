@@ -41,3 +41,29 @@ export interface JobRunOption {
 export interface PipelineInstallOption {
   tuna: boolean;
 }
+
+/**
+ * response of plugin query
+ */
+export interface PluginResp {
+  id: string;
+  name: string;
+  version: string;
+  category: string;
+  datatype: string;
+  namespace: string;
+  dest: string;
+  status: number;
+  error: string;
+}
+
+/**
+ * response of plugin install
+ */
+export interface PluginInstallingResp extends PluginResp {
+  logId: string;
+}
+
+export interface LogCallback {
+  (level: string, data: string): void;
+}
