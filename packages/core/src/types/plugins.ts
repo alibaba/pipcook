@@ -147,7 +147,7 @@ export interface DataProcessType extends PipcookPlugin {
  * @param dataset The dataset of which you loaded in `dataCollect` & `dataAccess`
  * @param args The arguments from pipeline config file.
  */
-export interface GlobalDataProcessType extends PipcookPlugin {
+export interface DatasetProcessType extends PipcookPlugin {
   (dataset: UniDataset, args: ArgsType): Promise<void>;
 }
 
