@@ -1,5 +1,5 @@
 {
-  "name": "@pipcook/plugins-tensorflow-bert-ner-model-train",
+  "name": "@pipcook/plugins-tensorflow-bert-ner-model-evaluate",
   "version": "1.0.4",
   "description": "",
   "main": "dist/index",
@@ -32,6 +32,7 @@
     "python": "3.7",
     "dependencies": {
       "tensorflow": "2.1.0",
+      "seqeval": "0.0.5",
       "fastprogress": "0.1.21"
     }
   }

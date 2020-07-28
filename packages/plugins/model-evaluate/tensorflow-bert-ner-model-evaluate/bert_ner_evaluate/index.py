@@ -1,16 +1,14 @@
-import json
 import logging
 import math
 import os
-import shutil
 import pandas as pd
 
 import sys
 import numpy as np
 import tensorflow as tf
 from fastprogress import master_bar, progress_bar
+from seqeval.metrics import classification_report
 
-from .optimization import AdamWeightDecay, WarmUp
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -224,91 +222,78 @@ def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer
                           label_mask=label_mask))
     return features
 
-
-def train(params):
+def evaluate(params):
     args = obj(params)
-    args.learning_rate = 5e-5
-    args.warmup_proportion = 0.1
-    args.weight_decay = 0.01
-    args.adam_epsilon = 1e-8
-    args.seed = 42
 
     ner = args.ner
-    strategy = args.strategy
+    tokenizer = args.tokenizer
 
     processor = NerProcessor()
     label_list = processor.get_labels()
     num_labels = len(label_list) + 1
 
-    if os.path.exists(args.output_dir) and os.listdir(args.output_dir):
-        raise ValueError("Output directory ({}) already exists and is not empty.".format(args.output_dir))
-    if not os.path.exists(args.output_dir):
-        os.makedirs(args.output_dir)
+    ids = tf.ones((1,128),dtype=tf.int64)
+    _ = ner(ids,ids,ids,ids, training=False)
 
-    train_examples = None
-    optimizer = None
-    num_train_optimization_steps = 0
-    train_examples = processor.get_train_examples(args.data_dir)
-    num_train_optimization_steps = int(
-        len(train_examples) / args.train_batch_size) * args.num_train_epochs
-    warmup_steps = int(args.warmup_proportion *
-                        num_train_optimization_steps)
-    learning_rate_fn = tf.keras.optimizers.schedules.PolynomialDecay(initial_learning_rate=args.learning_rate,
-                                            decay_steps=num_train_optimization_steps,end_learning_rate=0.0)
-    if warmup_steps:
-        learning_rate_fn = WarmUp(initial_learning_rate=args.learning_rate,
-                                decay_schedule_fn=learning_rate_fn,
-                                warmup_steps=warmup_steps)
-    optimizer = AdamWeightDecay(
-        learning_rate=learning_rate_fn,
-        weight_decay_rate=args.weight_decay,
-        beta_1=0.9,
-        beta_2=0.999,
-        epsilon=args.adam_epsilon,
-        exclude_from_weight_decay=['layer_norm', 'bias'])
-
-    label_map = {i: label for i, label in enumerate(label_list, 1)}
-    train_features = convert_examples_to_features(
-        train_examples, label_list, args.max_seq_length, args.tokenizer)
-    logger.info("***** Running training *****")
-    logger.info("  Num examples = %d", len(train_examples))
-    logger.info("  Batch size = %d", args.train_batch_size)
-    logger.info("  Num steps = %d", num_train_optimization_steps)
+    eval_examples = processor.get_test_examples(args.data_dir)
+    
+    eval_features = convert_examples_to_features(
+        eval_examples, label_list, args.max_seq_length, tokenizer)
+    logger.info("***** Running evalution *****")
+    logger.info("  Num examples = %d", len(eval_examples))
+    logger.info("  Batch size = %d", args.eval_batch_size)
 
     all_input_ids = tf.data.Dataset.from_tensor_slices(
-        np.asarray([f.input_ids for f in train_features]))
+        np.asarray([f.input_ids for f in eval_features]))
     all_input_mask = tf.data.Dataset.from_tensor_slices(
-        np.asarray([f.input_mask for f in train_features]))
+        np.asarray([f.input_mask for f in eval_features]))
     all_segment_ids = tf.data.Dataset.from_tensor_slices(
-        np.asarray([f.segment_ids for f in train_features]))
+        np.asarray([f.segment_ids for f in eval_features]))
     all_valid_ids = tf.data.Dataset.from_tensor_slices(
-        np.asarray([f.valid_ids for f in train_features]))
-    all_label_mask = tf.data.Dataset.from_tensor_slices(
-        np.asarray([f.label_mask for f in train_features]))
+        np.asarray([f.valid_ids for f in eval_features]))
 
     all_label_ids = tf.data.Dataset.from_tensor_slices(
-        np.asarray([f.label_id for f in train_features]))
+        np.asarray([f.label_id for f in eval_features]))
+    all_label_mask = tf.data.Dataset.from_tensor_slices(
+        np.asarray([f.label_mask for f in eval_features]))
 
-    # Dataset using tf.data
-    train_data = tf.data.Dataset.zip(
-        (all_input_ids, all_input_mask, all_segment_ids, all_valid_ids, all_label_ids,all_label_mask))
-    shuffled_train_data = train_data.shuffle(buffer_size=int(len(train_features) * 0.1),
-                                            seed = args.seed,
-                                            reshuffle_each_iteration=True)
-    batched_train_data = shuffled_train_data.batch(args.train_batch_size)
-    # Distributed dataset
-    dist_dataset = strategy.experimental_distribute_dataset(batched_train_data)
+    eval_data = tf.data.Dataset.zip(
+        (all_input_ids, all_input_mask, all_segment_ids, all_valid_ids, all_label_ids, all_label_mask))
+    batched_eval_data = eval_data.batch(args.eval_batch_size)
 
     loss_metric = tf.keras.metrics.Mean()
-
-    epoch_bar = master_bar(range(args.num_train_epochs))
+    epoch_bar = master_bar(range(1))
     pb_max_len = math.ceil(
-        float(len(train_features))/float(args.train_batch_size))
+        float(len(eval_features))/float(args.eval_batch_size))
 
-    def train_step(input_ids, input_mask, segment_ids, valid_ids, label_ids,label_mask):
-        def step_fn(input_ids, input_mask, segment_ids, valid_ids, label_ids,label_mask):
+    y_true = []
+    y_pred = []
+    label_map = {i : label for i, label in enumerate(label_list,1)}
+    label_map[0] = '0'
+    for epoch in epoch_bar:
+        for (input_ids, input_mask, segment_ids, valid_ids, label_ids, label_mask) in progress_bar(batched_eval_data, total=pb_max_len, parent=epoch_bar):
+                logits = ner(input_ids, input_mask,
+                              segment_ids, valid_ids, training=False)
+                label_mask = tf.reshape(label_mask,(-1,))
+                logits = tf.reshape(logits,(-1,num_labels))
+                logits_masked = tf.boolean_mask(logits,label_mask)
+                logits = tf.argmax(logits_masked,axis=1)
+                label_ids = tf.reshape(label_ids,(-1,))
+                label_ids = tf.boolean_mask(label_ids,label_mask)
+                temp_1 = []
+                temp_2 = []
+                for i in range(label_ids.shape[0]):
+                    temp_1.append(label_map[label_ids[i].numpy()])
+                    temp_2.append(label_map[logits[i].numpy()])
+                y_true.append(temp_1)
+                y_pred.append(temp_2)
 
-            with tf.GradientTape() as tape:
+    report = classification_report(y_true, y_pred, digits=4)
+    return report
+
+
+
+    with tf.GradientTape() as tape:
                 logits = ner(input_ids, input_mask,segment_ids, valid_ids, training=True)
                 label_mask = tf.reshape(label_mask,(-1,))
                 logits = tf.reshape(logits,(-1,num_labels))
@@ -317,32 +302,3 @@ def train(params):
                 label_ids_masked = tf.boolean_mask(label_ids,label_mask)
                 cross_entropy = args.loss_fct(label_ids_masked, logits_masked)
                 loss = tf.reduce_sum(cross_entropy) * (1.0 / args.train_batch_size)
-            grads = tape.gradient(loss, ner.trainable_variables)
-            optimizer.apply_gradients(list(zip(grads, ner.trainable_variables)))
-            return cross_entropy
-
-        per_example_losses = strategy.experimental_run_v2(step_fn,
-                                  args=(input_ids, input_mask, segment_ids, valid_ids, label_ids,label_mask))
-        mean_loss = strategy.reduce(tf.distribute.ReduceOp.MEAN, per_example_losses, axis=0)
-        return mean_loss
-
-    for epoch in epoch_bar:
-        with strategy.scope():
-            for (input_ids, input_mask, segment_ids, valid_ids, label_ids,label_mask) in progress_bar(dist_dataset, total=pb_max_len, parent=epoch_bar):
-                loss = train_step(input_ids, input_mask, segment_ids, valid_ids, label_ids,label_mask)
-                loss_metric(loss)
-                epoch_bar.child.comment = f'loss : {loss_metric.result()}'
-        loss_metric.reset_states()
-    
-    # model weight save 
-    ner.save_weights(os.path.join(args.output_dir,"model.h5"))
-    ner.load_weights(os.path.join(args.output_dir,"model.h5"))
-    # copy vocab to output_dir
-    shutil.copyfile(os.path.join(args.bert_model,"vocab.txt"), os.path.join(args.output_dir,"vocab.txt"))
-    # copy bert config to output_dir
-    shutil.copyfile(os.path.join(args.bert_model,"bert_config.json"),os.path.join(args.output_dir,"bert_config.json"))
-    # save label_map and max_seq_length of trained model
-    model_config = {"bert_model":args.bert_model,"do_lower":False,
-                    "max_seq_length":args.max_seq_length,"num_labels":num_labels,
-                    "label_map":label_map}
-    json.dump(model_config,open(os.path.join(args.output_dir,"model_config.json"),"w"),indent=4)

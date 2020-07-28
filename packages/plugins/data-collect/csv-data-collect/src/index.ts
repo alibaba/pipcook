@@ -40,13 +40,19 @@ const textClassDataCollect: DataCollectType = async (args: ArgsType): Promise<vo
     const trainType = splitString[splitString.length - 2];
     const result = await writeCsvFile(csvPath);
     if (trainType === 'train') {
-      trainData.push(...result);
+      result.forEach(re => {
+        trainData.push(re);
+      })
     }
     if (trainType === 'validation') {
-      validationData.push(...result);
+      result.forEach(re => {
+        validationData.push(re);
+      })
     }
     if (trainType === 'test') {
-      testData.push(...result);
+      result.forEach(re => {
+        testData.push(re);
+      })
     }
   }
 
