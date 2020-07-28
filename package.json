@@ -28,7 +28,8 @@
     "test:pipeline": "sh ./run_pipeline.sh",
     "typedoc": "typedoc",
     "clean": "lerna run clean",
-    "release": "lerna publish from-package --yes --no-verify-access"
+    "release": "lerna publish from-package --yes --no-verify-access",
+    "nightly-release": "lerna version prerelease --force-publish --yes && lerna publish --yes --no-verify-access --dist-tag nightly"
   },
   "dependencies": {
     "@types/jasmine": "^3.5.10",
