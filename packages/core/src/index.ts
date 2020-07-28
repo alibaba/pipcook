@@ -37,7 +37,8 @@ export {
   ModelDefineArgsType,
   ModelTrainArgsType,
   PluginTypeI,
-  PipcookPlugin
+  PipcookPlugin,
+  PluginStatus
 } from './types/plugins';
 export { EvaluateResult } from './types/other';
 

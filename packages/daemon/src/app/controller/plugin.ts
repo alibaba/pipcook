@@ -1,68 +1,93 @@
-import { Context, controller, inject, provide, get, post } from 'midway';
-import { successRes } from '../../utils/response';
+import { controller, inject, provide, get, post, del, put } from 'midway';
+import { BaseController } from './base-controller';
 import { PluginManager } from '../../service/plugin';
 import ServerSentEmitter from '../../utils/emitter';
+import { PluginInstallingResp } from '../../interface';
 import Debug from 'debug';
 const debug = Debug('daemon.app.plugin');
 
 @provide()
 @controller('/plugin')
-export class PluginController {
-  @inject()
-  ctx: Context;
+export class PluginController extends BaseController {
 
   @inject('pluginManager')
   pluginManager: PluginManager;
 
-  @get('/install')
+  // TODO(feely): check if the plugin was installed
+  @post()
   public async install() {
     const { name, pyIndex } = this.ctx.query;
-    const sse = new ServerSentEmitter(this.ctx);
+    let response: PluginInstallingResp;
+    debug(`checking info: ${name}.`);
     try {
-      debug(`checking info: ${name}.`);
-      const pkg = await this.pluginManager.fetch(name);
-      sse.emit('info', pkg);
-
-      debug(`installing ${name}.`);
-      const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
-      try {
-        await this.pluginManager.install(pkg, pyIndex);
-        sse.emit('installed', pkg);
-      } catch (err) {
-        await this.pluginManager.removeById(plugin.id);
-        throw err;
-      }
+      response = await this.pluginManager.installByName(name, pyIndex, false);
+      this.successRes(response);
     } catch (err) {
-      sse.emit('error', err?.message);
-    } finally {
-      sse.finish();
+      this.failRes(`plugin installation failed with error: ${err.message}`);
     }
   }
 
-  @get('/uninstall')
-  public async uninstall() {
-    await this.pluginManager.uninstall(this.ctx.query.name);
-    successRes(this.ctx, {});
+  /**
+   * reinstall plugin
+   */
+  @put()
+  public async reinstall() {
+    const { name, pyIndex } = this.ctx.query;
+    let response: PluginInstallingResp;
+    debug(`checking info: ${name}.`);
+    try {
+      response = await this.pluginManager.installByName(name, pyIndex, true);
+      this.successRes(response);
+    } catch (err) {
+      this.failRes(`plugin installation failed with error: ${err.message}`);
+    }
   }
 
-  @get('/list')
+  /**
+   * delete plugin by name
+   */
+  @del('/:name')
+  public async delete() {
+    try {
+      if (typeof this.ctx.params.name === 'string' && this.ctx.params.name) {
+        await this.pluginManager.uninstall(this.ctx.params.name);
+        this.successRes(undefined, 204);
+      } else {
+        // not implemented
+        this.failRes('no name value found', 400);
+      }
+    } catch (err) {
+      this.failRes(err.message, 404);
+    }
+  }
+
+  /**
+   * find a plugin by id
+   */
+  @get('/:id')
+  public async get() {
+    const plugin = await this.pluginManager.findById(this.ctx.params.id);
+    this.successRes(plugin);
+  }
+
+  /**
+   * list plugins
+   */
+  @get()
   public async list() {
     const plugins = await this.pluginManager.list({
       datatype: this.ctx.query.datatype,
       category: this.ctx.query.category
     });
-    successRes(this.ctx, { data: plugins });
+    this.successRes(plugins);
   }
-  @get('/:id')
-  public async info() {
-    const plugin = await this.pluginManager.findById(this.ctx.params.id);
-    successRes(this.ctx, { data: plugin });
-  }
-  @post('/upload')
-  public async upload() {
+
+  // create a plugin by tarball stream
+  @post('/tarball')
+  public async uploadPackage() {
     const fs = await this.ctx.getFileStream();
     const { pyIndex, force } = fs.fields;
-    successRes(this.ctx, await this.pluginManager.installFromTarStream(fs, pyIndex, force));
+    this.successRes(await this.pluginManager.installFromTarStream(fs, pyIndex, force));
   }
 
   private linkLog(logStream: NodeJS.ReadStream, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
@@ -77,6 +102,9 @@ export class PluginController {
     });
   }
 
+  /**
+   * trace log
+   */
   @get('/log/:id')
   public async log() {
     const sse = new ServerSentEmitter(this.ctx);

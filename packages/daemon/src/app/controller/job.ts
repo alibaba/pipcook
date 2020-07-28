@@ -1,5 +1,5 @@
 import { Context, controller, inject, provide, get } from 'midway';
-import { successRes, failRes } from '../../utils/response';
+import { BaseController } from './base-controller';
 import { PipelineService } from '../../service/pipeline';
 import { parseConfig } from '../../runner/helper';
 import ServerSentEmitter from '../../utils/emitter';
@@ -9,7 +9,7 @@ import { createReadStream } from 'fs';
 
 @provide()
 @controller('/job')
-export class JobController {
+export class JobController extends BaseController {
   @inject()
   ctx: Context;
 
@@ -64,38 +64,29 @@ export class JobController {
         const plugins = await this.pipelineService.installPlugins(job, cwd, pyIndex);
         this.pipelineService.startJob(job, cwd, plugins);
       } catch (err) {
-        return failRes(this.ctx, {
-          message: err?.message,
-          data: job
-        });
+        return this.failRes(err?.message);
       }
-      successRes(this.ctx, {
-        message: 'create pipeline and jobs successfully',
-        data: job
-      }, 201);
+      this.successRes(job, 201);
     }
   }
 
   @get('/list')
   public async list() {
-    const { ctx } = this;
-    const { pipelineId, offset, limit } = ctx.query;
+    const { pipelineId, offset, limit } = this.ctx.query;
     try {
       const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
-      successRes(ctx, {
+      this.successRes({
         data: jobs
       });
     } catch (err) {
-      failRes(ctx, {
-        message: err.message
-      });
+      this.failRes(err.message);
     }
   }
 
   @get('/remove')
   public async remove() {
     const count = await this.pipelineService.removeJobs();
-    successRes(this.ctx, {
+    this.successRes({
       message: 'remove jobs successfully',
       data: count
     });
@@ -106,9 +97,9 @@ export class JobController {
     const { id } = this.ctx.query;
     const success = this.pipelineService.stopJob(id);
     if (success) {
-      successRes(this.ctx, {});
+      this.successRes(undefined);
     } else {
-      failRes(this.ctx, {message: 'stop job error'});
+      this.failRes('stop job error');
     }
   }
 
@@ -121,15 +112,13 @@ export class JobController {
       if (data === null || data === undefined) {
         throw new Error('log not found');
       }
-      successRes(ctx, {
+      this.successRes({
         data: {
           log: data
         }
       });
     } catch (err) {
-      failRes(ctx, {
-        message: err.message
-      });
+      this.failRes(err.message);
     }
   }
 
@@ -147,9 +136,9 @@ export class JobController {
       if (!job) {
         throw new Error('job not found');
       }
-      successRes(this.ctx, { data: job });
+      this.successRes(job);
     } catch (err) {
-      failRes(this.ctx, { message: err.message });
+      this.failRes(err.message);
     }
   }
 }

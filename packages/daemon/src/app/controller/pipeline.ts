@@ -1,10 +1,10 @@
 
 import { constants, PipelineDB } from '@pipcook/pipcook-core';
-import { Context, controller, inject, provide, post, get, put, del } from 'midway';
+import { controller, inject, provide, post, get, put, del } from 'midway';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
 import { parseConfig } from '../../runner/helper';
-import { successRes, failRes } from '../../utils/response';
+import { BaseController } from './base-controller';
 import { PipelineService } from '../../service/pipeline';
 import { LogManager } from '../../service/log-manager';
 import ServerSentEmitter from '../../utils/emitter';
@@ -12,10 +12,7 @@ const debug = Debug('daemon.app.pipeline');
 
 @provide()
 @controller('/pipeline')
-export class PipelineController {
-  @inject()
-  ctx: Context;
-
+export class PipelineController extends BaseController {
   @inject('pipelineService')
   pipelineService: PipelineService;
 
@@ -27,10 +24,9 @@ export class PipelineController {
 
   @post('')
   public async create() {
-    const { ctx } = this;
     try {
-      const { name, isFile = true } = ctx.request.body;
-      let { config } = ctx.request.body;
+      const { name, isFile = true } = this.ctx.request.body;
+      let { config } = this.ctx.request.body;
       if (!isFile && typeof config !== 'object') {
         config = JSON.parse(config);
       }
@@ -39,14 +35,9 @@ export class PipelineController {
         parsedConfig.name = name;
       }
       const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-      successRes(ctx, {
-        message: 'create pipeline successfully',
-        data: pipeline
-      }, 201);
+      this.successRes(pipeline, 201);
     } catch (err) {
-      failRes(ctx, {
-        message: err.message
-      });
+      this.failRes(err.message);
     }
   }
 
@@ -55,29 +46,19 @@ export class PipelineController {
     const { offset, limit } = this.ctx.query;
     try {
       const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
-      successRes(this.ctx, {
-        message: 'get pipeline successfully',
-        data: pipelines,
-      });
+      this.successRes(pipelines);
     } catch (err) {
-      failRes(this.ctx, {
-        message: err.message
-      });
+      this.failRes(err.message);
     }
   }
 
   @del('')
   public async remove() {
     try {
-      const count = await this.pipelineService.removePipelines();
-      successRes(this.ctx, {
-        message: 'get pipeline successfully',
-        data: count
-      });
+      await this.pipelineService.removePipelines();
+      this.successRes(undefined, 204);
     } catch (err) {
-      failRes(this.ctx, {
-        message: err.message
-      });
+      this.failRes(err.message);
     }
   }
 
@@ -87,19 +68,12 @@ export class PipelineController {
     try {
       const count = await this.pipelineService.removePipelineById(id);
       if (count > 0) {
-        successRes(this.ctx, {
-          message: 'remove pipeline successfully',
-          data: count
-        });
+        this.successRes(undefined, 204);
       } else {
-        failRes(this.ctx, {
-          message: 'remove pipeline error, id not exists',
-        });
+        this.failRes('remove pipeline error, id not exists');
       }
     } catch (err) {
-      failRes(this.ctx, {
-        message: err.message
-      });
+      this.failRes(err.message);
     }
   }
 
@@ -135,13 +109,9 @@ export class PipelineController {
         json.name = pipeline.name;
       }
 
-      successRes(this.ctx, {
-        data: json
-      });
+      this.successRes(json);
     } catch (err) {
-      failRes(this.ctx, {
-        message: err.message
-      });
+      this.failRes(err.message);
     }
   }
 
@@ -157,14 +127,9 @@ export class PipelineController {
       }
       const parsedConfig = await parseConfig(config, false);
       const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
-      successRes(ctx, {
-        message: 'update pipeline successfully',
-        data
-      });
+      this.successRes(data);
     } catch (err) {
-      failRes(ctx, {
-        message: err.message
-      });
+      this.failRes(err.message);
     }
   }
 
