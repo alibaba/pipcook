@@ -90,5 +90,5 @@ npm install @pipcook/pipcook-cli@nightly
 Or
 
 ```bash
-npm install --tag nightly @pipcook/pipcook-cli@
+npm install --tag nightly @pipcook/pipcook-cli
 ```
