@@ -1,7 +1,6 @@
-import { DataProcessType, ArgsType, UniDataset } from '@pipcook/pipcook-core'
+import { DataProcessType, ArgsType, Sample } from '@pipcook/pipcook-core'
 
-const templateDataProcess: DataProcessType = async (data: UniDataset, args: ArgsType): Promise<UniDataset> => {
-  return {} as UniDataset;
+const templateDataProcess: DataProcessType = async (data: Sample, args: ArgsType): Promise<void> => {
 }
 
 export default templateDataProcess;
