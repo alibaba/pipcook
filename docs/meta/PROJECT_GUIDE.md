@@ -75,10 +75,10 @@ Community plugins can also be submitted as built-in plugins through pull request
 
 [semver]: https://semver.org/
 
-### Nightly Release
+### Beta Release
 
-The nightly release will be built and published to npm every midnight if there is any commit in the past day.
-The aim to have such a release is to provide a quick fix to existing bugs and access to new/experimental features that are not suitable to deploy under the production environment.
+The beta release will be built and published to npm every midnight if there is any commit in the past day.
+The aim of having such a release is to provide a quick fix to existing bugs and access to new/experimental features that are not suitable to deploy under the production environment.
 
 #### Usage
 
