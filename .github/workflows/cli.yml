@@ -65,7 +65,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook run ./test/pipelines/text-bayes-classification.json --verbose
     - name: pipcook run from url
       run: |
-        ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/test/pipelines/text-bayes-classification.json --verbose
+        ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json --verbose
     - name: pipcook plugin install
       run: |
         ./packages/cli/dist/bin/pipcook plugin install ./packages/plugins/data-collect/csv-data-collect
@@ -100,4 +100,4 @@ jobs:
     - name: pipcook plugin install from pipeline config
       run: |
         ./packages/cli/dist/bin/pipcook pipeline install ./test/pipelines/text-bayes-classification.json
-        ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/test/pipelines/text-bayes-classification.json --verbose
+        ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json --verbose
