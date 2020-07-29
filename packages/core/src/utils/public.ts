@@ -116,7 +116,7 @@ export async function downloadAndExtractTo(resUrl: string): Promise<string> {
 
   const { protocol, pathname } = url.parse(resUrl);
   const destPath = path.join(PIPCOOK_TMPDIR, generate());
-  await fs.ensureDirSync(destPath);
+  await fs.ensureDir(destPath);
   const pkgName = path.join(destPath, filename);
 
   if (protocol === 'file:' && extname !== '.zip') {
