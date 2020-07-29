@@ -22,7 +22,7 @@ const bertNerModelTrain: ModelTrainType = async (data: CsvDataset, model: UniMod
     output_dir: modelPath,
     train_batch_size: batchSize,
     num_train_epochs: epochs
-  })
+  });
 
   return model;
 };

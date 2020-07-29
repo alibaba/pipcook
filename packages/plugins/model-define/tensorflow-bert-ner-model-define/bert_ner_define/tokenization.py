@@ -1,23 +1,3 @@
-# Copyright 2019 The TensorFlow Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-"""Tokenization classes implementation.
-
-The file is forked from:
-https://github.com/google-research/bert/blob/master/tokenization.py.
-"""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -31,13 +11,6 @@ import tensorflow as tf
 
 
 def validate_case_matches_checkpoint(do_lower_case, init_checkpoint):
-  """Checks whether the casing config is consistent with the checkpoint name."""
-
-  # The casing has to be passed in by the user and there is no explicit check
-  # as to whether it matches the checkpoint. The casing information probably
-  # should have been stored in the bert_config.json file, but it's not, so
-  # we have to heuristically detect it to validate.
-
   if not init_checkpoint:
     return
 
@@ -202,13 +175,6 @@ class BasicTokenizer(object):
     """Tokenizes a piece of text."""
     text = convert_to_unicode(text)
     text = self._clean_text(text)
-
-    # This was added on November 1st, 2018 for the multilingual and Chinese
-    # models. This is also applied to the English models now, but it doesn't
-    # matter since the English models were not trained on any Chinese data
-    # and generally don't have any Chinese data in them (there are Chinese
-    # characters in the vocabulary because Wikipedia does have some Chinese
-    # words in the English Wikipedia.).
     text = self._tokenize_chinese_chars(text)
 
     orig_tokens = whitespace_tokenize(text)
@@ -267,15 +233,7 @@ class BasicTokenizer(object):
     return "".join(output)
 
   def _is_chinese_char(self, cp):
-    """Checks whether CP is the codepoint of a CJK character."""
-    # This defines a "chinese character" as anything in the CJK Unicode block:
-    #   https://en.wikipedia.org/wiki/CJK_Unified_Ideographs_(Unicode_block)
-    #
-    # Note that the CJK Unicode block is NOT all Japanese and Korean characters,
-    # despite its name. The modern Korean Hangul alphabet is a different block,
-    # as is Japanese Hiragana and Katakana. Those alphabets are used to write
-    # space-separated words, so they are not treated specially and handled
-    # like the all of the other languages.
+
     if ((cp >= 0x4E00 and cp <= 0x9FFF) or  #
         (cp >= 0x3400 and cp <= 0x4DBF) or  #
         (cp >= 0x20000 and cp <= 0x2A6DF) or  #
@@ -311,23 +269,6 @@ class WordpieceTokenizer(object):
     self.max_input_chars_per_word = max_input_chars_per_word
 
   def tokenize(self, text):
-    """Tokenizes a piece of text into its word pieces.
-
-    This uses a greedy longest-match-first algorithm to perform tokenization
-    using the given vocabulary.
-
-    For example:
-      input = "unaffable"
-      output = ["un", "##aff", "##able"]
-
-    Args:
-      text: A single token or whitespace separated tokens. This should have
-        already been passed through `BasicTokenizer.
-
-    Returns:
-      A list of wordpiece tokens.
-    """
-
     text = convert_to_unicode(text)
 
     output_tokens = []
@@ -365,9 +306,7 @@ class WordpieceTokenizer(object):
 
 
 def _is_whitespace(char):
-  """Checks whether `chars` is a whitespace character."""
-  # \t, \n, and \r are technically contorl characters but we treat them
-  # as whitespace since they are generally considered as such.
+
   if char == " " or char == "\t" or char == "\n" or char == "\r":
     return True
   cat = unicodedata.category(char)
@@ -377,9 +316,7 @@ def _is_whitespace(char):
 
 
 def _is_control(char):
-  """Checks whether `chars` is a control character."""
-  # These are technically control characters but we count them as whitespace
-  # characters.
+
   if char == "\t" or char == "\n" or char == "\r":
     return False
   cat = unicodedata.category(char)
@@ -389,12 +326,7 @@ def _is_control(char):
 
 
 def _is_punctuation(char):
-  """Checks whether `chars` is a punctuation character."""
   cp = ord(char)
-  # We treat all non-letter/number ASCII as punctuation.
-  # Characters such as "^", "$", and "`" are not in the Unicode
-  # Punctuation class but we treat them as punctuation anyways, for
-  # consistency.
   if ((cp >= 33 and cp <= 47) or (cp >= 58 and cp <= 64) or
       (cp >= 91 and cp <= 96) or (cp >= 123 and cp <= 126)):
     return True

@@ -11,15 +11,6 @@ from .utils import tf_utils
 class BertNer(tf.keras.Model):
 
     def __init__(self, bert_model,float_type, num_labels, max_seq_length, final_layer_initializer=None):
-        '''
-        bert_model : string or dict
-                     string: bert pretrained model directory with bert_config.json and bert_model.ckpt
-                     dict: bert model config , pretrained weights are not restored
-        float_type : tf.float32
-        num_labels : num of tags in NER task
-        max_seq_length : max_seq_length of tokens
-        final_layer_initializer : default:  tf.keras.initializers.TruncatedNormal
-        '''
         super(BertNer, self).__init__()
         
         input_word_ids = tf.keras.layers.Input(shape=(max_seq_length,), dtype=tf.int32, name='input_word_ids')

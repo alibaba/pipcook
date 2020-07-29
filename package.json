@@ -27,7 +27,7 @@
     "test": "sh run_tests.sh",
     "test:pipeline": "sh ./run_pipeline.sh",
     "typedoc": "typedoc",
-    "clean": "lerna clean && lerna run clean && rm -rf node_modules",
+    "clean": "lerna run clean",
     "release": "lerna publish from-package --yes --no-verify-access"
   },
   "dependencies": {
