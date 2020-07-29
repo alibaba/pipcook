@@ -1,6 +1,9 @@
 import * as qs from 'querystring';
 import axios, { AxiosRequestConfig } from 'axios';
 import EventSource from 'eventsource';
+import { promisify } from 'util';
+import fs, { ReadStream } from 'fs-extra';
+import FormData from 'form-data';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
@@ -27,6 +30,26 @@ export const del = async (host: string) => createGeneralRequest(axios.delete)(ho
 export const get = async (host: string, params?: RequestParams, config?: AxiosRequestConfig) => {
   const uri = `${host}?${qs.stringify(params)}`;
   return createGeneralRequest(axios.get)(uri, config);
+};
+
+export const uploadFile = async (host: string, fileStream: ReadStream, params?: RequestParams): Promise<any> => {
+  const form = new FormData();
+  for (const key in params) {
+    if (params[key]) {
+      form.append(key, params[key]);
+    }
+  }
+  form.append('file', fileStream);
+
+  const getLength = promisify(form.getLength.bind(form));
+  const length = await getLength();
+  const headers = Object.assign({ 'Content-Length': length }, form.getHeaders());
+  const response = await axios.post(host, form, { headers });
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  } else {
+    throw new Error(response?.data?.message);
+  }
 };
 
 export const getFile = async (host: string, params?: RequestParams): Promise<NodeJS.ReadStream> => {

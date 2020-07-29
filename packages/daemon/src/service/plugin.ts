@@ -7,16 +7,6 @@ import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
 import { PluginInstallingResp, PluginResp } from '../interface';
 
-class PluginNotFound extends TypeError {
-  status: number;
-  plugin: string;
-  constructor(name: string) {
-    super(`cannot find the plugin "${name}"`);
-    this.plugin = name;
-    this.status = 400;
-  }
-}
-
 interface ListPluginsFilter {
   datatype?: string;
   category?: string;
@@ -156,18 +146,10 @@ export class PluginManager {
     return this.startInstall(pkg, pyIndex, force);
   }
 
-  async uninstall(name: string): Promise<void> {
+  async uninstall(plugin: PluginModel): Promise<void> {
     const { costa } = this.pluginRT;
-    const plugins = await this.model.findAll({
-      where: { name }
-    });
-    if (plugins.length === 0) {
-      throw new PluginNotFound(name);
-    }
-    await plugins.map(async (plugin: PluginModel) => {
-      await costa.uninstall(plugin.name);
-      await plugin.destroy();
-    });
+    await costa.uninstall(plugin.name);
+    await plugin.destroy();
   }
 
   async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<PluginInstallingResp> {

@@ -1,6 +1,6 @@
-import { get, post, del, listen } from './request';
-import { tunaMirrorURI } from './utils';
+import { get, post, del, listen, uploadFile } from './request';
 import { PluginResp, PluginInstallingResp, LogCallback } from './interface';
+import { ReadStream } from 'fs-extra';
 
 /**
  * API for plugin
@@ -60,9 +60,18 @@ export class Plugin {
   /**
    * create by package name
    * @param name package name
-   * @param tuna boolean use tuna for pip
+   * @param pyIndex the python package index
    */
-  async create(name: string, tuna: boolean): Promise<PluginInstallingResp> {
-    return await post(`${this.route}`, { name, pyIndex: tuna ? tunaMirrorURI : undefined });
+  async createByName(name: string, pyIndex?: string): Promise<PluginInstallingResp> {
+    return await post(`${this.route}`, { name, pyIndex });
+  }
+
+  /**
+   * create by package stream
+   * @param pkgStream file stream
+   * @param pyIndex the python package index
+   */
+  async createByTarball(pkgStream: ReadStream, pyIndex?: string): Promise<PluginInstallingResp> {
+    return await uploadFile(`${this.route}/tarball`, pkgStream, { pyIndex });
   }
 }

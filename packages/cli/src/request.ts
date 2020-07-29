@@ -48,7 +48,6 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Nod
   return resp.data as NodeJS.ReadStream;
 };
 
-// FIXME(feely): params is not working
 export const uploadFile = async (host: string, file: string, params?: RequestParams): Promise<any> => {
   const stream = fs.createReadStream(file);
   const form = new FormData();

@@ -54,11 +54,14 @@ export class PluginController extends BaseController {
     try {
       if (typeof this.ctx.params.id === 'string' && this.ctx.params.id) {
         const plugin = await this.pluginManager.findById(this.ctx.params.id);
-        await this.pluginManager.uninstall(plugin.name);
-        this.success(undefined, 204);
+        if (plugin) {
+          await this.pluginManager.uninstall(plugin);
+          this.success(undefined, 204);
+        } else {
+          this.fail(`no plugin found by id ${this.ctx.params.id}`, 400);
+        }
       } else {
-        // not implemented
-        this.fail('no name value found', 400);
+        this.fail('no id value found', 400);
       }
     } catch (err) {
       this.fail(err.message, 404);
@@ -72,7 +75,7 @@ export class PluginController extends BaseController {
     try {
       const plugins = await this.pluginManager.list();
       for (const plugin of plugins) {
-        await this.pluginManager.uninstall(plugin.name);
+        await this.pluginManager.uninstall(plugin);
       }
       this.success(undefined, 204);
     } catch (err) {
@@ -110,8 +113,13 @@ export class PluginController extends BaseController {
   @post('/tarball')
   public async uploadPackage() {
     const fs = await this.ctx.getFileStream();
-    const { pyIndex, force } = fs.fields;
-    this.success(await this.pluginManager.installFromTarStream(fs, pyIndex, force));
+    const { pyIndex } = fs.fields;
+    try {
+      const installResp = await this.pluginManager.installFromTarStream(fs, pyIndex, false);
+      this.success(installResp);
+    } catch (err) {
+      this.fail(`create plugin by tarball error: ${err.message}`);
+    }
   }
 
   private linkLog(logStream: NodeJS.ReadStream, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
