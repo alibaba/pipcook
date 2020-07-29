@@ -4,6 +4,7 @@ import * as fs from 'fs-extra';
 import { generate } from 'shortid';
 import { Op } from 'sequelize';
 import { provide, inject } from 'midway';
+import * as createHttpError from 'http-errors';
 import {
   PipelineDB,
   PipelineStatus,
@@ -274,14 +275,13 @@ export class PipelineService {
     }
   }
 
-  stopJob(id: string): boolean {
+  stopJob(id: string): void {
     const runnable = runnableMap[id];
     if (runnable) {
       runnable.destroy();
       delete runnableMap[id];
-      return true;
     } else {
-      return false;
+      throw createHttpError(500, 'stop job error');
     }
   }
 

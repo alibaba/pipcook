@@ -3,6 +3,7 @@ import { constants, PipelineDB } from '@pipcook/pipcook-core';
 import { controller, inject, provide, post, get, put, del } from 'midway';
 import * as Joi from 'joi';
 import Debug from 'debug';
+import * as createHttpError from 'http-errors';
 import { PluginManager } from '../../service/plugin';
 import { parseConfig } from '../../runner/helper';
 import { BaseController } from './base';
@@ -16,6 +17,11 @@ const createSchema = Joi.object({
   config: Joi.object(),
   configFile: Joi.string(),
 }).without('config', 'configFile').or('config', 'configFile');
+
+const listSchema = Joi.object({
+  offset: Joi.number(),
+  limit: Joi.number()
+});
 
 @provide()
 @controller('/pipeline')
@@ -34,16 +40,12 @@ export class PipelineController extends BaseController {
    */
   @post()
   public async create() {
-    try {
-      this.validate(createSchema, this.ctx.request.body);
-      const { name, configFile, config } = this.ctx.request.body;
-      const parsedConfig = await parseConfig(configFile || config);
-      parsedConfig.name = name;
-      const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-      this.success(pipeline, 201);
-    } catch (err) {
-      this.fail(err.message);
-    }
+    this.validate(createSchema, this.ctx.request.body);
+    const { name, configFile, config } = this.ctx.request.body;
+    const parsedConfig = await parseConfig(configFile || config);
+    parsedConfig.name = name;
+    const pipeline = await this.pipelineService.createPipeline(parsedConfig);
+    this.success(pipeline, 201);
   }
 
   /**
@@ -51,13 +53,10 @@ export class PipelineController extends BaseController {
    */
   @get()
   public async list() {
+    this.validate(listSchema, this.ctx.query);
     const { offset, limit } = this.ctx.query;
-    try {
-      const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
-      this.success(pipelines.rows);
-    } catch (err) {
-      this.fail(err.message);
-    }
+    const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
+    this.success(pipelines.rows);
   }
 
   /**
@@ -65,12 +64,8 @@ export class PipelineController extends BaseController {
    */
   @del()
   public async remove() {
-    try {
-      await this.pipelineService.removePipelines();
-      this.success(undefined, 204);
-    } catch (err) {
-      this.fail(err.message);
-    }
+    await this.pipelineService.removePipelines();
+    this.success();
   }
 
   /**
@@ -79,15 +74,11 @@ export class PipelineController extends BaseController {
   @del('/:id')
   public async removeOne() {
     const { id } = this.ctx.params;
-    try {
-      const count = await this.pipelineService.removePipelineById(id);
-      if (count > 0) {
-        this.success(undefined, 204);
-      } else {
-        this.fail('remove pipeline error, id not exists', 404);
-      }
-    } catch (err) {
-      this.fail(err.message);
+    const count = await this.pipelineService.removePipelineById(id);
+    if (count > 0) {
+      this.success();
+    } else {
+      throw createHttpError('remove pipeline error, id not exists', 404);
     }
   }
 
@@ -99,37 +90,33 @@ export class PipelineController extends BaseController {
     const { id } = this.ctx.params;
     const json = { plugins: {} } as any;
 
-    try {
-      const pipeline = await this.pipelineService.getPipeline(id);
-      if (!pipeline) {
-        throw new Error('pipeline not found');
-      }
-      const updatePluginNode = (name: string): void => {
-        if (typeof pipeline[name] === 'string') {
-          const params = pipeline[`${name}Params`];
-          json.plugins[name] = {
-            name: pipeline[name],
-            params: params != null ? JSON.parse(params) : undefined
-          };
-        }
-      };
-      updatePluginNode('dataCollect');
-      updatePluginNode('dataAccess');
-      updatePluginNode('dataProcess');
-      updatePluginNode('modelDefine');
-      updatePluginNode('modelLoad');
-      updatePluginNode('modelTrain');
-      updatePluginNode('modelEvaluate');
-
-      // update the `name` node
-      if (pipeline.name) {
-        json.name = pipeline.name;
-      }
-
-      this.success(json);
-    } catch (err) {
-      this.fail(err.message);
+    const pipeline = await this.pipelineService.getPipeline(id);
+    if (!pipeline) {
+      throw new Error('pipeline not found');
     }
+    const updatePluginNode = (name: string): void => {
+      if (typeof pipeline[name] === 'string') {
+        const params = pipeline[`${name}Params`];
+        json.plugins[name] = {
+          name: pipeline[name],
+          params: params != null ? JSON.parse(params) : undefined
+        };
+      }
+    };
+    updatePluginNode('dataCollect');
+    updatePluginNode('dataAccess');
+    updatePluginNode('dataProcess');
+    updatePluginNode('modelDefine');
+    updatePluginNode('modelLoad');
+    updatePluginNode('modelTrain');
+    updatePluginNode('modelEvaluate');
+
+    // update the `name` node
+    if (pipeline.name) {
+      json.name = pipeline.name;
+    }
+
+    this.success(json);
   }
 
   /**
@@ -139,18 +126,14 @@ export class PipelineController extends BaseController {
   public async update() {
     const { ctx } = this;
     const { id } = ctx.params;
-    try {
-      const { isFile = true } = ctx.request.body;
-      let { config } = ctx.request.body;
-      if (!isFile && typeof config !== 'object') {
-        config = JSON.parse(config);
-      }
-      const parsedConfig = await parseConfig(config, false);
-      const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
-      this.success(data);
-    } catch (err) {
-      this.fail(err.message);
+    const { isFile = true } = ctx.request.body;
+    let { config } = ctx.request.body;
+    if (!isFile && typeof config !== 'object') {
+      config = JSON.parse(config);
     }
+    const parsedConfig = await parseConfig(config, false);
+    const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
+    this.success(data);
   }
 
   /**
@@ -166,7 +149,7 @@ export class PipelineController extends BaseController {
       });
       this.success(pipeline);
     } else {
-      this.fail('no pipeline found', 404);
+      throw createHttpError(404, 'no pipeline found');
     }
   }
 

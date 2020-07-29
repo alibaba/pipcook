@@ -58,12 +58,8 @@ export class JobController extends BaseController {
         sse.finish();
       }
     } else {
-      try {
-        const plugins = await this.pipelineService.installPlugins(job, pyIndex);
-        this.pipelineService.startJob(job, plugins);
-      } catch (err) {
-        return this.fail(err?.message);
-      }
+      const plugins = await this.pipelineService.installPlugins(job, pyIndex);
+      this.pipelineService.startJob(job, plugins);
       this.success(job, 201);
     }
   }
@@ -71,14 +67,10 @@ export class JobController extends BaseController {
   @get('/list')
   public async list() {
     const { pipelineId, offset, limit } = this.ctx.query;
-    try {
-      const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
-      this.success({
-        data: jobs
-      });
-    } catch (err) {
-      this.fail(err.message);
-    }
+    const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
+    this.success({
+      data: jobs
+    });
   }
 
   @get('/remove')
@@ -93,31 +85,19 @@ export class JobController extends BaseController {
   @get('/stop')
   public async stop() {
     const { id } = this.ctx.query;
-    const success = this.pipelineService.stopJob(id);
-    if (success) {
-      this.success(undefined);
-    } else {
-      this.fail('stop job error');
-    }
+    this.pipelineService.stopJob(id);
+    this.success(undefined);
   }
 
   @get('/:id/log')
   public async viewLog() {
     const { ctx } = this;
     const { id } = ctx.params;
-    try {
-      const data = await this.pipelineService.getLogById(id);
-      if (data === null || data === undefined) {
-        throw new Error('log not found');
-      }
-      this.success({
-        data: {
-          log: data
-        }
-      });
-    } catch (err) {
-      this.fail(err.message);
+    const data = await this.pipelineService.getLogById(id);
+    if (data === null || data === undefined) {
+      throw new Error('log not found');
     }
+    this.success(data);
   }
 
   @get('/:id/output.tar.gz')
@@ -129,14 +109,10 @@ export class JobController extends BaseController {
   @get('/:id')
   public async get() {
     const { id } = this.ctx.params;
-    try {
-      const job = await this.pipelineService.getJobById(id);
-      if (!job) {
-        throw new Error('job not found');
-      }
-      this.success(job);
-    } catch (err) {
-      this.fail(err.message);
+    const job = await this.pipelineService.getJobById(id);
+    if (!job) {
+      throw new Error('job not found');
     }
+    this.success(job);
   }
 }

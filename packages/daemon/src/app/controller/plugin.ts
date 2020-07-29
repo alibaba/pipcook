@@ -1,4 +1,5 @@
 import { controller, inject, provide, get, post, del, put } from 'midway';
+import * as createHttpError from 'http-errors';
 import { BaseController } from './base';
 import { PluginManager } from '../../service/plugin';
 import ServerSentEmitter from '../../utils/emitter';
@@ -22,12 +23,8 @@ export class PluginController extends BaseController {
     const { name, pyIndex } = this.ctx.request.body;
     let response: PluginInstallingResp;
     debug(`checking info: ${name}.`);
-    try {
-      response = await this.pluginManager.installByName(name, pyIndex, false);
-      this.success(response);
-    } catch (err) {
-      this.fail(`plugin installation failed with error: ${err.message}`);
-    }
+    response = await this.pluginManager.installByName(name, pyIndex, false);
+    this.success(response);
   }
 
   /**
@@ -38,12 +35,8 @@ export class PluginController extends BaseController {
     const { name, pyIndex } = this.ctx.query;
     let response: PluginInstallingResp;
     debug(`checking info: ${name}.`);
-    try {
-      response = await this.pluginManager.installByName(name, pyIndex, true);
-      this.success(response);
-    } catch (err) {
-      this.fail(`plugin installation failed with error: ${err.message}`);
-    }
+    response = await this.pluginManager.installByName(name, pyIndex, true);
+    this.success(response);
   }
 
   /**
@@ -51,20 +44,16 @@ export class PluginController extends BaseController {
    */
   @del('/:id')
   public async remove() {
-    try {
-      if (typeof this.ctx.params.id === 'string' && this.ctx.params.id) {
-        const plugin = await this.pluginManager.findById(this.ctx.params.id);
-        if (plugin) {
-          await this.pluginManager.uninstall(plugin);
-          this.success(undefined, 204);
-        } else {
-          this.fail(`no plugin found by id ${this.ctx.params.id}`, 400);
-        }
+    if (typeof this.ctx.params.id === 'string' && this.ctx.params.id) {
+      const plugin = await this.pluginManager.findById(this.ctx.params.id);
+      if (plugin) {
+        await this.pluginManager.uninstall(plugin);
+        this.success();
       } else {
-        this.fail('no id value found', 400);
+        throw createHttpError(400, `no plugin found by id ${this.ctx.params.id}`);
       }
-    } catch (err) {
-      this.fail(err.message, 404);
+    } else {
+      throw createHttpError(400, 'no id value found');
     }
   }
   /**
@@ -72,15 +61,11 @@ export class PluginController extends BaseController {
    */
   @del()
   public async removeAll() {
-    try {
-      const plugins = await this.pluginManager.list();
-      for (const plugin of plugins) {
-        await this.pluginManager.uninstall(plugin);
-      }
-      this.success(undefined, 204);
-    } catch (err) {
-      this.fail(err.message, 404);
+    const plugins = await this.pluginManager.list();
+    for (const plugin of plugins) {
+      await this.pluginManager.uninstall(plugin);
     }
+    this.success();
   }
   /**
    * find a plugin by id
@@ -91,7 +76,7 @@ export class PluginController extends BaseController {
     if (plugin) {
       this.success(plugin);
     } else {
-      this.fail('no plugin found', 404);
+      throw createHttpError(404, 'no plugin found');
     }
   }
 
@@ -114,12 +99,8 @@ export class PluginController extends BaseController {
   public async uploadPackage() {
     const fs = await this.ctx.getFileStream();
     const { pyIndex } = fs.fields;
-    try {
-      const installResp = await this.pluginManager.installFromTarStream(fs, pyIndex, false);
-      this.success(installResp);
-    } catch (err) {
-      this.fail(`create plugin by tarball error: ${err.message}`);
-    }
+    const installResp = await this.pluginManager.installFromTarStream(fs, pyIndex, false);
+    this.success(installResp);
   }
 
   private linkLog(logStream: NodeJS.ReadStream, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
