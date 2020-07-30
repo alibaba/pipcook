@@ -1,20 +1,19 @@
 import { get, getFile } from './request';
-import { tunaMirrorURI } from './utils';
-import { JobModel, JobRunOption } from './interface';
+import { BaseApi } from './base';
+import { JobResp, JobRunOption } from './interface';
 
 /**
  * API for job
  */
-export class Job {
-  route: string;
+export class Job extends BaseApi {
   constructor(url: string) {
-    this.route = `${url}/job`;
+    super(`${url}/job`);
   }
 
   /**
    * list all jobs
    */
-  async list(): Promise<JobModel[]> {
+  async list(): Promise<JobResp[]> {
     const jobs = await get(`${this.route}/list`);
     return jobs.rows;
   }
@@ -47,7 +46,7 @@ export class Job {
    * get job info by job id
    * @param id job id
    */
-  async info(id: string): Promise<JobModel> {
+  async info(id: string): Promise<JobResp> {
     return await get(`${this.route}/${id}`);
   }
 
@@ -55,11 +54,11 @@ export class Job {
    * start to run a pipeline by pipeline id
    * @param opts piplineId: pipeline id, tuna: is using tuna mirror, timeout: query timeout
    */
-  async run(opts: JobRunOption): Promise<JobModel> {
+  async run(opts: JobRunOption): Promise<JobResp> {
     const prarms = {
       pipelineId: opts.pipelineId,
       verbose: '0',
-      pyIndex: opts.tuna ? tunaMirrorURI : undefined
+      pyIndex: opts.pyIndex
     };
     return await get(`${this.route}/run`, prarms, { timeout: opts.timeout ? opts.timeout : 180 * 1000 });
   }

@@ -1,14 +1,15 @@
 import * as path from 'path';
 import { readJson } from 'fs-extra';
-import { PipcookClient, PipelineModel } from '../../packages/sdk';
+import { PipcookClient, PipelineResp } from '../../packages/sdk';
+import { tunaMirrorURI } from '../../packages/sdk/src/utils';
 
 describe('pipeline api.pipeline test', () => {
   const client = new PipcookClient('http://127.0.0.1', 6927);
 
   const name = 'bayes';
-  const pipelineFile = path.join(__dirname, 'text-bayes-classification.json');
+  const pipelineFile = path.join(__dirname, '../../example/pipelines/text-bayes-classification.json');
   let config: any;
-  let pipeline: PipelineModel;
+  let pipeline: PipelineResp;
   it('prepare', async () => {
     // prepare
     config = await readJson(pipelineFile);
@@ -24,6 +25,7 @@ describe('pipeline api.pipeline test', () => {
   it('list', async () => {
     // list
     let pipelines = await client.pipeline.list();
+    console.log(pipelines);
     expect(Array.isArray(pipelines));
     expect(pipeline.id).toBe(pipelines[0].id);
   });
@@ -33,15 +35,22 @@ describe('pipeline api.pipeline test', () => {
   });
   it('install pipeline', async () => {
     // install Plugins
-    await client.pipeline.installPlugins(pipeline.id);
+    const log = await client.pipeline.install(pipeline.id);
+    await client.pipeline.log(log.logId, (level:string, data: string) => {
+      console.log(`[${level}] ${data}`);
+      expect(typeof level).toBe('string');
+      expect(typeof data).toBe('string');
+    });
   }, 180 * 1000);
   it('update pipeline', async () => {
     // update
+    config.name = 'newName';
     pipeline = await client.pipeline.update(pipeline.id, config);
+    expect(pipeline.name).toBe(config.name);
   });
   it('remove pipeline', async () => {
     // remove
-    expect(await client.pipeline.remove(pipeline.id)).toBe(1);
+    expect(await client.pipeline.remove(pipeline.id));
     const pipelines = await client.pipeline.list();
     expect(pipelines.length).toBe(0);
   });

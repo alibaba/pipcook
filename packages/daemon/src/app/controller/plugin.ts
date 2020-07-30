@@ -1,15 +1,13 @@
 import { controller, inject, provide, get, post, del, put } from 'midway';
-import * as createHttpError from 'http-errors';
-import { BaseController } from './base';
+import * as HttpStatus from 'http-status';
+import { BaseLogController } from './base';
 import { PluginManager } from '../../service/plugin';
-import ServerSentEmitter from '../../utils/emitter';
-import { PluginInstallingResp } from '../../interface';
 import Debug from 'debug';
 const debug = Debug('daemon.app.plugin');
 
 @provide()
 @controller('/plugin')
-export class PluginController extends BaseController {
+export class PluginController extends BaseLogController {
 
   @inject('pluginManager')
   pluginManager: PluginManager;
@@ -21,9 +19,8 @@ export class PluginController extends BaseController {
   @post()
   public async install() {
     const { name, pyIndex } = this.ctx.request.body;
-    let response: PluginInstallingResp;
     debug(`checking info: ${name}.`);
-    response = await this.pluginManager.installByName(name, pyIndex, false);
+    const response = await this.pluginManager.installByName(name, pyIndex, false);
     this.success(response);
   }
 
@@ -33,9 +30,8 @@ export class PluginController extends BaseController {
   @put()
   public async reinstall() {
     const { name, pyIndex } = this.ctx.query;
-    let response: PluginInstallingResp;
     debug(`checking info: ${name}.`);
-    response = await this.pluginManager.installByName(name, pyIndex, true);
+    const response = await this.pluginManager.installByName(name, pyIndex, true);
     this.success(response);
   }
 
@@ -50,10 +46,10 @@ export class PluginController extends BaseController {
         await this.pluginManager.uninstall(plugin);
         this.success();
       } else {
-        throw createHttpError(400, `no plugin found by id ${this.ctx.params.id}`);
+        this.ctx.throw(`no plugin found by id ${this.ctx.params.id}`, HttpStatus.NOT_FOUND);
       }
     } else {
-      throw createHttpError(400, 'no id value found');
+      this.ctx.throw('no id value found', HttpStatus.BAD_REQUEST);
     }
   }
   /**
@@ -76,7 +72,7 @@ export class PluginController extends BaseController {
     if (plugin) {
       this.success(plugin);
     } else {
-      throw createHttpError(404, 'no plugin found');
+      this.ctx.throw('no plugin found', HttpStatus.NOT_FOUND);
     }
   }
 
@@ -97,22 +93,10 @@ export class PluginController extends BaseController {
    */
   @post('/tarball')
   public async uploadPackage() {
-    const fs = await this.ctx.getFileStream();
-    const { pyIndex } = fs.fields;
-    const installResp = await this.pluginManager.installFromTarStream(fs, pyIndex, false);
+    const fstream = await this.ctx.getFileStream();
+    const { pyIndex } = fstream.fields;
+    const installResp = await this.pluginManager.installFromTarStream(fstream, pyIndex, false);
     this.success(installResp);
-  }
-
-  private linkLog(logStream: NodeJS.ReadStream, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
-    return new Promise(resolve => {
-      logStream.on('data', data => {
-        sse.emit('log', { level, data });
-      });
-      logStream.on('close', resolve);
-      logStream.on('error', err => {
-        sse.emit('error', err.message);
-      });
-    });
   }
 
   /**
@@ -120,15 +104,6 @@ export class PluginController extends BaseController {
    */
   @get('/log/:logId')
   public async log() {
-    const sse = new ServerSentEmitter(this.ctx);
-    const log = this.pluginManager.getInstallLog(this.ctx.params.logId);
-    if (!log) {
-      return sse.finish();
-    }
-    await Promise.all([
-      this.linkLog(log.stdout, 'info', sse),
-      this.linkLog(log.stderr, 'warn', sse)
-    ]);
-    return sse.finish();
+    await this.logImpl();
   }
 }

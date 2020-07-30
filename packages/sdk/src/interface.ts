@@ -1,5 +1,5 @@
 // TODO: move these defines to core or somewhere to share with daemon
-export interface JobModel {
+export interface JobResp {
   id: string;
   pipelineId: string;
   specVersion: string;
@@ -13,7 +13,10 @@ export interface JobModel {
   dataset: string;
 }
 
-export interface PipelineModel {
+/**
+ * response of pipline
+ */
+export interface PipelineResp {
   id: string;
   name: string;
   dataCollect: string;
@@ -32,14 +35,21 @@ export interface PipelineModel {
   modelEvaluateParams: string;
 }
 
+/**
+ * response of pipeline install
+ */
+export interface PipelineInstallingResp extends PipelineResp {
+  logId: string;
+}
+
 export interface JobRunOption {
   pipelineId: string;
   timeout?: number;
-  tuna?: boolean;
+  pyIndex?: string;
 }
 
 export interface PipelineInstallOption {
-  tuna: boolean;
+  pyIndex: string;
 }
 
 /**

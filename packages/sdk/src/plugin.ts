@@ -1,14 +1,14 @@
-import { get, post, del, listen, uploadFile } from './request';
-import { PluginResp, PluginInstallingResp, LogCallback } from './interface';
+import { get, post, del, uploadFile } from './request';
+import { BaseApi } from './base';
+import { PluginResp, PluginInstallingResp } from './interface';
 import { ReadStream } from 'fs-extra';
 
 /**
  * API for plugin
  */
-export class Plugin {
-  route: string;
+export class Plugin extends BaseApi {
   constructor(url: string) {
-    this.route = `${url}/plugin`;
+    super(`${url}/plugin`);
   }
 
   /**
@@ -32,29 +32,6 @@ export class Plugin {
    */
   async remove(id?: string): Promise<void> {
     return await del(`${this.route}/${id ? id : ''}`);
-  }
-
-  /**
-   * listen log
-   * @param logId log id
-   */
-  log(logId: string, logCallback: LogCallback): Promise<void> {
-    return new Promise((resolve, reject) => {
-      listen(`${this.route}/log/${logId}`, undefined, {
-        'log': (e: MessageEvent) => {
-          const logObj = JSON.parse(e.data);
-          if (logCallback) {
-            logCallback(logObj.level, logObj.data);
-          }
-        },
-        'error': (e: MessageEvent) => {
-            reject(e.data);
-        },
-        'close': () => {
-          resolve();
-        }
-      });
-    })
   }
 
   /**

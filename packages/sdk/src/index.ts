@@ -3,8 +3,8 @@ import { Pipeline } from './pipeline';
 import { Plugin } from './plugin';
 export { JobStatus } from './utils';
 export {
-  JobModel,
-  PipelineModel,
+  JobResp,
+  PipelineResp,
   JobRunOption,
   PipelineInstallOption,
   PluginResp,

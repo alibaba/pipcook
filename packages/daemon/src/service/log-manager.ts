@@ -40,6 +40,10 @@ class LogPassthrough extends Transform {
     }
     callback();
   }
+
+  writeLine(line: string) {
+    this.write(`${line}\n`);
+  }
 }
 
 @scope(ScopeEnum.Singleton)

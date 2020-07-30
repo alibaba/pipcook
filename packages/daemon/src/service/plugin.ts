@@ -1,8 +1,8 @@
-import { provide, inject } from 'midway';
+import { provide, inject, Context } from 'midway';
 import { generate } from 'shortid';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
 import { PluginStatus } from '@pipcook/pipcook-core';
-import { LogManager, LogObject } from './log-manager';
+import { LogManager } from './log-manager';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
 import { PluginInstallingResp, PluginResp } from '../interface';
@@ -14,6 +14,9 @@ interface ListPluginsFilter {
 
 @provide('pluginManager')
 export class PluginManager {
+
+  @inject()
+  ctx: Context;
 
   @inject('logManager')
   logManager: LogManager;
@@ -117,10 +120,11 @@ export class PluginManager {
     } catch (err) {
       // uninstall if occurring an error on installing.
       await this.pluginRT.costa.uninstall(pkg.name);
+      
       throw err;
     }
   }
-  async startInstall(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<PluginInstallingResp> {
+  async installAsync(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<PluginInstallingResp> {
     const logObject = this.logManager.create();
     const plugin = await this.findOrCreateByPkg(pkg);
     process.nextTick(async () => {
@@ -143,7 +147,7 @@ export class PluginManager {
    */
   async installByName(pkgName: string, pyIndex?: string, force?: boolean): Promise<PluginInstallingResp> {
     const pkg = await this.fetch(pkgName);
-    return this.startInstall(pkg, pyIndex, force);
+    return this.installAsync(pkg, pyIndex, force);
   }
 
   async uninstall(plugin: PluginModel): Promise<void> {
@@ -154,10 +158,6 @@ export class PluginManager {
 
   async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<PluginInstallingResp> {
     const pkg = await this.fetchByStream(tarball);
-    return this.startInstall(pkg, pyIndex, force);
-  }
-
-  getInstallLog(id: string): LogObject {
-    return this.logManager.get(id);
+    return this.installAsync(pkg, pyIndex, force);
   }
 }

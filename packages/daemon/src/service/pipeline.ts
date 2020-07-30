@@ -3,8 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { generate } from 'shortid';
 import { Op } from 'sequelize';
-import { provide, inject } from 'midway';
-import * as createHttpError from 'http-errors';
+import { provide, inject, Context } from 'midway';
 import {
   PipelineDB,
   PipelineStatus,
@@ -56,6 +55,9 @@ const runnableMap: Record<string, PluginRunnable> = {};
 @provide('pipelineService')
 export class PipelineService {
 
+  @inject()
+  ctx: Context;
+  
   @inject('pipelineModel')
   pipeline: PipelineModelStatic;
 
@@ -281,7 +283,7 @@ export class PipelineService {
       runnable.destroy();
       delete runnableMap[id];
     } else {
-      throw createHttpError(500, 'stop job error');
+      this.ctx.throw('no runnable found');
     }
   }
 

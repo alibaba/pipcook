@@ -1,39 +1,35 @@
-
 import { constants, PipelineDB } from '@pipcook/pipcook-core';
 import { controller, inject, provide, post, get, put, del } from 'midway';
+import * as HttpStatus from 'http-status';
 import * as Joi from 'joi';
 import Debug from 'debug';
-import * as createHttpError from 'http-errors';
 import { PluginManager } from '../../service/plugin';
 import { parseConfig } from '../../runner/helper';
-import { BaseController } from './base';
+import { BaseLogController } from './base';
 import { PipelineService } from '../../service/pipeline';
-import { LogManager } from '../../service/log-manager';
-import ServerSentEmitter from '../../utils/emitter';
+import { LogObject } from '../../service/log-manager';
+import { PipelineInstallingResp } from '../../interface';
 const debug = Debug('daemon.app.pipeline');
 
 const createSchema = Joi.object({
   name: Joi.string(),
   config: Joi.object(),
-  configFile: Joi.string(),
-}).without('config', 'configFile').or('config', 'configFile');
+  configUri: Joi.string(),
+}).without('config', 'configUri').or('config', 'configUri');
 
 const listSchema = Joi.object({
-  offset: Joi.number(),
-  limit: Joi.number()
+  offset: Joi.number().min(0),
+  limit: Joi.number().min(1)
 });
 
 @provide()
 @controller('/pipeline')
-export class PipelineController extends BaseController {
+export class PipelineController extends BaseLogController {
   @inject('pipelineService')
   pipelineService: PipelineService;
 
   @inject('pluginManager')
   pluginManager: PluginManager;
-
-  @inject('logManager')
-  logManager: LogManager;
 
   /**
    * create pipeline
@@ -41,11 +37,11 @@ export class PipelineController extends BaseController {
   @post()
   public async create() {
     this.validate(createSchema, this.ctx.request.body);
-    const { name, configFile, config } = this.ctx.request.body;
-    const parsedConfig = await parseConfig(configFile || config);
+    const { name, configUri, config } = this.ctx.request.body;
+    const parsedConfig = await parseConfig(configUri || config);
     parsedConfig.name = name;
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    this.success(pipeline, 201);
+    this.success(pipeline, HttpStatus.CREATED);
   }
 
   /**
@@ -78,7 +74,7 @@ export class PipelineController extends BaseController {
     if (count > 0) {
       this.success();
     } else {
-      throw createHttpError('remove pipeline error, id not exists', 404);
+      this.ctx.throw('remove pipeline error, id not exists', HttpStatus.NOT_FOUND);
     }
   }
 
@@ -92,7 +88,7 @@ export class PipelineController extends BaseController {
 
     const pipeline = await this.pipelineService.getPipeline(id);
     if (!pipeline) {
-      throw new Error('pipeline not found');
+      this.ctx.throw('pipeline not found', HttpStatus.NOT_FOUND);
     }
     const updatePluginNode = (name: string): void => {
       if (typeof pipeline[name] === 'string') {
@@ -124,15 +120,14 @@ export class PipelineController extends BaseController {
    */
   @put('/:id')
   public async update() {
-    const { ctx } = this;
-    const { id } = ctx.params;
-    const { isFile = true } = ctx.request.body;
-    let { config } = ctx.request.body;
-    if (!isFile && typeof config !== 'object') {
-      config = JSON.parse(config);
-    }
+    const { id } = this.ctx.params;
+    this.validate(createSchema, this.ctx.request.body);
+    const { config } = this.ctx.request.body;
     const parsedConfig = await parseConfig(config, false);
     const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
+    if (!data) {
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
+    }
     this.success(data);
   }
 
@@ -143,28 +138,18 @@ export class PipelineController extends BaseController {
   public async installById() {
     const { pyIndex } = this.ctx.query;
     const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
+    const log = this.logManager.create();
     if (pipeline) {
       process.nextTick(() => {
-        this.install(pipeline, pyIndex);
+        this.install(pipeline, log, pyIndex);
       });
-      this.success(pipeline);
+      this.success({ ...(pipeline.toJSON() as PipelineInstallingResp), logId: log.id });
     } else {
-      throw createHttpError(404, 'no pipeline found');
+      this.ctx.throw('no pipeline found', HttpStatus.NOT_FOUND);
     }
   }
 
-  private async install(pipeline: PipelineDB, pyIndex?: string) {
-    const sse = new ServerSentEmitter(this.ctx);
-    const log = this.logManager.create();
-    log.stderr.on('data', (data) => {
-      sse.emit('log', { level: 'warn', data });
-    });
-    log.stdout.on('data', (data) => {
-      sse.emit('log', { level: 'info', data });
-    });
-    log.stderr.on('error', (err) => {
-      sse.emit('error', err.message);
-    });
+  private async install(pipeline: PipelineDB, log: LogObject, pyIndex?: string): Promise<void> {
     try {
       for (const type of constants.PLUGINS) {
         if (!pipeline[type]) {
@@ -172,7 +157,7 @@ export class PipelineController extends BaseController {
         }
         debug(`start installation: ${type}`);
         const pkg = await this.pluginManager.fetch(pipeline[type]);
-        sse.emit('info', pkg);
+        log.stdout.writeLine(`start to install plugin ${pkg.name}@${pkg.version}`);
 
         debug(`installing ${pipeline[type]}.`);
         const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
@@ -183,18 +168,23 @@ export class PipelineController extends BaseController {
             stdout: log.stdout,
             stderr: log.stderr
           });
-          sse.emit('installed', pkg);
+          log.stdout.writeLine(`install plugin ${pkg.name}@${pkg.version} successfully`);
         } catch (err) {
-          this.pluginManager.removeById(plugin.id);
+          this.pluginManager.setFailedById(plugin.id, err.message);
           throw err;
         }
       }
-      sse.emit('finished', pipeline);
       this.logManager.destroy(log.id);
     } catch (err) {
       this.logManager.destroy(log.id, err);
-    } finally {
-      sse.finish();
     }
   }
+
+  /**
+   * trace log
+   */
+  @get('/log/:logId')
+  public async log() {
+    await this.logImpl();
+  };
 }

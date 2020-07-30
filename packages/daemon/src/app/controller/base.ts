@@ -1,6 +1,8 @@
 import { Context, inject } from 'midway';
 import { ObjectSchema } from 'joi';
-import * as createHttpError from 'http-errors';
+import * as HttpStatus from 'http-status';
+import ServerSentEmitter from '../../utils/emitter';
+import { LogManager } from '../../service/log-manager';
 
 export class BaseController {
   @inject()
@@ -13,7 +15,7 @@ export class BaseController {
   validate(schema: ObjectSchema, data: any) {
     const { error } = schema.validate(data);
     if (error) {
-      throw createHttpError(400, error.message);
+      this.ctx.throw(error.message, HttpStatus.BAD_REQUEST);
     }
   }
   /**
@@ -27,7 +29,40 @@ export class BaseController {
     if (typeof status !== 'undefined') {
       this.ctx.status = status;
     } else {
-      this.ctx.status = data ? 200 : 204;
+      this.ctx.status = data ? HttpStatus.OK : HttpStatus.NO_CONTENT;
     }
+  }
+}
+
+export class BaseLogController extends BaseController {
+  @inject('logManager')
+  logManager: LogManager;
+
+  private linkLog(logStream: NodeJS.ReadStream, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
+    return new Promise(resolve => {
+      logStream.on('data', data => {
+        sse.emit('log', { level, data });
+      });
+      logStream.on('close', resolve);
+      logStream.on('error', err => {
+        sse.emit('error', err.message);
+      });
+    });
+  }
+
+  /**
+   * trace log
+   */
+  public async logImpl(): Promise<void> {
+    const sse = new ServerSentEmitter(this.ctx);
+    const log = this.logManager.get(this.ctx.params.logId);
+    if (!log) {
+      return sse.finish();
+    }
+    await Promise.all([
+      this.linkLog(log.stdout, 'info', sse),
+      this.linkLog(log.stderr, 'warn', sse)
+    ]);
+    return sse.finish();
   }
 }

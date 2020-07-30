@@ -1,41 +1,50 @@
-import { get, post, put, del, listen } from './request';
-import { tunaMirrorURI } from './utils';
-import { PipelineModel, PipelineInstallOption } from './interface';
-
+import { get, post, put, del } from './request';
+import { PipelineResp, PipelineInstallOption, PipelineInstallingResp } from './interface';
+import { BaseApi } from './base';
 /**
  * API for pipeline
  */
-export class Pipeline {
-  route: string;
+export class Pipeline extends BaseApi {
   constructor(url: string) {
-    this.route = `${url}/pipeline`;
+    super(`${url}/pipeline`);
   }
 
   /**
    * list all pipelines
    */
-  async list(): Promise<PipelineModel[]> {
-    return (await get(`${this.route}/list`)).rows;
+  list(): Promise<PipelineResp[]> {
+    return get(`${this.route}`);
   }
 
   /**
    * get pipeline info by pipeline id
    * @param id pipeline id
    */
-  async info(id: string): Promise<PipelineModel> {
-    return await get(`${this.route}/info/${id}`);
+  async get(id: string): Promise<PipelineResp> {
+    return await get(`${this.route}/${id}`);
   }
-
+  info = this.get;
   /**
    * create a pipeline by pipeline config object
    * @param config pipeline config
    * @param opts name: pipeline name
    */
-  async create(config: object, opts: any): Promise<PipelineModel> {
+  async create(config: object, opts: any): Promise<PipelineResp> {
     return await post(`${this.route}`, {
       config,
-      name: opts.name,
-      isFile: false
+      name: opts.name
+    });
+  }
+
+  /**
+   * create a pipeline by pipeline config uri
+   * @param configUri pipeline config file uri
+   * @param opts name: pipeline name
+   */
+  async createByUri(configUri: string, opts: any): Promise<PipelineResp> {
+    return await post(`${this.route}`, {
+      configUri,
+      name: opts.name
     });
   }
 
@@ -44,10 +53,9 @@ export class Pipeline {
    * @param id pipeline id
    * @param config pipeline config
    */
-  async update(id: string, config: object): Promise<PipelineModel> {
+  async update(id: string, config: PipelineResp): Promise<PipelineResp> {
     return await put(`${this.route}/${id}`, {
-      config,
-      isFile: false
+      config
     });
   }
 
@@ -55,7 +63,7 @@ export class Pipeline {
    * remove pipeline by id, if the id is undefined or 'all', remove all
    * @param id pipline id or 'all'
    */
-  async remove(id?: any): Promise<number> {
+  async remove(id?: any): Promise<void> {
     if (typeof id === 'string' && id !== 'all') {
       return await del(`${this.route}/${id}`);
     } else {
@@ -63,22 +71,12 @@ export class Pipeline {
     }
   }
 
-  // TODO(feely): offer event notification about install progress.
   /**
    * install plugins defined in pipeline
    * @param id pipeline id
-   * @param opt tuna: is using tuna mirror
+   * @param opt installation options
    */
-  async installPlugins(id: string, opt?: PipelineInstallOption): Promise<void> {
-    return new Promise((resolve, reject) => {
-      listen(`${this.route}/${id}/install`, { pyIndex: opt?.tuna ? tunaMirrorURI : undefined }, {
-        'error': (e: MessageEvent) => {
-          reject(new TypeError(e.data));
-        },
-        'finished': () => {
-          resolve();
-        }
-      });
-    });
+  async install(id: string, opt?: PipelineInstallOption): Promise<PipelineInstallingResp> {
+    return await post(`${this.route}/${id}/installation`, opt);
   }
 }
