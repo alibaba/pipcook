@@ -61,6 +61,7 @@ Pipcook 约定 `main` 函数作为了插件的入口，参数与 Node.js 插件�
     "runtime": "python"
   }
 }
+```
 
 这样，当 Pipcook 在加载插件时，就会使用 Python 加载器来加载插件了，如需使用 Python 的第三方库，同样在 `conda.dependencies` 下申明即可如：
 
