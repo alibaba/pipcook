@@ -87,7 +87,7 @@ export class PluginRunnable {
     this.stderr = await open(compPath + '/logs/stderr.log', 'w+');
 
     debug(`bootstrap a new process for ${this.id}.`);
-    this.handle = fork(__dirname + '/client', [], {
+    this.handle = fork(__dirname + '/client/entry', [], {
       stdio: [
         process.stdin, // stdin
         this.stdout,
