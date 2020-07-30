@@ -1,6 +1,6 @@
 import path from 'path';
-import { CostaRuntime } from './runtime';
-import { PluginRunnable } from './runnable';
+import { CostaRuntime } from '../src/runtime';
+import { PluginRunnable } from '../src/runnable';
 import { readdir } from 'fs-extra';
 
 describe('start runnable in normal way', () => {
