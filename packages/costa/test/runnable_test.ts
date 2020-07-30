@@ -44,6 +44,8 @@ describe('start runnable in normal way', () => {
     const tmp2 = await runnable.start(simple, tmp);
     const stdout = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
     expect(stdout.search('hello python!') !== 0).toBe(true);
+    expect(stdout.search('fn1([0. 0.])') !== 0).toBe(true);
+    expect(stdout.search('fn2()') !== 0).toBe(true);
 
     // test passing the variable from python to python.
     await runnable.start(simple, tmp2);
