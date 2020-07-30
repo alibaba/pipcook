@@ -1,18 +1,18 @@
-# Contribute a Plugin
+# 为 Pipcook 贡献插件
 
-Pipcook welcomes developers to contribute plugins for us to extend the functions of Pipcook. This document describes how to develop a plugin. The content involved in this article is just a few suggestions, the specific plugin can run successfully in Pipcook as long as it meets our plugin prototype specifications.
+Pipcook 乐于开发者为我们贡献插件以扩展 Pipcook 的功能。 本文将介绍如何开发插件。 其中涉及的内容仅为建议，只要符合我们的插件原型规范就可以在 Pipcook 中成功运行。
 
-We strongly recommend that you first understand the [plugin specification](../spec/plugin.md) that we define. Only plugins that meet the interface that we define can be accepted.
+> 强烈建议您先了解我们定义的[插件规范](../spec/plugin.md)。
 
-## Get Started
+## 新手入门
 
-To get started with developing a new plugin, [Pipcook Tools][] provides `pipcook plugin-dev`:
+插件开发从一行命令开始：`pipcook plugin-dev`：
 
 ```sh
 $ pipcook plugin-dev --type <category> --name <plugin>
 ```
 
-A plugin script is a TypeScript function that inherits from the corresponding plugin interface, for exmaple, a `DataCollectType` plugin will look like this:
+一个插件就是一个继承自 Pipcook 插件接口的 TypeScript 函数，比如一个 `DataCollectType` 插件：
 
 ```js
 const collectTextline: DataCollectType = async (args: ArgsType): Promise<void> => {
@@ -22,32 +22,11 @@ const collectTextline: DataCollectType = async (args: ArgsType): Promise<void> =
 };
 ```
 
-For other plugin interfaces, see [this list of plugin categories](../spec/plugin.md#plugin-category).
+其他插件的接口可以参考[该插件分类列表](../spec/plugin.md#plugin-category)。
 
+## 插件开发
 
-## Test your plugin
-
-You can prepare the corresponding mocking data based on the interface. For example, if you developed a `DataProcessType` plugin, create some mock firstly:
-
-```js
-const data = {
-  trainData: tf.data.array([{xs: [1,2,3], ys: [1]},{xs: [4,5,6], ys: [2]}]),
-  metaData: {
-    feature: {
-      name: 'train',
-      type: 'int32',
-      shape: [1,3]
-    },
-    label: {
-      name: 'test,
-      type: 'int32',
-      shape: [1]
-    },
-  }
-};
-```
-
-If the `DataProcessType` plugin needs to double the size of each feature, you can implement your plugin as follows:
+接下来，我们要写一个插件，它会把每一行数据的值乘以2：
 
 ```js
 const doubleSize: DataProcessType = async (sample: Sample, metadata: Metadata, args?: ArgsType): Promise<void> => {
@@ -57,67 +36,58 @@ const doubleSize: DataProcessType = async (sample: Sample, metadata: Metadata, a
 export default doubleSize;
 ```
 
-You need to check the following two before releasing that:
+插件完成后，需要确保以下：
 
-- a plugin is able to run without any errors.
-- the returned value of your plugin comply with the [plugin specfication](../spec/plugin.md).
+- 运行过程中不能崩溃；
+- 函数返回值需要遵循[插件规范](../spec/plugin.md)；
 
-After ensuring the preceding the above, you can run a real pipeline to check whether your plugin is compatible with the corresponding upstream and downstream plugins.
+上述要点验证后，就可以将你的插件插入到对应的 Pipeline 中去运行了。
 
-## Release
+### Python 开发环境
 
-Once you have developed the plugin done, you can create own plugin package on NPM:
+为了让一些非 Node.js 开发者（比如算法工程师）也能为 Pipcook 贡献插件，我们提供了完全基于 Python 的插件开发环境，脚本如下：
+
+```py
+# __init__.py
+def main(sample, metadata, args):
+  sample.data *= 2
+```
+
+Pipcook 约定 `main` 函数作为了插件的入口，参数与 Node.js 插件的参数保持一致，文件也需要命名为 `__init__.py`，除此之外，需要在 package.json 中增加：
+
+```json
+{
+  "pipcook": {
+    "runtime": "python"
+  }
+}
+
+这样，当 Pipcook 在加载插件时，就会使用 Python 加载器来加载插件了，如需使用 Python 的第三方库，同样在 `conda.dependencies` 下申明即可如：
+
+```json
+{
+  "pipcook": {
+    "runtime": "python"
+  },
+  "conda": {
+    "dependencies": {
+      "tensorflow": "*",
+      "numpy": "*"
+    }
+  }
+}
+```
+
+## 发布
+
+插件开发和验证完成，就可以分享到 NPM 了：
 
 ```sh
 $ npm publish
 ```
 
-And anyone could try your plugin via the following command:
+任何人都可以通过以下命令来安装使用：
 
 ```sh
 $ pipcook plugin install your-pipcook-plugin-name
 ```
-
-## Awesome Pipcook Plugins
-
-Below is the awesome list of Pipcook plugins, we welcome third-party plugin contributors to update this list via GitHub Pull Request.
-
-### `dataCollect`
-
-- @pipcook/plugins-csv-data-collect
-- @pipcook/plugins-image-classification-data-collect
-- @pipcook/plugins-mnist-data-collect
-- @pipcook/plugins-object-detection-coco-data-collect
-- @pipcook/plugins-object-detection-pascalvoc-data-collect
-
-### `dataAccess`
-
-- @pipcook/plugins-coco-data-access
-- @pipcook/plugins-csv-data-access
-- @pipcook/plugins-pascalvoc-data-access
-
-### `dataProcess`
-
-- @pipcook/plugins-image-data-process
-
-### `modelDefine`
-
-- @pipcook/plugins-bayesian-model-define
-- @pipcook/plugins-detectron-fasterrcnn-model-define
-- @pipcook/plugins-tfjs-mobilenet-model-define
-- @pipcook/plugins-tfjs-simplecnn-model-define
-
-### `modelTrain`
-
-- @pipcook/plugins-bayesian-model-train
-- @pipcook/plugins-image-classification-tfjs-model-train
-- @pipcook/plugins-detectron-model-train
-
-### `modelEvaluate`
-
-- @pipcook/plugins-image-data-process
-- @pipcook/plugins-bayesian-model-evaluate
-- @pipcook/plugins-image-classification-tfjs-model-evaluate
-- @pipcook/plugins-detectron-model-evaluate
-
-[Pipcook Tools]: ../../manual/pipcook-tools.md
