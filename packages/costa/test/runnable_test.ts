@@ -1,15 +1,18 @@
 import path from 'path';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
-import { readdir } from 'fs-extra';
+import { readdir, readFile } from 'fs-extra';
+
+const INSTALL_SPECS_TIMEOUT = 180 * 1000;
 
 describe('start runnable in normal way', () => {
-  const costa = new CostaRuntime({
+  const opts = {
     installDir: path.join(__dirname, '../.tests/plugins'),
     datasetDir: path.join(__dirname, '../.tests/datasets'),
     componentDir: path.join(__dirname, '../.tests/components'),
     npmRegistryPrefix: 'https://registry.npmjs.com/'
-  });
+  };
+  const costa = new CostaRuntime(opts);
   let runnable: PluginRunnable;
 
   it('should create a new runnable', () => {
@@ -22,6 +25,23 @@ describe('start runnable in normal way', () => {
     await runnable.bootstrap({});
     expect(runnable.state).toBe('idle');
   });
+
+  it('should start a nodejs plugin', async () => {
+    const simple = await costa.fetch('./plugins/nodejs-simple', path.join(__dirname, '../../test'));
+    await costa.install(simple, process);
+    const p = await runnable.start(simple, { foobar: true });
+    const stdout = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
+    expect(stdout.search('{ foobar: true }') !== 0).toBe(true);
+  }, INSTALL_SPECS_TIMEOUT);
+
+  it('should start a python plugin', async () => {
+    const simple = await costa.fetch('./plugins/python-simple', path.join(__dirname, '../../test'));
+    await costa.install(simple, process);
+    expect(simple.pipcook.runtime).toBe('python');
+    const p = await runnable.start(simple, { foobar: true });
+    const stdout = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
+    expect(stdout.search('hello python!') !== 0).toBe(true);
+  }, INSTALL_SPECS_TIMEOUT);
 
   it('should destroy the runnable', async () => {
     await runnable.destroy();

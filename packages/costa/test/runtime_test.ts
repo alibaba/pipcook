@@ -1,6 +1,6 @@
 import path from 'path';
 import { CostaRuntime } from '../src/runtime';
-import { PluginPackage } from '..';
+import { PluginPackage } from '../src';
 import { stat } from 'fs-extra';
 import { spawnSync } from 'child_process';
 import { createReadStream } from 'fs-extra';

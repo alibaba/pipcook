@@ -1,0 +1,20 @@
+{
+  "name": "python-simple",
+  "version": "1.0.0",
+  "description": "test python simple",
+  "main": "main.py",
+  "dependencies": {
+    "@pipcook/boa": "^1.0.4"
+  },
+  "pipcook": {
+    "category": "modelDefine",
+    "datatype": "text",
+    "runtime": "python"
+  },
+  "conda": {
+    "python": "3.7",
+    "dependencies": {
+      "numpy": "*"
+    }
+  }
+}

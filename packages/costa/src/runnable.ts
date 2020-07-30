@@ -36,7 +36,6 @@ export interface BootstrapArg {
  * The runnable is to represent a container to run plugins.
  */
 export class PluginRunnable {
-  private id: string;
   private rt: CostaRuntime;
   private handle: ChildProcess = null;
 
@@ -48,6 +47,11 @@ export class PluginRunnable {
   private onread: Function | null;
   private onreadfail: Function | null;
   private ondestroyed: Function | null;
+
+  /**
+   * The runnable id.
+   */
+  public id: string;
 
   /**
    * the current working directory for this runnable.
