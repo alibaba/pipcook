@@ -2,7 +2,7 @@
   "name": "python-simple",
   "version": "1.0.0",
   "description": "test python simple",
-  "main": "main.py",
+  "main": "__init__.py",
   "dependencies": {
     "@pipcook/boa": "^1.0.4"
   },

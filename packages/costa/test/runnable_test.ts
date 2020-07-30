@@ -26,10 +26,11 @@ describe('start runnable in normal way', () => {
     expect(runnable.state).toBe('idle');
   });
 
+  let tmp: any;
   it('should start a nodejs plugin', async () => {
     const simple = await costa.fetch('./plugins/nodejs-simple', path.join(__dirname, '../../test'));
     await costa.install(simple, process);
-    const p = await runnable.start(simple, { foobar: true });
+    tmp = await runnable.start(simple, { foobar: true });
     const stdout = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
     expect(stdout.search('{ foobar: true }') !== 0).toBe(true);
   }, INSTALL_SPECS_TIMEOUT);
@@ -38,9 +39,16 @@ describe('start runnable in normal way', () => {
     const simple = await costa.fetch('./plugins/python-simple', path.join(__dirname, '../../test'));
     await costa.install(simple, process);
     expect(simple.pipcook.runtime).toBe('python');
-    const p = await runnable.start(simple, { foobar: true });
+
+    // test passing the variable from js to python.
+    const tmp2 = await runnable.start(simple, tmp);
     const stdout = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
     expect(stdout.search('hello python!') !== 0).toBe(true);
+
+    // test passing the variable from python to python.
+    await runnable.start(simple, tmp2);
+    const stdout2 = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
+    expect(stdout2.search('hello python! [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]') !== 0).toBe(true);
   }, INSTALL_SPECS_TIMEOUT);
 
   it('should destroy the runnable', async () => {

@@ -12,5 +12,5 @@ export default function (pkg: PluginPackage): Function {
     stdout.flush();
     stderr.flush();
     return res;
-  }
+  };
 }
