@@ -126,8 +126,9 @@ export class PluginManager {
       throw err;
     }
   }
+
   async installAsync(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
-    const logger = this.logManager.create();
+    const logger = await this.logManager.create();
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
       process.nextTick(async () => {
@@ -137,7 +138,7 @@ export class PluginManager {
           this.logManager.destroy(logger.id);
         } catch (err) {
           this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
-          console.error('install plugin from tarball error', err.message);
+          console.error('install plugin error', err.message);
           this.logManager.destroy(logger.id, err);
         }
       });

@@ -1,7 +1,7 @@
 import path from 'path';
 import { Writable } from 'stream';
 import { generate } from 'shortid';
-import { ensureDir, ensureSymlink, ensureFile, open, close } from 'fs-extra';
+import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
 import { CostaRuntime, PluginPackage } from './runtime';
@@ -46,10 +46,6 @@ export class PluginRunnable {
   private rt: CostaRuntime;
   private handle: ChildProcess = null;
 
-  // private stdout/stderr
-  private stdoutFd: number;
-  private stderrFd: number;
-
   // private events
   private onread: Function | null;
   private onreadfail: Function | null;
@@ -73,7 +69,7 @@ export class PluginRunnable {
    * Create a runnable by the given runtime.
    * @param rt the costa runtime.
    */
-  constructor(rt: CostaRuntime, logger?: LogStdio, id?: string) {
+  constructor(rt: CostaRuntime, logger: LogStdio, id?: string) {
     this.id = id || generate();
     this.rt = rt;
     this.workingDir = path.join(this.rt.options.componentDir, this.id);
@@ -88,23 +84,16 @@ export class PluginRunnable {
 
     debug(`make sure the component dir is existed.`);
     await ensureDir(compPath + '/node_modules');
-    await ensureDir(compPath + '/logs');
-    await [
-      ensureFile(compPath + '/logs/stdout.log'),
-      ensureFile(compPath + '/logs/stderr.log')
-    ];
-
-    this.stdoutFd = await open(compPath + '/logs/stdout.log', 'w+');
-    this.stderrFd = await open(compPath + '/logs/stderr.log', 'w+');
 
     debug(`bootstrap a new process for ${this.id}.`);
     this.handle = fork(__dirname + '/client', [], {
       stdio: [ process.stdin, 'pipe', 'pipe', 'ipc' ],
       cwd: compPath,
+      silent: true,
       env: Object.assign({}, process.env, arg.customEnv)
     });
-    pipe(this.handle.stdout, this.logger?.stdout, this.stdoutFd);
-    pipe(this.handle.stderr, this.logger?.stderr, this.stderrFd);
+    pipe(this.handle.stdout, this.logger.stdout);
+    pipe(this.handle.stderr, this.logger.stderr);
     this.handle.on('message', this.handleMessage.bind(this));
     this.handle.once('exit', this.afterDestroy.bind(this));
 
@@ -255,12 +244,8 @@ export class PluginRunnable {
    */
   private async afterDestroy(code: number, signal: NodeJS.Signals): Promise<void> {
     debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
-    await [
-      // FIXME(Yorkie): remove component directory?
-      // remove(path.join(this.rt.options.componentDir, this.id)),
-      close(this.stdoutFd),
-      close(this.stderrFd)
-    ];
+    // FIXME(Yorkie): remove component directory?
+    // await remove(path.join(this.rt.options.componentDir, this.id));
     if (typeof this.onread === 'function' && typeof this.onreadfail === 'function') {
       this.onreadfail(new TypeError(`costa runtime is destroyed(${signal}).`));
     }

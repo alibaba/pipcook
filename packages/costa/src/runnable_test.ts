@@ -13,7 +13,7 @@ describe('start runnable in normal way', () => {
   let runnable: PluginRunnable;
 
   it('should create a new runnable', () => {
-    runnable = new PluginRunnable(costa);
+    runnable = new PluginRunnable(costa, process);
     expect(runnable.workingDir).toBeInstanceOf(String);
     expect(runnable.state).toBe('init');
   });

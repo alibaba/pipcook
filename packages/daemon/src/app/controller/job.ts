@@ -1,6 +1,8 @@
 import { controller, inject, provide, get, post, del } from 'midway';
 import * as HttpStatus from 'http-status';
-import { createReadStream } from 'fs';
+import { constants } from '@pipcook/pipcook-core';
+import { createReadStream, ensureDir, ensureFile } from 'fs-extra';
+import { join } from 'path';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { PluginManager } from '../../service/plugin';
@@ -25,7 +27,15 @@ export class JobController extends BaseEventController {
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
       const job = await this.pipelineService.createJob(pipelineId);
-      const log = this.logManager.create();
+      const logPath = join(constants.PIPCOOK_RUN, job.id, 'logs');
+      const stdoutFile = join(logPath, 'stdout.log');
+      const stderrFile = join(logPath, 'stderr.log');
+      await ensureDir(logPath);
+      await [
+        ensureFile(stdoutFile),
+        ensureFile(stderrFile)
+      ];
+      const log = await this.logManager.create({ stdoutFile, stderrFile });
       process.nextTick(async () => {
         try {
           await this.pipelineService.runJob(job, pipeline, log);

@@ -1,4 +1,5 @@
 import { Transform, TransformCallback } from 'stream';
+import { open, close, write } from 'fs-extra';
 import { generate } from 'shortid';
 import { provide, scope, ScopeEnum } from 'midway';
 import { StringDecoder } from 'string_decoder';
@@ -15,13 +16,31 @@ export interface LogObject {
   stderr: LogPassthrough;
 }
 
+export interface LogOptions {
+  stdoutFile?: string;
+  stderrFile?: string;
+}
+
 class LogPassthrough extends Transform {
   decoder = new StringDecoder('utf8');
   last: string;
-  constructor() {
+  fd: number;
+  filename: string;
+  constructor(filename?: string) {
     super({ objectMode: true });
+    this.filename = filename;
   }
+
+  async init(): Promise<void> {
+    if (this.filename && !this.fd) {
+      this.fd = await open(this.filename, 'w+');
+    }
+  }
+
   _transform(chunk: any, encoding: string, callback: TransformCallback): void {
+    if (this.fd) {
+      write(this.fd, chunk);
+    }
     if (this.last === undefined) {
       this.last = '';
     }
@@ -37,6 +56,9 @@ class LogPassthrough extends Transform {
     this.last += this.decoder.end();
     if (this.last) {
       this.push(this.last);
+    }
+    if (this.fd) {
+      close(this.fd);
     }
     callback();
   }
@@ -54,9 +76,17 @@ export class LogManager {
   /**
    * create a log object, must call the destory function to clean it up.
    */
-  create(): LogObject {
+  async create(opts?: LogOptions): Promise<LogObject> {
     const id = generate();
-    const logObj: LogObject = { id, stdout: new LogPassthrough(), stderr: new LogPassthrough() };
+    const logObj: LogObject = {
+      id,
+      stdout: new LogPassthrough(opts?.stdoutFile),
+      stderr: new LogPassthrough(opts?.stderrFile)
+    };
+    Promise.all([
+      logObj.stdout.init(),
+      logObj.stderr.init()
+    ]);
     this.logMap.set(id, logObj);
     return logObj;
   }
@@ -77,7 +107,17 @@ export class LogManager {
    */
   destroy(id: string, err?: Error) {
     const log = this.logMap.get(id);
-    log.stderr.destroy(err);
+    if (err) {
+      // make sure someone handles the error, otherwise the process will exit
+      if (log.stderr.listeners('error').length > 0) {
+        log.stderr.destroy(err);
+      } else {
+        console.error(`unhandled error from log: ${err.message}`);
+        log.stderr.destroy();
+      }
+    } else {
+      log.stderr.destroy();
+    }
     log.stdout.destroy();
     return this.logMap.delete(id);
   }

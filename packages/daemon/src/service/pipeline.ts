@@ -207,7 +207,6 @@ export class PipelineService {
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
     await job.save();
-
     try {
       verifyPlugin('dataCollect');
       const dataDir = path.join(this.pluginManager.datasetRoot, `${plugins.dataCollect.plugin.name}@${plugins.dataCollect.plugin.version}`);
