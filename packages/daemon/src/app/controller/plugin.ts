@@ -58,9 +58,7 @@ export class PluginController extends BaseEventController {
   @del()
   public async removeAll() {
     const plugins = await this.pluginManager.list();
-    for (const plugin of plugins) {
-      await this.pluginManager.uninstall(plugin);
-    }
+    await this.pluginManager.uninstall(plugins);
     this.success();
   }
   /**

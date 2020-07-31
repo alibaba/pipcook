@@ -155,10 +155,18 @@ export class PluginManager {
     return this.installAsync(pkg, pyIndex, force);
   }
 
-  async uninstall(plugin: PluginModel): Promise<void> {
+  async uninstall(plugin: PluginModel | PluginModel[]): Promise<void> {
     const { costa } = this.pluginRT;
-    await costa.uninstall(plugin.name);
-    await plugin.destroy();
+    if (Array.isArray(plugin)) {
+      const names = plugin.map(singlePlugin => singlePlugin.name);
+      await costa.uninstall(names);
+      plugin.forEach(async (singlePlugin) => {
+        await singlePlugin.destroy();
+      });
+    } else {
+      await costa.uninstall(plugin.name);
+      await plugin.destroy();
+    }
   }
 
   async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {

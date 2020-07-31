@@ -374,13 +374,27 @@ export class CostaRuntime {
    * Uninstall the given plugin by name.
    * @param name the plugin package name.
    */
-  async uninstall(name: string): Promise<boolean> {
-    if (!await this.isInstalled(name)) {
-      debug(`skip uninstall "${name}" because it not exists.`);
-      return false;
+  async uninstall(name: string | string[]): Promise<boolean> {
+    const removePkg = async (name: string) => {
+      if (!await this.isInstalled(name)) {
+        debug(`skip uninstall "${name}" because it not exists.`);
+        return false;
+      }
+      await remove(path.join(this.options.installDir, 'node_modules', name));  
+      return true;
+    };
+    if (Array.isArray(name)) {
+      let success = false;
+      // any one uninstalls successfully, return true
+      await name.forEach(async (singleName) => {
+        if (await removePkg(singleName)) {
+          success = true;
+        }
+      });
+      return success;
+    } else {
+      return removePkg(name);
     }
-    await remove(path.join(this.options.installDir, 'node_modules', name));
-    return true;
   }
   /**
    * create a runnable.
