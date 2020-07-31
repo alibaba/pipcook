@@ -422,6 +422,8 @@ PyObject *PythonObject::Cast(Napi::Env env, Object value,
                              bool finalizeFuncType) {
   auto names = value.GetPropertyNames();
   auto dict = PyDict_New();
+  auto isKwargs = IsKwargs(value);
+
   for (uint32_t i = 0; i < names.Length(); i++) {
     std::string nameStr = names.Get(i).As<String>();
     // skip if the name is NODE_PYTHON_KWARGS_NAME(__kwargs)
@@ -432,7 +434,17 @@ PyObject *PythonObject::Cast(Napi::Env env, Object value,
     auto val = Cast(env, prop, finalizeFuncType);
     PyDict_SetItemString(dict, nameStr.c_str(), val);
   }
-  return dict;
+
+  if (isKwargs) {
+    // FIXME(yorkie): just return a dict object if it's for kwargs.
+    return dict;
+  }
+  // otherwise, we create a template class and object by attrs.
+  pybind::object type =
+      pybind::reinterpret_borrow<pybind::object>((PyObject *)&PyType_Type);
+  pybind::dict attrs = pybind::reinterpret_borrow<pybind::dict>(dict);
+  // FIXME(yorkie): use "JSObject" as the default object name to Python.
+  return type("JSObject", pybind::make_tuple(), attrs)().release().ptr();
 }
 
 PyObject *PythonObject::Cast(Napi::Env env, Napi::Value value,
