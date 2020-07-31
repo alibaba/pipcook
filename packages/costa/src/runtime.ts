@@ -380,7 +380,7 @@ export class CostaRuntime {
         debug(`skip uninstall "${name}" because it not exists.`);
         return false;
       }
-      await remove(path.join(this.options.installDir, 'node_modules', name));  
+      await remove(path.join(this.options.installDir, 'node_modules', name));
       return true;
     };
     if (Array.isArray(name)) {
