@@ -19,6 +19,12 @@
     },
     "bootstrap": {
       "nohoist": [
+        "@alifd/next",
+        "@icedesign/container",
+        "@icedesign/img",
+        "@icedesign/layout",
+        "@icedesign/notification",
+        "@icedesign/theme",
         "node-addon-api",
         "midway",
         "egg-ci",
