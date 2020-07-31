@@ -2,7 +2,7 @@
   "name": "@pipcook/sdk",
   "version": "1.0.4",
   "description": "JavaScript SDK for accessing Pipcook Daemon",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",

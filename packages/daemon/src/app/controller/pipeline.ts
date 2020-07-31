@@ -1,14 +1,14 @@
-import { constants, PipelineDB } from '@pipcook/pipcook-core';
+import { constants, PipelineDB, PluginStatus } from '@pipcook/pipcook-core';
 import { controller, inject, provide, post, get, put, del } from 'midway';
 import * as HttpStatus from 'http-status';
 import * as Joi from 'joi';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
 import { parseConfig } from '../../runner/helper';
-import { BaseLogController } from './base';
+import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { LogObject } from '../../service/log-manager';
-import { PipelineInstallingResp } from '../../interface';
+import { PluginResp } from '../../interface';
 const debug = Debug('daemon.app.pipeline');
 
 const createSchema = Joi.object({
@@ -23,8 +23,8 @@ const listSchema = Joi.object({
 });
 
 @provide()
-@controller('/pipeline')
-export class PipelineController extends BaseLogController {
+@controller('/api/pipeline')
+export class PipelineController extends BaseEventController {
   @inject('pipelineService')
   pipelineService: PipelineService;
 
@@ -140,51 +140,52 @@ export class PipelineController extends BaseLogController {
     const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
     const log = this.logManager.create();
     if (pipeline) {
-      process.nextTick(() => {
-        this.install(pipeline, log, pyIndex);
+      process.nextTick(async () => {
+        try {
+          await this.install(pipeline, log, pyIndex);
+          this.logManager.destroy(log.id);
+        } catch (err) {
+          this.logManager.destroy(log.id, err);
+        }
       });
-      this.success({ ...(pipeline.toJSON() as PipelineInstallingResp), logId: log.id });
+      this.success({ ...(pipeline.toJSON() as PluginResp), traceId: log.id });
     } else {
       this.ctx.throw('no pipeline found', HttpStatus.NOT_FOUND);
     }
   }
 
   private async install(pipeline: PipelineDB, log: LogObject, pyIndex?: string): Promise<void> {
-    try {
-      for (const type of constants.PLUGINS) {
-        if (!pipeline[type]) {
-          continue;
-        }
-        debug(`start installation: ${type}`);
-        const pkg = await this.pluginManager.fetch(pipeline[type]);
-        log.stdout.writeLine(`start to install plugin ${pkg.name}@${pkg.version}`);
-
-        debug(`installing ${pipeline[type]}.`);
-        const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
-        try {
-          await this.pluginManager.install(pkg, {
-            pyIndex,
-            force: false,
-            stdout: log.stdout,
-            stderr: log.stderr
-          });
-          log.stdout.writeLine(`install plugin ${pkg.name}@${pkg.version} successfully`);
-        } catch (err) {
-          this.pluginManager.setFailedById(plugin.id, err.message);
-          throw err;
-        }
+    for (const type of constants.PLUGINS) {
+      if (!pipeline[type]) {
+        continue;
       }
-      this.logManager.destroy(log.id);
-    } catch (err) {
-      this.logManager.destroy(log.id, err);
+      debug(`start installation: ${type}`);
+      const pkg = await this.pluginManager.fetch(pipeline[type]);
+      log.stdout.writeLine(`start to install plugin ${pkg.name}@${pkg.version}`);
+
+      debug(`installing ${pipeline[type]}.`);
+      const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
+      try {
+        await this.pluginManager.install(pkg, {
+          pyIndex,
+          force: false,
+          stdout: log.stdout,
+          stderr: log.stderr
+        });
+        this.pluginManager.setStatusById(plugin.id, PluginStatus.INSTALLED);
+        log.stdout.writeLine(`install plugin ${pkg.name}@${pkg.version} successfully`);
+      } catch (err) {
+        this.pluginManager.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
+        throw err;
+      }
     }
   }
 
   /**
-   * trace log
+   * trace event
    */
-  @get('/log/:logId')
-  public async log() {
-    await this.logImpl();
-  };
+  @get('/event/:traceId')
+  public async traceEvent() {
+    await this.traceEventImpl();
+  }
 }

@@ -1,13 +1,13 @@
 import { controller, inject, provide, get, post, del, put } from 'midway';
 import * as HttpStatus from 'http-status';
-import { BaseLogController } from './base';
+import { BaseEventController } from './base';
 import { PluginManager } from '../../service/plugin';
 import Debug from 'debug';
 const debug = Debug('daemon.app.plugin');
 
 @provide()
-@controller('/plugin')
-export class PluginController extends BaseLogController {
+@controller('/api/plugin')
+export class PluginController extends BaseEventController {
 
   @inject('pluginManager')
   pluginManager: PluginManager;
@@ -100,10 +100,10 @@ export class PluginController extends BaseLogController {
   }
 
   /**
-   * trace log
+   * trace event
    */
-  @get('/log/:logId')
-  public async log() {
-    await this.logImpl();
+  @get('/event/:traceId')
+  public async event() {
+    await this.traceEventImpl();
   }
 }

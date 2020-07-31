@@ -1,6 +1,6 @@
 import { get, post, del, uploadFile } from './request';
 import { BaseApi } from './base';
-import { PluginResp, PluginInstallingResp } from './interface';
+import { PluginResp, TraceResp } from './interface';
 import { ReadStream } from 'fs-extra';
 
 /**
@@ -14,24 +14,24 @@ export class Plugin extends BaseApi {
   /**
    * list all plugins
    */
-  async list(): Promise<PluginResp[]> {
-    return await get(`${this.route}`);
+  list(): Promise<PluginResp[]> {
+    return get(`${this.route}`);
   }
 
   /**
    * get plugin by id
    * @param id string plugin id
    */
-  async get(id: string): Promise<PluginResp> {
-    return await get(`${this.route}/${id}`);
+  get(id: string): Promise<PluginResp> {
+    return get(`${this.route}/${id}`);
   }
 
   /**
    * remove plugin or plugins
    * @param id string if null, remove all
    */
-  async remove(id?: string): Promise<void> {
-    return await del(`${this.route}/${id ? id : ''}`);
+  remove(id?: string): Promise<void> {
+    return del(`${this.route}/${id ? id : ''}`);
   }
 
   /**
@@ -39,8 +39,8 @@ export class Plugin extends BaseApi {
    * @param name package name
    * @param pyIndex the python package index
    */
-  async createByName(name: string, pyIndex?: string): Promise<PluginInstallingResp> {
-    return await post(`${this.route}`, { name, pyIndex });
+  createByName(name: string, pyIndex?: string): Promise<TraceResp<PluginResp>> {
+    return post(`${this.route}`, { name, pyIndex });
   }
 
   /**
@@ -48,7 +48,7 @@ export class Plugin extends BaseApi {
    * @param pkgStream file stream
    * @param pyIndex the python package index
    */
-  async createByTarball(pkgStream: ReadStream, pyIndex?: string): Promise<PluginInstallingResp> {
-    return await uploadFile(`${this.route}/tarball`, pkgStream, { pyIndex });
+  createByTarball(pkgStream: ReadStream, pyIndex?: string): Promise<TraceResp<PluginResp>> {
+    return uploadFile(`${this.route}/tarball`, pkgStream, { pyIndex });
   }
 }

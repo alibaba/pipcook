@@ -1,5 +1,10 @@
 
 /**
+ * response of trace
+ */
+export type TraceResp<T> = T & { traceId: string };
+
+/**
  * response of plugin query
  */
 export interface PluginResp {
@@ -10,12 +15,6 @@ export interface PluginResp {
   datatype: string;
   namespace: string;
   dest: string;
-}
-/**
- * response of plugin install
- */
-export interface PluginInstallingResp extends PluginResp {
-  logId: string;
 }
 
 /**
@@ -41,8 +40,18 @@ export interface PipelineResp {
 }
 
 /**
- * response of pipeline install
+ * response of job
  */
-export interface PipelineInstallingResp extends PipelineResp {
-  logId: string;
+export interface JobResp {
+  id: string;
+  pipelineId: string;
+  specVersion: string;
+  metadata: number;
+  evaluateMap: string;
+  evaluatePass: boolean;
+  currentIndex: number;
+  error: string;
+  endTime: number;
+  status: number;
+  dataset: string;
 }

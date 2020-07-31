@@ -1,17 +1,14 @@
-import { Context, controller, inject, provide, get } from 'midway';
-import { BaseController } from './base';
-import { PipelineService } from '../../service/pipeline';
-import { parseConfig } from '../../runner/helper';
-import ServerSentEmitter from '../../utils/emitter';
-import { JobModel } from '../../model/job';
-import { PluginManager } from '../../service/plugin';
+import { controller, inject, provide, get, post, del } from 'midway';
+import * as HttpStatus from 'http-status';
 import { createReadStream } from 'fs';
+import { BaseEventController } from './base';
+import { PipelineService } from '../../service/pipeline';
+import { PluginManager } from '../../service/plugin';
+import { JobResp } from '../../interface';
 
 @provide()
-@controller('/job')
-export class JobController extends BaseController {
-  @inject()
-  ctx: Context;
+@controller('/api/job')
+export class JobController extends BaseEventController {
 
   @inject('pipelineService')
   pipelineService: PipelineService;
@@ -19,78 +16,72 @@ export class JobController extends BaseController {
   @inject('pluginManager')
   pluginManager: PluginManager;
 
-  @get('/run')
-  public async run() {
-    const { pipelineId, verbose, pyIndex } = this.ctx.request.query;
-    const job = await this.pipelineService.createJob(pipelineId);
-    await this.runJobWithContext(
-      job,
-      verbose === '1',
-      pyIndex
-    );
-  }
-
-  @get('/start')
-  public async start() {
-    const { config, verbose, pyIndex } = this.ctx.request.query;
-    const parsedConfig = await parseConfig(config);
-    const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    const job = await this.pipelineService.createJob(pipeline.id);
-    await this.runJobWithContext(
-      job,
-      verbose === '1',
-      pyIndex
-    );
-  }
-
-  private async runJobWithContext(job: JobModel, verbose: boolean, pyIndex: string) {
-    if (verbose) {
-      const sse = new ServerSentEmitter(this.ctx);
-      try {
-        const plugins = await this.pipelineService.installPlugins(job, pyIndex);
-        sse.emit('job created', job);
-        await this.pipelineService.startJob(job, plugins);
-        // FIXME(yorkie): only pass the id because sse owns a max body length.
-        sse.emit('job finished', { id: job.id });
-      } catch (err) {
-        sse.emit('error', err?.message);
-      } finally {
-        sse.finish();
-      }
+  /**
+   * start a job from pipeline id or name
+   */
+  @post()
+  public async run(): Promise<void> {
+    const { pipelineId } = this.ctx.request.body;
+    const pipeline = await this.pipelineService.getPipeline(pipelineId);
+    if (pipeline) {
+      const job = await this.pipelineService.createJob(pipelineId);
+      const log = this.logManager.create();
+      process.nextTick(async () => {
+        try {
+          await this.pipelineService.runJob(job, pipeline, log);
+          this.logManager.destroy(log.id);
+        } catch (err) {
+          this.logManager.destroy(log.id, err);
+        }
+      });
+      this.success({ ...(job.toJSON() as JobResp), traceId: log.id });
     } else {
-      const plugins = await this.pipelineService.installPlugins(job, pyIndex);
-      this.pipelineService.startJob(job, plugins);
-      this.success(job, 201);
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'not pipeline found');
     }
   }
 
-  @get('/list')
-  public async list() {
+  /**
+   * list jobs
+   */
+  @get()
+  public async list(): Promise<void> {
     const { pipelineId, offset, limit } = this.ctx.query;
-    const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
-    this.success({
-      data: jobs
-    });
+    const jobs = (await this.pipelineService.queryJobs({ pipelineId }, { offset, limit }));
+    this.success(jobs);
   }
 
-  @get('/remove')
-  public async remove() {
-    const count = await this.pipelineService.removeJobs();
-    this.success({
-      message: 'remove jobs successfully',
-      data: count
-    });
+  /**
+   * remove all jobs
+   */
+  @del()
+  public async removeAll(): Promise<void> {
+    await this.pipelineService.removeJobs();
+    this.success();
   }
 
-  @get('/stop')
-  public async stop() {
+  /**
+   * remove job by id
+   */
+  @del('/:id')
+  public async remove(): Promise<void> {
+    const { id } = this.ctx.params;
+    const count = await this.pipelineService.removeJobById(id);
+    if (count) {
+      this.success();
+    } else {
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no job found');
+    }
+  }
+
+  @del('/:id/cancel')
+  public async stop(): Promise<void> {
     const { id } = this.ctx.query;
     this.pipelineService.stopJob(id);
-    this.success(undefined);
+    this.success();
   }
 
   @get('/:id/log')
-  public async viewLog() {
+  public async viewLog(): Promise<void> {
     const { ctx } = this;
     const { id } = ctx.params;
     const data = await this.pipelineService.getLogById(id);
@@ -100,19 +91,24 @@ export class JobController extends BaseController {
     this.success(data);
   }
 
-  @get('/:id/output.tar.gz')
-  public async output() {
+  @get('/:id/output')
+  public async download(): Promise<void> {
     const outputPath = this.pipelineService.getOutputTarByJobId(this.ctx.params.id);
     this.ctx.body = createReadStream(outputPath);
   }
 
   @get('/:id')
-  public async get() {
+  public async get(): Promise<void> {
     const { id } = this.ctx.params;
     const job = await this.pipelineService.getJobById(id);
     if (!job) {
-      throw new Error('job not found');
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no job found');
     }
     this.success(job);
+  }
+
+  @get('/event/:traceId')
+  public async traceEvent(): Promise<void> {
+    await this.traceEventImpl();
   }
 }

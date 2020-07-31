@@ -29,12 +29,12 @@ export class BaseController {
     if (typeof status !== 'undefined') {
       this.ctx.status = status;
     } else {
-      this.ctx.status = data ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+      this.ctx.status = typeof data === 'undefined' ? HttpStatus.NO_CONTENT : HttpStatus.OK;
     }
   }
 }
 
-export class BaseLogController extends BaseController {
+export class BaseEventController extends BaseController {
   @inject('logManager')
   logManager: LogManager;
 
@@ -51,11 +51,11 @@ export class BaseLogController extends BaseController {
   }
 
   /**
-   * trace log
+   * trace event
    */
-  public async logImpl(): Promise<void> {
+  public async traceEventImpl(): Promise<void> {
     const sse = new ServerSentEmitter(this.ctx);
-    const log = this.logManager.get(this.ctx.params.logId);
+    const log = this.logManager.get(this.ctx.params.traceId);
     if (!log) {
       return sse.finish();
     }

@@ -1,4 +1,10 @@
 // TODO: move these defines to core or somewhere to share with daemon
+
+/**
+ * response of event trace
+ */
+export type TraceResp<T> = T & { traceId: string }
+
 export interface JobResp {
   id: string;
   pipelineId: string;
@@ -35,13 +41,6 @@ export interface PipelineResp {
   modelEvaluateParams: string;
 }
 
-/**
- * response of pipeline install
- */
-export interface PipelineInstallingResp extends PipelineResp {
-  logId: string;
-}
-
 export interface JobRunOption {
   pipelineId: string;
   timeout?: number;
@@ -67,13 +66,16 @@ export interface PluginResp {
   error: string;
 }
 
-/**
- * response of plugin install
- */
-export interface PluginInstallingResp extends PluginResp {
-  logId: string;
+export interface EventCallback {
+  (event: string, data: any): void;
 }
 
-export interface LogCallback {
-  (level: string, data: string): void;
+/**
+ * log event interface
+ */
+export interface LogEvent {
+  // log level
+  level: string;
+  // log content
+  data: string;
 }

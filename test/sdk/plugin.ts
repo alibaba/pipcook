@@ -1,11 +1,11 @@
-import { PipcookClient, PluginInstallingResp } from '../../packages/sdk';
+import { PipcookClient, TraceResp, PluginResp } from '../../packages/sdk';
 import ChildProcess from 'child_process';
 import * as path from 'path';
 import fs from 'fs-extra';
 
 describe('pipeline api.plugin test', () => {
   const client = new PipcookClient('http://localhost', 6927);
-  let resp: PluginInstallingResp;
+  let resp: TraceResp<PluginResp>;
   it('prepare', async () => {
     // prepare
     await client.plugin.remove();
@@ -15,25 +15,33 @@ describe('pipeline api.plugin test', () => {
     resp = await client.plugin.createByName('@pipcook/plugins-chinese-poem-data-collect');
     expect(typeof resp).toBe('object');
     expect(resp.name).toBe('@pipcook/plugins-chinese-poem-data-collect');
-    expect(typeof resp.logId).toBe('string');
-    await client.plugin.log(resp.logId, (level: string, data: string) => {
-      console.log(`[${level}] ${data}`);
-      expect(typeof level).toBe('string');
-      expect(typeof data).toBe('string');
+    expect(typeof resp.traceId).toBe('string');
+    await client.plugin.traceEvent(resp.traceId, (event: string, data: any) => {
+      // log only for now
+      expect([ 'log' ]).toContain(event);
+      if (event === 'log') {
+        console.log(`[${data.level}] ${data.data}`);
+        expect(typeof data.level).toBe('string');
+        expect(typeof data.data).toBe('string');
+      }
     });
   }, 60 * 1000);
   it('create plugin by tarball', async () => {
     // create plugin by tarball
-    let pkgPath = ChildProcess.spawnSync('npm', [ 'pack' ], { cwd: path.join(__dirname, '../../packages/plugins/data-access/csv-data-access')}).stdout.toString();
+    let pkgPath = ChildProcess.spawnSync('npm', [ 'pack' ], {
+      cwd: path.join(__dirname, '../../packages/plugins/data-access/csv-data-access')
+    }).stdout.toString();
     pkgPath = pkgPath.replace(/\r|\n/g, '');
-    resp = await client.plugin.createByTarball(fs.createReadStream(path.join(__dirname, '../../packages/plugins/data-access/csv-data-access', pkgPath)));
+    resp = await client.plugin.createByTarball(
+      fs.createReadStream(path.join(__dirname, '../../packages/plugins/data-access/csv-data-access', pkgPath))
+    );
     expect(typeof resp).toBe('object');
     expect(resp.name).toBe('@pipcook/plugins-csv-data-access');
-    expect(typeof resp.logId).toBe('string');
-    await client.plugin.log(resp.logId, (level: string, data: string) => {
-      console.log(`[${level}] ${data}`);
-      expect(typeof level).toBe('string');
-      expect(typeof data).toBe('string');
+    expect(typeof resp.traceId).toBe('string');
+    await client.plugin.traceEvent(resp.traceId, (event: string, data: any) => {
+      console.log(`[${data.level}] ${data.data}`);
+      expect(typeof data.level).toBe('string');
+      expect(typeof data.data).toBe('string');
     });
   }, 60 * 1000);
   it('list plugins', async () => {

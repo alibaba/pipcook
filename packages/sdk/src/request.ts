@@ -2,7 +2,7 @@ import * as qs from 'querystring';
 import axios, { AxiosRequestConfig } from 'axios';
 import EventSource from 'eventsource';
 import { promisify } from 'util';
-import fs, { ReadStream } from 'fs-extra';
+import { ReadStream } from 'fs-extra';
 import FormData from 'form-data';
 
 export type RequestParams = Record<string, any>;
@@ -28,7 +28,12 @@ export const post = async (host: string, body?: RequestParams, params?: RequestP
 export const put = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig) => createGeneralRequest(axios.put)(host, body, params, config);
 export const del = async (host: string) => createGeneralRequest(axios.delete)(host);
 export const get = async (host: string, params?: RequestParams, config?: AxiosRequestConfig) => {
-  const uri = `${host}?${qs.stringify(params)}`;
+  let uri: string;
+  if (params) {
+    uri = `${host}?${qs.stringify(params)}`;
+  } else {
+    uri = host;
+  }
   return createGeneralRequest(axios.get)(uri, config);
 };
 
@@ -81,7 +86,6 @@ export const listen = async (host: string, params?: RequestParams, handlers?: Re
         handlers.error(e);
       }
     };
-
     es.addEventListener('error', onerror);
     es.addEventListener('session', (e: MessageEvent) => {
       if (e.data === 'close') {
@@ -102,7 +106,6 @@ export const listen = async (host: string, params?: RequestParams, handlers?: Re
         resolve(es);
       }
     });
-
     // register extra handlers.
     Object.keys(handlers)
       // handle `handlers.error` manually.

@@ -18,6 +18,7 @@ import {
   PluginSource,
   CondaConfig
 } from './index';
+import { pipe, LogStdio } from './utils';
 
 import { get, RequestPromiseOptions } from 'request-promise';
 import Debug from 'debug';
@@ -51,26 +52,6 @@ interface InstallOptions {
   stdout: Writable;
   // install process stderr
   stderr: Writable;
-}
-
-interface LogStdio {
-  stdout: Writable;
-  stderr: Writable;
-}
-
-/**
- * pipe a stream to another one, we fork multi child processes serially here,
- * Readable.pipi() will close the target pipe when end, we should ignore the end event.
- * @param readable child process stdout/stderr
- * @param writable the log stream
- */
-function pipe(readable: Readable, writable: Writable): void {
-  readable.on('error', (err) => {
-    writable.emit('error', err);
-  });
-  readable.on('data', (data) => {
-    writable.write(data);
-  });
 }
 
 function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio: LogStdio): Promise<string> {
@@ -408,7 +389,7 @@ export class CostaRuntime {
     if (args?.customEnv) {
       throw new TypeError('"customEnv" is not allowed here.');
     }
-    const runnable = new PluginRunnable(this, args.id);
+    const runnable = new PluginRunnable(this, args?.logger, args?.id);
     const pluginNodePath = path.join(this.options.installDir, 'node_modules');
     await runnable.bootstrap({
       customEnv: {

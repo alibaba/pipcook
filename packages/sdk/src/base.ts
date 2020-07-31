@@ -1,5 +1,5 @@
 import { listen } from './request';
-import { LogCallback } from './interface';
+import { EventCallback } from './interface';
 
 export class BaseApi {
   route: string;
@@ -9,21 +9,22 @@ export class BaseApi {
   }
 
   /**
-   * listen log
-   * @param logId log id
-   * @param logCallback log callback
+   * trace event
+   * @param eventId event id
+   * @param eventCallback event callback
    */
-  async log(logId: string, logCallback: LogCallback) {
+  traceEvent(eventId: string, eventCallback: EventCallback): Promise<void> {
     return new Promise((resolve, reject) => {
-      listen(`${this.route}/log/${logId}`, undefined, {
+      // TODO(feely): listen all event and transfer out
+      listen(`${this.route}/event/${eventId}`, undefined, {
         'log': (e: MessageEvent) => {
-          const logObj = JSON.parse(e.data);
-          if (logCallback) {
-            logCallback(logObj.level, logObj.data);
+          const eventObj = JSON.parse(e.data);
+          if (typeof eventCallback === 'function') {
+            eventCallback('log', eventObj);
           }
         },
         'error': (e: MessageEvent) => {
-            reject(e.data);
+          reject(e.data);
         },
         'close': () => {
           resolve();

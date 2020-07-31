@@ -8,7 +8,7 @@ export {
   JobRunOption,
   PipelineInstallOption,
   PluginResp,
-  PluginInstallingResp
+  TraceResp
 } from './interface';
 
 /**
@@ -26,7 +26,7 @@ export class PipcookClient {
    * @param port the port
    */
   constructor(protocolWithHostname: string, port = 6927) {
-    const url = `${protocolWithHostname}:${port}`;
+    const url = `${protocolWithHostname}:${port}/api`;
     this.pipeline = new Pipeline(url);
     this.job = new Job(url);
     this.plugin = new Plugin(url);
