@@ -422,7 +422,6 @@ PyObject *PythonObject::Cast(Napi::Env env, Object value,
                              bool finalizeFuncType) {
   auto names = value.GetPropertyNames();
   auto dict = PyDict_New();
-  auto isKwargs = IsKwargs(value);
 
   for (uint32_t i = 0; i < names.Length(); i++) {
     std::string nameStr = names.Get(i).As<String>();
@@ -435,7 +434,7 @@ PyObject *PythonObject::Cast(Napi::Env env, Object value,
     PyDict_SetItemString(dict, nameStr.c_str(), val);
   }
 
-  if (isKwargs) {
+  if (IsKwargs(value)) {
     // FIXME(yorkie): just return a dict object if it's for kwargs.
     return dict;
   }
