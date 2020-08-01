@@ -59,7 +59,7 @@ The project provides subprojects including machine learning pipeline framework, 
 - train their models and serve them.
 - optimize own models for better model evaluation results, like higher accuracy for image classification.
 
-> If you are in the above conditions, just try it via [installation guide](INSTALL.md).
+> If you are in the above conditions, just try it via [installation guide](docs/INSTALL.md).
 
 ### Subprojects
 
