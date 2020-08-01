@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-tfjs-text-lstm-model-define",
-  "version": "1.0.6-alpha.1",
+  "version": "1.0.6-alpha.2",
   "description": "The Pipcook plugin to create text",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "Yorkie Liu <yorkiefixer@gmail.com>",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^1.0.6-alpha.1",
+    "@pipcook/pipcook-core": "^1.0.6-alpha.2",
     "@tensorflow/tfjs-node-gpu": "1.7.0",
     "hanzi-tools": "^1.2.25",
     "node-pre-gyp": "^0.15.0"

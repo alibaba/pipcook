@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-fasttext-data-collect",
-  "version": "1.0.6-alpha.1",
+  "version": "1.0.6-alpha.2",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
