@@ -52,7 +52,10 @@ function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
   });
 }
 
-const runnableMap: Record<string, PluginRunnable> = {};
+const runnableMap: Record<string, {
+  data: PluginRunnable,
+  model: PluginRunnable
+}> = {};
 
 @provide('pipelineService')
 export class PipelineService {
@@ -174,9 +177,13 @@ export class PipelineService {
   }
 
   async startJob(job: JobModel, cwd: string, plugins: Partial<Record<PluginTypeI, PluginInfo>>) {
-    const runnable = await this.pluginManager.createRunnable(job.id);
+    const dataRunnable = await this.pluginManager.createRunnable(job.id);
+    const modelRunnable = await this.pluginManager.createRunnable(job.id);
     // save the runnable object
-    runnableMap[job.id] = runnable;
+    runnableMap[job.id] = {
+      data: dataRunnable,
+      model: modelRunnable
+    };
 
     const getParams = (params: string | null, ...extra: object[]): object => {
       if (params == null) {
@@ -187,7 +194,7 @@ export class PipelineService {
     };
     const verifyPlugin = (name: string): void => {
       if (!plugins[name]) {
-        runnableMap[job.id].destroy();
+        ['data', 'model'].forEach(type => runnableMap[job.id][type].destroy());
         throw new TypeError(`"${name}" plugin is required`);
       }
     };
@@ -199,31 +206,31 @@ export class PipelineService {
     try {
       verifyPlugin('dataCollect');
       const dataDir = path.join(this.pluginManager.datasetRoot, `${plugins.dataCollect.plugin.name}@${plugins.dataCollect.plugin.version}`);
-      const modelPath = path.join(runnable.workingDir, 'model');
+      const modelPath = path.join(dataRunnable.workingDir, 'model');
 
       // ensure the model dir exists
       await fs.ensureDir(modelPath);
 
       // run dataCollect to download dataset.
-      await runnable.start(plugins.dataCollect.plugin, getParams(plugins.dataCollect.params, {
+      await dataRunnable.start(plugins.dataCollect.plugin, getParams(plugins.dataCollect.params, {
         dataDir
       }));
 
       verifyPlugin('dataAccess');
-      const dataset = await runnable.start(plugins.dataAccess.plugin, getParams(plugins.dataAccess.params, {
+      const dataset = await dataRunnable.start(plugins.dataAccess.plugin, getParams(plugins.dataAccess.params, {
         dataDir
       }));
 
       let datasetProcess: PluginPackage;
       if (plugins.datasetProcess) {
         datasetProcess = plugins.datasetProcess.plugin;
-        await runnable.start(plugins.datasetProcess.plugin, dataset, getParams(plugins.datasetProcess.params));
+        await dataRunnable.start(plugins.datasetProcess.plugin, dataset, getParams(plugins.datasetProcess.params));
       }
 
       let dataProcess: PluginPackage;
       if (plugins.dataProcess) {
         dataProcess = plugins.dataProcess.plugin;
-        await runnable.start(plugins.dataProcess.plugin, dataset, getParams(plugins.dataProcess.params));
+        await dataRunnable.start(plugins.dataProcess.plugin, dataset, getParams(plugins.dataProcess.params));
       }
 
       let model: RunnableResponse;
