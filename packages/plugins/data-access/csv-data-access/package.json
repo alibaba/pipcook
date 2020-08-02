@@ -19,7 +19,7 @@
     "@pipcook/pipcook-core": "^1.0.5",
     "csv-parse": "^4.8.8",
     "glob": "^7.1.6",
-    "glob-promise": "^3.4.0",
+    "glob-promise": "^3.4.0"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
