@@ -10,11 +10,11 @@ import {
   compressTarFile,
   getModelDir,
   transformCsv,
-  getOsInfo
+  getOsInfo,
+  generateId
 } from './public';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { generate } from 'shortid';
 import { constants } from '..';
 import { platform } from 'os';
 
@@ -23,7 +23,7 @@ const xml2js = require('xml2js');
 describe('public utils', () => {
   it('should generate correct coco json from pascal voc format', async () => {
     const dir = process.cwd();
-    const file = generate();
+    const file = generateId();
     await createAnnotationFromJson(dir, {
       annotation: {
         folder: [
@@ -125,7 +125,7 @@ describe('public utils', () => {
 
 describe('test compress utils', () => {
   it('compress dir to tmp dir', async () => {
-    const tarFilename = path.join(constants.PIPCOOK_TMPDIR, generate() + '.tar');
+    const tarFilename = path.join(constants.PIPCOOK_TMPDIR, generateId() + '.tar');
     await compressTarFile(__filename, tarFilename);
     expect(await fs.pathExists(tarFilename)).toEqual(true);
     await fs.remove(tarFilename);
@@ -162,10 +162,23 @@ describe('test downloading utils', () => {
     await fs.remove(tmpDir2);
   }, TIMEOUT);
   it('test if remote file was downloaded', async () => {
-    const jsonFile = path.join(constants.PIPCOOK_TMPDIR, generate() + '.json');
+    const jsonFile = path.join(constants.PIPCOOK_TMPDIR, generateId() + '.json');
     await download('https://raw.githubusercontent.com/DavidCai1993/chinese-poem-generator.js/master/test/data/poet.song.91000.json', jsonFile);
     expect(await fs.pathExists(jsonFile)).toBe(true);
     const stats = await fs.stat(jsonFile);
     expect(stats.size).toBeGreaterThan(0);
+  });
+});
+
+describe('test id utils', () => {
+  it('id generator', async () => {
+    const id = generateId();
+    expect(typeof id).toEqual('string');
+    expect(id.length).toEqual(8);
+    for(let i = 0; i < id.length; ++i) {
+      const c = id.charCodeAt(i);
+      expect(c >= 'a'.charCodeAt(0) && c <= 'z'.charCodeAt(0)
+        || c >= '0'.charCodeAt(0) && c <= '9'.charCodeAt(0)).toBe(true);
+    }
   });
 });
