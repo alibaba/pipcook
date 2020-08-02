@@ -175,7 +175,7 @@ describe('test id utils', () => {
     const id = generateId();
     expect(typeof id).toEqual('string');
     expect(id.length).toEqual(8);
-    for(let i = 0; i < id.length; ++i) {
+    for (let i = 0; i < id.length; ++i) {
       const c = id.charCodeAt(i);
       expect(c >= 'a'.charCodeAt(0) && c <= 'z'.charCodeAt(0)
         || c >= '0'.charCodeAt(0) && c <= '9'.charCodeAt(0)).toBe(true);
