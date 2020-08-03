@@ -1,67 +1,60 @@
-import { get, getFile } from './request';
-import { tunaMirrorURI } from './utils';
-import { JobModel, JobRunOption } from './interface';
+import { get, getFile, del, post } from './request';
+import { BaseApi } from './base';
+import { JobResp, TraceResp } from './interface';
 
 /**
  * API for job
  */
-export class Job {
-  route: string;
+export class Job extends BaseApi {
   constructor(url: string) {
-    this.route = `${url}/job`;
+    super(`${url}/job`);
   }
 
   /**
    * list all jobs
    */
-  async list(): Promise<JobModel[]> {
-    const jobs = await get(`${this.route}/list`);
-    return jobs.rows;
-  }
-
-  // TODO(feely): support remove by id
-  /**
-   * remove all jobs
-   */
-  async remove(): Promise<number> {
-    return await get(`${this.route}/remove`);
+  list(): Promise<JobResp[]> {
+    return get(this.route);
   }
 
   /**
-   * stop job by id
-   * @param id job id
+   * remove pipeline by id, if the id is undefined remove all
+   * @param id pipline id or undefined
    */
-  async stop(id: string): Promise<void> {
-    await get(`${this.route}/stop`, { id });
-  }
-
-  /**
-   * get job log
-   * @param id job id
-   */
-  async log(id: string): Promise<any> {
-    return await get(`${this.route}/${id}/log`);
+  remove(id?: string): Promise<void> {
+    return del(`${this.route}/${id ? id : ''}`);
   }
 
   /**
    * get job info by job id
    * @param id job id
    */
-  async info(id: string): Promise<JobModel> {
-    return await get(`${this.route}/${id}`);
+  info(id: string): Promise<JobResp> {
+    return get(`${this.route}/${id}`);
+  }
+
+  /**
+   * cancel job by id
+   * @param id job id
+   */
+  cancel(id: string): Promise<void> {
+    return post(`${this.route}/${id}/cancel`);
+  }
+
+  /**
+   * get job log
+   * @param id job id
+   */
+  log(id: string): Promise<any> {
+    return get(`${this.route}/${id}/log`);
   }
 
   /**
    * start to run a pipeline by pipeline id
-   * @param opts piplineId: pipeline id, tuna: is using tuna mirror, timeout: query timeout
+   * @param piplineId pipeline id
    */
-  async run(opts: JobRunOption): Promise<JobModel> {
-    const prarms = {
-      pipelineId: opts.pipelineId,
-      verbose: '0',
-      pyIndex: opts.tuna ? tunaMirrorURI : undefined
-    };
-    return await get(`${this.route}/run`, prarms, { timeout: opts.timeout ? opts.timeout : 180 * 1000 });
+  run(pipelineId: string): Promise<TraceResp<JobResp>> {
+    return post(`${this.route}`, { pipelineId });
   }
 
   // TODO(feely): browser not working
@@ -70,7 +63,7 @@ export class Job {
    * you should check the job status before downloading
    * @param id job id
    */
-  async downloadOutput(id: string): Promise<NodeJS.ReadStream> {
-    return getFile(`${this.route}/${id}/output.tar.gz`);
+  downloadOutput(id: string): Promise<NodeJS.ReadStream> {
+    return getFile(`${this.route}/${id}/output`);
   }
 }

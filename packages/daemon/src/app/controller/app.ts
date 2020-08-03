@@ -1,24 +1,19 @@
-import { Context, controller, inject, provide, post } from 'midway';
+import { controller, inject, provide, post } from 'midway';
+import { BaseController } from './base';
 import { AppService } from '../../service/app';
-import { successRes } from '../../utils/response';
 
 @provide()
 @controller('/app')
-export class AppController {
-  @inject()
-  ctx: Context;
-
+export class AppController extends BaseController {
   @inject('AppService')
   AppService: AppService;
 
   @post('/compile')
   public async compile() {
     const result = await this.AppService.compile(this.ctx.request.body.src as string);
-    successRes(this.ctx, {
-      data: {
-        pipelines: result.pipelines,
-        executableSource: result.executableSource
-      }
+    this.success({
+      pipelines: result.pipelines,
+      executableSource: result.executableSource
     });
   }
 }

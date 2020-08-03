@@ -1,20 +1,11 @@
-import { provide, inject } from 'midway';
+import { provide, inject, Context } from 'midway';
 import { generate } from 'shortid';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
+import { PluginStatus } from '@pipcook/pipcook-core';
 import { LogManager, LogObject } from './log-manager';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
-import { PluginInstallingResp, PluginResp } from '../interface';
-
-class PluginNotFound extends TypeError {
-  status: number;
-  plugin: string;
-  constructor(name: string) {
-    super(`cannot find the plugin "${name}"`);
-    this.plugin = name;
-    this.status = 400;
-  }
-}
+import { PluginResp, TraceResp } from '../interface';
 
 interface ListPluginsFilter {
   datatype?: string;
@@ -23,6 +14,9 @@ interface ListPluginsFilter {
 
 @provide('pluginManager')
 export class PluginManager {
+
+  @inject()
+  ctx: Context;
 
   @inject('logManager')
   logManager: LogManager;
@@ -37,36 +31,39 @@ export class PluginManager {
     return this.pluginRT.costa.options.datasetDir;
   }
 
-  async fetch(name: string, cwd?: string): Promise<PluginPackage> {
-    return this.pluginRT.costa.fetch(name, cwd);
+  async fetch(name: string): Promise<PluginPackage> {
+    return this.pluginRT.costa.fetch(name);
   }
 
   async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
     return this.pluginRT.costa.fetchByStream(stream);
   }
 
-  async fetchAndInstall(name: string, cwd?: string, pyIndex?: string): Promise<PluginPackage> {
-    const pkg = await this.fetch(name, cwd);
+  async fetchAndInstall(name: string, log: LogObject, pyIndex?: string): Promise<PluginPackage> {
+    const pkg = await this.fetch(name);
     const plugin = await this.findOrCreateByPkg(pkg);
-    try {
-      await this.install(pkg, { pyIndex, force: false, stdout: process.stdout, stderr: process.stderr });
-    } catch (err) {
-      this.removeById(plugin.id);
-      throw err;
+    if (plugin.status !== PluginStatus.INSTALLED) {
+      try {
+        await this.install(pkg, { pyIndex, force: false, stdout: log.stdout, stderr: log.stderr });
+        this.setStatusById(plugin.id, PluginStatus.INSTALLED);
+      } catch (err) {
+        this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
+        throw err;
+      }
     }
     return pkg;
   }
 
-  async createRunnable(id: string): Promise<PluginRunnable> {
-    return this.pluginRT.costa.createRunnable({ id } as BootstrapArg);
+  async createRunnable(id: string, logger: LogObject): Promise<PluginRunnable> {
+    return this.pluginRT.costa.createRunnable({ id, logger } as BootstrapArg);
   }
 
   async list(filter?: ListPluginsFilter): Promise<PluginModel[]> {
     const where = {} as any;
-    if (filter.category) {
+    if (filter?.category) {
       where.category = filter.category;
     }
-    if (filter.datatype) {
+    if (filter?.datatype) {
       where.datatype = filter.datatype;
     }
     return this.model.findAll({ where });
@@ -91,6 +88,16 @@ export class PluginManager {
     return this.model.destroy({ where: { id } });
   }
 
+  async setStatusById(id: string, status: PluginStatus, errMsg?: string): Promise<number> {
+    const [ count ] = await this.model.update({
+      status,
+      error: errMsg
+    }, {
+      where: { id }
+    });
+    return count;
+  }
+
   async findOrCreateByPkg(pkg: PluginPackage): Promise<PluginModel> {
     const [ plugin ] = await this.model.findOrCreate({
       where: {
@@ -103,7 +110,8 @@ export class PluginManager {
         version: pkg.version,
         category: pkg.pipcook.category,
         datatype: pkg.pipcook.datatype,
-        dest: pkg.pipcook.target.DESTPATH
+        dest: pkg.pipcook.target.DESTPATH,
+        status: PluginStatus.INSTALLING
       }
     });
     return plugin;
@@ -119,38 +127,51 @@ export class PluginManager {
     }
   }
 
-  async uninstall(name: string): Promise<void> {
-    const { costa } = this.pluginRT;
-    const plugins = await this.model.findAll({
-      where: { name }
-    });
-    if (plugins.length === 0) {
-      throw new PluginNotFound(name);
+  async installAsync(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
+    const logger = await this.logManager.create();
+    const plugin = await this.findOrCreateByPkg(pkg);
+    if (plugin.status !== PluginStatus.INSTALLED) {
+      process.nextTick(async () => {
+        try {
+          await this.install(pkg, { pyIndex, force, stdout: logger.stdout, stderr: logger.stderr });
+          this.setStatusById(plugin.id, PluginStatus.INSTALLED);
+          this.logManager.destroy(logger.id);
+        } catch (err) {
+          this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
+          console.error('install plugin error', err.message);
+          this.logManager.destroy(logger.id, err);
+        }
+      });
     }
-    await plugins.map(async (plugin: PluginModel) => {
+    return { ...(plugin.toJSON() as PluginResp), traceId: logger.id };
+  }
+  /**
+   * install by package name or tarball url or git url
+   * @param pkgName string package name, tarball url, git url
+   * @param pyIndex string python package index
+   * @param force boolean if true, the installed plugin will be reinstall
+   */
+  async installByName(pkgName: string, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
+    const pkg = await this.fetch(pkgName);
+    return this.installAsync(pkg, pyIndex, force);
+  }
+
+  async uninstall(plugin: PluginModel | PluginModel[]): Promise<void> {
+    const { costa } = this.pluginRT;
+    if (Array.isArray(plugin)) {
+      const names = plugin.map(singlePlugin => singlePlugin.name);
+      await costa.uninstall(names);
+      plugin.forEach(async (singlePlugin) => {
+        await singlePlugin.destroy();
+      });
+    } else {
       await costa.uninstall(plugin.name);
       await plugin.destroy();
-    });
+    }
   }
 
-  async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<PluginInstallingResp> {
-    const logObject = this.logManager.create();
+  async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const pkg = await this.fetchByStream(tarball);
-    const plugin = await this.findOrCreateByPkg(pkg);
-    process.nextTick(async () => {
-      try {
-        await this.install(pkg, { pyIndex, force, stdout: logObject.stdout, stderr: logObject.stderr });
-        this.logManager.destroy(logObject.id);
-      } catch (err) {
-        this.removeById(plugin.id);
-        console.error('install plugin from tarball error', err.message);
-        this.logManager.destroy(logObject.id, err);
-      }
-    });
-    return { ...(plugin.toJSON() as PluginResp), logId: logObject.id };
-  }
-
-  getInstallLog(id: string): LogObject {
-    return this.logManager.get(id);
+    return this.installAsync(pkg, pyIndex, force);
   }
 }

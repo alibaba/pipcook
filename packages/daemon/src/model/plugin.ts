@@ -17,6 +17,8 @@ export class PluginModel extends Model {
   readonly datatype: string;
   readonly namespace: string;
   readonly dest: string;
+  readonly status: number;
+  readonly error: string;
 }
 
 export type PluginModelStatic = typeof Model & {
@@ -48,6 +50,12 @@ export default async function model(context: IApplicationContext): Promise<Plugi
       type: STRING
     },
     dest: {
+      type: STRING
+    },
+    status: {
+      type: STRING
+    },
+    error: {
       type: STRING
     }
   }) as PluginModelStatic;

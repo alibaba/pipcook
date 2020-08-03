@@ -1,229 +1,191 @@
-
-import { constants, PipelineDB } from '@pipcook/pipcook-core';
-import { Context, controller, inject, provide, post, get, put, del } from 'midway';
+import { constants, PipelineDB, PluginStatus } from '@pipcook/pipcook-core';
+import { controller, inject, provide, post, get, put, del } from 'midway';
+import * as HttpStatus from 'http-status';
+import * as Joi from 'joi';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
 import { parseConfig } from '../../runner/helper';
-import { successRes, failRes } from '../../utils/response';
+import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
-import { LogManager } from '../../service/log-manager';
-import ServerSentEmitter from '../../utils/emitter';
+import { LogObject } from '../../service/log-manager';
+import { PluginResp } from '../../interface';
 const debug = Debug('daemon.app.pipeline');
 
-@provide()
-@controller('/pipeline')
-export class PipelineController {
-  @inject()
-  ctx: Context;
+const createSchema = Joi.object({
+  name: Joi.string(),
+  config: Joi.object(),
+  configUri: Joi.string(),
+}).without('config', 'configUri').or('config', 'configUri');
 
+const listSchema = Joi.object({
+  offset: Joi.number().min(0),
+  limit: Joi.number().min(1)
+});
+
+@provide()
+@controller('/api/pipeline')
+export class PipelineController extends BaseEventController {
   @inject('pipelineService')
   pipelineService: PipelineService;
 
   @inject('pluginManager')
   pluginManager: PluginManager;
 
-  @inject('logManager')
-  logManager: LogManager;
-
-  @post('')
+  /**
+   * create pipeline
+   */
+  @post()
   public async create() {
-    const { ctx } = this;
-    try {
-      const { name, isFile = true } = ctx.request.body;
-      let { config } = ctx.request.body;
-      if (!isFile && typeof config !== 'object') {
-        config = JSON.parse(config);
-      }
-      const parsedConfig = await parseConfig(config);
-      if (typeof name === 'string') {
-        parsedConfig.name = name;
-      }
-      const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-      successRes(ctx, {
-        message: 'create pipeline successfully',
-        data: pipeline
-      }, 201);
-    } catch (err) {
-      failRes(ctx, {
-        message: err.message
-      });
-    }
+    this.validate(createSchema, this.ctx.request.body);
+    const { name, configUri, config } = this.ctx.request.body;
+    const parsedConfig = await parseConfig(configUri || config);
+    parsedConfig.name = name;
+    const pipeline = await this.pipelineService.createPipeline(parsedConfig);
+    this.success(pipeline, HttpStatus.CREATED);
   }
 
-  @get('/list')
+  /**
+   * list pipelines
+   */
+  @get()
   public async list() {
+    this.validate(listSchema, this.ctx.query);
     const { offset, limit } = this.ctx.query;
-    try {
-      const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
-      successRes(this.ctx, {
-        message: 'get pipeline successfully',
-        data: pipelines,
-      });
-    } catch (err) {
-      failRes(this.ctx, {
-        message: err.message
-      });
-    }
+    const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
+    this.success(pipelines.rows);
   }
 
-  @del('')
+  /**
+   * delete all pipelines
+   */
+  @del()
   public async remove() {
-    try {
-      const count = await this.pipelineService.removePipelines();
-      successRes(this.ctx, {
-        message: 'get pipeline successfully',
-        data: count
-      });
-    } catch (err) {
-      failRes(this.ctx, {
-        message: err.message
-      });
-    }
+    await this.pipelineService.removePipelines();
+    this.success();
   }
 
+  /**
+   * delete pipeline by id
+   */
   @del('/:id')
   public async removeOne() {
     const { id } = this.ctx.params;
-    try {
-      const count = await this.pipelineService.removePipelineById(id);
-      if (count > 0) {
-        successRes(this.ctx, {
-          message: 'remove pipeline successfully',
-          data: count
-        });
-      } else {
-        failRes(this.ctx, {
-          message: 'remove pipeline error, id not exists',
-        });
-      }
-    } catch (err) {
-      failRes(this.ctx, {
-        message: err.message
-      });
+    const count = await this.pipelineService.removePipelineById(id);
+    if (count > 0) {
+      this.success();
+    } else {
+      this.ctx.throw('remove pipeline error, id not exists', HttpStatus.NOT_FOUND);
     }
   }
 
-  @get('/info/:id')
+  /**
+   * find a pipeline by id
+   */
+  @get('/:id')
   public async get() {
     const { id } = this.ctx.params;
     const json = { plugins: {} } as any;
 
-    try {
-      const pipeline = await this.pipelineService.getPipeline(id);
-      if (!pipeline) {
-        throw new Error('pipeline not found');
-      }
-      const updatePluginNode = (name: string): void => {
-        if (typeof pipeline[name] === 'string') {
-          const params = pipeline[`${name}Params`];
-          json.plugins[name] = {
-            name: pipeline[name],
-            params: params != null ? JSON.parse(params) : undefined
-          };
-        }
-      };
-      updatePluginNode('dataCollect');
-      updatePluginNode('dataAccess');
-      updatePluginNode('dataProcess');
-      updatePluginNode('modelDefine');
-      updatePluginNode('modelLoad');
-      updatePluginNode('modelTrain');
-      updatePluginNode('modelEvaluate');
-
-      // update the `name` node
-      if (pipeline.name) {
-        json.name = pipeline.name;
-      }
-
-      successRes(this.ctx, {
-        data: json
-      });
-    } catch (err) {
-      failRes(this.ctx, {
-        message: err.message
-      });
+    const pipeline = await this.pipelineService.getPipeline(id);
+    if (!pipeline) {
+      this.ctx.throw('pipeline not found', HttpStatus.NOT_FOUND);
     }
+    const updatePluginNode = (name: string): void => {
+      if (typeof pipeline[name] === 'string') {
+        const params = pipeline[`${name}Params`];
+        json.plugins[name] = {
+          name: pipeline[name],
+          params: params != null ? JSON.parse(params) : undefined
+        };
+      }
+    };
+    updatePluginNode('dataCollect');
+    updatePluginNode('dataAccess');
+    updatePluginNode('dataProcess');
+    updatePluginNode('modelDefine');
+    updatePluginNode('modelLoad');
+    updatePluginNode('modelTrain');
+    updatePluginNode('modelEvaluate');
+
+    // update the `name` node
+    if (pipeline.name) {
+      json.name = pipeline.name;
+    }
+
+    this.success(json);
   }
 
+  /**
+   * update pipeline from config
+   */
   @put('/:id')
   public async update() {
-    const { ctx } = this;
-    const { id } = ctx.params;
-    try {
-      const { isFile = true } = ctx.request.body;
-      let { config } = ctx.request.body;
-      if (!isFile && typeof config !== 'object') {
-        config = JSON.parse(config);
-      }
-      const parsedConfig = await parseConfig(config, false);
-      const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
-      successRes(ctx, {
-        message: 'update pipeline successfully',
-        data
-      });
-    } catch (err) {
-      failRes(ctx, {
-        message: err.message
-      });
+    const { id } = this.ctx.params;
+    this.validate(createSchema, this.ctx.request.body);
+    const { config } = this.ctx.request.body;
+    const parsedConfig = await parseConfig(config, false);
+    const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
+    if (!data) {
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
     }
+    this.success(data);
   }
 
-  @get('/:id/install')
+  /**
+   * start the installation process by id
+   */
+  @post('/:id/installation')
   public async installById() {
-    const { pyIndex, cwd } = this.ctx.query;
+    const { pyIndex } = this.ctx.query;
     const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
-    return this.install(pipeline, pyIndex, cwd);
-  }
-
-  @get('/install')
-  public async installByConfig() {
-    const { config, pyIndex, cwd } = this.ctx.query;
-    const pipeline = await parseConfig(config);
-    return this.install(pipeline, pyIndex, cwd);
-  }
-
-  private async install(pipeline: PipelineDB, pyIndex?: string, cwd?: string) {
-    const sse = new ServerSentEmitter(this.ctx);
-    const log = this.logManager.create();
-    log.stderr.on('data', (data) => {
-      sse.emit('log', { level: 'warn', data });
-    });
-    log.stdout.on('data', (data) => {
-      sse.emit('log', { level: 'info', data });
-    });
-    log.stderr.on('error', (err) => {
-      sse.emit('error', err.message);
-    });
-    try {
-      for (const type of constants.PLUGINS) {
-        if (!pipeline[type]) {
-          continue;
-        }
-        debug(`start installation: ${type}`);
-        const pkg = await this.pluginManager.fetch(pipeline[type], cwd);
-        sse.emit('info', pkg);
-
-        debug(`installing ${pipeline[type]}.`);
-        const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
+    const log = await this.logManager.create();
+    if (pipeline) {
+      process.nextTick(async () => {
         try {
-          await this.pluginManager.install(pkg, {
-            pyIndex,
-            force: false,
-            stdout: log.stdout,
-            stderr: log.stderr
-          });
-          sse.emit('installed', pkg);
+          await this.install(pipeline, log, pyIndex);
+          this.logManager.destroy(log.id);
         } catch (err) {
-          this.pluginManager.removeById(plugin.id);
-          throw err;
+          this.logManager.destroy(log.id, err);
         }
-      }
-      sse.emit('finished', pipeline);
-      this.logManager.destroy(log.id);
-    } catch (err) {
-      this.logManager.destroy(log.id, err);
-    } finally {
-      sse.finish();
+      });
+      this.success({ ...(pipeline.toJSON() as PluginResp), traceId: log.id });
+    } else {
+      this.ctx.throw('no pipeline found', HttpStatus.NOT_FOUND);
     }
+  }
+
+  private async install(pipeline: PipelineDB, log: LogObject, pyIndex?: string): Promise<void> {
+    for (const type of constants.PLUGINS) {
+      if (!pipeline[type]) {
+        continue;
+      }
+      debug(`start installation: ${type}`);
+      const pkg = await this.pluginManager.fetch(pipeline[type]);
+      log.stdout.writeLine(`start to install plugin ${pkg.name}@${pkg.version}`);
+
+      debug(`installing ${pipeline[type]}.`);
+      const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
+      try {
+        await this.pluginManager.install(pkg, {
+          pyIndex,
+          force: false,
+          stdout: log.stdout,
+          stderr: log.stderr
+        });
+        this.pluginManager.setStatusById(plugin.id, PluginStatus.INSTALLED);
+        log.stdout.writeLine(`install plugin ${pkg.name}@${pkg.version} successfully`);
+      } catch (err) {
+        this.pluginManager.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
+        throw err;
+      }
+    }
+  }
+
+  /**
+   * trace event
+   */
+  @get('/event/:traceId')
+  public async traceEvent() {
+    await this.traceEventImpl();
   }
 }
