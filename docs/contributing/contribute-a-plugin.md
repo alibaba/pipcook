@@ -78,6 +78,11 @@ And anyone could try your plugin via the following command:
 $ pipcook plugin install your-pipcook-plugin-name
 ```
 
+## Database
+
+If your modification involves `Database` structure, you need to write a migration script under `daemon/src/migrations`.
+For more detail about it, please refer to [Migration](https://sequelize.org/master/manual/migrations.html).
+
 ## Awesome Pipcook Plugins
 
 Below is the awesome list of Pipcook plugins, we welcome third-party plugin contributors to update this list via GitHub Pull Request.

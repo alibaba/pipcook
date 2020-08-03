@@ -51,7 +51,8 @@
     "compile": "midway-bin build -c --port=6927",
     "clean": "rm -rf src/app/public",
     "test": "midway-bin test --ts --full-trace",
-    "postinstall": "npx sequelize-cli db:migrate:undo"
+    "migration": "npx sequelize-cli db:migrate",
+    "undo-migration": "npx sequelize-cli db:migrate:undo"
   },
   "ci": {
     "version": "10"
