@@ -21,6 +21,7 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
+    "preinstall": "lerna clean --yes",
     "postinstall": "lerna bootstrap",
     "build": "lerna run compile",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
