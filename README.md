@@ -132,7 +132,7 @@ See [here](./example) for complete list, and it's easy and quick to run these ex
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ pipcook run ./examples/pipelines/mnist-image-classification.json
+$ pipcook run ./example/pipelines/mnist-image-classification.json
 ```
 
 After the above pipeline is completed, you have already trained a model at the current `output` directory, it's an independent NPM package and can be easily integrated in your existing system, to start a simple inference server locally, just run:
