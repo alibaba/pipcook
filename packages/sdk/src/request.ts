@@ -10,7 +10,7 @@ export type ResponseParams = Record<string, any>;
 export interface FileDownloadResp {
   totalBytes: number;
   stream: NodeJS.ReadStream;
-};
+}
 
 axios.defaults.timeout = 5000;
 

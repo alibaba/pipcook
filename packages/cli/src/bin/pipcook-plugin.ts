@@ -76,7 +76,7 @@ async function uninstall(name: string, opts: any): Promise<void> {
     try {
       await client.plugin.remove(plugins[0].id);
       logger.success(`uninstalled ${name}`);
-    } catch(err) {
+    } catch (err) {
       logger.fail(err.message);
     }
   } else {

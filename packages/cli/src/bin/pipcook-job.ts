@@ -16,8 +16,8 @@ async function list(opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);
   const jobs = client.job.list();
   if ((await jobs).length > 0) {
-    console.table((await jobs).map( job => {
-      return { ...job, status: PipelineStatusStr[job.status] }
+    console.table((await jobs).map( (job) => {
+      return { ...job, status: PipelineStatusStr[job.status] };
     }), [ 'id', 'status', 'evaluatePass', 'createdAt' ]);
   } else {
     console.info('no job is created.');
@@ -41,8 +41,7 @@ async function stop(id: string, opts: any): Promise<void> {
   try {
     await client.job.cancel(id);
     logger.success('stop job succeeded');
-  }
-  catch (err) {
+  } catch (err) {
     logger.fail(err.message);
   }
 }
@@ -84,7 +83,7 @@ async function run(filename: string, opts: any): Promise<JobResp> {
     logger.info('start to create pipeline');
     const pipeline = await client.pipeline.create(config);
     logger.info(`pipeline is created: ${pipeline.id}, installing`);
-    const installingResp = await client.pipeline.install(pipeline.id, { pyIndex: opts.tuna ? tunaMirrorURI: undefined });
+    const installingResp = await client.pipeline.install(pipeline.id, { pyIndex: opts.tuna ? tunaMirrorURI : undefined });
     await client.pipeline.traceEvent(installingResp.traceId, logCallback);
     logger.info('pipeline installed successfully, start to run job');
     const jobRunning = await client.job.run(pipeline.id);
@@ -102,11 +101,12 @@ async function run(filename: string, opts: any): Promise<JobResp> {
   } catch (err) {
     logger.fail(`something wrong when running job: ${err.message}`);
   }
-};
+}
 
 export async function start(filename: string, opts: any): Promise<void> {
   await run(filename, opts);
 }
+
 async function runAndDownload (filename: string, opts: any) {
   const job = await run(filename, opts);
   const client = initClient(opts.host, opts.port);
@@ -114,24 +114,27 @@ async function runAndDownload (filename: string, opts: any) {
   logger.info(`start to download output to ${outputRootPath}`);
   // remove the output dir
   await fs.remove(outputRootPath);
-
-  // generate output
-  const fileDownloadResp = await client.job.downloadOutput(job.id);
-  const extract = tar.extract();
-  extract.on('entry', async (header, stream, next) => {
-    const dist = join(outputRootPath, header.name);
-    if (header.type === 'directory') {
-      await fs.mkdirp(dist);
-    } else if (header.type === 'file') {
-      stream.pipe(fs.createWriteStream(dist));
-    }
-    stream.on('end', next);
-    stream.resume();
-  });
-  extract.on('finish', () => {
-    logger.info('download finished');
-  });
-  fileDownloadResp.stream.pipe(createGunzip()).pipe(extract);
+  try {
+    // generate output
+    const fileDownloadResp = await client.job.downloadOutput(job.id);
+    const extract = tar.extract();
+    extract.on('entry', async (header, stream, next) => {
+      const dist = join(outputRootPath, header.name);
+      if (header.type === 'directory') {
+        await fs.mkdirp(dist);
+      } else if (header.type === 'file') {
+        stream.pipe(fs.createWriteStream(dist));
+      }
+      stream.on('end', next);
+      stream.resume();
+    });
+    extract.on('finish', () => {
+      logger.info('download finished');
+    });
+    fileDownloadResp.stream.pipe(createGunzip()).pipe(extract);
+  } catch (err) {
+    logger.fail(err.message);
+  }
 }
 
 program

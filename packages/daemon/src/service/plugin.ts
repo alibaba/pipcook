@@ -10,7 +10,7 @@ import { PluginResp, TraceResp } from '../interface';
 interface ListPluginsFilter {
   datatype?: string;
   category?: string;
-  name?: string
+  name?: string;
 }
 
 @provide('pluginManager')
