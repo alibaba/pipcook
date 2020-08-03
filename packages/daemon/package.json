@@ -52,7 +52,7 @@
     "clean": "rm -rf src/app/public",
     "test": "midway-bin test --ts --full-trace",
     "migration": "npx sequelize-cli db:migrate",
-    "undo-migration": "npx sequelize-cli db:migrate:undo"
+    "migration:undo": "npx sequelize-cli db:migrate:undo"
   },
   "ci": {
     "version": "10"
