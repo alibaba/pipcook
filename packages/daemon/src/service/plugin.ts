@@ -1,6 +1,6 @@
 import { provide, inject } from 'midway';
-import { generate } from 'shortid';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
+import { generateId } from '@pipcook/pipcook-core';
 import { LogManager, LogObject } from './log-manager';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
@@ -98,7 +98,7 @@ export class PluginManager {
         version: pkg.version
       },
       defaults: {
-        id: generate(),
+        id: generateId(),
         name: pkg.name,
         version: pkg.version,
         category: pkg.pipcook.category,
