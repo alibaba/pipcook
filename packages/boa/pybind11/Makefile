@@ -27,7 +27,6 @@ $(BUILD):
 	$(MD5CMD)
 	tar -C $(DOWNLOAD_DIR) -xf $(TARBALL)
 	mv $(ARCHIVE_DIR) $(BUILD)
-	rm -rf $(DOWNLOAD_DIR)
 
 clean:
 	rm -rf $(BUILD)
