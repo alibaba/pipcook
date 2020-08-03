@@ -95,13 +95,13 @@ describe('public utils', () => {
     expect(parsedData.annotation.filename[0]).toBe('test.jpg');
     expect(parsedData.annotation.folder[0]).toBe(annotationDir);
     expect(parsedData.annotation.object[0].name[0]).toBe('for-test');
-    fs.rmdir(annotationDir);
+    fs.remove(annotationDir);
   });
   it('test get the model path name', () => {
     const pathname = getModelDir('test');
     expect(pathname.endsWith('test/model')).toBe(true);
   });
-  it('test get the model path name', () => {
+  it('test transformCsv', () => {
     const strFromCsv = transformCsv('1, 2, "a", "b", 3.14, "2020-07-18 13:51:00", "img.jpg"');
     expect(strFromCsv).toBe('"1, 2, ""a"", ""b"", 3.14, ""2020-07-18 13:51:00"", ""img.jpg"""');
   });
