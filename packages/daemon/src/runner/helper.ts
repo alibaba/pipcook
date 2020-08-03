@@ -3,7 +3,6 @@
  */
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { generate } from 'shortid';
 import * as request from 'request-promise';
 import * as url from 'url';
 import {
@@ -11,6 +10,7 @@ import {
   PipelineDB,
   PipelineDBParams,
   constants,
+  generateId
 } from '@pipcook/pipcook-core';
 
 const { PLUGINS, PIPCOOK_LOGS } = constants;
@@ -41,12 +41,12 @@ async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> 
   }
 }
 
-export async function parseConfig(configPath: string | RunConfigI, generateId = true): Promise<PipelineDB> {
+export async function parseConfig(configPath: string | RunConfigI, isGenerateId = true): Promise<PipelineDB> {
   const configJson = await loadConfig(configPath);
   const result: PipelineDB = {};
 
-  if (generateId) {
-    result.id = generate();
+  if (isGenerateId) {
+    result.id = generateId();
   }
   if (configJson.name) {
     result.name = configJson.name;

@@ -54,7 +54,8 @@ export {
   getModelDir,
   convertPascal2CocoFileOutput,
   compressTarFile,
-  shuffle
+  shuffle,
+  generateId
 } from './utils/public';
 
 export { OutputType } from './constants/other';
