@@ -7,6 +7,10 @@ import FormData from 'form-data';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
+export interface FileDownloadResp {
+  totalBytes: number;
+  stream: NodeJS.ReadStream;
+};
 
 axios.defaults.timeout = 5000;
 
@@ -59,13 +63,14 @@ export const uploadFile = async (host: string, fileStream: ReadStream, params?: 
   }
 };
 
-export const getFile = async (host: string, params?: RequestParams): Promise<NodeJS.ReadStream> => {
+export const getFile = async (host: string, params?: RequestParams): Promise<FileDownloadResp> => {
   const resp = await axios({
     method: 'GET',
     url: `${host}?${qs.stringify(params)}`,
     responseType: 'stream'
   });
-  return resp.data as NodeJS.ReadStream;
+  const totalBytes = parseInt(resp.headers['content-length'], 10);
+  return { totalBytes, stream: resp.data as NodeJS.ReadStream };
 };
 
 export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {

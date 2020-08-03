@@ -25,7 +25,7 @@ export class PipcookClient {
    * @param protocolWithHostname the daemon hostname with protocol, like 'http://192.168.1.50'
    * @param port the port
    */
-  constructor(protocolWithHostname: string, port = 6927) {
+  constructor(protocolWithHostname= 'http://127.0.0.1', port = 6927) {
     const url = `${protocolWithHostname}:${port}/api`;
     this.pipeline = new Pipeline(url);
     this.job = new Job(url);

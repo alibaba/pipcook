@@ -75,7 +75,11 @@ export async function parseConfigFilename(filename: string): Promise<string> {
 
 export function initClient(host: string, port: number): PipcookClient {
   if (!client) {
-    client = new PipcookClient(`http://${host}`, port);
+    if (host) {
+      client = new PipcookClient(`http://${host}`, port);
+    } else {
+      client = new PipcookClient('http://127.0.0.1', port);
+    }
   }
   return client;
 }

@@ -98,7 +98,7 @@ program
   .command('install <name>')
   .description('install the given plugin.')
   .option('--tuna', 'use tuna mirror to install python packages')
-  .option('-h|--host <host>', 'the host of daemon', '127.0.0.1')
+  .option('-h|--host <host>', 'the host of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action((name: string, opts: any) => {
     install(name, opts);
@@ -106,7 +106,7 @@ program
 
 program
   .command('uninstall <name>')
-  .option('-h|--host <host>', 'the host of daemon', '127.0.0.1')
+  .option('-h|--host <host>', 'the host of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .description('uninstall the given plugin')
   .action(uninstall);
@@ -117,7 +117,7 @@ program
   .option('-c|--category <name>', 'the plugin category')
   .option('-d|--datatype <name>', 'the plugin datatype')
   .option('-n|--name <name>', 'the plugin package name')
-  .option('-h|--host <host>', 'the host of daemon', '127.0.0.1')
+  .option('-h|--host <host>', 'the host of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action(list);
 

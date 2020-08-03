@@ -1,4 +1,4 @@
-import { get, getFile, del, post } from './request';
+import { get, getFile, del, post, FileDownloadResp } from './request';
 import { BaseApi } from './base';
 import { JobResp, TraceResp } from './interface';
 
@@ -64,7 +64,7 @@ export class Job extends BaseApi {
    * you should check the job status before downloading
    * @param id job id
    */
-  downloadOutput(id: string): Promise<NodeJS.ReadStream> {
+  downloadOutput(id: string): Promise<FileDownloadResp> {
     return getFile(`${this.route}/${id}/output`);
   }
 }

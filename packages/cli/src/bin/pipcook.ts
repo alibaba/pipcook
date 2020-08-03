@@ -8,8 +8,8 @@ import { join } from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { pathExists } from 'fs-extra';
 
+import { start } from './pipcook-job';
 import init from '../actions/init';
-import start from '../actions/start';
 import serve from '../actions/serve';
 import board from '../actions/board';
 import devPlugin from '../actions/dev-plugin';
@@ -60,7 +60,7 @@ import devPlugin from '../actions/dev-plugin';
     .command('run <filename>')
     .option('--tuna', 'use tuna mirror to install python packages')
     .option('--output', 'the output directory name', 'output')
-    .option('-h|--host <host>', 'the host of daemon', '127.0.0.1')
+    .option('-h|--host <host>', 'the host of daemon')
     .option('-p|--port <port>', 'the port of daemon')
     .description('run pipeline with a json file.')
     .action(start);
