@@ -8,6 +8,8 @@ import FormData from 'form-data';
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
 
+axios.defaults.timeout = 5000;
+
 function createGeneralRequest(agent: Function): Function {
   return async (...args: any[]) => {
     let response;

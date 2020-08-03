@@ -29,9 +29,10 @@ export class Job extends BaseApi {
    * get job info by job id
    * @param id job id
    */
-  info(id: string): Promise<JobResp> {
+  get(id: string): Promise<JobResp> {
     return get(`${this.route}/${id}`);
   }
+  info = this.get;
 
   /**
    * cancel job by id

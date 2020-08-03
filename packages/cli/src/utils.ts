@@ -10,6 +10,7 @@ import {
 import { pathExists } from 'fs-extra';
 import path from 'path';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
+import { PipcookClient } from '@pipcook/sdk';
 import realOra = require('ora');
 
 export const Constants = {
@@ -17,6 +18,8 @@ export const Constants = {
   BOA_CONDA_MIRROR: 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda'
 };
 export const cwd = process.cwd;
+
+export let client: PipcookClient;
 
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
@@ -68,6 +71,13 @@ export async function parseConfigFilename(filename: string): Promise<string> {
     throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
   }
   return filename;
+}
+
+export function initClient(host: string, port: number): PipcookClient {
+  if (!client) {
+    client = new PipcookClient(`http://${host}`, port);
+  }
+  return client;
 }
 
 interface Logger {
