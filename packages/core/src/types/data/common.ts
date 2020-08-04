@@ -47,6 +47,8 @@ export interface Sample {
 export interface DataLoader {
   len: () => Promise<number>;
   getItem: (id: number) => Promise<Sample>;
+  next?: () => Promise<Sample>;
+  nextBatch?: (batchSize: number) => Promise<Array<Sample>>;
 }
 
 /**
@@ -68,6 +70,10 @@ export interface UniDataset {
     result: boolean;
     message?: string;
   };
+  /**
+   * The batch size for this dataset
+   */
+  batchSize?: number;
   /**
    * The loader for training.
    */

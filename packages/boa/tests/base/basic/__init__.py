@@ -14,6 +14,10 @@ class Foobar(object):
   def callfunc(self, fn):
     return fn(233)
 
+  def testObjPass(self, obj):
+    v = obj.fn1(obj.input)
+    return obj.scope.fn2(v)
+
   def __enter__(self):
     self.entered = True
 

@@ -1,11 +1,11 @@
 {
   "name": "@pipcook/daemon",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "pipcook daemon",
   "dependencies": {
-    "@pipcook/app": "^1.0.4",
-    "@pipcook/costa": "^1.0.4",
-    "@pipcook/pipcook-core": "^1.0.4",
+    "@pipcook/app": "^1.0.5",
+    "@pipcook/costa": "^1.0.5",
+    "@pipcook/pipcook-core": "^1.0.5",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "cls-hooked": "^4.2.2",
@@ -20,7 +20,6 @@
     "midway": "^1.19.0",
     "request-promise": "^4.2.5",
     "sequelize": "^5.21.7",
-    "shortid": "^2.2.15",
     "sqlite3": "^4.1.1",
     "ssestream": "^1.1.0"
   },
@@ -31,7 +30,6 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.5.5",
     "@types/request-promise": "^4.1.46",
-    "@types/shortid": "^0.0.29",
     "cross-env": "^6.0.0",
     "egg-ci": "^1.8.0",
     "midway-bin": "1",

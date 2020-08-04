@@ -1,8 +1,8 @@
 import { Transform, TransformCallback } from 'stream';
 import { open, close, write } from 'fs-extra';
-import { generate } from 'shortid';
 import { provide, scope, ScopeEnum } from 'midway';
 import { StringDecoder } from 'string_decoder';
+import { generateId } from '@pipcook/pipcook-core';
 
 /**
  * Log obejct for plugin installing and pipeline running.
@@ -77,7 +77,7 @@ export class LogManager {
    * create a log object, must call the destory function to clean it up.
    */
   async create(opts?: LogOptions): Promise<LogObject> {
-    const id = generate();
+    const id = generateId();
     const logObj: LogObject = {
       id,
       stdout: new LogPassthrough(opts?.stdoutFile),

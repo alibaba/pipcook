@@ -3,7 +3,6 @@
  */
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { generate } from 'shortid';
 import * as request from 'request-promise';
 import * as url from 'url';
 import {
@@ -11,6 +10,7 @@ import {
   PipelineDB,
   PipelineDBParams,
   constants,
+  generateId
 } from '@pipcook/pipcook-core';
 
 const { PLUGINS, PIPCOOK_LOGS } = constants;
@@ -24,6 +24,12 @@ async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> 
     }
     if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) >= 0) {
       configJson = JSON.parse(await request(configPath));
+      for (const key in configJson.plugins) {
+        const plugin = configJson.plugins[key];
+        if (path.isAbsolute(plugin.package) || plugin.package.startsWith('.')) {
+          throw new TypeError(`local path is invalid for plugin package: ${plugin.package}`);
+        }
+      }
     } else if (urlObj.protocol === 'file:') {
       configJson = await fs.readJSON(url.fileURLToPath(configPath));
     } else {
@@ -35,12 +41,12 @@ async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> 
   }
 }
 
-export async function parseConfig(configPath: string | RunConfigI, generateId = true): Promise<PipelineDB> {
+export async function parseConfig(configPath: string | RunConfigI, isGenerateId = true): Promise<PipelineDB> {
   const configJson = await loadConfig(configPath);
   const result: PipelineDB = {};
 
-  if (generateId) {
-    result.id = generate();
+  if (isGenerateId) {
+    result.id = generateId();
   }
   if (configJson.name) {
     result.name = configJson.name;

@@ -90,7 +90,7 @@ export class PipelineController extends BaseEventController {
     if (!pipeline) {
       this.ctx.throw('pipeline not found', HttpStatus.NOT_FOUND);
     }
-    const updatePluginNode = (name: string): void => {
+    constants.PLUGINS.forEach(name => {
       if (typeof pipeline[name] === 'string') {
         const params = pipeline[`${name}Params`];
         json.plugins[name] = {
@@ -98,15 +98,7 @@ export class PipelineController extends BaseEventController {
           params: params != null ? JSON.parse(params) : undefined
         };
       }
-    };
-    updatePluginNode('dataCollect');
-    updatePluginNode('dataAccess');
-    updatePluginNode('dataProcess');
-    updatePluginNode('modelDefine');
-    updatePluginNode('modelLoad');
-    updatePluginNode('modelTrain');
-    updatePluginNode('modelEvaluate');
-
+    });
     // update the `name` node
     if (pipeline.name) {
       json.name = pipeline.name;

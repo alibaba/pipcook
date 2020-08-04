@@ -74,3 +74,21 @@ To help Pipcook discover all the plugins, the project provides some rules to let
 Community plugins can also be submitted as built-in plugins through pull requests, but this requires nomination by a core collaborator and the approvals of at least 2 collaborators.
 
 [semver]: https://semver.org/
+
+### Beta Release
+
+The beta release will be built and published to npm every midnight if there is any commit in the past day.
+The aim of having such a release is to provide a quick fix to existing bugs and access to new/experimental features that are not suitable to deploy under the production environment.
+
+#### Usage
+
+You can directly use the following command:
+```bash
+$ npm install @pipcook/pipcook-cli@beta -g
+```
+
+Or
+
+```bash
+$ npm install --tag beta @pipcook/pipcook-cli -g
+```
