@@ -1,20 +1,21 @@
 'use strict';
+import {QueryInterface, DataTypes} from 'sequelize';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface: QueryInterface) => {
     return queryInterface.sequelize.transaction(t => {
       return Promise.all([
         queryInterface.addColumn('pipelines', 'datasetProcess', {
-          type: Sequelize.DataTypes.STRING
+          type: DataTypes.STRING
         }, { transaction: t }),
         queryInterface.addColumn('pipelines', 'datasetProcessParams', {
-          type: Sequelize.DataTypes.STRING
+          type: DataTypes.STRING
         }, { transaction: t })
       ])
     })
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface: QueryInterface) => {
     return queryInterface.sequelize.transaction(t => {
       return queryInterface.removeColumn('pipelines', 'datasetProcess', { transaction: t }).then(() => {
         return queryInterface.removeColumn('pipelines', 'datasetProcessParams', { transaction: t });
