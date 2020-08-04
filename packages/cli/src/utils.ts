@@ -73,15 +73,26 @@ export async function parseConfigFilename(filename: string): Promise<string> {
   return filename;
 }
 
-export function initClient(host: string, port: number): PipcookClient {
+/**
+ * init and get the client
+ * @param host host name or ip, default value is '127.0.0.1'
+ * @param port port default 6972
+ */
+export function initClient(host = '127.0.0.1', port = 6972): PipcookClient {
   if (!client) {
-    if (host) {
-      client = new PipcookClient(`http://${host}`, port);
-    } else {
-      client = new PipcookClient('http://127.0.0.1', port);
-    }
+    client = new PipcookClient(`http://${host}`, port);
   }
   return client;
+}
+
+export function traceLogger(event: string, data: any) {
+  if (event === 'log') {
+    if (data.level === 'info') {
+      this.logger.info(data.data);
+    } else if (data.level === 'warn') {
+      this.logger.warn(data.data);
+    }
+  }
 }
 
 interface Logger {

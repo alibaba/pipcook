@@ -8,7 +8,7 @@ import { createGunzip } from 'zlib';
 import { PipelineStatus } from '@pipcook/pipcook-core';
 import { JobResp } from '@pipcook/sdk';
 import { tunaMirrorURI } from '../config';
-import { logger, initClient } from '../utils';
+import { logger, initClient, traceLogger } from '../utils';
 
 const PipelineStatusStr = [ 'creating', 'running', 'success', 'fail' ];
 
@@ -57,16 +57,6 @@ async function log(id: string, opts: any): Promise<void> {
   }
 }
 
-function logCallback(event: string, data: any) {
-  if (event === 'log') {
-    if (data.level === 'info') {
-      logger.info(data.data);
-    } else if (data.level === 'warn') {
-      logger.warn(data.data);
-    }
-  }
-}
-
 async function run(filename: string, opts: any): Promise<JobResp> {
   const client = initClient(opts.host, opts.port);
   let config: any;
@@ -84,11 +74,11 @@ async function run(filename: string, opts: any): Promise<JobResp> {
     const pipeline = await client.pipeline.create(config);
     logger.info(`pipeline is created: ${pipeline.id}, installing`);
     const installingResp = await client.pipeline.install(pipeline.id, { pyIndex: opts.tuna ? tunaMirrorURI : undefined });
-    await client.pipeline.traceEvent(installingResp.traceId, logCallback);
+    await client.pipeline.traceEvent(installingResp.traceId, traceLogger);
     logger.info('pipeline installed successfully, start to run job');
     const jobRunning = await client.job.run(pipeline.id);
     logger.info(`job is created: ${jobRunning.id}, running`);
-    await client.pipeline.traceEvent(jobRunning.traceId, logCallback);
+    await client.pipeline.traceEvent(jobRunning.traceId, traceLogger);
     const job = await client.job.get(jobRunning.id);
     if (job.status === PipelineStatus.SUCCESS) {
       logger.info('job is finished successfully');

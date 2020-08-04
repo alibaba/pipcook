@@ -7,7 +7,7 @@ import { PluginStatus } from '@pipcook/pipcook-core';
 import { spawnSync } from 'child_process';
 import fs from 'fs-extra';
 import { tunaMirrorURI } from '../config';
-import { logger, initClient } from '../utils';
+import { logger, initClient, traceLogger } from '../utils';
 
 async function install(name: string, opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);
@@ -42,15 +42,7 @@ async function install(name: string, opts: any): Promise<void> {
       logger.start(`fetching package info ${name}`);
       resp = await client.plugin.createByName(name, opts.tuna ? tunaMirrorURI : undefined);
     }
-    await client.plugin.traceEvent(resp.traceId, (event: string, data: any) => {
-      if (event === 'log') {
-        if (data.level === 'info') {
-          logger.info(data.data);
-        } else if (data.level === 'warn') {
-          logger.warn(data.data);
-        }
-      }
-    });
+    await client.plugin.traceEvent(resp.traceId, traceLogger);
     // confirm if the plugin installed successfully
     const plugin = await client.plugin.get(resp.id);
     if (plugin) {

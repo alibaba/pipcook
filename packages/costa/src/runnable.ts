@@ -69,12 +69,12 @@ export class PluginRunnable {
    * Create a runnable by the given runtime.
    * @param rt the costa runtime.
    */
-  constructor(rt: CostaRuntime, logger: LogStdio, id?: string) {
+  constructor(rt: CostaRuntime, logger?: LogStdio, id?: string) {
     this.id = id || generate();
     this.rt = rt;
     this.workingDir = path.join(this.rt.options.componentDir, this.id);
     this.state = 'init';
-    this.logger = logger;
+    this.logger = logger || process;
   }
   /**
    * Do bootstrap the runnable client.

@@ -1,6 +1,6 @@
 import { PipelineResp } from '@pipcook/sdk';
 import { constants, PluginStatus } from '@pipcook/pipcook-core';
-import { logger, parseConfigFilename, initClient } from "./utils";
+import { logger, parseConfigFilename, initClient, traceLogger } from "./utils";
 import { tunaMirrorURI } from "./config";
 import { readJson } from 'fs-extra';
 
@@ -23,15 +23,7 @@ export async function install(filename: string, opts: any): Promise<void> {
       pipeline = await client.pipeline.create(config);
     }
     const installingResp = client.pipeline.install(pipeline.id, { pyIndex: opts.tuna ? tunaMirrorURI : undefined });
-    client.pipeline.traceEvent((await installingResp).traceId, (event: string, data: any) => {
-      if (event === 'log') {
-        if (data.level === 'info') {
-          logger.info(data.data);
-        } else if (data.level === 'warn') {
-          logger.warn(data.data);
-        }
-      }
-    });
+    client.pipeline.traceEvent((await installingResp).traceId, traceLogger);
     let isSuccess = true;
     await constants.PLUGINS.forEach(async (plugin) => {
       if (!pipeline[plugin]) {
