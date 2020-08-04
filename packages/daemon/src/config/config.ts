@@ -1,6 +1,11 @@
-const os = require('os');
+import { homedir } from 'os';
 
-module.exports = {
-  dialect: 'sqlite',
-  storage: process.env.PIPCOOK_STORAGE || (`${os.homedir()}/.pipcook/db/pipcook.db`)
-}
+
+const  dialect = 'sqlite';
+const storage = process.env.PIPCOOK_STORAGE || (`${homedir()}/.pipcook/db/pipcook.db`)
+
+
+export {
+  dialect,
+  storage
+};

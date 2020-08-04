@@ -76,7 +76,8 @@ The `pipeline_name` is the name of the pipeline file under "test/pipelines", suc
 - "databinding-image-classification"
 
 ### Database
-If your modification involves `Database` structure, you need to write a migration script under `daemon/src/migrations`.
+
+If your modification involves `Database` structure, you need to write a migration script under `packages/daemon/src/migrations`.
 For more detail about it, please refer to [Migration](https://sequelize.org/master/manual/migrations.html).
 
 ### Push and create a pull request
