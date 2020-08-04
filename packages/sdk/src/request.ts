@@ -20,12 +20,12 @@ function createGeneralRequest(agent: Function): Function {
     try {
       response = await agent(...args);
     } catch (err) {
-      throw new Error(response?.data?.message || err.message);
+      throw new Error(err.response?.data?.message || err.message);
     }
     if (response.status >= 200 && response.status < 300) {
       return response.data;
     } else {
-      throw new Error(response?.data?.message);
+      throw new Error(response.data?.message);
     }
   };
 }

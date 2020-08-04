@@ -25,6 +25,9 @@ async function remove(id: string, opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);
   logger.start('removing jobs...');
   try {
+    if (id === 'all') {
+      id = undefined;
+    }
     await client.job.remove(id);
     logger.success('remove jobs succeeded');
   } catch (err) {
@@ -86,7 +89,6 @@ async function run(filename: string, opts: any): Promise<JobResp> {
       logger.fail(`invalid job status: ${job.status}`);
     }
   } catch (err) {
-    console.log(err);
     logger.fail(`something wrong when running job: ${err.message}`);
   }
 }
@@ -144,7 +146,7 @@ program
   .description('show logs by the given job id');
 
 program
-  .command('stop <job>')
+  .command('stop <job>').alias('cancel')
   .option('-h|--host <host>', 'the host of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action(stop)

@@ -1,6 +1,7 @@
 import path from 'path';
 import { Writable } from 'stream';
 import { generate } from 'shortid';
+import { EventEmitter } from 'events';
 import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
@@ -60,6 +61,11 @@ export class PluginRunnable {
    * The current state.
    */
   public state: 'init' | 'idle' | 'busy';
+
+  /**
+   * The flag somebody stop running
+   */
+  public cancelByUser: boolean;
 
   /**
    * logger
@@ -168,6 +174,7 @@ export class PluginRunnable {
     if (!this.handle.connected) {
       return;
     }
+    this.cancelByUser = true;
     this.send(PluginOperator.WRITE, { event: 'destroy' });
     return new Promise((resolve) => {
       this.ondestroyed = resolve;

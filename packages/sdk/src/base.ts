@@ -24,7 +24,7 @@ export class BaseApi {
           }
         },
         'error': (e: MessageEvent) => {
-          reject(e.data);
+          reject(new Error(e.data));
         },
         'close': () => {
           resolve();
