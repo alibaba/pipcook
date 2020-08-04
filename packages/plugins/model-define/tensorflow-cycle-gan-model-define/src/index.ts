@@ -2,7 +2,7 @@ import { ModelDefineType, UniModel, ModelDefineArgsType, Sample, ImageDataset } 
 import * as path from 'path';
 
 const boa = require('@pipcook/boa');
-const { tuple } = boa.builtins();
+const { tuple, dict } = boa.builtins();
 const sys = boa.import('sys');
 // TODO(Feely): support dot in the module name
 sys.path.insert(0, path.join(__dirname, '..'));
@@ -58,10 +58,10 @@ let opt = {
 };
 
 const cycleGanModelDefine: ModelDefineType = async (data: ImageDataset, args: ModelDefineArgsType): Promise<UniModel> => {
-  opt = {
+  opt = dict({
     ...opt,
     ...args
-  };
+  });
   const model = new CycleGAN(opt);
   const pipcookModel: UniModel = {
     model,

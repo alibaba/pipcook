@@ -73,14 +73,14 @@ test('`builtins.list` class', t => {
 });
 
 test('`builtins.len()` function', t => {
-  const { len } = builtins;
-  const dict = {
+  const { len, dict } = builtins;
+  const obj = {
     a0: 1,
     a1: 2,
     a2: 3,
   };
   const arr = [30, 31, 32, 100];
-  t.equal(len(dict), Object.keys(dict).length);
+  t.equal(len(dict(boa.kwargs(obj))), Object.keys(obj).length);
   t.equal(len(arr), arr.length);
   t.end();
 });
