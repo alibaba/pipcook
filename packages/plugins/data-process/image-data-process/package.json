@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-image-data-process",
-  "version": "1.0.6-alpha.0",
+  "version": "1.0.6-beta.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/pipcook-core": "^1.0.6-alpha.0",
+    "@pipcook/pipcook-core": "^1.0.6-beta.0",
     "@types/cli-progress": "^3.4.2",
     "cli-progress": "^3.6.0",
     "jimp": "^0.10.0"

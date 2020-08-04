@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/sdk",
-  "version": "1.0.6-alpha.0",
+  "version": "1.0.6-beta.0",
   "description": "JavaScript SDK for accessing Pipcook Daemon",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "compile": "tsc -b tsconfig.json"
   },
   "dependencies": {
-    "@pipcook/pipcook-core": "^1.0.6-alpha.0",
+    "@pipcook/pipcook-core": "^1.0.6-beta.0",
     "axios": "^0.18.1",
     "eventsource": "^1.0.7",
     "fs-extra": "^8.1.0"
