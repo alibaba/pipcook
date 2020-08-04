@@ -1,7 +1,7 @@
 'use strict';
 import { QueryInterface, DataTypes } from 'sequelize';
 
-module.exports = {
+export default {
   up: async (queryInterface: QueryInterface) => {
     return queryInterface.sequelize.transaction(t => {
       return Promise.all([
@@ -16,10 +16,9 @@ module.exports = {
   },
 
   down: (queryInterface: QueryInterface) => {
-    return queryInterface.sequelize.transaction(t => {
-      return queryInterface.removeColumn('pipelines', 'datasetProcess', { transaction: t }).then(() => {
+    return queryInterface.sequelize.transaction( async t => {
+        await queryInterface.removeColumn('pipelines', 'datasetProcess', { transaction: t })
         return queryInterface.removeColumn('pipelines', 'datasetProcessParams', { transaction: t });
-      })
     });
   }
 };
