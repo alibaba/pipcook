@@ -17,8 +17,8 @@ async function install(name: string, opts: any): Promise<void> {
     name = path.join(process.cwd(), name);
   }
   try {
-  // install from local package directory
     if (await fs.pathExists(name) && await (await fs.stat(name)).isDirectory()) {
+      // install from local package directory
       try {
         const pkg = await fs.readJSON(path.join(name, 'package.json'));
         logger.start(`installing ${pkg.name} from ${name}`);
@@ -38,7 +38,8 @@ async function install(name: string, opts: any): Promise<void> {
       }
       const fstream = fs.createReadStream(path.join(name, tarball));
       resp = await client.plugin.createByTarball(fstream, opts.tuna ? tunaMirrorURI : undefined);
-    } else { // install from name, git, etc.
+    } else {
+      // install from name, git, etc.
       logger.start(`fetching package info ${name}`);
       resp = await client.plugin.createByName(name, opts.tuna ? tunaMirrorURI : undefined);
     }

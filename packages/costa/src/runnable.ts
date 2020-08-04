@@ -1,6 +1,5 @@
 import path from 'path';
 import { Writable } from 'stream';
-import { generate } from 'shortid';
 import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';

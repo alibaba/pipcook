@@ -105,7 +105,6 @@ program
 
 program
   .command('install <pipeline>')
-  .option('--verbose', 'prints verbose logs', true)
   .option('--tuna', 'use tuna mirror to install python packages')
   .option('-h|--host <host>', 'the host of daemon')
   .option('-p|--port <port>', 'the port of daemon')
