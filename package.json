@@ -17,7 +17,6 @@
     "lerna": "^3.18.4",
     "ts-node": "^8.6.2",
     "typedoc": "^0.17.8",
-    "typedoc-plugin-lerna": "^0.1.0",
     "typescript": "^3.9.7"
   },
   "scripts": {
