@@ -1,71 +1,8 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import * as path from 'path';
-import { readJson } from 'fs-extra';
-import { install } from '../pipeline';
-import { logger, initClient } from '../utils';
+import { list, info, create, update, remove, install } from '../actions/pipeline';
 
-async function list(opts: any): Promise<void> {
-  const client = initClient(opts.host, opts.port);
-  let pipelines = await client.pipeline.list();
-  if (pipelines.length > 0) {
-    console.table(pipelines, [ 'id', 'name', 'updatedAt', 'createdAt' ]);
-  } else {
-    console.info('no pipeline is created.');
-  }
-}
-
-async function info(id: string, opts: any): Promise<void> {
-  const client = initClient(opts.host, opts.port);
-  try {
-    const pipeline = await client.pipeline.get(id);
-    console.info(JSON.stringify(pipeline, null, 2));
-  } catch (err) {
-    logger.fail(err.message);
-  }
-}
-
-async function create(filename: string, opts: any): Promise<void> {
-  const client = initClient(opts.host, opts.port);
-  if (!path.isAbsolute(filename)) {
-    filename = path.join(process.cwd(), filename);
-  }
-  const config = await readJson(filename);
-  try {
-    const pipeline = await client.pipeline.create(config, { name: opts.name });
-    logger.success(`pipeline ${pipeline.id} created.`);
-  } catch (err) {
-    logger.fail(err.message);
-  }
-}
-
-async function update(id: string, filename: string, opts: any): Promise<void> {
-  const client = initClient(opts.host, opts.port);
-  if (!path.isAbsolute(filename)) {
-    filename = path.join(process.cwd(), filename);
-  }
-  const config = await readJson(filename);
-  try {
-    const pipeline = await client.pipeline.update(id, config);
-    logger.success(`pipeline ${pipeline.id} updated with ${filename}.`);
-  } catch (err) {
-    logger.fail(err.message);
-  }
-}
-
-async function remove(id: any, opts: any): Promise<void> {
-  const client = initClient(opts.host, opts.port);
-  try {
-    if (id === 'all') {
-      id = undefined;
-    }
-    await client.pipeline.remove(id);
-    logger.success(id ? `pipeline ${id} has removed.` : `all pipelines removed.`);
-  } catch (err) {
-    logger.fail(err.message);
-  }
-}
 
 program
   .command('list')

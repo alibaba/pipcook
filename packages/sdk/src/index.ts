@@ -1,7 +1,7 @@
 import { Job } from './job';
 import { Pipeline } from './pipeline';
 import { Plugin } from './plugin';
-export { JobStatus } from './utils';
+export { JobStatusValue, PluginStatusValue } from './utils';
 export {
   JobResp,
   PipelineResp,
