@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-core",
-  "version": "1.0.6-beta.0",
+  "version": "1.0.6-beta.1",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
