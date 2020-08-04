@@ -11,7 +11,7 @@ describe('csv-data-collect-test',  () => {
   
     const trainExist = await fs.pathExists(path.join(__dirname, 'temp', 'train.csv'));
     
-    expect(trainExist).toBe(true);
+    expect(trainExist).toBeTrue();
   });
 
   afterEach(async () => {

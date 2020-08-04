@@ -28,6 +28,7 @@
     "pretest": "npm run lint",
     "test": "sh run_tests.sh",
     "test:pipeline": "sh ./run_pipeline.sh",
+    "test:plugins": "npx ts-node node_modules/jasmine/bin/jasmine test/plugins/**/*",
     "typedoc": "typedoc",
     "clean": "lerna run clean",
     "release": "lerna publish from-package --yes --no-verify-access",
