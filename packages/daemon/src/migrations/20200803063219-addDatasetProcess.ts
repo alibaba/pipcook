@@ -15,7 +15,7 @@ module.exports = {
     })
   },
 
-  down: async (queryInterface: QueryInterface) => {
+  down: (queryInterface: QueryInterface) => {
     return queryInterface.sequelize.transaction(t => {
       return queryInterface.removeColumn('pipelines', 'datasetProcess', { transaction: t }).then(() => {
         return queryInterface.removeColumn('pipelines', 'datasetProcessParams', { transaction: t });
