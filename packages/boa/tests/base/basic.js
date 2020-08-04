@@ -51,6 +51,16 @@ test('define a extended class with basic functions', t => {
   t.equal(f.test, 'pythonworld');
   t.equal(f.ping('yorkie'), 'hello <yorkie> on pythonworld');
   t.equal(f.callfunc(x => x * 2), 233 * 2);
+
+  const v = f.testObjPass({
+    input: 10,
+    fn1: x => x * 2,
+    scope: {
+      fn2: y => y * y,
+    },
+  });
+  // fn2(fn1(input))
+  t.equal(v, 400);
   t.end();
 });
 

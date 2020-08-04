@@ -196,7 +196,9 @@ function _internalWrap(T, src={}) {
     invoke: {
       enumerable: false,
       writable: false,
-      value: args => T.invoke.apply(T, args),
+      value: args => {
+        return T.invoke.apply(T, args);
+      },
     },
     /**
      * @method toString
