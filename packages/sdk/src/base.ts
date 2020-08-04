@@ -10,13 +10,13 @@ export class BaseApi {
 
   /**
    * trace event
-   * @param eventId event id
+   * @param traceId trace id
    * @param eventCallback event callback
    */
-  traceEvent(eventId: string, eventCallback: EventCallback): Promise<void> {
+  traceEvent(traceId: string, eventCallback: EventCallback): Promise<void> {
     return new Promise((resolve, reject) => {
       // TODO(feely): listen all event and transfer out
-      listen(`${this.route}/event/${eventId}`, undefined, {
+      listen(`${this.route}/event/${traceId}`, undefined, {
         'log': (e: MessageEvent) => {
           const eventObj = JSON.parse(e.data);
           if (typeof eventCallback === 'function') {
@@ -24,7 +24,7 @@ export class BaseApi {
           }
         },
         'error': (e: MessageEvent) => {
-          reject(e.data);
+          reject(new Error(e.data));
         },
         'close': () => {
           resolve();

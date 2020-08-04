@@ -19,7 +19,11 @@ export enum PipelineStatus {
   /**
    * It represents the pipeline is failed.
    */
-  FAIL
+  FAIL,
+  /**
+   * It represents the pipeline is canceled.
+   */
+  CANCELED
 }
 
 /**

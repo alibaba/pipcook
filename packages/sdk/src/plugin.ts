@@ -1,6 +1,6 @@
 import { get, post, del, uploadFile } from './request';
 import { BaseApi } from './base';
-import { PluginResp, TraceResp } from './interface';
+import { PluginResp, TraceResp, PluginListParams } from './interface';
 import { ReadStream } from 'fs-extra';
 
 /**
@@ -13,9 +13,10 @@ export class Plugin extends BaseApi {
 
   /**
    * list all plugins
+   * @param params params
    */
-  list(): Promise<PluginResp[]> {
-    return get(`${this.route}`);
+  list(params?: PluginListParams): Promise<PluginResp[]> {
+    return get(`${this.route}`, params);
   }
 
   /**

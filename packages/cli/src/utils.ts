@@ -7,9 +7,12 @@ import {
   SpawnOptions,
   ExecException
 } from 'child_process';
-import { pathExists } from 'fs-extra';
+import tar from 'tar-stream';
+import { createGunzip } from 'zlib';
+import { pathExists, mkdirp, createWriteStream } from 'fs-extra';
 import path from 'path';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
+import { PipcookClient } from '@pipcook/sdk';
 import realOra = require('ora');
 
 export const Constants = {
@@ -17,6 +20,8 @@ export const Constants = {
   BOA_CONDA_MIRROR: 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda'
 };
 export const cwd = process.cwd;
+
+export let client: PipcookClient;
 
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
@@ -68,6 +73,45 @@ export async function parseConfigFilename(filename: string): Promise<string> {
     throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
   }
   return filename;
+}
+
+/**
+ * init and get the client
+ * @param host host name or ip, default value is '127.0.0.1'
+ * @param port port default 6927
+ */
+export function initClient(host = '127.0.0.1', port = 6927): PipcookClient {
+  if (!client) {
+    client = new PipcookClient(`http://${host}`, port);
+  }
+  return client;
+}
+
+export async function extractToPath(stream: NodeJS.ReadableStream, outputPath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const extract = tar.extract();
+    const gunZip = createGunzip();
+    extract.on('entry', async (header, stream, next) => {
+      const dist = path.join(outputPath, header.name);
+      if (header.type === 'directory') {
+        await mkdirp(dist);
+      } else if (header.type === 'file') {
+        stream.pipe(createWriteStream(dist));
+      }
+      stream.on('end', next);
+      stream.resume();
+    });
+    extract.on('error', (err) => {
+      reject(err);
+    });
+    extract.on('finish', () => {
+      resolve();
+    });
+    gunZip.on('error', (err) => {
+      reject(err);
+    });
+    stream.pipe(gunZip).pipe(extract);
+  });
 }
 
 interface Logger {
@@ -135,3 +179,13 @@ class DefaultLogger implements Logger {
 
 const { rows, columns, isTTY } = process.stdout;
 export const logger = isTTY && rows > 0 && columns > 0 ? new TtyLogger() : new DefaultLogger();
+
+export function traceLogger(event: string, data: any) {
+  if (event === 'log') {
+    if (data.level === 'info') {
+      logger.info(data.data);
+    } else if (data.level === 'warn') {
+      logger.warn(data.data);
+    }
+  }
+}

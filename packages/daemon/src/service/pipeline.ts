@@ -278,9 +278,11 @@ export class PipelineService {
       job.status = PipelineStatus.SUCCESS;
       await job.save();
     } catch (err) {
-      job.status = PipelineStatus.FAIL;
-      job.error = err.message;
-      await job.save();
+      if (!runnable.cancelByUser) {
+        job.status = PipelineStatus.FAIL;
+        job.error = err.message;
+        await job.save();
+      }
       throw err;
     } finally {
       await runnable.destroy();
@@ -288,13 +290,20 @@ export class PipelineService {
     }
   }
 
-  stopJob(id: string): void {
-    const runnable = runnableMap[id];
-    if (runnable) {
-      runnable.destroy();
-      delete runnableMap[id];
+  async stopJob(id: string): Promise<void> {
+    const job = await this.getJobById(id);
+    if (job && job.status === PipelineStatus.RUNNING) {
+      const runnable = runnableMap[id];
+      if (runnable) {
+        runnable.destroy();
+        delete runnableMap[id];
+      } else {
+        console.error(`no runnable found: ${id}`);
+      }
+      job.status = PipelineStatus.CANCELED;
+      await job.save();
     } else {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'no runnable found');
+      this.ctx.throw(HttpStatus.BAD_REQUEST, 'job is not running');
     }
   }
 

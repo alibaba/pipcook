@@ -83,10 +83,13 @@ export class JobController extends BaseEventController {
     }
   }
 
-  @del('/:id/cancel')
+  /**
+   * cancel job
+   */
+  @post('/:id/cancel')
   public async stop(): Promise<void> {
-    const { id } = this.ctx.query;
-    this.pipelineService.stopJob(id);
+    const { id } = this.ctx.params;
+    await this.pipelineService.stopJob(id);
     this.success();
   }
 

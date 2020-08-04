@@ -81,7 +81,8 @@ export class PluginController extends BaseEventController {
   public async list() {
     const plugins = await this.pluginManager.list({
       datatype: this.ctx.query.datatype,
-      category: this.ctx.query.category
+      category: this.ctx.query.category,
+      name: this.ctx.query.name
     });
     this.success(plugins);
   }

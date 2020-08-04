@@ -79,3 +79,8 @@ export interface LogEvent {
   // log content
   data: string;
 }
+export interface PluginListParams {
+  datatype?: string;
+  category?: string;
+  name?: string;
+}

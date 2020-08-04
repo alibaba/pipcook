@@ -1,6 +1,7 @@
 import path from 'path';
 import { Writable } from 'stream';
 import { generate } from 'shortid';
+import { EventEmitter } from 'events';
 import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
@@ -62,6 +63,11 @@ export class PluginRunnable {
   public state: 'init' | 'idle' | 'busy';
 
   /**
+   * The flag somebody stop running
+   */
+  public cancelByUser: boolean;
+
+  /**
    * logger
    */
   private logger: Record<'stdout' | 'stderr', Writable>;
@@ -69,12 +75,12 @@ export class PluginRunnable {
    * Create a runnable by the given runtime.
    * @param rt the costa runtime.
    */
-  constructor(rt: CostaRuntime, logger: LogStdio, id?: string) {
+  constructor(rt: CostaRuntime, logger?: LogStdio, id?: string) {
     this.id = id || generate();
     this.rt = rt;
     this.workingDir = path.join(this.rt.options.componentDir, this.id);
     this.state = 'init';
-    this.logger = logger;
+    this.logger = logger || process;
   }
   /**
    * Do bootstrap the runnable client.
@@ -168,6 +174,7 @@ export class PluginRunnable {
     if (!this.handle.connected) {
       return;
     }
+    this.cancelByUser = true;
     this.send(PluginOperator.WRITE, { event: 'destroy' });
     return new Promise((resolve) => {
       this.ondestroyed = resolve;

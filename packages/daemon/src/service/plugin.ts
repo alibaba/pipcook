@@ -10,6 +10,7 @@ import { PluginResp, TraceResp } from '../interface';
 interface ListPluginsFilter {
   datatype?: string;
   category?: string;
+  name?: string;
 }
 
 @provide('pluginManager')
@@ -65,6 +66,9 @@ export class PluginManager {
     }
     if (filter?.datatype) {
       where.datatype = filter.datatype;
+    }
+    if (filter?.name) {
+      where.name = filter.name;
     }
     return this.model.findAll({ where });
   }
