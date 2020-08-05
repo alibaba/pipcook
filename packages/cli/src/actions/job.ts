@@ -1,8 +1,8 @@
 import { join, isAbsolute } from 'path';
 import * as fs from 'fs-extra';
-import { PipelineStatus, constants } from '@pipcook/pipcook-core';
+import { PipelineStatus } from '@pipcook/pipcook-core';
 import { JobStatusValue, JobResp } from '@pipcook/sdk';
-import { install as pluginInstall } from './plugin';
+import { installPackageFromConfig } from './pipeline';
 import { tunaMirrorURI } from '../config';
 import { logger, initClient, traceLogger, extractToPath } from '../utils';
 
@@ -70,15 +70,7 @@ export async function run(filename: string, opts: any): Promise<JobResp> {
     logger.fail(`read pipeline config file error: ${err.message}`);
   }
   try {
-    for (const plugin of constants.PLUGINS) {
-      const packageName = config.plugins[plugin]?.package;
-      if (typeof packageName === 'string') {
-        if (packageName[0] === '.') {
-          const pkg = await pluginInstall(packageName, opts);
-          config.plugins[plugin].package = pkg.name;
-        }
-      }
-    }
+    await installPackageFromConfig(config, opts);
     logger.info('start to create pipeline');
     const pipeline = await client.pipeline.create(config);
     logger.success(`pipeline is created: ${pipeline.id}, installing`);

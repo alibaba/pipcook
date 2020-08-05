@@ -1,10 +1,12 @@
 
 import * as path from 'path';
+import * as Url from 'url';
 import { PipelineResp, PluginStatusValue } from '@pipcook/sdk';
 import { constants, PluginStatus } from '@pipcook/pipcook-core';
 import { readJson } from 'fs-extra';
-import { logger, parseConfigFilename, initClient, traceLogger } from "../utils";
-import { tunaMirrorURI } from "../config";
+import { install as pluginInstall } from './plugin';
+import { logger, parseConfigFilename, initClient, streamToJson } from "../utils";
+import { getFile } from '../request';
 
 export async function list(opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);
@@ -67,6 +69,18 @@ export async function remove(id: any, opts: any): Promise<void> {
   }
 }
 
+export async function installPackageFromConfig(config: any, opts: any): Promise<void> {
+  for (const plugin of constants.PLUGINS) {
+    const packageName = config.plugins[plugin]?.package;
+    if (typeof packageName === 'string') {
+      if (packageName[0] === '.') {
+        const pkg = await pluginInstall(packageName, opts);
+        config.plugins[plugin].package = pkg.name;
+      }
+    }
+  }
+}
+
 export async function install(filename: string, opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);
   logger.start(`start install pipeline from ${filename}`);
@@ -77,18 +91,30 @@ export async function install(filename: string, opts: any): Promise<void> {
   }
   let pipeline: PipelineResp;
   try {
-    if (filename.startsWith('http')) {
-      pipeline = await client.pipeline.createByUri(filename);
-    } else {
-      const config = await readJson(filename);
+    if (filename.startsWith('file')) {
+      const url = Url.parse(filename);
+      const config = await readJson(url.path);
+      logger.start('installing plugins');
+      await installPackageFromConfig(config, opts);
+      logger.info('start to create pipeline');
       pipeline = await client.pipeline.create(config);
+      logger.success(`pipeline is created: ${pipeline.id}`);
+    } else {
+      logger.start(`downloading pipeline config file form ${filename}`);
+      const stream = await getFile(filename);
+      const config = await streamToJson(stream);
+      logger.start('installing plugins');
+      await installPackageFromConfig(config, opts);
+      logger.info('start to create pipeline');
+      pipeline = await client.pipeline.create(config);
+      logger.success(`pipeline is created: ${pipeline.id}`);
     }
-    const installingResp = client.pipeline.install(pipeline.id, { pyIndex: opts.tuna ? tunaMirrorURI : undefined });
-    client.pipeline.traceEvent((await installingResp).traceId, traceLogger);
+    // check the installation
+    logger.info('check plugin:');
     let isSuccess = true;
     await constants.PLUGINS.forEach(async (plugin) => {
       if (!pipeline[plugin]) {
-        return logger.info(`${plugin} plugin is not configured`);
+        return;
       }
       const plugins = await client.plugin.list({ name: pipeline[plugin] });
       if (plugins.length > 0) {

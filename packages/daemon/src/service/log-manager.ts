@@ -88,7 +88,6 @@ export class LogManager {
       logObj.stderr.init()
     ]);
     this.logMap.set(id, logObj);
-    console.log('log created', id);
     return logObj;
   }
 
@@ -107,7 +106,6 @@ export class LogManager {
    * @param err error if have
    */
   destroy(id: string, err?: Error) {
-    console.log('log destory', id);
     const log = this.logMap.get(id);
     if (err) {
       // make sure someone handles the error, otherwise the process will exit

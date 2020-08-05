@@ -74,6 +74,25 @@ export async function parseConfigFilename(filename: string): Promise<string> {
   }
   return filename;
 }
+export async function streamToJson(stream: NodeJS.ReadStream): Promise<object> {
+  return new Promise((resolve, reject) => {
+    let jsonStr = '';
+    stream.on('data', (chunk: any) => {
+      jsonStr += chunk;
+    });
+    stream.on('error', (err) => {
+      reject(err);
+    });
+    stream.on('end', () => {
+      try {
+        const jsonObj = JSON.parse(jsonStr);
+        resolve(jsonObj);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  });
+}
 
 /**
  * init and get the client

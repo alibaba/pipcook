@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { installEntry, uninstall, list } from '../actions/plugin';
+import { install, uninstall, list } from '../actions/plugin';
 
 program
   .command('install <name>')
@@ -9,7 +9,9 @@ program
   .option('--tuna', 'use tuna mirror to install python packages')
   .option('-h|--host <host>', 'the host of daemon')
   .option('-p|--port <port>', 'the port of daemon')
-  .action(installEntry);
+  .action((name: string, opts: any) => {
+    install(name, opts);
+  });
 
 program
   .command('uninstall <name>')
