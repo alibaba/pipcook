@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { list, runAndDownload, remove, log, stop } from '../actions/job'
+import { list, runAndDownload, remove, log, stop } from '../actions/job';
 
 program
   .command('list')

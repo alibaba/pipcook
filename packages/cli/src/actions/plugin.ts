@@ -39,7 +39,7 @@ export async function install(name: string, opts: any): Promise<PluginResp> {
   try {
     if (await fs.pathExists(name) && (await fs.stat(name)).isDirectory()) {
       // install from local package directory
-      resp = await installFromLocal(name, opts);  
+      resp = await installFromLocal(name, opts);
     } else {
       // install from name, git, etc.
       logger.start(`fetching package info ${name}`);
@@ -95,7 +95,7 @@ export async function list(opts: any): Promise<void> {
     console.info('no plugin installed.');
   } else {
     console.table(plugins.map((plugin) => {
-      return { ...plugin, status: PluginStatusValue[plugin.status] }
+      return { ...plugin, status: PluginStatusValue[plugin.status] };
     }), [ 'name', 'version', 'category', 'datatype', 'status' ]);
   }
 }

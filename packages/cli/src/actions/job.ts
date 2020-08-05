@@ -12,7 +12,7 @@ export async function list(opts: any): Promise<void> {
   if (jobs.length > 0) {
     console.table(jobs.map((job) => {
       return { ...job, status: JobStatusValue[job.status] };
-    }), ['id', 'status', 'evaluatePass', 'createdAt']);
+    }), [ 'id', 'status', 'evaluatePass', 'createdAt' ]);
   } else {
     console.info('no job is created.');
   }
