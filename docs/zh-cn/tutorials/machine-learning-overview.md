@@ -79,7 +79,7 @@ predictBookPrice('Dive into Pipcook'); // 199.0
 ```js
 {
   "plugins": {
-    "package": "@pipcook/plugins-mnist-data-collect",
+    "dataCollect": "@pipcook/plugins-mnist-data-collect",
     "params": {
       "trainCount": 8000,
       "testCount": 2000
