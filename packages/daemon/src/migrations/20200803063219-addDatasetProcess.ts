@@ -18,7 +18,7 @@ export default {
   down: (queryInterface: QueryInterface) => {
     return queryInterface.sequelize.transaction( async t => {
         await queryInterface.removeColumn('pipelines', 'datasetProcess', { transaction: t })
-        return queryInterface.removeColumn('pipelines', 'datasetProcessParams', { transaction: t });
+        await queryInterface.removeColumn('pipelines', 'datasetProcessParams', { transaction: t });
     });
   }
 };
