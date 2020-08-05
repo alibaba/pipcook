@@ -105,15 +105,10 @@ function fetchPackageJsonFromTarball(filename: string): Promise<any> {
 
 async function fetchPackageJsonFromTarballStream(fileStream: Readable): Promise<any> {
   const unzip = createUnzip();
+  // catch the stream error
   const wait = () => {
     return new Promise((resolve, reject) => {
-      fileStream.pipe(unzip);
-      unzip.on('error', (err) => {
-        reject(err);
-      });
-      unzip.on('finish', () => {
-        resolve();
-      });
+      fileStream.on('error', reject).on('close', resolve).pipe(unzip);
     });
   };
   await wait();

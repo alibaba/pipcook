@@ -59,7 +59,14 @@ export async function installFromLocal(localPath: string, opts: any): Promise<Pl
   }
   const fstream = fs.createReadStream(path.join(localPath, tarball));
   const resp = await client.plugin.createByTarball(fstream, opts.tuna ? tunaMirrorURI : undefined);
-  return await traceInstallEvent(resp, opts);
+  if (resp.status === PluginStatus.INSTALLED) {
+    logger.success(`${pkg.name} already installed`);
+    return resp;
+  } else {
+    const plugin = await traceInstallEvent(resp, opts);
+    logger.success(`installing ${pkg.name}@${pkg.version} successfully`);
+    return plugin;
+  }
 }
 
 export async function installFromUri(uri: string, opts: any): Promise<PluginResp> {
