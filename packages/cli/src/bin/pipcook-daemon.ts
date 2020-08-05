@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 import program from 'commander';
 import { readFile, pathExists, remove } from 'fs-extra';
-import { logger } from '../utils';
+import { logger } from '../utils/common';
 
 const PIPCOOK_HOME = path.join(os.homedir(), '.pipcook');
 const DAEMON_HOME = path.join(PIPCOOK_HOME, 'server/node_modules/@pipcook/daemon');

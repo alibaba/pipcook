@@ -2,10 +2,10 @@ import { join, isAbsolute } from 'path';
 import * as fs from 'fs-extra';
 import { PipelineStatus } from '@pipcook/pipcook-core';
 import { JobStatusValue, JobResp } from '@pipcook/sdk';
-import { getFile } from '../request';
+import { getFile } from '../utils/request';
 import { installPackageFromConfig } from './pipeline';
 import { tunaMirrorURI } from '../config';
-import { logger, initClient, traceLogger, extractToPath, parseConfigFilename, streamToJson } from '../utils';
+import { logger, initClient, traceLogger, extractToPath, parseConfigFilename, streamToJson } from '../utils/common';
 
 export async function list(opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);

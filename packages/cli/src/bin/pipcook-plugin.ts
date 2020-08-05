@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { install, uninstall, list } from '../actions/plugin';
+import { install, uninstall, list } from '../service/plugin';
 
 program
   .command('install <name>')

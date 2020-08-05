@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { list, info, create, update, remove, install } from '../actions/pipeline';
+import { list, info, create, update, remove, install } from '../service/pipeline';
 
 
 program

@@ -4,7 +4,7 @@ import { PluginStatus } from '@pipcook/pipcook-core';
 import { spawnSync } from 'child_process';
 import fs from 'fs-extra';
 import { tunaMirrorURI } from '../config';
-import { logger, initClient, traceLogger } from '../utils';
+import { logger, initClient, traceLogger } from '../utils/common';
 
 /**
  * trace install event

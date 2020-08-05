@@ -3,11 +3,11 @@ import { createGunzip } from 'zlib';
 import { SpawnOptions } from 'child_process';
 import tar from 'tar-stream';
 import { readFile, ensureDir, pathExists, readJSON, writeJSON, remove, mkdirp, createWriteStream, writeFile } from 'fs-extra';
-import { get, post, listen, getFile } from './request';
-import { route } from './router';
-import { tunaMirrorURI } from './config';
+import { get, post, listen, getFile } from '../utils/request';
+import { route } from '../utils/router';
+import { tunaMirrorURI } from '../config';
 import { PipelineStatus } from '@pipcook/pipcook-core';
-import { execNpm, Constants } from './utils';
+import { execNpm, Constants } from '../utils/common';
 
 const { cwd } = process;
 
