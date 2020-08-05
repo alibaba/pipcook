@@ -21,7 +21,7 @@
     "modelTrain": {
       "package": "./packages/plugins/model-train/image-classification-tfjs-model-train",
       "params": {
-        "epochs": 1
+        "epochs": 15
       }
     },
     "modelEvaluate": {

@@ -104,7 +104,6 @@ async function emitStart(message: PluginMessage): Promise<void> {
             const len = await loader.len();
             loader.processIndex = 0;
             for (let i = 0; i < len; i++) {
-              console.log('--data pcoess');
               let sample = await loader.getItem(i);
               sample = await fn(sample, dataset.metadata, args);
               await loader.setItem(i, sample);
