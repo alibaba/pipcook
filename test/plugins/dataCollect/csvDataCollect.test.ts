@@ -1,4 +1,4 @@
-import textClassDataCollect from '../../../packages/plugins/data-collect/csv-data-collect'
+import textClassDataCollect from '../../../packages/plugins/data-collect/csv-data-collect/src/index'
 import * as path from 'path';
 import * as fs from 'fs-extra';
 

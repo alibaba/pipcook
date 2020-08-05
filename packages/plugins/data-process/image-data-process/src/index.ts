@@ -12,7 +12,7 @@ const imageDataProcess: DataProcessType = async (data: ImageSample, metadata: Me
     resize = [ 256, 256 ],
     normalize = false
   } = args;
-
+  
   try {
     let image = await Jimp.read(data.data);
     image = image.resize(resize[0], resize[1]);

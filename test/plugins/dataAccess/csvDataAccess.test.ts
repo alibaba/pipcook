@@ -1,7 +1,6 @@
-import textClassDataAccess from '../../../packages/plugins/data-access/csv-data-access';
+import textClassDataAccess from '../../../packages/plugins/data-access/csv-data-access/src/index';
 import * as path from 'path';
-
-const ASSET = path.join(path.resolve(__dirname, "../../"), "assets")
+import { ASSET } from '../../utils/utils';
 
 interface IRecord {
   label: string,
