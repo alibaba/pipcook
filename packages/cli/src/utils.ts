@@ -55,7 +55,7 @@ export function tail(id: string, name: string): ChildProcess {
   );
 }
 
-export async function parseConfigFilename(filename: string): Promise<string> {
+export async function parseConfigFilename(filename: string): Promise<url.UrlWithStringQuery> {
   if (!filename) {
     throw new TypeError('Please specify the config path');
   }
@@ -67,12 +67,12 @@ export async function parseConfigFilename(filename: string): Promise<string> {
     if (!await pathExists(filename)) {
       throw new TypeError(`${filename} not exists`);
     } else {
-      filename = url.parse(`file://${filename}`).href;
+      urlObj = url.parse(`file://${filename}`);
     }
   } else if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) === -1) {
-    throw new TypeError(`protocol ${urlObj.protocol} is not supported`);
+    throw new TypeError(`protocol '${urlObj.protocol}' is not supported`);
   }
-  return filename;
+  return urlObj;
 }
 export async function streamToJson(stream: NodeJS.ReadStream): Promise<object> {
   return new Promise((resolve, reject) => {

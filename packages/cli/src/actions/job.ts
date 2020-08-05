@@ -2,9 +2,10 @@ import { join, isAbsolute } from 'path';
 import * as fs from 'fs-extra';
 import { PipelineStatus } from '@pipcook/pipcook-core';
 import { JobStatusValue, JobResp } from '@pipcook/sdk';
+import { getFile } from '../request';
 import { installPackageFromConfig } from './pipeline';
 import { tunaMirrorURI } from '../config';
-import { logger, initClient, traceLogger, extractToPath } from '../utils';
+import { logger, initClient, traceLogger, extractToPath, parseConfigFilename, streamToJson } from '../utils';
 
 export async function list(opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);
@@ -57,28 +58,46 @@ export async function log(id: string, opts: any): Promise<void> {
 export async function run(filename: string, opts: any): Promise<JobResp> {
   const client = initClient(opts.host, opts.port);
   let config: any;
-  if (!isAbsolute(filename)) {
-    filename = join(process.cwd(), filename);
-  }
+
   logger.start(`run pipeline from ${filename}`);
   try {
-    config = await fs.readJson(filename);
-    if (typeof config?.plugins !== 'object') {
-      throw new Error('pipeline config file format error');
+    const fileUrl = await parseConfigFilename(filename);
+    if (fileUrl.protocol === 'file:') {
+      if (!isAbsolute(filename)) {
+        filename = join(process.cwd(), filename);
+      }
+      try {
+        config = await fs.readJson(filename);
+        if (typeof config?.plugins !== 'object') {
+          throw new Error('pipeline config file format error');
+        }
+      } catch (err) {
+        logger.fail(`read pipeline config file error: ${err.message}`);
+      }
+    } else if ([ 'http:', 'https:' ].indexOf(fileUrl.protocol) >= 0) {
+      logger.start('downloading pipeline config file');
+      try {
+        const stream = await getFile(filename);
+        config = await streamToJson(stream);
+      } catch (err) {
+        logger.fail(`fetch config failed: ${err.message}`);
+      }
+    } else {
+      logger.fail('unsupported file uri');
     }
-  } catch (err) {
-    logger.fail(`read pipeline config file error: ${err.message}`);
-  }
-  try {
+
     await installPackageFromConfig(config, opts);
     logger.info('start to create pipeline');
     const pipeline = await client.pipeline.create(config);
     logger.success(`pipeline is created: ${pipeline.id}, installing`);
+
     const installingResp = await client.pipeline.install(pipeline.id, { pyIndex: opts.tuna ? tunaMirrorURI : undefined });
     await client.pipeline.traceEvent(installingResp.traceId, traceLogger);
     logger.success('pipeline installed successfully, start to run job');
+
     const jobRunning = await client.job.run(pipeline.id);
     logger.success(`job is created: ${jobRunning.id}, running`);
+
     await client.pipeline.traceEvent(jobRunning.traceId, traceLogger);
     const job = await client.job.get(jobRunning.id);
     if (job.status === PipelineStatus.SUCCESS) {

@@ -84,14 +84,16 @@ export async function installPackageFromConfig(config: any, opts: any): Promise<
 export async function install(filename: string, opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);
   logger.start(`start install pipeline from ${filename}`);
+  let fileUrl;
   try {
-    filename = await parseConfigFilename(filename);
+    fileUrl = await parseConfigFilename(filename);
+    filename = fileUrl.href;
   } catch (err) {
     return logger.fail(err.message);
   }
   let pipeline: PipelineResp;
   try {
-    if (filename.startsWith('file')) {
+    if (fileUrl.protocol === 'file:') {
       const url = Url.parse(filename);
       const config = await readJson(url.path);
       logger.start('installing plugins');
