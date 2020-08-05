@@ -50,12 +50,12 @@ describe('pipeline api.job test', () => {
     expect(Array.isArray(jobs));
     expect(jobInfoObj.id).toBe(jobs[0].id);
   });
-  // it('clean', async () => {
-  //   // stop
-  //   if (jobInfoObj.status === 1) {
-  //     await client.job.cancel(jobInfoObj.id);
-  //   }
-  //   await client.job.remove();
-  //   await client.pipeline.remove(pipeline.id);
-  // });
+  it('clean', async () => {
+    // stop
+    if (jobInfoObj.status === 1) {
+      await client.job.cancel(jobInfoObj.id);
+    }
+    await client.job.remove();
+    await client.pipeline.remove(pipeline.id);
+  });
 });
