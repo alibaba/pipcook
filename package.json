@@ -6,21 +6,22 @@
   ],
   "devDependencies": {
     "@lerna/bootstrap": "^3.18.4",
+    "@types/jasmine": "^3.5.10",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
     "docsify-cli": "^4.4.0",
     "eslint": "^6.6.0",
     "http-server": "^0.12.3",
+    "jasmine": "^3.5.0",
     "jasmine-spec-reporter": "^5.0.2",
     "lerna": "^3.18.4",
     "ts-node": "^8.6.2",
-    "typedoc": "^0.15.4",
-    "typedoc-plugin-lerna": "^0.1.0",
-    "typescript": "^3.7.2"
+    "typedoc": "^0.17.8",
+    "typescript": "^3.9.7"
   },
   "scripts": {
-    "postinstall": "lerna bootstrap",
     "build": "lerna run compile && rm ./packages/daemon/dist/migrations/*.d.ts",
+    "postinstall": "lerna clean --yes && lerna bootstrap",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon --scope @pipcook/pipboard lint",
     "pretest": "npm run lint",
@@ -29,10 +30,6 @@
     "typedoc": "typedoc",
     "clean": "lerna run clean",
     "release": "lerna publish from-package --yes --no-verify-access",
-    "beta-release": "lerna version prerelease --force-publish --yes && lerna publish --yes --no-verify-access --dist-tag beta"
-  },
-  "dependencies": {
-    "@types/jasmine": "^3.5.10",
-    "jasmine": "^3.5.0"
+    "beta-release": "lerna version prerelease --preid beta --force-publish=* --yes && lerna publish from-package --yes --no-verify-access --dist-tag beta"
   }
 }

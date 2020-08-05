@@ -64,11 +64,23 @@ const resnetModelDefine: ModelDefineType = async (data: ImageDataset, args: Mode
     await download(MODEL_URL, MODEL_PATH);
   }
 
-  model = ResNet50(boa.kwargs({
-    include_top: false,
-    weights: 'imagenet',
-    input_shape: inputShape
-  }));
+  if (recoverPath) {
+    model = ResNet50(
+      boa.kwargs({
+        include_top: false,
+        weights: 'none',
+        input_shape: inputShape
+      })
+    );
+  } else {
+    model = ResNet50(
+      boa.kwargs({
+        include_top: false,
+        weights: 'imagenet',
+        input_shape: inputShape
+      })
+    );
+  }
 
   let output = model.output;
   output = GlobalAveragePooling2D()(output);
