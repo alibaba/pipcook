@@ -20,11 +20,11 @@ const imageDataProcess: DataProcessType = async (data: ImageSample, metadata: Me
   if (resize) {
     xs = tf.image.resizeBilinear(xs, resize);
   }
-  if(normalize) {
+  if (normalize) {
     xs = tf.div(xs, 255);
   }
   const label = data.label.categoryId;
-  const ys = tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(metadata.labelMap).length))
+  const ys = tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(metadata.labelMap).length));
 
   metadata.feature = {
     shape: [ resize[0], resize[1], 3 ]
@@ -34,7 +34,7 @@ const imageDataProcess: DataProcessType = async (data: ImageSample, metadata: Me
   return {
     data: xs,
     label: ys
-  }
+  };
 };
 
 export default imageDataProcess;

@@ -1,40 +1,6 @@
-import { ImageDataset, ModelTrainType, UniModel, ModelTrainArgsType, ImageDataLoader } from '@pipcook/pipcook-core';
+import { ImageDataset, ModelTrainType, UniModel, ModelTrainArgsType } from '@pipcook/pipcook-core';
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
-import Jimp from 'jimp';
-import { train } from '@tensorflow/tfjs-node-gpu';
-
-async function dataIterator(dataLoader: ImageDataLoader, labelMap: {
-  [key: string]: number;
-}): Promise<any> {
-  const count = await dataLoader.len();
-  return (): AsyncIterator<tf.TensorContainer> => {
-    let index = 0;
-    return {
-      async next(): Promise<IteratorResult<tf.TensorContainer>> {
-        if (index >= count) {
-          return { value: null, done: true };
-        }
-        const currentData = await dataLoader.getItem(index);
-        const image = await Jimp.read(currentData.data);
-        const trainImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
-        const imageArray = new Uint8Array(trainImageBuffer);
-        const label: number = currentData.label.categoryId;
-        index++;
-        return { value: tf.tidy(() => ({
-          xs: tf.tidy(() => tf.cast(tf.node.decodeImage(imageArray, 3), 'float32')),
-          ys: tf.tidy(() => tf.oneHot(tf.scalar(label, 'int32'), Object.keys(labelMap).length))
-        })), done: false };
-      }
-    };
-  };
-}
-
-async function createDataset(dataLoader: ImageDataLoader, labelMap: {
-  [key: string]: number;
-}) {
-  return tf.data.generator(await dataIterator(dataLoader, labelMap));
-}
 
 /**
  * this is plugin used to train tfjs model with pascal voc data format for image classification problem.
@@ -63,10 +29,10 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
     console.log(`Epoch ${i}/${epochs} start`);
     for (let j = 0; j < batchesPerEpoch; j++) {
       const dataBatch = await data.trainLoader.nextBatch(batchSize);
-      console.log(1)
-      const xs = tf.stack(dataBatch.map(ele => ele.data));
-      const ys = tf.stack(dataBatch.map(ele => ele.label));
-      console.log(2)
+      console.log(1);
+      const xs = tf.stack(dataBatch.map((ele) => ele.data));
+      const ys = tf.stack(dataBatch.map((ele) => ele.label));
+      console.log(2);
       const trainRes = await trainModel.trainOnBatch(xs, ys);
       console.log(`Iteration ${j}/${batchesPerEpoch} result --- loss: ${trainRes[0]} accuracy: ${trainRes[1]}`);
     }
@@ -74,8 +40,8 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
     let accuracy = 0;
     for (let j = 0; j < valBatchesPerEpoch; j++) {
       const dataBatch = await validationLoader.nextBatch(batchSize);
-      const xs = tf.stack(dataBatch.map(ele => ele.data));
-      const ys = tf.stack(dataBatch.map(ele => ele.label));
+      const xs = tf.stack(dataBatch.map((ele) => ele.data));
+      const ys = tf.stack(dataBatch.map((ele) => ele.label));
       const evaluateRes = await trainModel.evaluate(xs, ys);
       loss += Number(evaluateRes[0].dataSync());
       accuracy += Number(evaluateRes[1].dataSync());

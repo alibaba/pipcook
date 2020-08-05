@@ -66,6 +66,7 @@ export abstract class DataLoader{
 
   /**
    * iterate over dataset. Get next single sample
+   * Override Forbidden
    */
   async next(): Promise<Sample> {
     // reset index of data fetched to beginning when it reaches the end
@@ -79,21 +80,22 @@ export abstract class DataLoader{
     }
 
     // if data fetched not already processed, wait util this is finished
-    return await new Promise(resolve => {
+    return await new Promise((resolve) => {
       this.event.on(this.id, async () => {
         if (this.fetchIndex < this.processIndex) {
           const data = await this.getItem(this.fetchIndex++);
           this.event.removeAllListeners(this.id);
           resolve(data);
         }
-      })
+      });
     });
   }
 
   /**
    * iterate over dataset. Get next batch of data
+   * Override Forbidden
    */
-  async nextBatch(batchSize: number): Promise<Sample[]> {  
+  async nextBatch(batchSize: number): Promise<Sample[]> {
     const dataLen = await this.len();
 
     if (this.fetchIndex >= dataLen) {
@@ -112,7 +114,7 @@ export abstract class DataLoader{
       return result;
     }
 
-    return await new Promise(resolve => {
+    return await new Promise((resolve) => {
       this.event.on(this.id, async () => {
         if (this.fetchIndex + batchSize < this.processIndex) {
           const result = [];
@@ -122,8 +124,8 @@ export abstract class DataLoader{
           this.event.removeAllListeners(this.id);
           resolve(result);
         }
-      })
-    })
+      });
+    });
   }
 }
 

@@ -1,7 +1,6 @@
-import { ImageDataset, ModelEvaluateType, UniModel, ImageDataLoader, EvaluateResult } from '@pipcook/pipcook-core';
+import { ImageDataset, ModelEvaluateType, UniModel, EvaluateResult } from '@pipcook/pipcook-core';
 
 import * as tf from '@tensorflow/tfjs-node-gpu';
-import Jimp from 'jimp';
 
 /**
  *
@@ -26,8 +25,8 @@ const ModelEvalute: ModelEvaluateType =
 
       for (let i = 0; i < batches; i++) {
         const dataBatch = await data.testLoader.nextBatch(batchSize);
-        const xs = tf.stack(dataBatch.map(ele => ele.data));
-        const ys = tf.stack(dataBatch.map(ele => ele.label));
+        const xs = tf.stack(dataBatch.map((ele) => ele.data));
+        const ys = tf.stack(dataBatch.map((ele) => ele.label));
         const evaluateRes = await model.model.evaluate(xs, ys);
         loss += Number(evaluateRes[0].dataSync());
         accuracy += Number(evaluateRes[1].dataSync());
