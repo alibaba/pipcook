@@ -1,10 +1,10 @@
 import path from 'path';
-import { generate } from 'shortid';
 import { ensureDir, ensureSymlink, ensureFile, open, close } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
 import { CostaRuntime, PluginPackage } from './runtime';
 import Debug from 'debug';
+import { generateId } from '@pipcook/pipcook-core';
 const debug = Debug('costa.runnable');
 
 /**
@@ -64,7 +64,7 @@ export class PluginRunnable {
    * @param rt the costa runtime.
    */
   constructor(rt: CostaRuntime, id?: string) {
-    this.id = id || generate();
+    this.id = id || generateId();
     this.rt = rt;
     this.workingDir = path.join(this.rt.options.componentDir, this.id);
     this.state = 'init';

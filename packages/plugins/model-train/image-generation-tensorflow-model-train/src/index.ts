@@ -1,9 +1,10 @@
 import { ModelTrainType, UniModel, ImageDataset, ModelTrainArgsType } from '@pipcook/pipcook-core';
+const { dict } = require('@pipcook/boa').builtins();
 
 /**
  * training parameters
  */
-let trainOpt = {
+const trainOpt = {
   verbose: false,
   // save dir
   pic_dir: 'model',
@@ -20,10 +21,10 @@ let trainOpt = {
 };
 
 const cycleGANModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel> => {
-  const opt = {
+  const opt = dict({
     ...trainOpt,
     ...args
-  };
+  });
   const { trainLoader } = data;
   const aList = [];
   const bList = [];

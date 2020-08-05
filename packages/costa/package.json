@@ -23,7 +23,6 @@
     "fs-extra": "^8.1.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
-    "shortid": "^2.2.15",
     "tar-stream": "^2.1.2"
   },
   "devDependencies": {
@@ -32,7 +31,6 @@
     "@types/jasmine": "^3.5.7",
     "@types/request": "^2.48.4",
     "@types/request-promise": "^4.1.46",
-    "@types/shortid": "^0.0.29",
     "@types/tar-stream": "^2.1.0",
     "jasmine": "^3.5.0",
     "nyc": "14.1.1",
