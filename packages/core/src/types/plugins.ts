@@ -123,7 +123,7 @@ export interface DataAccessType extends PipcookPlugin {
  * @param args The arguments from pipeline config file.
  */
 export interface DataProcessType extends PipcookPlugin {
-  (data: Sample, metadata: Metadata, args: ArgsType): Promise<void>;
+  (data: Sample, metadata: Metadata, args: ArgsType): Promise<Sample>;
 }
 
 /**

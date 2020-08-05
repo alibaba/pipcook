@@ -8,10 +8,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import parse from 'csv-parse/lib/sync';
 
-class DataLoader implements CsvDataLoader {
+class DataLoader extends CsvDataLoader {
   records!: CsvSample[];
 
   constructor(csvPath: string, labelColumn: string) {
+    super();
     const records = parse(fs.readFileSync(csvPath), {
       columns: true
     });
@@ -31,6 +32,10 @@ class DataLoader implements CsvDataLoader {
 
   async getItem(id: number) {
     return this.records[id];
+  }
+
+  async setItem(id: number, sample: CsvSample) {
+    this.records[id] = sample;
   }
 }
 

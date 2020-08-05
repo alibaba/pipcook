@@ -98,17 +98,22 @@ async function emitStart(message: PluginMessage): Promise<void> {
     if (pkg.pipcook.category === 'dataProcess') {
       // in "dataProcess" plugin, we need to do process them in one by one.
       const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
-      const loaders = [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
+      [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
         .filter((loader: DataLoader) => loader != null)
-        .map(async (loader: DataLoader) => {
-          const len = await loader.len();
-          // FIXME(Yorkie): in parallel?
-          for (let i = 0; i < len; i++) {
-            const sample = await loader.getItem(i);
-            await fn(sample, dataset.metadata, args);
-          }
+        .forEach(async (loader: DataLoader) => {
+          process.nextTick(async () => {
+            const len = await loader.len();
+            loader.processIndex = 0;
+            for (let i = 0; i < len; i++) {
+              console.log('--data pcoess');
+              let sample = await loader.getItem(i);
+              sample = await fn(sample, dataset.metadata, args);
+              await loader.setItem(i, sample);
+              loader.processIndex = i + 1;
+              loader.notifyProcess();
+            }
+          });
         });
-      await Promise.all(loaders);
       recv(PluginOperator.WRITE);
       return;
     }

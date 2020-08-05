@@ -10,7 +10,8 @@ import {
   VocDataset,
   ImageDataLoader,
   ImageLabel,
-  shuffle
+  shuffle,
+  ImageSample
 } from '@pipcook/pipcook-core';
 import glob from 'glob-promise';
 import * as path from 'path';
@@ -22,9 +23,10 @@ interface DataPair {
   label: ImageLabel;
 }
 
-class DataLoader implements ImageDataLoader {
+class DataLoader extends ImageDataLoader {
   dataPairs!: DataPair[];
   constructor(dataPairs: DataPair[]) {
+    super();
     shuffle(dataPairs);
     this.dataPairs = dataPairs;
   }
@@ -38,6 +40,11 @@ class DataLoader implements ImageDataLoader {
       data: this.dataPairs[id].image,
       label: this.dataPairs[id].label
     };
+  }
+
+  async setItem(id: number, sample: ImageSample) {
+    this.dataPairs[id].image = sample.data;
+    this.dataPairs[id].label = sample.label;
   }
 }
 

@@ -42,6 +42,7 @@ const simpleCnnModelDefine: ModelDefineType = async (data: ImageDataset, args: M
 
   // create a new model
   if (!recoverPath) {
+    await data.trainLoader.next();
     assertionTest(data);
     inputShape = data.metadata.feature.shape;
     outputShape = Object.keys(data.metadata.labelMap).length;

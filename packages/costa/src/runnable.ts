@@ -128,6 +128,7 @@ export class PluginRunnable {
    * @param name the plguin name.
    */
   async start(pkg: PluginPackage, ...args: any[]): Promise<RunnableResponse | null> {
+    console.log('-0----------args,', args);
     if (this.state !== 'idle') {
       throw new TypeError(`the runnable "${this.id}" is busy or not ready now`);
     }
