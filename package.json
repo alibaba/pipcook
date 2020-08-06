@@ -20,7 +20,7 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
-    "postinstall": "lerna clean --yes && lerna bootstrap",
+    "postinstall": "lerna clean --yes && lerna bootstrap && node ./tools/init_dev.js -f",
     "build": "lerna run compile",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon --scope @pipcook/pipboard lint",

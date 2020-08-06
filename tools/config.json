@@ -1,0 +1,5 @@
+{
+    "plugins": [ "boa", "core" ],
+    "server": [ "daemon" ],
+    "pipboard": [ "pipboard" ]
+}
