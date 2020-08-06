@@ -54,6 +54,7 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > ~/.npmrc
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
+          npm run beta-release-tag env.GITHUB_RUN_NUMBER
           npm run beta-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

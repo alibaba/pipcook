@@ -30,6 +30,6 @@
     "typedoc": "typedoc",
     "clean": "lerna run clean",
     "release": "lerna publish from-package --yes --no-verify-access",
-    "beta-release": "lerna version prerelease --preid beta --force-publish=* --yes && lerna publish from-package --yes --no-verify-access --dist-tag beta"
-  }
+    "beta-release-tag": "lerna version prerelease --force-publish=* --yes  --preid ",
+    "beta-release": "lerna publish from-package --yes --no-verify-access --dist-tag beta"  }
 }
