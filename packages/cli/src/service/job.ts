@@ -15,7 +15,7 @@ export async function list(opts: any): Promise<void> {
       return { ...job, status: JobStatusValue[job.status] };
     }), [ 'id', 'status', 'evaluatePass', 'createdAt' ]);
   } else {
-    console.info('no job is created.');
+    logger.info('no job is created.');
   }
 }
 
@@ -48,10 +48,9 @@ export async function log(id: string, opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);
   try {
     const log = await client.job.log(id);
-    console.log(log);
+    logger.info(log);
   } catch (err) {
-    console.error(err.message);
-    process.exit(1);
+    logger.fail(err.message);
   }
 }
 

@@ -115,7 +115,7 @@ export async function list(opts: any): Promise<void> {
   const client = initClient(opts.host, opts.port);
   const plugins = await client.plugin.list(opts);
   if (plugins.length === 0) {
-    console.info('no plugin installed.');
+    logger.info('no plugin installed.');
   } else {
     console.table(plugins.map((plugin) => {
       return { ...plugin, status: PluginStatusValue[plugin.status] };
