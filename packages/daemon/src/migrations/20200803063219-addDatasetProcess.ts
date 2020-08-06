@@ -11,13 +11,13 @@ export default {
         queryInterface.addColumn('pipelines', 'datasetProcessParams', {
           type: DataTypes.STRING
         }, { transaction: t })
-      ])
-    })
+      ]);
+    });
   },
 
   down: (queryInterface: QueryInterface) => {
-    return queryInterface.sequelize.transaction( async t => {
-        await queryInterface.removeColumn('pipelines', 'datasetProcess', { transaction: t })
+    return queryInterface.sequelize.transaction(async t => {
+        await queryInterface.removeColumn('pipelines', 'datasetProcess', { transaction: t });
         await queryInterface.removeColumn('pipelines', 'datasetProcessParams', { transaction: t });
     });
   }

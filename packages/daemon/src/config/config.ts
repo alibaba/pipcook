@@ -1,9 +1,7 @@
-import { homedir } from 'os';
-
+import { constants } from '@pipcook/pipcook-core';
 
 const  dialect = 'sqlite';
-const storage = process.env.PIPCOOK_STORAGE || (`${homedir()}/.pipcook/db/pipcook.db`)
-
+const storage = process.env.PIPCOOK_STORAGE || constants.PIPCOOK_STORAGE;
 
 export {
   dialect,
