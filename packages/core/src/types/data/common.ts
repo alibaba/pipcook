@@ -1,6 +1,7 @@
 import events from 'events';
+
+import { generateId } from '../../utils/public';
 import { Statistic } from '../other';
-import { generate } from 'shortid';
 
 /**
  * The descriptor for sample data or label.
@@ -49,7 +50,7 @@ export interface Sample {
 export abstract class DataLoader{
   private event = new events.EventEmitter();
   private fetchIndex = 0;
-  private id = generate();
+  private id = generateId();
   public processIndex = -1;
 
   /**
@@ -60,7 +61,7 @@ export abstract class DataLoader{
   abstract async getItem(id: number): Promise<Sample>;
   abstract async setItem(id: number, sample: Sample): Promise<void>;
 
-  notifyProcess() {
+  notifyProcess(): void {
     this.event.emit(this.id);
   }
 
@@ -76,11 +77,11 @@ export abstract class DataLoader{
 
     // if the data fetched has already been processed, return it
     if (this.fetchIndex < this.processIndex || this.processIndex === -1) {
-      return await this.getItem(this.fetchIndex++);
+      return this.getItem(this.fetchIndex++);
     }
 
     // if data fetched not already processed, wait util this is finished
-    return await new Promise((resolve) => {
+    return new Promise((resolve) => {
       this.event.on(this.id, async () => {
         if (this.fetchIndex < this.processIndex) {
           const data = await this.getItem(this.fetchIndex++);
@@ -109,20 +110,20 @@ export abstract class DataLoader{
     if (this.fetchIndex + batchSize < this.processIndex) {
       const result = [];
       for (let i = this.fetchIndex; i < this.fetchIndex + batchSize; i++) {
-        result.push(await this.getItem(i));
+        result.push(this.getItem(i));
       }
-      return result;
+      return Promise.all(result);
     }
 
-    return await new Promise((resolve) => {
+    return new Promise((resolve) => {
       this.event.on(this.id, async () => {
         if (this.fetchIndex + batchSize < this.processIndex) {
           const result = [];
           for (let i = this.fetchIndex; i < this.fetchIndex + batchSize; i++) {
-            result.push(await this.getItem(i));
+            result.push(this.getItem(i));
           }
           this.event.removeAllListeners(this.id);
-          resolve(result);
+          resolve(await Promise.all(result));
         }
       });
     });

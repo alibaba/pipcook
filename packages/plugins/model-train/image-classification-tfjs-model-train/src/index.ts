@@ -29,10 +29,8 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
     console.log(`Epoch ${i}/${epochs} start`);
     for (let j = 0; j < batchesPerEpoch; j++) {
       const dataBatch = await data.trainLoader.nextBatch(batchSize);
-      console.log(1);
       const xs = tf.stack(dataBatch.map((ele) => ele.data));
       const ys = tf.stack(dataBatch.map((ele) => ele.label));
-      console.log(2);
       const trainRes = await trainModel.trainOnBatch(xs, ys);
       console.log(`Iteration ${j}/${batchesPerEpoch} result --- loss: ${trainRes[0]} accuracy: ${trainRes[1]}`);
     }
