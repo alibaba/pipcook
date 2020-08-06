@@ -31,5 +31,6 @@
     "clean": "lerna run clean",
     "release": "lerna publish from-package --yes --no-verify-access",
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes  --preid ",
-    "beta-release": "lerna publish from-package --yes --no-verify-access --dist-tag beta"  }
+    "beta-release": "lerna publish from-package --yes --no-verify-access --dist-tag beta"  
+  }
 }
