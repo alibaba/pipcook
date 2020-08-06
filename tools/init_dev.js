@@ -71,4 +71,4 @@ for (const key in config) {
 
 Promise.all(futures).then(() => {
   console.log('init finished');
-})
+});
