@@ -25,7 +25,7 @@ Then check if installed via `pipcook --help`.
 You could also install pipcook with Docker. Just run command:
 
 ```sh
-$ docker pull docker pull pipcook/pipcook:latest
+$ docker pull pipcook/pipcook:latest
 ```
 
 After pulling successfully, run command below to start:
