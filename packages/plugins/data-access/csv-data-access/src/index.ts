@@ -26,15 +26,15 @@ class DataLoader extends CsvDataLoader {
     });
   }
 
-  async len() {
+  async len(): Promise<number> {
     return this.records.length;
   }
 
-  async getItem(id: number) {
+  async getItem(id: number): Promise<CsvSample> {
     return this.records[id];
   }
 
-  async setItem(id: number, sample: CsvSample) {
+  async setItem(id: number, sample: CsvSample): Promise<void> {
     this.records[id] = sample;
   }
 }

@@ -3,14 +3,14 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/image-classification-data-collect",
       "params": {
-        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/eCommerceImageClassification.zip"
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/test/image-classification-test.zip"
       }
     },
     "dataAccess": {
       "package": "./packages/plugins/data-access/pascalvoc-data-access"
     },
     "dataProcess": {
-      "package": "./packages/plugins/data-process/image-data-process",
+      "package": "./packages/plugins/data-process/tensorflow-image-classification-process",
       "params": {
         "resize": [256, 256]
       }
@@ -25,7 +25,7 @@
     "modelTrain": {
       "package": "./packages/plugins/model-train/image-classification-tensorflow-model-train",
       "params": {
-        "epochs": 15
+        "epochs": 1
       }
     },
     "modelEvaluate": {

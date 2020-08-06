@@ -1,33 +1,7 @@
-import { ImageDataset, ModelEvaluateType, UniModel, ModelTrainArgsType, ImageDataLoader, EvaluateResult } from '@pipcook/pipcook-core';
-import * as path from 'path';
+import { ImageDataset, ModelEvaluateType, UniModel, EvaluateResult } from '@pipcook/pipcook-core';
 
 const boa = require('@pipcook/boa');
-const { tuple } = boa.builtins();
 const tf = boa.import('tensorflow');
-const sys = boa.import('sys');
-sys.path.insert(0, path.join(__dirname, '..', 'piploadlib'));
-const loadImage = boa.import('loadimage');
-const AUTOTUNE = tf.data.experimental.AUTOTUNE;
-
-async function createDataset(dataLoader: ImageDataLoader, labelMap: {
-  [key: string]: number;
-}) {
-  const imageNames: string[] = [];
-  const labels: number[] = [];
-  const count = await dataLoader.len();
-  for (let i = 0; i < count; i++) {
-    const currentData = await dataLoader.getItem(i);
-    imageNames.push(currentData.data);
-    labels.push(tf.one_hot(currentData.label.categoryId, Object.keys(labelMap).length));
-  }
-  const pathDs = tf.data.Dataset.from_tensor_slices(imageNames);
-  const imageDs = pathDs.map(loadImage.loadImage, boa.kwargs({
-    num_parallel_calls: AUTOTUNE
-  }));
-  const labelDs = tf.data.Dataset.from_tensor_slices(labels);
-  const imageLabelDs = tf.data.Dataset.zip(tuple([ imageDs, labelDs ]));
-  return imageLabelDs;
-}
 
 /**
  * this is plugin used to train tfjs model with pascal voc data format for image classification problem.
@@ -37,23 +11,40 @@ async function createDataset(dataLoader: ImageDataLoader, labelMap: {
  * @param batchSize : need to specify batch size
  * @param optimizer : need to specify optimizer
  */
-const ModelEvaluate: ModelEvaluateType = async (data: ImageDataset, model: UniModel, args: ModelTrainArgsType): Promise<EvaluateResult> => {
-  const {
-    batchSize = 16
-  } = args;
+const ModelEvaluate: ModelEvaluateType = async (data: ImageDataset, model: UniModel): Promise<EvaluateResult> => {
+  let batchSize = 16;
 
-  const { testLoader, metadata } = data;
+  const { testLoader } = data;
 
+  // sample data must contain test data
   if (testLoader) {
-    let dataset = await createDataset(testLoader, metadata.labelMap);
-    dataset = dataset.batch(batchSize);
-    dataset = dataset.prefetch(boa.kwargs({
-      buffer_size: AUTOTUNE
-    }));
-    const evaluateResult = model.model.evaluate(dataset);
-    return evaluateResult.toString();
+    const count = await testLoader.len();
+    const batches = parseInt(String(count / batchSize));
+
+    let loss = 0;
+    let accuracy = 0;
+
+    for (let i = 0; i < batches; i++) {
+      const dataBatch = await data.testLoader.nextBatch(batchSize);
+      const xs = tf.stack(dataBatch.map((ele) => ele.data));
+      const ys = tf.stack(dataBatch.map((ele) => ele.label));
+      const evaluateRes = await model.model.evaluate(xs, ys);
+      loss += Number(evaluateRes[0].dataSync());
+      accuracy += Number(evaluateRes[1].dataSync());
+    }
+
+    loss /= batches;
+    accuracy /= batches;
+
+    console.log(`Evaluate Result: loss: ${loss} accuracy: ${accuracy}`);
+
+    return {
+      loss,
+      accuracy
+    };
   }
-  return {};
+  // just skiped if no test loader.
+  return { pass: true };
 };
 
 export default ModelEvaluate;

@@ -32,18 +32,18 @@ class DataLoader extends ImageDataLoader {
     this.dataPairs = dataPairs;
   }
 
-  async len() {
+  async len(): Promise<number> {
     return this.dataPairs.length;
   }
 
-  async getItem(id: number) {
+  async getItem(id: number): Promise<ImageSample> {
     return {
       data: this.dataPairs[id].image,
       label: this.dataPairs[id].label
     };
   }
 
-  async setItem(id: number, sample: ImageSample) {
+  async setItem(id: number, sample: ImageSample): Promise<void> {
     this.dataPairs[id].image = sample.data;
     this.dataPairs[id].label = sample.label;
   }
