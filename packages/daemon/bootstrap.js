@@ -42,10 +42,8 @@ function createPidfileSync(pathname) {
   // create pidfile firstly
   createPidfileSync(DAEMON_PIDFILE);
 
-  exec("npm run migration", (err, out) => {
-    console.log(err);
-    console.log(out);
-  })
+  // run migration in sub-process
+  exec("npm run migration");
 
   // load config
   if (await pathExists(DAEMON_CONFIG)) {
