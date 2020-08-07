@@ -1,9 +1,20 @@
 import * as path from 'path';
+import { readdir, readFile, createWriteStream } from 'fs-extra';
+import { Writable } from 'stream';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
-import { readdir, readFile } from 'fs-extra';
 
 const INSTALL_SPECS_TIMEOUT = 180 * 1000;
+class StringWritable extends Writable {
+  data = '';
+  constructor() {
+    super();
+  }
+
+  _write(chunk: any): void {
+    this.data += chunk;
+  }
+}
 
 describe('start runnable in normal way', () => {
   const opts = {
@@ -37,19 +48,21 @@ describe('start runnable in normal way', () => {
 
   it('should start a python plugin', async () => {
     const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-simple'));
-    await costa.install(simple, process);
+    const stdoutStream = new StringWritable();
+    const stderrStream = new StringWritable();
+    await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream });
     expect(simple.pipcook.runtime).toBe('python');
 
     // test passing the variable from js to python.
     const tmp2 = await runnable.start(simple, tmp);
-    const stdout = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
+    const stdout = stdoutStream.data;
     expect(stdout.search('hello python!') !== 0).toBe(true);
     expect(stdout.search('fn1([0. 0.])') !== 0).toBe(true);
     expect(stdout.search('fn2()') !== 0).toBe(true);
 
     // test passing the variable from python to python.
     await runnable.start(simple, tmp2);
-    const stdout2 = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
+    const stdout2 = stdoutStream.data;
     expect(stdout2.search('hello python! [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]') !== 0).toBe(true);
   }, INSTALL_SPECS_TIMEOUT);
 
