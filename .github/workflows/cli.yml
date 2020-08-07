@@ -8,32 +8,6 @@ on:
     - master
 
 jobs:
-  testing-helps:
-    name: Test Pipcook Tools help commands
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node_version: ['12']
-        os: [ubuntu-latest, macOS-latest]
-    steps:
-    - uses: actions/checkout@v1
-    - name: Using Node.js ${{ matrix.node_version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node_version }}
-    - name: Building Pipcook
-      run: |
-        npm install
-        npm run build
-    - name: Testing help commands
-      run: |
-        ./packages/cli/dist/bin/pipcook -v
-        ./packages/cli/dist/bin/pipcook -h
-        ./packages/cli/dist/bin/pipcook init --help
-        ./packages/cli/dist/bin/pipcook run --help
-        ./packages/cli/dist/bin/pipcook plugin-dev --help
-        ./packages/cli/dist/bin/pipcook serve --help
-
   testing-runs:
     name: Test Pipcook Tools main commands
     runs-on: ${{ matrix.os }}
@@ -57,6 +31,14 @@ jobs:
       run: |
         ./packages/cli/dist/bin/pipcook init
         ./packages/cli/dist/bin/pipcook daemon start
+    - name: Testing help commands
+      run: |
+        ./packages/cli/dist/bin/pipcook -v
+        ./packages/cli/dist/bin/pipcook -h
+        ./packages/cli/dist/bin/pipcook init --help
+        ./packages/cli/dist/bin/pipcook run --help
+        ./packages/cli/dist/bin/pipcook plugin-dev --help
+        ./packages/cli/dist/bin/pipcook serve --help
     - name: install plugins from specific pipeline
       run: |
         ./packages/cli/dist/bin/pipcook pipeline install ./test/pipelines/text-bayes-classification.json --verbose
@@ -73,30 +55,6 @@ jobs:
     - name: "pipcook plugin-dev"
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
-
-  testing-install-from-config:
-    name: Test Pipcook Tools commands pipeline install
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node_version: ['12']
-        os: [ubuntu-latest, macOS-latest]
-    steps:
-    - uses: actions/checkout@v1
-    - name: Using Node.js ${{ matrix.node_version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node_version }}
-    - name: Building Pipcook
-      run: |
-        npm install
-        npm run build
-    - name: pipcook init
-      env:
-        NODE_ENV: local
-      run: |
-        ./packages/cli/dist/bin/pipcook init
-        ./packages/cli/dist/bin/pipcook daemon start
     - name: pipcook plugin install from pipeline config
       run: |
         ./packages/cli/dist/bin/pipcook pipeline install ./test/pipelines/text-bayes-classification.json

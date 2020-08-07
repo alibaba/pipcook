@@ -2,8 +2,6 @@ import path from 'path';
 import { CostaRuntime } from './runtime';
 import { PluginPackage } from '.';
 import { stat } from 'fs-extra';
-import { spawnSync } from 'child_process';
-import { createReadStream } from 'fs-extra';
 
 const INSTALL_SPECS_TIMEOUT = 180 * 1000;
 
@@ -79,37 +77,6 @@ describe('create a costa runtime', () => {
       collectCsv.name
     ));
   }, INSTALL_SPECS_TIMEOUT);
-
-  it('should install the package with conda packages', async () => {
-    const bayesClassifier = await costa.fetch('../plugins/model-define/bayesian-model-define');
-    await costa.install(bayesClassifier, process);
-    await stat(path.join(
-      costa.options.installDir,
-      'node_modules',
-      bayesClassifier.name
-    ));
-    await stat(path.join(
-      costa.options.installDir,
-      'conda_envs',
-      `${bayesClassifier.name}@${bayesClassifier.version}`
-    ));
-  }, INSTALL_SPECS_TIMEOUT);
-
-  it('should fetch a plugin from tarball readstream', async () => {
-    const pathname = path.join(__dirname, '../../plugins/data-collect/chinese-poem-data-collect');
-    let packName = spawnSync('npm', [ 'pack' ], { cwd: pathname }).stdout.toString();
-    console.log('packname', packName);
-    packName = packName.replace(/\r|\n/g, '');
-    const packageStream = createReadStream(path.join(pathname, packName));
-    const collectCsvWithSpecificVer = await costa.fetchByStream(packageStream);
-    expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-chinese-poem-data-collect');
-    await costa.install(collectCsvWithSpecificVer, process);
-    await stat(path.join(
-      costa.options.installDir,
-      'node_modules',
-      collectCsvWithSpecificVer.name
-    ));
-  }, 180 * 1000);
 
   it('should start the package', async () => {
     const runnable = await costa.createRunnable({ id: 'foobar' });
