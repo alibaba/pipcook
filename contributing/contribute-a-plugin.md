@@ -25,27 +25,7 @@ const collectTextline: DataCollectType = async (args: ArgsType): Promise<void> =
 For other plugin interfaces, see [this list of plugin categories](../spec/plugin.md#plugin-category).
 
 
-## Test your plugin
-
-You can prepare the corresponding mocking data based on the interface. For example, if you developed a `DataProcessType` plugin, create some mock firstly:
-
-```js
-const data = {
-  trainData: tf.data.array([{xs: [1,2,3], ys: [1]},{xs: [4,5,6], ys: [2]}]),
-  metaData: {
-    feature: {
-      name: 'train',
-      type: 'int32',
-      shape: [1,3]
-    },
-    label: {
-      name: 'test,
-      type: 'int32',
-      shape: [1]
-    },
-  }
-};
-```
+## Plugin development
 
 If the `DataProcessType` plugin needs to double the size of each feature, you can implement your plugin as follows:
 
@@ -63,6 +43,42 @@ You need to check the following two before releasing that:
 - the returned value of your plugin comply with the [plugin specfication](../spec/plugin.md).
 
 After ensuring the preceding the above, you can run a real pipeline to check whether your plugin is compatible with the corresponding upstream and downstream plugins.
+
+### Developing with Python
+
+In order to allow some non-Node.js developers (such as algorithm engineers) to contribute plugins to Pipcook, we provide a plugin development environment based entirely on Python. The script is as follows:
+
+```py
+# __init__.py
+def main(sample, metadata, args):
+  sample.data *= 2
+```
+
+Pipcook agrees that the `main` function is used as the entrance of the plugin. The parameters are consistent with those of the Node.js plugin. The file also needs to be named `__init__.py`. In addition, you need to add in package.json:
+
+```json
+{
+  "pipcook": {
+    "runtime": "python"
+  }
+}
+```
+
+In this way, when Pipcook loads the plugin, it will use the Python loader to load. If you need to use a third-party library of Python, you can also declare under `conda.dependencies` as follows:
+
+```json
+{
+  "pipcook": {
+    "runtime": "python"
+  },
+  "conda": {
+    "dependencies": {
+      "tensorflow": "*",
+      "numpy": "*"
+    }
+  }
+}
+```
 
 ## Release
 
