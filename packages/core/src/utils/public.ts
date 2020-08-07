@@ -2,7 +2,7 @@ import * as url from 'url';
 import { promisify } from 'util';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { generate } from 'shortid';
+import { customAlphabet } from 'nanoid';
 import _cliProgress from 'cli-progress';
 import { PIPCOOK_LOGS, PIPCOOK_TMPDIR } from '../constants/other';
 
@@ -12,6 +12,7 @@ const si = require('systeminformation');
 const targz = require('targz');
 const extract = require('extract-zip');
 
+const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 8);
 const compressAsync = promisify(targz.compress);
 const extractAsync = promisify(extract);
 /**
@@ -115,7 +116,7 @@ export async function downloadAndExtractTo(resUrl: string): Promise<string> {
   const extname = path.extname(filename);
 
   const { protocol, pathname } = url.parse(resUrl);
-  const destPath = path.join(PIPCOOK_TMPDIR, generate());
+  const destPath = path.join(PIPCOOK_TMPDIR, generateId());
   const pkgName = path.join(destPath, filename);
 
   if (protocol === 'file:' && extname !== '.zip') {
@@ -312,4 +313,11 @@ export function shuffle(array: any[]): void {
     const j = Math.floor(Math.random() * (i + 1));
     [ array[i], array[j] ] = [ array[j], array[i] ];
   }
+}
+
+/**
+ * generate id
+ */
+export function generateId(): string {
+  return nanoid();
 }

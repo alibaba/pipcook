@@ -3,8 +3,7 @@ import url from 'url';
 import { createUnzip } from 'zlib';
 import { Readable, Writable } from 'stream';
 import { createReadStream, createWriteStream, ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, mkdirp } from 'fs-extra';
-import { generate } from 'shortid';
-import { download, constants } from '@pipcook/pipcook-core';
+import { download, constants, generateId } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
@@ -281,7 +280,7 @@ export class CostaRuntime {
    * @param cwd the current working directory.
    */
   async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
-    const fileDir = path.join(constants.PIPCOOK_TMPDIR, generate());
+    const fileDir = path.join(constants.PIPCOOK_TMPDIR, generateId());
     const filename = path.join(fileDir, 'pkg.tgz');
     await mkdirp(fileDir);
     await new Promise((resolve, reject) => {
@@ -466,7 +465,7 @@ export class CostaRuntime {
       src.uri = name;
     } else if ([ 'https:', 'http:' ].indexOf(urlObj.protocol) !== -1) {
       src.from = 'tarball';
-      src.uri = path.join(constants.PIPCOOK_TMPDIR, generate(), path.basename(urlObj.pathname));
+      src.uri = path.join(constants.PIPCOOK_TMPDIR, generateId(), path.basename(urlObj.pathname));
     } else if (name[0] !== '.') {
       src.schema = this.getNameSchema(name);
       src.from = 'npm';

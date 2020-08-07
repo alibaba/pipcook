@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipboard",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "board for pipcook",
   "dependencies": {
     "@alifd/next": "^1.x",
@@ -9,7 +9,7 @@
     "@icedesign/layout": "^1.x",
     "@icedesign/notification": "^1.0.5",
     "@icedesign/theme": "^1.0.0",
-    "@tensorflow/tfjs": "^2.0.1",
+    "@tensorflow/tfjs": "1.7.0",
     "axios": "^0.18.1",
     "classnames": "^2.2.5",
     "codemirror": "^5.52.2",

@@ -1,7 +1,6 @@
 import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { generate } from 'shortid';
 import { Op } from 'sequelize';
 import { provide, inject } from 'midway';
 import {
@@ -11,7 +10,8 @@ import {
   PluginTypeI,
   compressTarFile,
   UniDataset,
-  constants as CoreConstants
+  constants as CoreConstants,
+  generateId
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
@@ -68,7 +68,7 @@ export class PipelineService {
 
   createPipeline(config: PipelineDB): Promise<PipelineModel> {
     if (typeof config.id !== 'string') {
-      config.id = generate();
+      config.id = generateId();
     }
     return this.pipeline.create(config);
   }
@@ -150,7 +150,7 @@ export class PipelineService {
   async createJob(pipelineId: string): Promise<JobModel> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
     const job = await this.job.create({
-      id: generate(),
+      id: generateId(),
       pipelineId,
       specVersion,
       status: PipelineStatus.INIT,

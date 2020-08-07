@@ -1,9 +1,8 @@
 import * as path from 'path';
-import { generate } from 'shortid';
 import { PluginProtocol, PluginOperator, PluginMessage } from './protocol';
 import { PluginPackage } from './index';
 import Debug from 'debug';
-import { UniDataset, DataLoader } from '@pipcook/pipcook-core';
+import { UniDataset, DataLoader, generateId } from '@pipcook/pipcook-core';
 
 type MessageHandler = Record<PluginOperator, (proto: PluginProtocol) => void>;
 const debug = Debug('costa.client');
@@ -123,7 +122,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
     // default handler for plugins.
     const resp = await fn(...pluginArgs.map(deserializeArg));
     if (resp) {
-      const rid = generate();
+      const rid = generateId();
       previousResults[rid] = resp;
       console.info(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
       recv(PluginOperator.WRITE, rid);

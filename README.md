@@ -59,7 +59,7 @@ The project provides subprojects including machine learning pipeline framework, 
 - train their models and serve them.
 - optimize own models for better model evaluation results, like higher accuracy for image classification.
 
-> If you are in the above conditions, just try it via [installation guide](INSTALL.md).
+> If you are in the above conditions, just try it via [installation guide](docs/INSTALL.md).
 
 ### Subprojects
 
@@ -132,7 +132,7 @@ See [here](./example) for complete list, and it's easy and quick to run these ex
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ pipcook run ./examples/pipelines/mnist-image-classification.json
+$ pipcook run ./example/pipelines/mnist-image-classification.json
 ```
 
 After the above pipeline is completed, you have already trained a model at the current `output` directory, it's an independent NPM package and can be easily integrated in your existing system, to start a simple inference server locally, just run:

@@ -113,7 +113,7 @@ export class PipelineController {
       if (!pipeline) {
         throw new Error('pipeline not found');
       }
-      const updatePluginNode = (name: string): void => {
+      constants.PLUGINS.forEach(name => {
         if (typeof pipeline[name] === 'string') {
           const params = pipeline[`${name}Params`];
           json.plugins[name] = {
@@ -121,14 +121,7 @@ export class PipelineController {
             params: params != null ? JSON.parse(params) : undefined
           };
         }
-      };
-      updatePluginNode('dataCollect');
-      updatePluginNode('dataAccess');
-      updatePluginNode('dataProcess');
-      updatePluginNode('modelDefine');
-      updatePluginNode('modelLoad');
-      updatePluginNode('modelTrain');
-      updatePluginNode('modelEvaluate');
+      });
 
       // update the `name` node
       if (pipeline.name) {
