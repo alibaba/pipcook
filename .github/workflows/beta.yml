@@ -51,7 +51,7 @@ jobs:
       - name: Publish npm beta packages
         if: env.UPDATED == 'true'
         run: |
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+          sha_short=$(git rev-parse --short HEAD)"
           echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > ~/.npmrc
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
