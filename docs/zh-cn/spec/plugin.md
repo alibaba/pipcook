@@ -18,7 +18,8 @@
   },
   "pipcook": {
     "category": "dataCollect",
-    "datatype": "image"
+    "datatype": "image",
+    "runtime": "nodejs"
   },
   "conda": {
     "python": "3.7",
@@ -36,6 +37,7 @@
 - 需要添加一个根节点 `pipcook`，
   - `pipcook.category` 用于描述插件类型，所有的类型可以看[这里](#分类)。
   - `pipcook.datatype` 用于描述插件所处理的数据类型，目前支持：`common`、`image` 和 `text`。
+  - `pipcook.runtime` 用于描述插件运行时的类型，目前支持 `nodejs` 和 `python`。
 - 可选的节点 `conda`，用于配置 Python 相关的依赖，
   - `conda.python` 用于声明 Python 版本，目前必须是 3.7。
   - `conda.dependencies` 用于声明插件会使用到的 Python 包，Pipcook 会在初始化插件时进行安装，它支持以下的版本声明方式：

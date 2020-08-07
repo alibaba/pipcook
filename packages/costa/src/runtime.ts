@@ -303,10 +303,12 @@ export class CostaRuntime {
 
     let boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
     if (!await pathExists(boaSrcPath)) {
-      boaSrcPath = path.join(__dirname, '../../boa');
-    }
-    if (!await pathExists(boaSrcPath)) {
-      throw new TypeError('costa is not installed correctly, please try init again');
+      try {
+        // FIXME: ../../ means boa/lib/index.js
+        boaSrcPath = path.join(require.resolve('@pipcook/boa'), '../../');
+      } catch (err) {
+        throw new TypeError(`boa(${boaSrcPath}) not exists, please try init again.`);
+      }
     }
 
     const pluginStdName = `${pkg.name}@${pkg.version}`;
