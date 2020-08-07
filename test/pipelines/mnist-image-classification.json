@@ -3,7 +3,7 @@
     "dataCollect": {
       "package": "./packages/plugins/data-collect/image-classification-data-collect",
       "params": {
-        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/test/image-classification-test.zip"
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/1(1).zip"
       }
     },
     "dataAccess": {
@@ -12,7 +12,7 @@
     "dataProcess": {
       "package": "./packages/plugins/data-process/tfjs-image-classification-process",
       "params": {
-        "resize": [256, 256]
+        "resize": [64, 64]
       }
     },
     "modelDefine": {
