@@ -29,7 +29,7 @@ async function installPkg(pkgDir, nodeModules, force) {
   }
 }
 
-async function init (projDir, pkgList, force) {
+async function init(projDir, pkgList, force) {
   await mkdirp(projDir);
   const projPackageFile = join(projDir, 'package.json');
   if (!await pathExists(projPackageFile)) {
@@ -63,9 +63,9 @@ if (process.argv.length > 2 && process.argv[2] === '-f') {
 }
 
 const futures = [];
-for (const key in config) {
-  if (Array.isArray(config[key])) {
-    futures.push(init(join(PIPCOOK_HOME_PATH, key), config[key], force));
+for (const projConfig of config) {
+  if (Array.isArray(projConfig.dependencies)) {
+    futures.push(init(join(PIPCOOK_HOME_PATH, projConfig.destDir), projConfig.dependencies, force));
   }
 }
 

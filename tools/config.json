@@ -1,5 +1,14 @@
-{
-    "plugins": [ "boa", "core" ],
-    "server": [ "daemon" ],
-    "pipboard": [ "pipboard" ]
-}
+[
+  {
+    "destDir": "plugins",
+    "dependencies": [ "boa", "core" ]
+  },
+  {
+    "destDir": "server",
+    "dependencies": [ "daemon" ]
+  },
+  {
+    "destDir": "pipboard",
+    "dependencies": [ "pipboard" ]
+  }
+]
