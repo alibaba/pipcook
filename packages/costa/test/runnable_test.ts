@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { readdir, readFile, createWriteStream } from 'fs-extra';
+import { readdir } from 'fs-extra';
 import { Writable } from 'stream';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
@@ -39,10 +39,12 @@ describe('start runnable in normal way', () => {
 
   let tmp: any;
   it('should start a nodejs plugin', async () => {
+    const stdoutStream = new StringWritable();
+    const stderrStream = new StringWritable();
     const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/nodejs-simple'));
-    await costa.install(simple, process);
+    await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream});
     tmp = await runnable.start(simple, { foobar: true });
-    const stdout = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
+    const stdout = stdoutStream.data;
     expect(stdout.search('{ foobar: true }') !== 0).toBe(true);
   }, INSTALL_SPECS_TIMEOUT);
 
