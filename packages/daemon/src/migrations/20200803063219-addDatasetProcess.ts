@@ -20,7 +20,7 @@ export default {
 
   down: (queryInterface: QueryInterface) => {
     return queryInterface.sequelize.transaction(async t => {
-      const tbNames = await queryInterface.showAllTables();
+      const tableNames = await queryInterface.showAllTables();
       if (tbNames.indexOf('pipelines') > 0) {
         await queryInterface.removeColumn('pipelines', 'datasetProcess', { transaction: t });
         await queryInterface.removeColumn('pipelines', 'datasetProcessParams', { transaction: t });
