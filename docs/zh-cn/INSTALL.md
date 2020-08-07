@@ -25,7 +25,7 @@ $ npm install -g @pipcook/pipcook-cli
 我们提供了阿里源 docker 镜像，您可以运行如下命令安装
 
 ```sh
-$ docker pull docker pull registry.cn-beijing.aliyuncs.com/pipcook/pipcook:latest
+$ docker pull registry.cn-beijing.aliyuncs.com/pipcook/pipcook:latest
 ```
 
 安装完成之后，可以运行如下命令启动 docker
