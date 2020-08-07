@@ -2,14 +2,14 @@
   "name": "@pipcook/costa",
   "version": "1.0.5",
   "description": "The Pipcook Plugin Runtime",
-  "main": "dist/runtime",
-  "types": "dist/runtime",
+  "main": "dist/src/runtime",
+  "types": "dist/src/runtime",
   "files": [
     "dist"
   ],
   "scripts": {
     "pretest": "rm -rf .tests",
-    "test": "ts-node ../../run_tests.ts --spec 'dist/*_test.js'",
+    "test": "ts-node ../../run_tests.ts --spec 'dist/test/runnable_test.js'",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json"

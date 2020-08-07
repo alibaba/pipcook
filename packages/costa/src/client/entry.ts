@@ -1,8 +1,10 @@
 import * as path from 'path';
-import { PluginProtocol, PluginOperator, PluginMessage } from './protocol';
-import { PluginPackage } from './index';
-import Debug from 'debug';
 import { UniDataset, DataLoader, generateId } from '@pipcook/pipcook-core';
+import Debug from 'debug';
+
+import { PluginProtocol, PluginOperator, PluginMessage } from '../protocol';
+import { PluginPackage } from '../index';
+import loadPlugin from './loaders';
 
 type MessageHandler = Record<PluginOperator, (proto: PluginProtocol) => void>;
 const debug = Debug('costa.client');
@@ -87,13 +89,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
       }
     }
 
-    // get the plugin function.
-    let fn = require(pkg.name);
-    if (fn && typeof fn !== 'function' && typeof fn.default === 'function') {
-      // compatible with ESM default export.
-      fn = fn.default;
-    }
-
+    const fn = loadPlugin(pkg);
     if (pkg.pipcook.category === 'dataProcess') {
       // in "dataProcess" plugin, we need to do process them in one by one.
       const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
