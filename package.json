@@ -20,8 +20,8 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
+    "build": "lerna run compile && rm ./packages/daemon/dist/migrations/*.d.ts",
     "postinstall": "lerna clean --yes && lerna bootstrap",
-    "build": "lerna run compile",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon --scope @pipcook/pipboard lint",
     "pretest": "npm run lint",
@@ -30,6 +30,6 @@
     "typedoc": "typedoc",
     "clean": "lerna run clean",
     "release": "lerna publish from-package --yes --no-verify-access",
-    "beta-release": "lerna version prerelease --force-publish=* --yes && lerna publish from-package  --preid beta --yes --no-verify-access --dist-tag beta"
+    "beta-release": "lerna version prerelease --preid beta --force-publish=* --yes && lerna publish from-package --yes --no-verify-access --dist-tag beta"
   }
 }

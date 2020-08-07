@@ -66,11 +66,23 @@ const mobilenetDefine: ModelDefineType = async (data: ImageDataset, args: ModelD
     await download(MODEL_URL, MODEL_PATH);
   }
 
-  model = MobileNetV2(boa.kwargs({
-    include_top: false,
-    weights: 'imagenet',
-    input_shape: inputShape
-  }));
+  if (recoverPath) {
+    model = MobileNetV2(
+      boa.kwargs({
+        include_top: false,
+        weights: 'none',
+        input_shape: inputShape
+      })
+    );
+  } else {
+    model = MobileNetV2(
+      boa.kwargs({
+        include_top: false,
+        weights: 'imagenet',
+        input_shape: inputShape
+      })
+    );
+  }
 
   let output = model.output;
   output = GlobalAveragePooling2D()(output);

@@ -101,6 +101,10 @@ export interface PluginPackage {
       PYTHONPATH: string;
       DESTPATH: string;
     };
+    /**
+     * The plugin runtime
+     */
+    runtime?: 'nodejs' | 'python';
   };
   /**
    * The below is some information related to Python.
