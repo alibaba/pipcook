@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
 import { readdir, readFile } from 'fs-extra';
@@ -28,7 +28,7 @@ describe('start runnable in normal way', () => {
 
   let tmp: any;
   it('should start a nodejs plugin', async () => {
-    const simple = await costa.fetch('./plugins/nodejs-simple', path.join(__dirname, '../../test'));
+    const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/nodejs-simple'));
     await costa.install(simple, process);
     tmp = await runnable.start(simple, { foobar: true });
     const stdout = await readFile(path.join(opts.componentDir, runnable.id, 'logs/stdout.log'), 'utf8');
@@ -36,7 +36,7 @@ describe('start runnable in normal way', () => {
   }, INSTALL_SPECS_TIMEOUT);
 
   it('should start a python plugin', async () => {
-    const simple = await costa.fetch('./plugins/python-simple', path.join(__dirname, '../../test'));
+    const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-simple'));
     await costa.install(simple, process);
     expect(simple.pipcook.runtime).toBe('python');
 
