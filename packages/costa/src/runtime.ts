@@ -1,7 +1,6 @@
 import path from 'path';
 import url from 'url';
 import { createUnzip } from 'zlib';
-import { Readable, Writable } from 'stream';
 import { createReadStream, createWriteStream, ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, mkdirp } from 'fs-extra';
 import { download, constants, generateId } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
@@ -48,9 +47,9 @@ interface InstallOptions {
   // install from new anyway.
   force?: boolean;
   // install process stdout
-  stdout: Writable;
+  stdout: NodeJS.WritableStream;
   // install process stderr
-  stderr: Writable;
+  stderr: NodeJS.WritableStream;
 }
 
 function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio: LogStdio): Promise<string> {
@@ -66,7 +65,7 @@ function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio: 
   });
 }
 
-function extractPackageJsonFromReadable(readable: Readable, pkgFilename: string): Promise<any> {
+function extractPackageJsonFromReadable(readable: NodeJS.ReadableStream, pkgFilename: string): Promise<any> {
   return new Promise((resolve, reject) => {
     let packageJson = '';
     const extract = tar.extract();
@@ -103,7 +102,7 @@ function fetchPackageJsonFromTarball(filename: string): Promise<any> {
   return fetchPackageJsonFromTarballStream(stream);
 }
 
-async function fetchPackageJsonFromTarballStream(fileStream: Readable): Promise<any> {
+async function fetchPackageJsonFromTarballStream(fileStream: NodeJS.ReadableStream): Promise<any> {
   const unzip = createUnzip();
   // catch the stream error
   const wait = () => {

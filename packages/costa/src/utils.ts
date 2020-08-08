@@ -1,8 +1,6 @@
-import { Readable, Writable } from 'stream';
-
 export interface LogStdio {
-  stdout: Writable;
-  stderr: Writable;
+  stdout: NodeJS.WritableStream;
+  stderr: NodeJS.WritableStream;
 }
 
 /**
@@ -11,7 +9,7 @@ export interface LogStdio {
  * @param readable child process stdout/stderr
  * @param writable the log stream
  */
-export function pipe(readable: Readable, writable: Writable): void {
+export function pipe(readable: NodeJS.ReadableStream, writable: NodeJS.WritableStream): void {
   readable.on('error', (err) => {
     writable.emit('error', err);
   });

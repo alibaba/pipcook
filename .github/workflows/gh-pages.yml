@@ -3,7 +3,7 @@ name: gh-pages
 on:
   push:
     branches:
-      - api-refactor
+      - master
 
 jobs:
   deployment:

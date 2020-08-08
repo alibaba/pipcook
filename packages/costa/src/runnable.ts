@@ -1,5 +1,4 @@
 import path from 'path';
-import { Writable } from 'stream';
 import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
@@ -68,12 +67,12 @@ export class PluginRunnable {
   /**
    * The flag somebody stop running
    */
-  public cancelByUser: boolean;
+  public canceled: boolean;
 
   /**
    * logger
    */
-  private logger: Record<'stdout' | 'stderr', Writable>;
+  private logger: Record<'stdout' | 'stderr', NodeJS.WritableStream>;
   /**
    * Create a runnable by the given runtime.
    * @param rt the costa runtime.
@@ -177,7 +176,7 @@ export class PluginRunnable {
     if (!this.handle.connected) {
       return;
     }
-    this.cancelByUser = true;
+    this.canceled = true;
     this.send(PluginOperator.WRITE, { event: 'destroy' });
     return new Promise((resolve) => {
       this.ondestroyed = resolve;

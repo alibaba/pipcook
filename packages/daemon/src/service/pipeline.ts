@@ -278,7 +278,7 @@ export class PipelineService {
       job.status = PipelineStatus.SUCCESS;
       await job.save();
     } catch (err) {
-      if (!runnable.cancelByUser) {
+      if (!runnable.canceled) {
         job.status = PipelineStatus.FAIL;
         job.error = err.message;
         await job.save();

@@ -2,10 +2,10 @@ name: build
 on:
   push:
     branches:
-    - api-refactor
+    - master
   pull_request:
     branches:
-    - api-refactor
+    - master
 
 jobs:
   universal:
