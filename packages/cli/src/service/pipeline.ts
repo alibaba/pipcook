@@ -2,7 +2,7 @@
 import * as path from 'path';
 import * as Url from 'url';
 import { PipelineResp, PluginStatusValue } from '@pipcook/sdk';
-import { constants, PluginStatus, PluginTypeI } from '@pipcook/pipcook-core';
+import { constants, PluginStatus } from '@pipcook/pipcook-core';
 import { readJson } from 'fs-extra';
 import { install as pluginInstall } from './plugin';
 import { logger, parseConfigFilename, initClient, streamToJson } from "../utils/common";
