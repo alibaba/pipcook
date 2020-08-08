@@ -2,7 +2,7 @@
 import * as path from 'path';
 import * as Url from 'url';
 import { PipelineResp, PluginStatusValue } from '@pipcook/sdk';
-import { constants, PluginStatus } from '@pipcook/pipcook-core';
+import { constants, PluginStatus, PluginTypeI } from '@pipcook/pipcook-core';
 import { readJson } from 'fs-extra';
 import { install as pluginInstall } from './plugin';
 import { logger, parseConfigFilename, initClient, streamToJson } from "../utils/common";
@@ -115,10 +115,11 @@ export async function install(filename: string, opts: any): Promise<void> {
     logger.info('check plugin:');
     let isSuccess = true;
     await constants.PLUGINS.map(async (plugin) => {
-      if (!pipeline.hasOwnProperty(plugin) || !pipeline[plugin]) {
+      const getKeyValue = <U extends PluginTypeI, T extends PipelineResp>(key: U) => (obj: T) => obj[key];
+      const pluginName = getKeyValue<PluginTypeI, PipelineResp>(plugin)(pipeline);
+      if (!pluginName) {
         return;
       }
-      const pluginName = pipeline[plugin];
       const plugins = await client.plugin.list({ name: pluginName });
       if (plugins.length > 0 && plugins[0].status === PluginStatus.INSTALLED) {
         logger.success(`${pluginName} installed.`);
