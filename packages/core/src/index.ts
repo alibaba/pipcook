@@ -29,6 +29,7 @@ export {
   DataCollectType,
   DataAccessType,
   DataProcessType,
+  DatasetProcessType,
   ModelLoadType,
   ModelDefineType,
   ModelTrainType,
