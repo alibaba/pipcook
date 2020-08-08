@@ -115,18 +115,16 @@ export async function install(filename: string, opts: any): Promise<void> {
     logger.info('check plugin:');
     let isSuccess = true;
     await constants.PLUGINS.map(async (plugin) => {
-      const pluginName = pipeline[plugin];
-      if (!pluginName) {
+      if (!pipeline.hasOwnProperty(plugin) || !pipeline[plugin]) {
         return;
       }
+      const pluginName = pipeline[plugin];
       const plugins = await client.plugin.list({ name: pluginName });
-      if (plugins.length > 0) {
-        if (plugins[0].status === PluginStatus.INSTALLED) {
-          logger.success(`${pluginName} installed.`);
-        } else {
-          isSuccess = false;
-          logger.fail(`${pluginName} ${PluginStatusValue[plugins[0].status]}.`, false);
-        }
+      if (plugins.length > 0 && plugins[0].status === PluginStatus.INSTALLED) {
+        logger.success(`${pluginName} installed.`);
+      } else {
+        isSuccess = false;
+        logger.fail(`${pluginName} ${PluginStatusValue[plugins[0]?.status || PluginStatus.FAILED]}.`, false);
       }
     });
     if (isSuccess) {
