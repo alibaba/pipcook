@@ -11,4 +11,4 @@ export default {
       this.status = typeof data === 'undefined' ? HttpStatus.NO_CONTENT : HttpStatus.OK;
     }
   }
-}
+};
