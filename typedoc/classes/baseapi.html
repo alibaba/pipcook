@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>EvaluateError | Pipcook APIs</title>
+	<title>BaseApi | Pipcook APIs</title>
 	<meta name="description" content="Documentation for Pipcook APIs">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="evaluateerror.html">EvaluateError</a>
+					<a href="baseapi.html">BaseApi</a>
 				</li>
 			</ul>
-			<h1>Class EvaluateError</h1>
+			<h1>Class BaseApi</h1>
 		</div>
 	</div>
 </header>
@@ -66,10 +66,16 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="evaluateerror.html#typeerror" class="tsd-signature-type">TypeError</a>
+						<span class="target">BaseApi</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">EvaluateError</span>
+								<a href="job.html" class="tsd-signature-type">Job</a>
+							</li>
+							<li>
+								<a href="pipeline.html" class="tsd-signature-type">Pipeline</a>
+							</li>
+							<li>
+								<a href="plugin.html" class="tsd-signature-type">Plugin</a>
 							</li>
 						</ul>
 					</li>
@@ -82,17 +88,19 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="evaluateerror.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="baseapi.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="evaluateerror.html#message" class="tsd-kind-icon">message</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="evaluateerror.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="evaluateerror.html#result" class="tsd-kind-icon">result</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="evaluateerror.html#stack" class="tsd-kind-icon">stack</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="evaluateerror.html#typeerror" class="tsd-kind-icon">Type<wbr>Error</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="baseapi.html#route" class="tsd-kind-icon">route</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="baseapi.html#traceevent" class="tsd-kind-icon">trace<wbr>Event</a></li>
 							</ul>
 						</section>
 					</div>
@@ -104,80 +112,77 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Evaluate<wbr>Error<span class="tsd-signature-symbol">(</span>r<span class="tsd-signature-symbol">: </span><a href="../interfaces/evaluateresult.html" class="tsd-signature-type">EvaluateResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="evaluateerror.html" class="tsd-signature-type">EvaluateError</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Base<wbr>Api<span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="baseapi.html" class="tsd-signature-type">BaseApi</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/core/src/types/other.ts#L12">packages/core/src/types/other.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/base.ts#L5">packages/sdk/src/base.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>r: <a href="../interfaces/evaluateresult.html" class="tsd-signature-type">EvaluateResult</a></h5>
+									<h5>uri: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="evaluateerror.html" class="tsd-signature-type">EvaluateError</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="baseapi.html" class="tsd-signature-type">BaseApi</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="message" class="tsd-anchor"></a>
-					<h3>message</h3>
-					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="evaluateerror.html">EvaluateError</a>.<a href="evaluateerror.html#message">message</a></p>
-						<ul>
-							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:974</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="evaluateerror.html">EvaluateError</a>.<a href="evaluateerror.html#name">name</a></p>
-						<ul>
-							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:973</li>
-						</ul>
-					</aside>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="result" class="tsd-anchor"></a>
-					<h3>result</h3>
-					<div class="tsd-signature tsd-kind-icon">result<span class="tsd-signature-symbol">:</span> <a href="../interfaces/evaluateresult.html" class="tsd-signature-type">EvaluateResult</a></div>
+					<a name="route" class="tsd-anchor"></a>
+					<h3>route</h3>
+					<div class="tsd-signature tsd-kind-icon">route<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/core/src/types/other.ts#L12">packages/core/src/types/other.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/base.ts#L5">packages/sdk/src/base.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="stack" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> stack</h3>
-					<div class="tsd-signature tsd-kind-icon">stack<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="evaluateerror.html">EvaluateError</a>.<a href="evaluateerror.html#stack">stack</a></p>
-						<ul>
-							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:975</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="typeerror" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Type<wbr>Error</h3>
-					<div class="tsd-signature tsd-kind-icon">Type<wbr>Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">TypeErrorConstructor</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:1039</li>
-						</ul>
-					</aside>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="traceevent" class="tsd-anchor"></a>
+					<h3>trace<wbr>Event</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">trace<wbr>Event<span class="tsd-signature-symbol">(</span>traceId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, eventCallback<span class="tsd-signature-symbol">: </span><a href="../interfaces/eventcallback.html" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/base.ts#L16">packages/sdk/src/base.ts:16</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>trace event</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>traceId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>trace id</p>
+									</div>
+								</li>
+								<li>
+									<h5>eventCallback: <a href="../interfaces/eventcallback.html" class="tsd-signature-type">EventCallback</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>event callback</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -194,25 +199,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="evaluateerror.html" class="tsd-kind-icon">Evaluate<wbr>Error</a>
+						<a href="baseapi.html" class="tsd-kind-icon">Base<wbr>Api</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="evaluateerror.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="evaluateerror.html#message" class="tsd-kind-icon">message</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="evaluateerror.html#name" class="tsd-kind-icon">name</a>
+								<a href="baseapi.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="evaluateerror.html#result" class="tsd-kind-icon">result</a>
+								<a href="baseapi.html#route" class="tsd-kind-icon">route</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="evaluateerror.html#stack" class="tsd-kind-icon">stack</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="evaluateerror.html#typeerror" class="tsd-kind-icon">Type<wbr>Error</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="baseapi.html#traceevent" class="tsd-kind-icon">trace<wbr>Event</a>
 							</li>
 						</ul>
 					</li>

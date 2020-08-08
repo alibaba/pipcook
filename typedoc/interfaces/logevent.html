@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>JobRunOption | Pipcook APIs</title>
+	<title>LogEvent | Pipcook APIs</title>
 	<meta name="description" content="Documentation for Pipcook APIs">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,21 +52,28 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="jobrunoption.html">JobRunOption</a>
+					<a href="logevent.html">LogEvent</a>
 				</li>
 			</ul>
-			<h1>Interface JobRunOption</h1>
+			<h1>Interface LogEvent</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>log event interface</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">JobRunOption</span>
+						<span class="target">LogEvent</span>
 					</li>
 				</ul>
 			</section>
@@ -77,9 +84,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="jobrunoption.html#pipelineid" class="tsd-kind-icon">pipeline<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="jobrunoption.html#pyindex" class="tsd-kind-icon">py<wbr>Index</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="jobrunoption.html#timeout" class="tsd-kind-icon">timeout</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="logevent.html#data" class="tsd-kind-icon">data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="logevent.html#level" class="tsd-kind-icon">level</a></li>
 							</ul>
 						</section>
 					</div>
@@ -88,32 +94,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="pipelineid" class="tsd-anchor"></a>
-					<h3>pipeline<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="data" class="tsd-anchor"></a>
+					<h3>data</h3>
+					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/interface.ts#L45">packages/sdk/src/interface.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/interface.ts#L80">packages/sdk/src/interface.ts:80</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="pyindex" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> py<wbr>Index</h3>
-					<div class="tsd-signature tsd-kind-icon">py<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="level" class="tsd-anchor"></a>
+					<h3>level</h3>
+					<div class="tsd-signature tsd-kind-icon">level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/interface.ts#L47">packages/sdk/src/interface.ts:47</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="timeout" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> timeout</h3>
-					<div class="tsd-signature tsd-kind-icon">timeout<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/interface.ts#L46">packages/sdk/src/interface.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/interface.ts#L78">packages/sdk/src/interface.ts:78</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -132,16 +128,13 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="jobrunoption.html" class="tsd-kind-icon">Job<wbr>Run<wbr>Option</a>
+						<a href="logevent.html" class="tsd-kind-icon">Log<wbr>Event</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="jobrunoption.html#pipelineid" class="tsd-kind-icon">pipeline<wbr>Id</a>
+								<a href="logevent.html#data" class="tsd-kind-icon">data</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="jobrunoption.html#pyindex" class="tsd-kind-icon">py<wbr>Index</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="jobrunoption.html#timeout" class="tsd-kind-icon">timeout</a>
+								<a href="logevent.html#level" class="tsd-kind-icon">level</a>
 							</li>
 						</ul>
 					</li>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>JobRunOption | Pipcook APIs</title>
+	<title>FileDownloadResp | Pipcook APIs</title>
 	<meta name="description" content="Documentation for Pipcook APIs">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="jobrunoption.html">JobRunOption</a>
+					<a href="filedownloadresp.html">FileDownloadResp</a>
 				</li>
 			</ul>
-			<h1>Interface JobRunOption</h1>
+			<h1>Interface FileDownloadResp</h1>
 		</div>
 	</div>
 </header>
@@ -66,7 +66,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">JobRunOption</span>
+						<span class="target">FileDownloadResp</span>
 					</li>
 				</ul>
 			</section>
@@ -77,9 +77,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="jobrunoption.html#pipelineid" class="tsd-kind-icon">pipeline<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="jobrunoption.html#pyindex" class="tsd-kind-icon">py<wbr>Index</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="jobrunoption.html#timeout" class="tsd-kind-icon">timeout</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="filedownloadresp.html#stream" class="tsd-kind-icon">stream</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="filedownloadresp.html#totalbytes" class="tsd-kind-icon">total<wbr>Bytes</a></li>
 							</ul>
 						</section>
 					</div>
@@ -88,32 +87,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="pipelineid" class="tsd-anchor"></a>
-					<h3>pipeline<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="stream" class="tsd-anchor"></a>
+					<h3>stream</h3>
+					<div class="tsd-signature tsd-kind-icon">stream<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadStream</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/interface.ts#L45">packages/sdk/src/interface.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/request.ts#L12">packages/sdk/src/request.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="pyindex" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> py<wbr>Index</h3>
-					<div class="tsd-signature tsd-kind-icon">py<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="totalbytes" class="tsd-anchor"></a>
+					<h3>total<wbr>Bytes</h3>
+					<div class="tsd-signature tsd-kind-icon">total<wbr>Bytes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/interface.ts#L47">packages/sdk/src/interface.ts:47</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="timeout" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> timeout</h3>
-					<div class="tsd-signature tsd-kind-icon">timeout<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/interface.ts#L46">packages/sdk/src/interface.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/request.ts#L11">packages/sdk/src/request.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -132,16 +121,13 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="jobrunoption.html" class="tsd-kind-icon">Job<wbr>Run<wbr>Option</a>
+						<a href="filedownloadresp.html" class="tsd-kind-icon">File<wbr>Download<wbr>Resp</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="jobrunoption.html#pipelineid" class="tsd-kind-icon">pipeline<wbr>Id</a>
+								<a href="filedownloadresp.html#stream" class="tsd-kind-icon">stream</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="jobrunoption.html#pyindex" class="tsd-kind-icon">py<wbr>Index</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="jobrunoption.html#timeout" class="tsd-kind-icon">timeout</a>
+								<a href="filedownloadresp.html#totalbytes" class="tsd-kind-icon">total<wbr>Bytes</a>
 							</li>
 						</ul>
 					</li>
