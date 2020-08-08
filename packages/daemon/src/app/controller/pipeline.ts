@@ -41,7 +41,7 @@ export class PipelineController extends BaseEventController {
     const parsedConfig = await parseConfig(configUri || config);
     parsedConfig.name = name;
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    this.success(pipeline, HttpStatus.CREATED);
+    this.ctx.success(pipeline, HttpStatus.CREATED);
   }
 
   /**
@@ -52,7 +52,7 @@ export class PipelineController extends BaseEventController {
     this.validate(listSchema, this.ctx.query);
     const { offset, limit } = this.ctx.query;
     const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
-    this.success(pipelines.rows);
+    this.ctx.success(pipelines.rows);
   }
 
   /**
@@ -61,7 +61,7 @@ export class PipelineController extends BaseEventController {
   @del()
   public async remove() {
     await this.pipelineService.removePipelines();
-    this.success();
+    this.ctx.success();
   }
 
   /**
@@ -72,7 +72,7 @@ export class PipelineController extends BaseEventController {
     const { id } = this.ctx.params;
     const count = await this.pipelineService.removePipelineById(id);
     if (count > 0) {
-      this.success();
+      this.ctx.success();
     } else {
       this.ctx.throw('remove pipeline error, id not exists', HttpStatus.NOT_FOUND);
     }
@@ -103,8 +103,7 @@ export class PipelineController extends BaseEventController {
     if (pipeline.name) {
       json.name = pipeline.name;
     }
-
-    this.success(json);
+    this.ctx.success(json);
   }
 
   /**
@@ -120,7 +119,7 @@ export class PipelineController extends BaseEventController {
     if (!data) {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
     }
-    this.success(data);
+    this.ctx.success(data);
   }
 
   /**
@@ -140,7 +139,7 @@ export class PipelineController extends BaseEventController {
           this.logManager.destroy(log.id, err);
         }
       });
-      this.success({ ...(pipeline.toJSON() as PluginResp), traceId: log.id });
+      this.ctx.success({ ...(pipeline.toJSON() as PluginResp), traceId: log.id });
     } else {
       this.ctx.throw('no pipeline found', HttpStatus.NOT_FOUND);
     }

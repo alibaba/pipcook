@@ -21,7 +21,7 @@ export class PluginController extends BaseEventController {
     const { name, pyIndex } = this.ctx.request.body;
     debug(`checking info: ${name}.`);
     const response = await this.pluginManager.installByName(name, pyIndex, false);
-    this.success(response);
+    this.ctx.success(response);
   }
 
   /**
@@ -32,7 +32,7 @@ export class PluginController extends BaseEventController {
     const { name, pyIndex } = this.ctx.query;
     debug(`checking info: ${name}.`);
     const response = await this.pluginManager.installByName(name, pyIndex, true);
-    this.success(response);
+    this.ctx.success(response);
   }
 
   /**
@@ -44,7 +44,7 @@ export class PluginController extends BaseEventController {
       const plugin = await this.pluginManager.findById(this.ctx.params.id);
       if (plugin) {
         await this.pluginManager.uninstall(plugin);
-        this.success();
+        this.ctx.success();
       } else {
         this.ctx.throw(`no plugin found by id ${this.ctx.params.id}`, HttpStatus.NOT_FOUND);
       }
@@ -59,7 +59,7 @@ export class PluginController extends BaseEventController {
   public async removeAll() {
     const plugins = await this.pluginManager.list();
     await this.pluginManager.uninstall(plugins);
-    this.success();
+    this.ctx.success();
   }
   /**
    * find a plugin by id
@@ -68,7 +68,7 @@ export class PluginController extends BaseEventController {
   public async get() {
     const plugin = await this.pluginManager.findById(this.ctx.params.id);
     if (plugin) {
-      this.success(plugin);
+      this.ctx.success(plugin);
     } else {
       this.ctx.throw('no plugin found', HttpStatus.NOT_FOUND);
     }
@@ -84,7 +84,7 @@ export class PluginController extends BaseEventController {
       category: this.ctx.query.category,
       name: this.ctx.query.name
     });
-    this.success(plugins);
+    this.ctx.success(plugins);
   }
 
   /**
@@ -95,7 +95,7 @@ export class PluginController extends BaseEventController {
     const fstream = await this.ctx.getFileStream();
     const { pyIndex } = fstream.fields;
     const installResp = await this.pluginManager.installFromTarStream(fstream, pyIndex, false);
-    this.success(installResp);
+    this.ctx.success(installResp);
   }
 
   /**

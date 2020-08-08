@@ -44,7 +44,7 @@ export class JobController extends BaseEventController {
           this.logManager.destroy(log.id, err);
         }
       });
-      this.success({ ...(job.toJSON() as JobResp), traceId: log.id });
+      this.ctx.success({ ...(job.toJSON() as JobResp), traceId: log.id });
     } else {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'not pipeline found');
     }
@@ -57,7 +57,7 @@ export class JobController extends BaseEventController {
   public async list(): Promise<void> {
     const { pipelineId, offset, limit } = this.ctx.query;
     const jobs = (await this.pipelineService.queryJobs({ pipelineId }, { offset, limit }));
-    this.success(jobs);
+    this.ctx.success(jobs);
   }
 
   /**
@@ -66,7 +66,7 @@ export class JobController extends BaseEventController {
   @del()
   public async removeAll(): Promise<void> {
     await this.pipelineService.removeJobs();
-    this.success();
+    this.ctx.success();
   }
 
   /**
@@ -77,7 +77,7 @@ export class JobController extends BaseEventController {
     const { id } = this.ctx.params;
     const count = await this.pipelineService.removeJobById(id);
     if (count) {
-      this.success();
+      this.ctx.success();
     } else {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'no job found');
     }
@@ -90,7 +90,7 @@ export class JobController extends BaseEventController {
   public async stop(): Promise<void> {
     const { id } = this.ctx.params;
     await this.pipelineService.stopJob(id);
-    this.success();
+    this.ctx.success();
   }
 
   @get('/:id/log')
@@ -101,7 +101,7 @@ export class JobController extends BaseEventController {
     if (data === null || data === undefined) {
       throw new Error('log not found');
     }
-    this.success(data);
+    this.ctx.success(data);
   }
 
   @get('/:id/output')
@@ -117,7 +117,7 @@ export class JobController extends BaseEventController {
     if (!job) {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'no job found');
     }
-    this.success(job);
+    this.ctx.success(job);
   }
 
   @get('/event/:traceId')

@@ -115,16 +115,17 @@ export async function install(filename: string, opts: any): Promise<void> {
     logger.info('check plugin:');
     let isSuccess = true;
     await constants.PLUGINS.forEach(async (plugin) => {
-      if (!pipeline[plugin]) {
+      const pluginName = (pipeline as any)[plugin as string];
+      if (!pluginName) {
         return;
       }
-      const plugins = await client.plugin.list({ name: pipeline[plugin] });
+      const plugins = await client.plugin.list({ name: pluginName });
       if (plugins.length > 0) {
         if (plugins[0].status === PluginStatus.INSTALLED) {
-          logger.success(`${pipeline[plugin]} installed.`);
+          logger.success(`${pluginName} installed.`);
         } else {
           isSuccess = false;
-          logger.fail(`${pipeline[plugin]} ${PluginStatusValue[plugins[0].status]}.`, false);
+          logger.fail(`${pluginName} ${PluginStatusValue[plugins[0].status]}.`, false);
         }
       }
     });
