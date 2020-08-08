@@ -13,6 +13,6 @@ export class LogController extends BaseController {
   public async view() {
     const { id } = this.ctx.params;
     const data = await this.pipelineService.getLogById(id);
-    this.success(data);
+    this.ctx.success(data);
   }
 }

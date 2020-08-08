@@ -170,7 +170,7 @@ export class PluginManager {
     if (Array.isArray(plugin)) {
       const names = plugin.map(singlePlugin => singlePlugin.name);
       await costa.uninstall(names);
-      plugin.forEach(async (singlePlugin) => {
+      await plugin.map(async (singlePlugin) => {
         await singlePlugin.destroy();
       });
     } else {

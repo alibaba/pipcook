@@ -11,7 +11,7 @@ export class AppController extends BaseController {
   @post('/compile')
   public async compile() {
     const result = await this.AppService.compile(this.ctx.request.body.src as string);
-    this.success({
+    this.ctx.success({
       pipelines: result.pipelines,
       executableSource: result.executableSource
     });

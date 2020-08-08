@@ -114,8 +114,8 @@ export async function install(filename: string, opts: any): Promise<void> {
     // check the installation
     logger.info('check plugin:');
     let isSuccess = true;
-    await constants.PLUGINS.forEach(async (plugin) => {
-      const pluginName = (pipeline as any)[plugin as string];
+    await constants.PLUGINS.map(async (plugin) => {
+      const pluginName = pipeline[plugin];
       if (!pluginName) {
         return;
       }

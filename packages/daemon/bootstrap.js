@@ -5,6 +5,7 @@ const os = require('os');
 const { pathExists } = require('fs-extra');
 const fs = require('fs');
 const { start } = require('egg');
+const HttpStatus = require('http-status');
 
 const PIPCOOK_HOME = os.homedir() + '/.pipcook';
 const DAEMON_PIDFILE = PIPCOOK_HOME + '/daemon.pid';
@@ -70,7 +71,15 @@ function createPidfileSync(pathname) {
     server.once('error', err => {
       exitProcessWithError(`app server got error: ${err.message}, code: ${err.code}`);
     });
-
+    // extending the success function for context
+    app.context.success = function (data, status) {
+      this.body = data;
+      if (typeof status !== 'undefined') {
+        this.status = status;
+      } else {
+        this.status = typeof data === 'undefined' ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+      }
+    };
     // emit `server` event in app
     app.emit('server', server);
 
