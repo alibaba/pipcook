@@ -8,7 +8,7 @@ import { tunaMirrorURI } from '../config';
 import { logger, initClient, traceLogger, extractToPath, parseConfigFilename, streamToJson } from '../utils/common';
 
 export async function list(opts: any): Promise<void> {
-  const client = initClient(opts.host, opts.port);
+  const client = initClient(opts.ip, opts.port);
   const jobs = await client.job.list();
   if (jobs.length > 0) {
     console.table(jobs.map((job) => {
@@ -20,7 +20,7 @@ export async function list(opts: any): Promise<void> {
 }
 
 export async function remove(id: string, opts: any): Promise<void> {
-  const client = initClient(opts.host, opts.port);
+  const client = initClient(opts.ip, opts.port);
   logger.start('removing jobs...');
   try {
     if (id === 'all') {
@@ -34,7 +34,7 @@ export async function remove(id: string, opts: any): Promise<void> {
 }
 
 export async function stop(id: string, opts: any): Promise<void> {
-  const client = initClient(opts.host, opts.port);
+  const client = initClient(opts.ip, opts.port);
   logger.start('stopping jobs...');
   try {
     await client.job.cancel(id);
@@ -45,7 +45,7 @@ export async function stop(id: string, opts: any): Promise<void> {
 }
 
 export async function log(id: string, opts: any): Promise<void> {
-  const client = initClient(opts.host, opts.port);
+  const client = initClient(opts.ip, opts.port);
   try {
     const log = await client.job.log(id);
     logger.info(log);
@@ -55,7 +55,7 @@ export async function log(id: string, opts: any): Promise<void> {
 }
 
 export async function run(filename: string, opts: any): Promise<JobResp> {
-  const client = initClient(opts.host, opts.port);
+  const client = initClient(opts.ip, opts.port);
   let config: any;
 
   logger.start(`run pipeline from ${filename}`);
@@ -118,7 +118,7 @@ export async function start(filename: string, opts: any): Promise<void> {
 
 export async function runAndDownload(filename: string, opts: any) {
   const job = await run(filename, opts);
-  const client = initClient(opts.host, opts.port);
+  const client = initClient(opts.ip, opts.port);
   const outputRootPath = join(process.cwd(), opts.output || 'output');
   logger.info(`start to download output to ${outputRootPath}`);
   // remove the output dir

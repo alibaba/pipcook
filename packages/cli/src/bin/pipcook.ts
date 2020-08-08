@@ -60,7 +60,7 @@ import devPlugin from '../actions/dev-plugin';
     .command('run <filename>')
     .option('--tuna', 'use tuna mirror to install python packages')
     .option('--output', 'the output directory name', 'output')
-    .option('-h|--host <host>', 'the host of daemon')
+    .option('-h|--host-ip <ip>', 'the host ip of daemon')
     .option('-p|--port <port>', 'the port of daemon')
     .description('run pipeline with a json file.')
     .action(start);
