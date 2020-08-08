@@ -47,7 +47,7 @@ export interface Sample {
 /**
  * The data loader to used to load dataset.
  */
-export abstract class DataLoader{
+export abstract class DataLoader {
   private event = new events.EventEmitter();
   private fetchIndex = 0;
   private id = generateId();
