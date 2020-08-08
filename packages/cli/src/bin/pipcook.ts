@@ -8,7 +8,7 @@ import { join } from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { pathExists } from 'fs-extra';
 
-import { start } from './pipcook-job';
+import { start } from '../service/job';
 import init from '../actions/init';
 import serve from '../actions/serve';
 import board from '../actions/board';

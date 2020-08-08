@@ -87,6 +87,10 @@ export class PluginManager {
     return this.model.findOne({ where: { id } });
   }
 
+  async findByName(name: string): Promise<PluginModel> {
+    return this.model.findOne({ where: { name } });
+  }
+
   async removeById(id: string): Promise<number> {
     return this.model.destroy({ where: { id } });
   }
@@ -131,9 +135,9 @@ export class PluginManager {
   }
 
   async installAsync(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
-    const logger = await this.logManager.create();
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
+      const logger = await this.logManager.create();
       process.nextTick(async () => {
         try {
           await this.install(pkg, { pyIndex, force, stdout: logger.stdout, stderr: logger.stderr });
@@ -145,8 +149,10 @@ export class PluginManager {
           this.logManager.destroy(logger.id, err);
         }
       });
+      return { ...(plugin.toJSON() as PluginResp), traceId: logger.id };
+    } else {
+      return { ...(plugin.toJSON() as PluginResp), traceId: '' };
     }
-    return { ...(plugin.toJSON() as PluginResp), traceId: logger.id };
   }
   /**
    * install by package name or tarball url or git url

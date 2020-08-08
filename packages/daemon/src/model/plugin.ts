@@ -1,4 +1,4 @@
-import { STRING, Model, BuildOptions } from 'sequelize';
+import { STRING, INTEGER, Model, BuildOptions } from 'sequelize';
 import { providerWrapper, IApplicationContext } from 'midway';
 import DB from '../boot/database';
 
@@ -53,7 +53,9 @@ export default async function model(context: IApplicationContext): Promise<Plugi
       type: STRING
     },
     status: {
-      type: STRING
+      type: INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
     error: {
       type: STRING

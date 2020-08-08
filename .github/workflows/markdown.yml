@@ -2,10 +2,10 @@ name: check markdown files
 on:
   push:
     branches:
-    - master
+    - api-refactor
   pull_request:
     branches:
-    - master
+    - api-refactor
 
 jobs:
   markdown-link-check:

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { logger } from '../utils';
-import { AppProject } from '../app';
+import { logger } from '../utils/common';
+import { AppProject } from '../service/app';
 import { PipelineStatus } from '@pipcook/pipcook-core';
 
 program

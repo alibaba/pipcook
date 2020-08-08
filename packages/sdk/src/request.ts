@@ -12,7 +12,7 @@ export interface FileDownloadResp {
   stream: NodeJS.ReadStream;
 }
 
-axios.defaults.timeout = 5000;
+axios.defaults.timeout = 60000;
 
 function createGeneralRequest(agent: Function): Function {
   return async (...args: any[]) => {
