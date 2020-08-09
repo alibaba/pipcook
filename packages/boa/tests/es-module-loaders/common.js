@@ -30,7 +30,7 @@ if (major >= '14' && minor >= '5') {
 
 function check(t, appPath) {
   const options = { encoding: 'utf8', stdio: 'inherit' };
-  const args = ['--no-warnings', FLAG, PATH_ESM_LOADER];
+  const args = ['--no-warnings', '--unhandled-rejections=strict', FLAG, PATH_ESM_LOADER];
   // See https://github.com/nodejs/node/pull/31974
   if (process.version < 'v14.0.0') {
     args.push('--experimental-modules');
@@ -56,3 +56,5 @@ test('python custom', t => check(t, './py/test-esm-loader-custom.mjs'));
 test('javascript thirdparty', t => check(t, './js/test-esm-loader-thirdparty.mjs'));
 
 test('javascript custom', t => check(t, './js/test-esm-loader-custom.mjs'));
+
+test('dynamic imports', t => check(t, './py/test-esm-loader-dynamic-imports.mjs'));
