@@ -73,12 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="baseapi.html" class="tsd-signature-type">BaseApi</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">Job</span>
-							</li>
-						</ul>
+						<span class="target">Job</span>
 					</li>
 				</ul>
 			</section>
@@ -89,27 +84,25 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="job.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="job.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="job.html#info" class="tsd-kind-icon">info</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="job.html#route" class="tsd-kind-icon">route</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="job.html#route" class="tsd-kind-icon">route</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="job.html#cancel" class="tsd-kind-icon">cancel</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="job.html#downloadoutput" class="tsd-kind-icon">download<wbr>Output</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="job.html#get" class="tsd-kind-icon">get</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="job.html#info" class="tsd-kind-icon">info</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="job.html#list" class="tsd-kind-icon">list</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="job.html#log" class="tsd-kind-icon">log</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="job.html#remove" class="tsd-kind-icon">remove</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="job.html#run" class="tsd-kind-icon">run</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="job.html#traceevent" class="tsd-kind-icon">trace<wbr>Event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="job.html#stop" class="tsd-kind-icon">stop</a></li>
 							</ul>
 						</section>
 					</div>
@@ -117,18 +110,17 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">new <wbr>Job<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="job.html" class="tsd-signature-type">Job</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="baseapi.html">BaseApi</a>.<a href="baseapi.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/job.ts#L8">packages/sdk/src/job.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/sdk/src/job.ts#L9">packages/sdk/src/job.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -145,23 +137,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="info" class="tsd-anchor"></a>
-					<h3>info</h3>
-					<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span> <a href="job.html#get" class="tsd-signature-type">get</a><span class="tsd-signature-symbol"> = this.get</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/job.ts#L35">packages/sdk/src/job.ts:35</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="route" class="tsd-anchor"></a>
 					<h3>route</h3>
 					<div class="tsd-signature tsd-kind-icon">route<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="baseapi.html">BaseApi</a>.<a href="baseapi.html#route">route</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/base.ts#L5">packages/sdk/src/base.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/sdk/src/job.ts#L9">packages/sdk/src/job.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -169,47 +150,16 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="cancel" class="tsd-anchor"></a>
-					<h3>cancel</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">cancel<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/job.ts#L41">packages/sdk/src/job.ts:41</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>cancel job by id</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>job id</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="downloadoutput" class="tsd-anchor"></a>
 					<h3>download<wbr>Output</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">download<wbr>Output<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/filedownloadresp.html" class="tsd-signature-type">FileDownloadResp</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">download<wbr>Output<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ReadStream</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/job.ts#L67">packages/sdk/src/job.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/sdk/src/job.ts#L73">packages/sdk/src/job.ts:73</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -227,21 +177,21 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/filedownloadresp.html" class="tsd-signature-type">FileDownloadResp</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ReadStream</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="get" class="tsd-anchor"></a>
-					<h3>get</h3>
+					<a name="info" class="tsd-anchor"></a>
+					<h3>info</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobresp.html" class="tsd-signature-type">JobResp</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobmodel.html" class="tsd-signature-type">JobModel</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/job.ts#L32">packages/sdk/src/job.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/sdk/src/job.ts#L50">packages/sdk/src/job.ts:50</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -258,7 +208,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobresp.html" class="tsd-signature-type">JobResp</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobmodel.html" class="tsd-signature-type">JobModel</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -266,13 +216,13 @@
 					<a name="list" class="tsd-anchor"></a>
 					<h3>list</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">list<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobresp.html" class="tsd-signature-type">JobResp</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">list<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobmodel.html" class="tsd-signature-type">JobModel</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/job.ts#L16">packages/sdk/src/job.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/sdk/src/job.ts#L17">packages/sdk/src/job.ts:17</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -280,7 +230,7 @@
 									<p>list all jobs</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobresp.html" class="tsd-signature-type">JobResp</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobmodel.html" class="tsd-signature-type">JobModel</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -294,7 +244,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/job.ts#L49">packages/sdk/src/job.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/sdk/src/job.ts#L42">packages/sdk/src/job.ts:42</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -319,30 +269,21 @@
 					<a name="remove" class="tsd-anchor"></a>
 					<h3>remove</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/job.ts#L24">packages/sdk/src/job.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/sdk/src/job.ts#L26">packages/sdk/src/job.ts:26</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>remove pipeline by id, if the id is undefined remove all</p>
+									<p>remove all jobs</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> id: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>pipline id or undefined</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -350,13 +291,13 @@
 					<a name="run" class="tsd-anchor"></a>
 					<h3>run</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>pipelineId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#traceresp" class="tsd-signature-type">TraceResp</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobresp.html" class="tsd-signature-type">JobResp</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>opts<span class="tsd-signature-symbol">: </span><a href="../interfaces/jobrunoption.html" class="tsd-signature-type">JobRunOption</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobmodel.html" class="tsd-signature-type">JobModel</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/job.ts#L57">packages/sdk/src/job.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/sdk/src/job.ts#L58">packages/sdk/src/job.ts:58</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -367,44 +308,40 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>pipelineId: <span class="tsd-signature-type">string</span></h5>
+									<h5>opts: <a href="../interfaces/jobrunoption.html" class="tsd-signature-type">JobRunOption</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>piplineId: pipeline id, tuna: is using tuna mirror, timeout: query timeout</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#traceresp" class="tsd-signature-type">TraceResp</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobresp.html" class="tsd-signature-type">JobResp</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobmodel.html" class="tsd-signature-type">JobModel</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<a name="traceevent" class="tsd-anchor"></a>
-					<h3>trace<wbr>Event</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">trace<wbr>Event<span class="tsd-signature-symbol">(</span>traceId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, eventCallback<span class="tsd-signature-symbol">: </span><a href="../interfaces/eventcallback.html" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="stop" class="tsd-anchor"></a>
+					<h3>stop</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="baseapi.html">BaseApi</a>.<a href="baseapi.html#traceevent">traceEvent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/bfe735d5/packages/sdk/src/base.ts#L16">packages/sdk/src/base.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/sdk/src/job.ts#L34">packages/sdk/src/job.ts:34</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>trace event</p>
+									<p>stop job by id</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>traceId: <span class="tsd-signature-type">string</span></h5>
+									<h5>id: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>trace id</p>
-									</div>
-								</li>
-								<li>
-									<h5>eventCallback: <a href="../interfaces/eventcallback.html" class="tsd-signature-type">EventCallback</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>event callback</p>
+										<p>job id</p>
 									</div>
 								</li>
 							</ul>
@@ -429,23 +366,17 @@
 					<li class="current tsd-kind-class">
 						<a href="job.html" class="tsd-kind-icon">Job</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="job.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="job.html#info" class="tsd-kind-icon">info</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="job.html#route" class="tsd-kind-icon">route</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="job.html#cancel" class="tsd-kind-icon">cancel</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="job.html#downloadoutput" class="tsd-kind-icon">download<wbr>Output</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="job.html#get" class="tsd-kind-icon">get</a>
+								<a href="job.html#info" class="tsd-kind-icon">info</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="job.html#list" class="tsd-kind-icon">list</a>
@@ -459,8 +390,8 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="job.html#run" class="tsd-kind-icon">run</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="job.html#traceevent" class="tsd-kind-icon">trace<wbr>Event</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="job.html#stop" class="tsd-kind-icon">stop</a>
 							</li>
 						</ul>
 					</li>
@@ -481,11 +412,10 @@
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>

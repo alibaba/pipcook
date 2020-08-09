@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DataAccessType | Pipcook APIs</title>
+	<title>DatasetProcessType | Pipcook APIs</title>
 	<meta name="description" content="Documentation for Pipcook APIs">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="dataaccesstype.html">DataAccessType</a>
+					<a href="datasetprocesstype.html">DatasetProcessType</a>
 				</li>
 			</ul>
-			<h1>Interface DataAccessType</h1>
+			<h1>Interface DatasetProcessType</h1>
 		</div>
 	</div>
 </header>
@@ -65,16 +65,22 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>This plugin is a data access plugin, designed to connect datasets from different sources to
-							Pipcook. At the same time, you could perform certain data verification in this plugin to ensure
-						the quality of data access.</p>
+						<p>Similar to <code>DataProcessType</code>, but this type targets on the whole dataset rather than a sample.
+						This plugin will be convenient when it comes to process data that requires information from the whole dataset. I.E. corpus construction, average data among the dataset ...</p>
 					</div>
-					<p>Based on the returned value of <code>DataAccessType</code>, this plugin could selectively calculate and
-					verify data related to Datasets.</p>
-					<p>For example, for image data, we can calculate the average value, variance, and eigenvector of
-					images, therefore, the quality of the data set is evaluated and output.</p>
-					<p>At the same time, data access will connect the data to the memory, and the output might be
-					<code>tf.dataset</code> or other data loader.</p>
+					<dl class="tsd-comment-tags">
+						<dt>example</dt>
+						<dd><pre><code class="language-js"><span class="hljs-keyword">const</span> getCorpus = <span class="hljs-keyword">async</span> (dataset: UniDataset, <span class="hljs-attr">metadata</span>: Metadata, args?: ArgsType): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-keyword">void</span>&gt; =&gt; {
+ <span class="hljs-keyword">const</span> corpus: <span class="hljs-built_in">Set</span>&lt;string&gt; = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>();
+ <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> data <span class="hljs-keyword">of</span> dataset) {
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> word <span class="hljs-keyword">of</span> (data.data.split(<span class="hljs-string">&quot; &quot;</span>))) {
+     corpus.add(word);
+   }
+ }
+ metadata.corpus = corpus;
+}</code></pre>
+						</dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -84,7 +90,7 @@
 						<a href="pipcookplugin.html" class="tsd-signature-type">PipcookPlugin</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">DataAccessType</span>
+								<span class="target">DatasetProcessType</span>
 							</li>
 						</ul>
 					</li>
@@ -93,42 +99,55 @@
 			<section class="tsd-panel">
 				<h3 class="tsd-before-signature">Callable</h3>
 				<ul class="tsd-signatures tsd-kind-interface">
-					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../index.html#argstype" class="tsd-signature-type">ArgsType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="unidataset.html" class="tsd-signature-type">UniDataset</a><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>dataset<span class="tsd-signature-symbol">: </span><a href="unidataset.html" class="tsd-signature-type">UniDataset</a>, args<span class="tsd-signature-symbol">: </span><a href="../index.html#argstype" class="tsd-signature-type">ArgsType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/core/src/types/plugins.ts#L99">packages/core/src/types/plugins.ts:99</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c2425f10/packages/core/src/types/plugins.ts#L150">packages/core/src/types/plugins.ts:150</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>This plugin is a data access plugin, designed to connect datasets from different sources to
-									Pipcook. At the same time, you could perform certain data verification in this plugin to ensure
-								the quality of data access.</p>
+								<p>Similar to <code>DataProcessType</code>, but this type targets on the whole dataset rather than a sample.
+								This plugin will be convenient when it comes to process data that requires information from the whole dataset. I.E. corpus construction, average data among the dataset ...</p>
 							</div>
-							<p>Based on the returned value of <code>DataAccessType</code>, this plugin could selectively calculate and
-							verify data related to Datasets.</p>
-							<p>For example, for image data, we can calculate the average value, variance, and eigenvector of
-							images, therefore, the quality of the data set is evaluated and output.</p>
-							<p>At the same time, data access will connect the data to the memory, and the output might be
-							<code>tf.dataset</code> or other data loader.</p>
+							<dl class="tsd-comment-tags">
+								<dt>example</dt>
+								<dd><pre><code class="language-js"><span class="hljs-keyword">const</span> getCorpus = <span class="hljs-keyword">async</span> (dataset: UniDataset, <span class="hljs-attr">metadata</span>: Metadata, args?: ArgsType): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-keyword">void</span>&gt; =&gt; {
+ <span class="hljs-keyword">const</span> corpus: <span class="hljs-built_in">Set</span>&lt;string&gt; = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>();
+ <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> data <span class="hljs-keyword">of</span> dataset) {
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> word <span class="hljs-keyword">of</span> (data.data.split(<span class="hljs-string">&quot; &quot;</span>))) {
+     corpus.add(word);
+   }
+ }
+ metadata.corpus = corpus;
+}</code></pre>
+								</dd>
+							</dl>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
+								<h5>dataset: <a href="unidataset.html" class="tsd-signature-type">UniDataset</a></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The dataset of which you loaded in <code>dataCollect</code> &amp; <code>dataAccess</code></p>
+									</div>
+								</div>
+							</li>
+							<li>
 								<h5>args: <a href="../index.html#argstype" class="tsd-signature-type">ArgsType</a></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>accepts the result from <code>DataCollectType</code>.</p>
+										<p>The arguments from pipeline config file.</p>
 									</div>
 								</div>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="unidataset.html" class="tsd-signature-type">UniDataset</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						<p>a unified dataset.</p>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 					<li class="tsd-description">
 						<aside class="tsd-sources">
@@ -138,16 +157,22 @@
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>This plugin is a data access plugin, designed to connect datasets from different sources to
-									Pipcook. At the same time, you could perform certain data verification in this plugin to ensure
-								the quality of data access.</p>
+								<p>Similar to <code>DataProcessType</code>, but this type targets on the whole dataset rather than a sample.
+								This plugin will be convenient when it comes to process data that requires information from the whole dataset. I.E. corpus construction, average data among the dataset ...</p>
 							</div>
-							<p>Based on the returned value of <code>DataAccessType</code>, this plugin could selectively calculate and
-							verify data related to Datasets.</p>
-							<p>For example, for image data, we can calculate the average value, variance, and eigenvector of
-							images, therefore, the quality of the data set is evaluated and output.</p>
-							<p>At the same time, data access will connect the data to the memory, and the output might be
-							<code>tf.dataset</code> or other data loader.</p>
+							<dl class="tsd-comment-tags">
+								<dt>example</dt>
+								<dd><pre><code class="language-js"><span class="hljs-keyword">const</span> getCorpus = <span class="hljs-keyword">async</span> (dataset: UniDataset, <span class="hljs-attr">metadata</span>: Metadata, args?: ArgsType): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-keyword">void</span>&gt; =&gt; {
+ <span class="hljs-keyword">const</span> corpus: <span class="hljs-built_in">Set</span>&lt;string&gt; = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>();
+ <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> data <span class="hljs-keyword">of</span> dataset) {
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> word <span class="hljs-keyword">of</span> (data.data.split(<span class="hljs-string">&quot; &quot;</span>))) {
+     corpus.add(word);
+   }
+ }
+ metadata.corpus = corpus;
+}</code></pre>
+								</dd>
+							</dl>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
@@ -156,7 +181,6 @@
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						<p>a unified dataset.</p>
 					</li>
 				</ul>
 			</section>
@@ -174,7 +198,7 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="dataaccesstype.html" class="tsd-kind-icon">Data<wbr>Access<wbr>Type</a>
+						<a href="datasetprocesstype.html" class="tsd-kind-icon">Dataset<wbr>Process<wbr>Type</a>
 					</li>
 				</ul>
 				<ul class="after-current">
