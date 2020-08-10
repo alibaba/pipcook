@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { pathExists, readdir, readFile, symlink, mkdirp, remove } from 'fs-extra';
+import { pathExists, readdir, symlink, mkdirp, remove } from 'fs-extra';
 import { Writable } from 'stream';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
