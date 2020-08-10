@@ -38,8 +38,8 @@
   "conda": {
     "python": "3.7",
     "dependencies": {
-      "jieba": "*",
-      "scikit-learn": "*"
+      "jieba": "0.42.1",
+      "scikit-learn": "0.23.2"
     }
   }
 }
