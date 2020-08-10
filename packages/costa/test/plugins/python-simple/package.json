@@ -14,7 +14,7 @@
   "conda": {
     "python": "3.7",
     "dependencies": {
-      "numpy": "*"
+      "numpy": "1.19.1"
     }
   }
 }

@@ -38,8 +38,8 @@
       "torch": "1.4.0",
       "torchvision": "0.5.0",
       "opencv-python": "4.3.0.36",
-      "cython": "*",
-      "pycocotools": "*",
+      "cython": "0.29.21",
+      "pycocotools": "2.0.1",
       "detectron": "git+https://gitee.com/pipcook/detectron2.git"
     }
   },
