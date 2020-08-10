@@ -1,12 +1,13 @@
 import { ArgsType, CsvDataLoader, CsvDataset, CsvSample, DataAccessType } from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';
 
-class TextlineLoader implements CsvDataLoader {
+class TextlineLoader extends CsvDataLoader {
   records: CsvSample[];
   charset: string[];
   maxLineLength: number;
 
   constructor(lines: string[], maxLineLength: number) {
+    super();
     this.charset = [];
     this.maxLineLength = maxLineLength;
     const inputSeqs = [] as Array<number[]>;
@@ -35,11 +36,15 @@ class TextlineLoader implements CsvDataLoader {
       return sample;
     });
   }
-  async len() {
+
+  async len(): Promise<number>{
     return this.records.length;
   }
-  async getItem(id: number) {
+  async getItem(id: number): Promise<CsvSample>{
     return this.records[id];
+  }
+  async setItem(id: number, sample: CsvSample): Promise<void>{
+    this.records[id] = sample;
   }
 }
 
