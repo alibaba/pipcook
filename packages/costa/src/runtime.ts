@@ -394,11 +394,11 @@ export class CostaRuntime {
     if (Array.isArray(name)) {
       let success = false;
       // any one uninstalls successfully, return true
-      await name.forEach(async (singleName) => {
+      for (const singleName of name) {
         if (await removePkg(singleName)) {
           success = true;
         }
-      });
+      }
       return success;
     } else {
       return removePkg(name);

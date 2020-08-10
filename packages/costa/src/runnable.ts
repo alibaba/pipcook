@@ -72,7 +72,7 @@ export class PluginRunnable {
   /**
    * logger
    */
-  private logger: Record<'stdout' | 'stderr', NodeJS.WritableStream>;
+  private logger: LogStdio;
   /**
    * Create a runnable by the given runtime.
    * @param rt the costa runtime.
