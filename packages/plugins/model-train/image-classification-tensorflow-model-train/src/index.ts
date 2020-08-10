@@ -40,8 +40,10 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
         const dataBatch = await data.trainLoader.nextBatch(batchSize);
         const xs = tf.stack(dataBatch.map((ele) => ele.data));
         const ys = tf.stack(dataBatch.map((ele) => ele.label));
-        const trainRes = await trainModel.trainOnBatch(xs, ys);
-        console.log(`Iteration ${j}/${batchesPerEpoch} result --- loss: ${trainRes[0]} accuracy: ${trainRes[1]}`);
+        const trainRes = await trainModel.train_on_batch(xs, ys);
+        if (j % (Math.floor(batchesPerEpoch / 10)) === 0) {
+          console.log(`Iteration ${j}/${batchesPerEpoch} result --- loss: ${trainRes[0]} accuracy: ${trainRes[1]}`);
+        }
       }
       let loss = 0;
       let accuracy = 0;
@@ -50,8 +52,8 @@ const ModelTrain: ModelTrainType = async (data: ImageDataset, model: UniModel, a
         const xs = tf.stack(dataBatch.map((ele) => ele.data));
         const ys = tf.stack(dataBatch.map((ele) => ele.label));
         const evaluateRes = await trainModel.evaluate(xs, ys);
-        loss += Number(evaluateRes[0].dataSync());
-        accuracy += Number(evaluateRes[1].dataSync());
+        loss += Number(evaluateRes[0].numpy());
+        accuracy += Number(evaluateRes[1].numpy());
       }
       loss /= valBatchesPerEpoch;
       accuracy /= valBatchesPerEpoch;
