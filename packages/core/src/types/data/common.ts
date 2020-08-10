@@ -65,6 +65,10 @@ export abstract class DataLoader {
     this.event.emit(this.id);
   }
 
+  getFetchIndex(): number {
+    return this.fetchIndex;
+  }
+
   /**
    * iterate over dataset. Get next single sample
    * Override Forbidden
