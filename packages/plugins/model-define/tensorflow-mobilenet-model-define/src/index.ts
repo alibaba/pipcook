@@ -49,6 +49,7 @@ const mobilenetDefine: ModelDefineType = async (data: ImageDataset, args: ModelD
   let outputShape: number;
 
   if (!recoverPath) {
+    await data.trainLoader.next();
     assertionTest(data);
     inputShape = data.metadata.feature.shape;
     outputShape = Object.keys(data.metadata.labelMap).length;

@@ -35,6 +35,7 @@ const mobilenetModelDefine: ModelDefineType = async (data: ImageDataset, args: M
     labelMap
   } = args;
 
+  await data.trainLoader.next();
   assertionTest(data);
   const NUM_CLASSES = Object.keys(data.metadata.labelMap).length;
   labelMap = data.metadata.labelMap;

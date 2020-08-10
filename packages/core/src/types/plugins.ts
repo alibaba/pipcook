@@ -123,7 +123,32 @@ export interface DataAccessType extends PipcookPlugin {
  * @param args The arguments from pipeline config file.
  */
 export interface DataProcessType extends PipcookPlugin {
-  (data: Sample, metadata: Metadata, args: ArgsType): Promise<void>;
+  (data: Sample, metadata: Metadata, args: ArgsType): Promise<Sample>;
+}
+
+/**
+ * Similar to `DataProcessType`, but this type targets on the whole dataset rather than a sample.
+ * This plugin will be convenient when it comes to process data that requires information from the whole dataset. I.E. corpus construction, average data among the dataset ...
+ *
+ * @example
+ *
+ * ```js
+ * const getCorpus = async (dataset: UniDataset, metadata: Metadata, args?: ArgsType): Promise<void> => {
+ *  const corpus: Set<string> = new Set();
+ *  for (const data of dataset) {
+ *    for (const word of (data.data.split(" "))) {
+ *      corpus.add(word);
+ *    }
+ *  }
+ *  metadata.corpus = corpus;
+ * }
+ * ```
+ *
+ * @param dataset The dataset of which you loaded in `dataCollect` & `dataAccess`
+ * @param args The arguments from pipeline config file.
+ */
+export interface DatasetProcessType extends PipcookPlugin {
+  (dataset: UniDataset, args: ArgsType): Promise<void>;
 }
 
 /**

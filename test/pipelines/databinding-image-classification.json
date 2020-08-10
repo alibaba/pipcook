@@ -10,7 +10,7 @@
       "package": "./packages/plugins/data-access/pascalvoc-data-access"
     },
     "dataProcess": {
-      "package": "./packages/plugins/data-process/image-data-process",
+      "package": "./packages/plugins/data-process/tensorflow-image-classification-process",
       "params": {
         "resize": [256, 256]
       }
