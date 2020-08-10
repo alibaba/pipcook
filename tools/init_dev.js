@@ -1,3 +1,5 @@
+'use strict';
+
 const spawnSync = require('child_process').spawnSync;
 const path = require('path');
 const homedir = require('os').homedir;
@@ -5,7 +7,7 @@ const fs = require('fs-extra');
 
 const { join, dirname } = path;
 const { mkdirp, stat, readJson, writeJson, remove, pathExists, symlink } = fs;
-const config = require('./config.json');
+const config = require('./dev_config.json');
 
 const PIPCOOK_HOME_PATH = join(homedir(), '.pipcook');
 
