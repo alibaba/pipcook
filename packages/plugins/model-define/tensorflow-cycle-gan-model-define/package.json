@@ -32,7 +32,7 @@
     "python": "3.7",
     "dependencies": {
       "tensorflow": "*",
-      "opencv-python": "*"
+      "opencv-python": "4.3.0.36"
     }
   }
 }

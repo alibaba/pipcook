@@ -38,7 +38,7 @@
     "dependencies": {
       "torch": "1.4.0",
       "torchvision": "0.5.0",
-      "opencv-python": "*",
+      "opencv-python": "4.3.0.36",
       "cython": "*",
       "pycocotools": "*",
       "detectron": "git+https://gitee.com/pipcook/detectron2.git"
