@@ -1,4 +1,3 @@
-
 import * as path from 'path';
 import * as Url from 'url';
 import { PipelineResp, PluginStatusValue } from '@pipcook/sdk';
