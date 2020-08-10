@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { readdir } from 'fs-extra';
+import { pathExists, readdir, readFile, symlink, mkdirp, remove } from 'fs-extra';
 import { Writable } from 'stream';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
@@ -25,6 +25,18 @@ describe('start runnable in normal way', () => {
   };
   const costa = new CostaRuntime(opts);
   let runnable: PluginRunnable;
+  it('perpare', async () => {
+    await Promise.all([
+      remove(opts.installDir),
+      remove(opts.datasetDir),
+      remove(opts.componentDir)
+    ]);
+    await Promise.all([
+      mkdirp(opts.installDir),
+      mkdirp(opts.datasetDir),
+      mkdirp(opts.componentDir)
+    ]);
+  });
 
   it('should create a new runnable', () => {
     runnable = new PluginRunnable(costa);
@@ -49,6 +61,14 @@ describe('start runnable in normal way', () => {
   }, INSTALL_SPECS_TIMEOUT);
 
   it('should start a python plugin', async () => {
+    await mkdirp(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook'));
+    if (await pathExists(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa'))) {
+      await remove(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa'));
+    }
+    await symlink(
+      path.join(__dirname, '../../../boa'),
+      path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa')
+    );
     const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-simple'));
     const stdoutStream = new StringWritable();
     const stderrStream = new StringWritable();
