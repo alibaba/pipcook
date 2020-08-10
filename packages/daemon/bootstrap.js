@@ -5,10 +5,12 @@ const os = require('os');
 const { pathExists } = require('fs-extra');
 const fs = require('fs');
 const { start } = require('egg');
+const { execSync } = require('child_process');
 
 const PIPCOOK_HOME = os.homedir() + '/.pipcook';
 const DAEMON_PIDFILE = PIPCOOK_HOME + '/daemon.pid';
 const DAEMON_CONFIG = PIPCOOK_HOME + '/daemon.config.json';
+const PIPCOOK_DB = PIPCOOK_HOME + '/db/pipcook.db';
 const PORT = 6927;
 
 const isChildMode = typeof process.send === 'function';
@@ -40,6 +42,11 @@ function createPidfileSync(pathname) {
 
   // create pidfile firstly
   createPidfileSync(DAEMON_PIDFILE);
+
+  if (fs.existsSync(PIPCOOK_DB)) {
+    // run migration in sub-process
+    execSync('npm run migration');
+  }
 
   // load config
   if (await pathExists(DAEMON_CONFIG)) {
