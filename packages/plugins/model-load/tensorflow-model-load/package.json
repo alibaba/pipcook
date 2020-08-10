@@ -34,7 +34,7 @@
   "conda": {
     "python": "3.7",
     "dependencies": {
-      "tensorflow": "*"
+      "tensorflow": "2.2.0"
     }
   }
 }
