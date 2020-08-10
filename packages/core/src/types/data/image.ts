@@ -58,8 +58,8 @@ export interface ImageSample {
   label: ImageLabel;
 }
 
-export interface ImageDataLoader extends DataLoader {
-  getItem: (id: number) => Promise<ImageSample>;
+export abstract class ImageDataLoader extends DataLoader {
+  abstract getItem(id: number): Promise<ImageSample>;
 }
 
 export interface ImageDataset extends UniDataset {

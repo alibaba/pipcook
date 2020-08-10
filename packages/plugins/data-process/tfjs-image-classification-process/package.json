@@ -1,0 +1,35 @@
+{
+  "name": "@pipcook/plugins-tfjs-image-classification-process",
+  "version": "1.0.5",
+  "description": "",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tensorflow/tfjs-node-gpu": "1.7.0",
+    "@pipcook/pipcook-core": "^1.0.5",
+    "fs-extra": "^8.1.0"
+  },
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
+  "devDependencies": {
+    "@types/jasmine": "^3.5.7",
+    "nyc": "14.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "pipcook": {
+    "category": "dataProcess",
+    "datatype": "image"
+  }
+}
