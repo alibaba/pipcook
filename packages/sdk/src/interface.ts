@@ -1,5 +1,11 @@
 // TODO: move these defines to core or somewhere to share with daemon
-export interface JobModel {
+
+/**
+ * response of event trace
+ */
+export type TraceResp<T> = T & { traceId: string }
+
+export interface JobResp {
   id: string;
   pipelineId: string;
   specVersion: string;
@@ -13,7 +19,10 @@ export interface JobModel {
   dataset: string;
 }
 
-export interface PipelineModel {
+/**
+ * response of pipline
+ */
+export interface PipelineResp {
   id: string;
   name: string;
   dataCollect: string;
@@ -35,9 +44,43 @@ export interface PipelineModel {
 export interface JobRunOption {
   pipelineId: string;
   timeout?: number;
-  tuna?: boolean;
+  pyIndex?: string;
 }
 
 export interface PipelineInstallOption {
-  tuna: boolean;
+  pyIndex: string;
+}
+
+/**
+ * response of plugin query
+ */
+export interface PluginResp {
+  id: string;
+  name: string;
+  version: string;
+  category: string;
+  datatype: string;
+  namespace: string;
+  dest: string;
+  status: number;
+  error: string;
+}
+
+export interface EventCallback {
+  (event: string, data: any): void;
+}
+
+/**
+ * log event interface
+ */
+export interface LogEvent {
+  // log level
+  level: string;
+  // log content
+  data: string;
+}
+export interface PluginListParams {
+  datatype?: string;
+  category?: string;
+  name?: string;
 }

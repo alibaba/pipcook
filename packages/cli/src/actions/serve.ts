@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import path from 'path';
 import childProcess from 'child_process';
 import { ServeHandler, PredictHandler } from '../types';
-import { logger } from '../utils';
+import { logger } from '../utils/common';
 
 const fastify = Fastify({ logger: true });
 

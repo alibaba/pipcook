@@ -17,7 +17,7 @@ describe('create a costa runtime', () => {
   let collectCsv: PluginPackage;
 
   it('should fetch a plugin and install from local', async () => {
-    collectCsv = await costa.fetch('../plugins/data-collect/csv-data-collect');
+    collectCsv = await costa.fetch(path.join(process.cwd(), '../plugins/data-collect/csv-data-collect'));
     expect(collectCsv.name).toBe('@pipcook/plugins-csv-data-collect');
     expect(collectCsv.pipcook.datatype).toBe('text');
     expect(collectCsv.pipcook.category).toBe('dataCollect');
@@ -30,7 +30,7 @@ describe('create a costa runtime', () => {
   }, INSTALL_SPECS_TIMEOUT);
 
   it('should fetch a python plugin and install from local', async () => {
-    const bayesClassifier = await costa.fetch('../plugins/model-define/bayesian-model-define');
+    const bayesClassifier = await costa.fetch(path.join(process.cwd(), '../plugins/model-define/bayesian-model-define'));
     expect(bayesClassifier.name).toBe('@pipcook/plugins-bayesian-model-define');
     expect(bayesClassifier.pipcook.category).toBe('modelDefine');
     await costa.install(bayesClassifier, process);
@@ -81,7 +81,7 @@ describe('create a costa runtime', () => {
   }, INSTALL_SPECS_TIMEOUT);
 
   it('should install the package with conda packages', async () => {
-    const bayesClassifier = await costa.fetch('../plugins/model-define/bayesian-model-define');
+    const bayesClassifier = await costa.fetch(path.join(process.cwd(), '../plugins/model-define/bayesian-model-define'));
     await costa.install(bayesClassifier, process);
     await stat(path.join(
       costa.options.installDir,

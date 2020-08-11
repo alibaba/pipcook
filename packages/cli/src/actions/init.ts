@@ -5,7 +5,7 @@ import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 
-import { Constants, logger } from '../utils';
+import { Constants, logger } from '../utils/common';
 import { InitCommandHandler } from '../types';
 import { optionalNpmClients, daemonPackage, boardPackage, isLocal } from '../config';
 

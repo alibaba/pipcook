@@ -1,19 +1,21 @@
 import * as path from 'path';
 import { readJson } from 'fs-extra';
-import { PipcookClient, PipelineModel } from '../../packages/sdk';
+import { PipcookClient, PipelineResp } from '../../packages/sdk';
 
 describe('pipeline api.pipeline test', () => {
-  const client = new PipcookClient('http://127.0.0.1', 6927);
+  const client = new PipcookClient('http://localhost', 6927);
 
   const name = 'bayes';
-  const pipelineFile = path.join(__dirname, 'text-bayes-classification.json');
+  const pipelineFile = path.join(__dirname, '../../example/pipelines/text-bayes-classification.json');
   let config: any;
-  let pipeline: PipelineModel;
+  let pipeline: PipelineResp;
   it('prepare', async () => {
     // prepare
     config = await readJson(pipelineFile);
     await client.job.remove();
     await client.pipeline.remove();
+    expect(await (await client.pipeline.list()).length).toBe(0);
+    expect(await (await client.job.list()).length).toBe(0);
   });
   it('create', async () => {
     // create
@@ -33,15 +35,26 @@ describe('pipeline api.pipeline test', () => {
   });
   it('install pipeline', async () => {
     // install Plugins
-    await client.pipeline.installPlugins(pipeline.id);
+    const log = await client.pipeline.install(pipeline.id);
+    await client.pipeline.traceEvent(log.traceId, (event: string, data: any) => {
+      // log only for now
+      expect([ 'log' ]).toContain(event);
+      if (event === 'log') {
+        console.log(`[${data.level}] ${data.data}`);
+        expect(typeof data.level).toBe('string');
+        expect(typeof data.data).toBe('string');
+      }
+    });
   }, 180 * 1000);
   it('update pipeline', async () => {
     // update
+    config.name = 'newName';
     pipeline = await client.pipeline.update(pipeline.id, config);
+    expect(pipeline.name).toBe(config.name);
   });
   it('remove pipeline', async () => {
     // remove
-    expect(await client.pipeline.remove(pipeline.id)).toBe(1);
+    expect(await client.pipeline.remove(pipeline.id));
     const pipelines = await client.pipeline.list();
     expect(pipelines.length).toBe(0);
   });

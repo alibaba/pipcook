@@ -77,7 +77,6 @@ function createPidfileSync(pathname) {
     server.once('error', err => {
       exitProcessWithError(`app server got error: ${err.message}, code: ${err.code}`);
     });
-
     // emit `server` event in app
     app.emit('server', server);
 
