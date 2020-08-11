@@ -16,16 +16,15 @@ axios.defaults.timeout = 60000;
 
 function createGeneralRequest(agent: Function): Function {
   return async (...args: any[]) => {
-    let response;
     try {
-      response = await agent(...args);
+      const response = await agent(...args);
+      if (response.status >= 200 && response.status < 300) {
+        return response.data;
+      } else {
+        throw new Error(response?.data?.message);
+      }
     } catch (err) {
       throw new Error(err.response?.data?.message || err.message);
-    }
-    if (response.status >= 200 && response.status < 300) {
-      return response.data;
-    } else {
-      throw new Error(response.data?.message);
     }
   };
 }
@@ -55,11 +54,15 @@ export const uploadFile = async (host: string, fileStream: ReadStream, params?: 
   const getLength = promisify(form.getLength.bind(form));
   const length = await getLength();
   const headers = Object.assign({ 'Content-Length': length }, form.getHeaders());
-  const response = await axios.post(host, form, { headers });
-  if (response.status >= 200 && response.status < 300) {
-    return response.data;
-  } else {
-    throw new Error(response?.data?.message);
+  try {
+    const response = await axios.post(host, form, { headers });
+    if (response.status >= 200 && response.status < 300) {
+      return response.data;
+    } else {
+      throw new Error(response?.data?.message);
+    }
+  } catch (err) {
+    throw new Error(err.response?.data?.message || err.message);
   }
 };
 
