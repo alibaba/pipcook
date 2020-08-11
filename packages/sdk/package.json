@@ -12,10 +12,12 @@
     "@pipcook/pipcook-core": "^1.0.5",
     "axios": "^0.18.1",
     "eventsource": "^1.0.7",
+    "form-data": "^3.0.0",
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {
     "@types/eventsource": "^1.1.2",
+    "@types/form-data": "^2.5.0",
     "@types/fs-extra": "^9.0.1",
     "typescript": "^3.7.2"
   }
