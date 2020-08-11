@@ -46,10 +46,10 @@ export class PluginController extends BaseEventController {
         await this.pluginManager.uninstall(plugin);
         this.ctx.success();
       } else {
-        this.ctx.throw(`no plugin found by id ${this.ctx.params.id}`, HttpStatus.NOT_FOUND);
+        this.ctx.throw(HttpStatus.NOT_FOUND, `no plugin found by id ${this.ctx.params.id}`);
       }
     } else {
-      this.ctx.throw('no id value found', HttpStatus.BAD_REQUEST);
+      this.ctx.throw(HttpStatus.BAD_REQUEST, 'no id value found');
     }
   }
   /**
@@ -70,7 +70,7 @@ export class PluginController extends BaseEventController {
     if (plugin) {
       this.ctx.success(plugin);
     } else {
-      this.ctx.throw('no plugin found', HttpStatus.NOT_FOUND);
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
     }
   }
 

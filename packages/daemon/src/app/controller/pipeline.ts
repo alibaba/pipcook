@@ -74,7 +74,7 @@ export class PipelineController extends BaseEventController {
     if (count > 0) {
       this.ctx.success();
     } else {
-      this.ctx.throw('remove pipeline error, id not exists', HttpStatus.NOT_FOUND);
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'remove pipeline error, id not exists');
     }
   }
 
@@ -88,7 +88,7 @@ export class PipelineController extends BaseEventController {
 
     const pipeline = await this.pipelineService.getPipeline(id);
     if (!pipeline) {
-      this.ctx.throw('pipeline not found', HttpStatus.NOT_FOUND);
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'pipeline not found');
     }
     constants.PLUGINS.forEach(name => {
       if (typeof pipeline[name] === 'string') {
@@ -141,7 +141,7 @@ export class PipelineController extends BaseEventController {
       });
       this.ctx.success({ ...(pipeline.toJSON() as PluginResp), traceId: log.id });
     } else {
-      this.ctx.throw('no pipeline found', HttpStatus.NOT_FOUND);
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no pipeline found');
     }
   }
 

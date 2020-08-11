@@ -15,7 +15,7 @@ export class BaseController {
   validate(schema: ObjectSchema, data: any) {
     const { error } = schema.validate(data);
     if (error) {
-      this.ctx.throw(error.message, HttpStatus.BAD_REQUEST);
+      this.ctx.throw(HttpStatus.BAD_REQUEST, error.message);
     }
   }
 }

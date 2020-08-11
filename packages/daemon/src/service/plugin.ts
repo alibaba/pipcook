@@ -1,4 +1,4 @@
-import { provide, inject, Context } from 'midway';
+import { provide, inject } from 'midway';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
 import { PluginStatus, generateId } from '@pipcook/pipcook-core';
 import { LogManager, LogObject } from './log-manager';
@@ -14,9 +14,6 @@ interface ListPluginsFilter {
 
 @provide('pluginManager')
 export class PluginManager {
-
-  @inject()
-  ctx: Context;
 
   @inject('logManager')
   logManager: LogManager;

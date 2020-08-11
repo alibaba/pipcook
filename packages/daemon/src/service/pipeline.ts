@@ -2,8 +2,9 @@ import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { Op } from 'sequelize';
-import { provide, inject, Context } from 'midway';
+import { provide, inject } from 'midway';
 import * as HttpStatus from 'http-status';
+import * as createHttpError from 'http-errors';
 import {
   PipelineDB,
   PipelineStatus,
@@ -57,9 +58,6 @@ const runnableMap: Record<string, PluginRunnable> = {};
 
 @provide('pipelineService')
 export class PipelineService {
-
-  @inject()
-  ctx: Context;
 
   @inject('pipelineModel')
   pipeline: PipelineModelStatic;
@@ -311,7 +309,7 @@ export class PipelineService {
       job.status = PipelineStatus.CANCELED;
       await job.save();
     } else {
-      this.ctx.throw(HttpStatus.BAD_REQUEST, 'job is not running');
+      throw createHttpError(HttpStatus.BAD_REQUEST, 'job is not running');
     }
   }
 
