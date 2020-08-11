@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>TranslationResult | Pipcook APIs</title>
+	<title>PluginStatus | Pipcook APIs</title>
 	<meta name="description" content="Documentation for Pipcook APIs">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="translationresult.html">TranslationResult</a>
+					<a href="pluginstatus.html">PluginStatus</a>
 				</li>
 			</ul>
-			<h1>Interface TranslationResult</h1>
+			<h1>Enumeration PluginStatus</h1>
 		</div>
 	</div>
 </header>
@@ -65,53 +65,71 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The translation result.</p>
+						<p>the plugin status for installation</p>
 					</div>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">TranslationResult</span>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="translationresult.html#lang" class="tsd-kind-icon">lang</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="translationresult.html#output" class="tsd-kind-icon">output</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="pluginstatus.html#failed" class="tsd-kind-icon">FAILED</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="pluginstatus.html#installed" class="tsd-kind-icon">INSTALLED</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="pluginstatus.html#installing" class="tsd-kind-icon">INSTALLING</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="lang" class="tsd-anchor"></a>
-					<h3>lang</h3>
-					<div class="tsd-signature tsd-kind-icon">lang<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="failed" class="tsd-anchor"></a>
+					<h3>FAILED</h3>
+					<div class="tsd-signature tsd-kind-icon">FAILED<span class="tsd-signature-symbol">:</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5d3df2c6/packages/app/src/apis/types.ts#L56">packages/app/src/apis/types.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5d3df2c6/packages/core/src/types/plugins.ts#L244">packages/core/src/types/plugins.ts:244</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>the plugin installs failed</p>
+						</div>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="output" class="tsd-anchor"></a>
-					<h3>output</h3>
-					<div class="tsd-signature tsd-kind-icon">output<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="installed" class="tsd-anchor"></a>
+					<h3>INSTALLED</h3>
+					<div class="tsd-signature tsd-kind-icon">INSTALLED<span class="tsd-signature-symbol">:</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5d3df2c6/packages/app/src/apis/types.ts#L57">packages/app/src/apis/types.ts:57</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5d3df2c6/packages/core/src/types/plugins.ts#L240">packages/core/src/types/plugins.ts:240</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>the plugin installs successfully</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="installing" class="tsd-anchor"></a>
+					<h3>INSTALLING</h3>
+					<div class="tsd-signature tsd-kind-icon">INSTALLING<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5d3df2c6/packages/core/src/types/plugins.ts#L236">packages/core/src/types/plugins.ts:236</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>the plugin is installing</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -127,14 +145,17 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="translationresult.html" class="tsd-kind-icon">Translation<wbr>Result</a>
+					<li class="current tsd-kind-enum">
+						<a href="pluginstatus.html" class="tsd-kind-icon">Plugin<wbr>Status</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="translationresult.html#lang" class="tsd-kind-icon">lang</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="pluginstatus.html#failed" class="tsd-kind-icon">FAILED</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="translationresult.html#output" class="tsd-kind-icon">output</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="pluginstatus.html#installed" class="tsd-kind-icon">INSTALLED</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="pluginstatus.html#installing" class="tsd-kind-icon">INSTALLING</a>
 							</li>
 						</ul>
 					</li>
