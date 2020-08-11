@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-text-creation-tfjs-model-train",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,7 +16,7 @@
   "author": "Yorkie Liu <yorkiefixer@gmail.com>",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^1.0.6",
+    "@pipcook/pipcook-core": "^1.1.0",
     "@tensorflow/tfjs-node-gpu": "1.7.0"
   },
   "devDependencies": {
