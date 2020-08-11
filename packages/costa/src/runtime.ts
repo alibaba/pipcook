@@ -69,6 +69,7 @@ function extractPackageJsonFromReadable(readable: NodeJS.ReadableStream, pkgFile
   return new Promise((resolve, reject) => {
     let packageJson = '';
     const extract = tar.extract();
+    extract.on('error', reject);
     extract.on('entry', (header, stream, next) => {
       if (header.name === pkgFilename) {
         stream.on('data', (buf) => packageJson += buf);
@@ -83,7 +84,7 @@ function extractPackageJsonFromReadable(readable: NodeJS.ReadableStream, pkgFile
         reject(e);
       }
     });
-    readable.pipe(extract);
+    readable.on('error', reject).pipe(extract);
   });
 }
 
@@ -107,7 +108,7 @@ async function fetchPackageJsonFromTarballStream(fileStream: NodeJS.ReadableStre
   // catch the stream error
   const wait = () => {
     return new Promise((resolve, reject) => {
-      fileStream.on('error', reject).on('close', resolve).pipe(unzip);
+      fileStream.on('error', reject).on('close', resolve).pipe(unzip.on('error', reject));
     });
   };
   await wait();
