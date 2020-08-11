@@ -4,7 +4,7 @@ describe('test pipeline controller', () => {
   it('should list all pipelines', () => {
     return app
       .httpRequest()
-      .get('/pipeline/list')
+      .get('/api/pipeline')
       .expect('Content-Type', /json/)
       .expect(200);
   });

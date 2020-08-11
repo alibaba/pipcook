@@ -1,4 +1,4 @@
-import { STRING, Model, BuildOptions } from 'sequelize';
+import { STRING, INTEGER, Model, BuildOptions } from 'sequelize';
 import { providerWrapper, IApplicationContext } from 'midway';
 import DB from '../boot/database';
 
@@ -17,6 +17,8 @@ export class PluginModel extends Model {
   readonly datatype: string;
   readonly namespace: string;
   readonly dest: string;
+  readonly status: number;
+  readonly error: string;
 }
 
 export type PluginModelStatic = typeof Model & {
@@ -48,6 +50,14 @@ export default async function model(context: IApplicationContext): Promise<Plugi
       type: STRING
     },
     dest: {
+      type: STRING
+    },
+    status: {
+      type: INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    error: {
       type: STRING
     }
   }) as PluginModelStatic;

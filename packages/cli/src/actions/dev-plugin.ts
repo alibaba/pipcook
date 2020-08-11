@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import path from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { DevPluginCommandHandler } from '../types';
-import { logger } from '../utils';
+import { logger } from '../utils/common';
 
 
 /**

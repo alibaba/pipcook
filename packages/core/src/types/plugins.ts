@@ -225,3 +225,21 @@ export interface ModelTrainType extends PipcookPlugin {
 export interface ModelEvaluateType extends PipcookPlugin {
   (data: UniDataset, model: UniModel, args: ArgsType): Promise<EvaluateResult>;
 }
+
+/**
+ * the plugin status for installation
+ */
+export enum PluginStatus {
+  /**
+   * the plugin is installing
+   */
+  INSTALLING = 0,
+  /**
+   * the plugin installs successfully
+   */
+  INSTALLED,
+  /**
+   * the plugin installs failed
+   */
+  FAILED
+}

@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import axios from 'axios';
 import fs from 'fs-extra';
 import EventSource from 'eventsource';
-import { logger } from './utils';
+import { logger } from './common';
 import FormData from 'form-data';
 
 export type RequestParams = Record<string, any>;
@@ -48,7 +48,6 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Nod
   return resp.data as NodeJS.ReadStream;
 };
 
-// FIXME(feely): params is not working
 export const uploadFile = async (host: string, file: string, params?: RequestParams): Promise<any> => {
   const stream = fs.createReadStream(file);
   const form = new FormData();
