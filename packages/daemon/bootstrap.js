@@ -46,7 +46,7 @@ function createPidfileSync(pathname) {
   if (fs.existsSync(PIPCOOK_DB)) {
     // run migration in sub-process
     const res = execSync('npm run migration', {
-      "cwd": __dirname
+      'cwd': __dirname
     });
   }
 
