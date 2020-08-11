@@ -1,7 +1,7 @@
 name: Beta Build Packages
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  watch:
+    types: started
 
 jobs:
   release:
@@ -56,7 +56,10 @@ jobs:
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
           npm run beta-release-tag -- --preid "${sha_short}-beta"
+          cat package.json
+          git diff | cat
           npm run beta-release
+          git diff | cat
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
