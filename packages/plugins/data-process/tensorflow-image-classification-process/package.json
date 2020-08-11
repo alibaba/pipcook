@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-tensorflow-image-classification-process",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pipcook/boa": "^1.0.6",
-    "@pipcook/pipcook-core": "^1.0.6"
+    "@pipcook/boa": "^1.1.0",
+    "@pipcook/pipcook-core": "^1.1.0"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
