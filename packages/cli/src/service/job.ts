@@ -112,10 +112,6 @@ export async function run(filename: string, opts: any): Promise<JobResp> {
   }
 }
 
-export async function start(filename: string, opts: any): Promise<void> {
-  await run(filename, opts);
-}
-
 export async function runAndDownload(filename: string, opts: any) {
   const job = await run(filename, opts);
   const client = initClient(opts.ip, opts.port);
