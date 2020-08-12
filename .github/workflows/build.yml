@@ -30,6 +30,7 @@ jobs:
         path: |
           */*/.miniconda
           */*/Miniconda3-latest*.sh
+          */*/.CONDA_INSTALL_DIR
         key: ${{ runner.os }}-miniconda
     - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
