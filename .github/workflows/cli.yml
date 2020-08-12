@@ -28,7 +28,7 @@ jobs:
     - name: 'upload artifact'
       uses: 'actions/upload-artifact@v2'
       with:
-        name: my-artifact ${{ matrix.node-version }}
+        name: my-artifaccct ${{ matrix.node-version }}
         path: ${{ github.workspace }}
     - name: pipcook init
       env:
