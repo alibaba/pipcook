@@ -102,8 +102,7 @@ Napi::Value PythonNode::Import(const CallbackInfo &info) {
     pybind::object obj = pybind::module::import(mModulePath.c_str());
     return PythonObject::NewInstance(info.Env(), obj);
   } catch (pybind::error_already_set &e) {
-    Napi::TypeError::New(info.Env(), e.what())
-        .ThrowAsJavaScriptException();
+    Napi::TypeError::New(info.Env(), e.what()).ThrowAsJavaScriptException();
   }
 }
 

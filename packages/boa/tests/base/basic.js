@@ -143,3 +143,8 @@ test('iteration protocols', t => {
   }, TypeError);
   t.end();
 });
+
+test('import a nonexistent module', t => {
+  t.throws(() => boa.import('noneexistent-module'));
+  t.end();
+});
