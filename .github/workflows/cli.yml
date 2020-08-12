@@ -7,6 +7,7 @@ on:
     branches:
     - master
 
+jobs:
   testing-runs:
     name: Test Pipcook Tools main commands
     runs-on: ${{ matrix.os }}
