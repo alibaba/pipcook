@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/plugins-tensorflow-cycle-gan-model-define",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/index",
   "types": "dist/index",
@@ -13,8 +13,8 @@
   "author": "Feely <feely@outlook.com>",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/boa": "^1.0.6",
-    "@pipcook/pipcook-core": "^1.0.6"
+    "@pipcook/boa": "^1.1.0",
+    "@pipcook/pipcook-core": "^1.1.0"
   },
   "gitHead": "1e21ad0799e221dcf4b7aa3a3b2187d5b8d8b865",
   "devDependencies": {
