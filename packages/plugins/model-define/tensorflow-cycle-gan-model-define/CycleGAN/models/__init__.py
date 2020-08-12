@@ -1,1 +1,0 @@
-from .cyclegan import CycleGAN
