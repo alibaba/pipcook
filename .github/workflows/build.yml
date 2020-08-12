@@ -25,8 +25,8 @@ jobs:
           */*/node_modules
           packages/boa/pybind11
           packages/boa/pyodide
-        key: |
-          ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json,packages/boa/pybind11/Makefile,packages/boa/pyodide/Makefile') }}
+        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json,packages/boa/pybind11/Makefile,packages/boa/pyodide/Makefile') }}
+        restore-keys: |
           ${{ runner.os }}-${{ matrix.node_version }}
           ${{ runner.os }}
     - name: restore miniconda
@@ -36,8 +36,8 @@ jobs:
           packages/boa/.miniconda
           packages/boa/Miniconda3-latest*.sh
           packages/boa/.CONDA_INSTALL_DIR
-        key: |
-          ${{ runner.os }}-miniconda-${{ hashFiles('packages/boa/Miniconda3-latest*.sh') }}
+        key: ${{ runner.os }}-miniconda-${{ hashFiles('packages/boa/Miniconda3-latest*.sh') }}
+        restore-keys: |
           ${{ runner.os }}-miniconda
     - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1

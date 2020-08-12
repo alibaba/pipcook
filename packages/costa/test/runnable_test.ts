@@ -12,6 +12,7 @@ class StringWritable extends Writable {
   }
 
   _write(chunk: any): void {
+    console.log(chunk);
     this.data += chunk;
   }
 }
