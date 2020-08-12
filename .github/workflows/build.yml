@@ -39,7 +39,7 @@ jobs:
       run: |
         npm install
         npm run build
-        du -h -d 2
+        du -h -d 1
     - name: Running unit tests
       run: |
         npm test
@@ -62,10 +62,10 @@ jobs:
         npm run test:pipeline -- text-bayes-classification
     - name: install plugins from specific pipeline
       run: |
-          ./packages/cli/dist/bin/pipcook pipeline install ./sample/pipelines/text-bayes-classification.json
+          ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/text-bayes-classification.json
     - name: pipcook run from local filename
       run: |
-        ./packages/cli/dist/bin/pipcook run ./sample/pipelines/text-bayes-classification.json
+        ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
         ls ./output && rm -rf ./output
     - name: pipcook run from url
       run: |
