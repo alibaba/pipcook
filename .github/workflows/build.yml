@@ -43,11 +43,6 @@ jobs:
     - name: Running unit tests
       run: |
         npm test
-        zip -r pipcook.zip ./*
-    - uses: actions/upload-artifact@v2
-      with:
-        name: pipcook-artifact-${{ github.sha }}
-        path: ./pipcook.zip 
   # pipeline:
   #   name: Run the pipeline on ${{ matrix.os }}
   #   runs-on: ${{ matrix.os }}
