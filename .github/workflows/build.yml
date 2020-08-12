@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['12']
+        node_version: ['12', '14']
         os: [ubuntu-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v1
@@ -25,7 +25,7 @@ jobs:
           */*/node_modules
           packages/boa/pybind11
           packages/boa/pyodide
-        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json,packages/boa/pybind11/Makefile,packages/boa/pyodide/Makefile') }}
     - name: restore miniconda
       uses: actions/cache@v2
       with:
@@ -33,7 +33,7 @@ jobs:
           */*/.miniconda
           */*/Miniconda3-latest*.sh
           */*/.CONDA_INSTALL_DIR
-        key: ${{ runner.os }}-miniconda
+        key: ${{ runner.os }}-miniconda-${{ hashFiles('*/*/Miniconda3-latest*.sh') }}
     - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
