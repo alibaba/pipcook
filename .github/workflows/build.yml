@@ -23,6 +23,8 @@ jobs:
         path: |
           node_modules
           */*/node_modules
+          packages/boa/pybind11
+          packages/boa/pyodide
         key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json') }}
     - name: restore miniconda
       uses: actions/cache@v2
