@@ -13,10 +13,24 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['12', '14']
-        os: [ubuntu-latest, macOS-latest]
+        node_version: ['12']
+        os: [ubuntu-latest]
     steps:
     - uses: actions/checkout@v1
+    - name: restore lerna
+      uses: actions/cache@v2
+      with:
+        path: |
+          node_modules
+          */*/node_modules
+        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json') }}
+    - name: restore miniconda
+      uses: actions/cache@v2
+      with:
+        path: |
+          */*/.miniconda
+          */*/Miniconda3-latest*.sh
+        key: ${{ runner.os }}-miniconda
     - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
@@ -28,30 +42,33 @@ jobs:
     - name: Running unit tests
       run: |
         npm test
-
-  pipeline:
-    name: Run the pipeline on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node_version: ['12']
-        os: [ubuntu-latest, macOS-latest]
-    steps:
-    - uses: actions/checkout@v1
-    - name: Using Node.js ${{ matrix.node_version }}
-      uses: actions/setup-node@v1
+    - uses: actions/upload-artifact@v2
       with:
-        node-version: ${{ matrix.node_version }}
-    - name: Building Pipcook
-      run: |
-        npm install
-        npm run build
-    - name: pipcook init
-      env:
-        NODE_ENV: local
-      run: |
-        ./packages/cli/dist/bin/pipcook init
-        ./packages/cli/dist/bin/pipcook daemon start
-    - name: Running an example pipeline
-      run: |
-        npm run test:pipeline -- text-bayes-classification
+        name: pipcook-artifact-${{ github.sha }}
+        path: ${{ github.workspace }} 
+  # pipeline:
+  #   name: Run the pipeline on ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       node_version: ['12']
+  #       os: [ubuntu-latest, macOS-latest]
+  #   steps:
+  #   - uses: actions/checkout@v1
+  #   - name: Using Node.js ${{ matrix.node_version }}
+  #     uses: actions/setup-node@v1
+  #     with:
+  #       node-version: ${{ matrix.node_version }}
+  #   - name: Building Pipcook
+  #     run: |
+  #       npm install
+  #       npm run build
+  #   - name: pipcook init
+  #     env:
+  #       NODE_ENV: local
+  #     run: |
+  #       ./packages/cli/dist/bin/pipcook init
+  #       ./packages/cli/dist/bin/pipcook daemon start
+  #   - name: Running an example pipeline
+  #     run: |
+  #       npm run test:pipeline -- text-bayes-classification

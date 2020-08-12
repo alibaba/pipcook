@@ -1,63 +1,63 @@
-name: Beta Build Packages
-on:
-  schedule:
-    - cron: '0 0 * * *'
+# name: Beta Build Packages
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'
 
-jobs:
-  release:
-    name: Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delete branch
-        uses: dawidd6/action-delete-branch@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: beta
+# jobs:
+#   release:
+#     name: Release
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Delete branch
+#         uses: dawidd6/action-delete-branch@v3
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           branches: beta
 
-      - name: Create Beta Branch
-        uses: peterjgrainger/action-create-branch@v1.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: 'beta'
+#       - name: Create Beta Branch
+#         uses: peterjgrainger/action-create-branch@v1.0.0
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           branch: 'beta'
 
-      - name: Checkout beta
-        uses: actions/checkout@v2
-        with:
-          ref: beta
-      - name:  Activity check
-        run: |
-            curl -sL https://api.github.com/repos/${{github.repository}}/commits?since=yesterday | jq -r '.[0]' > $HOME/commit.json
-            date="$(jq -r '.commit.committer.date' $HOME/commit.json)"
-            echo "Last commit is made @ $date"
+#       - name: Checkout beta
+#         uses: actions/checkout@v2
+#         with:
+#           ref: beta
+#       - name:  Activity check
+#         run: |
+#             curl -sL https://api.github.com/repos/${{github.repository}}/commits?since=yesterday | jq -r '.[0]' > $HOME/commit.json
+#             date="$(jq -r '.commit.committer.date' $HOME/commit.json)"
+#             echo "Last commit is made @ $date"
             
-            if [ -n "${date}" ]; then
-              echo ::set-env name=UPDATED::true
-            fi
-        shell: bash
+#             if [ -n "${date}" ]; then
+#               echo ::set-env name=UPDATED::true
+#             fi
+#         shell: bash
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        if: env.UPDATED == 'true'
-        with:
-          node-version: 12
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v1
+#         if: env.UPDATED == 'true'
+#         with:
+#           node-version: 12
 
-      - name: Install Dependencies
-        if: env.UPDATED == 'true'
-        run: |
-          npm install
-          npm run build
+#       - name: Install Dependencies
+#         if: env.UPDATED == 'true'
+#         run: |
+#           npm install
+#           npm run build
           
-      - name: Publish npm beta packages
-        if: env.UPDATED == 'true'
-        run: |
-          sha_short="$(git rev-parse --short HEAD)"
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > ~/.npmrc
-          git config --global user.name 'pipcook'
-          git config --global user.email 'queyue.crk@alibaba-inc.com'
-          npm run beta-release-tag -- --preid "${sha_short}-beta"
-          npm run beta-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
-          NPM_AUTH_TOKEN: ${{ secrets.npm_token }}
+#       - name: Publish npm beta packages
+#         if: env.UPDATED == 'true'
+#         run: |
+#           sha_short="$(git rev-parse --short HEAD)"
+#           echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > ~/.npmrc
+#           git config --global user.name 'pipcook'
+#           git config --global user.email 'queyue.crk@alibaba-inc.com'
+#           npm run beta-release-tag -- --preid "${sha_short}-beta"
+#           npm run beta-release
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+#           NPM_AUTH_TOKEN: ${{ secrets.npm_token }}
