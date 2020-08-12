@@ -150,15 +150,17 @@ export class PipelineController extends BaseEventController {
       if (!pipeline[type]) {
         continue;
       }
+      let plugin = await this.pluginManager.findByName(pipeline[type]);
+      if (plugin && plugin.status === PluginStatus.INSTALLED) {
+        log.stdout.writeLine(`plugin ${plugin.name}@${plugin.version} already installed`);
+        continue;
+      }
       debug(`start installation: ${type}`);
       const pkg = await this.pluginManager.fetch(pipeline[type]);
-      log.stdout.writeLine(`start to install plugin ${pkg.name}@${pkg.version}`);
+      log.stdout.writeLine(`start to install plugin ${pkg.name}`);
 
       debug(`installing ${pipeline[type]}.`);
-      const plugin = await this.pluginManager.findOrCreateByPkg(pkg);
-      if (plugin.status === PluginStatus.INSTALLED) {
-        return log.stdout.writeLine(`plugin ${pkg.name}@${pkg.version} already installed`);
-      }
+      plugin = await this.pluginManager.findOrCreateByPkg(pkg);
       try {
         await this.pluginManager.install(pkg, {
           pyIndex,

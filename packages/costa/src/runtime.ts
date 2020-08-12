@@ -1,7 +1,19 @@
 import path from 'path';
 import url from 'url';
 import { createUnzip } from 'zlib';
-import { createReadStream, createWriteStream, ensureDir, ensureDirSync, pathExists, remove, writeFile, readFile, access, mkdirp } from 'fs-extra';
+import {
+  createReadStream,
+  createWriteStream,
+  ensureDir,
+  ensureDirSync,
+  pathExists,
+  remove,
+  writeFile,
+  readFile,
+  access,
+  mkdirp,
+  readJson
+} from 'fs-extra';
 import { download, constants, generateId } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
@@ -217,8 +229,8 @@ export class CostaRuntime {
 
   /**
    * valid package info and assgin with source
-   * @param pkg plugin package info
-   * @param source source info
+   * @param pkg plugin package package info.
+   * @param source source info.
    */
   validAndAssign(pkg: PluginPackage, source: PluginSource): PluginPackage {
     try {
@@ -233,6 +245,15 @@ export class CostaRuntime {
     }
     return pkg;
   }
+
+  /**
+   * fetch plugin package info by plugin name
+   * @param name plugin name
+   */
+  async fetchFromInstalledPlugin(name: string): Promise<PluginPackage> {
+    return this.assignPackage(await readJson(path.join(constants.PIPCOOK_PLUGINS, 'node_modules', name, 'package.json')), undefined);
+  }
+
   /**
    * fetch and check if the package name is valid.
    * @param name the plugin package name.
@@ -255,7 +276,7 @@ export class CostaRuntime {
       pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
     } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
-      pkg = require(`${source.uri}/package.json`);
+      pkg = await readJson(`${source.uri}/package.json`);
     } else if (source.from === 'tarball') {
       debug(`downloading the url ${source.uri}`);
       await download(source.name, source.uri);
@@ -493,9 +514,11 @@ export class CostaRuntime {
       throw new TypeError('Invalid plugin package.json, not found on "pipcook"');
     }
   }
+
   /**
    * Assign some fields to package.
-   * @param pkg the plugin package.
+   * @param pkg plugin info
+   * @param source plugin source for installation
    */
   private assignPackage(pkg: PluginPackage, source: PluginSource): PluginPackage {
     const { installDir } = this.options;
@@ -504,6 +527,7 @@ export class CostaRuntime {
       PYTHONPATH: path.join(
         installDir, `conda_envs/${pkg.name}@${pkg.version}`, 'lib/python3.7/site-packages'),
       DESTPATH: path.join(
+        // TODO(feely): not implement the version
         installDir, `node_modules/${pkg.name}@${pkg.version}`)
     };
     return pkg;
