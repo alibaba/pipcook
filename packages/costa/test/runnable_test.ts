@@ -65,8 +65,9 @@ describe('start runnable in normal way', () => {
     if (await pathExists(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa'))) {
       await remove(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa'));
     }
+
     await symlink(
-      path.join(__dirname, '../../../boa'),
+      path.join(__dirname, '../../boa'),
       path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa')
     );
     const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-simple'));
