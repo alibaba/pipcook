@@ -30,7 +30,7 @@ jobs:
         NODE_ENV: local
       run: |
         ./packages/cli/dist/bin/pipcook init
-        ./packages/cli/dist/bin/pipcook daemon start
+        node ./packages/daemon/bootstrap.js 2>&1 &
     - name: install plugins from specific pipeline
       run: |
         ./packages/cli/dist/bin/pipcook pipeline install ./test/pipelines/text-bayes-classification.json
@@ -41,6 +41,4 @@ jobs:
       run: |
         ./packages/cli/dist/bin/pipcook plugin install ./packages/plugins/data-collect/csv-data-collect
         ./packages/cli/dist/bin/pipcook plugin install ./packages/plugins/model-define/detectron-fasterrcnn-model-define
-    - name: "pipcook plugin-dev"
-      run: |
-        ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
+
