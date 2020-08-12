@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         node_version: ['12']
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v1
     - name: restore lerna
@@ -37,7 +37,7 @@ jobs:
         node-version: ${{ matrix.node_version }}
     - name: Building Pipcook
       run: |
-        npm install
+        ls ./node_modules || npm install
         npm run build
         du -h -d 1
     - name: Running unit tests

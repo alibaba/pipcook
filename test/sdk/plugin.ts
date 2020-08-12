@@ -30,7 +30,7 @@ describe('pipeline api.plugin test', () => {
       request.get('https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-1.1.0.tgz')
     );
     expect(typeof resp).toBe('object');
-    expect(resp.name).toBe('@pipcook/plugins-csv-data-access');
+    expect(resp.name).toBe('@pipcook/plugins-csv-data-collect');
     expect(resp.version).toBe('1.1.0');
     expect(typeof resp.traceId).toBe('string');
     await client.plugin.traceEvent(resp.traceId, (event: string, data: any) => {
