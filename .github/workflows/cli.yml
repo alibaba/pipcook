@@ -25,11 +25,6 @@ jobs:
       run: |
         npm install
         npm run build
-    - name: 'upload artifact'
-      uses: 'actions/upload-artifact@v2'
-      with:
-        name: my-artifaccct ${{ matrix.node-version }}
-        path: ${{ github.workspace }}
     - name: pipcook init
       env:
         NODE_ENV: local
