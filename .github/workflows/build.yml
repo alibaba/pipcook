@@ -67,6 +67,7 @@ jobs:
     - name: install plugins from specific pipeline
       run: |
           ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/text-bayes-classification.json
+          ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
     - name: pipcook run from local filename
       run: |
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
