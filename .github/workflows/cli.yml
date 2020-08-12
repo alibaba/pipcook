@@ -28,8 +28,8 @@ jobs:
     - name: 'upload artifact'
       uses: 'actions/upload-artifact@v2'
       with:
-          name: ${{ matrix.node_version }}-${{ matrix.os }}-${{ matrix. }}
-          path: ${{ github.workspace }}
+        name: ${{ matrix.node_version }}-${{ matrix.os }}
+        path: ${{ github.workspace }}
     - name: pipcook init
       env:
         NODE_ENV: local
