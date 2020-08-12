@@ -32,6 +32,13 @@ export class PluginManager {
     return this.pluginRT.costa.fetch(name);
   }
 
+  /**
+   * fetch pakcage info by plugin name
+   * @param name plugin name
+   */
+  async fetchFromInstalledPlugin(name: string): Promise<PluginPackage> {
+    return this.pluginRT.costa.fetchFromInstalledPlugin(name);
+  }
   async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
     return this.pluginRT.costa.fetchByStream(stream);
   }
@@ -105,8 +112,8 @@ export class PluginManager {
   async findOrCreateByPkg(pkg: PluginPackage): Promise<PluginModel> {
     const [ plugin ] = await this.model.findOrCreate({
       where: {
-        name: pkg.name,
-        version: pkg.version
+        // TODO(feely): support the different versions of plugins
+        name: pkg.name
       },
       defaults: {
         id: generateId(),

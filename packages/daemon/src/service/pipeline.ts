@@ -13,7 +13,8 @@ import {
   compressTarFile,
   UniDataset,
   constants as CoreConstants,
-  generateId
+  generateId,
+  PluginStatus
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 
@@ -171,15 +172,30 @@ export class PipelineService {
     return job;
   }
 
-  async installPlugins(pipeline: PipelineModel, log: LogObject, pyIndex?: string): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
+  async fetchPlugins(pipeline: PipelineModel): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
     const plugins: Partial<Record<PluginTypeI, PluginInfo>> = {};
+    const noneInstalledPlugins: string[] = [];
     for (const type of CoreConstants.PLUGINS) {
       if (pipeline[type]) {
-        plugins[type] = await {
-          plugin: await this.pluginManager.fetchAndInstall(pipeline[type], log, pyIndex),
-          params: pipeline[`${type}Params`]
-        };
+        const plugin = await this.pluginManager.findByName(pipeline[type]);
+        if (plugin && plugin.status === PluginStatus.INSTALLED) {
+          // ignore if any plugin not installed, because will throw an error after processing.
+          if (noneInstalledPlugins.length === 0) {
+            plugins[type] = await {
+              plugin: await this.pluginManager.fetchFromInstalledPlugin(pipeline[type]),
+              params: pipeline[`${type}Params`]
+            };
+          }
+        } else {
+          noneInstalledPlugins.push(pipeline[type]);
+        }
       }
+    }
+    if (noneInstalledPlugins.length > 0) {
+      const errStr = noneInstalledPlugins.map((value: string, index: number) => {
+        return index === noneInstalledPlugins.length - 1 ? value : `${value}, `;
+      })
+      throw createHttpError(HttpStatus.NOT_FOUND, `these plugins are not installed: ${errStr}`);
     }
     return plugins;
   }
@@ -379,7 +395,7 @@ export class PipelineService {
   }
 
   async runJob(job: JobModel, pipeline: PipelineModel, log: LogObject): Promise<void> {
-    const plugins = await this.installPlugins(pipeline, log);
+    const plugins = await this.fetchPlugins(pipeline);
     await this.startJob(job, pipeline, plugins, log);
   }
 }
