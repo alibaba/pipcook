@@ -16,7 +16,7 @@ jobs:
         node_version: ['12', '14']
         os: [ubuntu-latest, macOS-latest]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: restore lerna
       uses: actions/cache@v2
       with:
