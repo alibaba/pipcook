@@ -42,6 +42,7 @@ jobs:
       run: |
         (ls ./node_modules && ls ./packages/boa/.miniconda) || npm install
         npm run build
+        npm run init-dev
         du -h -d 1
     - name: Running unit tests
       run: |
