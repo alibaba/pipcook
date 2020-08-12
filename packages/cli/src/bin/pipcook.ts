@@ -8,7 +8,7 @@ import { join } from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { pathExists } from 'fs-extra';
 
-import { start } from '../service/job';
+import { runAndDownload } from '../service/job';
 import init from '../actions/init';
 import serve from '../actions/serve';
 import board from '../actions/board';
@@ -63,7 +63,7 @@ import devPlugin from '../actions/dev-plugin';
     .option('-h|--host-ip <ip>', 'the host ip of daemon')
     .option('-p|--port <port>', 'the port of daemon')
     .description('run pipeline with a json file.')
-    .action(start);
+    .action(runAndDownload);
 
   program
     .command('serve <dir>')
