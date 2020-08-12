@@ -98,8 +98,13 @@ Napi::Value PythonNode::Import(const CallbackInfo &info) {
     return info.Env().Undefined();
   }
   std::string mModulePath = std::string(info[0].As<String>());
-  pybind::object obj = pybind::module::import(mModulePath.c_str());
-  return PythonObject::NewInstance(info.Env(), obj);
+  try {
+    pybind::object obj = pybind::module::import(mModulePath.c_str());
+    return PythonObject::NewInstance(info.Env(), obj);
+  } catch (pybind::error_already_set &e) {
+    Napi::TypeError::New(info.Env(), e.what())
+        .ThrowAsJavaScriptException();
+  }
 }
 
 Napi::Value PythonNode::Print(const CallbackInfo &info) {
