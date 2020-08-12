@@ -40,7 +40,7 @@ jobs:
         node-version: ${{ matrix.node_version }}
     - name: Building Pipcook
       run: |
-        (ls ./node_modules && ls ./packages/boa/.miniconda) || npm install
+        npm install
         npm run build
         npm run init-dev
         du -h -d 1
