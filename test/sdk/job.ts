@@ -32,7 +32,7 @@ describe('pipeline api.job test', () => {
     expect(typeof pipeline.id).toBe('string');
     const pipelineTrace = await client.pipeline.install(pipeline.id);
     await client.pipeline.traceEvent(pipelineTrace.traceId, traceLog);
-  }, 180 * 1000);
+  }, 240 * 1000);
   it('create job', async () => {
     // create job
     jobObj = await client.job.run(pipeline.id);
