@@ -453,7 +453,7 @@ module.exports = {
    */
   'kwargs': input => {
     if (typeof input !== 'object') {
-      throw new TypeError('input must be a string.');
+      throw new TypeError('input must be an object.');
     }
     return Object.assign({}, input, {
       [native.NODE_PYTHON_KWARGS_NAME]: true,
