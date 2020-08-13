@@ -193,10 +193,7 @@ export class PipelineService {
       }
     }
     if (noneInstalledPlugins.length > 0) {
-      const errStr = noneInstalledPlugins.map((value: string, index: number) => {
-        return index === noneInstalledPlugins.length - 1 ? value : `${value}, `;
-      });
-      throw createHttpError(HttpStatus.NOT_FOUND, `these plugins are not installed: ${errStr}`);
+      throw createHttpError(HttpStatus.NOT_FOUND, `these plugins are not installed: ${JSON.stringify(noneInstalledPlugins)}`);
     }
     return plugins;
   }
