@@ -62,23 +62,26 @@ describe('start runnable in normal way', () => {
   }, INSTALL_SPECS_TIMEOUT);
 
   it('should start a python plugin', async () => {
+    console.log(1);
     await mkdirp(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook'));
     if (await pathExists(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa'))) {
       await remove(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa'));
     }
-
+    console.log(__dirname);
     await symlink(
-      path.join(__dirname, '../../boa'),
+      path.join(__dirname, '../../../boa'),
       path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa')
     );
+    console.log(3);
     const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-simple'));
     const stdoutStream = new StringWritable();
     const stderrStream = new StringWritable();
     await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream });
     expect(simple.pipcook.runtime).toBe('python');
-
+    console.log(4);
     // test passing the variable from js to python.
     const tmp2 = await runnable.start(simple, tmp);
+    console.log(5);
     const stdout = stdoutStream.data;
     expect(stdout.search('hello python!') !== 0).toBe(true);
     expect(stdout.search('fn1([0. 0.])') !== 0).toBe(true);
