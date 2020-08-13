@@ -40,7 +40,7 @@ describe('pipeline api.job test', () => {
     expect(typeof jobObj.id).toBe('string');
     expect(typeof (jobObj as TraceResp<JobResp>).traceId).toBe('string');
     await client.job.traceEvent((jobObj as TraceResp<JobResp>).traceId, traceLog);
-  }, 180 * 1000);
+  }, 240 * 1000);
   it('query job info', async () => {
     // info
     jobInfoObj = await client.job.info(jobObj.id);
