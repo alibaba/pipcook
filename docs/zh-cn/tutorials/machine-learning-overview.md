@@ -116,7 +116,7 @@ predictBookPrice('Dive into Pipcook'); // 199.0
 {
   "plugins": {
     "dataProcess": {
-      "package": "@pipcook/plugins-image-data-process",
+      "package": "@pipcook/plugins-tensorflow-image-classification-process",
       "params": {
         "resize": [28, 28]
       }
@@ -125,7 +125,7 @@ predictBookPrice('Dive into Pipcook'); // 199.0
 }
 ```
 
-接下来，我们使用插件 "@pipcook/plugins-image-data-process" 来调整每张图片的尺寸为 28x28：
+接下来，我们使用插件 "@pipcook/plugins-tensorflow-image-classification-process" 来调整每张图片的尺寸为 28x28：
 
 ```js
 {
