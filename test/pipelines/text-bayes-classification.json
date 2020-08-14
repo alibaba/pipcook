@@ -7,19 +7,19 @@
       }
     },
     "dataAccess": {
-      "package": "./packages/plugins/data-access/csv-data-access",
+      "package": "https://registry.npmjs.org/@pipcook/plugins-csv-data-access/-/plugins-csv-data-access-1.1.0.tgz",
       "params": {
         "labelColumn": "output"
       }
     },
     "modelDefine": {
-      "package": "./packages/plugins/model-define/bayesian-model-define"
+      "package": "@pipcook/plugins-bayesian-model-define"
     },
     "modelTrain": {
-      "package": "./packages/plugins/model-train/bayesian-model-train"
+      "package": "@pipcook/plugins-bayesian-model-train"
     },
     "modelEvaluate": {
-      "package": "./packages/plugins/model-evaluate/bayesian-model-evaluate",
+      "package": "@pipcook/plugins-bayesian-model-evaluate",
       "params": {
         "expectAccracy": 0.9
       }

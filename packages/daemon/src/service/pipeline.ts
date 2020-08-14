@@ -177,12 +177,13 @@ export class PipelineService {
     const noneInstalledPlugins: string[] = [];
     for (const type of CoreConstants.PLUGINS) {
       if (pipeline[type]) {
-        const plugin = await this.pluginManager.findByName(pipeline[type]);
+        const pkg = await this.pluginManager.fetch(pipeline[type]);
+        const plugin = await this.pluginManager.findByName(pkg.name);
         if (plugin && plugin.status === PluginStatus.INSTALLED) {
           // ignore if any plugin not installed, because will throw an error after processing.
           if (noneInstalledPlugins.length === 0) {
             plugins[type] = await {
-              plugin: await this.pluginManager.fetchFromInstalledPlugin(pipeline[type]),
+              plugin: await this.pluginManager.fetchFromInstalledPlugin(pkg.name),
               params: pipeline[`${type}Params`]
             };
           }
@@ -192,10 +193,7 @@ export class PipelineService {
       }
     }
     if (noneInstalledPlugins.length > 0) {
-      const errStr = noneInstalledPlugins.map((value: string, index: number) => {
-        return index === noneInstalledPlugins.length - 1 ? value : `${value}, `;
-      });
-      throw createHttpError(HttpStatus.NOT_FOUND, `these plugins are not installed: ${errStr}`);
+      throw createHttpError(HttpStatus.NOT_FOUND, `these plugins are not installed: ${JSON.stringify(noneInstalledPlugins)}`);
     }
     return plugins;
   }
