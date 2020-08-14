@@ -2,6 +2,15 @@ import * as path from 'path';
 import { readJson } from 'fs-extra';
 import { PipcookClient, PipelineResp, JobResp, TraceResp } from '../../packages/sdk';
 
+const traceLog = (event: string, data: any) => {
+  expect([ 'log' ]).toContain(event);
+  if (event === 'log') {
+    console.log(`[${data.level}] ${data.data}`);
+    expect(typeof data.level).toBe('string');
+    expect(typeof data.data).toBe('string');
+  }
+};
+
 describe('pipeline api.job test', () => {
   const client = new PipcookClient('http://localhost', 6927);
   const name = 'bayes-job-test';
@@ -21,23 +30,17 @@ describe('pipeline api.job test', () => {
     pipeline = await client.pipeline.create(config, { name });
     expect(typeof pipeline).toBe('object');
     expect(typeof pipeline.id).toBe('string');
-  });
+    const pipelineTrace = await client.pipeline.install(pipeline.id);
+    await client.pipeline.traceEvent(pipelineTrace.traceId, traceLog);
+  }, 240 * 1000);
   it('create job', async () => {
     // create job
     jobObj = await client.job.run(pipeline.id);
     expect(typeof jobObj).toBe('object');
     expect(typeof jobObj.id).toBe('string');
     expect(typeof (jobObj as TraceResp<JobResp>).traceId).toBe('string');
-    await client.job.traceEvent((jobObj as TraceResp<JobResp>).traceId, (event: string, data: any) => {
-      // log only for now
-      expect([ 'log' ]).toContain(event);
-      if (event === 'log') {
-        console.log(`[${data.level}] ${data.data}`);
-        expect(typeof data.level).toBe('string');
-        expect(typeof data.data).toBe('string');
-      }
-    });
-  }, 180 * 1000);
+    await client.job.traceEvent((jobObj as TraceResp<JobResp>).traceId, traceLog);
+  }, 240 * 1000);
   it('query job info', async () => {
     // info
     jobInfoObj = await client.job.info(jobObj.id);
