@@ -4,7 +4,7 @@ import { Writable } from 'stream';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
 
-const INSTALL_SPECS_TIMEOUT = 180 * 1000;
+const INSTALL_SPECS_TIMEOUT = 240 * 1000;
 class StringWritable extends Writable {
   data = '';
   constructor() {
