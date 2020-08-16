@@ -38,7 +38,7 @@ import devPlugin from '../actions/dev-plugin';
     versionStr.push(`Pipcook Daemon  v${daemonPkg.version} ${constants.PIPCOOK_DAEMON_SRC}`);
   }
   if (await pathExists(boardPath)) {
-    const boardPkg = require(join(constants.PIPCOOK_BOARD_SRC, 'package.json'));
+    const boardPkg = require(boardPath);
     versionStr.push(`Pipboard        v${boardPkg.version} ${constants.PIPCOOK_BOARD_SRC}`);
   }
 
