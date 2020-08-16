@@ -6,7 +6,7 @@ import program from 'commander';
 import { execSync as exec } from 'child_process';
 import { join } from 'path';
 import { constants } from '@pipcook/pipcook-core';
-import { pathExists } from 'fs-extra';
+import { pathExists, readJson } from 'fs-extra';
 
 import { runAndDownload } from '../service/job';
 import init from '../actions/init';
@@ -34,11 +34,11 @@ import devPlugin from '../actions/dev-plugin';
   const daemonPath = join(constants.PIPCOOK_DAEMON_SRC, 'package.json');
   const boardPath = join(constants.PIPCOOK_BOARD_SRC, 'package.json');
   if (await pathExists(daemonPath)) {
-    const daemonPkg = require(daemonPath);
+    const daemonPkg = await readJson(daemonPath);
     versionStr.push(`Pipcook Daemon  v${daemonPkg.version} ${constants.PIPCOOK_DAEMON_SRC}`);
   }
   if (await pathExists(boardPath)) {
-    const boardPkg = require(boardPath);
+    const boardPkg = await readJson(boardPath);
     versionStr.push(`Pipboard        v${boardPkg.version} ${constants.PIPCOOK_BOARD_SRC}`);
   }
 
