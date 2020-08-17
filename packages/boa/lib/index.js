@@ -81,6 +81,7 @@ function dump(T) {
   return pyInst.import('json')
     .__getattr__('dumps')
     .invoke(asHandleObject(T), {
+      // use str method to serialize those fields which cannot be serialized by default
       default: _internalWrap(builtins).str,
       [native.NODE_PYTHON_KWARGS_NAME]: true,
     });
