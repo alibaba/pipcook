@@ -177,12 +177,13 @@ export class PipelineService {
     const noneInstalledPlugins: string[] = [];
     for (const type of CoreConstants.PLUGINS) {
       if (pipeline[type]) {
-        const plugin = await this.pluginManager.findByName(pipeline[type]);
+        const pkg = await this.pluginManager.fetch(pipeline[type]);
+        const plugin = await this.pluginManager.findByName(pkg.name);
         if (plugin && plugin.status === PluginStatus.INSTALLED) {
           // ignore if any plugin not installed, because will throw an error after processing.
           if (noneInstalledPlugins.length === 0) {
             plugins[type] = await {
-              plugin: await this.pluginManager.fetchFromInstalledPlugin(pipeline[type]),
+              plugin: await this.pluginManager.fetchFromInstalledPlugin(pkg.name),
               params: pipeline[`${type}Params`]
             };
           }
@@ -192,10 +193,7 @@ export class PipelineService {
       }
     }
     if (noneInstalledPlugins.length > 0) {
-      const errStr = noneInstalledPlugins.map((value: string, index: number) => {
-        return index === noneInstalledPlugins.length - 1 ? value : `${value}, `;
-      });
-      throw createHttpError(HttpStatus.NOT_FOUND, `these plugins are not installed: ${errStr}`);
+      throw createHttpError(HttpStatus.NOT_FOUND, `these plugins are not installed: ${JSON.stringify(noneInstalledPlugins)}`);
     }
     return plugins;
   }
@@ -278,16 +276,6 @@ export class PipelineService {
         modelDir: modelPath
       }));
 
-      await this.generateOutput(job, {
-        modelPath,
-        modelPlugin,
-        dataProcess,
-        datasetProcess,
-        pipeline,
-        workingDir: runnable.workingDir,
-        template: 'node' // set node by default
-      });
-
       // update job status to successful
       const result = await runnable.valueOf(output) as EvaluateResult;
       const datasetVal = await runnable.valueOf(dataset) as UniDataset;
@@ -298,6 +286,17 @@ export class PipelineService {
       job.evaluatePass = result.pass;
       job.endTime = Date.now();
       job.status = PipelineStatus.SUCCESS;
+
+      await this.generateOutput(job, {
+        modelPath,
+        modelPlugin,
+        dataProcess,
+        datasetProcess,
+        pipeline,
+        workingDir: runnable.workingDir,
+        template: 'node' // set node by default
+      });
+
       await job.save();
     } catch (err) {
       if (!runnable.canceled) {
