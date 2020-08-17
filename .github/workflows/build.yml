@@ -48,13 +48,13 @@ jobs:
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: npm install
+        command: npm install
       - name: Building Pipcook
       uses: nick-invision/retry@v1
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: npm run build
+        command: npm run build
     - name: Initialize Pipcook
       run: |
         npm run init-dev
@@ -64,7 +64,7 @@ jobs:
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: npm test
+        command: npm test
     - name: daemon start
       run: |
         ./packages/cli/dist/bin/pipcook daemon start
@@ -81,7 +81,7 @@ jobs:
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: npx ts-node ./run_tests.ts  
+        command: npx ts-node ./run_tests.ts  
     - name: Running an example pipeline
       uses: nick-invision/retry@v1
       with:
@@ -93,25 +93,25 @@ jobs:
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/text-bayes-classification.json
+        command: ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/text-bayes-classification.json
     - name: install plugins from specific http pipeline
       uses: nick-invision/retry@v1
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
+        command: ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
     - name: pipcook run from local filename
       uses: nick-invision/retry@v1
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json && ls ./output && rm -rf ./output
+        command: ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json && ls ./output && rm -rf ./output
     - name: pipcook run from url
       uses: nick-invision/retry@v1
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json && ls ./output && rm -rf ./output
+        command: ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json && ls ./output && rm -rf ./output
     - name: "pipcook plugin-dev"
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
