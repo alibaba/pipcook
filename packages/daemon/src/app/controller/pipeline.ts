@@ -127,7 +127,7 @@ export class PipelineController extends BaseEventController {
    */
   @post('/:id/installation')
   public async installById() {
-    const { pyIndex } = this.ctx.query;
+    const { pyIndex } = this.ctx.request.body;
     const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
     const log = await this.logManager.create();
     if (pipeline) {

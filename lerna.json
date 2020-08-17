@@ -6,8 +6,6 @@
     "packages/core",
     "packages/costa",
     "packages/daemon",
-    "packages/pipboard",
-    "packages/plugins/**/*",
     "packages/sdk"
   ],
   "version": "independent",
