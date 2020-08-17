@@ -80,7 +80,10 @@ function copy(T) {
 function dump(T) {
   return pyInst.import('json')
     .__getattr__('dumps')
-    .invoke(asHandleObject(T));
+    .invoke(asHandleObject(T), {
+      default: _internalWrap(builtins).str,
+      [native.NODE_PYTHON_KWARGS_NAME]: true,
+    });
 }
 
 function getDelegator(type) {
