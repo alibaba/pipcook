@@ -284,6 +284,16 @@ export class CostaRuntime {
     }
     return this.validAndAssign(pkg, source);
   }
+
+  async saveFile(stream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream): Promise<void> {
+    return new Promise((resolve, reject) => {
+      stream.pipe(writeStream);
+      stream.on('error', reject);
+      writeStream.on('finish', resolve);
+      writeStream.on('error', reject);
+    });
+  }
+
   /**
    * fetch and check if the package name is valid.
    * @param name the plugin package readstream for npm package tarball.
@@ -292,14 +302,9 @@ export class CostaRuntime {
   async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
     const fileDir = path.join(constants.PIPCOOK_TMPDIR, generateId());
     const filename = path.join(fileDir, 'pkg.tgz');
+    const writeStream = createWriteStream(filename);
     await mkdirp(fileDir);
-    await new Promise((resolve, reject) => {
-      const writeStream = createWriteStream(filename);
-      stream.pipe(writeStream);
-      stream.on('error', reject);
-      writeStream.on('finish', resolve);
-      writeStream.on('error', reject);
-    });
+    await this.saveFile(stream, writeStream);
     const pkg = await fetchPackageJsonFromTarball(filename);
     const source: PluginSource = {
       from: 'tarball',

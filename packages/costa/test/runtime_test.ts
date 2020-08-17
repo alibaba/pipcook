@@ -3,7 +3,7 @@ import { CostaRuntime } from '../src/runtime';
 import { PluginPackage } from '../src';
 import { stat } from 'fs-extra';
 import { spawnSync } from 'child_process';
-import { createReadStream } from 'fs-extra';
+import { createReadStream, createWriteStream } from 'fs-extra';
 
 const INSTALL_SPECS_TIMEOUT = 180 * 1000;
 
@@ -15,6 +15,16 @@ describe('create a costa runtime', () => {
     npmRegistryPrefix: 'https://registry.npmjs.com/'
   });
   let collectCsv: PluginPackage;
+
+  it('test upload file saving', async () => {
+    let step = 0;
+    const readStream = createReadStream(path.join(__dirname, 'runtime.ts'));
+    const writeStream = createWriteStream(path.join(__dirname, 'runtime.ts_test'));
+    readStream.on('end', () => expect(++step).toBe(0));
+    writeStream.on('finish', () => expect(++step).toBe(1));
+    await costa.saveFile(readStream, writeStream);
+    expect(step).toBe(2);
+  }, INSTALL_SPECS_TIMEOUT);
 
   it('should fetch a plugin and install from local', async () => {
     collectCsv = await costa.fetch(path.join(process.cwd(), '../plugins/data-collect/csv-data-collect'));
@@ -94,7 +104,6 @@ describe('create a costa runtime', () => {
       `${bayesClassifier.name}@${bayesClassifier.version}`
     ));
   }, INSTALL_SPECS_TIMEOUT);
-
   it('should fetch a plugin from tarball readstream', async () => {
     const pathname = path.join(__dirname, '../../plugins/data-collect/chinese-poem-data-collect');
     let packName = spawnSync('npm', [ 'pack' ], { cwd: pathname }).stdout.toString();
