@@ -285,12 +285,12 @@ export class CostaRuntime {
     return this.validAndAssign(pkg, source);
   }
 
-  async saveFile(stream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream): Promise<void> {
+  saveFile(readStream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream): Promise<void> {
     return new Promise((resolve, reject) => {
-      stream.pipe(writeStream);
-      stream.on('error', reject);
-      writeStream.on('finish', resolve);
+      readStream.pipe(writeStream);
+      readStream.on('error', reject);
       writeStream.on('error', reject);
+      writeStream.on('finish', resolve);
     });
   }
 
@@ -302,8 +302,8 @@ export class CostaRuntime {
   async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
     const fileDir = path.join(constants.PIPCOOK_TMPDIR, generateId());
     const filename = path.join(fileDir, 'pkg.tgz');
-    const writeStream = createWriteStream(filename);
     await mkdirp(fileDir);
+    const writeStream = createWriteStream(filename);
     await this.saveFile(stream, writeStream);
     const pkg = await fetchPackageJsonFromTarball(filename);
     const source: PluginSource = {
