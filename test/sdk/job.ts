@@ -70,6 +70,7 @@ describe('pipeline api.job test', () => {
     expect(typeof (jobObj as TraceResp<JobResp>).traceId).toBe('string');
     await client.job.traceEvent((jobObj as TraceResp<JobResp>).traceId, traceLog);
     const downloadObj = await client.job.downloadOutput(jobObj.id);
+    await mkdirp(path.join(__dirname, 'output'));
     await extractToPath(downloadObj.stream, path.join(__dirname, 'output'));
     const metadata = await readJson(path.join(__dirname, 'output', 'metadata.json'));
     expect(metadata?.pipline?.id).toBe(jobObj.id);
