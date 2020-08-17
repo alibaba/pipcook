@@ -28,7 +28,7 @@ import {
   PluginSource,
   CondaConfig
 } from './index';
-import { pipe, LogStdio } from './utils';
+import { pipe, LogStdio, pipeWithFinish } from './utils';
 
 import { get, RequestPromiseOptions } from 'request-promise';
 import Debug from 'debug';
@@ -285,15 +285,6 @@ export class CostaRuntime {
     return this.validAndAssign(pkg, source);
   }
 
-  saveFile(readStream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream): Promise<void> {
-    return new Promise((resolve, reject) => {
-      readStream.pipe(writeStream);
-      readStream.on('error', reject);
-      writeStream.on('error', reject);
-      writeStream.on('finish', resolve);
-    });
-  }
-
   /**
    * fetch and check if the package name is valid.
    * @param name the plugin package readstream for npm package tarball.
@@ -304,7 +295,7 @@ export class CostaRuntime {
     const filename = path.join(fileDir, 'pkg.tgz');
     await mkdirp(fileDir);
     const writeStream = createWriteStream(filename);
-    await this.saveFile(stream, writeStream);
+    await pipeWithFinish(stream, writeStream);
     const pkg = await fetchPackageJsonFromTarball(filename);
     const source: PluginSource = {
       from: 'tarball',

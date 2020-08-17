@@ -17,3 +17,17 @@ export function pipe(readable: NodeJS.ReadableStream, writable: NodeJS.WritableS
     writable.write(data);
   });
 }
+
+/**
+ * pipe read stream to write steam with finish event
+ * @param readStream the read stream
+ * @param writeStream the write stream
+ */
+export function pipeWithFinish(readStream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream): Promise<void> {
+  return new Promise((resolve, reject) => {
+    readStream.pipe(writeStream);
+    readStream.on('error', reject);
+    writeStream.on('error', reject);
+    writeStream.on('finish', resolve);
+  });
+}
