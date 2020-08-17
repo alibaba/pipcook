@@ -5,6 +5,7 @@ import { LogManager, LogObject } from './log-manager';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
+import { pluginQueue } from '../utils/queue';
 
 interface ListPluginsFilter {
   datatype?: string;
@@ -129,16 +130,22 @@ export class PluginManager {
   }
 
   async install(pkg: PluginPackage, opts: InstallOptions): Promise<void> {
-    try {
-      await this.pluginRT.costa.install(pkg, opts);
-    } catch (err) {
-      // uninstall if occurring an error on installing.
-      await this.pluginRT.costa.uninstall(pkg.name);
-      throw err;
-    }
+    return new Promise((resolve, reject) => {
+      pluginQueue.push((cb) => {
+        this.pluginRT.costa.install(pkg, opts).then(() => {
+          resolve();
+          cb();
+        }).catch((err) => {
+          // uninstall if occurring an error on installing.
+          this.pluginRT.costa.uninstall(pkg.name);
+          reject(err);
+          cb();
+        });
+      });
+    });
   }
 
-  async installAsync(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
+  async installNextTick(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
       const logger = await this.logManager.create();
@@ -166,7 +173,7 @@ export class PluginManager {
    */
   async installByName(pkgName: string, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const pkg = await this.fetch(pkgName);
-    return this.installAsync(pkg, pyIndex, force);
+    return this.installNextTick(pkg, pyIndex, force);
   }
 
   async uninstall(plugin: PluginModel | PluginModel[]): Promise<void> {
@@ -185,6 +192,6 @@ export class PluginManager {
 
   async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const pkg = await this.fetchByStream(tarball);
-    return this.installAsync(pkg, pyIndex, force);
+    return this.installNextTick(pkg, pyIndex, force);
   }
 }

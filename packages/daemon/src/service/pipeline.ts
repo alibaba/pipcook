@@ -17,11 +17,11 @@ import {
   PluginStatus
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
-
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
 import { LogObject } from './log-manager';
+import { pluginQueue } from '../utils/queue';
 
 interface QueryOptions {
   limit: number;
@@ -394,6 +394,17 @@ export class PipelineService {
 
   async runJob(job: JobModel, pipeline: PipelineModel, log: LogObject): Promise<void> {
     const plugins = await this.fetchPlugins(pipeline);
-    await this.startJob(job, pipeline, plugins, log);
+    job.status = PipelineStatus.PENDING;
+    await job.save();
+    return new Promise((resolve, reject) => {
+      pluginQueue.push((cb) => {
+        this.startJob(job, pipeline, plugins, log).then(() => {
+          resolve();
+          cb();
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    });
   }
 }

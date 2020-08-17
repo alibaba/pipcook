@@ -241,5 +241,9 @@ export enum PluginStatus {
   /**
    * the plugin installs failed
    */
-  FAILED
+  FAILED,
+  /**
+   * the plugin installation pending
+   */
+  PENDING
 }

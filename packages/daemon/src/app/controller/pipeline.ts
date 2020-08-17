@@ -133,7 +133,7 @@ export class PipelineController extends BaseEventController {
     if (pipeline) {
       process.nextTick(async () => {
         try {
-          await this.install(pipeline, log, pyIndex);
+          await this.installByPipeline(pipeline, log, pyIndex);
           this.logManager.destroy(log.id);
         } catch (err) {
           this.logManager.destroy(log.id, err);
@@ -145,7 +145,7 @@ export class PipelineController extends BaseEventController {
     }
   }
 
-  private async install(pipeline: PipelineDB, log: LogObject, pyIndex?: string): Promise<void> {
+  private async installByPipeline(pipeline: PipelineDB, log: LogObject, pyIndex?: string): Promise<void> {
     for (const type of constants.PLUGINS) {
       if (!pipeline[type]) {
         continue;
