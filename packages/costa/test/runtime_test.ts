@@ -3,7 +3,7 @@ import { CostaRuntime } from '../src/runtime';
 import { PluginPackage } from '../src';
 import { stat } from 'fs-extra';
 import { spawnSync } from 'child_process';
-import { createReadStream, createWriteStream } from 'fs-extra';
+import { createReadStream, createWriteStream, remove } from 'fs-extra';
 
 const INSTALL_SPECS_TIMEOUT = 180 * 1000;
 
@@ -18,12 +18,14 @@ describe('create a costa runtime', () => {
 
   it('test upload file saving', async () => {
     let step = 0;
+    const writeFile = path.join(__dirname, 'runtime.ts_test');
     const readStream = createReadStream(path.join(__dirname, 'runtime.ts'));
-    const writeStream = createWriteStream(path.join(__dirname, 'runtime.ts_test'));
+    const writeStream = createWriteStream(writeFile);
     readStream.on('end', () => expect(++step).toBe(0));
     writeStream.on('finish', () => expect(++step).toBe(1));
     await costa.saveFile(readStream, writeStream);
     expect(step).toBe(2);
+    await remove(writeFile);
   }, INSTALL_SPECS_TIMEOUT);
 
   it('should fetch a plugin and install from local', async () => {
