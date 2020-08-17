@@ -146,7 +146,7 @@ export class PluginManager {
     });
   }
 
-  async installNextTick(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
+  async installAtNextTick(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
       const logger = await this.logManager.create();
@@ -175,7 +175,7 @@ export class PluginManager {
    */
   async installByName(pkgName: string, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const pkg = await this.fetch(pkgName);
-    return this.installNextTick(pkg, pyIndex, force);
+    return this.installAtNextTick(pkg, pyIndex, force);
   }
 
   async uninstall(plugin: PluginModel | PluginModel[]): Promise<void> {
@@ -194,6 +194,6 @@ export class PluginManager {
 
   async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const pkg = await this.fetchByStream(tarball);
-    return this.installNextTick(pkg, pyIndex, force);
+    return this.installAtNextTick(pkg, pyIndex, force);
   }
 }
