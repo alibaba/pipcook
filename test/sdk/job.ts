@@ -73,9 +73,11 @@ describe('pipeline api.job test', () => {
     await mkdirp(path.join(__dirname, 'output'));
     await extractToPath(downloadObj.stream, path.join(__dirname, 'output'));
     const metadata = await readJson(path.join(__dirname, 'output', 'metadata.json'));
-    expect(metadata?.pipline?.id).toBe(jobObj.id);
-    expect(typeof metadata?.output?.dataset).toBe('string');
-    expect(typeof metadata?.output?.evaluateMap).toBe('string');
+    console.log('metadata', path.join(__dirname, 'output', 'metadata.json'), metadata)
+    expect(metadata.pipeline.id).toBe(pipeline.id);
+    expect(metadata.output.id).toBe(jobObj.id);
+    expect(typeof metadata.output.dataset).toBe('string');
+    expect(typeof metadata.output.evaluateMap).toBe('string');
     await remove(path.join(__dirname, 'output'));
   }, 240 * 1000);
   it('query job info', async () => {
