@@ -1,7 +1,5 @@
 import { PipcookClient, TraceResp, PluginResp } from '../../packages/sdk';
-import ChildProcess from 'child_process';
-import * as path from 'path';
-import fs from 'fs-extra';
+const request = require('request');
 
 describe('pipeline api.plugin test', () => {
   const client = new PipcookClient('http://localhost', 6927);
@@ -28,15 +26,12 @@ describe('pipeline api.plugin test', () => {
   }, 60 * 1000);
   it('create plugin by tarball', async () => {
     // create plugin by tarball
-    let pkgPath = ChildProcess.spawnSync('npm', [ 'pack' ], {
-      cwd: path.join(__dirname, '../../packages/plugins/data-access/csv-data-access')
-    }).stdout.toString();
-    pkgPath = pkgPath.replace(/\r|\n/g, '');
     resp = await client.plugin.createByTarball(
-      fs.createReadStream(path.join(__dirname, '../../packages/plugins/data-access/csv-data-access', pkgPath))
+      request.get('https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-1.1.0.tgz')
     );
     expect(typeof resp).toBe('object');
-    expect(resp.name).toBe('@pipcook/plugins-csv-data-access');
+    expect(resp.name).toBe('@pipcook/plugins-csv-data-collect');
+    expect(resp.version).toBe('1.1.0');
     expect(typeof resp.traceId).toBe('string');
     await client.plugin.traceEvent(resp.traceId, (event: string, data: any) => {
       console.log(`[${data.level}] ${data.data}`);

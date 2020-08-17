@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-./packages/cli/dist/bin/pipcook run "./test/pipelines/$1.json"
+./packages/cli/dist/bin/pipcook run "./example/pipelines/$1.json"
 
