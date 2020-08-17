@@ -99,7 +99,7 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
       "package": "@pipcook/plugins-pascalvoc-data-access"
     },
     "dataProcess": {
-      "package": "@pipcook/plugins-image-data-process",
+      "package": "@pipcook/plugins-tensorflow-image-classification-process",
       "params": {
         "resize": [224, 224]
       }
@@ -127,7 +127,7 @@ Through the above plugins, we can see that they are used separately:
 
 1. **@pipcook/plugins-image-classification-data-collect** This plug-in is used to download the dataset that meets the image classification described above. Mainly, we need to provide the url parameter, and we provide the dataset address that we prepared above
 1. **@pipcook/plugins-pascalvoc-data-access** Now that we have downloaded the dataset, we need to convert the dataset to pipcook format so that we can use the model later
-1. **@pipcook/plugins-image-data-process** When performing image classification, we need to have some necessary operations on the original data. For example, image classification requires that all pictures are of the same size, so we use this plugin to resize the pictures to a uniform size
+1. **@pipcook/plugins-tensorflow-image-classification-process** When performing image classification, we need to have some necessary operations on the original data. For example, image classification requires that all pictures are of the same size, so we use this plugin to resize the pictures to a uniform size
 1. **@pipcook/plugins-tensorflow-mobilenet-model-define**  We use this plugin to choose the model. The models are genrally defined in model-define plugins.
 1. **@pipcook/plugins-image-classification-tensorflow-model-train**  We use this plugin for training. This is a general plugin for image classification based on TensorFlow, which has nothing to do with the model selected in the previous stage.
 1. **@pipcook/plugins-image-classification-tensorflow-model-train** We use this plugin for evaluating. This step is to give out the performance of the model we have trained on previous step
