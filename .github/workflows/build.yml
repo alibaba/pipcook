@@ -49,7 +49,7 @@ jobs:
         max_attempts: 3
         retry_wait_seconds: 10
         command: npm install
-      - name: Building Pipcook
+    - name: Building Pipcook
       uses: nick-invision/retry@v1
       with:
         max_attempts: 3
@@ -87,7 +87,7 @@ jobs:
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: npm run test:pipeline -- text-bayes-classification
+        command: npm run test:pipeline -- text-bayes-classification
     - name: install plugins from specific local pipeline
       uses: nick-invision/retry@v1
       with:
