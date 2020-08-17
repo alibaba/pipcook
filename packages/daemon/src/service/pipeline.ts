@@ -401,9 +401,7 @@ export class PipelineService {
         this.startJob(job, pipeline, plugins, log).then(() => {
           resolve();
           cb();
-        }).catch((err) => {
-          reject(err);
-        });
+        }).catch(reject);
       });
     });
   }
