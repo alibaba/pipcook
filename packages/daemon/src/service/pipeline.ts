@@ -276,16 +276,6 @@ export class PipelineService {
         modelDir: modelPath
       }));
 
-      await this.generateOutput(job, {
-        modelPath,
-        modelPlugin,
-        dataProcess,
-        datasetProcess,
-        pipeline,
-        workingDir: runnable.workingDir,
-        template: 'node' // set node by default
-      });
-
       // update job status to successful
       const result = await runnable.valueOf(output) as EvaluateResult;
       const datasetVal = await runnable.valueOf(dataset) as UniDataset;
@@ -296,6 +286,17 @@ export class PipelineService {
       job.evaluatePass = result.pass;
       job.endTime = Date.now();
       job.status = PipelineStatus.SUCCESS;
+
+      await this.generateOutput(job, {
+        modelPath,
+        modelPlugin,
+        dataProcess,
+        datasetProcess,
+        pipeline,
+        workingDir: runnable.workingDir,
+        template: 'node' // set node by default
+      });
+      
       await job.save();
     } catch (err) {
       if (!runnable.canceled) {
