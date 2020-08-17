@@ -4,7 +4,7 @@ import { Writable } from 'stream';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
 
-const INSTALL_SPECS_TIMEOUT = 180 * 1000;
+const INSTALL_SPECS_TIMEOUT = 240 * 1000;
 class StringWritable extends Writable {
   data = '';
   constructor() {
@@ -74,7 +74,6 @@ describe('start runnable in normal way', () => {
     const stderrStream = new StringWritable();
     await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream });
     expect(simple.pipcook.runtime).toBe('python');
-
     // test passing the variable from js to python.
     const tmp2 = await runnable.start(simple, tmp);
     const stdout = stdoutStream.data;
