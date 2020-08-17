@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "lerna run compile && rm ./packages/daemon/dist/migrations/*.d.ts",
-    "dev-build": "lerna run dev-compile",
+    "dev-build": "lerna run dev-compile --parallel --concurrency 10",
     "postinstall": "lerna clean --yes && lerna bootstrap && node ./tools/init_dev.js -f",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon --scope @pipcook/pipboard lint",
