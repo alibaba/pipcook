@@ -296,7 +296,7 @@ export class PipelineService {
         workingDir: runnable.workingDir,
         template: 'node' // set node by default
       });
-      
+
       await job.save();
     } catch (err) {
       if (!runnable.canceled) {
