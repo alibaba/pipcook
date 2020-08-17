@@ -119,7 +119,7 @@ We use [PASCAL VOC][] as the dataset format in our pipeline, the "@pipcook/plugi
 {
   "plugins": {
     "dataProcess": {
-      "package": "@pipcook/plugins-image-data-process",
+      "package": "@pipcook/plugins-tensorflow-image-classification-process",
       "params": {
         "resize": [28, 28]
       }
@@ -128,7 +128,7 @@ We use [PASCAL VOC][] as the dataset format in our pipeline, the "@pipcook/plugi
 }
 ```
 
-Next, we use the plugin "@pipcook/plugins-image-data-process" to resize the image to 28x28 in our dataset, which is required for the next step.
+Next, we use the plugin "@pipcook/plugins-tensorflow-image-classification-process" to resize the image to 28x28 in our dataset, which is required for the next step.
 
 ```js
 {

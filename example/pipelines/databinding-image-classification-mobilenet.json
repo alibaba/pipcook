@@ -10,7 +10,7 @@
       "package": "@pipcook/plugins-pascalvoc-data-access"
     },
     "dataProcess": {
-      "package": "@pipcook/plugins-image-data-process",
+      "package": "@pipcook/plugins-tensorflow-image-classification-process",
       "params": {
         "resize": [224, 224]
       }

@@ -114,7 +114,7 @@ Below is the awesome list of Pipcook plugins, we welcome third-party plugin cont
 
 ### `dataProcess`
 
-- @pipcook/plugins-image-data-process
+- @pipcook/plugins-tensorflow-image-classification-process
 
 ### `modelDefine`
 
@@ -131,7 +131,7 @@ Below is the awesome list of Pipcook plugins, we welcome third-party plugin cont
 
 ### `modelEvaluate`
 
-- @pipcook/plugins-image-data-process
+- @pipcook/plugins-tensorflow-image-classification-process
 - @pipcook/plugins-bayesian-model-evaluate
 - @pipcook/plugins-image-classification-tfjs-model-evaluate
 - @pipcook/plugins-detectron-model-evaluate
