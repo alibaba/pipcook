@@ -1,6 +1,6 @@
 import path from 'path';
 import { createReadStream, createWriteStream, remove } from 'fs-extra';
-import { pipePromisify } from '../src/utils';
+import { pipeGracefully } from '../src/utils';
 
 it('test pipe with finish event', async () => {
   let step = 0;
@@ -9,7 +9,7 @@ it('test pipe with finish event', async () => {
   const writeStream = createWriteStream(writeFile);
   readStream.on('end', () => expect(++step).toBe(0));
   writeStream.on('finish', () => expect(++step).toBe(1));
-  await pipePromisify(readStream, writeStream);
+  await pipeGracefully(readStream, writeStream);
   expect(step).toBe(2);
   await remove(writeFile);
 });

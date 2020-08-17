@@ -23,7 +23,7 @@ export function pipeLog(readable: NodeJS.ReadableStream, writable: NodeJS.Writab
  * @param readStream the read stream
  * @param writeStream the write stream
  */
-export function pipePromisify(readStream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream): Promise<void> {
+export function pipeGracefully(readStream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream): Promise<void> {
   return new Promise((resolve, reject) => {
     readStream.pipe(writeStream);
     readStream.on('error', reject);
