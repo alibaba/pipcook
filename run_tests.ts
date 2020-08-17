@@ -14,7 +14,7 @@ if (indexSpec !== -1 && process.argv[indexSpec + 1]) {
 }
 const runner = new JasmineCtor();
 runner.loadConfig({
-  spec_files: spec || [ 'src/**/*_test.ts', 'test/**/*.ts' ],
+  spec_files: spec || [ 'src/**/*_test.ts', 'test/**/job.ts' ],
   random: false
 });
 runner.clearReporters();
