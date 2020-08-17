@@ -43,13 +43,19 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node_version }}
-    - name: Building Pipcook
+    - name: Installing Pipcook
       uses: nick-invision/retry@v1
       with:
         max_attempts: 3
         retry_wait_seconds: 10
-      command: npm install && npm run builder
-    - name: Building Pipcook
+      command: npm install
+      - name: Building Pipcook
+      uses: nick-invision/retry@v1
+      with:
+        max_attempts: 3
+        retry_wait_seconds: 10
+      command: npm run build
+    - name: Initialize Pipcook
       run: |
         npm run init-dev
         du -h -d 1
