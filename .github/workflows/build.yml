@@ -43,7 +43,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node_version }}
-    - name: Retry Step
     - name: Building Pipcook
       uses: nick-invision/retry@v1
       with:
