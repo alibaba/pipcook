@@ -49,7 +49,7 @@ export class PluginManager {
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
       try {
-        await this.install(pkg, { pyIndex, force: false, stdout: log.stdout, stderr: log.stderr });
+        await this.install(plugin.id, pkg, { pyIndex, force: false, stdout: log.stdout, stderr: log.stderr });
         this.setStatusById(plugin.id, PluginStatus.INSTALLED);
       } catch (err) {
         this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
@@ -129,9 +129,10 @@ export class PluginManager {
     return plugin;
   }
 
-  async install(pkg: PluginPackage, opts: InstallOptions): Promise<void> {
+  async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       pluginQueue.push((cb) => {
+        this.setStatusById(pluginId, PluginStatus.PENDING);
         this.pluginRT.costa.install(pkg, opts).then(() => {
           resolve();
           cb();
@@ -151,7 +152,8 @@ export class PluginManager {
       const logger = await this.logManager.create();
       process.nextTick(async () => {
         try {
-          await this.install(pkg, { pyIndex, force, stdout: logger.stdout, stderr: logger.stderr });
+          this.setStatusById(plugin.id, PluginStatus.PENDING);
+          await this.install(plugin.id, pkg, { pyIndex, force, stdout: logger.stdout, stderr: logger.stderr });
           this.setStatusById(plugin.id, PluginStatus.INSTALLED);
           this.logManager.destroy(logger.id);
         } catch (err) {

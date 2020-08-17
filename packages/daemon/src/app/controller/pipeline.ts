@@ -162,7 +162,7 @@ export class PipelineController extends BaseEventController {
       debug(`installing ${pipeline[type]}.`);
       plugin = await this.pluginManager.findOrCreateByPkg(pkg);
       try {
-        await this.pluginManager.install(pkg, {
+        await this.pluginManager.install(plugin.id, pkg, {
           pyIndex,
           force: false,
           stdout: log.stdout,
