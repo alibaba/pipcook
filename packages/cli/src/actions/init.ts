@@ -1,6 +1,6 @@
 import { join, dirname } from 'path';
 import { execSync as exec } from 'child_process';
-import fse, { readJson, ensureDir, symlink } from 'fs-extra';
+import fse, { readJson, ensureDir, symlink, remove } from 'fs-extra';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
@@ -77,11 +77,11 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
 
   // Install the daemon and pipboard.
   try {
-    await fse.remove(CoreConstants.PIPCOOK_DAEMON);
-    await fse.remove(CoreConstants.PIPCOOK_BOARD);
+    await remove(CoreConstants.PIPCOOK_DAEMON);
+    await remove(CoreConstants.PIPCOOK_BOARD);
 
-    await fse.ensureDir(CoreConstants.PIPCOOK_DAEMON);
-    await fse.ensureDir(CoreConstants.PIPCOOK_BOARD);
+    await ensureDir(CoreConstants.PIPCOOK_DAEMON);
+    await ensureDir(CoreConstants.PIPCOOK_BOARD);
     if (tuna) {
       // write the daemon config
       await fse.writeJSON(join(CoreConstants.PIPCOOK_HOME_PATH, 'daemon.config.json'), {
@@ -101,8 +101,8 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
     logger.success('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
     logger.fail(`failed to initialize Pipcook with the error ${err && err.stack}`, false);
-    await fse.remove(CoreConstants.PIPCOOK_DAEMON);
-    await fse.remove(CoreConstants.PIPCOOK_BOARD);
+    await remove(CoreConstants.PIPCOOK_DAEMON);
+    await remove(CoreConstants.PIPCOOK_BOARD);
   }
 };
 
