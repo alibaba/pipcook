@@ -13,6 +13,7 @@ if (indexSpec !== -1 && process.argv[indexSpec + 1]) {
   spec = [ process.argv[indexSpec + 1] ];
 }
 const runner = new JasmineCtor();
+runner.DEFAULT_TIMEOUT_INTERVAL = 20 * 6000;
 runner.loadConfig({
   spec_files: spec || [ 'src/**/*_test.ts', 'test/**/*.ts' ],
   random: false

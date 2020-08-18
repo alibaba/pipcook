@@ -23,7 +23,7 @@ describe('pipeline api.plugin test', () => {
         expect(typeof data.data).toBe('string');
       }
     });
-  }, 60 * 1000);
+  });
   it('create plugin by tarball', async () => {
     // create plugin by tarball
     resp = await client.plugin.createByTarball(
@@ -38,7 +38,7 @@ describe('pipeline api.plugin test', () => {
       expect(typeof data.level).toBe('string');
       expect(typeof data.data).toBe('string');
     });
-  }, 60 * 1000);
+  });
   it('list plugins', async () => {
     // list plugins
     const plugins = await client.plugin.list();
@@ -59,7 +59,7 @@ describe('pipeline api.plugin test', () => {
     await client.plugin.remove();
     plugins = await client.plugin.list();
     expect(plugins.length).toBe(0);
-  }, 60 * 1000);
+  });
   it('clean', async () => {
     await client.plugin.remove();
   });

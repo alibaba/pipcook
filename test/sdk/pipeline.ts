@@ -45,7 +45,7 @@ describe('pipeline api.pipeline test', () => {
         expect(typeof data.data).toBe('string');
       }
     });
-  }, 240 * 1000);
+  });
   it('update pipeline', async () => {
     // update
     config.name = 'newName';
