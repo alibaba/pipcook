@@ -1,7 +1,7 @@
 import { inject, Context } from 'midway';
 import { ObjectSchema } from 'joi';
 import * as HttpStatus from 'http-status';
-import ServerSentEmitter from '../../utils/emitter';
+import { ServerSentEmitter } from '../../utils';
 import { LogManager } from '../../service/log-manager';
 
 export class BaseController {

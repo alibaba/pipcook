@@ -1,7 +1,8 @@
+import Queue from 'queue';
 import { Context } from 'midway';
 import SseStream from 'ssestream';
 
-export default class ServerSentEmitter {
+export class ServerSentEmitter {
   private handle: SseStream;
   private response: NodeJS.WritableStream;
 
@@ -21,3 +22,5 @@ export default class ServerSentEmitter {
     this.handle.unpipe(this.response);
   }
 }
+
+export const pluginQueue = new Queue({ autostart: true, concurrency: 1 });
