@@ -101,7 +101,7 @@
       "package": "@pipcook/plugins-pascalvoc-data-access"
     },
     "dataProcess": {
-      "package": "@pipcook/plugins-image-data-process",
+      "package": "@pipcook/plugins-tensorflow-image-classification-process",
       "params": {
         "resize": [224, 224]
       }
@@ -130,7 +130,7 @@
 
 1. **@pipcook/plugins-image-classification-data-collect** 这个插件用于下载符合上面描述的图片分类的数据集，主要，我们需要提供 url 参数，我们提供了上面我们准备好的数据集地址。
 1. **@pipcook/plugins-pascalvoc-data-access **我们现在已经下载好了数据集，我们需要将数据集接入成 pipcook 的格式，以便后续进入模型。
-1. **@pipcook/plugins-image-data-process** 在进行图片分类时，我们需要对原始的数据进入一些必要的操作，比如，图片分类要求所有的图片是一样大小的，所以我们使用这个插件把图片 resize 成统一大小。
+1. **@pipcook/plugins-tensorflow-image-classification-process** 在进行图片分类时，我们需要对原始的数据进入一些必要的操作，比如，图片分类要求所有的图片是一样大小的，所以我们使用这个插件把图片 resize 成统一大小。
 1. **@pipcook/plugins-tensorflow-mobilenet-model-define** 我们这里选用 mobilenet 模型来进行训练，这个模型一般用于训练中等复杂的数据，对于更复杂的数据集，推荐您选用 @pipcook/plugins-tensorflow-resnet-model-define 插件。
 1. **@pipcook/plugins-image-classification-tensorflow-model-train **我们使用此插件来进行训练，这是一个图片分类基于 TensorFlow 的通用插件，和上一阶段具体选择的模型无关。
 1. **@pipcook/plugins-image-classification-tensorflow-model-train **我们使用此插件来进行模型的评估，模型的评估是指在测试集上模型的表现效果，这是一个图片分类基于 TensorFlow 的通用插件，和上一阶段具体选择的模型无关。

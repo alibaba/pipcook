@@ -5,15 +5,15 @@ export default {
   up: async (queryInterface: QueryInterface) => {
     return queryInterface.sequelize.transaction(async t => {
       const tbNames = await queryInterface.showAllTables();
-      if (tbNames.indexOf('plugin') > 0) {
-        const columns = await queryInterface.describeTable('plugin');
+      if (tbNames.indexOf('plugins') >= 0) {
+        const columns = await queryInterface.describeTable('plugins');
         return Promise.all([
-          !columns['status'] && queryInterface.addColumn('plugin', 'status', {
+          !columns['status'] && queryInterface.addColumn('plugins', 'status', {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0
           }, { transaction: t }),
-          !columns['error'] && queryInterface.addColumn('plugin', 'error', {
+          !columns['error'] && queryInterface.addColumn('plugins', 'error', {
             type: DataTypes.STRING
           }, { transaction: t })
         ]);
@@ -24,10 +24,10 @@ export default {
   down: (queryInterface: QueryInterface) => {
     return queryInterface.sequelize.transaction(async t => {
       const tbNames = await queryInterface.showAllTables();
-      if (tbNames.indexOf('plugin') > 0) {
-        const columns = await queryInterface.describeTable('plugin');
-        !columns['status'] && await queryInterface.removeColumn('plugin', 'status', { transaction: t });
-        !columns['status'] && await queryInterface.removeColumn('plugin', 'error', { transaction: t });
+      if (tbNames.indexOf('plugins') >= 0) {
+        const columns = await queryInterface.describeTable('plugins');
+        !columns['status'] && await queryInterface.removeColumn('plugins', 'status', { transaction: t });
+        !columns['status'] && await queryInterface.removeColumn('plugins', 'error', { transaction: t });
       }
     });
   }
