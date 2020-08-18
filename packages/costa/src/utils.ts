@@ -9,11 +9,25 @@ export interface LogStdio {
  * @param readable child process stdout/stderr
  * @param writable the log stream
  */
-export function pipe(readable: NodeJS.ReadableStream, writable: NodeJS.WritableStream): void {
+export function pipeLog(readable: NodeJS.ReadableStream, writable: NodeJS.WritableStream): void {
   readable.on('error', (err) => {
     writable.emit('error', err);
   });
   readable.on('data', async (data) => {
     writable.write(data);
+  });
+}
+
+/**
+ * pipe read stream to write steam with finish event
+ * @param readStream the read stream
+ * @param writeStream the write stream
+ */
+export function pipeGracefully(readStream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream): Promise<void> {
+  return new Promise((resolve, reject) => {
+    readStream.pipe(writeStream);
+    readStream.on('error', reject);
+    writeStream.on('error', reject);
+    writeStream.on('finish', resolve);
   });
 }
