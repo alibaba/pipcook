@@ -13,7 +13,7 @@ import { logger, initClient, traceLogger } from '../utils/common';
  * @param opts opts from args
  */
 async function traceInstallEvent(traceObj: TraceResp<PluginResp>, opts: any): Promise<PluginResp> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   if (traceObj.status === PluginStatus.INSTALLED) {
     return traceObj as PluginResp;
   }
@@ -39,7 +39,7 @@ async function traceInstallEvent(traceObj: TraceResp<PluginResp>, opts: any): Pr
  * @param opts opts from args
  */
 export async function installFromLocal(localPath: string, opts: any): Promise<PluginResp> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   let pkg: any;
   try {
     pkg = await fs.readJSON(path.join(localPath, 'package.json'));
@@ -71,7 +71,7 @@ export async function installFromLocal(localPath: string, opts: any): Promise<Pl
 }
 
 export async function installFromUri(uri: string, opts: any): Promise<PluginResp> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   logger.start(`fetching package info ${uri}`);
   const resp = await client.plugin.createByName(uri, opts.tuna ? tunaMirrorURI : undefined);
   return await traceInstallEvent(resp, opts);
@@ -96,7 +96,7 @@ export async function install(name: string, opts: any): Promise<PluginResp> {
 }
 
 export async function uninstall(name: string, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   logger.start(`uninstalling ${name}`);
   const plugins = await client.plugin.list({ name });
   logger.info(plugins.length.toString());
@@ -113,7 +113,7 @@ export async function uninstall(name: string, opts: any): Promise<void> {
 }
 
 export async function list(opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   const plugins = await client.plugin.list(opts);
   if (plugins.length === 0) {
     logger.info('no plugin installed.');
