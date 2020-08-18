@@ -21,6 +21,8 @@ jobs:
       with:
         node-version: ${{ matrix.node_version }}
     - name: install
+      env:
+        BOA_TUNA: 1
       run: npm install
     - name: compile
       run: npm run build
@@ -28,4 +30,9 @@ jobs:
       run: |
         ./packages/cli/dist/bin/pipcook daemon start
     - name: pipeline
-      run: npm run test:pipeline -- ${{ matrix.pipeline }}
+      run: |
+        npm run test:pipeline -- mnist-image-classification --tuna
+        npm run test:pipeline -- databinding-image-classification --tuna
+        npm run test:pipeline -- text-bayes-classification --tuna
+        npm run test:pipeline -- fasttext --tuna
+        
