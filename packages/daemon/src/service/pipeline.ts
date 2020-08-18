@@ -21,7 +21,7 @@ import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
 import { LogObject } from './log-manager';
-import { pluginQueue } from '../utils/queue';
+import { pluginQueue } from '../utils';
 
 interface QueryOptions {
   limit: number;

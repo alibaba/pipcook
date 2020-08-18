@@ -5,7 +5,7 @@ import { LogManager, LogObject } from './log-manager';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
-import { pluginQueue } from '../utils/queue';
+import { pluginQueue } from '../utils';
 
 interface ListPluginsFilter {
   datatype?: string;
