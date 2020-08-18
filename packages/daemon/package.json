@@ -56,7 +56,8 @@
     "clean": "rm -rf src/app/public",
     "test": "midway-bin test --ts --full-trace",
     "migration": "npx sequelize-cli db:migrate",
-    "migration:undo": "npx sequelize-cli db:migrate:undo"
+    "migration:undo": "npx sequelize-cli db:migrate:undo",
+    "benchmark": "node benchmark/bootstrap.js"
   },
   "ci": {
     "version": "10"
