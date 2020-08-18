@@ -57,7 +57,7 @@
     "test": "midway-bin test --ts --full-trace",
     "migration": "npx sequelize-cli db:migrate",
     "migration:undo": "npx sequelize-cli db:migrate:undo",
-    "benchmark": "node benchmark/benchmark.js"
+    "benchmark": "node benchmark/bootstrap.js"
   },
   "ci": {
     "version": "10"
