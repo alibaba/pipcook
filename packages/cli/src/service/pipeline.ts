@@ -8,7 +8,7 @@ import { logger, parseConfigFilename, initClient, streamToJson } from "../utils/
 import { getFile } from '../utils/request';
 
 export async function list(opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   let pipelines = await client.pipeline.list();
   if (pipelines.length > 0) {
     console.table(pipelines, [ 'id', 'name', 'updatedAt', 'createdAt' ]);
@@ -18,7 +18,7 @@ export async function list(opts: any): Promise<void> {
 }
 
 export async function info(id: string, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   try {
     const pipeline = await client.pipeline.get(id);
     console.info(JSON.stringify(pipeline, null, 2));
@@ -28,7 +28,7 @@ export async function info(id: string, opts: any): Promise<void> {
 }
 
 export async function create(filename: string, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   if (!path.isAbsolute(filename)) {
     filename = path.join(process.cwd(), filename);
   }
@@ -42,7 +42,7 @@ export async function create(filename: string, opts: any): Promise<void> {
 }
 
 export async function update(id: string, filename: string, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   if (!path.isAbsolute(filename)) {
     filename = path.join(process.cwd(), filename);
   }
@@ -56,7 +56,7 @@ export async function update(id: string, filename: string, opts: any): Promise<v
 }
 
 export async function remove(id: any, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   try {
     if (id === 'all') {
       id = undefined;
@@ -81,7 +81,7 @@ export async function installPackageFromConfig(config: any, opts: any): Promise<
 }
 
 export async function install(filename: string, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   logger.start(`start install pipeline from ${filename}`);
   let fileUrl;
   try {
