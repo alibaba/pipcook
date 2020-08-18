@@ -57,8 +57,7 @@ Object PythonObject::NewInstance(Napi::Env env, pybind::object src) {
 }
 
 PythonObject::PythonObject(const CallbackInfo &info)
-    : ObjectWrap<PythonObject>(info) {
-}
+    : ObjectWrap<PythonObject>(info) {}
 
 pybind::object PythonObject::value() { return _self; }
 
