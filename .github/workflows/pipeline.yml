@@ -13,7 +13,6 @@ jobs:
     strategy:
       matrix:
         node_version: ['12']
-        pipeline: ['mnist-image-classification', 'databinding-image-classification', 'text-bayes-classification', 'fasttext']
     steps:
     - uses: actions/checkout@v2
     - name: Using Node.js ${{ matrix.node_version }}
