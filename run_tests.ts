@@ -12,10 +12,11 @@ const indexSpec = process.argv.indexOf('--spec');
 if (indexSpec !== -1 && process.argv[indexSpec + 1]) {
   spec = [ process.argv[indexSpec + 1] ];
 }
-JasmineCtor.DEFAULT_TIMEOUT_INTERVAL = 20 * 6000;
+
 const runner = new JasmineCtor();
+runner.jasmine.DEFAULT_TIMEOUT_INTERVAL = 20 * 6000;
 runner.loadConfig({
-  spec_files: spec || [ 'src/**/*_test.ts', 'test/**/*.ts' ],
+  spec_files: spec || [ 'src/**/*_test.ts', 'test/**/job.ts' ],
   random: false
 });
 runner.clearReporters();
