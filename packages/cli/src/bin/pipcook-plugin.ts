@@ -22,9 +22,10 @@ program
 
 program
   .command('list')
+  .helpOption('--help', 'show help')
   .description('list installed plugin')
   .option('-c|--category <name>', 'the plugin category')
-  .option('-d|--datatype <name>', 'the plugin datatype')
+  .option('-d|--datatype <datatype>', 'the plugin datatype')
   .option('-n|--name <name>', 'the plugin package name')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
