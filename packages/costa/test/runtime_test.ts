@@ -94,7 +94,6 @@ describe('create a costa runtime', () => {
       `${bayesClassifier.name}@${bayesClassifier.version}`
     ));
   }, INSTALL_SPECS_TIMEOUT);
-
   it('should fetch a plugin from tarball readstream', async () => {
     const pathname = path.join(__dirname, '../../plugins/data-collect/chinese-poem-data-collect');
     let packName = spawnSync('npm', [ 'pack' ], { cwd: pathname }).stdout.toString();

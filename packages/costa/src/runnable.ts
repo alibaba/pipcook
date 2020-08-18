@@ -3,7 +3,7 @@ import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
 import { CostaRuntime, PluginPackage } from './runtime';
-import { pipe, LogStdio } from './utils';
+import { pipeLog, LogStdio } from './utils';
 import Debug from 'debug';
 import { generateId } from '@pipcook/pipcook-core';
 const debug = Debug('costa.runnable');
@@ -100,8 +100,8 @@ export class PluginRunnable {
       silent: true,
       env: Object.assign({}, process.env, arg.customEnv)
     });
-    pipe(this.handle.stdout, this.logger.stdout);
-    pipe(this.handle.stderr, this.logger.stderr);
+    pipeLog(this.handle.stdout, this.logger.stdout);
+    pipeLog(this.handle.stderr, this.logger.stderr);
     this.handle.on('message', this.handleMessage.bind(this));
     this.handle.once('exit', this.afterDestroy.bind(this));
 
