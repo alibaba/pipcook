@@ -5,6 +5,7 @@ import { install, uninstall, list } from '../service/plugin';
 
 program
   .command('install <name>')
+  .helpOption('--help', 'show help')
   .description('install the given plugin.')
   .option('--tuna', 'use tuna mirror to install python packages')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
@@ -15,6 +16,7 @@ program
 
 program
   .command('uninstall <name>')
+  .helpOption('--help', 'show help')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .description('uninstall the given plugin')

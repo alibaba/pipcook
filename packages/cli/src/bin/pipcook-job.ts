@@ -5,6 +5,7 @@ import { list, runAndDownload, remove, log, stop } from '../service/job';
 
 program
   .command('list')
+  .helpOption('--help', 'show help')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action(list)
@@ -12,6 +13,7 @@ program
 
 program
   .command('run <pipeline>')
+  .helpOption('--help', 'show help')
   .option('--tuna', 'use tuna mirror to install python packages')
   .option('--output', 'the output directory name', 'output')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
@@ -21,6 +23,7 @@ program
 
 program
   .command('remove <id>')
+  .helpOption('--help', 'show help')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action(remove)
@@ -28,6 +31,7 @@ program
 
 program
   .command('log <job>')
+  .helpOption('--help', 'show help')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action(log)
@@ -35,6 +39,7 @@ program
 
 program
   .command('stop <job>').alias('cancel')
+  .helpOption('--help', 'show help')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action(stop)
