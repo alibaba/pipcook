@@ -23,7 +23,11 @@ export enum PipelineStatus {
   /**
    * It represents the pipeline is canceled.
    */
-  CANCELED
+  CANCELED,
+  /**
+   * It represents the pipeline is pending.
+   */
+  PENDING
 }
 
 /**
