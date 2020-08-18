@@ -1,19 +1,21 @@
 name: pipeline
 on:
-  schedule:
-  - cron: "0 2 * * *"
+  pull_request:
+    branches:
+    - master
+  # schedule:
+  # - cron: "0 2 * * *"
 
 jobs:
   universal:
-    name: Run ${{ matrix.pipeline }} on node ${{ matrix.node_version }} and ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: Run ${{ matrix.pipeline }} on node ${{ matrix.node_version }}
+    runs-on: [self-hosted, linux, gpu]
     strategy:
       matrix:
         node_version: ['12']
-        os: [ubuntu-latest]
         pipeline: ['mnist-image-classification', 'databinding-image-classification', 'text-bayes-classification', 'fasttext']
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
@@ -23,10 +25,7 @@ jobs:
     - name: compile
       run: npm run build
     - name: initilize pipcook
-      env:
-        NODE_ENV: local
       run: |
-        ./packages/cli/dist/bin/pipcook init
         ./packages/cli/dist/bin/pipcook daemon start
     - name: pipeline
       run: npm run test:pipeline -- ${{ matrix.pipeline }}
