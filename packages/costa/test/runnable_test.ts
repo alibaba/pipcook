@@ -4,7 +4,6 @@ import { Writable } from 'stream';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
 
-const INSTALL_SPECS_TIMEOUT = 240 * 1000;
 class StringWritable extends Writable {
   data = '';
   constructor() {
@@ -58,7 +57,7 @@ describe('start runnable in normal way', () => {
     tmp = await runnable.start(simple, { foobar: true });
     const stdout = stdoutStream.data;
     expect(stdout.search('{ foobar: true }') !== 0).toBe(true);
-  }, INSTALL_SPECS_TIMEOUT);
+  });
 
   it('should start a python plugin', async () => {
     await mkdirp(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook'));
@@ -85,7 +84,7 @@ describe('start runnable in normal way', () => {
     await runnable.start(simple, tmp2);
     const stdout2 = stdoutStream.data;
     expect(stdout2.search('hello python! [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]') !== 0).toBe(true);
-  }, INSTALL_SPECS_TIMEOUT);
+  });
 
   it('should destroy the runnable', async () => {
     await runnable.destroy();
