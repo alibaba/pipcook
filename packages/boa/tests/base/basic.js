@@ -59,7 +59,7 @@ test('define a extended class with basic functions', t => {
       fn2: y => y * y,
     },
   });
-  // fn2(fn1(input))
+  // fn2(fn1(input));
   t.equal(v, 400);
   t.end();
 });

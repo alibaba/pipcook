@@ -5,8 +5,6 @@
 using namespace boa;
 using namespace Napi;
 
-Napi::FunctionReference PythonObject::constructor;
-
 Object PythonObject::Init(Napi::Env env, Object exports) {
   Napi::HandleScope scope(env);
   Napi::Function func = DefineClass(
@@ -34,8 +32,9 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
           InstanceMethod("__delitem__", &PythonObject::DelItem),
       });
 
-  constructor = Persistent(func);
-  constructor.SuppressDestruct();
+  Napi::FunctionReference *constructor = new Napi::FunctionReference();
+  *constructor = Persistent(func);
+  env.SetInstanceData(constructor);
 
   exports.Set("Object", func);
 #define DEFINE_CONSTANT(macro) exports.Set(#macro, macro)
@@ -51,7 +50,7 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
 }
 
 Object PythonObject::NewInstance(Napi::Env env, pybind::object src) {
-  Object wrapped = constructor.New({});
+  Object wrapped = env.GetInstanceData<Napi::FunctionReference>()->New({});
   auto obj = PythonObject::Unwrap(wrapped);
   obj->_self = src;
   return wrapped;
@@ -59,14 +58,11 @@ Object PythonObject::NewInstance(Napi::Env env, pybind::object src) {
 
 PythonObject::PythonObject(const CallbackInfo &info)
     : ObjectWrap<PythonObject>(info) {
-  Ref();
-  SuppressDestruct();
 }
 
 pybind::object PythonObject::value() { return _self; }
 
 void PythonObject::Finalize(Napi::Env env) {
-  Unref();
   for (auto f : _funcs) {
     delete f;
   }
@@ -97,6 +93,7 @@ Napi::Value PythonObject::Next(const CallbackInfo &info) {
 
 Napi::Value PythonObject::Invoke(const CallbackInfo &info) {
   pybind::tuple args(info.Length());
+  PyObject *args_ = args.release().ptr();
   PyObject *kwargs = NULL;
   int counter = 0;
 
@@ -107,7 +104,7 @@ Napi::Value PythonObject::Invoke(const CallbackInfo &info) {
       if (kwargs == NULL && IsKwargs(info[i])) {
         kwargs = value;
       } else {
-        PyTuple_SET_ITEM(args.ptr(), counter++, value);
+        PyTuple_SET_ITEM(args_, counter++, value);
       }
     } catch (const std::invalid_argument &e) {
       // FIXME(Yorkie): just throw it if no type is supported.
@@ -117,11 +114,11 @@ Napi::Value PythonObject::Invoke(const CallbackInfo &info) {
   }
 
   // Resize the args length by the variable `counter`.
-  _PyTuple_Resize(&args.ptr(), (Py_ssize_t)counter);
+  _PyTuple_Resize(&args_, (Py_ssize_t)counter);
 
   // Invoke this function
   try {
-    PyObject *result = PyObject_Call(_self.ptr(), args.ptr(), kwargs);
+    PyObject *result = PyObject_Call(_self.ptr(), args_, kwargs);
     if (!result)
       throw pybind::error_already_set();
     return PythonObject::NewInstance(
