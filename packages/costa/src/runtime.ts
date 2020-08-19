@@ -64,13 +64,13 @@ interface InstallOptions {
   stderr: NodeJS.WritableStream;
 }
 
-function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio: LogStdio): Promise<string> {
+function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio: LogStdio): Promise<void> {
   return new Promise((resolve, reject) => {
     opts.stdio = [ null, 'pipe', 'pipe' ];
     opts.detached = false;
     const child = spawn(command, args, opts);
-    pipeLog(child.stdout, stdio.stdout);
-    pipeLog(child.stderr, stdio.stderr);
+    pipeLog(child.stdout, stdio.stdout, stdio.prefix);
+    pipeLog(child.stderr, stdio.stderr, stdio.prefix);
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });
@@ -289,31 +289,13 @@ export class CostaRuntime {
     };
     return this.validAndAssign(pkg, source);
   }
+
   /**
-   * Install the given plugin by name.
-   * @param pkg the plugin package.
+   * install node packages for plugin
+   * @param pkg plugin package info
    * @param opts install options
    */
-  async install(pkg: PluginPackage, opts: InstallOptions): Promise<boolean> {
-    if (opts.force === true) {
-      await this.uninstall(pkg.name);
-    }
-    // check if the pkg is installed
-    if ((await this.isInstalled(pkg.name)) && !opts.force) {
-      debug(`skip install "${pkg.name}" because it already exists`);
-      return true;
-    }
-
-    let boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
-    if (!await pathExists(boaSrcPath)) {
-      try {
-        // FIXME: ../../ means boa/lib/index.js
-        boaSrcPath = path.join(require.resolve('@pipcook/boa'), '../../');
-      } catch (err) {
-        throw new TypeError(`boa(${boaSrcPath}) not exists, please try init again.`);
-      }
-    }
-
+  private async installNodeModules(pkg: PluginPackage, opts: InstallOptions): Promise<void> {
     const pluginStdName = `${pkg.name}@${pkg.version}`;
     let pluginAbsName;
     if (pkg.pipcook.source.from === 'npm') {
@@ -323,7 +305,7 @@ export class CostaRuntime {
       pluginAbsName = pkg.pipcook.source.uri;
       debug(`install the plugin from ${pluginAbsName}`);
     }
-    const stdio = { stdout: opts.stdout, stderr: opts.stderr };
+    const stdio = { stdout: opts.stdout, stderr: opts.stderr, prefix: 'node' };
     const npmExecOpts = { cwd: this.options.installDir };
     const npmArgs = [ 'install', pluginAbsName, '-E', '--production' ];
 
@@ -334,9 +316,19 @@ export class CostaRuntime {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts, stdio);
     }
-    await spawnAsync('npm', npmArgs, npmExecOpts, stdio);
+    return spawnAsync('npm', npmArgs, npmExecOpts, { ...stdio, prefix: 'NODE' });
+  }
 
+  /**
+   * install python packages for plugin
+   * @param pkg plugin package info
+   * @param boaSrcPath boa source path
+   * @param opts install options
+   */
+  private async installPythonPackages(pkg: PluginPackage, boaSrcPath: string, opts: InstallOptions): Promise<void> {
     if (pkg.conda?.dependencies) {
+      const pluginStdName = `${pkg.name}@${pkg.version}`;
+      const stdio = { stdout: opts.stdout, stderr: opts.stderr, prefix: 'PYTHON' };
       debug(`prepare the Python environment for ${pluginStdName}`);
       const envDir = path.join(this.options.installDir, 'conda_envs', pluginStdName);
       await remove(envDir);
@@ -363,22 +355,49 @@ export class CostaRuntime {
       debug('conda environment is setup correctly, start downloading.');
       await spawnAsync(python, [ '-m', 'venv', envDir ], {}, stdio);
       // TODO(yorkie): check for access(pip3)
-
-      for (let name of requirements) {
-        debug(`installing python package ${name}`);
-        let args = [ 'install', name ];
-        if (opts.pyIndex) {
-          args = args.concat([ '-i', opts.pyIndex ]);
-        }
-        args = args.concat([
-          '--default-timeout=1000',
-          `--cache-dir=${this.options.installDir}/.pip`
-        ]);
-        await spawnAsync(`${envDir}/bin/pip3`, args, {}, stdio);
+      let args = [ 'install', '-r', `${envDir}/requirements.txt` ];
+      if (opts.pyIndex) {
+        args = args.concat([ '-i', opts.pyIndex ]);
       }
+      args = args.concat([
+        '--default-timeout=1000',
+        `--cache-dir=${this.options.installDir}/.pip`
+      ]);
+      return spawnAsync(`${envDir}/bin/pip3`, args, {}, stdio);
     } else {
       debug(`just skip the Python environment installation.`);
     }
+  }
+
+  /**
+   * Install the given plugin by name.
+   * @param pkg the plugin package.
+   * @param opts install options
+   */
+  async install(pkg: PluginPackage, opts: InstallOptions): Promise<boolean> {
+    if (opts.force === true) {
+      await this.uninstall(pkg.name);
+    }
+    // check if the pkg is installed
+    if ((await this.isInstalled(pkg.name)) && !opts.force) {
+      debug(`skip install "${pkg.name}" because it already exists`);
+      return true;
+    }
+
+    let boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
+    if (!await pathExists(boaSrcPath)) {
+      try {
+        // FIXME: ../../ means boa/lib/index.js
+        boaSrcPath = path.join(require.resolve('@pipcook/boa'), '../../');
+      } catch (err) {
+        throw new TypeError(`boa(${boaSrcPath}) not exists, please try init again.`);
+      }
+    }
+
+    await Promise.all([
+      this.installNodeModules(pkg, opts),
+      this.installPythonPackages(pkg, boaSrcPath, opts)
+    ]);
 
     return true;
   }
