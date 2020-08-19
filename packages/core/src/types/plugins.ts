@@ -111,7 +111,7 @@ export interface DataAccessType extends PipcookPlugin {
  * @example
  *
  * ```js
- * const doubleSize: DataProcessType = async (sample: Sample, metadata: Metadata, args?: ArgsType): Promise<void> => {
+ * const doubleSize: DataProcessType = async (sample: Sample, metadata: Metadata, args?: ArgsType): Promise<Sample> => {
  *   // double the data
  *   sample.data = sample.data * 2;
  * };
