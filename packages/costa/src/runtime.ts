@@ -293,7 +293,7 @@ export class CostaRuntime {
   /**
    * install node packages for plugin
    * @param pkg plugin package info
-   * @param opts install options
+   * @param optsinstall options
    */
   private async installNodeModules(pkg: PluginPackage, opts: InstallOptions): Promise<void> {
     const pluginStdName = `${pkg.name}@${pkg.version}`;
@@ -305,7 +305,7 @@ export class CostaRuntime {
       pluginAbsName = pkg.pipcook.source.uri;
       debug(`install the plugin from ${pluginAbsName}`);
     }
-    const stdio = { stdout: opts.stdout, stderr: opts.stderr, prefix: 'node' };
+    const stdio = { stdout: opts.stdout, stderr: opts.stderr, prefix: 'NODE' };
     const npmExecOpts = { cwd: this.options.installDir };
     const npmArgs = [ 'install', pluginAbsName, '-E', '--production' ];
 
@@ -316,14 +316,14 @@ export class CostaRuntime {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts, stdio);
     }
-    return spawnAsync('npm', npmArgs, npmExecOpts, { ...stdio, prefix: 'NODE' });
+    return spawnAsync('npm', npmArgs, npmExecOpts, stdio);
   }
 
   /**
    * install python packages for plugin
    * @param pkg plugin package info
    * @param boaSrcPath boa source path
-   * @param opts install options
+   * @param optsinstall options
    */
   private async installPythonPackages(pkg: PluginPackage, boaSrcPath: string, opts: InstallOptions): Promise<void> {
     if (pkg.conda?.dependencies) {
