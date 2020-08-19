@@ -111,12 +111,12 @@ export async function install(filename: string, opts: any): Promise<void> {
     // check the installation
     logger.info('check plugin:');
     let isSuccess = true;
-    for (const plugin of constants.PLUGINS) {
+    await Promise.all(constants.PLUGINS.map(async (plugin) => {
       // if use pipeline[plugin], error throw:
       // TS2536: Type 'PluginTypeI' cannot be used to index type 'PipelineResp'.
       const pluginName = (pipeline as any)[plugin];
       if (!pluginName) {
-        continue;
+        return;
       }
       const plugins = await client.plugin.list({ name: pluginName });
       if (plugins.length > 0 && plugins[0].status === PluginStatus.INSTALLED) {
@@ -125,7 +125,7 @@ export async function install(filename: string, opts: any): Promise<void> {
         isSuccess = false;
         logger.fail(`${pluginName} ${PluginStatusValue[plugins[0]?.status || PluginStatus.FAILED]}.`, false);
       }
-    }
+    }));
     if (isSuccess) {
       logger.success('pipeline installed successfully.');
     } else {
