@@ -131,7 +131,7 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
       npmInstall(npmClient, boardPackage, beta, CoreConstants.PIPCOOK_BOARD, npmInstallEnvs)
     ]);
     await initPlugin(CoreConstants.PIPCOOK_DAEMON, CoreConstants.PIPCOOK_PLUGINS);
-    // await fse.copy(CoreConstants.PIPCOOK_BOARD_BUILD, CoreConstants.PIPCOOK_DAEMON_PUBLIC);
+    await fse.copy(CoreConstants.PIPCOOK_BOARD_BUILD, CoreConstants.PIPCOOK_DAEMON_PUBLIC);
     logger.success('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
     logger.fail(`failed to initialize Pipcook with the error ${err && err.stack}`, false);
