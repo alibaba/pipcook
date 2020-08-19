@@ -30,8 +30,8 @@ jobs:
         ./packages/cli/dist/bin/pipcook daemon start
     - name: pipeline
       run: |
+        npm run test:pipeline -- text-bayes-classification --tuna
         npm run test:pipeline -- mnist-image-classification --tuna
         npm run test:pipeline -- databinding-image-classification --tuna
-        npm run test:pipeline -- text-bayes-classification --tuna
         npm run test:pipeline -- fasttext --tuna
         
