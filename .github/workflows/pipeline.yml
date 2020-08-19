@@ -45,3 +45,8 @@ jobs:
       if: always()
       run: |
         npm run test:pipeline -- fasttext --tuna
+    - name: clean
+      if: always()
+      run: |
+        ./packages/cli/dist/bin/pipcook daemon stop
+        rm -rf ~/.pipcook
