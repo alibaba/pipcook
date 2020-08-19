@@ -53,6 +53,6 @@ describe('test dataloder', () => {
     const recordIndex = dataLoader.getFetchIndex();
     await dataLoader.nextBatch(4);
     const compareIndex = dataLoader.getFetchIndex();
-    expect(recordIndex).toNotEqual(compareIndex);
+    expect(recordIndex).not.toEqual(compareIndex);
   });
 });
