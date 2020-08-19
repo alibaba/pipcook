@@ -72,10 +72,8 @@ export async function installPackageFromConfig(config: any, opts: any): Promise<
   for (const plugin of constants.PLUGINS) {
     const packageName = config.plugins[plugin]?.package;
     if (typeof packageName === 'string') {
-      if (packageName[0] === '.') {
-        const pkg = await pluginInstall(packageName, opts);
-        config.plugins[plugin].package = pkg.name;
-      }
+      const pkg = await pluginInstall(packageName, opts);
+      config.plugins[plugin].package = pkg.name;
     }
   }
 }
@@ -113,12 +111,12 @@ export async function install(filename: string, opts: any): Promise<void> {
     // check the installation
     logger.info('check plugin:');
     let isSuccess = true;
-    await constants.PLUGINS.map(async (plugin) => {
+    for (const plugin of constants.PLUGINS) {
       // if use pipeline[plugin], error throw:
       // TS2536: Type 'PluginTypeI' cannot be used to index type 'PipelineResp'.
       const pluginName = (pipeline as any)[plugin];
       if (!pluginName) {
-        return;
+        continue;
       }
       const plugins = await client.plugin.list({ name: pluginName });
       if (plugins.length > 0 && plugins[0].status === PluginStatus.INSTALLED) {
@@ -127,7 +125,7 @@ export async function install(filename: string, opts: any): Promise<void> {
         isSuccess = false;
         logger.fail(`${pluginName} ${PluginStatusValue[plugins[0]?.status || PluginStatus.FAILED]}.`, false);
       }
-    });
+    }
     if (isSuccess) {
       logger.success('pipeline installed successfully.');
     } else {
