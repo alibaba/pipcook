@@ -43,6 +43,16 @@ describe('test dataloder', () => {
     const dataLoader = new LocalDataLoader();
     dataLoader.processIndex = 5;
     await dataLoader.nextBatch(4);
-    expect(dataLoader.getFetchIndex()).toBe(0);
+    expect(dataLoader.getFetchIndex()).toBe(4);
+  });
+
+  it('next batch should be updated', async () => {
+    const dataLoader = new LocalDataLoader();
+    dataLoader.processIndex = 9;
+    await dataLoader.nextBatch(4);
+    const recordIndex = dataLoader.getFetchIndex();
+    await dataLoader.nextBatch(4);
+    const compareIndex = dataLoader.getFetchIndex();
+    expect(recordIndex).not.toEqual(compareIndex);
   });
 });
