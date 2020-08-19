@@ -24,6 +24,7 @@ jobs:
         BOA_TUNA: 1
       run: |
         rm -rf ~/.pipcook
+        npm install cnpm -g
         cnpm install
     - name: compile
       run: cnpm run build
