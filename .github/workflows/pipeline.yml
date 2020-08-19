@@ -22,7 +22,9 @@ jobs:
     - name: install
       env:
         BOA_TUNA: 1
-      run: npm install
+      run: |
+        rm -rf ~/.pipcook
+        npm install
     - name: compile
       run: npm run build
     - name: initilize pipcook
