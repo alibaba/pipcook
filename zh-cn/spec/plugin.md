@@ -67,7 +67,7 @@
 
 [`dataCollect(args: ArgsType): Promise<void>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/datacollecttype.html
 [`dataAccess(args: ArgsType): Promise<UniDataset>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/dataaccesstype.html
-[`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<void>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/dataprocesstype.html
+[`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<Sample>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/dataprocesstype.html
 [`modelLoad(data: UniDataset, args: ArgsType): Promise<UniModel>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modelloadtype.html
 [`modelDefine(data: UniDataset, args: ModelDefineArgsType): Promise<UniModel>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modeldefinetype.html
 [`modelTrain(data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/modeltraintype.html
