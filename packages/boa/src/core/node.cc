@@ -103,6 +103,7 @@ Napi::Value PythonNode::Import(const CallbackInfo &info) {
     return PythonObject::NewInstance(info.Env(), obj);
   } catch (pybind::error_already_set &e) {
     Napi::TypeError::New(info.Env(), e.what()).ThrowAsJavaScriptException();
+    return info.Env().Undefined();
   }
 }
 
