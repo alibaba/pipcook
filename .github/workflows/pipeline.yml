@@ -24,9 +24,9 @@ jobs:
         BOA_TUNA: 1
       run: |
         rm -rf ~/.pipcook
-        npm install
+        cnpm install
     - name: compile
-      run: npm run build
+      run: cnpm run build
     - name: initilize pipcook
       run: |
         ./packages/cli/dist/bin/pipcook daemon start
