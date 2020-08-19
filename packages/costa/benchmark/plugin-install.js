@@ -11,7 +11,6 @@ const costa = new CostaRuntime({
 });
 
 (async () => {
-  const start = Date.now();
   const pkg = await costa.fetch('@pipcook/plugins-tensorflow-resnet-model-define');
   await costa.install(pkg, process);
 })();
