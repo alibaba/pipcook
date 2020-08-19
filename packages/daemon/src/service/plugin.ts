@@ -132,7 +132,7 @@ export class PluginManager {
   async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       pluginQueue.push((cb) => {
-        this.setStatusById(pluginId, PluginStatus.PENDING);
+        this.setStatusById(pluginId, PluginStatus.INSTALLING);
         this.pluginRT.costa.install(pkg, opts).then(() => {
           resolve();
           cb();
