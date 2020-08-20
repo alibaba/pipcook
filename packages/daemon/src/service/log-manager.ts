@@ -26,19 +26,13 @@ class LogPassthrough extends Transform {
   last: string;
   fd: number;
   filename: string;
-  constructor(filename?: string) {
+  constructor(fd: number) {
     super({ objectMode: true });
-    this.filename = filename;
-  }
-
-  async init(): Promise<void> {
-    if (this.filename && !this.fd) {
-      this.fd = await open(this.filename, 'w+');
-    }
+    this.fd = fd;
   }
 
   _transform(chunk: any, encoding: string, callback: TransformCallback): void {
-    if (this.fd) {
+    if (this.fd > 0) {
       write(this.fd, chunk);
     }
     if (this.last === undefined) {
@@ -78,15 +72,13 @@ export class LogManager {
    */
   async create(opts?: LogOptions): Promise<LogObject> {
     const id = generateId();
+    const fdOut = opts?.stdoutFile ? await open(opts?.stdoutFile, 'w+') : -1;
+    const fdErr = opts?.stderrFile ? await open(opts?.stderrFile, 'w+') : -1;
     const logObj: LogObject = {
       id,
-      stdout: new LogPassthrough(opts?.stdoutFile),
-      stderr: new LogPassthrough(opts?.stderrFile)
+      stdout: new LogPassthrough(fdOut),
+      stderr: new LogPassthrough(fdErr)
     };
-    Promise.all([
-      logObj.stdout.init(),
-      logObj.stderr.init()
-    ]);
     this.logMap.set(id, logObj);
     return logObj;
   }
@@ -119,6 +111,12 @@ export class LogManager {
       log.stderr.destroy();
     }
     log.stdout.destroy();
+    if (log.stdout.fd > 0) {
+      close(log.stdout.fd);
+    }
+    if (log.stderr.fd > 0) {
+      close(log.stderr.fd);
+    }
     return this.logMap.delete(id);
   }
 }
