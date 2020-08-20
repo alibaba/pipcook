@@ -10,6 +10,7 @@
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
     "docsify-cli": "^4.4.0",
+    "esbuild": "^0.6.25",
     "eslint": "^6.6.0",
     "http-server": "^0.12.3",
     "jasmine": "^3.5.0",
@@ -21,6 +22,7 @@
   },
   "scripts": {
     "build": "lerna run compile && rm ./packages/daemon/dist/migrations/*.d.ts",
+    "dev-build": "lerna run dev-compile --parallel --concurrency 10",
     "postinstall": "lerna clean --yes && lerna bootstrap && node ./tools/init_dev.js -f",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon --scope @pipcook/pipboard lint",
