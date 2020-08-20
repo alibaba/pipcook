@@ -3,6 +3,7 @@ export const dependencies: string[] = [
   '@pipcook/pipcook-core'
 ];
 
+
 export const daemonPackage = '@pipcook/daemon';
 export const boardPackage = '@pipcook/pipboard';
 
