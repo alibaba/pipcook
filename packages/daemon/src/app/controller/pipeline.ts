@@ -127,13 +127,13 @@ export class PipelineController extends BaseEventController {
    */
   @post('/:id/installation')
   public async installById() {
-    const { pyIndex } = this.ctx.query;
+    const { pyIndex } = this.ctx.request.body;
     const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
     const log = await this.logManager.create();
     if (pipeline) {
       process.nextTick(async () => {
         try {
-          await this.install(pipeline, log, pyIndex);
+          await this.installByPipeline(pipeline, log, pyIndex);
           this.logManager.destroy(log.id);
         } catch (err) {
           this.logManager.destroy(log.id, err);
@@ -145,7 +145,7 @@ export class PipelineController extends BaseEventController {
     }
   }
 
-  private async install(pipeline: PipelineDB, log: LogObject, pyIndex?: string): Promise<void> {
+  private async installByPipeline(pipeline: PipelineDB, log: LogObject, pyIndex?: string): Promise<void> {
     for (const type of constants.PLUGINS) {
       if (!pipeline[type]) {
         continue;
@@ -162,7 +162,7 @@ export class PipelineController extends BaseEventController {
       debug(`installing ${pipeline[type]}.`);
       plugin = await this.pluginManager.findOrCreateByPkg(pkg);
       try {
-        await this.pluginManager.install(pkg, {
+        await this.pluginManager.install(plugin.id, pkg, {
           pyIndex,
           force: false,
           stdout: log.stdout,

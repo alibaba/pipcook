@@ -29,9 +29,9 @@ async function predict(data) {
   if (!model) {
     model = await modelDefine;
   }
-  const sample = { data, label: null };
+  let sample = { data, label: null };
   if (typeof dataProcessModule === 'function') {
-    await dataProcessModule(sample, {}, JSON.parse(pipeline.dataProcessParams));
+    sample = await dataProcessModule(sample, {}, JSON.parse(pipeline.dataProcessParams));
   }
   return await model.predict(sample);
 };

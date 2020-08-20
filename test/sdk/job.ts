@@ -1,5 +1,7 @@
 import * as path from 'path';
-import { readJson } from 'fs-extra';
+import { readJson, mkdirp, createWriteStream, remove } from 'fs-extra';
+import tar from 'tar-stream';
+import { createGunzip } from 'zlib';
 import { PipcookClient, PipelineResp, JobResp, TraceResp } from '../../packages/sdk';
 
 const traceLog = (event: string, data: any) => {
@@ -10,6 +12,33 @@ const traceLog = (event: string, data: any) => {
     expect(typeof data.data).toBe('string');
   }
 };
+
+export async function extractToPath(stream: NodeJS.ReadableStream, outputPath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const extract = tar.extract();
+    const gunZip = createGunzip();
+    extract.on('entry', async (header, stream, next) => {
+      const dist = path.join(outputPath, header.name);
+      if (header.type === 'directory') {
+        await mkdirp(dist);
+      } else if (header.type === 'file') {
+        stream.pipe(createWriteStream(dist));
+      }
+      stream.on('end', next);
+      stream.resume();
+    });
+    extract.on('error', (err) => {
+      reject(err);
+    });
+    extract.on('finish', () => {
+      resolve();
+    });
+    gunZip.on('error', (err) => {
+      reject(err);
+    });
+    stream.pipe(gunZip).pipe(extract);
+  });
+}
 
 describe('pipeline api.job test', () => {
   const client = new PipcookClient('http://localhost', 6927);
@@ -32,7 +61,7 @@ describe('pipeline api.job test', () => {
     expect(typeof pipeline.id).toBe('string');
     const pipelineTrace = await client.pipeline.install(pipeline.id);
     await client.pipeline.traceEvent(pipelineTrace.traceId, traceLog);
-  }, 240 * 1000);
+  });
   it('create job', async () => {
     // create job
     jobObj = await client.job.run(pipeline.id);
@@ -40,7 +69,17 @@ describe('pipeline api.job test', () => {
     expect(typeof jobObj.id).toBe('string');
     expect(typeof (jobObj as TraceResp<JobResp>).traceId).toBe('string');
     await client.job.traceEvent((jobObj as TraceResp<JobResp>).traceId, traceLog);
-  }, 240 * 1000);
+    const downloadObj = await client.job.downloadOutput(jobObj.id);
+    await mkdirp(path.join(__dirname, 'output'));
+    await extractToPath(downloadObj.stream, path.join(__dirname, 'output'));
+    const metadata = await readJson(path.join(__dirname, 'output', 'metadata.json'));
+    console.log('metadata', path.join(__dirname, 'output', 'metadata.json'), metadata)
+    expect(metadata.pipeline.id).toBe(pipeline.id);
+    expect(metadata.output.id).toBe(jobObj.id);
+    expect(typeof metadata.output.dataset).toBe('string');
+    expect(typeof metadata.output.evaluateMap).toBe('string');
+    await remove(path.join(__dirname, 'output'));
+  });
   it('query job info', async () => {
     // info
     jobInfoObj = await client.job.info(jobObj.id);

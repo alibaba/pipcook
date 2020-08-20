@@ -5,6 +5,7 @@ import { LogManager, LogObject } from './log-manager';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
+import { pluginQueue } from '../utils';
 
 interface ListPluginsFilter {
   datatype?: string;
@@ -48,7 +49,7 @@ export class PluginManager {
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
       try {
-        await this.install(pkg, { pyIndex, force: false, stdout: log.stdout, stderr: log.stderr });
+        await this.install(plugin.id, pkg, { pyIndex, force: false, stdout: log.stdout, stderr: log.stderr });
         this.setStatusById(plugin.id, PluginStatus.INSTALLED);
       } catch (err) {
         this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
@@ -128,23 +129,31 @@ export class PluginManager {
     return plugin;
   }
 
-  async install(pkg: PluginPackage, opts: InstallOptions): Promise<void> {
-    try {
-      await this.pluginRT.costa.install(pkg, opts);
-    } catch (err) {
-      // uninstall if occurring an error on installing.
-      await this.pluginRT.costa.uninstall(pkg.name);
-      throw err;
-    }
+  async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {
+    return new Promise((resolve, reject) => {
+      pluginQueue.push((cb) => {
+        this.setStatusById(pluginId, PluginStatus.INSTALLING);
+        this.pluginRT.costa.install(pkg, opts).then(() => {
+          resolve();
+          cb();
+        }).catch((err) => {
+          // uninstall if occurring an error on installing.
+          this.pluginRT.costa.uninstall(pkg.name);
+          reject(err);
+          cb();
+        });
+      });
+    });
   }
 
-  async installAsync(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
+  async installAtNextTick(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
       const logger = await this.logManager.create();
       process.nextTick(async () => {
         try {
-          await this.install(pkg, { pyIndex, force, stdout: logger.stdout, stderr: logger.stderr });
+          this.setStatusById(plugin.id, PluginStatus.PENDING);
+          await this.install(plugin.id, pkg, { pyIndex, force, stdout: logger.stdout, stderr: logger.stderr });
           this.setStatusById(plugin.id, PluginStatus.INSTALLED);
           this.logManager.destroy(logger.id);
         } catch (err) {
@@ -166,7 +175,7 @@ export class PluginManager {
    */
   async installByName(pkgName: string, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const pkg = await this.fetch(pkgName);
-    return this.installAsync(pkg, pyIndex, force);
+    return this.installAtNextTick(pkg, pyIndex, force);
   }
 
   async uninstall(plugin: PluginModel | PluginModel[]): Promise<void> {
@@ -185,6 +194,6 @@ export class PluginManager {
 
   async installFromTarStream(tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const pkg = await this.fetchByStream(tarball);
-    return this.installAsync(pkg, pyIndex, force);
+    return this.installAtNextTick(pkg, pyIndex, force);
   }
 }

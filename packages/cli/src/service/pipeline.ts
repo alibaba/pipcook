@@ -8,7 +8,7 @@ import { logger, parseConfigFilename, initClient, streamToJson } from "../utils/
 import { getFile } from '../utils/request';
 
 export async function list(opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   let pipelines = await client.pipeline.list();
   if (pipelines.length > 0) {
     console.table(pipelines, [ 'id', 'name', 'updatedAt', 'createdAt' ]);
@@ -18,7 +18,7 @@ export async function list(opts: any): Promise<void> {
 }
 
 export async function info(id: string, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   try {
     const pipeline = await client.pipeline.get(id);
     console.info(JSON.stringify(pipeline, null, 2));
@@ -28,7 +28,7 @@ export async function info(id: string, opts: any): Promise<void> {
 }
 
 export async function create(filename: string, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   if (!path.isAbsolute(filename)) {
     filename = path.join(process.cwd(), filename);
   }
@@ -42,7 +42,7 @@ export async function create(filename: string, opts: any): Promise<void> {
 }
 
 export async function update(id: string, filename: string, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   if (!path.isAbsolute(filename)) {
     filename = path.join(process.cwd(), filename);
   }
@@ -56,7 +56,7 @@ export async function update(id: string, filename: string, opts: any): Promise<v
 }
 
 export async function remove(id: any, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   try {
     if (id === 'all') {
       id = undefined;
@@ -72,16 +72,14 @@ export async function installPackageFromConfig(config: any, opts: any): Promise<
   for (const plugin of constants.PLUGINS) {
     const packageName = config.plugins[plugin]?.package;
     if (typeof packageName === 'string') {
-      if (packageName[0] === '.') {
-        const pkg = await pluginInstall(packageName, opts);
-        config.plugins[plugin].package = pkg.name;
-      }
+      const pkg = await pluginInstall(packageName, opts);
+      config.plugins[plugin].package = pkg.name;
     }
   }
 }
 
 export async function install(filename: string, opts: any): Promise<void> {
-  const client = initClient(opts.ip, opts.port);
+  const client = initClient(opts.hostIp, opts.port);
   logger.start(`start install pipeline from ${filename}`);
   let fileUrl;
   try {
@@ -113,7 +111,7 @@ export async function install(filename: string, opts: any): Promise<void> {
     // check the installation
     logger.info('check plugin:');
     let isSuccess = true;
-    await constants.PLUGINS.map(async (plugin) => {
+    await Promise.all(constants.PLUGINS.map(async (plugin) => {
       // if use pipeline[plugin], error throw:
       // TS2536: Type 'PluginTypeI' cannot be used to index type 'PipelineResp'.
       const pluginName = (pipeline as any)[plugin];
@@ -127,7 +125,7 @@ export async function install(filename: string, opts: any): Promise<void> {
         isSuccess = false;
         logger.fail(`${pluginName} ${PluginStatusValue[plugins[0]?.status || PluginStatus.FAILED]}.`, false);
       }
-    });
+    }));
     if (isSuccess) {
       logger.success('pipeline installed successfully.');
     } else {

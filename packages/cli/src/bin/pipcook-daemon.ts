@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
 import { spawn, fork } from 'child_process';
-import os from 'os';
 import path from 'path';
 import program from 'commander';
 import { readFile, pathExists, remove } from 'fs-extra';
+import { constants } from '@pipcook/pipcook-core';
 import { logger } from '../utils/common';
 
-const PIPCOOK_HOME = path.join(os.homedir(), '.pipcook');
-const DAEMON_HOME = path.join(PIPCOOK_HOME, 'server/node_modules/@pipcook/daemon');
+const PIPCOOK_HOME = constants.PIPCOOK_HOME_PATH;
+const DAEMON_HOME = constants.PIPCOOK_DAEMON_SRC;
+const ACCESS_LOG = path.join(PIPCOOK_HOME, 'daemon.access.log');
 const DAEMON_PIDFILE = path.join(PIPCOOK_HOME, 'daemon.pid');
+const BOOTSTRAP_HOME = path.join(DAEMON_HOME, 'bootstrap.js');
 
 interface DaemonBootstrapMessage {
   event: string;
@@ -25,7 +27,7 @@ async function start(): Promise<void> {
   }
   logger.start('starting Pipcook...');
 
-  const daemon = fork(path.join(DAEMON_HOME, 'bootstrap.js'), [], {
+  const daemon = fork(BOOTSTRAP_HOME, [], {
     cwd: DAEMON_HOME,
     stdio: 'ignore',
     detached: true
@@ -40,8 +42,7 @@ async function start(): Promise<void> {
   daemon.on('exit', async (code: number) => {
     logger.fail(`Pipcook daemon starts failed with code(${code}).`, false);
     // TODO(yorkie): check if this is local mode.
-    const accessLog = path.join(PIPCOOK_HOME, 'daemon.access.log');
-    console.error(await readFile(accessLog, 'utf8'));
+    console.error(await readFile(ACCESS_LOG, 'utf8'));
   });
 }
 
@@ -66,13 +67,13 @@ function tail(file: string): void {
 }
 
 async function monitor(): Promise<void> {
-  tail(`${PIPCOOK_HOME}/daemon.access.log`);
+  tail(ACCESS_LOG);
 }
 
 async function debugDaemon(): Promise<void> {
   await stop();
   process.env.DEBUG = 'costa*';
-  require(path.join(DAEMON_HOME, 'bootstrap.js'));
+  require(BOOTSTRAP_HOME);
 }
 
 program
@@ -102,7 +103,7 @@ program
   .command('logfile')
   .description('print the path of logfile')
   .action(() => {
-    console.info(PIPCOOK_HOME + '/daemon.access.log');
+    console.info(ACCESS_LOG);
   });
 
 program

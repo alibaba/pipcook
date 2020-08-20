@@ -2,7 +2,6 @@
 
 const { join } = require('path');
 const { CostaRuntime } = require('../dist/src/runtime');
-const { PluginRunnable } = require('../dist/src/runnable');
 
 const costa = new CostaRuntime({
   installDir: join(__dirname, '../.tests/plugins'),
@@ -10,9 +9,8 @@ const costa = new CostaRuntime({
   componentDir: join(__dirname, '../.tests/components'),
   npmRegistryPrefix: 'https://registry.npmjs.com/'
 });
-const r = new PluginRunnable(costa);
 
 (async () => {
-  await r.bootstrap({});
-  r.destroy();
+  const pkg = await costa.fetch('@pipcook/plugins-tensorflow-resnet-model-define');
+  await costa.install(pkg, process);
 })();

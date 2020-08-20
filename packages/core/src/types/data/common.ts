@@ -103,7 +103,7 @@ export abstract class DataLoader {
   async nextBatch(batchSize: number): Promise<Sample[]> {
     const dataLen = await this.len();
 
-    if (this.fetchIndex >= dataLen) {
+    if (this.fetchIndex >= dataLen - 1) {
       this.fetchIndex = 0;
     }
 
@@ -116,6 +116,7 @@ export abstract class DataLoader {
       for (let i = this.fetchIndex; i < this.fetchIndex + batchSize; i++) {
         result.push(this.getItem(i));
       }
+      this.fetchIndex += batchSize;
       return Promise.all(result);
     }
 
@@ -126,6 +127,7 @@ export abstract class DataLoader {
           for (let i = this.fetchIndex; i < this.fetchIndex + batchSize; i++) {
             result.push(this.getItem(i));
           }
+          this.fetchIndex += batchSize;
           this.event.removeAllListeners(this.id);
           resolve(await Promise.all(result));
         }
