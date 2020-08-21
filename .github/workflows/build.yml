@@ -74,7 +74,7 @@ jobs:
       run: |
           ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/chinese-poem-creation.json
           ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
-    - name: test plugin install
+    - name: install a new plugin and install a installed plugin
       run: |
         ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
         ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
