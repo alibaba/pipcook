@@ -402,7 +402,10 @@ export class PipelineService {
         this.startJob(job, pipeline, plugins, log).then(() => {
           resolve();
           cb();
-        }).catch(reject);
+        }).catch((err) => {
+          reject(err);
+          cb();
+        });
       });
     });
   }
