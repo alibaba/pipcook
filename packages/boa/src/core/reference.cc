@@ -6,6 +6,12 @@ PythonReference::PythonReference(PythonObject *scope) : mScope(scope) {
   mCapsule = PyCapsule_New(this, nullptr, nullptr);
 }
 
+PythonReference::~PythonReference() {
+  if (isRef) {
+    mScope->Unref();
+  }
+}
+
 template <typename T> T *PythonReference::Unwrap(PyObject *wrapped) {
   return reinterpret_cast<T *>(PyCapsule_GetPointer(wrapped, nullptr));
 }
@@ -28,6 +34,7 @@ void PythonReference::addFinalizer() {
   mWeakref = PyWeakref_NewRef(mTarget, mFinalizer);
   // ref the scope object
   mScope->Ref();
+  isRef = true;
 }
 
 void PythonReference::assignTarget(PyObject *target) {

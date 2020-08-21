@@ -1,6 +1,4 @@
-
-
-const { test } = require('tap');
+const test = require('tape');
 const boa = require('../../');
 const np = boa.import('numpy');
 const { tuple, type } = boa.builtins();
