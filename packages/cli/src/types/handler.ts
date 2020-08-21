@@ -25,8 +25,8 @@ export interface DevPluginCommandHandler {
 
 interface InitCommandHandlerObjectParams {
   client: string;
-  beta: boolean;
   tuna: boolean;
+  V: string;
 }
 
 export interface InitCommandHandler {

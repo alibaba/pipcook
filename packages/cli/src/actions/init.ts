@@ -14,11 +14,8 @@ const {
   BOA_CONDA_MIRROR
 } = Constants;
 
-async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
+async function npmInstall(npmClient: string, name: string, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
   exec(`"${npmClient}" init -f`, { cwd, env, stdio: 'ignore' });
-  if (beta) {
-    name = `${name}@beta`;
-  }
   const cmd = `"${npmClient}" install ${name} -E --production`;
   exec(cmd, { cwd, env, stdio: 'inherit' });
 }
@@ -52,7 +49,13 @@ async function initPlugin(daemonDir: string, pluginDir: string) {
   await ensureDir(join(pluginDir, 'node_modules/@pipcook'));
   const boaPlugin = join(pluginDir, 'node_modules/@pipcook/boa');
   const corePlugin = join(pluginDir, 'node_modules/@pipcook/core');
-  const pluginPackage = await readJson(join(pluginDir, 'package.json'));
+  let pluginPackage = await readJson(join(pluginDir, 'package.json'));
+  if (!pluginPackage) {
+    pluginPackage = {};
+  }
+  if (!pluginPackage.dependencies || typeof pluginPackage.dependencies !== 'object') {
+    pluginPackage.dependencies = {};
+  }
   if (!await pathExists(boaPlugin)) {
     await symlink(boa, boaPlugin);
     const boaPackage = await readJson(join(boaPlugin, 'package.json'));
@@ -69,7 +72,7 @@ async function initPlugin(daemonDir: string, pluginDir: string) {
 /**
  * install all dependencies of pipcook into working dir
  */
-const init: InitCommandHandler = async ({ client, beta, tuna }) => {
+const init: InitCommandHandler = async ({ client, tuna, V: version }) => {
   let npmClient = 'npm';
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
@@ -125,10 +128,15 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
         spaces: 2
       });
     }
-
+    let daemon = daemonPackage;
+    let board = boardPackage;
+    if (version) {
+      daemon += `@${version}`;
+      board += `@${version}`;
+    }
     await Promise.all([
-      npmInstall(npmClient, daemonPackage, beta, CoreConstants.PIPCOOK_DAEMON, npmInstallEnvs),
-      npmInstall(npmClient, boardPackage, beta, CoreConstants.PIPCOOK_BOARD, npmInstallEnvs)
+      npmInstall(npmClient, daemon, CoreConstants.PIPCOOK_DAEMON, npmInstallEnvs),
+      npmInstall(npmClient, board, CoreConstants.PIPCOOK_BOARD, npmInstallEnvs)
     ]);
     await initPlugin(CoreConstants.PIPCOOK_DAEMON, CoreConstants.PIPCOOK_PLUGINS);
     await fse.copy(CoreConstants.PIPCOOK_BOARD_BUILD, CoreConstants.PIPCOOK_DAEMON_PUBLIC);
