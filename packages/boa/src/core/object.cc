@@ -36,7 +36,7 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
   *constructor = Persistent(func);
   env.SetInstanceData(constructor);
 
-  exports.Set("Object", func);
+  exports.Set("PythonObject", func);
 #define DEFINE_CONSTANT(macro) exports.Set(#macro, macro)
   DEFINE_CONSTANT(NODE_PYTHON_KWARGS_NAME);
   DEFINE_CONSTANT(NODE_PYTHON_BYTES_NAME);
@@ -50,14 +50,16 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
 }
 
 Object PythonObject::NewInstance(Napi::Env env, pybind::object src) {
-  Object wrapped = env.GetInstanceData<Napi::FunctionReference>()->New({});
-  auto obj = PythonObject::Unwrap(wrapped);
-  obj->_self = src;
-  return wrapped;
+  return env.GetInstanceData<Napi::FunctionReference>()->New(
+      {External<pybind::object>::New(env, &src)});
 }
 
 PythonObject::PythonObject(const CallbackInfo &info)
-    : ObjectWrap<PythonObject>(info) {}
+    : ObjectWrap<PythonObject>(info) {
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+  _self = *(info[0].As<External<pybind::object>>().Data());
+}
 
 pybind::object PythonObject::value() { return _self; }
 
@@ -65,6 +67,7 @@ void PythonObject::Finalize(Napi::Env env) {
   for (auto f : _funcs) {
     delete f;
   }
+  _funcs.clear();
 }
 
 Napi::Value PythonObject::Next(const CallbackInfo &info) {

@@ -3,7 +3,7 @@
 'use strict';
 
 const path = require('path');
-const { test } = require('tap');
+const test = require('tape');
 const { spawnSync } = require('child_process');
 
 function getAbsolutePath(relativePath) {
@@ -18,14 +18,14 @@ if (major <= '12' && minor <= '11' && patch <= '1') {
   // See https://github.com/nodejs/node/pull/29796
   console.log(`1..0 # Skipped: Current nodejs version: ${
     process.version} does not support \`--experimental-loader\`.`);
-  process.exit(0);
+  return;
 }
 if (major >= '14' && minor >= '5') {
   // https://github.com/nodejs/node/pull/33501
   // TODO(yorkie): compatible with the new esm hooks.
   console.log(`1..0 # Skipped: Current nodejs version ${
     process.version} does not support dynamic module type.`);
-  process.exit(0);
+  return;
 }
 
 function check(t, appPath) {

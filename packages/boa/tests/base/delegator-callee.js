@@ -1,6 +1,4 @@
-
-
-const { test } = require('tap');
+const test = require('tape');
 const callee = require('../../lib/delegators/callee');
 
 test('simple callee delegator', t => {
