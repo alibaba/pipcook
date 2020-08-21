@@ -66,7 +66,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook serve --help
     - name: pipcook sdk test
       run: |
-        npx ts-node ./run_tests.ts  
+        npx ts-node ./run_tests.ts
     - name: Running an example pipeline
       run: |
         npm run test:pipeline -- text-bayes-classification
