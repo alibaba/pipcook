@@ -70,11 +70,23 @@ export async function installFromLocal(localPath: string, opts: any): Promise<Pl
   }
 }
 
-export async function installFromUri(uri: string, opts: any): Promise<PluginResp> {
+export async function installFromRemote(uriOrName: string, opts: any): Promise<PluginResp> {
   const client = initClient(opts.hostIp, opts.port);
-  logger.start(`fetching package info ${uri}`);
-  const resp = await client.plugin.createByName(uri, opts.tuna ? tunaMirrorURI : undefined);
-  return await traceInstallEvent(resp, opts);
+  logger.start(`fetching package info ${uriOrName}`);
+  const resp = await client.plugin.createByName(uriOrName, opts.tuna ? tunaMirrorURI : undefined);
+  if (resp.status === PluginStatus.INSTALLED) {
+    logger.success(`plugin ${resp.name}@${resp.version} has already been installed`);
+    return resp;
+  }
+  if (resp.traceId) {
+    await traceInstallEvent(resp, opts);
+  }
+  const plugin = await client.plugin.get(resp.id);
+  if (plugin.status !== PluginStatus.INSTALLED) {
+    throw new TypeError(`Plugin ${plugin.name} install failed`);
+  }
+  logger.success(`install ${resp.name}@${resp.version} successfully`);
+  return plugin;
 }
 
 export async function install(name: string, opts: any): Promise<PluginResp> {
@@ -88,7 +100,7 @@ export async function install(name: string, opts: any): Promise<PluginResp> {
       return await installFromLocal(name, opts);
     } else {
       // install from package name, git, etc.
-      return await installFromUri(name, opts);
+      return await installFromRemote(name, opts);
     }
   } catch (err) {
     logger.fail(err.message);
