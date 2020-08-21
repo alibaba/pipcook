@@ -13,18 +13,11 @@ function getAbsolutePath(relativePath) {
 const FLAG = '--experimental-loader';
 const PATH_ESM_LOADER = getAbsolutePath('../../esm/loader.mjs');
 
-const [major, minor] = process.version.replace('v', '').split('.');
+const [major] = process.version.replace('v', '').split('.');
 if (major <= '12') {
   // See https://github.com/nodejs/node/pull/29796
   console.log(`1..0 # Skipped: Current nodejs version: ${
     process.version} does not support \`--experimental-loader\`.`);
-  return;
-}
-if (major >= '14' && minor >= '5') {
-  // https://github.com/nodejs/node/pull/33501
-  // TODO(yorkie): compatible with the new esm hooks.
-  console.log(`1..0 # Skipped: Current nodejs version ${
-    process.version} does not support dynamic module type.`);
   return;
 }
 
