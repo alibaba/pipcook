@@ -13,7 +13,7 @@ export {
 
 /**
  * The Pipcook client to connect specific daemon endpoint.
- * 
+ *
  * @example
  * ```js
  * const client = new PipcookClient();
