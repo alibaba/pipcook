@@ -19,29 +19,12 @@ export function getFormat(url, context, defaultGetFormat) {
   // DynamicInstantiate hook triggered if boa protocol is matched
   if (url.startsWith(protocol)) {
     return {
-      // original 'dynamic' is deprecated by node v14.8.0
       format: 'module'
     }
   }
 
   // Other protocol are assigned to nodejs for internal judgment loading
   return defaultGetFormat(url, context, defaultGetFormat);
-}
-
-// deprecated by node v14.8.0
-export function dynamicInstantiate(url) {
-  const moduleInstance = boa.import(url.replace(protocol, ''));
-  // Get all the properties of the Python Object to construct named export
-  const moduleExports = dir(moduleInstance);
-  return {
-    exports: ['default', ...moduleExports],
-    execute: exports => {
-      for (let name of moduleExports) {
-        exports[name].set(moduleInstance[name]);
-      }
-      exports.default.set(moduleInstance);
-    }
-  };
 }
 
 // alternative dynamic loader
