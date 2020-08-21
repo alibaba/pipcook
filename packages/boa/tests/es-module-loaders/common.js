@@ -20,13 +20,6 @@ if (major <= '12' && minor <= '11' && patch <= '1') {
     process.version} does not support \`--experimental-loader\`.`);
   process.exit(0);
 }
-if (major >= '14' && minor >= '5') {
-  // https://github.com/nodejs/node/pull/33501
-  // TODO(yorkie): compatible with the new esm hooks.
-  console.log(`1..0 # Skipped: Current nodejs version ${
-    process.version} does not support dynamic module type.`);
-  process.exit(0);
-}
 
 function check(t, appPath) {
   const options = { encoding: 'utf8', stdio: 'inherit' };
