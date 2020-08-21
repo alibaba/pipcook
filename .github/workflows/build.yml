@@ -18,9 +18,10 @@ jobs:
         os: [ubuntu-latest, macOS-latest]
     steps:
     - name: cancel previous runs
-      uses: styfle/cancel-workflow-action@0.4.1
+      uses: imgcook/cancel-workflow-action@81524cf
       with:
         access_token: ${{ github.token }}
+        exception: master
     - uses: actions/checkout@v2
     - name: restore lerna
       uses: actions/cache@v2
