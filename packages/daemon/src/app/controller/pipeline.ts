@@ -15,7 +15,7 @@ const createSchema = Joi.object({
   name: Joi.string(),
   config: Joi.object(),
   configUri: Joi.string(),
-}).without('config', 'configUri').or('config', 'configUri');
+}).xor('config', 'configUri');
 
 const listSchema = Joi.object({
   offset: Joi.number().min(0),
@@ -36,6 +36,7 @@ export class PipelineController extends BaseEventController {
    */
   @post()
   public async create() {
+    console.log('body', this.ctx.request.body);
     this.validate(createSchema, this.ctx.request.body);
     const { name, configUri, config } = this.ctx.request.body;
     const parsedConfig = await parseConfig(configUri || config);
