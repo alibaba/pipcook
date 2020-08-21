@@ -17,6 +17,10 @@ jobs:
         node_version: ['12', '14']
         os: [ubuntu-latest, macOS-latest]
     steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.4.1
+      with:
+        access_token: ${{ github.token }}
     - uses: actions/checkout@v2
     - name: restore lerna
       uses: actions/cache@v2
