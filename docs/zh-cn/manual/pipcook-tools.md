@@ -25,6 +25,18 @@ $ pipcook daemon start
 $ pipcook init --tuna
 ```
 
+如果想指定 daemon 和 pipboard 的版本, 可以使用:
+
+```sh
+$ pipcook init 1.1.0
+```
+
+或者直接使用 `--beta` 选项来安装 beta 版本:
+
+```sh
+$ pipcook init --beta
+```
+
 执行完上述的初始化命令，以及启动 [Pipcook Daemon][] 后，你就可以开始使用 Pipcook 了，让我们从一些简单的命令开始吧。
 
 ## 使用指南
