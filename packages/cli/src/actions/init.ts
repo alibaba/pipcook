@@ -72,7 +72,7 @@ async function initPlugin(daemonDir: string, pluginDir: string) {
 /**
  * install all dependencies of pipcook into working dir
  */
-const init: InitCommandHandler = async ({ client, tuna, V: version }) => {
+const init: InitCommandHandler = async ({ beta, client, tuna, V: version }) => {
   let npmClient = 'npm';
   if (beta) {
     version = 'beta';
