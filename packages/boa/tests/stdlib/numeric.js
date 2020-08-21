@@ -1,6 +1,4 @@
-
-
-const { test } = require('tap');
+const test = require('tape');
 const boa = require('../../');
 const { version_info } = boa.import('sys');
 

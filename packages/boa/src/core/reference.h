@@ -13,6 +13,7 @@ namespace boa {
 class PythonReference {
 public:
   PythonReference(PythonObject *scope);
+  ~PythonReference();
 
   template <typename T = PythonReference> static T *Unwrap(PyObject *wrapped);
   static PyObject *Finalize(PyObject *self, PyObject *args_in,
@@ -31,6 +32,10 @@ protected:
    * capsule object for passing reference object.
    */
   PyObject *mCapsule;
+  /**
+   * if ref-ed
+   */
+  bool isRef = false;
 
 private:
   /**

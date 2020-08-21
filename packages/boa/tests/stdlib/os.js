@@ -1,6 +1,4 @@
-
-
-const { test } = require('tap');
+const test = require('tape');
 const path = require('path');
 const boa = require('../../');
 const os = boa.import('os');

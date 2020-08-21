@@ -49,7 +49,7 @@ We have defined the following plugin categories for the machine learning lifecyc
 
 - [`dataCollect(args: ArgsType): Promise<void>`][] downloads from data source, which is stored in corresponding unified dataset.
 - [`dataAccess(args: ArgsType): Promise<UniDataset>`][] gets the dataset ready in loader and compatible with later model.
-- [`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<void>`][] processes data in row.
+- [`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<Sample>`][] processes data in row.
 - [`modelLoad(data: UniDataset, args: ArgsType): Promise<UniModel>`][] loads the model into the pipeline.
 - [`modelDefine(data: UniDataset, args: ModelDefineArgsType): Promise<UniModel>`][] defines the model.
 - [`modelTrain(data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>`][] outputs the trained model and saves to configured location.

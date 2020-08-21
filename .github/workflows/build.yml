@@ -17,10 +17,11 @@ jobs:
         node_version: ['12', '14']
         os: [ubuntu-latest, macOS-latest]
     steps:
-    - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.4.1
+    - name: cancel previous runs
+      uses: imgcook/cancel-workflow-action@81524cf
       with:
         access_token: ${{ github.token }}
+        exception: master
     - uses: actions/checkout@v2
     - name: restore lerna
       uses: actions/cache@v2
@@ -70,14 +71,18 @@ jobs:
         ./packages/cli/dist/bin/pipcook serve --help
     - name: pipcook sdk test
       run: |
-        npx ts-node ./run_tests.ts  
+        npx ts-node ./run_tests.ts
+    - name: install plugins from specific pipeline
+      run: |
+        ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/chinese-poem-creation.json
+        ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
     - name: Running an example pipeline
       run: |
         npm run test:pipeline -- text-bayes-classification
-    - name: install plugins from specific pipeline
+    - name: install a new plugin and install a installed plugin
       run: |
-          ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/chinese-poem-creation.json
-          ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
+        ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
+        ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
     - name: pipcook run from local filename
       run: |
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
