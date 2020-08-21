@@ -12,17 +12,34 @@ export {
 } from './interface';
 
 /**
- * Pipcook daemon sdk for javascript
- * the operations of pipeline and job is available for now.
+ * The Pipcook client to connect specific daemon endpoint.
+ * 
+ * @example
+ * ```js
+ * const client = new PipcookClient();
+ * const pipelines = await client.pipeline.list();
+ * // [{ ...pipelines }]
+ * ```
  */
 export class PipcookClient {
+
+  /**
+   * The pipeline management object.
+   */
   pipeline: Pipeline;
+
+  /**
+   * The job management object.
+   */
   job: Job;
+
+  /**
+   * The plugin manager object.
+   */
   plugin: Plugin;
 
   /**
-   * The constructor for PipcookClient
-   * @param protocolWithHostname the daemon hostname with protocol, like 'http://192.168.1.50'
+   * @param protocolWithHostname the daemon hostname with protocol, like "http://192.168.1.50"
    * @param port the port
    */
   constructor(protocolWithHostname = 'http://127.0.0.1', port = 6927) {

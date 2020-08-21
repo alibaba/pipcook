@@ -29,7 +29,7 @@
     "pretest": "npm run lint",
     "test": "sh run_tests.sh",
     "test:pipeline": "sh ./run_pipeline.sh",
-    "typedoc": "typedoc",
+    "typedoc": "sh tools/mkdoc.sh",
     "clean": "lerna run clean",
     "release": "lerna publish from-package --yes --no-verify-access",
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
