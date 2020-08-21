@@ -80,7 +80,11 @@ function copy(T) {
 function dump(T) {
   return pyInst.import('json')
     .__getattr__('dumps')
-    .invoke(asHandleObject(T));
+    .invoke(asHandleObject(T), {
+      // use str method to serialize those fields which cannot be serialized by default
+      default: _internalWrap(builtins).str,
+      [native.NODE_PYTHON_KWARGS_NAME]: true,
+    });
 }
 
 function getDelegator(type) {
@@ -453,7 +457,7 @@ module.exports = {
    */
   'kwargs': input => {
     if (typeof input !== 'object') {
-      throw new TypeError('input must be a string.');
+      throw new TypeError('input must be an object.');
     }
     return Object.assign({}, input, {
       [native.NODE_PYTHON_KWARGS_NAME]: true,

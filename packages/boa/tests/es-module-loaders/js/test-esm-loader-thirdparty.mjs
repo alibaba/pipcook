@@ -1,4 +1,4 @@
 import assert from 'assert';
-import tap from 'tap';
+import tape from 'tape';
 
-assert.equal(typeof tap.ok, 'function');
+assert.equal(typeof tape, 'function');

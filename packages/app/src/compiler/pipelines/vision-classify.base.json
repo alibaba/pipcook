@@ -1,7 +1,7 @@
 {
   "plugins": {
     "dataCollect": {
-      "package": "./packages/plugins/data-collect/image-classification-data-collect",
+      "package": "@pipcook/image-classification-data-collect",
       "params": {
         "url": "input your zip url"
       }

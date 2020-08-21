@@ -1,13 +1,13 @@
 {
   "name": "@pipcook/boa",
-  "version": "1.0.5",
+  "version": "1.1.2",
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {
     "clean": "sh tools/clean-python.sh && make -C ./pybind11/ clean",
     "preinstall": "node tools/check-dependence.js && make -C ./pybind11/ && node tools/install-python.js && node tools/install-requirements.js",
     "postinstall": "npm run build",
-    "test": "tap --no-cov ./tests/**/*.js",
+    "test": "tape ./tests/**/*.js",
     "lint": "eslint . -c .eslintrc.js --no-eslintrc && ./clang-format.py",
     "build": "npm run compile",
     "pretest": "npm run lint",
@@ -42,7 +42,7 @@
     "codecov": "^3.6.5",
     "eslint": "^6.7.2",
     "nyc": "^14.1.1",
-    "tap": "^14.10.5"
+    "tape": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"

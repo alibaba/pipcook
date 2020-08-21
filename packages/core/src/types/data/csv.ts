@@ -20,8 +20,8 @@ export interface CsvMetadata extends Metadata {
   };
 }
 
-export interface CsvDataLoader extends DataLoader {
-  getItem: (id: number) => Promise<CsvSample>;
+export abstract class CsvDataLoader extends DataLoader {
+  abstract getItem(id: number): Promise<CsvSample>;
 }
 
 export interface CsvDataset extends UniDataset {

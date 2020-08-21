@@ -17,6 +17,7 @@ export default (appInfo: EggAppInfo) => {
 
   // add your config here
   config.middleware = [
+    'errorHandler'
   ];
 
   config.security = {
@@ -29,6 +30,9 @@ export default (appInfo: EggAppInfo) => {
     prefix: '/',
     dir: staticDir,
   };
+
+  // sequelize logger: boolean or function
+  config.sequelizeLogger = false;
 
   return config;
 };

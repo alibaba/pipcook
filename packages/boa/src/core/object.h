@@ -17,8 +17,6 @@ public:
   pybind::object value();
 
 private:
-  static FunctionReference constructor;
-
   Napi::Value Next(const CallbackInfo &);
   Napi::Value Invoke(const CallbackInfo &);
   Napi::Value CreateClass(const CallbackInfo &);

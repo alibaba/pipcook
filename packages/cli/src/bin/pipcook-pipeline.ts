@@ -1,87 +1,56 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import * as path from 'path';
-import { install } from '../pipeline';
-import { get, post, put, del } from '../request';
-import { route } from '../router';
-import { logger } from '../utils';
+import { list, info, create, update, remove, install } from '../service/pipeline';
 
-async function list(): Promise<void> {
-  let pipelines = (await get(`${route.pipeline}/list`)).rows;
-  if (pipelines.length > 0) {
-    console.table(pipelines, [ 'id', 'name', 'updatedAt', 'createdAt' ]);
-  } else {
-    console.info('no pipeline is created.');
-  }
-}
-
-async function info(id: string): Promise<void> {
-  const pipeline = await get(`${route.pipeline}/info/${id}`);
-  console.info(JSON.stringify(pipeline, null, 2));
-}
-
-async function create(filename: string, opts: any): Promise<void> {
-  if (!path.isAbsolute(filename)) {
-    filename = path.join(process.cwd(), filename);
-  }
-  const pipeline = await post(`${route.pipeline}`, {
-    config: filename,
-    name: opts.name
-  });
-  logger.success(`pipeline ${pipeline.id} created.`);
-}
-
-async function update(id: string, filename: string): Promise<void> {
-  if (!path.isAbsolute(filename)) {
-    filename = path.join(process.cwd(), filename);
-  }
-  const pipeline = await put(`${route.pipeline}/${id}`, {
-    config: filename
-  });
-  logger.success(`pipeline ${pipeline.id} updated with ${filename}.`);
-}
-
-async function remove(id?: any): Promise<void> {
-  if (typeof id === 'string' && id !== 'all') {
-    await del(`${route.pipeline}/${id}`);
-    logger.success(`pipeline ${id} has removed.`);
-  } else {
-    const n = await del(route.pipeline);
-    logger.success(`${n} pipelines has removed.`);
-  }
-}
 
 program
   .command('list')
+  .helpOption('--help', 'show help')
   .description('list all pipelines')
+  .option('-h|--host-ip <ip>', 'the host ip of daemon')
+  .option('-p|--port <port>', 'the port of daemon')
   .action(list);
 
 program
   .command('info <id>')
+  .helpOption('--help', 'show help')
   .description('info the pipeline by its id')
+  .option('-h|--host-ip <ip>', 'the host ip of daemon')
+  .option('-p|--port <port>', 'the port of daemon')
   .action(info);
 
 program
   .command('create <file>')
+  .helpOption('--help', 'show help')
   .description('create a pipeline')
   .option('-n|--name <name>', 'the pipeline name')
+  .option('-h|--host-ip <ip>', 'the host ip of daemon')
+  .option('-p|--port <port>', 'the port of daemon')
   .action(create);
 
 program
   .command('update <id> <filename>')
+  .helpOption('--help', 'show help')
   .description('update a pipeline')
+  .option('-h|--host-ip <ip>', 'the host ip of daemon')
+  .option('-p|--port <port>', 'the port of daemon')
   .action(update);
 
 program
   .command('remove [id]')
+  .helpOption('--help', 'show help')
   .description('remove all pipelines or specific 1 pipeline via id')
+  .option('-h|--host-ip <ip>', 'the host ip of daemon')
+  .option('-p|--port <port>', 'the port of daemon')
   .action(remove);
 
 program
   .command('install <pipeline>')
-  .option('--verbose', 'prints verbose logs', true)
+  .helpOption('--help', 'show help')
   .option('--tuna', 'use tuna mirror to install python packages')
+  .option('-h|--host-ip <ip>', 'the host ip of daemon')
+  .option('-p|--port <port>', 'the port of daemon')
   .action(install)
   .description('install the plugins from a pipeline config file or url');
 

@@ -1,11 +1,11 @@
 {
   "name": "@pipcook/daemon",
-  "version": "1.0.5",
+  "version": "1.1.2",
   "description": "pipcook daemon",
   "dependencies": {
-    "@pipcook/app": "^1.0.5",
-    "@pipcook/costa": "^1.0.5",
-    "@pipcook/pipcook-core": "^1.0.5",
+    "@pipcook/app": "^1.1.2",
+    "@pipcook/costa": "^1.1.2",
+    "@pipcook/pipcook-core": "^1.1.2",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "cls-hooked": "^4.2.2",
@@ -14,14 +14,21 @@
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
+    "http-errors": "^1.8.0",
+    "http-status": "^1.4.2",
+    "joi": "^17.1.1",
     "midway": "^1.19.0",
+    "queue": "^6.0.1",
     "request-promise": "^4.2.5",
     "sequelize": "^5.21.7",
+    "sequelize-cli": "^6.2.0",
     "sqlite3": "^4.1.1",
     "ssestream": "^1.1.0"
   },
   "devDependencies": {
     "@types/cls-hooked": "^4.3.0",
+    "@types/http-errors": "^1.8.0",
+    "@types/joi": "^14.3.4",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.5.5",
     "@types/request-promise": "^4.1.46",
@@ -47,10 +54,12 @@
     "lint": "tslint -p tsconfig.json -t stylish",
     "ci": "npm run cov",
     "compile": "midway-bin build -c --port=6927",
+    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts --tsconfig=tsconfig.json --outdir=dist",
     "clean": "rm -rf src/app/public",
     "test": "midway-bin test --ts --full-trace",
     "migration": "npx sequelize-cli db:migrate",
-    "migration:undo": "npx sequelize-cli db:migrate:undo"
+    "migration:undo": "npx sequelize-cli db:migrate:undo",
+    "benchmark": "node benchmark/bootstrap.js"
   },
   "ci": {
     "version": "10"

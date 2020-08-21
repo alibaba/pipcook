@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/app",
-  "version": "1.0.5",
+  "version": "1.1.2",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -9,7 +9,9 @@
   "scripts": {
     "test": "ts-node ../../run_tests.ts",
     "build": "npm run clean && npm run compile",
+    "dev-build": "npm run clean && npm run dev-compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts --tsconfig=tsconfig.json --outdir=dist && sh setup.sh",
     "compile": "tsc -b tsconfig.json && sh setup.sh"
   },
   "license": "Apache 2.0",

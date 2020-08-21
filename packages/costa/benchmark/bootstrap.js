@@ -1,8 +1,8 @@
 'use strict';
 
 const { join } = require('path');
-const { CostaRuntime } = require('../dist/runtime');
-const { PluginRunnable } = require('../dist/runnable');
+const { CostaRuntime } = require('../dist/src/runtime');
+const { PluginRunnable } = require('../dist/src/runnable');
 
 const costa = new CostaRuntime({
   installDir: join(__dirname, '../.tests/plugins'),

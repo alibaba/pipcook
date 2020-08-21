@@ -3,7 +3,7 @@
 'use strict';
 
 const path = require('path');
-const { test } = require('tap');
+const test = require('tape');
 const { spawnSync } = require('child_process');
 
 function getAbsolutePath(relativePath) {
@@ -13,17 +13,17 @@ function getAbsolutePath(relativePath) {
 const FLAG = '--experimental-loader';
 const PATH_ESM_LOADER = getAbsolutePath('../../esm/loader.mjs');
 
-const [major, minor, patch] = process.version.replace('v', '').split('.');
-if (major <= '12' && minor <= '11' && patch <= '1') {
+const [major, minor] = process.version.replace('v', '').split('.');
+if (major <= '12') {
   // See https://github.com/nodejs/node/pull/29796
   console.log(`1..0 # Skipped: Current nodejs version: ${
     process.version} does not support \`--experimental-loader\`.`);
-  process.exit(0);
+  return;
 }
 
 function check(t, appPath) {
   const options = { encoding: 'utf8', stdio: 'inherit' };
-  const args = ['--no-warnings', FLAG, PATH_ESM_LOADER];
+  const args = ['--no-warnings', '--unhandled-rejections=strict', FLAG, PATH_ESM_LOADER];
   // See https://github.com/nodejs/node/pull/31974
   if (process.version < 'v14.0.0') {
     args.push('--experimental-modules');
@@ -49,3 +49,5 @@ test('python custom', t => check(t, './py/test-esm-loader-custom.mjs'));
 test('javascript thirdparty', t => check(t, './js/test-esm-loader-thirdparty.mjs'));
 
 test('javascript custom', t => check(t, './js/test-esm-loader-custom.mjs'));
+
+test('dynamic imports', t => check(t, './py/test-esm-loader-dynamic-imports.mjs'));

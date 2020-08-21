@@ -1,13 +1,13 @@
-import { join, dirname } from 'path';
+import { join } from 'path';
 import { execSync as exec } from 'child_process';
-import fse, { readJson, ensureDir, symlink } from 'fs-extra';
+import fse, { readJson, writeJson, ensureDir, symlink, remove, pathExists } from 'fs-extra';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 
-import { Constants, logger } from '../utils';
+import { Constants, logger } from '../utils/common';
 import { InitCommandHandler } from '../types';
-import { optionalNpmClients, daemonPackage, boardPackage, isLocal } from '../config';
+import { optionalNpmClients, daemonPackage, boardPackage } from '../config';
 
 const {
   BOA_CONDA_INDEX,
@@ -16,21 +16,54 @@ const {
 
 async function npmInstall(npmClient: string, name: string, beta: boolean, cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
   exec(`"${npmClient}" init -f`, { cwd, env, stdio: 'ignore' });
-  if (isLocal) {
-    // FIXME(yorkie): manually make symlink to local development
-    // This is because npm-install from path will not be compatible with lerna's node_modules/.staging dir.
-    const pkg = await readJson(name + '/package.json');
-    const dest = join(cwd, 'node_modules', pkg.name);
-    await ensureDir(dirname(dest));
-    await symlink(name, dest, 'dir');
-  } else {
-    if (beta) {
-      name = `${name}@beta`;
-    }
-    const cmd = `"${npmClient}" install ${name} -E --production`;
-    console.info(`exec "${cmd}"`);
-    exec(cmd, { cwd, env, stdio: 'inherit' });
+  if (beta) {
+    name = `${name}@beta`;
   }
+  const cmd = `"${npmClient}" install ${name} -E --production`;
+  exec(cmd, { cwd, env, stdio: 'inherit' });
+}
+
+/**
+ * init the plugin project with boa and core
+ */
+async function initPlugin(daemonDir: string, pluginDir: string) {
+  await ensureDir(pluginDir);
+  if (!await pathExists(join(pluginDir, 'package.json'))) {
+    exec('npm init -y', { cwd: pluginDir, stdio: 'ignore' });
+  }
+
+  if (!await pathExists(daemonDir)) {
+    return logger.warn('daemon is not installed.');
+  }
+  let boa = join(daemonDir, 'node_modules/@pipcook/boa');
+  if (!await pathExists(boa)) {
+    boa = join(daemonDir, 'node_modules/@pipcook/daemon/node_modules/@pipcook/costa/node_modules/@pipcook/boa');
+    if (!await pathExists(boa)) {
+      return logger.warn('boa is not installed.');
+    }
+  }
+  let core = join(daemonDir, 'node_modules/@pipcook/pipcook-core');
+  if (!await pathExists(core)) {
+    core = join(daemonDir, 'node_modules/@pipcook/daemon/node_modules/@pipcook/pipcook-core');
+    if (!await pathExists(core)) {
+      return logger.warn('pipcook-core is not installed.');
+    }
+  }
+  await ensureDir(join(pluginDir, 'node_modules/@pipcook'));
+  const boaPlugin = join(pluginDir, 'node_modules/@pipcook/boa');
+  const corePlugin = join(pluginDir, 'node_modules/@pipcook/core');
+  const pluginPackage = await readJson(join(pluginDir, 'package.json'));
+  if (!await pathExists(boaPlugin)) {
+    await symlink(boa, boaPlugin);
+    const boaPackage = await readJson(join(boaPlugin, 'package.json'));
+    pluginPackage.dependencies[boaPackage.name] = boaPackage.version;
+  }
+  if (!await pathExists(corePlugin)) {
+    await symlink(core, corePlugin);
+    const corePackage = await readJson(join(corePlugin, 'package.json'));
+    pluginPackage.dependencies[corePackage.name] = corePackage.version;
+  }
+  await writeJson(join(pluginDir, 'package.json'), pluginPackage, { spaces: 2 });
 }
 
 /**
@@ -77,11 +110,11 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
 
   // Install the daemon and pipboard.
   try {
-    await fse.remove(CoreConstants.PIPCOOK_DAEMON);
-    await fse.remove(CoreConstants.PIPCOOK_BOARD);
+    await remove(CoreConstants.PIPCOOK_DAEMON);
+    await remove(CoreConstants.PIPCOOK_BOARD);
 
-    await fse.ensureDir(CoreConstants.PIPCOOK_DAEMON);
-    await fse.ensureDir(CoreConstants.PIPCOOK_BOARD);
+    await ensureDir(CoreConstants.PIPCOOK_DAEMON);
+    await ensureDir(CoreConstants.PIPCOOK_BOARD);
     if (tuna) {
       // write the daemon config
       await fse.writeJSON(join(CoreConstants.PIPCOOK_HOME_PATH, 'daemon.config.json'), {
@@ -97,12 +130,13 @@ const init: InitCommandHandler = async ({ client, beta, tuna }) => {
       npmInstall(npmClient, daemonPackage, beta, CoreConstants.PIPCOOK_DAEMON, npmInstallEnvs),
       npmInstall(npmClient, boardPackage, beta, CoreConstants.PIPCOOK_BOARD, npmInstallEnvs)
     ]);
+    await initPlugin(CoreConstants.PIPCOOK_DAEMON, CoreConstants.PIPCOOK_PLUGINS);
     await fse.copy(CoreConstants.PIPCOOK_BOARD_BUILD, CoreConstants.PIPCOOK_DAEMON_PUBLIC);
     logger.success('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
     logger.fail(`failed to initialize Pipcook with the error ${err && err.stack}`, false);
-    await fse.remove(CoreConstants.PIPCOOK_DAEMON);
-    await fse.remove(CoreConstants.PIPCOOK_BOARD);
+    await remove(CoreConstants.PIPCOOK_DAEMON);
+    await remove(CoreConstants.PIPCOOK_BOARD);
   }
 };
 
