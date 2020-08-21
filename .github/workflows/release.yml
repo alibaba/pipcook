@@ -22,7 +22,35 @@ jobs:
           npm install
           npm run build
 
+      - name: Get release version
+        id: get_version
+        run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:11})
+
+      - name: Publish check
+        run: |
+          ver=$RELEASE_VERSION
+          check_pkg() {
+            curl -sL "http://registry.npmjs.com/@pipcook/$1" | jq -r '.versions."'$2'".version'
+          }
+
+          check_image() {
+            curl -sL "https://hub.docker.com/v2/repositories/pipcook/pipcook/tags/$1" | jq -r '.name'
+          }
+
+          if
+            [ $(check_pkg pipcook-cli $ver) == $ver ] ||
+            [ $(check_pkg daemon $ver) == $ver ] ||
+            [ $(check_pkg pipboard $ver) == $ver ]
+          then
+            echo ::set-env name=NPM_PUBLISHED::true
+          fi
+
+          if [ $(check_image $ver) == $ver ]; then
+            echo ::set-env name=DOCKER_PUBLISHED::true
+          fi
+
       - name: Publish npm packages
+        if: env.NPM_PUBLISHED != 'true'
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > ~/.npmrc
           git config --global user.name 'pipcook'
@@ -33,12 +61,9 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
           NPM_AUTH_TOKEN: ${{ secrets.npm_token }}
 
-      - name: Get release version
-        id: get_version
-        run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:11})
-
       - name: Publish to Docker registry
         uses: docker/build-push-action@v1
+        if: env.DOCKER_PUBLISHED != 'true'
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
