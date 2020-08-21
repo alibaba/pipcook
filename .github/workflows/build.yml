@@ -18,7 +18,7 @@ jobs:
         os: [ubuntu-latest, macOS-latest]
     steps:
     - name: cancel previous runs
-      uses: FeelyChau/cancel-workflow-action@main
+      uses: FeelyChau/cancel-workflow-action@add/exception
       with:
         access_token: ${{ github.token }}
         exception: master
