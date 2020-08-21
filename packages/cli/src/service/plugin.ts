@@ -50,7 +50,7 @@ export async function installFromLocal(localPath: string, opts: any): Promise<Pl
   if (!pkg?.pipcook) {
     throw new TypeError('invalid plugin package');
   }
-  const output = spawnSync('npm', ['pack'], { cwd: localPath });
+  const output = spawnSync('npm', [ 'pack' ], { cwd: localPath });
   let tarball: string;
   if (output.status !== 0) {
     throw new TypeError(`read local package error: ${output.stderr.toString()}`);
@@ -132,6 +132,6 @@ export async function list(opts: any): Promise<void> {
   } else {
     console.table(plugins.map((plugin) => {
       return { ...plugin, status: PluginStatusValue[plugin.status] };
-    }), ['name', 'version', 'category', 'datatype', 'status']);
+    }), [ 'name', 'version', 'category', 'datatype', 'status' ]);
   }
 }
