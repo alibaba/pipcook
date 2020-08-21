@@ -51,7 +51,7 @@
 
 - [`dataCollect(args: ArgsType): Promise<void>`][] 从数据源中下载数据，并且存储为统一的格式。
 - [`dataAccess(args: ArgsType): Promise<UniDataset>`][] 将数据加载到加载器中，兼容之后的模型插件。
-- [`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<void>`][] 按行进行数据预处理。
+- [`dataProcess(sample: Sample, md: Metadata, args: ArgsType): Promise<Sample>`][] 按行进行数据预处理。
 - [`modelLoad(data: UniDataset, args: ArgsType): Promise<UniModel>`][] 加载预训练模型。
 - [`modelDefine(data: UniDataset, args: ModelDefineArgsType): Promise<UniModel>`][] 定义模型。
 - [`modelTrain(data: UniDataset, model: UniModel, args: ModelTrainArgsType): Promise<UniModel>`][] 输出训练后的模型，以及模型持久化。
