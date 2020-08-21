@@ -74,6 +74,9 @@ async function initPlugin(daemonDir: string, pluginDir: string) {
  */
 const init: InitCommandHandler = async ({ client, tuna, V: version }) => {
   let npmClient = 'npm';
+  if (beta) {
+    version = 'beta';
+  }
   const npmInstallEnvs = Object.assign({}, process.env);
   if (tuna) {
     npmInstallEnvs.BOA_CONDA_INDEX = BOA_CONDA_INDEX;

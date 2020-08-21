@@ -46,6 +46,7 @@ import devPlugin from '../actions/dev-plugin';
   program
     .command('init')
     .option('-c, --client <string>', 'specify your npm client.')
+    .option('-b, --beta', 'use or update the beta version, if set, the option version will be ignored.')
     .option('-V <version>', 'version of daemon and pipboard.')
     .option('--tuna', 'use tuna mirror to download miniconda at China.')
     .description('initialize the daemon and pipboard.')
