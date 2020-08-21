@@ -1,6 +1,4 @@
-
-
-const { test } = require('tap');
+const test = require('tape');
 const boa = require('../../');
 
 test('the `hashlib` module', t => {

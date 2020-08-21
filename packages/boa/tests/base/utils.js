@@ -1,6 +1,4 @@
-
-
-const { test } = require('tap');
+const test = require('tape');
 const utils = require('../../lib/utils');
 
 test('utils.getIndent', t => {
