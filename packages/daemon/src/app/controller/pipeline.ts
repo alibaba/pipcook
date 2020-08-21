@@ -36,7 +36,6 @@ export class PipelineController extends BaseEventController {
    */
   @post()
   public async create() {
-    console.log('body', this.ctx.request.body);
     this.validate(createSchema, this.ctx.request.body);
     const { name, configUri, config } = this.ctx.request.body;
     const parsedConfig = await parseConfig(configUri || config);
