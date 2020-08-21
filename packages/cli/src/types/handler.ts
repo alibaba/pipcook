@@ -27,11 +27,10 @@ interface InitCommandHandlerObjectParams {
   client: string;
   beta: boolean;
   tuna: boolean;
-  V: string;
 }
 
 export interface InitCommandHandler {
-  (cmdObj: InitCommandHandlerObjectParams): Promise<void>;
+  (version: string, cmdObj: InitCommandHandlerObjectParams): Promise<void>;
 }
 
 type ServeOpts = { port: number };
