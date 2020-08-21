@@ -38,8 +38,8 @@ jobs:
           }
 
           if
-            [ $(check_pkg pipcook-cli $ver) == $ver ] ||
-            [ $(check_pkg daemon $ver) == $ver ] ||
+            [ $(check_pkg pipcook-cli $ver) == $ver ] &&
+            [ $(check_pkg daemon $ver) == $ver ] &&
             [ $(check_pkg pipboard $ver) == $ver ]
           then
             echo ::set-env name=NPM_PUBLISHED::true
