@@ -3,15 +3,20 @@ import { BaseApi } from './base';
 import { JobResp, TraceResp } from './interface';
 
 /**
- * API for job
+ * Job API object.
  */
 export class Job extends BaseApi {
+  /**
+   * Use PipcookClient instead.
+   * @private
+   */
   constructor(url: string) {
     super(`${url}/job`);
   }
 
   /**
-   * list all jobs
+   * list all jobs.
+   * @returns The jobs list.
    */
   list(): Promise<JobResp[]> {
     return get(this.route);
