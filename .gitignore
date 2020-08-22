@@ -25,3 +25,4 @@ packages/daemon/.github/**
 .pipcook
 __pycache__
 .history
+*.pb
