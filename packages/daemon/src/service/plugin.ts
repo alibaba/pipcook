@@ -131,17 +131,18 @@ export class PluginManager {
 
   async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {
     return new Promise((resolve, reject) => {
-      pluginQueue.push((cb) => {
+      pluginQueue.push(async (cb) => {
         this.setStatusById(pluginId, PluginStatus.INSTALLING);
-        this.pluginRT.costa.install(pkg, opts).then(() => {
+        try {
+          await this.pluginRT.costa.install(pkg, opts);
           resolve();
           cb();
-        }).catch((err) => {
+        } catch (err) {
           // uninstall if occurring an error on installing.
           this.pluginRT.costa.uninstall(pkg.name);
           reject(err);
           cb();
-        });
+        }
       });
     });
   }
