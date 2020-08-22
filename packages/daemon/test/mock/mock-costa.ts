@@ -1,8 +1,17 @@
 
-import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions, CostaRuntime, RunnableResponse } from '@pipcook/costa';
-import { EvaluateResult, UniDataset } from '@pipcook/pipcook-core';
+import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions, CostaRuntime, RunnableResponse, LogStdio } from '@pipcook/costa';
+import { EvaluateResult, UniDataset, constants as CoreConstants } from '@pipcook/pipcook-core';
+import { mkdirpSync } from 'fs-extra';
+import { join } from 'path';
 
 class MockRunnable extends PluginRunnable {
+  mockLogger: LogStdio;
+  canceled = false;
+  constructor(rt: CostaRuntime, logger?: LogStdio, id?: string) {
+    super(rt, logger, id);
+    this.mockLogger = logger;
+  }
+
   valueOfResult: EvaluateResult & UniDataset = {
     pass: true,
     metadata: {},
@@ -29,13 +38,28 @@ class MockRunnable extends PluginRunnable {
     return;
   }
   async valueOf(resp: RunnableResponse): Promise<object> {
-    console.log('valueOf', resp);
+    console.log('mock valueOf', resp);
     return this.valueOfResult;
   }
   start(pkg: PluginPackage, ...args: any[]): Promise<RunnableResponse | null> {
-    return;
+    return new Promise((resolve, reject) => {
+      console.log('mock run plugin ', pkg.name);
+      setTimeout(() => {
+        if (this.canceled) {
+          return reject(new Error('mock runtime destoried'));
+        }
+        if (this.mockLogger) {
+          this.mockLogger.stderr.write(`[err] mock job log for ${pkg.name}\n`);
+          this.mockLogger.stdout.write(`[out] mock job log for ${pkg.name}\n`);
+        }
+        resolve();
+      }, 1000);
+      // TODO(feely): check if the current plugin is a model-train plugin
+      mkdirpSync(join(this.workingDir, 'model'));
+    })
   }
   destroy(): Promise<void> {
+    this.canceled = true;
     return;
   }
 }
@@ -70,26 +94,28 @@ export class MockCosta extends CostaRuntime {
   };
   constructor() {
     super({
-      installDir: '',
-      datasetDir: '',
-      componentDir: '',
-      npmRegistryPrefix: ''
+      installDir: CoreConstants.PIPCOOK_PLUGINS,
+      datasetDir: CoreConstants.PIPCOOK_DATASET,
+      componentDir: CoreConstants.PIPCOOK_RUN,
+      npmRegistryPrefix: 'https://registry.npmjs.com/'
     });
   }
   /**
    * fetch plugin package info by plugin name
    * @param name plugin name
    */
-  fetchFromInstalledPlugin(name: string): Promise<PluginPackage> {
-    return;
+  async fetchFromInstalledPlugin(name: string): Promise<PluginPackage> {
+    console.log('mock fetchFromInstalledPlugin', name);
+    return { ...this.mockPkg, name };
   }
   /**
    * fetch and check if the package name is valid.
    * @param name the plugin package name.
    */
   async fetch(name: string): Promise<PluginPackage> {
-    console.log(`fetch ${name}`);
-    return { name, ...this.mockPkg };
+    console.log(`mock fetch ${name}`);
+    // TODO(feely): config plugin package info by user
+    return { ...this.mockPkg, name };
   }
   /**
    * fetch and check if the package name is valid.
@@ -97,6 +123,7 @@ export class MockCosta extends CostaRuntime {
    * @param cwd the current working directory.
    */
   async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
+    console.log('mock fetchByStream');
     return this.mockPkg;
   }
   /**
@@ -105,7 +132,14 @@ export class MockCosta extends CostaRuntime {
    * @param opts install options
    */
   async install(pkg: PluginPackage, opts: InstallOptions): Promise<boolean> {
-    return true;
+    console.log('mock install', pkg.name);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        opts.stderr.write(`[err] install ${pkg.name}\n`);
+        opts.stdout.write(`[out] install ${pkg.name}\n`);
+        resolve(true);
+      }, 100);
+    });
   }
   /**
    * Uninstall the given plugin by name.
@@ -118,6 +152,6 @@ export class MockCosta extends CostaRuntime {
    * create a runnable.
    */
   async createRunnable(args?: BootstrapArg): Promise<PluginRunnable> {
-    return new MockRunnable(this);
+    return new MockRunnable(this, args?.logger, args?.id);
   }
 }

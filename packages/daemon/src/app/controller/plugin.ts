@@ -29,7 +29,7 @@ export class PluginController extends BaseEventController {
    */
   @put()
   public async reinstall() {
-    const { name, pyIndex } = this.ctx.query;
+    const { name, pyIndex } = this.ctx.request.body;
     debug(`checking info: ${name}.`);
     const response = await this.pluginManager.installByName(name, pyIndex, true);
     this.ctx.success(response);

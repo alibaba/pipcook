@@ -194,6 +194,8 @@ export {
   InstallOptions
 };
 
+export { LogStdio } from './utils';
+
 /**
  * The Costa runtime is for scheduling plugins and management.
  */

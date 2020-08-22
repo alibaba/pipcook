@@ -313,7 +313,10 @@ export class PipelineService {
 
   async stopJob(id: string): Promise<void> {
     const job = await this.getJobById(id);
-    if (job && job.status === PipelineStatus.RUNNING) {
+    if (!job) {
+      throw createHttpError(HttpStatus.NOT_FOUND, 'job not found');
+    }
+    if (job.status === PipelineStatus.RUNNING) {
       const runnable = runnableMap[id];
       if (runnable) {
         runnable.destroy();
@@ -365,7 +368,6 @@ export class PipelineService {
       pipeline: opts.pipeline.toJSON(),
       output: job.toJSON(),
     };
-
     await Promise.all([
       // copy base components
       fs.copy(opts.modelPath, dist + '/model'),

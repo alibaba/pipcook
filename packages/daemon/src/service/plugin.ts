@@ -122,7 +122,7 @@ export class PluginManager {
         version: pkg.version,
         category: pkg.pipcook.category,
         datatype: pkg.pipcook.datatype,
-        dest: pkg.pipcook.target.DESTPATH,
+        dest: pkg.pipcook.target?.DESTPATH,
         status: PluginStatus.INSTALLING
       }
     });

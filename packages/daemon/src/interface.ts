@@ -15,6 +15,8 @@ export interface PluginResp {
   datatype: string;
   namespace: string;
   dest: string;
+  status: number;
+  error: string;
 }
 
 /**
