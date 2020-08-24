@@ -23,6 +23,22 @@ export interface ConfigResp {
  */
 export type TraceResp<T> = T & { traceId: string }
 
+/**
+ * common filter options
+ */
+export type ListFilter = {
+  offset?: number;
+  limit?: number;
+}
+
+/**
+ * filter options for `job.list()`
+ */
+export type JobListFilter = { pipelineId: string } & ListFilter;
+
+/**
+ * job response
+ */
 export interface JobResp {
   id: string;
   pipelineId: string;
