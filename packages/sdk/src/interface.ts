@@ -4,7 +4,9 @@
  * `/api/versions` response
  */
 export interface VersionsResp {
-  daemon?: string;
+  versions: {
+    daemon?: string;
+  };
 }
 
 /**
