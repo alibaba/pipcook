@@ -6,7 +6,7 @@ export default {
   },
   security: {
     domainWhiteList: [
-      'http://localhost:4444',
+      'http://localhost',
       'https://pipboard.vercel.app'
     ]
   }
