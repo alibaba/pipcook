@@ -91,6 +91,11 @@ describe('pipeline api.job test', () => {
     const jobs = await client.job.list();
     expect(Array.isArray(jobs));
     expect(jobInfoObj.id).toBe(jobs[0].id);
+
+    // list by pipeline id
+    const emptyJobs = await client.job.list({ pipelineId: 'not-exist' });
+    expect(Array.isArray(emptyJobs)).toBeTruthy();
+    expect(emptyJobs.length).toBe(0);
   });
   it('clean', async () => {
     // stop
