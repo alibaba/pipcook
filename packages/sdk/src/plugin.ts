@@ -31,7 +31,7 @@ export class Plugin extends BaseApi {
    * get plugin metadata by id
    * @param id string plugin id
    */
-  fetch(id: string): Promise<object> {
+  fetch(id: string): Promise<any> {
     return get(`${this.route}/${id}/metadata`);
   }
 
