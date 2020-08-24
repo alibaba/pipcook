@@ -1,6 +1,6 @@
 import { get, getFile, del, post, FileDownloadResp } from './request';
 import { BaseApi } from './base';
-import { JobResp, TraceResp } from './interface';
+import { JobResp, TraceResp, JobListFilter } from './interface';
 
 /**
  * Job API object.
@@ -16,10 +16,11 @@ export class Job extends BaseApi {
 
   /**
    * list all jobs.
+   * @param filter the filter to list the jobs.
    * @returns The jobs list.
    */
-  list(): Promise<JobResp[]> {
-    return get(this.route);
+  list(filter?: JobListFilter): Promise<JobResp[]> {
+    return get(this.route, filter);
   }
 
   /**

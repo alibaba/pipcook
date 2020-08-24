@@ -1,5 +1,5 @@
 import { get, post, put, del } from './request';
-import { PipelineResp, PipelineInstallOption, TraceResp } from './interface';
+import { PipelineResp, PipelineInstallOption, TraceResp, ListFilter } from './interface';
 import { BaseApi } from './base';
 /**
  * API for pipeline
@@ -11,9 +11,10 @@ export class Pipeline extends BaseApi {
 
   /**
    * list all pipelines
+   * @param filter the filter option to list pipelines
    */
-  list(): Promise<PipelineResp[]> {
-    return get(`${this.route}`);
+  list(filter?: ListFilter): Promise<PipelineResp[]> {
+    return get(`${this.route}`, filter);
   }
 
   /**
