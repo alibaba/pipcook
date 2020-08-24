@@ -135,7 +135,6 @@ const init: InitCommandHandler = async (version: string, { beta, client, tuna })
     let board = boardPackage;
     if (version) {
       daemon += `@${version}`;
-      board += `@${version}`;
     }
     await Promise.all([
       npmInstall(npmClient, daemon, CoreConstants.PIPCOOK_DAEMON, npmInstallEnvs),
