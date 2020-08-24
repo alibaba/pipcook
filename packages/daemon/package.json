@@ -58,8 +58,8 @@
     "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts --tsconfig=tsconfig.json --outdir=dist",
     "clean": "rm -rf src/app/public",
     "test": "midway-bin test --ts --full-trace",
-    "migration": "npx sequelize-cli db:migrate",
-    "migration:undo": "npx sequelize-cli db:migrate:undo",
+    "migration": "sequelize-cli db:migrate",
+    "migration:undo": "sequelize-cli db:migrate:undo",
     "benchmark": "node benchmark/bootstrap.js"
   },
   "ci": {
