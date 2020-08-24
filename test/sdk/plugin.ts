@@ -27,7 +27,7 @@ describe('pipeline api.plugin test', () => {
     // fetch plugin metadata
     const md = await client.plugin.fetch(resp.id);
     expect(typeof md).toBe('object');
-    expect(md.pipcook).toBe('object');
+    expect(typeof md.pipcook).toBe('object');
     expect(md.id).toBe(resp.id);
   });
   it('create plugin by tarball', async () => {
