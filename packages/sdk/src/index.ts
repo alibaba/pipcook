@@ -60,13 +60,13 @@ export class PipcookClient {
    * list versions
    */
   listVersions(): Promise<VersionsResp> {
-    return get(`${this.endpoint}/api/versions`);
+    return get(`${this.endpoint}/versions`);
   }
 
   /**
    * get daemon config
    */
   getConfig(): Promise<ConfigResp> {
-    return get(`${this.endpoint}/api/config`);
+    return get(`${this.endpoint}/config`);
   }
 }
