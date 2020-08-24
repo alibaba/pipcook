@@ -9,5 +9,5 @@ describe('test the index apis', () => {
   it('get daemon config', async () => {
     const config = await client.getConfig();
     expect(config).not.toBeNull();
-  })
+  });
 });
