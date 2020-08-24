@@ -26,6 +26,11 @@ export {
 export class PipcookClient {
 
   /**
+   * The endpoint to Pipcook.
+   */
+  private endpoint: string;
+
+  /**
    * The pipeline management object.
    */
   pipeline: Pipeline;
@@ -45,7 +50,7 @@ export class PipcookClient {
    * @param port the port
    */
   constructor(protocolWithHostname = 'http://127.0.0.1', port = 6927) {
-    const url = `${protocolWithHostname}:${port}/api`;
+    const url = this.endpoint = `${protocolWithHostname}:${port}/api`;
     this.pipeline = new Pipeline(url);
     this.job = new Job(url);
     this.plugin = new Plugin(url);
@@ -55,13 +60,13 @@ export class PipcookClient {
    * list versions
    */
   listVersions(): Promise<VersionsResp> {
-    return get('/api/versions');
+    return get(`${this.endpoint}/api/versions`);
   }
 
   /**
    * get daemon config
    */
   getConfig(): Promise<ConfigResp> {
-    return get('/api/config');
+    return get(`${this.endpoint}/api/config`);
   }
 }
