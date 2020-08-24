@@ -2734,6 +2734,9 @@ img {
 				<li class=" tsd-kind-constructor tsd-parent-kind-class">
 					<a href="pipcookclient.html#constructor" class="tsd-kind-icon">constructor</a>
 				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a href="pipcookclient.html#endpoint" class="tsd-kind-icon">endpoint</a>
+				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="pipcookclient.html#job" class="tsd-kind-icon">job</a>
 				</li>
@@ -2743,6 +2746,12 @@ img {
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="pipcookclient.html#plugin" class="tsd-kind-icon">plugin</a>
 				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="pipcookclient.html#getconfig" class="tsd-kind-icon">get<wbr>Config</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="pipcookclient.html#listversions" class="tsd-kind-icon">list<wbr>Versions</a>
+				</li>
 			</ul>
 		</li>
 		<li class=" tsd-kind-class">
@@ -2750,6 +2759,9 @@ img {
 		</li>
 		<li class=" tsd-kind-class">
 			<a href="plugin.html" class="tsd-kind-icon">Plugin</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/configresp.html" class="tsd-kind-icon">Config<wbr>Resp</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/eventcallback.html" class="tsd-kind-icon">Event<wbr>Callback</a>
@@ -2777,6 +2789,9 @@ img {
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/pluginresp.html" class="tsd-kind-icon">Plugin<wbr>Resp</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/versionsresp.html" class="tsd-kind-icon">Versions<wbr>Resp</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="../index.html#requestparams" class="tsd-kind-icon">Request<wbr>Params</a>
@@ -2859,9 +2874,17 @@ img {
 					<section class="tsd-index-section ">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="pipcookclient.html#endpoint" class="tsd-kind-icon">endpoint</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookclient.html#job" class="tsd-kind-icon">job</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookclient.html#pipeline" class="tsd-kind-icon">pipeline</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="pipcookclient.html#plugin" class="tsd-kind-icon">plugin</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Methods</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipcookclient.html#getconfig" class="tsd-kind-icon">get<wbr>Config</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="pipcookclient.html#listversions" class="tsd-kind-icon">list<wbr>Versions</a></li>
 						</ul>
 					</section>
 				</div>
@@ -2879,7 +2902,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/19e60e30/packages/sdk/src/index.ts#L39">index.ts:39</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/12b3278b/packages/sdk/src/index.ts#L46">index.ts:46</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2910,13 +2933,28 @@ img {
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Properties</h2>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<a name="endpoint" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> endpoint</h3>
+				<div class="tsd-signature tsd-kind-icon">endpoint<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/12b3278b/packages/sdk/src/index.ts#L31">index.ts:31</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The endpoint to Pipcook.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 				<a name="job" class="tsd-anchor"></a>
 				<h3>job</h3>
 				<div class="tsd-signature tsd-kind-icon">job<span class="tsd-signature-symbol">:</span> <a href="job.html" class="tsd-signature-type">Job</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/19e60e30/packages/sdk/src/index.ts#L34">index.ts:34</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/12b3278b/packages/sdk/src/index.ts#L41">index.ts:41</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2931,7 +2969,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">pipeline<span class="tsd-signature-symbol">:</span> <a href="pipeline.html" class="tsd-signature-type">Pipeline</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/19e60e30/packages/sdk/src/index.ts#L29">index.ts:29</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/12b3278b/packages/sdk/src/index.ts#L36">index.ts:36</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2946,7 +2984,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">plugin<span class="tsd-signature-symbol">:</span> <a href="plugin.html" class="tsd-signature-type">Plugin</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/19e60e30/packages/sdk/src/index.ts#L39">index.ts:39</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/12b3278b/packages/sdk/src/index.ts#L46">index.ts:46</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2954,6 +2992,53 @@ img {
 						<p>The plugin manager object.</p>
 					</div>
 				</div>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="getconfig" class="tsd-anchor"></a>
+				<h3>get<wbr>Config</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Config<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/configresp.html" class="tsd-signature-type">ConfigResp</a><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/12b3278b/packages/sdk/src/index.ts#L69">index.ts:69</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>get daemon config</p>
+							</div>
+						</div>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/configresp.html" class="tsd-signature-type">ConfigResp</a><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="listversions" class="tsd-anchor"></a>
+				<h3>list<wbr>Versions</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">list<wbr>Versions<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/versionsresp.html" class="tsd-signature-type">VersionsResp</a><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/12b3278b/packages/sdk/src/index.ts#L62">index.ts:62</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>list versions</p>
+							</div>
+						</div>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/versionsresp.html" class="tsd-signature-type">VersionsResp</a><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
 			</section>
 		</section>
 		<footer class="with-border-bottom">
@@ -2971,6 +3056,9 @@ img {
 					</ul>
 					<ul class="tsd-legend">
 						<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+					</ul>
+					<ul class="tsd-legend">
+						<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 					</ul>
 				</div>
 			</div>
