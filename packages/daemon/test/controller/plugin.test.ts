@@ -50,4 +50,11 @@ describe('test plugin controller', () => {
       })
       .expect(200);
   });
+
+  it('should get 404 if id is not found', () => {
+    return app
+      .httpRequest()
+      .get(`/api/plugin/not-exists/metadata`)
+      .expect(404);
+  });
 });
