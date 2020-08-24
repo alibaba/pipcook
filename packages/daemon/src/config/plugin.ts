@@ -1,4 +1,13 @@
-import { EggPlugin } from 'midway';
 export default {
-  static: true // default is true
-} as EggPlugin;
+  static: true,
+  cors: {
+    enable: true,
+    package: 'egg-cors'
+  },
+  security: {
+    domainWhiteList: [
+      'http://localhost:4444',
+      'https://pipboard.vercel.app'
+    ]
+  }
+};

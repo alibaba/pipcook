@@ -20,6 +20,11 @@ export default (appInfo: EggAppInfo) => {
     'errorHandler'
   ];
 
+  config.cors = {
+    origin: '*',
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
+  };
+
   config.security = {
     csrf: {
       enable: false,
