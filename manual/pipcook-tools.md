@@ -25,6 +25,18 @@ To use [tuna mirror](https://mirrors.tuna.tsinghua.edu.cn/) for Python installat
 $ pipcook init --tuna
 ```
 
+We can specify the version:
+
+```sh
+$ pipcook init 1.1.0
+```
+
+Or use `--beta` to install the beta version:
+
+```sh
+$ pipcook init --beta
+```
+
 After executing the above initialization commands and starting the daemon, you can start using Pipcook, let's start with some simple introductions.
 
 ## Pipeline Usage
