@@ -11,7 +11,7 @@
     "noUnusedLocals": true,
     "stripInternal": true,
     "pretty": true,
-    "declaration": true,
+    "declaration": false,
     "outDir": "dist",
     "skipLibCheck": true
   },
