@@ -26,6 +26,7 @@
         "node-addon-api",
         "midway",
         "egg-ci",
+        "egg-cors",
         "egg-scripts",
         "midway-bin",
         "midway-mock",
