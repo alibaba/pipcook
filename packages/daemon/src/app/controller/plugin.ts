@@ -75,6 +75,19 @@ export class PluginController extends BaseEventController {
   }
 
   /**
+   * fetch the plugin metadata by a id
+   */
+  @get('/:id/metadata')
+  public async metadata() {
+    const plugin = await this.pluginManager.findById(this.ctx.params.id);
+    if (!plugin) {
+      return this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
+    }
+    const md = await this.pluginManager.fetch(`${plugin.name}@${plugin.version}`);
+    this.ctx.success(md);
+  }
+
+  /**
    * list plugins
    */
   @get()

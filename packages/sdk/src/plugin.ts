@@ -28,6 +28,14 @@ export class Plugin extends BaseApi {
   }
 
   /**
+   * get plugin metadata by id
+   * @param id string plugin id
+   */
+  fetch(id: string): Promise<object> {
+    return get(`${this.route}/${id}/metadata`);
+  }
+
+  /**
    * remove plugin or plugins
    * @param id string if null, remove all
    */
