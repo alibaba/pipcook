@@ -1,6 +1,22 @@
 // TODO: move these defines to core or somewhere to share with daemon
 
 /**
+ * `/api/versions` response
+ */
+export interface VersionsResp {
+  daemon?: string;
+}
+
+/**
+ * `/api/config` response
+ */
+export interface ConfigResp {
+  npmRegistryPrefix?: string;
+  pythonIndexMirror?: string;
+  pythonCondaMirror?: string;
+}
+
+/**
  * response of event trace
  */
 export type TraceResp<T> = T & { traceId: string }
@@ -79,6 +95,7 @@ export interface LogEvent {
   // log content
   data: string;
 }
+
 export interface PluginListParams {
   datatype?: string;
   category?: string;

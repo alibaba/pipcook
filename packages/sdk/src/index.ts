@@ -1,6 +1,8 @@
 import { Job } from './job';
 import { Pipeline } from './pipeline';
 import { Plugin } from './plugin';
+import { get } from './request';
+import { VersionsResp, ConfigResp } from './interface';
 export { JobStatusValue, PluginStatusValue } from './utils';
 export {
   JobResp,
@@ -47,5 +49,19 @@ export class PipcookClient {
     this.pipeline = new Pipeline(url);
     this.job = new Job(url);
     this.plugin = new Plugin(url);
+  }
+
+  /**
+   * list versions
+   */
+  listVersions(): Promise<VersionsResp> {
+    return get('/api/versions');
+  }
+
+  /**
+   * get daemon config
+   */
+  getConfig(): Promise<ConfigResp> {
+    return get('/api/config');
   }
 }
