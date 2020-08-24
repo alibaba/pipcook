@@ -101,6 +101,19 @@ Occuring the download problems? We use [tuna](https://mirror.tuna.tsinghua.edu.c
 $ pipcook init --tuna
 ```
 
+If want to specify the version of daemon and pipboard, we can use:
+
+```sh
+$ pipcook init 1.1.0
+```
+
+Or directly use option `--beta` to specify the beta version:
+
+```sh
+$ pipcook init --beta
+```
+
+
 Then run a pipeline:
 
 ```shell
