@@ -1,5 +1,5 @@
 import { get, post, put, del } from './request';
-import { PipelineResp, PipelineInstallOption, TraceResp, ListFilter } from './interface';
+import { PipelineResp, PipelineInstallOption, TraceResp, ListFilter, PipelineConfig } from './interface';
 import { BaseApi } from './base';
 /**
  * API for pipeline
@@ -30,7 +30,7 @@ export class Pipeline extends BaseApi {
    * @param config pipeline config
    * @param opts name: pipeline name
    */
-  create(config: object, opts?: any): Promise<PipelineResp> {
+  create(config: PipelineConfig, opts?: any): Promise<PipelineResp> {
     return post(`${this.route}`, {
       config,
       name: opts?.name
@@ -54,7 +54,7 @@ export class Pipeline extends BaseApi {
    * @param id pipeline id
    * @param config pipeline config
    */
-  update(id: string, config: PipelineResp): Promise<PipelineResp> {
+  update(id: string, config: PipelineConfig): Promise<PipelineResp> {
     return put(`${this.route}/${id}`, {
       config
     });

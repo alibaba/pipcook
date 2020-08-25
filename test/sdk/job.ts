@@ -2,7 +2,7 @@ import * as path from 'path';
 import { readJson, mkdirp, createWriteStream, remove } from 'fs-extra';
 import tar from 'tar-stream';
 import { createGunzip } from 'zlib';
-import { PipcookClient, PipelineResp, JobResp, TraceResp } from '../../packages/sdk';
+import { PipcookClient, PipelineResp, JobResp, TraceResp, PipelineConfig } from '../../packages/sdk';
 
 const traceLog = (event: string, data: any) => {
   expect([ 'log' ]).toContain(event);
@@ -44,7 +44,7 @@ describe('pipeline api.job test', () => {
   const client = new PipcookClient('http://localhost', 6927);
   const name = 'bayes-job-test';
   const pipelineFile = path.join(__dirname, '../../example/pipelines/text-bayes-classification.json');
-  let config: any;
+  let config: PipelineConfig;
   let pipeline: PipelineResp;
   let jobObj: JobResp;
   let jobInfoObj: JobResp;

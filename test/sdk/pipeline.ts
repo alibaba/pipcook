@@ -1,13 +1,13 @@
 import * as path from 'path';
 import { readJson } from 'fs-extra';
-import { PipcookClient, PipelineResp } from '../../packages/sdk';
+import { PipcookClient, PipelineResp, PipelineConfig } from '../../packages/sdk';
 
 describe('pipeline api.pipeline test', () => {
   const client = new PipcookClient('http://localhost', 6927);
 
   const name = 'bayes';
   const pipelineFile = path.join(__dirname, '../../example/pipelines/text-bayes-classification.json');
-  let config: any;
+  let config: PipelineConfig;
   let pipeline: PipelineResp;
   it('prepare', async () => {
     // prepare
