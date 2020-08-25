@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as Url from 'url';
-import { PipelineResp, PluginStatusValue } from '@pipcook/sdk';
+import { PipelineResp, PluginStatusValue, PipelineConfig } from '@pipcook/sdk';
 import { constants, PluginStatus } from '@pipcook/pipcook-core';
 import { readJson } from 'fs-extra';
 import { install as pluginInstall } from './plugin';
@@ -101,7 +101,7 @@ export async function install(filename: string, opts: any): Promise<void> {
     } else {
       logger.start(`downloading pipeline config file form ${filename}`);
       const stream = await getFile(filename);
-      const config = await streamToJson(stream);
+      const config = await streamToJson(stream) as PipelineConfig;
       logger.start('installing plugins');
       await installPackageFromConfig(config, opts);
       logger.info('start to create pipeline');
