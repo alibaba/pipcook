@@ -11,4 +11,4 @@ ENV TF_FORCE_GPU_ALLOW_GROWTH=true
 ENV LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64:/usr/local/cuda-10.2/lib64:${LD_LIBRARY_PATH}
 
 WORKDIR /opt/pipcook
-RUN npm install @pipcook/pipcook-cli@${VER} -g && pipcook init
+RUN npm install @pipcook/pipcook-cli@${VER} -g && pipcook init ${VER}
