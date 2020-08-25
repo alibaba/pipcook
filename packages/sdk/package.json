@@ -3,6 +3,10 @@
   "version": "1.1.2",
   "description": "JavaScript SDK for accessing Pipcook Daemon",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "package-lock.json"
+  ],
   "scripts": {
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compile",
