@@ -36,6 +36,14 @@ export class Plugin extends BaseApi {
   }
 
   /**
+   * fetch specific plugin metadata by name
+   * @param name the plugin name, for example "@pipcook/plugins-image-classification-data-collect"
+   */
+  fetchByName(name: string): Promise<any> {
+    return get(`${this.route}/metadata`, { name });
+  }
+
+  /**
    * remove plugin or plugins
    * @param id string if null, remove all
    */

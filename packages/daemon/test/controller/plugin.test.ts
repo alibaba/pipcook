@@ -57,4 +57,23 @@ describe('test plugin controller', () => {
       .get(`/api/plugin/not-exists/metadata`)
       .expect(404);
   });
+
+  it('should fetch by name', () => {
+    return app
+      .httpRequest()
+      .get(`/api/plugin/metadata?name=${name}`)
+      .expect((resp) => {
+        assert.equal(resp.body.name, name);
+        assert.equal(resp.body.pipcook.category, 'dataCollect');
+        assert.equal(resp.body.pipcook.datatype, 'image');
+      })
+      .expect(200);
+  });
+
+  it('should fetch by name if the name is miss', () => {
+    return app
+      .httpRequest()
+      .get('/api/plugin/metadata')
+      .expect(400);
+  });
 });
