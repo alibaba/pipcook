@@ -12,7 +12,8 @@ export function parsePluginName(name: string): { protocol: PluginSourceProtocol;
     protocol = 'fs';
   } else if (/^git(\+ssh|\+https|\+http)?:$/.test(urlObject.protocol)) {
     protocol = 'git';
-  } else if ([ 'https:', 'http:' ].indexOf(urlObject.protocol) !== -1 && urlObject.path.endsWith('.tgz')) {
+  } else if ([ 'https:', 'http:' ].indexOf(urlObject.protocol) !== -1
+    && (urlObject.path.endsWith('.tgz') || urlObject.path.endsWith('.gz'))) {
     protocol = 'tarball';
   } else if (name[0] !== '.' && !urlObject.protocol) {
     protocol = 'npm';

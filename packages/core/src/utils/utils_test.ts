@@ -9,8 +9,14 @@ describe('test plugin name parser', () => {
     const { protocol: protocolWithScope } = parsePluginName('core');
     expect(protocolWithScope).toEqual('npm');
   });
-  it('parse from tarball', async () => {
+  it('parse from tarball .tgz', async () => {
     const url = 'http://a.b.c:9090/core.tgz';
+    const { protocol, urlObject } = parsePluginName(url);
+    expect(protocol).toEqual('tarball');
+    expect(urlObject.href).toEqual(url);
+  });
+  it('parse from tarball .gz', async () => {
+    const url = 'http://a.b.c:9090/core.gz';
     const { protocol, urlObject } = parsePluginName(url);
     expect(protocol).toEqual('tarball');
     expect(urlObject.href).toEqual(url);
