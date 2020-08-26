@@ -28,15 +28,15 @@ export default {
       }
       if (tbNames.indexOf('plugins') >= 0) {
         const columns = await queryInterface.describeTable('plugins');
-        if (!columns['from']) {
-          futures.push(queryInterface.addColumn('plugins', 'from', {
+        if (!columns['sourceFrom']) {
+          futures.push(queryInterface.addColumn('plugins', 'sourceFrom', {
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: 'npm'
           }, { transaction: t }));
         }
-        if (!columns['uri']) {
-          futures.push(queryInterface.addColumn('plugins', 'uri', {
+        if (!columns['sourceUri']) {
+          futures.push(queryInterface.addColumn('plugins', 'sourceUri', {
             type: DataTypes.STRING,
             allowNull: true,
             defaultValue: ''
@@ -70,14 +70,14 @@ export default {
       }
       if (tbNames.indexOf('plugins') >= 0) {
         const columns = await queryInterface.describeTable('plugins');
-        if (columns['from']) {
-          futures.push(queryInterface.removeColumn('plugins', 'from', { transaction: t }));
+        if (columns['sourceFrom']) {
+          futures.push(queryInterface.removeColumn('plugins', 'sourceFrom', { transaction: t }));
         }
       }
       if (tbNames.indexOf('plugins') >= 0) {
         const columns = await queryInterface.describeTable('plugins');
-        if (columns['uri']) {
-          futures.push(queryInterface.removeColumn('plugins', 'uri', { transaction: t }));
+        if (columns['sourceUri']) {
+          futures.push(queryInterface.removeColumn('plugins', 'sourceUri', { transaction: t }));
         }
       }
       return Promise.all(futures);

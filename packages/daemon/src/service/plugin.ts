@@ -126,9 +126,9 @@ export class PluginManager {
         category: pkg.pipcook.category,
         datatype: pkg.pipcook.datatype,
         dest: pkg.pipcook.target.DESTPATH,
-        from: pkg.pipcook.source.from,
-        uri: pkg.pipcook.source.uri,
-        status: PluginStatus.INIT
+        sourceFrom: pkg.pipcook.source.from,
+        sourceUri: pkg.pipcook.source.uri,
+        status: PluginStatus.INITIALIZED
       }
     });
     return plugin;

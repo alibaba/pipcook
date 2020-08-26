@@ -249,5 +249,5 @@ export enum PluginStatus {
   /**
    * the plugin installation not started
    */
-  INIT
+  INITIALIZED
 }
