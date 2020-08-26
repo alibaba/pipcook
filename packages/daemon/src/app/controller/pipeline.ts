@@ -92,10 +92,10 @@ export class PipelineController extends BaseEventController {
   }
 
   /**
-   * find a pipeline by id
+   * find a pipeline config by id
    */
-  @get('/:id')
-  public async get() {
+  @get('/:id/config')
+  public async getConfig() {
     const { id } = this.ctx.params;
     const json = { plugins: {} } as any;
 
@@ -107,7 +107,7 @@ export class PipelineController extends BaseEventController {
       if (typeof pipeline[name] === 'string') {
         const params = pipeline[`${name}Params`];
         json.plugins[name] = {
-          name: pipeline[name],
+          package: pipeline[name],
           params: params != null ? JSON.parse(params) : undefined
         };
       }
@@ -117,6 +117,19 @@ export class PipelineController extends BaseEventController {
       json.name = pipeline.name;
     }
     this.ctx.success(json);
+  }
+
+  /**
+   * find a pipeline by id
+   */
+  @get('/:id')
+  public async get() {
+    const { id } = this.ctx.params;
+    const pipeline = await this.pipelineService.getPipeline(id);
+    if (!pipeline) {
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'pipeline not found');
+    }
+    this.ctx.success(pipeline);
   }
 
   /**

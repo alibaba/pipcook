@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as Url from 'url';
-import { PipelineResp, PluginStatusValue } from '@pipcook/sdk';
+import { PipelineResp, PluginStatusValue, PipelineConfig } from '@pipcook/sdk';
 import { constants, PluginStatus } from '@pipcook/pipcook-core';
 import { readJson } from 'fs-extra';
 import { install as pluginInstall } from './plugin';
@@ -20,7 +20,7 @@ export async function list(opts: any): Promise<void> {
 export async function info(id: string, opts: any): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   try {
-    const pipeline = await client.pipeline.get(id);
+    const pipeline = await client.pipeline.getConfig(id);
     console.info(JSON.stringify(pipeline, null, 2));
   } catch (err) {
     logger.fail(err.message);
@@ -101,7 +101,7 @@ export async function install(filename: string, opts: any): Promise<void> {
     } else {
       logger.start(`downloading pipeline config file form ${filename}`);
       const stream = await getFile(filename);
-      const config = await streamToJson(stream);
+      const config = await streamToJson(stream) as PipelineConfig;
       logger.start('installing plugins');
       await installPackageFromConfig(config, opts);
       logger.info('start to create pipeline');

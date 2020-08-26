@@ -119,3 +119,24 @@ export interface PluginListParams {
   category?: string;
   name?: string;
 }
+
+export interface PluginConfig {
+  package: string;
+  params?: any;
+}
+
+export interface PipelinePlugins {
+  dataCollect: PluginConfig;
+  dataAccess: PluginConfig;
+  dataProcess?: PluginConfig;
+  datasetProcess?: PluginConfig;
+  modelLoad?: PluginConfig;
+  modelDefine?: PluginConfig;
+  modelTrain: PluginConfig;
+  modelEvaluate: PluginConfig;
+}
+
+export interface PipelineConfig {
+  name: string;
+  plugins: PipelinePlugins;
+}

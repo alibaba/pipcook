@@ -4,14 +4,7 @@ import { Plugin } from './plugin';
 import { get } from './request';
 import { VersionsResp, ConfigResp } from './interface';
 export { JobStatusValue, PluginStatusValue } from './utils';
-export {
-  JobResp,
-  PipelineResp,
-  JobRunOption,
-  PipelineInstallOption,
-  PluginResp,
-  TraceResp
-} from './interface';
+export * from './interface';
 
 /**
  * The Pipcook client to connect specific daemon endpoint.
