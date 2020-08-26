@@ -63,7 +63,7 @@ export {
 
 export {
   parsePluginName
-} from './utils/utils';
+} from './utils/common';
 
 export { OutputType } from './constants/other';
 export { PipelineDB, PipelineDBParams, PipelineStatus } from './types/database';

@@ -1,6 +1,6 @@
 import {
   parsePluginName
-} from './utils';
+} from './common';
 
 describe('test plugin name parser', () => {
   it('parse from package name', async () => {
