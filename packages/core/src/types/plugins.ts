@@ -10,7 +10,6 @@ interface InsertParams {
 
 export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'datasetProcess' | 'modelLoad' | 'modelDefine' | 'modelTrain' | 'modelEvaluate';
 
-// TODO(feely): remove 'fs'
 /**
  * The plugin installation protocol
  */
