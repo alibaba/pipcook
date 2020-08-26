@@ -111,7 +111,6 @@ export async function uninstall(name: string, opts: any): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   logger.start(`uninstalling ${name}`);
   const plugins = await client.plugin.list({ name });
-  logger.info(plugins.length.toString());
   if (plugins.length > 0) {
     try {
       await client.plugin.remove(plugins[0].id);
