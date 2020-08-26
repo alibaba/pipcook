@@ -7,7 +7,6 @@ import * as request from 'request-promise';
 import * as url from 'url';
 import {
   RunConfigI,
-  PipelineDB,
   PipelineDBParams,
   constants,
   generateId,

@@ -61,7 +61,7 @@ export {
 } from './utils/public';
 
 export { OutputType } from './constants/other';
-export { PipelineDB, PipelineDBParams, PipelineStatus } from './types/database';
+export { PipelineDBParams, PipelineStatus } from './types/database';
 export { RunConfigI } from './types/config';
 
 // expose constants

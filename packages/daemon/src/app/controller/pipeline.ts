@@ -1,10 +1,10 @@
-import { constants, PipelineDB, PluginStatus } from '@pipcook/pipcook-core';
+import { constants, PluginStatus } from '@pipcook/pipcook-core';
 import { controller, inject, provide, post, get, put, del } from 'midway';
 import * as HttpStatus from 'http-status';
 import * as Joi from 'joi';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
-import { parseConfig } from '../../runner/helper';
+import { parseConfig, PipelineDB } from '../../runner/helper';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { LogObject } from '../../service/log-manager';
