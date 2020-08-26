@@ -245,5 +245,9 @@ export enum PluginStatus {
   /**
    * the plugin installation pending
    */
-  PENDING
+  PENDING,
+  /**
+   * the plugin installation not started
+   */
+  INIT
 }
