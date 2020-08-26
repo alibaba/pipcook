@@ -1,7 +1,6 @@
-import { app } from 'midway-mock/bootstrap';
+import { app, assert } from 'midway-mock/bootstrap';
 import { PipelineService } from '../../src/service/pipeline';
 import * as sinon from 'sinon';
-import assert from 'midway-mock/node_modules/@types/power-assert';
 
 describe('test pipeline controller', () => {
   it('should list all pipelines', () => {
