@@ -86,6 +86,25 @@ describe('start runnable in normal way', () => {
     expect(stdout2.search('hello python! [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]') !== 0).toBe(true);
   });
 
+  it('should start a python plugin with scope package name', async () => {
+    await mkdirp(path.join(__dirname, './plugins/python-scope/node_modules/@pipcook'));
+    if (await pathExists(path.join(__dirname, './plugins/python-scope/node_modules/@pipcook/boa'))) {
+      await remove(path.join(__dirname, './plugins/python-scope/node_modules/@pipcook/boa'));
+    }
+    await symlink(
+      path.join(__dirname, '../../../boa'),
+      path.join(__dirname, './plugins/python-scope/node_modules/@pipcook/boa')
+    );
+    const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-scope'));
+    const stdoutStream = new StringWritable();
+    const stderrStream = new StringWritable();
+    await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream });
+    // test if the plugin is executed successfully
+    await runnable.start(simple, tmp);
+    const stdout = stdoutStream.data;
+    expect(stdout.search('hello python!') !== 0).toBe(true);
+  });
+
   it('should destroy the runnable', async () => {
     await runnable.destroy();
     const list = await readdir(costa.options.componentDir);
