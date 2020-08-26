@@ -26,6 +26,6 @@ describe('test plugin apis', () => {
     const call = getfn.getCall(0) as any;
     const urlo = parse(call.firstArg, true);
     expect(urlo.pathname).toBe('/api/plugin/metadata');
-    expect(urlo.query.name).toBe('foobar');
+    expect(call.args[1].name).toBe('foobar');
   });
 });
