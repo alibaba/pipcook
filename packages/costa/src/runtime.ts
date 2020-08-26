@@ -1,5 +1,4 @@
 import path from 'path';
-import url from 'url';
 import { createUnzip } from 'zlib';
 import {
   createReadStream,

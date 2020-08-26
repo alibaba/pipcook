@@ -326,7 +326,7 @@ export function generateId(): string {
 /**
  * parse plugin name, return the plugin protocol and url object
  */
-export function parsePluginName(name: string): { protocol: PluginProtocol; urlObject: url.UrlWithStringQuery; } {
+export function parsePluginName(name: string): { protocol: PluginProtocol; urlObject: url.UrlWithStringQuery } {
   const urlObject = url.parse(name);
   let protocol: PluginProtocol;
   if (path.isAbsolute(name)) {
