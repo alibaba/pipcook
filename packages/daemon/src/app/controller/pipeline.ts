@@ -129,7 +129,11 @@ export class PipelineController extends BaseEventController {
     if (!pipeline) {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'pipeline not found');
     }
-    this.ctx.success(pipeline);
+    const plugins = (await Promise.all(constants.PLUGINS.map(async (pluginType) => {
+      const plugin = await this.pluginManager.findById(pipeline[`${pluginType}Id`]);
+      return plugin;
+    }))).filter((plugin) => plugin);
+    this.ctx.success({ ...pipeline, plugins });
   }
 
   /**
