@@ -49,11 +49,9 @@ export class PipelineController extends BaseEventController {
     };
     const plugins = (await Promise.all(constants.PLUGINS.map(async (pluginType) => {
       const plugin = await createPlugin(pluginType);
-      if (plugin) {
-        parsedConfig[`${pluginType}Id`] = plugin?.id;
-        parsedConfig[pluginType] = plugin?.name;
-        return plugin;
-      }
+      parsedConfig[`${pluginType}Id`] = plugin?.id;
+      parsedConfig[pluginType] = plugin?.name;
+      return plugin;
     }))).filter((plugin) => plugin);
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
     this.ctx.success({ ...pipeline, plugins }, HttpStatus.CREATED);
