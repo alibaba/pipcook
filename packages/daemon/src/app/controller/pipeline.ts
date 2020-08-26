@@ -44,7 +44,7 @@ export class PipelineController extends BaseEventController {
     const createPlugin = async (field: string) => {
       if (parsedConfig[field]) {
         const pkg = await this.pluginManager.fetch(parsedConfig[field]);
-        return await this.pluginManager.findOrCreateByPkg(pkg);
+        return this.pluginManager.findOrCreateByPkg(pkg);
       } else {
         return undefined;
       }
