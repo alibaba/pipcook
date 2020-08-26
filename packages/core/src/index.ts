@@ -38,6 +38,7 @@ export {
   ModelDefineArgsType,
   ModelTrainArgsType,
   PluginTypeI,
+  PluginSourceProtocol as PluginProtocol,
   PipcookPlugin,
   PluginStatus
 } from './types/plugins';
@@ -59,6 +60,10 @@ export {
   shuffle,
   generateId
 } from './utils/public';
+
+export {
+  parsePluginName
+} from './utils/common';
 
 export { OutputType } from './constants/other';
 export { PipelineDB, PipelineDBParams, PipelineStatus } from './types/database';
