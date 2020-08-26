@@ -11,6 +11,11 @@ interface InsertParams {
 export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'datasetProcess' | 'modelLoad' | 'modelDefine' | 'modelTrain' | 'modelEvaluate';
 
 /**
+ * The plugin installation protocol
+ */
+export type PluginSourceProtocol = 'fs' | 'npm' | 'git' | 'tarball';
+
+/**
  * The base type which represents the `Record` from pipeline config file.
  */
 export type ArgsType = InsertParams & Record<string, any>
