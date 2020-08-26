@@ -92,6 +92,9 @@ export class PluginManager {
     return this.model.findOne({ where: { id } });
   }
 
+  async findByIds(ids: string[]): Promise<PluginModel> {
+    return this.model.findOne({ where: { id: ids } });
+  }
   async findByName(name: string): Promise<PluginModel> {
     return this.model.findOne({ where: { name } });
   }
@@ -123,7 +126,9 @@ export class PluginManager {
         category: pkg.pipcook.category,
         datatype: pkg.pipcook.datatype,
         dest: pkg.pipcook.target.DESTPATH,
-        status: PluginStatus.INSTALLING
+        from: pkg.pipcook.source.from,
+        uri: pkg.pipcook.source.uri,
+        status: PluginStatus.INIT
       }
     });
     return plugin;
