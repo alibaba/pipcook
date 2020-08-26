@@ -55,8 +55,11 @@ export class PipelineController extends BaseEventController {
         return plugin;
       })
     )).filter((plugin) => plugin);
-    const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    this.ctx.success({ ...pipeline.toJSON(), plugins }, HttpStatus.CREATED);
+    let pipeline = await this.pipelineService.createPipeline(parsedConfig);
+    // TODO(feely): if use Destructuring there will be a
+    // typeError: Converting circular structure to JSON
+    (pipeline as any ).plugins = plugins;
+    this.ctx.success(pipeline, HttpStatus.CREATED);
   }
 
   /**
@@ -135,7 +138,10 @@ export class PipelineController extends BaseEventController {
       const plugin = await this.pluginManager.findById(pipeline[`${pluginType}Id`]);
       return plugin;
     }))).filter((plugin) => plugin);
-    this.ctx.success({ ...pipeline.toJSON(), plugins });
+    // TODO(feely): if use Destructuring there will be a
+    // typeError: Converting circular structure to JSON
+    (pipeline as any ).plugins = plugins;
+    this.ctx.success(pipeline);
   }
 
   /**
