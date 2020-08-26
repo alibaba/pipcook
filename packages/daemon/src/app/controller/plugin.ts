@@ -52,6 +52,7 @@ export class PluginController extends BaseEventController {
       this.ctx.throw(HttpStatus.BAD_REQUEST, 'no id value found');
     }
   }
+
   /**
    * delete all plugins
    */
@@ -61,6 +62,20 @@ export class PluginController extends BaseEventController {
     await this.pluginManager.uninstall(plugins);
     this.ctx.success();
   }
+
+  /**
+   * get metadata from name
+   */
+  @get('/metadata')
+  public async getMetadata() {
+    const name = this.ctx.query.name;
+    if (!name) {
+      return this.ctx.throw(HttpStatus.BAD_REQUEST, 'name is required');
+    }
+    const md = await this.pluginManager.fetch(name);
+    this.ctx.success(md);
+  }
+
   /**
    * find a plugin by id
    */
@@ -78,7 +93,7 @@ export class PluginController extends BaseEventController {
    * fetch the plugin metadata by a id
    */
   @get('/:id/metadata')
-  public async metadata() {
+  public async getMetadataById() {
     const plugin = await this.pluginManager.findById(this.ctx.params.id);
     if (!plugin) {
       return this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');

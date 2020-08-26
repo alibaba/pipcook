@@ -12,7 +12,8 @@
     "dev-build": "npm run clean && npm run dev-compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "dev-compile": "esbuild ./src/*.ts --tsconfig=tsconfig.json --outdir=dist",
-    "compile": "tsc -b tsconfig.json"
+    "compile": "tsc -b tsconfig.json",
+    "test": "ts-node ../../run_tests.ts"
   },
   "dependencies": {
     "@pipcook/pipcook-core": "^1.1.2",
@@ -25,6 +26,8 @@
     "@types/eventsource": "^1.1.2",
     "@types/form-data": "^2.5.0",
     "@types/fs-extra": "^9.0.1",
+    "@types/sinon": "^9.0.5",
+    "sinon": "^9.0.3",
     "typescript": "^3.7.2"
   }
 }
