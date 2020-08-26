@@ -27,7 +27,7 @@ export interface RuntimeOptions {
  * This represents a source of a plugin.
  */
 export interface PluginSource {
-  protocol: PluginProtocol;
+  from: PluginProtocol;
   uri?: string;
   urlObject?: url.UrlWithStringQuery;
   name: string;

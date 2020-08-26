@@ -5,7 +5,6 @@ import * as fs from 'fs-extra';
 import { customAlphabet } from 'nanoid';
 import _cliProgress from 'cli-progress';
 import { PIPCOOK_LOGS, PIPCOOK_TMPDIR } from '../constants/other';
-import { PluginProtocol } from '../types/plugins';
 
 const xml2js = require('xml2js');
 const request = require('request');
@@ -321,24 +320,4 @@ export function shuffle(array: any[]): void {
  */
 export function generateId(): string {
   return nanoid();
-}
-
-/**
- * parse plugin name, return the plugin protocol and url object
- */
-export function parsePluginName(name: string): { protocol: PluginProtocol; urlObject: url.UrlWithStringQuery } {
-  const urlObject = url.parse(name);
-  let protocol: PluginProtocol;
-  if (path.isAbsolute(name)) {
-    protocol = 'fs';
-  } else if (/^git(\+ssh|\+https|\+http)?:$/.test(urlObject.protocol)) {
-    protocol = 'git';
-  } else if ([ 'https:', 'http:' ].indexOf(urlObject.protocol) !== -1) {
-    protocol = 'tarball';
-  } else if (name[0] !== '.') {
-    protocol = 'npm';
-  } else {
-    throw new TypeError(`Unsupported resolving plugin name: ${name}`);
-  }
-  return { protocol, urlObject };
 }

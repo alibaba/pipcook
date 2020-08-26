@@ -13,7 +13,7 @@ export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'datase
 /**
  * The plugin installation protocol
  */
-export type PluginProtocol = 'fs' | 'npm' | 'git' | 'tarball';
+export type PluginSourceProtocol = 'fs' | 'npm' | 'git' | 'tarball';
 
 /**
  * The base type which represents the `Record` from pipeline config file.

@@ -246,22 +246,22 @@ export class CostaRuntime {
   async fetch(name: string): Promise<PluginPackage> {
     let pkg: PluginPackage;
     const source = this.getSource(name);
-    if (source.protocol === 'npm') {
+    if (source.from === 'npm') {
       debug(`requesting the url ${source.uri}`);
       // TODO(yorkie): support http cache
       const resp = await requestHttpGetWithCache(source.uri);
       const meta = resp as NpmPackageMetadata;
       pkg = selectNpmPackage(meta, source);
-    } else if (source.protocol === 'git') {
+    } else if (source.from === 'git') {
       debug(`requesting the url ${source.uri}...`);
       const { hostname, auth, hash } = source.urlObject;
       let pathname = source.urlObject.pathname.replace(/^\/:?/, '');
       const remote = `${auth || 'git'}@${hostname}:${pathname}${hash || ''}`;
       pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
-    } else if (source.protocol === 'fs') {
+    } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
       pkg = await readJson(`${source.uri}/package.json`);
-    } else if (source.protocol === 'tarball') {
+    } else if (source.from === 'tarball') {
       debug(`downloading the url ${source.uri}`);
       await download(source.name, source.uri);
       pkg = await fetchPackageJsonFromTarball(source.uri);
@@ -282,7 +282,7 @@ export class CostaRuntime {
     await pipeGracefully(stream, writeStream);
     const pkg = await fetchPackageJsonFromTarball(filename);
     const source: PluginSource = {
-      protocol: 'tarball',
+      from: 'tarball',
       name: `${pkg.name}@${pkg.version}`,
       uri: filename
     };
@@ -297,7 +297,7 @@ export class CostaRuntime {
   private async installNodeModules(pkg: PluginPackage, opts: InstallOptions): Promise<void> {
     const pluginStdName = `${pkg.name}@${pkg.version}`;
     let pluginAbsName;
-    if (pkg.pipcook.source.protocol === 'npm') {
+    if (pkg.pipcook.source.from === 'npm') {
       pluginAbsName = pluginStdName;
       debug(`install the plugin from npm registry: ${pluginAbsName}`);
     } else {
@@ -478,7 +478,7 @@ export class CostaRuntime {
   private getSource(name: string): PluginSource {
     const { protocol, urlObject } = parsePluginName(name);
     const src: PluginSource = {
-      protocol,
+      from: protocol,
       name,
       uri: null,
       urlObject

@@ -38,7 +38,7 @@ export {
   ModelDefineArgsType,
   ModelTrainArgsType,
   PluginTypeI,
-  PluginProtocol,
+  PluginSourceProtocol as PluginProtocol,
   PipcookPlugin,
   PluginStatus
 } from './types/plugins';
@@ -58,9 +58,12 @@ export {
   convertPascal2CocoFileOutput,
   compressTarFile,
   shuffle,
-  generateId,
-  parsePluginName
+  generateId
 } from './utils/public';
+
+export {
+  parsePluginName
+} from './utils/utils';
 
 export { OutputType } from './constants/other';
 export { PipelineDB, PipelineDBParams, PipelineStatus } from './types/database';
