@@ -18,20 +18,20 @@ export class Pipeline extends BaseApi {
   }
 
   /**
-   * get pipeline info by pipeline id
+   * get pipeline config by pipeline id
    * @param id pipeline id
    */
   get(id: string): Promise<PipelineResp> {
-    return get(`${this.route}/${id}`);
+    return get(`${this.route}/${id}/config`);
   }
   info = this.get;
 
   /**
-   * get pipeline config by pipeline id
+   * get pipeline info by pipeline id
    * @param id pipeline id
    */
-  getConfig(id: string): Promise<PipelineConfig> {
-    return get(`${this.route}/${id}/config`);
+  getPipeline(id: string): Promise<PipelineConfig> {
+    return get(`${this.route}/${id}`);
   }
 
   /**
