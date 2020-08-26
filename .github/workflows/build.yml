@@ -60,7 +60,7 @@ jobs:
         npm test
     - name: daemon start
       run: |
-        mkdir -p ~/.pipcook/db && wget https://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook-ci-res/pipcook.db -o ~/.pipcook/db/pipcook.db
+        mkdir -p ~/.pipcook/db && wget https://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook-ci-res/pipcook.db -O ~/.pipcook/db/pipcook.db
         ./packages/cli/dist/bin/pipcook daemon start
     - name: Testing help commands
       run: |
