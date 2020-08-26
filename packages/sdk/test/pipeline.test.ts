@@ -12,16 +12,16 @@ describe('test pipeline apis', () => {
 
   it('should call get pipeline config by id', async () => {
     const getfn = sinon.stub(request, 'get');
-    await pipcook.pipeline.get('id');
+    await pipcook.pipeline.getConfig('id');
 
     const call = getfn.getCall(0) as any;
     const urlo = parse(call.firstArg, true);
     expect(urlo.pathname).toBe('/api/pipeline/id/config');
   });
 
-  it('should call get pipeline object by id', async () => {
+  it('should call get pipeline info by id', async () => {
     const getfn = sinon.stub(request, 'get');
-    await pipcook.pipeline.getPipeline('id');
+    await pipcook.pipeline.get('id');
 
     const call = getfn.getCall(0) as any;
     const urlo = parse(call.firstArg, true);
