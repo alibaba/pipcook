@@ -10,6 +10,12 @@ interface InsertParams {
 
 export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'datasetProcess' | 'modelLoad' | 'modelDefine' | 'modelTrain' | 'modelEvaluate';
 
+// TODO(feely): remove 'fs'
+/**
+ * The plugin installation protocol
+ */
+export type PluginProtocol = 'fs' | 'npm' | 'git' | 'tarball' | null;
+
 /**
  * The base type which represents the `Record` from pipeline config file.
  */
