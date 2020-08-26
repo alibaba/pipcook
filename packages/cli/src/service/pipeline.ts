@@ -20,7 +20,7 @@ export async function list(opts: any): Promise<void> {
 export async function info(id: string, opts: any): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   try {
-    const pipeline = await client.pipeline.get(id);
+    const pipeline = await client.pipeline.getConfig(id);
     console.info(JSON.stringify(pipeline, null, 2));
   } catch (err) {
     logger.fail(err.message);
