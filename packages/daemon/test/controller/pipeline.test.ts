@@ -1,7 +1,19 @@
-import { app } from 'midway-mock/bootstrap';
-import { PipelineService } from '../../src/service/pipeline';
-import * as sinon from 'sinon';
-import assert from 'midway-mock/node_modules/@types/power-assert';
+import { app, assert } from 'midway-mock/bootstrap';
+import { MidwayMockApplication } from 'midway-mock/dist/interface';
+
+function mockGetPipeline(app: MidwayMockApplication) {
+  app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
+    assert.equal(id, 'id');
+    return {
+      id,
+      name: 'name',
+      dataCollect: 'dataCollect',
+      dataCollectParams: '{}',
+      dataAccess: 'dataCollectParams',
+      dataAccessParams: '{"a":1}'
+    };
+  });
+}
 
 describe('test pipeline controller', () => {
   it('should list all pipelines', () => {
@@ -12,43 +24,21 @@ describe('test pipeline controller', () => {
       .expect(200);
   });
   it('should get pipeline config', async () => {
-    const pipelineService = await app.applicationContext.getAsync<PipelineService>('pipelineService');
-    sinon.replace(pipelineService, 'getPipeline', (id: string) => {
-      assert.equal(id, 'id');
-      return {
-        id,
-        name: 'name',
-        dataCollect: 'dataCollect',
-        dataCollectParams: '{}',
-        dataAccess: 'dataCollectParams',
-        dataAccessParams: '{"a": 1}'
-      };      
-    });
+    mockGetPipeline(app);
     return app
       .httpRequest()
       .get('/api/pipeline/id/config')
       .expect('Content-Type', /json/)
       .expect(200).then((res) => {
         assert.equal(res.body.name, 'name');
-        assert.equal(res.body.plugin.dataCollect.package, 'dataCollect');
-        assert.equal(res.body.plugin.dataCollect.params.keys(), []);
-        assert.equal(res.body.plugin.dataAccess.package, 'dataCollectParams');
-        assert.equal(res.body.plugin.dataAccess.params.a, 1);
+        assert.equal(res.body.plugins.dataCollect.package, 'dataCollect');
+        assert.deepEqual(res.body.plugins.dataCollect.params, {});
+        assert.equal(res.body.plugins.dataAccess.package, 'dataCollectParams');
+        assert.equal(res.body.plugins.dataAccess.params.a, 1);
       });
   });
   it('should get pipeline info', async () => {
-    const pipelineService = await app.applicationContext.getAsync<PipelineService>('pipelineService');
-    sinon.replace(pipelineService, 'getPipeline', (id: string) => {
-      assert.equal(id, 'id');
-      return {
-        id,
-        name: 'name',
-        dataCollect: 'dataCollect',
-        dataCollectParams: '{}',
-        dataAccess: 'dataCollectParams',
-        dataAccessParams: '{"a": 1}'
-      };      
-    });
+    mockGetPipeline(app);
     return app
       .httpRequest()
       .get('/api/pipeline/id')
@@ -56,9 +46,9 @@ describe('test pipeline controller', () => {
       .expect(200).then((res) => {
         assert.equal(res.body.name, 'name');
         assert.equal(res.body.dataCollect, 'dataCollect');
-        assert.equal(res.body.dataCollectParams.keys(), []);
+        assert.equal(res.body.dataCollectParams, '{}');
         assert.equal(res.body.dataAccess, 'dataCollectParams');
-        assert.equal(res.body.dataAccessParams.a, 1);
+        assert.equal(res.body.dataAccessParams, '{"a":1}');
       });
   });
 });
