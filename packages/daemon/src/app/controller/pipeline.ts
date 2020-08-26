@@ -56,7 +56,7 @@ export class PipelineController extends BaseEventController {
       })
     )).filter((plugin) => plugin);
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    this.ctx.success({ ...pipeline, plugins }, HttpStatus.CREATED);
+    this.ctx.success({ ...pipeline.toJSON(), plugins }, HttpStatus.CREATED);
   }
 
   /**
@@ -135,7 +135,7 @@ export class PipelineController extends BaseEventController {
       const plugin = await this.pluginManager.findById(pipeline[`${pluginType}Id`]);
       return plugin;
     }))).filter((plugin) => plugin);
-    this.ctx.success({ ...pipeline, plugins });
+    this.ctx.success({ ...pipeline.toJSON(), plugins });
   }
 
   /**
