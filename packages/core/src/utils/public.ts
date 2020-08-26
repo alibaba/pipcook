@@ -5,6 +5,7 @@ import * as fs from 'fs-extra';
 import { customAlphabet } from 'nanoid';
 import _cliProgress from 'cli-progress';
 import { PIPCOOK_LOGS, PIPCOOK_TMPDIR } from '../constants/other';
+import { PluginProtocol } from '../types/plugins';
 
 const xml2js = require('xml2js');
 const request = require('request');
@@ -325,9 +326,9 @@ export function generateId(): string {
 /**
  * parse plugin name, return the plugin protocol and url object
  */
-export function parsePluginName(name: string): { protocol: string; urlObject: url.UrlWithStringQuery; } {
+export function parsePluginName(name: string): { protocol: PluginProtocol; urlObject: url.UrlWithStringQuery; } {
   const urlObject = url.parse(name);
-  let protocol: string;
+  let protocol: PluginProtocol;
   if (path.isAbsolute(name)) {
     protocol = 'fs';
   } else if (/^git(\+ssh|\+https|\+http)?:$/.test(urlObject.protocol)) {
