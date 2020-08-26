@@ -15,7 +15,7 @@ const createSchema = Joi.object({
   name: Joi.string(),
   config: Joi.object(),
   configUri: Joi.string(),
-}).without('config', 'configUri').or('config', 'configUri');
+}).xor('config', 'configUri');
 
 const listSchema = Joi.object({
   offset: Joi.number().min(0),
@@ -47,12 +47,14 @@ export class PipelineController extends BaseEventController {
         return this.pluginManager.findOrCreateByPkg(pkg);
       }
     };
-    const plugins = (await Promise.all(constants.PLUGINS.map(async (pluginType) => {
-      const plugin = await createPlugin(pluginType);
-      parsedConfig[`${pluginType}Id`] = plugin?.id;
-      parsedConfig[pluginType] = plugin?.name;
-      return plugin;
-    }))).filter((plugin) => plugin);
+    const plugins = (await Promise.all(
+      constants.PLUGINS.map(async (pluginType) => {
+        const plugin = await createPlugin(pluginType);
+        parsedConfig[`${pluginType}Id`] = plugin?.id;
+        parsedConfig[pluginType] = plugin?.name;
+        return plugin;
+      })
+    )).filter((plugin) => plugin);
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
     this.ctx.success({ ...pipeline, plugins }, HttpStatus.CREATED);
   }
