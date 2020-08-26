@@ -215,8 +215,9 @@ describe('test plugin name parser', () => {
     expect(urlObject.href).toEqual(url);
   });
   it('parse from invalid url', async () => {
-    const url = './abc/tarball.tgz';
-    const { protocol } = parsePluginName(url);
-    expect(protocol).toEqual(undefined);
+    expect(() => {
+      const url = './abc/tarball.tgz';
+      parsePluginName(url);
+    }).toThrowError(TypeError);
   });
 });

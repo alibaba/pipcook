@@ -338,7 +338,7 @@ export function parsePluginName(name: string): { protocol: PluginProtocol; urlOb
   } else if (name[0] !== '.') {
     protocol = 'npm';
   } else {
-    protocol = undefined;
+    throw new TypeError(`Unsupported resolving plugin name: ${name}`);
   }
   return { protocol, urlObject };
 }

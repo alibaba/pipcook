@@ -494,8 +494,6 @@ export class CostaRuntime {
         npmRegistryPrefix = npmRegistryPrefix.slice(0, -1);
       }
       src.uri = `${npmRegistryPrefix}/${src.schema.packageName}`;
-    } else {
-      throw new TypeError(`Unsupported resolving plugin name: ${name}`);
     }
     return src;
   }
