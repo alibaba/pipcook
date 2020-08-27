@@ -6,7 +6,6 @@ import { provide, inject } from 'midway';
 import * as HttpStatus from 'http-status';
 import * as createHttpError from 'http-errors';
 import {
-  PipelineDB,
   PipelineStatus,
   EvaluateResult,
   PluginTypeI,
@@ -22,6 +21,7 @@ import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
 import { LogObject } from './log-manager';
 import { pluginQueue } from '../utils';
+import { PipelineDB } from '../runner/helper';
 
 interface QueryOptions {
   limit: number;
