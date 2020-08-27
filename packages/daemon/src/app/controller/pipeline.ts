@@ -47,16 +47,17 @@ export class PipelineController extends BaseEventController {
         return this.pluginManager.findOrCreateByPkg(pkg);
       }
     };
-    const plugins = (await Promise.all(
-      constants.PLUGINS.map(async (pluginType) => {
-        const plugin = await createPlugin(pluginType);
-        parsedConfig[`${pluginType}Id`] = plugin?.id;
-        parsedConfig[pluginType] = plugin?.name;
-        return plugin;
-      })
-    )).filter((plugin) => plugin);
+    const plugins = [];
+    for (const pluginType of constants.PLUGINS) {
+      const plugin = await createPlugin(pluginType);
+      if (plugin) {
+        parsedConfig[`${pluginType}Id`] = plugin.id;
+        parsedConfig[pluginType] = plugin.name;
+        plugins.push(plugin);
+      }
+    }
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    // TODO(feely): if use Destructuring there will be a
+    // FIXME(feely): if use destructuring there will be a
     // typeError: Converting circular structure to JSON
     (pipeline as any).plugins = plugins;
     this.ctx.success(pipeline, HttpStatus.CREATED);
@@ -138,7 +139,7 @@ export class PipelineController extends BaseEventController {
       const plugin = await this.pluginManager.findById(pipeline[`${pluginType}Id`]);
       return plugin;
     }))).filter((plugin) => plugin);
-    // TODO(feely): if use Destructuring there will be a
+    // FIXME(feely): if use Destructuring there will be a
     // typeError: Converting circular structure to JSON
     (pipeline as any).plugins = plugins;
     this.ctx.success(pipeline);
