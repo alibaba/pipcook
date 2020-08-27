@@ -1,5 +1,3 @@
-import { PluginTypeI } from './plugins';
-
 /**
  * The Pipeline status
  */
@@ -34,8 +32,3 @@ export enum PipelineStatus {
  * The pipeline database parameters list.
  */
 export type PipelineDBParams = 'dataCollectParams' | 'dataAccessParams' | 'dataProcessParams' | 'modelDefineParams' | 'modelLoadParams' | 'modelTrainParams' | 'modelEvaluateParams';
-
-/**
- * The pipeline database schema.
- */
-export type PipelineDB = Partial<Record<'id' | 'name' | PluginTypeI | PipelineDBParams, string>>;
