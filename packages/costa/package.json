@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "pretest": "rm -rf .tests",
-    "test": "ts-node ../../run_tests.ts --spec 'dist/test/runnable_test.js'",
+    "test": "ts-node ../../run_tests.ts --spec 'dist/test/*.js'",
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
