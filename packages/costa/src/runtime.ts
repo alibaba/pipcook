@@ -1,5 +1,4 @@
 import path from 'path';
-import url from 'url';
 import { createUnzip } from 'zlib';
 import {
   createReadStream,
@@ -14,7 +13,7 @@ import {
   mkdirp,
   readJson
 } from 'fs-extra';
-import { download, constants, generateId } from '@pipcook/pipcook-core';
+import { download, constants, generateId, parsePluginName } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
@@ -477,32 +476,24 @@ export class CostaRuntime {
    * @param cwd the current working dir.
    */
   private getSource(name: string): PluginSource {
-    const urlObj = url.parse(name);
+    const { protocol, urlObject } = parsePluginName(name);
     const src: PluginSource = {
-      from: null,
+      from: protocol,
       name,
       uri: null,
-      urlObject: urlObj
+      urlObject
     };
-    if (path.isAbsolute(name)) {
-      src.from = 'fs';
+    if (protocol === 'fs' || protocol === 'git') {
       src.uri = name;
-    } else if (/^git(\+ssh)?:$/.test(urlObj.protocol)) {
-      src.from = 'git';
-      src.uri = name;
-    } else if ([ 'https:', 'http:' ].indexOf(urlObj.protocol) !== -1) {
-      src.from = 'tarball';
-      src.uri = path.join(constants.PIPCOOK_TMPDIR, generateId(), path.basename(urlObj.pathname));
-    } else if (name[0] !== '.') {
+    } else if (protocol === 'tarball') {
+      src.uri = path.join(constants.PIPCOOK_TMPDIR, generateId(), path.basename(urlObject.pathname));
+    } else if (protocol === 'npm') {
       src.schema = this.getNameSchema(name);
-      src.from = 'npm';
       let { npmRegistryPrefix } = this.options;
       if (npmRegistryPrefix.slice(-1) === '/') {
         npmRegistryPrefix = npmRegistryPrefix.slice(0, -1);
       }
       src.uri = `${npmRegistryPrefix}/${src.schema.packageName}`;
-    } else {
-      throw new TypeError(`Unsupported resolving plugin name: ${name}`);
     }
     return src;
   }
