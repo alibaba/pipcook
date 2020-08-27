@@ -12,7 +12,6 @@ describe('create a costa runtime', () => {
     npmRegistryPrefix: 'https://registry.npmjs.com/'
   });
   let nodeSimple: PluginPackage;
-  let pythonSimple: PluginPackage;
   const nodeSimplePath = path.join(__dirname, '../../test/plugins/nodejs-simple');
   const pythonSimplePath = path.join(__dirname, '../../test/plugins/python-simple');
 
@@ -70,7 +69,6 @@ describe('create a costa runtime', () => {
   });
 
   it('should fetch a plugin and install from tarball', async () => {
-    try {
     const collectCsvWithSpecificVer = await costa.fetch('https://registry.npmjs.org/@pipcook/plugins-csv-data-collect/-/plugins-csv-data-collect-1.0.0.tgz');
     expect(collectCsvWithSpecificVer.name).toBe('@pipcook/plugins-csv-data-collect');
     expect(collectCsvWithSpecificVer.version).toBe('1.0.0');
@@ -80,9 +78,6 @@ describe('create a costa runtime', () => {
       'node_modules',
       collectCsvWithSpecificVer.name
     ));
-    } catch(err) {
-      console.log(err);
-    }
   });
 
   it('should fetch a plugin from npm', async () => {
