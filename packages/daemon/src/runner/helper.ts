@@ -12,6 +12,7 @@ import {
   generateId,
   PluginTypeI
 } from '@pipcook/pipcook-core';
+import { PipelineModel } from '../model/pipeline';
 
 const { PLUGINS, PIPCOOK_LOGS } = constants;
 
@@ -48,9 +49,9 @@ async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> 
   }
 }
 
-export async function parseConfig(configPath: string | RunConfigI, isGenerateId = true): Promise<PipelineDB> {
+export async function parseConfig(configPath: string | RunConfigI, isGenerateId = true): Promise<PipelineModel> {
   const configJson = await loadConfig(configPath);
-  const result: PipelineDB = {};
+  const result: PipelineModel = new PipelineModel();
 
   if (isGenerateId) {
     result.id = generateId();

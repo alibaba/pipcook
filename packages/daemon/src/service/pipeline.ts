@@ -16,12 +16,11 @@ import {
   PluginStatus
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
-import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
-import { JobModelStatic, JobModel } from '../model/job';
+import { PipelineModel } from '../model/pipeline';
+import { JobModel } from '../model/job';
 import { PluginManager } from './plugin';
 import { LogObject } from './log-manager';
 import { pluginQueue } from '../utils';
-import { PipelineDB } from '../runner/helper';
 
 interface QueryOptions {
   limit: number;
@@ -60,31 +59,27 @@ const runnableMap: Record<string, PluginRunnable> = {};
 @provide('pipelineService')
 export class PipelineService {
 
-  @inject('pipelineModel')
-  pipeline: PipelineModelStatic;
-
-  @inject('jobModel')
-  job: JobModelStatic;
-
   @inject('pluginManager')
   pluginManager: PluginManager;
 
-  createPipeline(config: PipelineDB): Promise<PipelineModel> {
+  // FIXME(feely): change to IPipelineModel
+  createPipeline(config: PipelineModel): Promise<PipelineModel> {
+    console.log('config.id', config.id, config);
     if (typeof config.id !== 'string') {
       config.id = generateId();
     }
-    return this.pipeline.create(config);
+    return PipelineModel.create(config.toJSON());
   }
 
   async getPipeline(idOrName: string): Promise<PipelineModel> {
-    return this.pipeline.findOne({
+    return PipelineModel.findOne({
       where: { [Op.or]: [ { id: idOrName }, { name: idOrName } ] }
     });
   }
 
   async queryPipelines(opts?: QueryOptions): Promise<{rows: PipelineModel[], count: number}> {
     const { offset, limit } = opts || {};
-    return this.pipeline.findAndCountAll({
+    return PipelineModel.findAndCountAll({
       offset,
       limit,
       order: [
@@ -99,7 +94,7 @@ export class PipelineService {
   }
 
   async removePipelineById(id: string): Promise<number> {
-    return this.pipeline.destroy({
+    return PipelineModel.destroy({
       where: { id }
     });
   }
@@ -112,15 +107,15 @@ export class PipelineService {
     return list.count;
   }
 
-  async updatePipelineById(id: string, config: PipelineDB): Promise<PipelineModel> {
-    await this.pipeline.update(config, {
+  async updatePipelineById(id: string, config: PipelineModel): Promise<PipelineModel> {
+    await PipelineModel.update(config, {
       where: { id }
     });
     return this.getPipeline(id);
   }
 
   async getJobById(id: string): Promise<JobModel> {
-    return this.job.findOne({
+    return JobModel.findOne({
       where: { id }
     });
   }
@@ -131,7 +126,7 @@ export class PipelineService {
     if (typeof filter.pipelineId === 'string') {
       where.pipelineId = filter.pipelineId;
     }
-    return (await this.job.findAndCountAll({
+    return (await JobModel.findAndCountAll({
       offset,
       limit,
       where,
@@ -151,7 +146,7 @@ export class PipelineService {
   }
 
   async removeJobById(id: string): Promise<number> {
-    const job = await this.job.findByPk(id);
+    const job = await JobModel.findByPk(id);
     if (job) {
       await job.destroy();
       await fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`);
@@ -162,7 +157,7 @@ export class PipelineService {
 
   async createJob(pipelineId: string): Promise<JobModel> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
-    const job = await this.job.create({
+    const job = await JobModel.create({
       id: generateId(),
       pipelineId,
       specVersion,

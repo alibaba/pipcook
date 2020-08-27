@@ -3,7 +3,7 @@ import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pi
 import { PluginStatus, generateId } from '@pipcook/pipcook-core';
 import { LogManager, LogObject } from './log-manager';
 import PluginRuntime from '../boot/plugin';
-import { PluginModelStatic, PluginModel } from '../model/plugin';
+import { PluginModel } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
 import { pluginQueue } from '../utils';
 
@@ -18,9 +18,6 @@ export class PluginManager {
 
   @inject('logManager')
   logManager: LogManager;
-
-  @inject('pluginModel')
-  model: PluginModelStatic;
 
   @inject('pluginRT')
   pluginRT: PluginRuntime;
@@ -74,7 +71,7 @@ export class PluginManager {
     if (filter?.name) {
       where.name = filter.name;
     }
-    return this.model.findAll({ where });
+    return PluginModel.findAll({ where });
   }
 
   async query(filter?: ListPluginsFilter): Promise<PluginModel[]> {
@@ -85,26 +82,26 @@ export class PluginManager {
     if (filter.datatype) {
       where.datatype = filter.datatype;
     }
-    return this.model.findAll({ where });
+    return PluginModel.findAll({ where });
   }
 
   async findById(id: string): Promise<PluginModel> {
-    return this.model.findOne({ where: { id } });
+    return PluginModel.findOne({ where: { id } });
   }
 
   async findByIds(ids: string[]): Promise<PluginModel[]> {
-    return this.model.findAll({ where: { id: ids } });
+    return PluginModel.findAll({ where: { id: ids } });
   }
   async findByName(name: string): Promise<PluginModel> {
-    return this.model.findOne({ where: { name } });
+    return PluginModel.findOne({ where: { name } });
   }
 
   async removeById(id: string): Promise<number> {
-    return this.model.destroy({ where: { id } });
+    return PluginModel.destroy({ where: { id } });
   }
 
   async setStatusById(id: string, status: PluginStatus, errMsg?: string): Promise<number> {
-    const [ count ] = await this.model.update({
+    const [ count ] = await PluginModel.update({
       status,
       error: errMsg
     }, {
@@ -114,7 +111,7 @@ export class PluginManager {
   }
 
   async findOrCreateByPkg(pkg: PluginPackage): Promise<PluginModel> {
-    const [ plugin ] = await this.model.findOrCreate({
+    const [ plugin ] = await PluginModel.findOrCreate({
       where: {
         // TODO(feely): support the different versions of plugins
         name: pkg.name

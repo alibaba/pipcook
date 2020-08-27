@@ -1,14 +1,5 @@
-import { STRING, Model, BuildOptions } from 'sequelize';
-import { providerWrapper, IApplicationContext } from 'midway';
-import { JobModelStatic } from './job';
-import DB from '../boot/database';
-
-providerWrapper([
-  {
-    id: 'pipelineModel',
-    provider: model
-  }
-]);
+import { STRING, Model, Sequelize } from 'sequelize';
+import { JobModel } from './job';
 
 export class PipelineModel extends Model {
   id: string;
@@ -47,14 +38,8 @@ export class PipelineModel extends Model {
   modelEvaluateParams: string;
 }
 
-export type PipelineModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): PipelineModel;
-};
-
-export default async function model(context: IApplicationContext): Promise<PipelineModelStatic> {
-  const db = await context.getAsync('pipcookDB') as DB;
-  const JobModel = await context.getAsync('jobModel') as JobModelStatic;
-  const PipelineModel = db.sequelize.define('pipeline', {
+export default async function model(sequelize: Sequelize): Promise<void> {
+  PipelineModel.init({
     id: {
       type: STRING,
       primaryKey: true,
@@ -144,8 +129,11 @@ export default async function model(context: IApplicationContext): Promise<Pipel
     modelEvaluateParams: {
       type: STRING
     }
-  }) as PipelineModelStatic;
+  },
+  {
+    sequelize,
+    modelName: 'pipeline'
+  });
   PipelineModel.hasMany(JobModel);
   await PipelineModel.sync();
-  return PipelineModel;
 }

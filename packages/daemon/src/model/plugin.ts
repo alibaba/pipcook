@@ -1,74 +1,45 @@
-import { STRING, INTEGER, Model, BuildOptions } from 'sequelize';
-import { providerWrapper, IApplicationContext } from 'midway';
-import DB from '../boot/database';
-
-providerWrapper([
-  {
-    id: 'pluginModel',
-    provider: model
-  }
-]);
+import { STRING, INTEGER, Model, Sequelize } from 'sequelize';
 
 export class PluginModel extends Model {
-  readonly id: string;
-  readonly name: string;
-  readonly version: string;
-  readonly category: string;
-  readonly datatype: string;
-  readonly namespace: string;
-  readonly dest: string;
-  readonly sourceFrom: string;
-  readonly sourceUri: string;
-  readonly status: number;
-  readonly error: string;
+  id: string;
+  name: string;
+  version: string;
+  category: string;
+  datatype: string;
+  namespace: string;
+  dest: string;
+  sourceFrom: string;
+  sourceUri: string;
+  status: number;
+  error: string;
 }
 
-export type PluginModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): PluginModel;
-};
-
-export default async function model(context: IApplicationContext): Promise<PluginModelStatic> {
-  const db = await context.getAsync('pipcookDB') as DB;
-  const PluginModel = db.sequelize.define('plugin', {
+export default async function model(sequelize: Sequelize): Promise<void> {
+  PluginModel.init({
     id: {
       type: STRING,
       primaryKey: true,
       allowNull: false,
       unique: true
     },
-    name: {
-      type: STRING
-    },
-    version: {
-      type: STRING
-    },
-    category: {
-      type: STRING
-    },
-    datatype: {
-      type: STRING
-    },
-    namespace: {
-      type: STRING
-    },
-    dest: {
-      type: STRING
-    },
-    sourceFrom: {
-      type: STRING
-    },
-    sourceUri: {
-      type: STRING
-    },
+    name: STRING,
+    version: STRING,
+    category: STRING,
+    datatype: STRING,
+    namespace: STRING,
+    dest: STRING,
+    sourceFrom: STRING,
+    sourceUri: STRING,
     status: {
       type: INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    error: {
-      type: STRING
-    }
-  }) as PluginModelStatic;
+    error: STRING
+  },
+  {
+    sequelize: sequelize,
+    modelName: 'plugin'
+  });
   await PluginModel.sync();
-  return PluginModel;
 }

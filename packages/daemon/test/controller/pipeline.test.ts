@@ -1,7 +1,7 @@
 import { app, assert } from 'midway-mock/bootstrap';
 import { MidwayMockApplication } from 'midway-mock/dist/interface';
 import { PluginPackage } from '@pipcook/costa';
-import { PipelineDB } from '../../src/runner/helper';
+import { PipelineModel } from '../../src/model/pipeline';
 
 function mockGetPipeline(app: MidwayMockApplication) {
   app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
@@ -96,7 +96,7 @@ describe('test pipeline controller', () => {
         };
       }
     });
-    app.mockClassFunction('pipelineService', 'createPipeline', async (pipeline: PipelineDB) => {
+    app.mockClassFunction('pipelineService', 'createPipeline', async (pipeline: PipelineModel) => {
       assert.equal(pipeline.name, 'name');
       assert.equal(pipeline.dataCollectId, 'dataCollectId');
       assert.equal(pipeline.dataCollect, 'dataCollect');

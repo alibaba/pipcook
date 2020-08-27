@@ -1,19 +1,10 @@
-import { STRING, INTEGER, BOOLEAN, Model, BuildOptions } from 'sequelize';
-import { providerWrapper, IApplicationContext } from 'midway';
-import DB from '../boot/database';
-
-providerWrapper([
-  {
-    id: 'jobModel',
-    provider: model
-  }
-]);
+import { STRING, INTEGER, BOOLEAN, Model, Sequelize } from 'sequelize';
 
 export class JobModel extends Model {
-  readonly id: string;
-  readonly pipelineId: string;
-  readonly specVersion: string;
-  readonly metadata: number;
+  id: string;
+  pipelineId: string;
+  specVersion: string;
+  metadata: number;
 
   evaluateMap: string;
   evaluatePass: boolean;
@@ -24,13 +15,8 @@ export class JobModel extends Model {
   dataset: string;
 }
 
-export type JobModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): JobModel;
-};
-
-export default async function model(context: IApplicationContext): Promise<JobModelStatic> {
-  const db = await context.getAsync('pipcookDB') as DB;
-  const JobModel = db.sequelize.define('job', {
+export default async function model(sequelize: Sequelize): Promise<void> {
+  JobModel.init({
     id: {
       type: STRING,
       primaryKey: true,
@@ -77,7 +63,10 @@ export default async function model(context: IApplicationContext): Promise<JobMo
     endTime: {
       type: INTEGER
     }
-  }) as JobModelStatic;
+  },
+  {
+    sequelize: sequelize,
+    modelName: 'job'
+  });
   await JobModel.sync();
-  return JobModel;
 }

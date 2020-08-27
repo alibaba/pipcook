@@ -4,11 +4,12 @@ import * as HttpStatus from 'http-status';
 import * as Joi from 'joi';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
-import { parseConfig, PipelineDB } from '../../runner/helper';
+import { parseConfig } from '../../runner/helper';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { LogObject } from '../../service/log-manager';
 import { PluginResp } from '../../interface';
+import { PipelineModel } from '../../model/pipeline';
 const debug = Debug('daemon.app.pipeline');
 
 const createSchema = Joi.object({
@@ -182,7 +183,7 @@ export class PipelineController extends BaseEventController {
     }
   }
 
-  private async installByPipeline(pipeline: PipelineDB, log: LogObject, pyIndex?: string): Promise<void> {
+  private async installByPipeline(pipeline: PipelineModel, log: LogObject, pyIndex?: string): Promise<void> {
     for (const type of constants.PLUGINS) {
       if (!pipeline[type]) {
         continue;
