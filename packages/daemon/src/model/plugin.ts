@@ -38,7 +38,7 @@ export default async function model(sequelize: Sequelize): Promise<void> {
     error: STRING
   },
   {
-    sequelize: sequelize,
+    sequelize,
     modelName: 'plugin'
   });
   await PluginModel.sync();

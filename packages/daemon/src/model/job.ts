@@ -65,7 +65,7 @@ export default async function model(sequelize: Sequelize): Promise<void> {
     }
   },
   {
-    sequelize: sequelize,
+    sequelize,
     modelName: 'job'
   });
   await JobModel.sync();
