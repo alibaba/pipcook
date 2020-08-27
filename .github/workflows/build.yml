@@ -59,8 +59,9 @@ jobs:
       run: |
         npm test
     - name: migration
+      if: ${{ runner.os == 'Linux' }}
       run: |
-        [ "${{ runner.os }}" -eq "Linux" ] && mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db || true
+        mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db || true
     - name: daemon start
       run: |
         ./packages/cli/dist/bin/pipcook daemon start
