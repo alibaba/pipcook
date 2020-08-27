@@ -414,8 +414,8 @@ export class CostaRuntime {
         return false;
       }
       await remove(path.join(this.options.installDir, 'node_modules', name));
-      if (pkg.dependecies[name]) {
-        delete pkg.dependecies[name];
+      if (pkg.dependencies && pkg.dependencies[name]) {
+        delete pkg.dependencies[name];
       }
       return true;
     };
@@ -433,7 +433,7 @@ export class CostaRuntime {
     }
     // remove dependencies
     if (success) {
-      await writeJson(pkg, path.join(this.options.installDir, 'package.json'), { spaces: 2 });
+      await writeJson(path.join(this.options.installDir, 'package.json'), pkg, { spaces: 2 });
     }
     return success;
   }
