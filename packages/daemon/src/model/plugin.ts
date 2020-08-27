@@ -17,6 +17,8 @@ export class PluginModel extends Model {
   readonly datatype: string;
   readonly namespace: string;
   readonly dest: string;
+  readonly sourceFrom: string;
+  readonly sourceUri: string;
   readonly status: number;
   readonly error: string;
 }
@@ -50,6 +52,12 @@ export default async function model(context: IApplicationContext): Promise<Plugi
       type: STRING
     },
     dest: {
+      type: STRING
+    },
+    sourceFrom: {
+      type: STRING
+    },
+    sourceUri: {
       type: STRING
     },
     status: {
