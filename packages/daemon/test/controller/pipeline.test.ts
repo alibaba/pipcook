@@ -6,7 +6,7 @@ import { PipelineDB } from '../../src/runner/helper';
 function mockGetPipeline(app: MidwayMockApplication) {
   app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
     assert.equal(id, 'id');
-    return {
+    const obj: any = {
       id,
       name: 'name',
       dataCollectId: 'dataCollectId',
@@ -16,6 +16,10 @@ function mockGetPipeline(app: MidwayMockApplication) {
       dataAccess: 'dataAccess',
       dataAccessParams: '{"a":1}'
     };
+    obj.toJSON = function () {
+      return this;  
+    };
+    return obj;
   });
 }
 
@@ -43,12 +47,16 @@ describe('test pipeline controller', () => {
   });
   it('should get pipeline info', async () => {
     mockGetPipeline(app);
-    app.mockClassFunction('pluginManager', 'findById', async (id: string) => {
-      if (id) {
-        return {
-          id,
-          name: `${id}PluginName`
-        };
+    app.mockClassFunction('pluginManager', 'findByIds', async (ids: string[]) => {
+      if (ids.length > 0) {
+        const result = [];
+        for (const id of ids) {
+          result.push({
+            id,
+            name: `${id}PluginName`
+          });
+        }
+        return result;
       }
     });
     return app
@@ -63,6 +71,7 @@ describe('test pipeline controller', () => {
         assert.equal(res.body.dataAccessId, 'dataAccessId');
         assert.equal(res.body.dataAccess, 'dataAccess');
         assert.equal(res.body.dataAccessParams, '{"a":1}');
+        console.log(res.body.plugins);
         assert.deepEqual(res.body.plugins, [
           {id: 'dataCollectId', name: 'dataCollectIdPluginName'},
           {id: 'dataAccessId', name: 'dataAccessIdPluginName'}
@@ -96,6 +105,9 @@ describe('test pipeline controller', () => {
       assert.equal(pipeline.dataAccess, 'dataAccess');
       assert.equal(pipeline.dataAccessParams, '{"testParam":"456"}');
       pipeline.id = 'id';
+      (pipeline as any).toJSON = function () {
+        return this;
+      }
       return pipeline;
     });
     return app

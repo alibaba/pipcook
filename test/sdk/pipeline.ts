@@ -22,6 +22,7 @@ describe('pipeline api.pipeline test', () => {
     pipeline = await client.pipeline.create(config, { name });
     expect(typeof pipeline).toBe('object');
     expect(typeof pipeline.id).toBe('string');
+    expect(Array.isArray(pipeline.plugins) && pipeline.plugins.length > 0);
   });
   it('list', async () => {
     // list

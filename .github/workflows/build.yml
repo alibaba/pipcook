@@ -58,9 +58,12 @@ jobs:
     - name: Running unit tests
       run: |
         npm test
+    - name: migration
+        if: ${{ runner.os == "Linux" }}
+        run: |
+          mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db
     - name: daemon start
       run: |
-        mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-1.0.0.db ~/.pipcook/db/pipcook.db
         ./packages/cli/dist/bin/pipcook daemon start
     - name: Testing help commands
       run: |

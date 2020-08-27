@@ -92,8 +92,8 @@ export class PluginManager {
     return this.model.findOne({ where: { id } });
   }
 
-  async findByIds(ids: string[]): Promise<PluginModel> {
-    return this.model.findOne({ where: { id: ids } });
+  async findByIds(ids: string[]): Promise<PluginModel[]> {
+    return this.model.findAll({ where: { id: ids } });
   }
   async findByName(name: string): Promise<PluginModel> {
     return this.model.findOne({ where: { name } });

@@ -48,6 +48,7 @@ export class PipelineController extends BaseEventController {
       }
     };
     const plugins = [];
+    // TODO(Feely): modify to batch insert for performance
     for (const pluginType of constants.PLUGINS) {
       const plugin = await createPlugin(pluginType);
       if (plugin) {
@@ -57,10 +58,7 @@ export class PipelineController extends BaseEventController {
       }
     }
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    // FIXME(feely): if use destructuring there will be a
-    // typeError: Converting circular structure to JSON
-    (pipeline as any).plugins = plugins;
-    this.ctx.success(pipeline, HttpStatus.CREATED);
+    this.ctx.success({ ...pipeline.toJSON(), plugins }, HttpStatus.CREATED);
   }
 
   /**
@@ -135,14 +133,14 @@ export class PipelineController extends BaseEventController {
     if (!pipeline) {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'pipeline not found');
     }
-    const plugins = (await Promise.all(constants.PLUGINS.map(async (pluginType) => {
-      const plugin = await this.pluginManager.findById(pipeline[`${pluginType}Id`]);
-      return plugin;
-    }))).filter((plugin) => plugin);
-    // FIXME(feely): if use Destructuring there will be a
-    // typeError: Converting circular structure to JSON
-    (pipeline as any).plugins = plugins;
-    this.ctx.success(pipeline);
+    const pluginIds = [];
+    constants.PLUGINS.forEach((pluginType) => {
+      if (pipeline[`${pluginType}Id`]) {
+        pluginIds.push(pipeline[`${pluginType}Id`]);
+      }
+    });
+    const plugins = await this.pluginManager.findByIds(pluginIds);
+    this.ctx.success({ ...pipeline.toJSON(), plugins });
   }
 
   /**
