@@ -1,5 +1,5 @@
 import * as url from 'url';
-import { PluginTypeI } from '@pipcook/pipcook-core';
+import { PluginTypeI, PluginProtocol } from '@pipcook/pipcook-core';
 
 /**
  * The options to configure Costa runtime.
@@ -27,7 +27,7 @@ export interface RuntimeOptions {
  * This represents a source of a plugin.
  */
 export interface PluginSource {
-  from: 'fs' | 'npm' | 'git' | 'tarball' | null;
+  from: PluginProtocol;
   uri?: string;
   urlObject?: url.UrlWithStringQuery;
   name: string;
