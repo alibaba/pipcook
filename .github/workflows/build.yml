@@ -59,7 +59,7 @@ jobs:
       run: |
         npm test
     - name: migration
-        run: |
+      run: |
         [ "${{ runner.os }}" -eq "Linux" ] && mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db || true
     - name: daemon start
       run: |
