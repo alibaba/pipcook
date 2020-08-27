@@ -11,7 +11,8 @@ import {
   readFile,
   access,
   mkdirp,
-  readJson
+  readJson,
+  writeJson
 } from 'fs-extra';
 import { download, constants, generateId, parsePluginName } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
@@ -405,26 +406,36 @@ export class CostaRuntime {
    * @param name the plugin package name.
    */
   async uninstall(name: string | string[]): Promise<boolean> {
+    const pkg = await readJson(path.join(this.options.installDir, 'package.json'));
+
     const removePkg = async (name: string) => {
       if (!await this.isInstalled(name)) {
         debug(`skip uninstall "${name}" because it not exists.`);
         return false;
       }
       await remove(path.join(this.options.installDir, 'node_modules', name));
+      if (pkg.dependecies[name]) {
+        delete pkg.dependecies[name];
+      }
       return true;
     };
+
+    let success = false;
     if (Array.isArray(name)) {
-      let success = false;
       // any one uninstalls successfully, return true
       for (const singleName of name) {
         if (await removePkg(singleName)) {
           success = true;
         }
       }
-      return success;
     } else {
-      return removePkg(name);
+      success = await removePkg(name);
     }
+    // remove dependencies
+    if (success) {
+      await writeJson(pkg, path.join(this.options.installDir, 'package.json'), { spaces: 2 });
+    }
+    return success;
   }
   /**
    * create a runnable.
