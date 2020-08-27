@@ -1,10 +1,10 @@
-import { constants, PipelineDB, PluginStatus } from '@pipcook/pipcook-core';
+import { constants, PluginStatus } from '@pipcook/pipcook-core';
 import { controller, inject, provide, post, get, put, del } from 'midway';
 import * as HttpStatus from 'http-status';
 import * as Joi from 'joi';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
-import { parseConfig } from '../../runner/helper';
+import { parseConfig, PipelineDB } from '../../runner/helper';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { LogObject } from '../../service/log-manager';
@@ -15,7 +15,7 @@ const createSchema = Joi.object({
   name: Joi.string(),
   config: Joi.object(),
   configUri: Joi.string(),
-}).without('config', 'configUri').or('config', 'configUri');
+}).xor('config', 'configUri');
 
 const listSchema = Joi.object({
   offset: Joi.number().min(0),
@@ -40,8 +40,25 @@ export class PipelineController extends BaseEventController {
     const { name, configUri, config } = this.ctx.request.body;
     const parsedConfig = await parseConfig(configUri || config);
     parsedConfig.name = name;
+    // the plugin name could be git/web url, we need the real name, and create plugin object
+    const createPlugin = async (field: string) => {
+      if (parsedConfig[field]) {
+        const pkg = await this.pluginManager.fetch(parsedConfig[field]);
+        return this.pluginManager.findOrCreateByPkg(pkg);
+      }
+    };
+    const plugins = [];
+    // TODO(Feely): modify to batch insert for performance
+    for (const pluginType of constants.PLUGINS) {
+      const plugin = await createPlugin(pluginType);
+      if (plugin) {
+        parsedConfig[`${pluginType}Id`] = plugin.id;
+        parsedConfig[pluginType] = plugin.name;
+        plugins.push(plugin);
+      }
+    }
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    this.ctx.success(pipeline, HttpStatus.CREATED);
+    this.ctx.success({ ...pipeline.toJSON(), plugins }, HttpStatus.CREATED);
   }
 
   /**
@@ -116,7 +133,14 @@ export class PipelineController extends BaseEventController {
     if (!pipeline) {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'pipeline not found');
     }
-    this.ctx.success(pipeline);
+    const pluginIds = [];
+    constants.PLUGINS.forEach((pluginType) => {
+      if (pipeline[`${pluginType}Id`]) {
+        pluginIds.push(pipeline[`${pluginType}Id`]);
+      }
+    });
+    const plugins = await this.pluginManager.findByIds(pluginIds);
+    this.ctx.success({ ...pipeline.toJSON(), plugins });
   }
 
   /**
