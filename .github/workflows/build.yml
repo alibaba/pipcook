@@ -3,9 +3,17 @@ on:
   push:
     branches:
     - master
+    paths-ignore:
+    - 'docker/**'
+    - 'docs/**'
+    - 'notebooks/**'
   pull_request:
     branches:
     - master
+    paths-ignore:
+    - 'docker/**'
+    - 'docs/**'
+    - 'notebooks/**'
 
 jobs:
   universal:
@@ -58,6 +66,10 @@ jobs:
     - name: Running unit tests
       run: |
         npm test
+    - name: migration
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db
     - name: daemon start
       run: |
         ./packages/cli/dist/bin/pipcook daemon start
