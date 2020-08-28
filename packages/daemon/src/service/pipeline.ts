@@ -19,7 +19,7 @@ import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa'
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
-import { LogObject, JobStatusChangeEvent } from './log-manager';
+import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { pluginQueue } from '../utils';
 import { PipelineDB } from '../runner/helper';
 
@@ -198,8 +198,8 @@ export class PipelineService {
     return plugins;
   }
 
-  async startJob(job: JobModel, pipeline: PipelineModel, plugins: Partial<Record<PluginTypeI, PluginInfo>>, logger: LogObject): Promise<void> {
-    const runnable = await this.pluginManager.createRunnable(job.id, logger);
+  async startJob(job: JobModel, pipeline: PipelineModel, plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<void> {
+    const runnable = await this.pluginManager.createRunnable(job.id, tracer);
     // save the runnable object
     runnableMap[job.id] = runnable;
 
@@ -222,7 +222,7 @@ export class PipelineService {
         step,
         stepAction
       };
-      logger.stdout.emit('jobStatusChange', jobEvent);
+      tracer.pushEvent('job_status', jobEvent);
     };
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
@@ -421,7 +421,7 @@ export class PipelineService {
     ];
   }
 
-  async runJob(job: JobModel, pipeline: PipelineModel, log: LogObject): Promise<void> {
+  async runJob(job: JobModel, pipeline: PipelineModel, log: Tracer): Promise<void> {
     const plugins = await this.fetchPlugins(pipeline);
     job.status = PipelineStatus.PENDING;
     await job.save();

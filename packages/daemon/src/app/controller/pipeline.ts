@@ -7,7 +7,7 @@ import { PluginManager } from '../../service/plugin';
 import { parseConfig, PipelineDB } from '../../runner/helper';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
-import { LogObject } from '../../service/log-manager';
+import { Tracer } from '../../service/trace-manager';
 import { PluginResp } from '../../interface';
 const debug = Debug('daemon.app.pipeline');
 
@@ -166,14 +166,14 @@ export class PipelineController extends BaseEventController {
   public async installById() {
     const { pyIndex } = this.ctx.request.body;
     const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
-    const log = await this.logManager.create();
+    const log = await this.traceManager.create();
     if (pipeline) {
       process.nextTick(async () => {
         try {
           await this.installByPipeline(pipeline, log, pyIndex);
-          this.logManager.destroy(log.id);
+          this.traceManager.destroy(log.id);
         } catch (err) {
-          this.logManager.destroy(log.id, err);
+          this.traceManager.destroy(log.id, err);
         }
       });
       this.ctx.success({ ...(pipeline.toJSON() as PluginResp), traceId: log.id });
@@ -182,7 +182,7 @@ export class PipelineController extends BaseEventController {
     }
   }
 
-  private async installByPipeline(pipeline: PipelineDB, log: LogObject, pyIndex?: string): Promise<void> {
+  private async installByPipeline(pipeline: PipelineDB, log: Tracer, pyIndex?: string): Promise<void> {
     for (const type of constants.PLUGINS) {
       if (!pipeline[type]) {
         continue;
