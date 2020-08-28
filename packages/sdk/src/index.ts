@@ -21,7 +21,7 @@ export class PipcookClient {
   /**
    * The endpoint to Pipcook.
    */
-  private endpoint: string;
+  endpoint: string;
 
   /**
    * The pipeline management object.
@@ -43,10 +43,10 @@ export class PipcookClient {
    * @param port the port
    */
   constructor(protocolWithHostname = 'http://127.0.0.1', port = 6927) {
-    const url = this.endpoint = `${protocolWithHostname}:${port}/api`;
-    this.pipeline = new Pipeline(url);
-    this.job = new Job(url);
-    this.plugin = new Plugin(url);
+    this.endpoint = `${protocolWithHostname}:${port}/api`;
+    this.pipeline = new Pipeline(this.endpoint);
+    this.job = new Job(this.endpoint);
+    this.plugin = new Plugin(this.endpoint);
   }
 
   /**

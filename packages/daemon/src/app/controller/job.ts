@@ -26,6 +26,7 @@ export class JobController extends BaseEventController {
     const { pipelineId } = this.ctx.request.body;
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
+      const plugins = await this.pipelineService.fetchPlugins(pipeline);
       const job = await this.pipelineService.createJob(pipelineId);
       const logPath = join(constants.PIPCOOK_RUN, job.id, 'logs');
       const stdoutFile = join(logPath, 'stdout.log');
@@ -38,7 +39,7 @@ export class JobController extends BaseEventController {
       const tracer = await this.traceManager.create({ stdoutFile, stderrFile });
       process.nextTick(async () => {
         try {
-          await this.pipelineService.runJob(job, pipeline, tracer);
+          await this.pipelineService.runJob(job, pipeline, plugins, tracer);
           this.traceManager.destroy(tracer.id);
         } catch (err) {
           this.traceManager.destroy(tracer.id, err);
@@ -107,6 +108,7 @@ export class JobController extends BaseEventController {
   @get('/:id/output')
   public async download(): Promise<void> {
     const outputPath = this.pipelineService.getOutputTarByJobId(this.ctx.params.id);
+    this.ctx.attachment(`pipcook-output-${this.ctx.params.id}.tar.gz`);
     this.ctx.body = createReadStream(outputPath);
   }
 
