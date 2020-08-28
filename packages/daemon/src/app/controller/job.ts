@@ -26,6 +26,7 @@ export class JobController extends BaseEventController {
     const { pipelineId } = this.ctx.request.body;
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
+      const plugins = await this.pipelineService.fetchPlugins(pipeline);
       const job = await this.pipelineService.createJob(pipelineId);
       const logPath = join(constants.PIPCOOK_RUN, job.id, 'logs');
       const stdoutFile = join(logPath, 'stdout.log');
@@ -38,7 +39,7 @@ export class JobController extends BaseEventController {
       const log = await this.logManager.create({ stdoutFile, stderrFile });
       process.nextTick(async () => {
         try {
-          await this.pipelineService.runJob(job, pipeline, log);
+          await this.pipelineService.runJob(job, pipeline, plugins, log);
           this.logManager.destroy(log.id);
         } catch (err) {
           this.logManager.destroy(log.id, err);
