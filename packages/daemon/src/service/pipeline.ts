@@ -8,18 +8,18 @@ import * as createHttpError from 'http-errors';
 import {
   PipelineStatus,
   EvaluateResult,
-  PluginTypeI,
   compressTarFile,
   UniDataset,
   constants as CoreConstants,
   generateId,
-  PluginStatus
+  PluginStatus,
+  PluginTypeI
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
-import { LogObject } from './log-manager';
+import { LogObject, JobStatusChangeEvent } from './log-manager';
 import { pluginQueue } from '../utils';
 import { PipelineDB } from '../runner/helper';
 
@@ -216,10 +216,18 @@ export class PipelineService {
         throw new TypeError(`"${name}" plugin is required`);
       }
     };
-
+    const emitJobEvent = (jobStatus: PipelineStatus ,step?: PluginTypeI, stepAction?: 'start' | 'end') => {
+      let jobEvent: JobStatusChangeEvent = {
+        jobStatus,
+        step,
+        stepAction
+      };
+      logger.stdout.emit('jobStatusChange', jobEvent);  
+    };
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
     await job.save();
+    emitJobEvent(PipelineStatus.RUNNING);
     try {
       verifyPlugin('dataCollect');
       const dataDir = path.join(this.pluginManager.datasetRoot, `${plugins.dataCollect.plugin.name}@${plugins.dataCollect.plugin.version}`);
@@ -228,26 +236,34 @@ export class PipelineService {
       // ensure the model dir exists
       await fs.ensureDir(modelPath);
 
+      emitJobEvent(PipelineStatus.RUNNING, 'dataCollect', 'start');
       // run dataCollect to download dataset.
       await runnable.start(plugins.dataCollect.plugin, getParams(plugins.dataCollect.params, {
         dataDir
       }));
-
+      emitJobEvent(PipelineStatus.RUNNING, 'dataCollect', 'end');
+      
       verifyPlugin('dataAccess');
+      emitJobEvent(PipelineStatus.RUNNING, 'dataAccess', 'start');
       const dataset = await runnable.start(plugins.dataAccess.plugin, getParams(plugins.dataAccess.params, {
         dataDir
       }));
-
+      emitJobEvent(PipelineStatus.RUNNING, 'dataAccess', 'end');
+      
       let datasetProcess: PluginPackage;
       if (plugins.datasetProcess) {
         datasetProcess = plugins.datasetProcess.plugin;
+        emitJobEvent(PipelineStatus.RUNNING, 'datasetProcess', 'start');
         await runnable.start(plugins.datasetProcess.plugin, dataset, getParams(plugins.datasetProcess.params));
+        emitJobEvent(PipelineStatus.RUNNING, 'datasetProcess', 'end');
       }
 
       let dataProcess: PluginPackage;
       if (plugins.dataProcess) {
         dataProcess = plugins.dataProcess.plugin;
+        emitJobEvent(PipelineStatus.RUNNING, 'dataProcess', 'start');
         await runnable.start(plugins.dataProcess.plugin, dataset, getParams(plugins.dataProcess.params));
+        emitJobEvent(PipelineStatus.RUNNING, 'dataProcess', 'end');
       }
 
       let model: RunnableResponse;
@@ -256,25 +272,33 @@ export class PipelineService {
       // select one of `ModelDefine` and `ModelLoad`.
       if (plugins.modelDefine) {
         modelPlugin = plugins.modelDefine.plugin;
+        emitJobEvent(PipelineStatus.RUNNING, 'modelDefine', 'start');
         model = await runnable.start(plugins.modelDefine.plugin, dataset, getParams(plugins.modelDefine.params));
+        emitJobEvent(PipelineStatus.RUNNING, 'modelDefine', 'end');
       } else if (plugins.modelLoad) {
         modelPlugin = plugins.modelLoad.plugin;
+        emitJobEvent(PipelineStatus.RUNNING, 'modelLoad', 'start');
         model = await runnable.start(plugins.modelLoad.plugin, dataset, getParams(plugins.modelLoad.params, {
           // specify the recover path for model loader by default.
           recoverPath: modelPath
         }));
+        emitJobEvent(PipelineStatus.RUNNING, 'modelLoad', 'end');
       }
 
       if (plugins.modelTrain) {
+        emitJobEvent(PipelineStatus.RUNNING, 'modelTrain', 'start');
         model = await runnable.start(plugins.modelTrain.plugin, dataset, model, getParams(plugins.modelTrain.params, {
           modelPath
         }));
+        emitJobEvent(PipelineStatus.RUNNING, 'modelTrain', 'end');
       }
 
       verifyPlugin('modelEvaluate');
+      emitJobEvent(PipelineStatus.RUNNING, 'modelEvaluate', 'start');
       const output = await runnable.start(plugins.modelEvaluate.plugin, dataset, model, getParams(plugins.modelEvaluate.params, {
         modelDir: modelPath
       }));
+      emitJobEvent(PipelineStatus.RUNNING, 'modelEvaluate', 'end');
 
       // update job status to successful
       const result = await runnable.valueOf(output) as EvaluateResult;
@@ -298,11 +322,15 @@ export class PipelineService {
       });
 
       await job.save();
+      emitJobEvent(PipelineStatus.SUCCESS);
     } catch (err) {
       if (!runnable.canceled) {
         job.status = PipelineStatus.FAIL;
         job.error = err.message;
         await job.save();
+        emitJobEvent(PipelineStatus.FAIL);
+      } else {
+        emitJobEvent(PipelineStatus.CANCELED);
       }
       throw err;
     } finally {

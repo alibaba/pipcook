@@ -2,8 +2,13 @@ import { Transform, TransformCallback } from 'stream';
 import { open, close, write } from 'fs-extra';
 import { provide, scope, ScopeEnum } from 'midway';
 import { StringDecoder } from 'string_decoder';
-import { generateId } from '@pipcook/pipcook-core';
+import { generateId, PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
 
+export interface JobStatusChangeEvent {
+  jobStatus: PipelineStatus;
+  step?: PluginTypeI;
+  stepAction?: 'start' | 'end';
+}
 /**
  * Log obejct for plugin installing and pipeline running.
  */
