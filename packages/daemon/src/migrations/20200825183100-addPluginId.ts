@@ -18,9 +18,9 @@ export default {
             defaultValue: null
           }, { transaction });
         };
-       for (const type of types) {
-          await addColumn(`${type}Id`);
-       }
+        for (const type of types) {
+            await addColumn(`${type}Id`);
+        }
       }
       if (tbNames.indexOf('plugins') >= 0) {
         const columns = await queryInterface.describeTable('plugins');
