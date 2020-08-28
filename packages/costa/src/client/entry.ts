@@ -202,3 +202,7 @@ process.on('message', (msg): void => {
   const proto = PluginProtocol.parse(msg);
   handlers[proto.op](proto);
 });
+
+process.on('unhandledRejection', (reason) => {
+  throw reason;
+});
