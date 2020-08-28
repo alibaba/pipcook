@@ -99,6 +99,8 @@ jobs:
       run: |
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
         ls ./output && rm -rf ./output
+        ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json --output mydir
+        ls ./mydir && rm -rf ./mydir
     - name: pipcook run from url
       run: |
         ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json

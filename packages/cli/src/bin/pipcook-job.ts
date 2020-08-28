@@ -15,7 +15,7 @@ program
   .command('run <pipeline>')
   .helpOption('--help', 'show help')
   .option('--tuna', 'use tuna mirror to install python packages')
-  .option('--output', 'the output directory name', 'output')
+  .option('--output <dir>', 'the output directory name', 'output')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action(runAndDownload)
