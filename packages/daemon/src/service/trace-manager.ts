@@ -12,8 +12,9 @@ export interface JobStatusChangeEvent {
   step?: PluginTypeI;
   stepAction?: 'start' | 'end';
 }
+
 /**
- * Log obejct for plugin installing and pipeline running.
+ * tracer for plugin installing and pipeline running.
  */
 export class Tracer {
   // log id
@@ -32,27 +33,51 @@ export class Tracer {
     this.emitter = new EventEmitter();
   }
 
-  listenLog(level: 'info' | 'warn', cb: (level: string, message: string) => void): Promise<void> {
-    return new Promise(resolve => {
-      const logStream = level === 'info' ? this.stdout : this.stderr;
-      logStream.on('data', message => {
+  /**
+   * get the loggers
+   */
+  getLogger(): { stdout: LogPassthrough; stderr: LogPassthrough } {
+    return { stdout: this.stdout, stderr: this.stderr };
+  }
+
+  /**
+   * listen event
+   * @param cb event callback
+   */
+  listen(cb: (type: string, data: any) => void): void {
+    // event callback
+    this.emitter.on('trace-event', cb);
+
+    // log callback
+    const pipeLog = (level: string, logger: LogPassthrough) => {
+      logger.on('data', message => {
         cb(level, message);
       });
-      logStream.on('close', resolve);
-      logStream.on('error', err => {
+      logger.on('close', () => this.emitter.emit('trace-finished'));
+      logger.on('error', err => {
         cb('error', err.message);
       });
-    });
+    };
+    pipeLog('info', this.stdout);
+    pipeLog('warn', this.stdout);
   }
 
-  listenEvent(cb: (type: PipcookEventType, data: any) => void): void {
-    this.emitter.on('trace', (type: PipcookEventType, data: any) => {
-      cb(type, data);
-    });
+  /**
+   * emit event to client
+   * @param type event type
+   * @param data only JobStatusChangeEvent for now
+   */
+  emit(type: PipcookEventType, data: JobStatusChangeEvent) {
+    this.emitter.emit('trace-event', { type, data });
   }
 
-  pushEvent(type: PipcookEventType, data: any) {
-    this.emitter.emit('trace', { type, data });
+  /**
+   * wait for end
+   */
+  async wait() {
+    return new Promise((resolve) => {
+      this.emitter.on('trace-finished', resolve);
+    });
   }
 }
 
@@ -133,24 +158,24 @@ export class TraceManager {
    * @param err error if have
    */
   destroy(id: string, err?: Error) {
-    const log = this.tracerMap.get(id);
+    const tracer = this.tracerMap.get(id);
     if (err) {
       // make sure someone handles the error, otherwise the process will exit
-      if (log.stderr.listeners('error').length > 0) {
-        log.stderr.destroy(err);
+      if (tracer.stderr.listeners('error').length > 0) {
+        tracer.stderr.destroy(err);
       } else {
         console.error(`unhandled error from log: ${err.message}`);
-        log.stderr.destroy();
+        tracer.stderr.destroy();
       }
     } else {
-      log.stderr.destroy();
+      tracer.stderr.destroy();
     }
-    log.stdout.destroy();
-    if (log.stdout.fd > 0) {
-      close(log.stdout.fd);
+    tracer.stdout.destroy();
+    if (tracer.stdout.fd > 0) {
+      close(tracer.stdout.fd);
     }
-    if (log.stderr.fd > 0) {
-      close(log.stderr.fd);
+    if (tracer.stderr.fd > 0) {
+      close(tracer.stderr.fd);
     }
     return this.tracerMap.delete(id);
   }

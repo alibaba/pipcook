@@ -33,16 +33,10 @@ export class BaseEventController extends BaseController {
     if (!tracer) {
       return sse.finish();
     }
-    const emitLog = (level, message) => {
-      sse.emit('log', { level, message });
-    };
-    tracer.listenEvent((type, data: any) => {
+    tracer.listen((type, data: any) => {
       sse.emit(type, data);
     });
-    await Promise.all([
-      tracer.listenLog('info', emitLog),
-      tracer.listenLog('warn', emitLog)
-    ]);
+    await tracer.wait();
     return sse.finish();
   }
 }
