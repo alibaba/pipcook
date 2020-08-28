@@ -107,6 +107,7 @@ export class JobController extends BaseEventController {
   @get('/:id/output')
   public async download(): Promise<void> {
     const outputPath = this.pipelineService.getOutputTarByJobId(this.ctx.params.id);
+    this.ctx.attachment(`pipcook-output-${this.ctx.params.id}.tar.gz`);
     this.ctx.body = createReadStream(outputPath);
   }
 
