@@ -98,13 +98,13 @@ To declare the loss function to be used in a model plugin:
 {
   "name": "loss",
   "type": "string[]",
-  "options": {
+  "options": [
     "meanSquaredError",
     "meanAbsoluteError",
     "categoricalCrossentropy",
     "sparseCategoricalCrossentropy",
     "binaryCrossentropy"
-  },
+  ],
   "defaultValue": [ "categoricalCrossentropy" ]
 }
 ```
@@ -116,7 +116,7 @@ To declare the language mode to a NLP-related plugin:
   "name": "mode",
   "type": "string[1]",
   "options": [ "cn", "en" ],
-  "defaultValue": "cn"
+  "defaultValue": "cn",
   "description": "Chinese text classification or English text classification, the value can be en or cn"
 }
 ```
