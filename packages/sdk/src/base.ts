@@ -23,10 +23,10 @@ export class BaseApi {
             eventCallback('log', eventObj);
           }
         },
-        'jobStatusChange': (e: MessageEvent) => {
+        'job_status': (e: MessageEvent) => {
           const eventObj = JSON.parse(e.data) as JobStatusChangeEvent;
           if (typeof eventCallback === 'function') {
-            eventCallback('jobStatusChange', eventObj);
+            eventCallback('job_status', eventObj);
           }
         },
         'error': (e: MessageEvent) => {

@@ -76,15 +76,14 @@ describe('pipeline api.job test', () => {
     expect(typeof jobObj.id).toBe('string');
     expect(typeof (jobObj as TraceResp<JobResp>).traceId).toBe('string');
     await client.job.traceEvent((jobObj as TraceResp<JobResp>).traceId, (event: string, data: any) => {
-      expect([ 'log', 'jobStatusChange' ]).toContain(event);
+      expect([ 'log', 'job_status' ]).toContain(event);
       if (event === 'log') {
         console.log(`[${data.level}] ${data.data}`);
         expect(typeof data.level).toBe('string');
         expect(typeof data.data).toBe('string');
-      }
-      if (event === 'jobStatusChange') {
+      } else if (event === 'job_status') {
         const { jobStatus, step, stepAction } = data;
-        console.log(`[job status] ${jobStatus} ${step} ${stepAction}`);
+        console.log('[job]', data);
         expect(typeof jobStatus).toBe('number');
         expect(typeof (step || '')).toBe('string');
         expect(typeof (stepAction || '')).toBe('string');

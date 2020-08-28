@@ -13,6 +13,12 @@ export interface JobStatusChangeEvent {
   stepAction?: 'start' | 'end';
 }
 
+export interface LogEvent {
+  level: string;
+  data: string;
+}
+
+export type PipecookEvent = JobStatusChangeEvent | LogEvent;
 /**
  * tracer for plugin installing and pipeline running.
  */
@@ -44,18 +50,20 @@ export class Tracer {
    * listen event
    * @param cb event callback
    */
-  listen(cb: (type: string, data: any) => void): void {
+  listen(cb: (type: PipcookEventType, data: PipecookEvent) => void): void {
     // event callback
-    this.emitter.on('trace-event', cb);
+    this.emitter.on('trace-event', (e) => {
+      cb(e.type, e.data);
+    });
 
     // log callback
     const pipeLog = (level: string, logger: LogPassthrough) => {
-      logger.on('data', message => {
-        cb(level, message);
+      logger.on('data', data => {
+        cb('log', { level, data });
       });
       logger.on('close', () => this.emitter.emit('trace-finished'));
       logger.on('error', err => {
-        cb('error', err.message);
+        cb('log', { level: 'error', data: err.message });
       });
     };
     pipeLog('info', this.stdout);

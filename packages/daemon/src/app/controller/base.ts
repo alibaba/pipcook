@@ -3,6 +3,9 @@ import { ObjectSchema } from 'joi';
 import * as HttpStatus from 'http-status';
 import { ServerSentEmitter } from '../../utils';
 import { TraceManager } from '../../service/trace-manager';
+import Debug from 'debug';
+
+const debug = Debug('base.controller');
 
 export class BaseController {
   @inject()
@@ -33,7 +36,8 @@ export class BaseEventController extends BaseController {
     if (!tracer) {
       return sse.finish();
     }
-    tracer.listen((type, data: any) => {
+    tracer.listen((type, data) => {
+      debug(`[trace ${this.ctx.params.traceId}]`, type, data);
       sse.emit(type, data);
     });
     await tracer.wait();
