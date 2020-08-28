@@ -36,6 +36,9 @@ export class BaseEventController extends BaseController {
     const emitLog = (level, message) => {
       sse.emit('log', { level, message });
     };
+    tracer.listenEvent((type, data: any) => {
+      sse.emit(type, data);
+    });
     await Promise.all([
       tracer.listenLog('info', emitLog),
       tracer.listenLog('warn', emitLog)
