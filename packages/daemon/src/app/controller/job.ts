@@ -2,7 +2,7 @@ import { controller, inject, provide, get, post, del } from 'midway';
 import * as HttpStatus from 'http-status';
 import { constants } from '@pipcook/pipcook-core';
 import { createReadStream, ensureDir, ensureFile } from 'fs-extra';
-import { join, extname } from 'path';
+import { join } from 'path';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { PluginManager } from '../../service/plugin';
