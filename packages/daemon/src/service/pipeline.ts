@@ -423,8 +423,10 @@ export class PipelineService {
     ];
   }
 
-  async runJob(job: JobModel, pipeline: PipelineModel,
-    plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<void> {
+  async runJob(job: JobModel,
+               pipeline: PipelineModel,
+               plugins: Partial<Record<PluginTypeI, PluginInfo>>,
+               tracer: Tracer): Promise<void> {
     job.status = PipelineStatus.PENDING;
     await job.save();
     return new Promise((resolve, reject) => {
