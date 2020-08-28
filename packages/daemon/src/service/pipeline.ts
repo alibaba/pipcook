@@ -222,7 +222,7 @@ export class PipelineService {
         step,
         stepAction
       };
-      tracer.pushEvent('job_status', jobEvent);
+      tracer.emit('job_status', jobEvent);
     };
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
@@ -421,13 +421,13 @@ export class PipelineService {
     ];
   }
 
-  async runJob(job: JobModel, pipeline: PipelineModel, log: Tracer): Promise<void> {
+  async runJob(job: JobModel, pipeline: PipelineModel, tracer: Tracer): Promise<void> {
     const plugins = await this.fetchPlugins(pipeline);
     job.status = PipelineStatus.PENDING;
     await job.save();
     return new Promise((resolve, reject) => {
       pluginQueue.push((cb) => {
-        this.startJob(job, pipeline, plugins, log).then(() => {
+        this.startJob(job, pipeline, plugins, tracer).then(() => {
           resolve();
           cb();
         }).catch((err) => {
