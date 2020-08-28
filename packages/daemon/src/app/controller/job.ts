@@ -35,10 +35,11 @@ export class JobController extends BaseEventController {
         ensureFile(stdoutFile),
         ensureFile(stderrFile)
       ];
+      const plugins = await this.pipelineService.fetchPlugins(pipeline);
       const log = await this.logManager.create({ stdoutFile, stderrFile });
       process.nextTick(async () => {
         try {
-          await this.pipelineService.runJob(job, pipeline, log);
+          await this.pipelineService.runJob(job, pipeline, plugins, log);
           this.logManager.destroy(log.id);
         } catch (err) {
           this.logManager.destroy(log.id, err);
