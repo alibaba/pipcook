@@ -81,6 +81,7 @@ To declare a url for a data-collect plugin:
   "type": "string",
   "description": "the remote url to download your dataset"
 }
+```
 
 To declare a shape for an image-resizing plugin:
 
