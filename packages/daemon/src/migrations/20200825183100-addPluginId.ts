@@ -1,11 +1,14 @@
 'use strict';
 import { QueryInterface, DataTypes, Promise } from 'sequelize';
 
+const types = [ 'dataCollect', 'dataAccess', 'dataProcess',
+      'datasetProcess', 'modelDefine', 'modelLoad', 'modelTrain', 'modelEvaluate' ];
+
 export default {
   up: async (queryInterface: QueryInterface) => {
-    return queryInterface.sequelize.transaction(async t => {
+    const transaction = await queryInterface.sequelize.transaction();
+    try {
       const tbNames = await queryInterface.showAllTables();
-      const futures = [];
       if (tbNames.indexOf('pipelines') >= 0) {
         const columns = await queryInterface.describeTable('pipelines');
         const addColumn = async function (columnName: string) {
@@ -13,38 +16,44 @@ export default {
             type: DataTypes.STRING,
             allowNull: true,
             defaultValue: null
-          }, { transaction: t });
+          }, { transaction });
         };
-        futures.push(Promise.all([
-          addColumn('dataCollectId'),
-          addColumn('dataAccessId'),
-          addColumn('dataProcessId'),
-          addColumn('datasetProcessId'),
-          addColumn('modelDefineId'),
-          addColumn('modelLoadId'),
-          addColumn('modelTrainId'),
-          addColumn('modelEvaluateId')
-        ]));
+        for (const type of types) {
+            await addColumn(`${type}Id`);
+        }
       }
       if (tbNames.indexOf('plugins') >= 0) {
         const columns = await queryInterface.describeTable('plugins');
         if (!columns['sourceFrom']) {
-          futures.push(queryInterface.addColumn('plugins', 'sourceFrom', {
+          await queryInterface.addColumn('plugins', 'sourceFrom', {
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: 'npm'
-          }, { transaction: t }));
+          }, { transaction });
         }
         if (!columns['sourceUri']) {
-          futures.push(queryInterface.addColumn('plugins', 'sourceUri', {
+          await queryInterface.addColumn('plugins', 'sourceUri', {
             type: DataTypes.STRING,
             allowNull: true,
             defaultValue: ''
-          }, { transaction: t }));
+          }, { transaction });
         }
       }
-      return Promise.all(futures);
-    });
+      // commit the table changes, otherwise there will throw an error 'no column dataCollect'
+      await transaction.commit();
+      try {
+        for (const type of types) {
+          await queryInterface.sequelize.query(
+            `update pipelines set ${type}Id = (select id from plugins where pipelines.${type} = plugins.name limit 1)`
+          );
+        }
+      } catch (err) {
+        console.warn('some error occurred when update plugin id in pipeline table: ', err);
+      }
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   },
 
   down: (queryInterface: QueryInterface) => {
