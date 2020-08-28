@@ -26,19 +26,30 @@ export class Tracer {
   // log id
   id: string;
   // stdout stream for log pipe
-  stdout: LogPassthrough;
+  private stdout: LogPassthrough;
   // stderr stream for log pipe
-  stderr: LogPassthrough;
+  private stderr: LogPassthrough;
   // event emitter
-  emitter: EventEmitter;
+  private emitter: EventEmitter;
 
-  constructor(fdOut: number, fdErr: number) {
+  private opts?: LogOptions;
+  private fdOut: number;
+  private fdErr: number;
+  constructor(opts?: LogOptions) {
     this.id = generateId();
-    this.stdout = new LogPassthrough(fdOut);
-    this.stderr = new LogPassthrough(fdErr);
     this.emitter = new EventEmitter();
+    this.opts = opts;
   }
 
+  /**
+   * init loggers
+   */
+  async initLogger() {
+    this.fdOut = this.opts?.stdoutFile ? await open(this.opts?.stdoutFile, 'w+') : -1;
+    this.fdErr = this.opts?.stderrFile ? await open(this.opts?.stderrFile, 'w+') : -1;
+    this.stdout = new LogPassthrough(this.fdOut);
+    this.stderr = new LogPassthrough(this.fdErr);
+  }
   /**
    * get the loggers
    */
@@ -86,6 +97,31 @@ export class Tracer {
     return new Promise((resolve) => {
       this.emitter.on('trace-finished', resolve);
     });
+  }
+
+  /**
+   * destory tracer
+   * @param err error if have
+   */
+  destroy(err?: Error) {
+    if (err) {
+      // make sure someone handles the error, otherwise the process will exit
+      if (this.stderr.listeners('error').length > 0) {
+        this.stderr.destroy(err);
+      } else {
+        console.error(`unhandled error from log: ${err.message}`);
+        this.stderr.destroy();
+      }
+    } else {
+      this.stderr.destroy();
+    }
+    this.stdout.destroy();
+    if (this.fdOut > 0) {
+      close(this.fdOut);
+    }
+    if (this.fdErr > 0) {
+      close(this.fdErr);
+    }
   }
 }
 
@@ -144,11 +180,10 @@ export class TraceManager {
    * create a log object, must call the destory function to clean it up.
    */
   async create(opts?: LogOptions): Promise<Tracer> {
-    const fdOut = opts?.stdoutFile ? await open(opts?.stdoutFile, 'w+') : -1;
-    const fdErr = opts?.stderrFile ? await open(opts?.stderrFile, 'w+') : -1;
-    const tarcer: Tracer = new Tracer(fdOut, fdErr);
-    this.tracerMap.set(tarcer.id, tarcer);
-    return tarcer;
+    const tracer: Tracer = new Tracer(opts);
+    await tracer.initLogger();
+    this.tracerMap.set(tracer.id, tracer);
+    return tracer;
   }
 
   /**
@@ -167,24 +202,7 @@ export class TraceManager {
    */
   destroy(id: string, err?: Error) {
     const tracer = this.tracerMap.get(id);
-    if (err) {
-      // make sure someone handles the error, otherwise the process will exit
-      if (tracer.stderr.listeners('error').length > 0) {
-        tracer.stderr.destroy(err);
-      } else {
-        console.error(`unhandled error from log: ${err.message}`);
-        tracer.stderr.destroy();
-      }
-    } else {
-      tracer.stderr.destroy();
-    }
-    tracer.stdout.destroy();
-    if (tracer.stdout.fd > 0) {
-      close(tracer.stdout.fd);
-    }
-    if (tracer.stderr.fd > 0) {
-      close(tracer.stderr.fd);
-    }
+    tracer.destroy(err);
     return this.tracerMap.delete(id);
   }
 }
