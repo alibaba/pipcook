@@ -4,6 +4,8 @@ import { provide, scope, ScopeEnum } from 'midway';
 import { StringDecoder } from 'string_decoder';
 import { generateId, PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
 
+export type PipcookEventType = 'log' | 'jobStatusChange';
+
 export interface JobStatusChangeEvent {
   jobStatus: PipelineStatus;
   step?: PluginTypeI;

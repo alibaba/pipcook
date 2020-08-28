@@ -33,6 +33,9 @@ export class BaseEventController extends BaseController {
       logStream.on('error', err => {
         sse.emit('error', err.message);
       });
+      logStream.on('jobStatusChange', data => {
+        sse.emit('jobStatusChange', data);
+      });
     });
   }
 

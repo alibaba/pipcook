@@ -216,13 +216,13 @@ export class PipelineService {
         throw new TypeError(`"${name}" plugin is required`);
       }
     };
-    const emitJobEvent = (jobStatus: PipelineStatus ,step?: PluginTypeI, stepAction?: 'start' | 'end') => {
-      let jobEvent: JobStatusChangeEvent = {
+    const emitJobEvent = (jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end') => {
+      const jobEvent: JobStatusChangeEvent = {
         jobStatus,
         step,
         stepAction
       };
-      logger.stdout.emit('jobStatusChange', jobEvent);  
+      logger.stdout.emit('jobStatusChange', jobEvent);
     };
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
@@ -242,14 +242,14 @@ export class PipelineService {
         dataDir
       }));
       emitJobEvent(PipelineStatus.RUNNING, 'dataCollect', 'end');
-      
+
       verifyPlugin('dataAccess');
       emitJobEvent(PipelineStatus.RUNNING, 'dataAccess', 'start');
       const dataset = await runnable.start(plugins.dataAccess.plugin, getParams(plugins.dataAccess.params, {
         dataDir
       }));
       emitJobEvent(PipelineStatus.RUNNING, 'dataAccess', 'end');
-      
+
       let datasetProcess: PluginPackage;
       if (plugins.datasetProcess) {
         datasetProcess = plugins.datasetProcess.plugin;
