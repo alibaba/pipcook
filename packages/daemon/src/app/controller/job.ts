@@ -2,7 +2,7 @@ import { controller, inject, provide, get, post, del } from 'midway';
 import * as HttpStatus from 'http-status';
 import { constants } from '@pipcook/pipcook-core';
 import { createReadStream, ensureDir, ensureFile } from 'fs-extra';
-import { join } from 'path';
+import { join, extname } from 'path';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { PluginManager } from '../../service/plugin';
@@ -107,7 +107,7 @@ export class JobController extends BaseEventController {
   @get('/:id/output')
   public async download(): Promise<void> {
     const outputPath = this.pipelineService.getOutputTarByJobId(this.ctx.params.id);
-    this.ctx.attachment(`${this.ctx.params.id}.tar.gz`);
+    this.ctx.attachment(`pipcook-output-${this.ctx.params.id}.tar.gz`);
     this.ctx.body = createReadStream(outputPath);
   }
 
