@@ -43,7 +43,14 @@ export default {
           }, { transaction: t }));
         }
       }
-      return Promise.all(futures);
+      await Promise.all(futures);
+      const types = [ 'dataCollect', 'dataAccess', 'dataProcess',
+        'datasetProcess', 'modelDefine', 'modelLoad', 'modelTrain', 'modelEvaluate' ];
+      for (const type of types) {
+        await queryInterface.sequelize.query(
+          `update pipelines set ${type}Id = (select id from plugins where pipelines.${type} = plugins.name limit 1)`
+        );
+      }
     });
   },
 
