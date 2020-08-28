@@ -50,7 +50,7 @@ describe('test job controller', () => {
   it('should list jobs', () => {
     return app
       .httpRequest()
-      .get('/api/plugin')
+      .get('/api/job')
       .expect('Content-Type', /json/)
       .expect((resp) => {
         assert.equal(Array.isArray(resp.body), true);
@@ -61,7 +61,7 @@ describe('test job controller', () => {
   it('should run a job', () => {
     app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
       assert.equal(id, 'id');
-      mockPipeline = {...mockPipeline, id};
+      mockPipeline = { ...mockPipeline, id };
       return mockPipeline;
     });
     app.mockClassFunction('pipelineService', 'fetchPlugins', async (pipeline: any): Promise<any[]> => {

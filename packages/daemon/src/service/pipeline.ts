@@ -177,10 +177,10 @@ export class PipelineService {
     const noneInstalledPlugins: string[] = [];
     for (const type of CoreConstants.PLUGINS) {
       if (pipeline[type]) {
-        if (!pipeline[`${pipeline[type]}Id`]) {
+        if (!pipeline[`${type}Id`]) {
           noneInstalledPlugins.push(pipeline[type]);
         }
-        const plugin = await this.pluginManager.findById(`${pipeline[type]}Id`);
+        const plugin = await this.pluginManager.findById(pipeline[`${type}Id`]);
         if (plugin && plugin.status === PluginStatus.INSTALLED) {
           // ignore if any plugin not installed, because will throw an error after processing.
           if (noneInstalledPlugins.length === 0) {
