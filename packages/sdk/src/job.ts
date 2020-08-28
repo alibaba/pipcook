@@ -73,4 +73,13 @@ export class Job extends BaseApi {
   downloadOutput(id: string): Promise<FileDownloadResp> {
     return getFile(`${this.route}/${id}/output`);
   }
+
+  /**
+   * generate the download url for given job id
+   * @param id job id
+   * @experimental
+   */
+  getOutputDownloadURL(id: string): string {
+    return `${this.route}/${id}/output`;
+  }
 }
