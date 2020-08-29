@@ -389,10 +389,14 @@ export class PipelineService {
   async getLogById(id: string): Promise<string[]> {
     const stdout = path.join(CoreConstants.PIPCOOK_RUN, id, 'logs/stdout.log');
     const stderr = path.join(CoreConstants.PIPCOOK_RUN, id, 'logs/stderr.log');
-    return [
-      await fs.readFile(stdout, 'utf8'),
-      await fs.readFile(stderr, 'utf8')
-    ];
+    if (await fs.pathExists(stdout) && await fs.pathExists(stderr)) {
+      return [
+        await fs.readFile(stderr, 'utf8'),
+        await fs.readFile(stdout, 'utf8')
+      ];
+    } else {
+      throw createHttpError(HttpStatus.NOT_FOUND, 'log not found');
+    }
   }
 
   async runJob(job: JobModel, pipeline: PipelineModel, plugins: Partial<Record<PluginTypeI, PluginInfo>>, log: LogObject): Promise<void> {
