@@ -98,10 +98,10 @@ export class JobController extends BaseEventController {
   public async viewLog(): Promise<void> {
     const { ctx } = this;
     const { id } = ctx.params;
-    const data = await this.pipelineService.getLogById(id);
-    if (data === null || data === undefined) {
-      throw new Error('log not found');
+    if (!await this.pipelineService.getJobById(id)) {
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'job not found');
     }
+    const data = await this.pipelineService.getLogById(id);
     this.ctx.success(data);
   }
 
