@@ -4,38 +4,76 @@ import { open, close, write } from 'fs-extra';
 import { provide, scope, ScopeEnum } from 'midway';
 import { StringDecoder } from 'string_decoder';
 import { generateId, PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
+import Debug from 'debug';
+
+const debug = Debug('tracer');
 
 export type PipcookEventType = 'log' | 'job_status';
 
-export interface JobStatusChangeEvent {
-  jobStatus: PipelineStatus;
-  step?: PluginTypeI;
-  stepAction?: 'start' | 'end';
+/**
+ * base pipcook event, defined the fields `type` and `data`
+ */
+export class BasePipcookEvent {
+  data?: any;
+  constructor(public type: PipcookEventType) {}
 }
 
-export interface LogEvent {
-  level: string;
-  data: string;
+/**
+ * pipcook event data type for job status change
+ */
+export class JobStatusChangeEvent extends BasePipcookEvent {
+  data: {
+    jobStatus: PipelineStatus;
+    step?: PluginTypeI;
+    stepAction?: 'start' | 'end';
+    queueLength?: number;
+  };
+  constructor(jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end', queueLength?: number) {
+    super('job_status');
+    this.data = { jobStatus, step, stepAction, queueLength };
+  }
+}
+
+export type LogLevel = 'info' | 'warn' | 'error';
+/**
+ * pipcook event data type for log
+ */
+export class LogEvent extends BasePipcookEvent {
+  data: {
+    level: LogLevel;
+    data: string;
+  };
+  constructor(level: LogLevel, data: string) {
+    super('log');
+    this.data = { level, data };
+  }
 }
 
 export type PipecookEvent = JobStatusChangeEvent | LogEvent;
 /**
  * tracer for plugin installing and pipeline running.
+ * it has 2 parts: logger and event handler:
+ * logger:
+ * stdout and stderr, they are streams to pipe the logs to clients
+ * event handler:
+ * pipe the pipcook event to clients
  */
 export class Tracer {
-  // log id
+  // trace id
   id: string;
   // stdout stream for log pipe
   private stdout: LogPassthrough;
   // stderr stream for log pipe
   private stderr: LogPassthrough;
-  // event emitter
+  // event emitter for pipcook event
   private emitter: EventEmitter;
-
-  private opts?: LogOptions;
+  // options of tracer
+  private opts?: TraceOptions;
+  // log file fd for stdout, -1 if not defined
   private fdOut: number;
+  // log file fd for stderr, -1 if not defined
   private fdErr: number;
-  constructor(opts?: LogOptions) {
+  constructor(opts?: TraceOptions) {
     this.id = generateId();
     this.emitter = new EventEmitter();
     this.opts = opts;
@@ -61,33 +99,32 @@ export class Tracer {
    * listen event
    * @param cb event callback
    */
-  listen(cb: (type: PipcookEventType, data: PipecookEvent) => void): void {
+  listen(cb: (data: PipecookEvent) => void): void {
     // event callback
     this.emitter.on('trace-event', (e) => {
-      cb(e.type, e.data);
+      cb(e);
     });
 
     // log callback
-    const pipeLog = (level: string, logger: LogPassthrough) => {
+    const pipeLog = (level: LogLevel, logger: LogPassthrough) => {
       logger.on('data', data => {
-        cb('log', { level, data });
+        cb(new LogEvent(level, data));
       });
       logger.on('close', () => this.emitter.emit('trace-finished'));
       logger.on('error', err => {
-        cb('log', { level: 'error', data: err.message });
+        cb(new LogEvent('error', err.message));
       });
     };
     pipeLog('info', this.stdout);
-    pipeLog('warn', this.stdout);
+    pipeLog('warn', this.stderr);
   }
 
   /**
    * emit event to client
-   * @param type event type
-   * @param data only JobStatusChangeEvent for now
+   * @param event pipcook event data
    */
-  emit(type: PipcookEventType, data: JobStatusChangeEvent) {
-    this.emitter.emit('trace-event', { type, data });
+  emit(event: PipecookEvent) {
+    this.emitter.emit('trace-event', event);
   }
 
   /**
@@ -105,6 +142,7 @@ export class Tracer {
    */
   destroy(err?: Error) {
     if (err) {
+      // TODO(feely): emit the error by tracer not logger
       // make sure someone handles the error, otherwise the process will exit
       if (this.stderr.listeners('error').length > 0) {
         this.stderr.destroy(err);
@@ -125,7 +163,7 @@ export class Tracer {
   }
 }
 
-export interface LogOptions {
+export interface TraceOptions {
   stdoutFile?: string;
   stderrFile?: string;
 }
@@ -179,7 +217,7 @@ export class TraceManager {
   /**
    * create a log object, must call the destory function to clean it up.
    */
-  async create(opts?: LogOptions): Promise<Tracer> {
+  async create(opts?: TraceOptions): Promise<Tracer> {
     const tracer: Tracer = new Tracer(opts);
     await tracer.initLogger();
     this.tracerMap.set(tracer.id, tracer);
@@ -202,7 +240,11 @@ export class TraceManager {
    */
   destroy(id: string, err?: Error) {
     const tracer = this.tracerMap.get(id);
-    tracer.destroy(err);
-    return this.tracerMap.delete(id);
+    if (tracer) {
+      tracer.destroy(err);
+      return this.tracerMap.delete(id);
+    } else {
+      debug(`tracer ${id} not found for destroy`);
+    }
   }
 }

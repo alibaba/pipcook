@@ -82,11 +82,12 @@ describe('pipeline api.job test', () => {
         expect(typeof data.level).toBe('string');
         expect(typeof data.data).toBe('string');
       } else if (event === 'job_status') {
-        const { jobStatus, step, stepAction } = data;
+        const { jobStatus, step, stepAction, queueLength } = data;
         console.log('[job]', data);
         expect(typeof jobStatus).toBe('number');
         expect(typeof (step || '')).toBe('string');
         expect(typeof (stepAction || '')).toBe('string');
+        expect(typeof queueLength  === 'undefined' || typeof queueLength  === 'number');
       }
     });
     const downloadObj = await client.job.downloadOutput(jobObj.id);

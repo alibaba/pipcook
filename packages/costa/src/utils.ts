@@ -17,6 +17,7 @@ export function pipeLog(readable: NodeJS.ReadableStream, writable: NodeJS.Writab
     writable.emit('error', err);
   });
   readable.on('data', (data) => {
+    console.log(data.toString());
     if (prefix) {
       buffer += data.toString();
       const list = buffer.split(/\n|\r/);

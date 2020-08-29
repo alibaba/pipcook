@@ -36,9 +36,9 @@ export class BaseEventController extends BaseController {
     if (!tracer) {
       return sse.finish();
     }
-    tracer.listen((type, data) => {
-      debug(`[trace ${this.ctx.params.traceId}]`, type, data);
-      sse.emit(type, data);
+    tracer.listen((data) => {
+      debug(`[trace ${this.ctx.params.traceId}]`, data.type, data.data);
+      sse.emit(data.type, data.data);
     });
     await tracer.wait();
     return sse.finish();
