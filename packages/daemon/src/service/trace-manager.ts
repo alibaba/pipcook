@@ -6,22 +6,22 @@ import { StringDecoder } from 'string_decoder';
 import { generateId, PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
 import Debug from 'debug';
 
-const debug = Debug('tracer');
+const debug = Debug('daemon.service.tracer');
 
-export type PipcookEventType = 'log' | 'job_status';
+export type TraceType = 'log' | 'job_status';
 
 /**
  * base pipcook event, defined the fields `type` and `data`
  */
-export class BasePipcookEvent {
+export class TraceEvent {
   data?: any;
-  constructor(public type: PipcookEventType) {}
+  constructor(public type: TraceType) {}
 }
 
 /**
  * pipcook event data type for job status change
  */
-export class JobStatusChangeEvent extends BasePipcookEvent {
+export class JobStatusChangeEvent extends TraceEvent {
   data: {
     jobStatus: PipelineStatus;
     step?: PluginTypeI;
@@ -38,7 +38,7 @@ export type LogLevel = 'info' | 'warn' | 'error';
 /**
  * pipcook event data type for log
  */
-export class LogEvent extends BasePipcookEvent {
+export class LogEvent extends TraceEvent {
   data: {
     level: LogLevel;
     data: string;
@@ -51,7 +51,7 @@ export class LogEvent extends BasePipcookEvent {
 
 export type PipecookEvent = JobStatusChangeEvent | LogEvent;
 /**
- * tracer for plugin installing and pipeline running.
+ * trace handler
  * it has 2 parts: logger and event handler:
  * logger:
  * stdout and stderr, they are streams to pipe the logs to clients
@@ -73,6 +73,7 @@ export class Tracer {
   private fdOut: number;
   // log file fd for stderr, -1 if not defined
   private fdErr: number;
+
   constructor(opts?: TraceOptions) {
     this.id = generateId();
     this.emitter = new EventEmitter();

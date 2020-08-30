@@ -5,7 +5,7 @@ import { ServerSentEmitter } from '../../utils';
 import { TraceManager } from '../../service/trace-manager';
 import Debug from 'debug';
 
-const debug = Debug('base.controller');
+const debug = Debug('daemon.base-controller');
 
 export class BaseController {
   @inject()
