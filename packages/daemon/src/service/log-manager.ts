@@ -57,7 +57,7 @@ class LogPassthrough extends Transform {
   /**
    * cover Transform.write, otherwise if no `data` event listener,
    * the callback `_transform` will not be called, but we need to save the log to file.
-   * @param args 
+   * @param args args for stream.write
    */
   write(...args: any[]): boolean {
     if (this.fd) {
