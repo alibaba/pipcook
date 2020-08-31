@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { install, uninstall, list } from '../service/plugin';
+import { install, uninstall, list, info } from '../service/plugin';
 
 program
   .command('install <name>')
@@ -33,4 +33,11 @@ program
   .option('-p|--port <port>', 'the port of daemon')
   .action(list);
 
+program
+  .command('info <id>')
+  .helpOption('--help', 'show help')
+  .description('show plugin info by id')
+  .option('-h|--host-ip <ip>', 'the host ip of daemon')
+  .option('-p|--port <port>', 'the port of daemon')
+  .action(info);
 program.parse(process.argv);
