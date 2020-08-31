@@ -34,7 +34,7 @@ export class JobStatusChangeEvent extends TraceEvent {
   }
 }
 
-export type LogLevel = 'info' | 'warn' | 'error';
+type LogLevel = 'info' | 'warn' | 'error';
 /**
  * pipcook event data type for log
  */
