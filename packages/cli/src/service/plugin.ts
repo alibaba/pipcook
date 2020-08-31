@@ -137,7 +137,6 @@ export async function list(opts: any): Promise<void> {
 
 export async function info(id: string, opts: any): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
-  console.log('id', opts.id);
   try {
     const plugin = await client.plugin.get(id);
     logger.success(JSON.stringify(plugin, undefined, 2));
