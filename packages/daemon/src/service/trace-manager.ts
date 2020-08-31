@@ -49,7 +49,7 @@ export class LogEvent extends TraceEvent {
   }
 }
 
-export type PipecookEvent = JobStatusChangeEvent | LogEvent;
+export type PipcookEvent = JobStatusChangeEvent | LogEvent;
 /**
  * trace handler
  * it has 2 parts: logger and event handler:
@@ -100,7 +100,7 @@ export class Tracer {
    * listen event
    * @param cb event callback
    */
-  listen(cb: (data: PipecookEvent) => void): void {
+  listen(cb: (data: PipcookEvent) => void): void {
     // event callback
     this.emitter.on('trace-event', (e) => {
       cb(e);
@@ -124,7 +124,7 @@ export class Tracer {
    * emit event to client
    * @param event pipcook event data
    */
-  emit(event: PipecookEvent) {
+  emit(event: PipcookEvent) {
     this.emitter.emit('trace-event', event);
   }
 

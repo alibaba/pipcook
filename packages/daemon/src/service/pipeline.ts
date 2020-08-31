@@ -226,7 +226,8 @@ export class PipelineService {
       );
       tracer.emit(jobEvent);
     };
-    const run = async (type: PluginTypeI, plugin: PluginPackage, ...args: any[]) => {
+    const run = async (type: PluginTypeI, ...args: any[]) => {
+      const plugin = plugins[type].plugin;
       emitJobEvent(PipelineStatus.RUNNING, type, 'start');
       const result = await runnable.start(plugin, ...args);
       emitJobEvent(PipelineStatus.RUNNING, type, 'end');
@@ -245,25 +246,25 @@ export class PipelineService {
       await fs.ensureDir(modelPath);
 
       // run dataCollect to download dataset.
-      await run('dataCollect', plugins.dataCollect.plugin, getParams(plugins.dataCollect.params, {
+      await run('dataCollect', getParams(plugins.dataCollect.params, {
         dataDir
       }));
 
       verifyPlugin('dataAccess');
-      const dataset = await run('dataAccess', plugins.dataAccess.plugin, getParams(plugins.dataAccess.params, {
+      const dataset = await run('dataAccess', getParams(plugins.dataAccess.params, {
         dataDir
       }));
 
       let datasetProcess: PluginPackage;
       if (plugins.datasetProcess) {
         datasetProcess = plugins.datasetProcess.plugin;
-        await run('datasetProcess', plugins.datasetProcess.plugin, dataset, getParams(plugins.datasetProcess.params));
+        await run('datasetProcess', dataset, getParams(plugins.datasetProcess.params));
       }
 
       let dataProcess: PluginPackage;
       if (plugins.dataProcess) {
         dataProcess = plugins.dataProcess.plugin;
-        await run('dataProcess', plugins.dataProcess.plugin, dataset, getParams(plugins.dataProcess.params));
+        await run('dataProcess', dataset, getParams(plugins.dataProcess.params));
       }
 
       let model: RunnableResponse;
@@ -272,23 +273,23 @@ export class PipelineService {
       // select one of `ModelDefine` and `ModelLoad`.
       if (plugins.modelDefine) {
         modelPlugin = plugins.modelDefine.plugin;
-        model = await run('modelDefine', plugins.modelDefine.plugin, dataset, getParams(plugins.modelDefine.params));
+        model = await run('modelDefine', dataset, getParams(plugins.modelDefine.params));
       } else if (plugins.modelLoad) {
         modelPlugin = plugins.modelLoad.plugin;
-        model = await run('modelLoad', plugins.modelLoad.plugin, dataset, getParams(plugins.modelLoad.params, {
+        model = await run('modelLoad', dataset, getParams(plugins.modelLoad.params, {
           // specify the recover path for model loader by default.
           recoverPath: modelPath
         }));
       }
 
       if (plugins.modelTrain) {
-        model = await run('modelTrain', plugins.modelTrain.plugin, dataset, model, getParams(plugins.modelTrain.params, {
+        model = await run('modelTrain', dataset, model, getParams(plugins.modelTrain.params, {
           modelPath
         }));
       }
 
       verifyPlugin('modelEvaluate');
-      const output = await run('modelEvaluate', plugins.modelEvaluate.plugin, dataset, model, getParams(plugins.modelEvaluate.params, {
+      const output = await run('modelEvaluate', dataset, model, getParams(plugins.modelEvaluate.params, {
         modelDir: modelPath
       }));
 
