@@ -32,9 +32,6 @@ class LogPassthrough extends Transform {
   }
 
   _transform(chunk: any, encoding: string, callback: TransformCallback): void {
-    if (this.fd > 0) {
-      write(this.fd, chunk);
-    }
     if (this.last === undefined) {
       this.last = '';
     }
@@ -57,6 +54,17 @@ class LogPassthrough extends Transform {
     callback();
   }
 
+  /**
+   * cover Transform.write, otherwise if no `data` event listener,
+   * the callback `_transform` will not be called, but we need to save the log to file.
+   * @param args 
+   */
+  write(...args: any[]): boolean {
+    if (this.fd) {
+      write(this.fd, args[0]);
+    }
+    return super.write(args[0], args[1], args[2]);
+  }
   writeLine(line: string) {
     this.write(`${line}\n`);
   }
