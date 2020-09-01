@@ -42,7 +42,7 @@ describe('test tracer', () => {
   it('#listen', async () => {
     tracer.listen(() => {});
   });
-  it('#test event: listen/emit/wait', async () => {
+  it('#test event: listen/dispatch/wait', async () => {
     let called = false;
     tracer.listen((data) => {
       called = true;
@@ -50,7 +50,7 @@ describe('test tracer', () => {
       assert.deepEqual(data.data, { level: 'info', data: 'message' });
     });
     process.nextTick(() => {
-      tracer.emit(new LogEvent('info', 'message'));
+      tracer.dispatch(new LogEvent('info', 'message'));
       tracer.destroy();
     });
     await tracer.wait();
@@ -155,13 +155,13 @@ describe('test the trace manager service', () => {
         }
       }
     });
-    tracer.emit(new JobStatusChangeEvent(
+    tracer.dispatch(new JobStatusChangeEvent(
       1,
       'dataCollect',
       'start',
       1
     ));
-    tracer.emit(new JobStatusChangeEvent(
+    tracer.dispatch(new JobStatusChangeEvent(
       1,
       'dataAccess',
       'end'
