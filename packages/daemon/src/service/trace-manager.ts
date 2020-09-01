@@ -67,27 +67,22 @@ export class Tracer {
   private stderr: LogPassthrough;
   // event emitter for pipcook event
   private emitter: EventEmitter;
-  // options of tracer
-  private opts?: TraceOptions;
-  // log file fd for stdout, -1 if not defined
-  private fdOut: number;
-  // log file fd for stderr, -1 if not defined
-  private fdErr: number;
 
   constructor(opts?: TraceOptions) {
     this.id = generateId();
     this.emitter = new EventEmitter();
-    this.opts = opts;
+    this.stdout = new LogPassthrough(opts?.stdoutFile);
+    this.stderr = new LogPassthrough(opts?.stderrFile);
   }
 
   /**
-   * init loggers
+   * init tracer
    */
-  async initLogger() {
-    this.fdOut = this.opts?.stdoutFile ? await open(this.opts?.stdoutFile, 'w+') : -1;
-    this.fdErr = this.opts?.stderrFile ? await open(this.opts?.stderrFile, 'w+') : -1;
-    this.stdout = new LogPassthrough(this.fdOut);
-    this.stderr = new LogPassthrough(this.fdErr);
+  async init() {
+    return Promise.all([
+      this.stdout.init(),
+      this.stderr.init()
+    ]);
   }
   /**
    * get the loggers
@@ -146,21 +141,19 @@ export class Tracer {
       // TODO(feely): emit the error by tracer not logger
       // make sure someone handles the error, otherwise the process will exit
       if (this.stderr.listeners('error').length > 0) {
+        this.stderr.end();
         this.stderr.destroy(err);
       } else {
         console.error(`unhandled error from log: ${err.message}`);
+        this.stderr.end();
         this.stderr.destroy();
       }
     } else {
+      this.stderr.end();
       this.stderr.destroy();
     }
+    this.stdout.end();
     this.stdout.destroy();
-    if (this.fdOut > 0) {
-      close(this.fdOut);
-    }
-    if (this.fdErr > 0) {
-      close(this.fdErr);
-    }
   }
 }
 
@@ -173,13 +166,26 @@ class LogPassthrough extends Transform {
   decoder = new StringDecoder('utf8');
   last: string;
   fd: number;
-  filename: string;
-  constructor(fd: number) {
+  initialized: boolean;
+  constructor(private filename: string) {
     super({ objectMode: true });
-    this.fd = fd;
+    this.fd = -1;
+    this.initialized = false;
+  }
+  /**
+   * need to be called before transforming, it initializes the log file
+   */
+  async init() {
+    if (this.filename) {
+      this.fd = await open(this.filename, 'w+');
+    }
+    this.initialized = true;
   }
 
   _transform(chunk: any, encoding: string, callback: TransformCallback): void {
+    if (!this.initialized) {
+      throw new TypeError('LogPassthrough should be initialized before transforming');
+    }
     if (this.fd > 0) {
       write(this.fd, chunk);
     }
@@ -194,12 +200,13 @@ class LogPassthrough extends Transform {
     });
     callback();
   }
+
   _flush(callback: TransformCallback) {
-    this.last += this.decoder.end();
+    this.last = this.last ? this.last + this.decoder.end() : this.decoder.end();
     if (this.last) {
       this.push(this.last);
     }
-    if (this.fd) {
+    if (this.fd > 0) {
       close(this.fd);
     }
     callback();
@@ -216,11 +223,11 @@ export class TraceManager {
   tracerMap = new Map<string, Tracer>();
 
   /**
-   * create a log object, must call the destory function to clean it up.
+   * create a log object, must call the destroy function to clean it up.
    */
   async create(opts?: TraceOptions): Promise<Tracer> {
     const tracer: Tracer = new Tracer(opts);
-    await tracer.initLogger();
+    await tracer.init();
     this.tracerMap.set(tracer.id, tracer);
     return tracer;
   }

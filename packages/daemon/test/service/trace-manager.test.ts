@@ -21,25 +21,23 @@ describe('test tracer', () => {
   let tracerWithFile: Tracer;
   it('#new tracer', async () => {
     tracer = new Tracer();
-    assert.equal(tracer['opts'], undefined);
     tracerWithFile = new Tracer(opts);
-    assert.deepEqual(opts, tracerWithFile['opts']);
   });
 
   it('#init logger', async () => {
     sinon.replace(fs, 'open', async (...args: any[]) => {
       assert.fail('should not open log file');
     });
-    await tracer.initLogger();
+    await tracer.init();
   });
   it('#init logger with log files', async () => {
-    await tracer.initLogger();
+    await tracer.init();
     sinon.replace(fs, 'open', async (...args: any[]) => {
       assert.ok([ opts.stdoutFile, opts.stderrFile ].indexOf(args[0]) >=0);
       assert.equal(args[1], 'w+');
       return 1;
     });
-    await tracerWithFile.initLogger();
+    await tracerWithFile.init();
   });
   it('#listen', async () => {
     tracer.listen(() => {});
@@ -61,7 +59,7 @@ describe('test tracer', () => {
   });
   it('#destory logger', async () => {
     tracer = new Tracer();
-    await tracer.initLogger();
+    await tracer.init();
     sinon.replace(fs, 'close', async (...args: any[]) => {
       assert.fail('should not close log file');
     });
