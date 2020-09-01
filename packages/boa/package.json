@@ -5,8 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "clean": "sh tools/clean-python.sh && make -C ./pybind11/ clean",
-    "preinstall": "node tools/check-dependence.js && make -C ./pybind11/ && node tools/install-python.js && node tools/install-requirements.js",
-    "postinstall": "npm run build",
+    "install-dep": "node tools/check-dependence.js && make -C ./pybind11/ && node tools/install-python.js && node tools/install-requirements.js",
     "test": "tape ./tests/**/*.js",
     "lint": "eslint . -c .eslintrc.js --no-eslintrc && ./clang-format.py",
     "build": "npm run compile",

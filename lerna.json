@@ -10,30 +10,21 @@
   ],
   "version": "independent",
   "loglevel": "verbose",
-  "npmClient": "npm",
+  "useWorkspaces": true,
+  "npmClient": "yarn",
   "command": {
     "publishConfig": {
       "access": "public"
     },
     "bootstrap": {
       "nohoist": [
-        "@alifd/next",
-        "@icedesign/container",
-        "@icedesign/img",
-        "@icedesign/layout",
-        "@icedesign/notification",
-        "@icedesign/theme",
         "node-addon-api",
         "midway",
         "egg-ci",
         "egg-cors",
         "egg-scripts",
         "midway-bin",
-        "midway-mock",
-        "ice-scripts",
-        "stylelint",
-        "ice-plugin-fusion",
-        "ice-plugin-moment-locales"
+        "midway-mock"
       ]
     }
   },
