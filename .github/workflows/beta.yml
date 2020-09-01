@@ -45,8 +45,8 @@ jobs:
       - name: Install Dependencies
         if: env.UPDATED == 'true'
         run: |
-          npm install
-          npm run build
+          yarn
+          yarn build
           
       - name: Publish npm beta packages
         if: env.UPDATED == 'true'
@@ -55,8 +55,8 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > ~/.npmrc
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
-          npm run beta-release-tag -- --preid "${sha_short}-beta"
-          npm run beta-release
+          yarn beta-release-tag -- --preid "${sha_short}-beta"
+          yarn beta-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
