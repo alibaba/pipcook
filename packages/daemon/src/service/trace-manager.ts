@@ -66,11 +66,11 @@ export class Tracer {
   // stderr stream for log pipe
   private stderr: LogPassthrough;
   // event emitter for pipcook event
-  private emitter: EventEmitter;
+  private dispatcher: EventEmitter;
 
   constructor(opts?: TraceOptions) {
     this.id = generateId();
-    this.emitter = new EventEmitter();
+    this.dispatcher = new EventEmitter();
     this.stdout = new LogPassthrough(opts?.stdoutFile);
     this.stderr = new LogPassthrough(opts?.stderrFile);
   }
@@ -97,7 +97,7 @@ export class Tracer {
    */
   listen(cb: (data: PipcookEvent) => void): void {
     // event callback
-    this.emitter.on('trace-event', (e) => {
+    this.dispatcher.on('trace-event', (e) => {
       cb(e);
     });
 
@@ -106,7 +106,7 @@ export class Tracer {
       logger.on('data', data => {
         cb(new LogEvent(level, data));
       });
-      logger.on('close', () => this.emitter.emit('trace-finished'));
+      logger.on('close', () => this.dispatcher.emit('trace-finished'));
       logger.on('error', err => {
         cb(new LogEvent('error', err.message));
       });
@@ -116,11 +116,11 @@ export class Tracer {
   }
 
   /**
-   * emit event to client
+   * dispatch event to client
    * @param event pipcook event data
    */
-  emit(event: PipcookEvent) {
-    this.emitter.emit('trace-event', event);
+  dispatch(event: PipcookEvent) {
+    this.dispatcher.emit('trace-event', event);
   }
 
   /**
@@ -128,7 +128,7 @@ export class Tracer {
    */
   async wait() {
     return new Promise((resolve) => {
-      this.emitter.on('trace-finished', resolve);
+      this.dispatcher.on('trace-finished', resolve);
     });
   }
 

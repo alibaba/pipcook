@@ -218,25 +218,25 @@ export class PipelineService {
         throw new TypeError(`"${name}" plugin is required`);
       }
     };
-    const emitJobEvent = (jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end') => {
+    const dispatchJobEvent = (jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end') => {
       const jobEvent = new JobStatusChangeEvent(
         jobStatus,
         step,
         stepAction
       );
-      tracer.emit(jobEvent);
+      tracer.dispatch(jobEvent);
     };
     const run = async (type: PluginTypeI, ...args: any[]) => {
       const plugin = plugins[type].plugin;
-      emitJobEvent(PipelineStatus.RUNNING, type, 'start');
+      dispatchJobEvent(PipelineStatus.RUNNING, type, 'start');
       const result = await runnable.start(plugin, ...args);
-      emitJobEvent(PipelineStatus.RUNNING, type, 'end');
+      dispatchJobEvent(PipelineStatus.RUNNING, type, 'end');
       return result;
     };
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
     await job.save();
-    emitJobEvent(PipelineStatus.RUNNING);
+    dispatchJobEvent(PipelineStatus.RUNNING);
     try {
       verifyPlugin('dataCollect');
       const dataDir = path.join(this.pluginManager.datasetRoot, `${plugins.dataCollect.plugin.name}@${plugins.dataCollect.plugin.version}`);
@@ -315,15 +315,15 @@ export class PipelineService {
       });
 
       await job.save();
-      emitJobEvent(PipelineStatus.SUCCESS);
+      dispatchJobEvent(PipelineStatus.SUCCESS);
     } catch (err) {
       if (!runnable.canceled) {
         job.status = PipelineStatus.FAIL;
         job.error = err.message;
         await job.save();
-        emitJobEvent(PipelineStatus.FAIL);
+        dispatchJobEvent(PipelineStatus.FAIL);
       } else {
-        emitJobEvent(PipelineStatus.CANCELED);
+        dispatchJobEvent(PipelineStatus.CANCELED);
       }
       throw err;
     } finally {
@@ -423,7 +423,7 @@ export class PipelineService {
     return new Promise((resolve, reject) => {
       let queueLength = pluginQueue.length;
       const queueReporter = () => {
-        tracer.emit(new JobStatusChangeEvent(PipelineStatus.PENDING, undefined, undefined, --queueLength));
+        tracer.dispatch(new JobStatusChangeEvent(PipelineStatus.PENDING, undefined, undefined, --queueLength));
       };
       if (queueLength > 0) {
         pluginQueue.on('success', queueReporter);
