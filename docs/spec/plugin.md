@@ -36,12 +36,91 @@ After reading the `package.json` example above, there are a few requirements:
 - adding a root field `pipcook`,
   - `pipcook.category` is used to describe the category to which the plugin belongs, and all categories are listed [here](#plugin-category).
   - `pipcook.datatype` is used to describe the type of data to be processed, currently supports: `common`, `image`, and `text`.
+  - `pipcook.params` is used to describe the parameters for the plugin, see the following section for more details.
 - adding an optional field `conda` for configuring Python-related dependencies,
   - `conda.python` is used to specify the Python version, must be `3.7`.
   - `conda.dependencies` is used to list all Python dependencies which will be installed on plugin initialization, and it supports the following kinds of version string:
     - `x.y.z`, the specific version on [PyPI][].
     - `*`, the same to above with the latest version.
     - `git+https://github.com/foobar/project@master`, install from GitHub repository, it follows [pip-install(1)](https://pip.pypa.io/en/stable/reference/pip_install/#git).
+
+#### how to define `pipcook.params`?
+
+The `pipcook.params` is an array slot to declare the plugin parameters, then developer could define some parameters for plugin. And Pipcook will use these declarations:
+
+- generate plugin documentation.
+- generate plugin configuration UI, for example [imgcook/pipboard](https://github.com/imgcook/pipboard).
+
+An example of params element is like:
+
+```json
+{
+  "name": "foobar",
+  "type": "string",
+  "description": "foobar is a string"
+}
+```
+
+The main fields for an element are:
+
+- `name` it's the parameter name.
+- `type` it's the parameter type, it consists literal type and array-like type.
+  - literal type is: `string` and `number`
+  - array-like type supports appending `[]` or `[n]` after any literal type, for example `string[]` is to represent a string array, and `number[2]` is a number array with 2 elements.
+- `description` it describes the parameter.
+- `defaultValue` it's the default value, its valid value is corresponding to its type.
+- `options` it's used to list options for the parameter value, it could be applied to array-like types only.
+
+Next, let's take a look at some examples in real-world.
+
+To declare a url for a data-collect plugin:
+
+```json
+{
+  "name": "url",
+  "type": "string",
+  "description": "the remote url to download your dataset"
+}
+```
+
+To declare a shape for an image-resizing plugin:
+
+```json
+{
+  "name": "resize",
+  "type": "number[2]",
+  "description": "the shape to resize"
+}
+```
+
+To declare the loss function to be used in a model plugin:
+
+```json
+{
+  "name": "loss",
+  "type": "string[]",
+  "options": [
+    "meanSquaredError",
+    "meanAbsoluteError",
+    "categoricalCrossentropy",
+    "sparseCategoricalCrossentropy",
+    "binaryCrossentropy"
+  ],
+  "defaultValue": [ "categoricalCrossentropy" ]
+}
+```
+
+To declare the language mode to a NLP-related plugin:
+
+```json
+{
+  "name": "mode",
+  "type": "string[1]",
+  "options": [ "cn", "en" ],
+  "defaultValue": "cn",
+  "description": "Chinese text classification or English text classification, the value can be en or cn"
+}
+```
 
 ## Plugin Category
 
