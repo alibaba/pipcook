@@ -1,11 +1,13 @@
 {
   "name": "pipcook",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.4",
+    "@babel/plugin-proposal-export-namespace-from": "^7.10.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
     "@lerna/bootstrap": "^3.18.4",
+    "@types/fs-extra": "^9.0.1",
     "@types/jasmine": "^3.5.10",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
@@ -35,5 +37,6 @@
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
     "beta-release": "lerna publish from-package --yes --no-verify-access --dist-tag beta",
     "init-dev": "node ./tools/init_dev.js -f"
-  }
+  },
+  "__npminstall_done": false
 }
