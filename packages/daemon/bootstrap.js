@@ -63,6 +63,9 @@ function createPidfileSync(pathname) {
   if (!await pathExists(midwayPathname)) {
     midwayPathname = path.join(__dirname, '../../midway');
   }
+  if (! await pathExists(midwayPathname)) {
+    midwayPathname = path.join(__dirname, '../../node_modules/midway');
+  }
   if (!await pathExists(midwayPathname)) {
     throw new TypeError('daemon is not installed correctly.');
   }
