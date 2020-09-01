@@ -137,23 +137,9 @@ export class Tracer {
    * @param err error if have
    */
   destroy(err?: Error) {
-    if (err) {
-      // TODO(feely): emit the error by tracer not logger
-      // make sure someone handles the error, otherwise the process will exit
-      if (this.stderr.listeners('error').length > 0) {
-        this.stderr.end();
-        this.stderr.destroy(err);
-      } else {
-        console.error(`unhandled error from log: ${err.message}`);
-        this.stderr.end();
-        this.stderr.destroy();
-      }
-    } else {
-      this.stderr.end();
-      this.stderr.destroy();
-    }
-    this.stdout.end();
-    this.stdout.destroy();
+    // TODO(feely): emit the error by tracer not logger
+    this.stderr.finish(err);
+    this.stdout.finish();
   }
 }
 
@@ -167,10 +153,13 @@ class LogPassthrough extends Transform {
   last: string;
   fd: number;
   initialized: boolean;
-  constructor(private filename: string) {
+  filename: string;
+
+  constructor(filename: string) {
     super({ objectMode: true });
     this.fd = -1;
     this.initialized = false;
+    this.filename = filename;
   }
   /**
    * need to be called before transforming, it initializes the log file
@@ -214,6 +203,22 @@ class LogPassthrough extends Transform {
 
   writeLine(line: string) {
     this.write(`${line}\n`);
+  }
+
+  /**
+   * end and destroy the stream.
+   */
+  finish(err?: Error) {
+    this.end();
+    // make sure someone handles the error, otherwise the process will exit
+    if (err && this.listeners('error').length > 0) {
+      this.destroy(err);
+    } else {
+      if (err) {
+        console.error(`unhandled error from log: ${err.message}`);
+      }
+      this.destroy();
+    }
   }
 }
 

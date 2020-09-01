@@ -173,8 +173,8 @@ describe('test the trace manager service', () => {
     await tracer.wait();
     assert.ok(logInfoFlag && logWarnFlag && logErrorFlag && eventStartFlag && eventEndFlag);
     assert.ok(await fs.pathExists(opts.stderrFile) && await fs.pathExists(opts.stdoutFile));
-    const stdoutContent = await fs.readFile(opts.stdoutFile, 'utf-8');
-    const stderrContent = await fs.readFile(opts.stderrFile, 'utf-8');
+    const stdoutContent = await fs.readFile(opts.stdoutFile, 'utf8');
+    const stderrContent = await fs.readFile(opts.stderrFile, 'utf8');
     assert.ok(stdoutContent.indexOf(mockLog.info) === 0);
     assert.ok(stderrContent.indexOf(mockLog.warn) === 0);
     return removeLogs();
