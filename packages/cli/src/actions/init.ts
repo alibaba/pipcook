@@ -7,7 +7,7 @@ import { constants as CoreConstants } from '@pipcook/pipcook-core';
 
 import { Constants, logger } from '../utils/common';
 import { InitCommandHandler } from '../types';
-import { optionalNpmClients, daemonPackage, boardPackage } from '../config';
+import { optionalNpmClients, daemonPackage } from '../config';
 
 const {
   BOA_CONDA_INDEX,
@@ -114,13 +114,10 @@ const init: InitCommandHandler = async (version: string, { beta, client, tuna })
     }
   }
 
-  // Install the daemon and pipboard.
+  // Install the daemon.
   try {
     await remove(CoreConstants.PIPCOOK_DAEMON);
-    await remove(CoreConstants.PIPCOOK_BOARD);
-
     await ensureDir(CoreConstants.PIPCOOK_DAEMON);
-    await ensureDir(CoreConstants.PIPCOOK_BOARD);
     if (tuna) {
       // write the daemon config
       await fse.writeJSON(join(CoreConstants.PIPCOOK_HOME_PATH, 'daemon.config.json'), {
@@ -132,21 +129,15 @@ const init: InitCommandHandler = async (version: string, { beta, client, tuna })
       });
     }
     let daemon = daemonPackage;
-    let board = boardPackage;
     if (version) {
       daemon += `@${version}`;
     }
-    await Promise.all([
-      npmInstall(npmClient, daemon, CoreConstants.PIPCOOK_DAEMON, npmInstallEnvs),
-      npmInstall(npmClient, board, CoreConstants.PIPCOOK_BOARD, npmInstallEnvs)
-    ]);
+    await npmInstall(npmClient, daemon, CoreConstants.PIPCOOK_DAEMON, npmInstallEnvs);
     await initPlugin(CoreConstants.PIPCOOK_DAEMON, CoreConstants.PIPCOOK_PLUGINS);
-    await fse.copy(CoreConstants.PIPCOOK_BOARD_BUILD, CoreConstants.PIPCOOK_DAEMON_PUBLIC);
     logger.success('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {
     logger.fail(`failed to initialize Pipcook with the error ${err && err.stack}`, false);
     await remove(CoreConstants.PIPCOOK_DAEMON);
-    await remove(CoreConstants.PIPCOOK_BOARD);
   }
 };
 
