@@ -82,9 +82,9 @@ export class PipelineService {
     });
   }
 
-  async queryPipelines(opts?: QueryOptions): Promise<{rows: PipelineModel[], count: number}> {
+  async queryPipelines(opts?: QueryOptions): Promise<PipelineModel[]> {
     const { offset, limit } = opts || {};
-    return this.pipeline.findAndCountAll({
+    return this.pipeline.findAll({
       offset,
       limit,
       order: [
@@ -106,10 +106,10 @@ export class PipelineService {
 
   async removePipelines(): Promise<number> {
     const list = await this.queryPipelines();
-    await list.rows.map(async (pipeline: PipelineModel) => {
+    await list.map(async (pipeline: PipelineModel) => {
       await pipeline.destroy();
     });
-    return list.count;
+    return list.length;
   }
 
   async updatePipelineById(id: string, config: PipelineDB): Promise<PipelineModel> {
@@ -131,14 +131,14 @@ export class PipelineService {
     if (typeof filter.pipelineId === 'string') {
       where.pipelineId = filter.pipelineId;
     }
-    return (await this.job.findAndCountAll({
+    return this.job.findAll({
       offset,
       limit,
       where,
       order: [
         [ 'createdAt', 'DESC' ]
       ]
-    })).rows;
+    });
   }
 
   async removeJobs(): Promise<number> {

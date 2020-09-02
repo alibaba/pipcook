@@ -69,7 +69,7 @@ export class PipelineController extends BaseEventController {
     this.validate(listSchema, this.ctx.query);
     const { offset, limit } = this.ctx.query;
     const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
-    this.ctx.success(pipelines.rows);
+    this.ctx.success(pipelines);
   }
 
   /**
