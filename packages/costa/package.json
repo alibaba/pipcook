@@ -12,7 +12,7 @@
     "test": "ts-node ../../run_tests.ts --spec 'dist/test/*.js'",
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compile",
-    "dev-trans": "babel --plugins @babel/plugin-transform-modules-commonjs ./dist/ --out-dir ./dist",
+    "dev-trans": "babel ./dist/ --out-dir ./dist",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts --outdir=dist --tsconfig=tsconfig.json && npm run dev-trans",
     "compile": "tsc -b tsconfig.json"
