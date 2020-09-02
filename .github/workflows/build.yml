@@ -109,7 +109,7 @@ jobs:
         ls ./output && rm -rf ./output
     - name: remove pipelines
       run: |
-        ./packages/cli/dist/bin/pipcook remove all
+        ./packages/cli/dist/bin/pipcook pipeline remove all -y
     - name: "pipcook plugin-dev"
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect

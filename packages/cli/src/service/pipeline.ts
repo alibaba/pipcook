@@ -1,9 +1,8 @@
 import * as path from 'path';
 import * as Url from 'url';
-import { PipelineResp, PluginStatusValue, PipelineConfig } from '@pipcook/sdk';
+import { PipelineResp, PluginStatusValue, PipelineConfig, JobResp } from '@pipcook/sdk';
 import { constants, PluginStatus } from '@pipcook/pipcook-core';
 import { readJson } from 'fs-extra';
-import { prompt } from 'inquirer';
 import { install as pluginInstall } from './plugin';
 import { logger, parseConfigFilename, initClient, streamToJson } from "../utils/common";
 import { getFile } from '../utils/request';
@@ -56,40 +55,25 @@ export async function update(id: string, filename: string, opts: any): Promise<v
   }
 }
 
-export async function remove(id: any, opts: any): Promise<void> {
+export async function listJobsByPipelineId(id: string, opts: any): Promise<JobResp[]> {
   const client = initClient(opts.hostIp, opts.port);
   let jobs;
-  if (id === 'all') {
-    id = undefined;
+  if (id === 'all' || id === undefined) {
     jobs = await client.job.list();
   } else {
     jobs = await client.job.list({ pipelineId: id });
   }
-  let confirm = false;
-  if (jobs.length > 0) {
-    const answer = await prompt([
-      {
-        type: 'confirm',
-        name: 'remove',
-        message: `${jobs.length} ${jobs.length > 1 ? 'jobs' : 'job'} which belong to the pipeline will be removed too, continue?`,
-        default: false
-      }
-    ]);
-    confirm = answer.remove;
-  } else {
-    confirm = true;
-  }
-  if (confirm) {
-    try {
-      if (id === 'all') {
-        id = undefined;
-      }
-      await client.pipeline.remove(id);
-      logger.info(`${jobs.length} ${jobs.length > 1 ? 'job' : 'jobs'} removed.`);
-      logger.success(id ? `pipeline ${id} has removed.` : `all pipelines removed.`);
-    } catch (err) {
-      logger.fail(err.message);
-    }
+  return jobs;
+}
+
+export async function remove(id: string, jobs: JobResp[], opts: any): Promise<void> {
+  const client = initClient(opts.hostIp, opts.port);
+  try {
+    await client.pipeline.remove(id);
+    logger.info(`${jobs.length} ${jobs.length > 1 ? 'job' : 'jobs'} removed.`);
+    logger.success(id ? `pipeline ${id} has removed.` : `all pipelines removed.`);
+  } catch (err) {
+    logger.fail(err.message);
   }
 }
 
