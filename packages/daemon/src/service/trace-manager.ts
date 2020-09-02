@@ -175,9 +175,6 @@ class LogPassthrough extends Transform {
     if (!this.initialized) {
       throw new TypeError('LogPassthrough should be initialized before transforming');
     }
-    if (this.fd > 0) {
-      write(this.fd, chunk);
-    }
     if (this.last === undefined) {
       this.last = '';
     }
@@ -201,6 +198,21 @@ class LogPassthrough extends Transform {
     callback();
   }
 
+  write(chunk: any, cb?: (error: Error | null | undefined) => void): boolean;
+  write(chunk: any, encoding?: string, cb?: (error: Error | null | undefined) => void): boolean;
+  /**
+   * cover Transform.write, otherwise if no `data` event listener,
+   * the callback `_transform` will not be called, but we need to save the log to file.
+   * @param args args for stream.write
+   * @param args args for stream.write
+   */
+  write(chunk: any, ...args: any[]): boolean {
+    if (this.fd > 0) {
+      write(this.fd, chunk);
+    }
+    return super.write(chunk, args[0], args[1]);
+  }
+
   writeLine(line: string) {
     this.write(`${line}\n`);
   }
@@ -209,16 +221,17 @@ class LogPassthrough extends Transform {
    * end and destroy the stream.
    */
   finish(err?: Error) {
-    this.end();
-    // make sure someone handles the error, otherwise the process will exit
-    if (err && this.listeners('error').length > 0) {
-      this.destroy(err);
-    } else {
-      if (err) {
-        console.error(`unhandled error from log: ${err.message}`);
+    this.end(() => {
+      // make sure someone handles the error, otherwise the process will exit
+      if (err && this.listeners('error').length > 0) {
+        this.destroy(err);
+      } else {
+        if (err) {
+          console.error(`unhandled error from log: ${err.message}`);
+        }
+        this.destroy();
       }
-      this.destroy();
-    }
+    });
   }
 }
 

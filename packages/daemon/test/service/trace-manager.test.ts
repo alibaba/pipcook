@@ -131,10 +131,10 @@ describe('test the trace manager service', () => {
         const logData = data as LogEvent;
         if (logData.data.level === 'info') {
           logInfoFlag = true;
-          assert.equal(logData.data.data, mockLog.info);
+          assert.ok(logData.data.data.startsWith(mockLog.info));
         } else if (logData.data.level === 'warn') {
           logWarnFlag = true;
-          assert.equal(logData.data.data, mockLog.warn);
+          assert.ok(logData.data.data.startsWith(mockLog.warn));
         } else if (logData.data.level === 'error') {
           logErrorFlag = true;
           assert.equal(logData.data.data, mockLog.error);
@@ -167,16 +167,22 @@ describe('test the trace manager service', () => {
       'end'
     ));
     const loggers = tracer.getLogger();
-    loggers.stdout.write(`${mockLog.info}\n`);
-    loggers.stderr.write(`${mockLog.warn}\n`);
+    let i = 0;
+    while (i++ < 50) {
+      loggers.stdout.write(`${mockLog.info}${i}\n`);
+      loggers.stderr.write(`${mockLog.warn}${i}\n`);
+    }
     tracer.destroy(new TypeError(mockLog.error));
     await tracer.wait();
     assert.ok(logInfoFlag && logWarnFlag && logErrorFlag && eventStartFlag && eventEndFlag);
     assert.ok(await fs.pathExists(opts.stderrFile) && await fs.pathExists(opts.stdoutFile));
     const stdoutContent = await fs.readFile(opts.stdoutFile, 'utf8');
     const stderrContent = await fs.readFile(opts.stderrFile, 'utf8');
-    assert.ok(stdoutContent.indexOf(mockLog.info) === 0);
-    assert.ok(stderrContent.indexOf(mockLog.warn) === 0);
+    i = 0;
+    while (i++ < 50) {
+      assert.ok(stdoutContent.indexOf(`${mockLog.info}${i}\n`) >= 0);
+      assert.ok(stderrContent.indexOf(`${mockLog.warn}${i}\n`) >= 0);
+    }
     return removeLogs();
   });
 });
