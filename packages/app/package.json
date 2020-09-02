@@ -12,7 +12,7 @@
     "dev-build": "npm run clean && npm run dev-compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts --tsconfig=tsconfig.json --outdir=dist && sh setup.sh",
-    "compile": " tsc -v && tsc -b tsconfig.json && sh setup.sh"
+    "compile": "tsc -b tsconfig.json && sh setup.sh"
   },
   "license": "Apache 2.0",
   "dependencies": {
