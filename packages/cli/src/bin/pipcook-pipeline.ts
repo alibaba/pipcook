@@ -46,6 +46,9 @@ program
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action(async (id: string, opts: any) => {
+    if (id === 'all') {
+      id = undefined;
+    }
     const jobs = await listJobsByPipelineId(id, opts);
     let confirm = !!opts.yes;
     if (!opts.yes && jobs.length > 0) {

@@ -58,7 +58,7 @@ export async function update(id: string, filename: string, opts: any): Promise<v
 export async function listJobsByPipelineId(id: string, opts: any): Promise<JobResp[]> {
   const client = initClient(opts.hostIp, opts.port);
   let jobs;
-  if (id === 'all' || id === undefined) {
+  if (id === undefined) {
     jobs = await client.job.list();
   } else {
     jobs = await client.job.list({ pipelineId: id });
