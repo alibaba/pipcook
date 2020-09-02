@@ -63,7 +63,7 @@ program
       confirm = answer.remove;
     }
     if (confirm) {
-      remove(id, jobs, opts);
+      return remove(id, jobs, opts);
     }
   });
 
