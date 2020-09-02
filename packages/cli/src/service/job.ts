@@ -145,5 +145,5 @@ export async function runAndDownload(filename: string, opts: any) {
 
 export async function runAndDownloadById(id: string, opts: any) {
   const job = await runByPipelineId(id, opts);
-  download(job.id, opts);
+  await download(job.id, opts);
 }
