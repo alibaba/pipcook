@@ -168,15 +168,22 @@ export class PipelineService {
     return 0;
   }
 
-  async removeJobByModel(job: JobModel): Promise<number> {
-    if (job) {
-      await Promise.all([
-        job.destroy(),
-        fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
-      ]);
-      return 1;
+  async removeJobByModels(jobs: JobModel[]): Promise<number> {
+    const ids = jobs.map(job => job.id);
+    const fsRemoveFutures = [];
+    for (const id of ids) {
+      fsRemoveFutures.push(fs.remove(`${CoreConstants.PIPCOOK_RUN}/${id}`));
     }
-    return 0;
+    const deleteFuture = this.job.destroy({
+      where: {
+        id: ids
+      }
+    });
+    const results = await Promise.all([
+      deleteFuture,
+      Promise.all(fsRemoveFutures)
+    ]);
+    return results[0];
   }
 
   async createJob(pipelineId: string): Promise<JobModel> {
