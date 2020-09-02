@@ -112,6 +112,7 @@ describe('test the trace manager service', () => {
   });
 
   it('#test trace', async () => {
+    await removeLogs();
     const traceManager: TraceManager = await app.applicationContext.getAsync<TraceManager>('traceManager');
     const id = (await traceManager.create(opts)).id;
     const tracer = await traceManager.get(id);
@@ -146,12 +147,12 @@ describe('test the trace manager service', () => {
         assert.equal(eventData.data.jobStatus, 1);
         if (eventData.data.stepAction === 'start') {
           eventStartFlag = true;
-          assert.equal(eventData.data.step, 'dataCollect');
-          assert.equal(eventData.data.queueLength, 1);
+          assert.equal(eventData.data.step, 'dataCollect', 'dataCollect step check');
+          assert.equal(eventData.data.queueLength, 1, 'dataCollect queue length step check');
         } if (eventData.data.stepAction === 'end') {
           eventEndFlag = true;
-          assert.equal(eventData.data.step, 'dataAccess');
-          assert.equal(eventData.data.queueLength, undefined);
+          assert.equal(eventData.data.step, 'dataAccess', 'dataAccess step check');
+          assert.equal(eventData.data.queueLength, undefined, 'dataAccess queue length check');
         }
       }
     });
@@ -174,14 +175,14 @@ describe('test the trace manager service', () => {
     }
     tracer.destroy(new TypeError(mockLog.error));
     await tracer.wait();
-    assert.ok(logInfoFlag && logWarnFlag && logErrorFlag && eventStartFlag && eventEndFlag);
-    assert.ok(await fs.pathExists(opts.stderrFile) && await fs.pathExists(opts.stdoutFile));
+    assert.ok(logInfoFlag && logWarnFlag && logErrorFlag && eventStartFlag && eventEndFlag, 'callback check');
+    assert.ok(await fs.pathExists(opts.stderrFile) && await fs.pathExists(opts.stdoutFile), 'log file check');
     const stdoutContent = await fs.readFile(opts.stdoutFile, 'utf8');
     const stderrContent = await fs.readFile(opts.stderrFile, 'utf8');
     i = 0;
     while (i++ < 50) {
-      assert.ok(stdoutContent.indexOf(`${mockLog.info}${i}\n`) >= 0);
-      assert.ok(stderrContent.indexOf(`${mockLog.warn}${i}\n`) >= 0);
+      assert.ok(stdoutContent.indexOf(`${mockLog.info}${i}\n`) >= 0, 'stdout log check');
+      assert.ok(stderrContent.indexOf(`${mockLog.warn}${i}\n`) >= 0, 'stderr log check');
     }
     return removeLogs();
   });
