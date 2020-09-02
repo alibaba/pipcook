@@ -1,6 +1,6 @@
 import { Transform, TransformCallback } from 'stream';
 import { EventEmitter } from 'events';
-import { open, close, write } from 'fs-extra';
+import { WriteStream, createWriteStream } from 'fs-extra';
 import { provide, scope, ScopeEnum } from 'midway';
 import { StringDecoder } from 'string_decoder';
 import { generateId, PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
@@ -76,15 +76,6 @@ export class Tracer {
   }
 
   /**
-   * init tracer
-   */
-  async init() {
-    return Promise.all([
-      this.stdout.init(),
-      this.stderr.init()
-    ]);
-  }
-  /**
    * get the loggers
    */
   getLogger(): { stdout: LogPassthrough; stderr: LogPassthrough } {
@@ -136,10 +127,12 @@ export class Tracer {
    * destory tracer
    * @param err error if have
    */
-  destroy(err?: Error) {
+  async destroy(err?: Error) {
     // TODO(feely): emit the error by tracer not logger
-    this.stderr.finish(err);
-    this.stdout.finish();
+    return Promise.all([
+      this.stderr.finish(err),
+      this.stdout.finish()
+    ]);
   }
 }
 
@@ -148,33 +141,22 @@ export interface TraceOptions {
   stderrFile?: string;
 }
 
-class LogPassthrough extends Transform {
+export class LogPassthrough extends Transform {
   decoder = new StringDecoder('utf8');
   last: string;
-  fd: number;
-  initialized: boolean;
-  filename: string;
+  fileStream: WriteStream;
 
-  constructor(filename: string) {
+  constructor(filename?: string) {
     super({ objectMode: true });
-    this.fd = -1;
-    this.initialized = false;
-    this.filename = filename;
-  }
-  /**
-   * need to be called before transforming, it initializes the log file
-   */
-  async init() {
-    if (this.filename) {
-      this.fd = await open(this.filename, 'w+');
+    if (filename) {
+      this.fileStream = createWriteStream(filename, { flags: 'w+' });
+      this.fileStream.on('error', (err) => {
+        console.error(`log [${filename}] write error: ${err.message}`);
+      });
     }
-    this.initialized = true;
   }
 
   _transform(chunk: any, encoding: string, callback: TransformCallback): void {
-    if (!this.initialized) {
-      throw new TypeError('LogPassthrough should be initialized before transforming');
-    }
     if (this.last === undefined) {
       this.last = '';
     }
@@ -192,9 +174,6 @@ class LogPassthrough extends Transform {
     if (this.last) {
       this.push(this.last);
     }
-    if (this.fd > 0) {
-      close(this.fd);
-    }
     callback();
   }
 
@@ -207,8 +186,8 @@ class LogPassthrough extends Transform {
    * @param args args for stream.write
    */
   write(chunk: any, ...args: any[]): boolean {
-    if (this.fd > 0) {
-      write(this.fd, chunk);
+    if (this.fileStream && this.fileStream.writable) {
+      this.fileStream.write(chunk);
     }
     return super.write(chunk, args[0], args[1]);
   }
@@ -220,8 +199,9 @@ class LogPassthrough extends Transform {
   /**
    * end and destroy the stream.
    */
-  finish(err?: Error) {
-    this.end(() => {
+  async finish(err?: Error) {
+    return new Promise<void>((resolve) => {
+      this.end();
       // make sure someone handles the error, otherwise the process will exit
       if (err && this.listeners('error').length > 0) {
         this.destroy(err);
@@ -230,6 +210,15 @@ class LogPassthrough extends Transform {
           console.error(`unhandled error from log: ${err.message}`);
         }
         this.destroy();
+      }
+      if (this.fileStream) {
+        this.fileStream.on('close', () => {
+          this.fileStream.close();
+          resolve();
+        });
+        this.fileStream.end();
+      } else {
+        resolve();
       }
     });
   }
@@ -243,9 +232,8 @@ export class TraceManager {
   /**
    * create a log object, must call the destroy function to clean it up.
    */
-  async create(opts?: TraceOptions): Promise<Tracer> {
+  create(opts?: TraceOptions): Tracer {
     const tracer: Tracer = new Tracer(opts);
-    await tracer.init();
     this.tracerMap.set(tracer.id, tracer);
     return tracer;
   }
@@ -264,11 +252,11 @@ export class TraceManager {
    * @param id trace id
    * @param err error if have
    */
-  destroy(id: string, err?: Error) {
+  async destroy(id: string, err?: Error) {
     const tracer = this.tracerMap.get(id);
     if (tracer) {
-      tracer.destroy(err);
-      return this.tracerMap.delete(id);
+      this.tracerMap.delete(id);
+      return tracer.destroy(err);
     } else {
       debug(`tracer ${id} not found for destroy`);
     }
