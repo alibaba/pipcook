@@ -23,8 +23,7 @@
   "scripts": {
     "build": "lerna run compile",
     "dev-build": "lerna run dev-compile --parallel --concurrency 10",
-    "preinstall": "yarn workspace @pipcook/boa run install-dep",
-    "postinstall": "node ./tools/init_dev.js -f && rm -rf ./node_modules/midway-bin/node_modules/typescript/ && yarn workspace @pipcook/boa run compile",
+    "postinstall": "node ./tools/init_dev.js -f && rm -rf ./node_modules/midway-bin/node_modules/typescript/",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon lint",
     "pretest": "npm run lint",

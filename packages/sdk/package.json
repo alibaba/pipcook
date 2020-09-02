@@ -10,7 +10,7 @@
   "scripts": {
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compile",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -rf node_modules",
     "dev-compile": "esbuild ./src/*.ts --tsconfig=tsconfig.json --outdir=dist",
     "compile": "tsc -b tsconfig.json",
     "test": "ts-node ../../run_tests.ts"

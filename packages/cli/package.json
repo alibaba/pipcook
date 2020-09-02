@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compiles",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -rf ./assets/server",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -rf ./assets/server && rm -rf node_modules",
     "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts --outdir=dist --tsconfig=tsconfig.json && sh setup.sh",
     "compile": "tsc -b tsconfig.json && sh setup.sh"
   },

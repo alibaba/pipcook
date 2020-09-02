@@ -57,7 +57,7 @@
     "ci": "npm run cov",
     "compile": "midway-bin build -c --port=6927",
     "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts --tsconfig=tsconfig.json --outdir=dist",
-    "clean": "rm -rf src/app/public",
+    "clean": "rm -rf src/app/public && rm -rf node_modules",
     "test": "midway-bin test --ts --full-trace",
     "migration": "sequelize-cli db:migrate",
     "migration:undo": "sequelize-cli db:migrate:undo",

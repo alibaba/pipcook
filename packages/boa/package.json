@@ -4,8 +4,9 @@
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {
-    "clean": "sh tools/clean-python.sh && make -C ./pybind11/ clean",
-    "install-dep": "node tools/check-dependence.js && make -C ./pybind11/ && node tools/install-python.js && node tools/install-requirements.js",
+    "clean": "sh tools/clean-python.sh && make -C ./pybind11/ clean && rm -rf node_modules",
+    "preinstall": "node tools/check-dependence.js && make -C ./pybind11/ && node tools/install-python.js && node tools/install-requirements.js",
+    "postinstall": "npm run build",
     "test": "tape ./tests/**/*.js",
     "lint": "eslint . -c .eslintrc.js --no-eslintrc && ./clang-format.py",
     "build": "npm run compile",
