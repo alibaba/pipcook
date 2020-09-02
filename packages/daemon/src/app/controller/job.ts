@@ -26,6 +26,7 @@ export class JobController extends BaseEventController {
     const { pipelineId } = this.ctx.request.body;
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
+      const plugins = await this.pipelineService.fetchPlugins(pipeline);
       const job = await this.pipelineService.createJob(pipelineId);
       const logPath = join(constants.PIPCOOK_RUN, job.id, 'logs');
       const stdoutFile = join(logPath, 'stdout.log');
@@ -35,16 +36,16 @@ export class JobController extends BaseEventController {
         ensureFile(stdoutFile),
         ensureFile(stderrFile)
       ];
-      const log = await this.logManager.create({ stdoutFile, stderrFile });
+      const tracer = await this.traceManager.create({ stdoutFile, stderrFile });
       process.nextTick(async () => {
         try {
-          await this.pipelineService.runJob(job, pipeline, log);
-          this.logManager.destroy(log.id);
+          await this.pipelineService.runJob(job, pipeline, plugins, tracer);
+          this.traceManager.destroy(tracer.id);
         } catch (err) {
-          this.logManager.destroy(log.id, err);
+          this.traceManager.destroy(tracer.id, err);
         }
       });
-      this.ctx.success({ ...(job.toJSON() as JobResp), traceId: log.id });
+      this.ctx.success({ ...(job.toJSON() as JobResp), traceId: tracer.id });
     } else {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'not pipeline found');
     }
@@ -97,16 +98,17 @@ export class JobController extends BaseEventController {
   public async viewLog(): Promise<void> {
     const { ctx } = this;
     const { id } = ctx.params;
-    const data = await this.pipelineService.getLogById(id);
-    if (data === null || data === undefined) {
-      throw new Error('log not found');
+    if (!await this.pipelineService.getJobById(id)) {
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'job not found');
     }
+    const data = await this.pipelineService.getLogById(id);
     this.ctx.success(data);
   }
 
   @get('/:id/output')
   public async download(): Promise<void> {
     const outputPath = this.pipelineService.getOutputTarByJobId(this.ctx.params.id);
+    this.ctx.attachment(`pipcook-output-${this.ctx.params.id}.tar.gz`);
     this.ctx.body = createReadStream(outputPath);
   }
 

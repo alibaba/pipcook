@@ -13,7 +13,7 @@ export async function list(opts: any): Promise<void> {
   if (jobs.length > 0) {
     console.table(jobs.map((job) => {
       return { ...job, status: JobStatusValue[job.status] };
-    }), [ 'id', 'status', 'evaluatePass', 'createdAt' ]);
+    }), [ 'id', 'pipelineId', 'status', 'evaluatePass', 'createdAt' ]);
   } else {
     logger.info('no job is created.');
   }
@@ -48,7 +48,7 @@ export async function log(id: string, opts: any): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   try {
     const log = await client.job.log(id);
-    logger.info(log);
+    logger.info(JSON.stringify(log));
   } catch (err) {
     logger.fail(err.message);
   }

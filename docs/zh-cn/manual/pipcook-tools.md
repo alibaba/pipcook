@@ -116,16 +116,37 @@ $ pipcook pipeline info <id>
 
 ```sh
 $ pipcook plugin list
-┌─────────┬───────────────────────────────────────────────────────────────────┬──────────┬─────────────────┬──────────┐
-│ (index) │                               name                                │ version  │    category     │ datatype │
-├─────────┼───────────────────────────────────────────────────────────────────┼──────────┼─────────────────┼──────────┤
-│    0    │                '@pipcook/plugins-csv-data-access'                 │ '0.5.9'  │  'dataAccess'   │  'text'  │
-│    1    │              '@pipcook/plugins-bayesian-model-train'              │ '0.5.10' │  'modelTrain'   │  'text'  │
-│    2    │            '@pipcook/plugins-bayesian-model-evaluate'             │ '0.5.10' │ 'modelEvaluate' │  'text'  │
-│    3    │                '@pipcook/plugins-csv-data-collect'                │ '0.5.9'  │  'dataCollect'  │  'text'  │
-│    4    │             '@pipcook/plugins-bayesian-model-define'              │ '0.5.10' │  'modelDefine'  │  'text'  │
-│    5    │               '@pipcook/plugins-mnist-data-collect'               │ '0.5.9'  │  'dataCollect'  │ 'image'  │
-└─────────┴───────────────────────────────────────────────────────────────────┴──────────┴─────────────────┴──────────┘
+┌─────────┬────────────┬────────────────────────────────────────────┬─────────┬─────────────────┬──────────┬─────────────┐
+│ (index) │     id     │                    name                    │ version │    category     │ datatype │   status    │
+├─────────┼────────────┼────────────────────────────────────────────┼─────────┼─────────────────┼──────────┼─────────────┤
+│    0    │ '6lfansw6' │    '@pipcook/plugins-csv-data-collect'     │ '1.1.0' │  'dataCollect'  │  'text'  │ 'installed' │
+│    1    │ 'mca2mysb' │     '@pipcook/plugins-csv-data-access'     │ '1.1.0' │  'dataAccess'   │  'text'  │ 'installed' │
+│    2    │ 'wbpggj0m' │  '@pipcook/plugins-bayesian-model-define'  │ '1.1.0' │  'modelDefine'  │  'text'  │ 'installed' │
+│    3    │ 'm65a6t7o' │  '@pipcook/plugins-bayesian-model-train'   │ '1.1.0' │  'modelTrain'   │  'text'  │ 'installed' │
+│    4    │ 'nz0iuobj' │ '@pipcook/plugins-bayesian-model-evaluate' │ '1.1.0' │ 'modelEvaluate' │  'text'  │ 'installed' │
+│    5    │ 'asdorgj1' │  '@pipcook/plugins-pascalvoc-data-access'  │ '1.1.0' │  'dataCollect'  │ 'image'  │ 'installed' │
+└─────────┴────────────┴────────────────────────────────────────────┴─────────┴─────────────────┴──────────┴─────────────┘
+```
+
+查看插件信息：
+
+```sh
+$ pipcook plugin info 6lfansw6
+{
+  "id": "6lfansw6",
+  "name": "@pipcook/plugins-csv-data-collect",
+  "version": "1.1.0",
+  "category": "dataCollect",
+  "datatype": "text",
+  "namespace": null,
+  "dest": "/path/to/.pipcook/plugins/node_modules/@pipcook/plugins-csv-data-collect@1.1.0",
+  "sourceFrom": "npm",
+  "sourceUri": "https://registry.npmjs.com/@pipcook/plugins-csv-data-collect",
+  "status": 1,
+  "error": null,
+  "createdAt": "2020-09-01T05:59:21.286Z",
+  "updatedAt": "2020-09-01T05:59:29.334Z"
+}
 ```
 
 卸载插件：

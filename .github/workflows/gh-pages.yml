@@ -9,7 +9,7 @@ jobs:
   deployment:
     runs-on: macOS-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
@@ -17,6 +17,7 @@ jobs:
       - name: Build documentation
         run: |
           npm install
+          npm run build
           npm run typedoc
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

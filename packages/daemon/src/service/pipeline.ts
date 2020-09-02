@@ -8,18 +8,18 @@ import * as createHttpError from 'http-errors';
 import {
   PipelineStatus,
   EvaluateResult,
-  PluginTypeI,
   compressTarFile,
   UniDataset,
   constants as CoreConstants,
   generateId,
-  PluginStatus
+  PluginStatus,
+  PluginTypeI
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 import { PipelineModel } from '../model/pipeline';
 import { JobModel } from '../model/job';
 import { PluginManager } from './plugin';
-import { LogObject } from './log-manager';
+import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { pluginQueue } from '../utils';
 
 interface QueryOptions {
@@ -172,13 +172,15 @@ export class PipelineService {
     const noneInstalledPlugins: string[] = [];
     for (const type of CoreConstants.PLUGINS) {
       if (pipeline[type]) {
-        const pkg = await this.pluginManager.fetch(pipeline[type]);
-        const plugin = await this.pluginManager.findByName(pkg.name);
+        if (!pipeline[`${type}Id`]) {
+          noneInstalledPlugins.push(pipeline[type]);
+        }
+        const plugin = await this.pluginManager.findById(pipeline[`${type}Id`]);
         if (plugin && plugin.status === PluginStatus.INSTALLED) {
           // ignore if any plugin not installed, because will throw an error after processing.
           if (noneInstalledPlugins.length === 0) {
             plugins[type] = await {
-              plugin: await this.pluginManager.fetchFromInstalledPlugin(pkg.name),
+              plugin: await this.pluginManager.fetchFromInstalledPlugin(plugin.name),
               params: pipeline[`${type}Params`]
             };
           }
@@ -193,8 +195,8 @@ export class PipelineService {
     return plugins;
   }
 
-  async startJob(job: JobModel, pipeline: PipelineModel, plugins: Partial<Record<PluginTypeI, PluginInfo>>, logger: LogObject): Promise<void> {
-    const runnable = await this.pluginManager.createRunnable(job.id, logger);
+  async startJob(job: JobModel, pipeline: PipelineModel, plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<void> {
+    const runnable = await this.pluginManager.createRunnable(job.id, tracer);
     // save the runnable object
     runnableMap[job.id] = runnable;
 
@@ -211,10 +213,25 @@ export class PipelineService {
         throw new TypeError(`"${name}" plugin is required`);
       }
     };
-
+    const dispatchJobEvent = (jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end') => {
+      const jobEvent = new JobStatusChangeEvent(
+        jobStatus,
+        step,
+        stepAction
+      );
+      tracer.dispatch(jobEvent);
+    };
+    const run = async (type: PluginTypeI, ...args: any[]) => {
+      const plugin = plugins[type].plugin;
+      dispatchJobEvent(PipelineStatus.RUNNING, type, 'start');
+      const result = await runnable.start(plugin, ...args);
+      dispatchJobEvent(PipelineStatus.RUNNING, type, 'end');
+      return result;
+    };
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
     await job.save();
+    dispatchJobEvent(PipelineStatus.RUNNING);
     try {
       verifyPlugin('dataCollect');
       const dataDir = path.join(this.pluginManager.datasetRoot, `${plugins.dataCollect.plugin.name}@${plugins.dataCollect.plugin.version}`);
@@ -224,25 +241,25 @@ export class PipelineService {
       await fs.ensureDir(modelPath);
 
       // run dataCollect to download dataset.
-      await runnable.start(plugins.dataCollect.plugin, getParams(plugins.dataCollect.params, {
+      await run('dataCollect', getParams(plugins.dataCollect.params, {
         dataDir
       }));
 
       verifyPlugin('dataAccess');
-      const dataset = await runnable.start(plugins.dataAccess.plugin, getParams(plugins.dataAccess.params, {
+      const dataset = await run('dataAccess', getParams(plugins.dataAccess.params, {
         dataDir
       }));
 
       let datasetProcess: PluginPackage;
       if (plugins.datasetProcess) {
         datasetProcess = plugins.datasetProcess.plugin;
-        await runnable.start(plugins.datasetProcess.plugin, dataset, getParams(plugins.datasetProcess.params));
+        await run('datasetProcess', dataset, getParams(plugins.datasetProcess.params));
       }
 
       let dataProcess: PluginPackage;
       if (plugins.dataProcess) {
         dataProcess = plugins.dataProcess.plugin;
-        await runnable.start(plugins.dataProcess.plugin, dataset, getParams(plugins.dataProcess.params));
+        await run('dataProcess', dataset, getParams(plugins.dataProcess.params));
       }
 
       let model: RunnableResponse;
@@ -251,23 +268,23 @@ export class PipelineService {
       // select one of `ModelDefine` and `ModelLoad`.
       if (plugins.modelDefine) {
         modelPlugin = plugins.modelDefine.plugin;
-        model = await runnable.start(plugins.modelDefine.plugin, dataset, getParams(plugins.modelDefine.params));
+        model = await run('modelDefine', dataset, getParams(plugins.modelDefine.params));
       } else if (plugins.modelLoad) {
         modelPlugin = plugins.modelLoad.plugin;
-        model = await runnable.start(plugins.modelLoad.plugin, dataset, getParams(plugins.modelLoad.params, {
+        model = await run('modelLoad', dataset, getParams(plugins.modelLoad.params, {
           // specify the recover path for model loader by default.
           recoverPath: modelPath
         }));
       }
 
       if (plugins.modelTrain) {
-        model = await runnable.start(plugins.modelTrain.plugin, dataset, model, getParams(plugins.modelTrain.params, {
+        model = await run('modelTrain', dataset, model, getParams(plugins.modelTrain.params, {
           modelPath
         }));
       }
 
       verifyPlugin('modelEvaluate');
-      const output = await runnable.start(plugins.modelEvaluate.plugin, dataset, model, getParams(plugins.modelEvaluate.params, {
+      const output = await run('modelEvaluate', dataset, model, getParams(plugins.modelEvaluate.params, {
         modelDir: modelPath
       }));
 
@@ -293,11 +310,15 @@ export class PipelineService {
       });
 
       await job.save();
+      dispatchJobEvent(PipelineStatus.SUCCESS);
     } catch (err) {
       if (!runnable.canceled) {
         job.status = PipelineStatus.FAIL;
         job.error = err.message;
         await job.save();
+        dispatchJobEvent(PipelineStatus.FAIL);
+      } else {
+        dispatchJobEvent(PipelineStatus.CANCELED);
       }
       throw err;
     } finally {
@@ -382,19 +403,33 @@ export class PipelineService {
   async getLogById(id: string): Promise<string[]> {
     const stdout = path.join(CoreConstants.PIPCOOK_RUN, id, 'logs/stdout.log');
     const stderr = path.join(CoreConstants.PIPCOOK_RUN, id, 'logs/stderr.log');
-    return [
-      await fs.readFile(stdout, 'utf8'),
-      await fs.readFile(stderr, 'utf8')
-    ];
+    if (await fs.pathExists(stdout) && await fs.pathExists(stderr)) {
+      return [
+        await fs.readFile(stderr, 'utf8'),
+        await fs.readFile(stdout, 'utf8')
+      ];
+    } else {
+      throw createHttpError(HttpStatus.NOT_FOUND, 'log not found');
+    }
   }
 
-  async runJob(job: JobModel, pipeline: PipelineModel, log: LogObject): Promise<void> {
-    const plugins = await this.fetchPlugins(pipeline);
+  async runJob(job: JobModel,
+               pipeline: PipelineModel,
+               plugins: Partial<Record<PluginTypeI, PluginInfo>>,
+               tracer: Tracer): Promise<void> {
     job.status = PipelineStatus.PENDING;
     await job.save();
     return new Promise((resolve, reject) => {
+      let queueLength = pluginQueue.length;
+      const queueReporter = () => {
+        tracer.dispatch(new JobStatusChangeEvent(PipelineStatus.PENDING, undefined, undefined, --queueLength));
+      };
+      if (queueLength > 0) {
+        pluginQueue.on('success', queueReporter);
+      }
       pluginQueue.push((cb) => {
-        this.startJob(job, pipeline, plugins, log).then(() => {
+        pluginQueue.removeListener('success', queueReporter);
+        this.startJob(job, pipeline, plugins, tracer).then(() => {
           resolve();
           cb();
         }).catch((err) => {

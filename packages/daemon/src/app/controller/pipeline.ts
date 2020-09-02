@@ -7,7 +7,7 @@ import { PluginManager } from '../../service/plugin';
 import { parseConfig } from '../../runner/helper';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
-import { LogObject } from '../../service/log-manager';
+import { Tracer } from '../../service/trace-manager';
 import { PluginResp } from '../../interface';
 import { PipelineModel } from '../../model/pipeline';
 const debug = Debug('daemon.app.pipeline');
@@ -167,14 +167,14 @@ export class PipelineController extends BaseEventController {
   public async installById() {
     const { pyIndex } = this.ctx.request.body;
     const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
-    const log = await this.logManager.create();
+    const log = await this.traceManager.create();
     if (pipeline) {
       process.nextTick(async () => {
         try {
           await this.installByPipeline(pipeline, log, pyIndex);
-          this.logManager.destroy(log.id);
+          this.traceManager.destroy(log.id);
         } catch (err) {
-          this.logManager.destroy(log.id, err);
+          this.traceManager.destroy(log.id, err);
         }
       });
       this.ctx.success({ ...(pipeline.toJSON() as PluginResp), traceId: log.id });
@@ -183,19 +183,20 @@ export class PipelineController extends BaseEventController {
     }
   }
 
-  private async installByPipeline(pipeline: PipelineModel, log: LogObject, pyIndex?: string): Promise<void> {
+  private async installByPipeline(pipeline: PipelineModel, tracer: Tracer, pyIndex?: string): Promise<void> {
+    const { stdout, stderr } = tracer.getLogger();
     for (const type of constants.PLUGINS) {
       if (!pipeline[type]) {
         continue;
       }
       let plugin = await this.pluginManager.findByName(pipeline[type]);
       if (plugin && plugin.status === PluginStatus.INSTALLED) {
-        log.stdout.writeLine(`plugin ${plugin.name}@${plugin.version} already installed`);
+        stdout.writeLine(`plugin ${plugin.name}@${plugin.version} already installed`);
         continue;
       }
       debug(`start installation: ${type}`);
       const pkg = await this.pluginManager.fetch(pipeline[type]);
-      log.stdout.writeLine(`start to install plugin ${pkg.name}`);
+      stdout.writeLine(`start to install plugin ${pkg.name}`);
 
       debug(`installing ${pipeline[type]}.`);
       plugin = await this.pluginManager.findOrCreateByPkg(pkg);
@@ -203,11 +204,11 @@ export class PipelineController extends BaseEventController {
         await this.pluginManager.install(plugin.id, pkg, {
           pyIndex,
           force: false,
-          stdout: log.stdout,
-          stderr: log.stderr
+          stdout,
+          stderr
         });
         this.pluginManager.setStatusById(plugin.id, PluginStatus.INSTALLED);
-        log.stdout.writeLine(`install plugin ${pkg.name}@${pkg.version} successfully`);
+        stdout.writeLine(`install plugin ${pkg.name}@${pkg.version} successfully`);
       } catch (err) {
         this.pluginManager.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
         throw err;

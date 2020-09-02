@@ -202,3 +202,11 @@ process.on('message', (msg): void => {
   const proto = PluginProtocol.parse(msg);
   handlers[proto.op](proto);
 });
+
+// if any error occurrs by promise chain in `nextTick`,
+// the error will be thrown from event `unhandledRejection`,
+// we need to handle and throw it out. Otherwise, this process will not exit.
+// see #523 for details.
+process.on('unhandledRejection', (reason) => {
+  throw reason;
+});
