@@ -107,6 +107,9 @@ jobs:
       run: |
         ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
         ls ./output && rm -rf ./output
+    - name: remove pipelines
+      run: |
+        ./packages/cli/dist/bin/pipcook remove all
     - name: "pipcook plugin-dev"
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
