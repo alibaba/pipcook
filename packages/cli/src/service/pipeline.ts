@@ -70,7 +70,7 @@ export async function remove(id: string, jobs: JobResp[], opts: any): Promise<vo
   const client = initClient(opts.hostIp, opts.port);
   try {
     await client.pipeline.remove(id);
-    logger.info(`${jobs.length} ${jobs.length > 1 ? 'job' : 'jobs'} removed.`);
+    logger.info(`${jobs.length} ${jobs.length > 1 ? 'jobs' : 'job'} removed.`);
     logger.success(id ? `pipeline ${id} has removed.` : `all pipelines removed.`);
   } catch (err) {
     logger.fail(err.message);

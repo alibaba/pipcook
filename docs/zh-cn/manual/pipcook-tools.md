@@ -108,6 +108,21 @@ $ pipcook pipeline info <id>
 }
 ```
 
+可以通过 pipeline id 或者 `all` 来删除 pipeline, 删除 pipeline 会将其下的 job 一起删除:
+
+```sh
+$ pipcook pipeline remove 42lw3pir   
+? 1 job which belong to the pipeline will be removed too, continue? Yes
+ℹ 1 jobs removed.
+```
+
+```sh
+$ pipcook pipeline remove all
+? 1 job which belong to the pipeline will be removed too, continue? Yes
+ℹ 1 jobs removed.
+✔ all pipelines removed.
+```
+
 ## 插件管理
 
 通过 `pipcook-pipeline(1)` 创建 Pipeline 时，如果发现插件没有安装的话，Pipcook 会自动安装到用户目录，除此之外，你也可以通过 `pipcook-plugin(1)` 手动管理。
