@@ -159,8 +159,10 @@ export class PipelineService {
   async removeJobById(id: string): Promise<number> {
     const job = await this.job.findByPk(id);
     if (job) {
-      await job.destroy();
-      await fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`);
+      await Promise.all([
+        job.destroy(),
+        fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
+      ]);
       return 1;
     }
     return 0;
@@ -168,8 +170,10 @@ export class PipelineService {
 
   async removeJobByModel(job: JobModel): Promise<number> {
     if (job) {
-      await job.destroy();
-      await fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`);
+      await Promise.all([
+        job.destroy(),
+        fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
+      ]);
       return 1;
     }
     return 0;
