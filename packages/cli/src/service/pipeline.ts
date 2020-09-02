@@ -65,17 +65,21 @@ export async function remove(id: any, opts: any): Promise<void> {
   } else {
     jobs = await client.job.list({ pipelineId: id });
   }
-  let answer = { remove : true };
+  let confirm = false;
   if (jobs.length > 0) {
-    answer = await prompt([
+    const answer = await prompt([
       {
         type: 'confirm',
         name: 'remove',
-        message: `${jobs.length} ${jobs.length > 1 ? 'jobs' : 'job'} which belong to the pipeline will be removed too, continue?`
+        message: `${jobs.length} ${jobs.length > 1 ? 'jobs' : 'job'} which belong to the pipeline will be removed too, continue?`,
+        default: false
       }
     ]);
+    confirm = answer.remove;
+  } else {
+    confirm = true;
   }
-  if (answer.remove) {
+  if (confirm) {
     try {
       if (id === 'all') {
         id = undefined;
