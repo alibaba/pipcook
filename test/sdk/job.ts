@@ -60,7 +60,14 @@ describe('pipeline api.job test', () => {
     expect(typeof pipeline).toBe('object');
     expect(typeof pipeline.id).toBe('string');
     const pipelineTrace = await client.pipeline.install(pipeline.id);
-    await client.pipeline.traceEvent(pipelineTrace.traceId, traceLog);
+    await client.pipeline.traceEvent(pipelineTrace.traceId, (event: string, data: any) => {
+      expect([ 'log' ]).toContain(event);
+      if (event === 'log') {
+        console.log(`[${data.level}] ${data.data}`);
+        expect(typeof data.level).toBe('string');
+        expect(typeof data.data).toBe('string');
+      }
+    });
   });
   it('create job', async () => {
     // create job
@@ -68,12 +75,26 @@ describe('pipeline api.job test', () => {
     expect(typeof jobObj).toBe('object');
     expect(typeof jobObj.id).toBe('string');
     expect(typeof (jobObj as TraceResp<JobResp>).traceId).toBe('string');
-    await client.job.traceEvent((jobObj as TraceResp<JobResp>).traceId, traceLog);
+    await client.job.traceEvent((jobObj as TraceResp<JobResp>).traceId, (event: string, data: any) => {
+      expect([ 'log', 'job_status' ]).toContain(event);
+      if (event === 'log') {
+        console.log(`[${data.level}] ${data.data}`);
+        expect(typeof data.level).toBe('string');
+        expect(typeof data.data).toBe('string');
+      } else if (event === 'job_status') {
+        const { jobStatus, step, stepAction, queueLength } = data;
+        console.log('[job]', data);
+        expect(typeof jobStatus).toBe('number');
+        expect(typeof (step || '')).toBe('string');
+        expect(typeof (stepAction || '')).toBe('string');
+        expect(typeof queueLength  === 'undefined' || typeof queueLength  === 'number');
+      }
+    });
     const downloadObj = await client.job.downloadOutput(jobObj.id);
     await mkdirp(path.join(__dirname, 'output'));
     await extractToPath(downloadObj.stream, path.join(__dirname, 'output'));
     const metadata = await readJson(path.join(__dirname, 'output', 'metadata.json'));
-    console.log('metadata', path.join(__dirname, 'output', 'metadata.json'), metadata)
+    console.log('metadata', path.join(__dirname, 'output', 'metadata.json'), metadata);
     expect(metadata.pipeline.id).toBe(pipeline.id);
     expect(metadata.output.id).toBe(jobObj.id);
     expect(typeof metadata.output.dataset).toBe('string');

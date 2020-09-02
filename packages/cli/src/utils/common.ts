@@ -11,7 +11,7 @@ import tar from 'tar-stream';
 import { createGunzip } from 'zlib';
 import { pathExists, mkdirp, createWriteStream } from 'fs-extra';
 import path from 'path';
-import { constants as CoreConstants } from '@pipcook/pipcook-core';
+import { constants as CoreConstants, PipelineStatus } from '@pipcook/pipcook-core';
 import { PipcookClient } from '@pipcook/sdk';
 import realOra = require('ora');
 
@@ -205,6 +205,16 @@ export function traceLogger(event: string, data: any) {
       logger.info(data.data);
     } else if (data.level === 'warn') {
       logger.warn(data.data);
+    }
+  } else if (event === 'job_status') {
+    if (data.jobStatus === PipelineStatus.PENDING) {
+      logger.info(`[job] pending: ${data.queueLength}`);
+    } else if (data.jobStatus === PipelineStatus.RUNNING) {
+      logger.info(`[job] running${data.step ? ` ${data.step} ${data.stepAction}` : ''}`);
+    } else if (data.jobStatus === PipelineStatus.FAIL) {
+      logger.info('[job] fails');
+    } else if (data.jobStatus === PipelineStatus.SUCCESS) {
+      logger.info('[job] run successfully');
     }
   }
 }
