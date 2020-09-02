@@ -2,7 +2,10 @@ import { inject, Context } from 'midway';
 import { ObjectSchema } from 'joi';
 import * as HttpStatus from 'http-status';
 import { ServerSentEmitter } from '../../utils';
-import { LogManager } from '../../service/log-manager';
+import { TraceManager } from '../../service/trace-manager';
+import Debug from 'debug';
+
+const debug = Debug('daemon.controller.base');
 
 export class BaseController {
   @inject()
@@ -21,34 +24,23 @@ export class BaseController {
 }
 
 export class BaseEventController extends BaseController {
-  @inject('logManager')
-  logManager: LogManager;
-
-  private linkLog(logStream: NodeJS.ReadStream, level: 'info' | 'warn', sse: ServerSentEmitter): Promise<void> {
-    return new Promise(resolve => {
-      logStream.on('data', data => {
-        sse.emit('log', { level, data });
-      });
-      logStream.on('close', resolve);
-      logStream.on('error', err => {
-        sse.emit('error', err.message);
-      });
-    });
-  }
+  @inject('traceManager')
+  traceManager: TraceManager;
 
   /**
    * trace event
    */
   public async traceEventImpl(): Promise<void> {
     const sse = new ServerSentEmitter(this.ctx);
-    const log = this.logManager.get(this.ctx.params.traceId);
-    if (!log) {
+    const tracer = this.traceManager.get(this.ctx.params.traceId);
+    if (!tracer) {
       return sse.finish();
     }
-    await Promise.all([
-      this.linkLog(log.stdout, 'info', sse),
-      this.linkLog(log.stderr, 'warn', sse)
-    ]);
+    tracer.listen((data) => {
+      debug(`[trace ${this.ctx.params.traceId}]`, data.type, data.data);
+      sse.emit(data.type, data.data);
+    });
+    await tracer.wait();
     return sse.finish();
   }
 }

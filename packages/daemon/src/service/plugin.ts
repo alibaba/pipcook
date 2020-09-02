@@ -1,7 +1,7 @@
 import { provide, inject } from 'midway';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
 import { PluginStatus, generateId } from '@pipcook/pipcook-core';
-import { LogManager, LogObject } from './log-manager';
+import { TraceManager, Tracer } from './trace-manager';
 import PluginRuntime from '../boot/plugin';
 import { PluginModelStatic, PluginModel } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
@@ -16,8 +16,8 @@ interface ListPluginsFilter {
 @provide('pluginManager')
 export class PluginManager {
 
-  @inject('logManager')
-  logManager: LogManager;
+  @inject('traceManager')
+  traceManager: TraceManager;
 
   @inject('pluginModel')
   model: PluginModelStatic;
@@ -44,12 +44,12 @@ export class PluginManager {
     return this.pluginRT.costa.fetchByStream(stream);
   }
 
-  async fetchAndInstall(name: string, log: LogObject, pyIndex?: string): Promise<PluginPackage> {
+  async fetchAndInstall(name: string, tracer: Tracer, pyIndex?: string): Promise<PluginPackage> {
     const pkg = await this.fetch(name);
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
       try {
-        await this.install(plugin.id, pkg, { pyIndex, force: false, stdout: log.stdout, stderr: log.stderr });
+        await this.install(plugin.id, pkg, { pyIndex, force: false, ...tracer.getLogger() });
         this.setStatusById(plugin.id, PluginStatus.INSTALLED);
       } catch (err) {
         this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
@@ -59,8 +59,8 @@ export class PluginManager {
     return pkg;
   }
 
-  async createRunnable(id: string, logger: LogObject): Promise<PluginRunnable> {
-    return this.pluginRT.costa.createRunnable({ id, logger } as BootstrapArg);
+  async createRunnable(id: string, tracer: Tracer): Promise<PluginRunnable> {
+    return this.pluginRT.costa.createRunnable({ id, logger: tracer.getLogger() } as BootstrapArg);
   }
 
   async list(filter?: ListPluginsFilter): Promise<PluginModel[]> {
@@ -154,20 +154,20 @@ export class PluginManager {
   async installAtNextTick(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
-      const logger = await this.logManager.create();
+      const tracer = await this.traceManager.create();
       process.nextTick(async () => {
         try {
           this.setStatusById(plugin.id, PluginStatus.PENDING);
-          await this.install(plugin.id, pkg, { pyIndex, force, stdout: logger.stdout, stderr: logger.stderr });
+          await this.install(plugin.id, pkg, { pyIndex, force, ...tracer.getLogger() });
           this.setStatusById(plugin.id, PluginStatus.INSTALLED);
-          this.logManager.destroy(logger.id);
+          this.traceManager.destroy(tracer.id);
         } catch (err) {
           this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
           console.error('install plugin error', err.message);
-          this.logManager.destroy(logger.id, err);
+          this.traceManager.destroy(tracer.id, err);
         }
       });
-      return { ...(plugin.toJSON() as PluginResp), traceId: logger.id };
+      return { ...(plugin.toJSON() as PluginResp), traceId: tracer.id };
     } else {
       return { ...(plugin.toJSON() as PluginResp), traceId: '' };
     }

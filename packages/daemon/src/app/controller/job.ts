@@ -36,16 +36,16 @@ export class JobController extends BaseEventController {
         ensureFile(stdoutFile),
         ensureFile(stderrFile)
       ];
-      const log = await this.logManager.create({ stdoutFile, stderrFile });
+      const tracer = await this.traceManager.create({ stdoutFile, stderrFile });
       process.nextTick(async () => {
         try {
-          await this.pipelineService.runJob(job, pipeline, plugins, log);
-          this.logManager.destroy(log.id);
+          await this.pipelineService.runJob(job, pipeline, plugins, tracer);
+          this.traceManager.destroy(tracer.id);
         } catch (err) {
-          this.logManager.destroy(log.id, err);
+          this.traceManager.destroy(tracer.id, err);
         }
       });
-      this.ctx.success({ ...(job.toJSON() as JobResp), traceId: log.id });
+      this.ctx.success({ ...(job.toJSON() as JobResp), traceId: tracer.id });
     } else {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'not pipeline found');
     }
