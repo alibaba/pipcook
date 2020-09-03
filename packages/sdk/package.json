@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/sdk",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "JavaScript SDK for accessing Pipcook Daemon",
   "main": "dist/index.js",
   "files": [
@@ -16,7 +16,7 @@
     "test": "ts-node ../../run_tests.ts"
   },
   "dependencies": {
-    "@pipcook/pipcook-core": "^1.1.2",
+    "@pipcook/pipcook-core": "^1.2.0",
     "axios": "^0.18.1",
     "eventsource": "^1.0.7",
     "form-data": "^3.0.0",
