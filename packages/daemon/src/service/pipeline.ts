@@ -125,6 +125,12 @@ export class PipelineService {
     });
   }
 
+  async getJobsByPipelineId(pipelineId: string): Promise<JobModel[]> {
+    return this.job.findAll({
+      where: { pipelineId }
+    });
+  }
+
   async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobModel[]> {
     const where = {} as any;
     const { offset, limit } = opts || {};
@@ -153,11 +159,31 @@ export class PipelineService {
   async removeJobById(id: string): Promise<number> {
     const job = await this.job.findByPk(id);
     if (job) {
-      await job.destroy();
-      await fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`);
+      await Promise.all([
+        job.destroy(),
+        fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
+      ]);
       return 1;
     }
     return 0;
+  }
+
+  async removeJobByModels(jobs: JobModel[]): Promise<number> {
+    const ids = jobs.map(job => job.id);
+    const fsRemoveFutures = [];
+    for (const id of ids) {
+      fsRemoveFutures.push(fs.remove(`${CoreConstants.PIPCOOK_RUN}/${id}`));
+    }
+    const deleteFuture = this.job.destroy({
+      where: {
+        id: ids
+      }
+    });
+    const results = await Promise.all([
+      deleteFuture,
+      Promise.all(fsRemoveFutures)
+    ]);
+    return results[0];
   }
 
   async createJob(pipelineId: string): Promise<JobModel> {
