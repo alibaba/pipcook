@@ -81,31 +81,46 @@ $ pipcook pipeline info <id>
 {
   "plugins": {
     "dataCollect": {
-      "name": "./packages/plugins/data-collect/object-detection-coco-data-collect",
+      "package": "./packages/plugins/data-collect/object-detection-coco-data-collect",
       "params": {
         "url": "http://foobar"
       }
     },
     "dataAccess": {
-      "name": "./packages/plugins/data-access/coco-data-access",
+      "package": "./packages/plugins/data-access/coco-data-access",
       "params": {}
     },
     "modelDefine": {
-      "name": "./packages/plugins/model-define/detectron-fasterrcnn-model-define",
+      "package": "./packages/plugins/model-define/detectron-fasterrcnn-model-define",
       "params": {}
     },
     "modelTrain": {
-      "name": "./packages/plugins/model-train/object-detection-detectron-model-train",
+      "package": "./packages/plugins/model-train/object-detection-detectron-model-train",
       "params": {
         "steps": 1
       }
     },
     "modelEvaluate": {
-      "name": "./packages/plugins/model-evaluate/object-detection-detectron-model-evaluate",
+      "package": "./packages/plugins/model-evaluate/object-detection-detectron-model-evaluate",
       "params": {}
     }
   }
 }
+```
+
+remove pipeline via pipeline id or `all`, this operation will remove jobs which belong to the pipeline too:
+
+```sh
+$ pipcook pipeline remove 42lw3pir   
+? 1 job which belong to the pipeline will be removed too, continue? Yes
+ℹ 1 job removed.
+```
+
+```sh
+$ pipcook pipeline remove all
+? 1 job which belong to the pipeline will be removed too, continue? Yes
+ℹ 1 jobs removed.
+✔ all pipelines removed.
 ```
 
 ## Plugins Management
