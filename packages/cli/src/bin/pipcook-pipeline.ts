@@ -51,16 +51,20 @@ program
     }
     const jobs = await listJobsByPipelineId(id, opts);
     let confirm = !!opts.yes;
-    if (!opts.yes && jobs.length > 0) {
-      const answer = await prompt([
-        {
-          type: 'confirm',
-          name: 'remove',
-          message: `${jobs.length} ${jobs.length > 1 ? 'jobs' : 'job'} which belong to the pipeline will be removed too, continue?`,
-          default: false
-        }
-      ]);
-      confirm = answer.remove;
+    if (!opts.yes) {
+      if (jobs.length > 0) {
+        const answer = await prompt([
+          {
+            type: 'confirm',
+            name: 'remove',
+            message: `${jobs.length} ${jobs.length > 1 ? 'jobs' : 'job'} which belong to the pipeline will be removed too, continue?`,
+            default: false
+          }
+        ]);
+        confirm = answer.remove;
+      } else {
+        confirm = true;
+      }
     }
     if (confirm) {
       return remove(id, jobs, opts);
