@@ -31,6 +31,10 @@ const mockPipeline = {
 };
 
 describe('test the pipeline service', () => {
+  it('#prepare', async () => {
+    const pipeline: PipelineService = await app.applicationContext.getAsync<PipelineService>('pipelineService');
+    await pipeline.removePipelines();
+  });
   it('#create pipeline and get created pipeline', async () => {
     const pipeline: PipelineService = await app.applicationContext.getAsync<PipelineService>('pipelineService');
     const obj = await pipeline.createPipeline(mockPipeline);
@@ -50,13 +54,13 @@ describe('test the pipeline service', () => {
     const obj = await pipeline.createPipeline(mockPipeline);
 
     await pipeline.updatePipelineById(obj.id, {
-      dataCollect: 'updated',
-      modelTrain: 'updated'
+      dataCollectId: 'updatedId',
+      modelTrainId: 'updatedId'
     });
 
     const p1 = await pipeline.getPipeline(obj.id);
-    assert(p1.dataCollect === 'updated');
-    assert(p1.modelTrain === 'updated');
+    assert(p1.dataCollectId === 'updatedId');
+    assert(p1.modelTrainId === 'updatedId');
 
     // clean
     await pipeline.removePipelineById(obj.id);
