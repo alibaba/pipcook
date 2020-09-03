@@ -86,7 +86,7 @@ export class PluginManager {
   }
 
   async findById(id: string): Promise<PluginEntity> {
-    return (await PluginModel.findOne({ where: { id } })).toJSON() as PluginEntity;
+    return (await PluginModel.findOne({ where: { id } }))?.toJSON() as PluginEntity;
   }
 
   async findByIds(ids: string[]): Promise<PluginEntity[]> {
@@ -128,7 +128,7 @@ export class PluginManager {
         status: PluginStatus.INITIALIZED
       }
     });
-    return plugin.toJSON() as PluginEntity;
+    return plugin?.toJSON() as PluginEntity;
   }
 
   async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {

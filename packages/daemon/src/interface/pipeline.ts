@@ -1,37 +1,37 @@
 
-export interface CreateParameter {
+export interface UpdateParameter {
   id?: string;
   name?: string;
 
   dataCollectId?: string;
-  dataCollect: string;
-  dataCollectParams: string;
+  dataCollect?: string;
+  dataCollectParams?: string;
 
   dataAccessId?: string;
-  dataAccess: string;
-  dataAccessParams: string;
+  dataAccess?: string;
+  dataAccessParams?: string;
 
   dataProcessId?: string;
   dataProcess?: string;
-  dataProcessParams: string;
+  dataProcessParams?: string;
 
   datasetProcessId?: string;
   datasetProcess?: string;
-  datasetProcessParams: string;
+  datasetProcessParams?: string;
 
   modelDefineId?: string;
   modelDefine?: string;
-  modelDefineParams: string;
+  modelDefineParams?: string;
 
   modelLoadId?: string;
   modelLoad?: string;
-  modelLoadParams: string;
+  modelLoadParams?: string;
 
   modelTrainId?: string;
-  modelTrain: string;
-  modelTrainParams: string;
+  modelTrain?: string;
+  modelTrainParams?: string;
 
   modelEvaluateId?: string;
-  modelEvaluate: string;
-  modelEvaluateParams: string;
+  modelEvaluate?: string;
+  modelEvaluateParams?: string;
 }

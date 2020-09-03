@@ -21,6 +21,7 @@ import { JobModel, JobEntity } from '../model/job';
 import { PluginManager } from './plugin';
 import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { pluginQueue } from '../utils';
+import { UpdateParameter } from '../interface/pipeline';
 
 interface QueryOptions {
   limit: number;
@@ -68,13 +69,13 @@ export class PipelineService {
     if (typeof config.id !== 'string') {
       config.id = generateId();
     }
-    return (await PipelineModel.create(config)).toJSON() as PipelineEntity;
+    return (await PipelineModel.create(config))?.toJSON() as PipelineEntity;
   }
 
   async getPipeline(idOrName: string): Promise<PipelineEntity> {
     return (await PipelineModel.findOne({
       where: { [Op.or]: [ { id: idOrName }, { name: idOrName } ] }
-    })).toJSON() as PipelineEntity;
+    }))?.toJSON() as PipelineEntity;
   }
 
   async queryPipelines(opts?: QueryOptions): Promise<PipelineEntity[]> {
@@ -107,7 +108,7 @@ export class PipelineService {
     return list.length;
   }
 
-  async updatePipelineById(id: string, config: PipelineEntity): Promise<PipelineEntity> {
+  async updatePipelineById(id: string, config: UpdateParameter): Promise<PipelineEntity> {
     await PipelineModel.update(config, {
       where: { id }
     });
@@ -117,7 +118,7 @@ export class PipelineService {
   async getJobById(id: string): Promise<JobEntity> {
     return (await JobModel.findOne({
       where: { id }
-    })).toJSON() as JobEntity;
+    }))?.toJSON() as JobEntity;
   }
 
   async saveJob(job: JobEntity): Promise<void> {

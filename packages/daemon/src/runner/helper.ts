@@ -57,29 +57,29 @@ export async function parseConfig(configPath: string | RunConfigI, isGenerateId 
   return {
     id: isGenerateId ? generateId() : undefined,
     name: configJson.name,
-    dataCollect: configJson.plugins.dataCollect.package,
-    dataCollectParams: parseParams(configJson.plugins.dataCollect.params),
+    dataCollect: configJson.plugins.dataCollect?.package,
+    dataCollectParams: parseParams(configJson.plugins.dataCollect?.params),
 
-    dataAccess: configJson.plugins.dataAccess.package,
-    dataAccessParams: parseParams(configJson.plugins.dataAccess.params),
+    dataAccess: configJson.plugins.dataAccess?.package,
+    dataAccessParams: parseParams(configJson.plugins.dataAccess?.params),
 
-    dataProcess: configJson.plugins.dataProcess.package,
-    dataProcessParams: parseParams(configJson.plugins.dataProcess.params),
+    dataProcess: configJson.plugins.dataProcess?.package,
+    dataProcessParams: parseParams(configJson.plugins.dataProcess?.params),
 
-    datasetProcess: configJson.plugins.dataProcess.package,
-    datasetProcessParams: parseParams(configJson.plugins.dataProcess.params),
+    datasetProcess: configJson.plugins.datasetProcess?.package,
+    datasetProcessParams: parseParams(configJson.plugins.datasetProcess?.params),
 
-    modelDefine: configJson.plugins.modelDefine.package,
-    modelDefineParams: parseParams(configJson.plugins.modelDefine.params),
+    modelDefine: configJson.plugins.modelDefine?.package,
+    modelDefineParams: parseParams(configJson.plugins.modelDefine?.params),
 
-    modelLoad: configJson.plugins.modelLoad.package,
-    modelLoadParams: parseParams(configJson.plugins.modelLoad.params),
+    modelLoad: configJson.plugins.modelLoad?.package,
+    modelLoadParams: parseParams(configJson.plugins.modelLoad?.params),
 
-    modelTrain: configJson.plugins.modelTrain.package,
-    modelTrainParams: parseParams(configJson.plugins.modelTrain.params),
+    modelTrain: configJson.plugins.modelTrain?.package,
+    modelTrainParams: parseParams(configJson.plugins.modelTrain?.params),
 
-    modelEvaluate: configJson.plugins.modelEvaluate.package,
-    modelEvaluateParams: parseParams(configJson.plugins.modelLoad.params)
+    modelEvaluate: configJson.plugins.modelEvaluate?.package,
+    modelEvaluateParams: parseParams(configJson.plugins.modelEvaluate?.params)
   };
 }
 
