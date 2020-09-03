@@ -29,7 +29,7 @@ describe('create a costa runtime', () => {
   });
 
   it('should uninstall the package', async () => {
-    await costa.uninstall(nodeSimple.name);
+    await costa.uninstall({ name: nodeSimple.name, version: nodeSimple.version });
     expect(!await pathExists(path.join(
       costa.options.installDir,
       'node_modules',
@@ -37,8 +37,8 @@ describe('create a costa runtime', () => {
     )));
     expect(!await pathExists(path.join(
       costa.options.installDir,
-      'node_modules',
-      nodeSimple.name
+      'conda_envs',
+      `${nodeSimple.name}@${nodeSimple.version}`
     )));
     const pkg = await readJson(path.join(costa.options.installDir, 'package.json'));
     expect(!pkg.dependencies || !pkg.dependencies[nodeSimple.name]);

@@ -143,7 +143,7 @@ export class PluginManager {
           cb();
         }).catch((err) => {
           // uninstall if occurring an error on installing.
-          this.pluginRT.costa.uninstall(pkg.name);
+          this.pluginRT.costa.uninstall(pkg);
           reject(err);
           cb();
         });
@@ -186,13 +186,12 @@ export class PluginManager {
   async uninstall(plugin: PluginModel | PluginModel[]): Promise<void> {
     const { costa } = this.pluginRT;
     if (Array.isArray(plugin)) {
-      const names = plugin.map(singlePlugin => singlePlugin.name);
-      await costa.uninstall(names);
+      await costa.uninstall(plugin);
       await plugin.map(async (singlePlugin) => {
         await singlePlugin.destroy();
       });
     } else {
-      await costa.uninstall(plugin.name);
+      await costa.uninstall(plugin);
       await plugin.destroy();
     }
   }

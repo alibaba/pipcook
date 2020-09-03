@@ -376,7 +376,7 @@ export class CostaRuntime {
    */
   async install(pkg: PluginPackage, opts: InstallOptions): Promise<boolean> {
     if (opts.force === true) {
-      await this.uninstall(pkg.name);
+      await this.uninstall(pkg);
     }
     // check if the pkg is installed
     if ((await this.isInstalled(pkg.name)) && !opts.force) {
@@ -403,33 +403,35 @@ export class CostaRuntime {
   }
   /**
    * Uninstall the given plugin by name.
-   * @param name the plugin package name.
+   * @param pkgMeta the plugin package name and version.
    */
-  async uninstall(name: string | string[]): Promise<boolean> {
+  async uninstall(pkgMeta: Record<'name' | 'version', string> | Record<'name' | 'version', string>[]): Promise<boolean> {
     const pkg = await readJson(path.join(this.options.installDir, 'package.json'));
 
-    const removePkg = async (name: string) => {
+    const removePkg = async (name: string, version: string) => {
       if (!await this.isInstalled(name)) {
         debug(`skip uninstall "${name}" because it not exists.`);
         return false;
       }
-      await remove(path.join(this.options.installDir, 'node_modules', name));
+      await Promise.all([
+        remove(path.join(this.options.installDir, 'node_modules', name)),
+        remove(path.join(this.options.installDir, 'conda_envs', `${name}@${version}`))
+      ]);
       if (pkg.dependencies && pkg.dependencies[name]) {
         delete pkg.dependencies[name];
       }
-      return true;
     };
 
     let success = false;
-    if (Array.isArray(name)) {
+    if (Array.isArray(pkgMeta)) {
       // any one uninstalls successfully, return true
-      for (const singleName of name) {
-        if (await removePkg(singleName)) {
+      for (const meta of pkgMeta) {
+        if (await removePkg(meta.name, meta.version)) {
           success = true;
         }
       }
     } else {
-      success = await removePkg(name);
+      success = await removePkg(pkgMeta.name, pkgMeta.version);
     }
     // remove dependencies
     if (success) {
