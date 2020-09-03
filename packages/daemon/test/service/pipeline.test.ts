@@ -54,13 +54,13 @@ describe('test the pipeline service', () => {
     const obj = await pipeline.createPipeline(mockPipeline);
 
     await pipeline.updatePipelineById(obj.id, {
-      dataCollectId: 'updatedId',
-      modelTrainId: 'updatedId'
+      dataCollect: 'updated',
+      modelTrain: 'updated'
     });
 
     const p1 = await pipeline.getPipeline(obj.id);
-    assert(p1.dataCollectId === 'updatedId');
-    assert(p1.modelTrainId === 'updatedId');
+    assert(p1.dataCollect === 'updated');
+    assert(p1.modelTrain === 'updated');
 
     // clean
     await pipeline.removePipelineById(obj.id);
