@@ -1,6 +1,7 @@
 import * as path from 'path';
-import { readJson } from 'fs-extra';
+import { readJson, pathExists } from 'fs-extra';
 import { PipcookClient, PipelineResp, PipelineConfig } from '../../packages/sdk';
+import { constants } from '../../packages/core';
 
 describe('pipeline api.pipeline test', () => {
   const client = new PipcookClient('http://localhost', 6927);
@@ -58,5 +59,8 @@ describe('pipeline api.pipeline test', () => {
     expect(await client.pipeline.remove(pipeline.id));
     const pipelines = await client.pipeline.list();
     expect(pipelines.length).toBe(0);
+    const jobs = await client.job.list();
+    expect(jobs.length).toBe(0);
+    expect(!await pathExists(path.join(constants.PIPCOOK_RUN, pipeline.id)));
   });
 });

@@ -70,7 +70,7 @@ export class PipelineController extends BaseEventController {
     this.validate(listSchema, this.ctx.query);
     const { offset, limit } = this.ctx.query;
     const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
-    this.ctx.success(pipelines.rows);
+    this.ctx.success(pipelines);
   }
 
   /**
@@ -78,16 +78,20 @@ export class PipelineController extends BaseEventController {
    */
   @del()
   public async remove() {
+    const jobs = await this.pipelineService.queryJobs({});
+    await this.pipelineService.removeJobByModels(jobs);
     await this.pipelineService.removePipelines();
     this.ctx.success();
   }
 
   /**
-   * delete pipeline by id
+   * delete pipeline by id, it will remove the jobs which belong to the pipeline.
    */
   @del('/:id')
   public async removeOne() {
     const { id } = this.ctx.params;
+    const jobs = await this.pipelineService.getJobsByPipelineId(id);
+    await this.pipelineService.removeJobByModels(jobs);
     const count = await this.pipelineService.removePipelineById(id);
     if (count > 0) {
       this.ctx.success();

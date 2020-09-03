@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { list, info, create, update, remove, install } from '../service/pipeline';
+import { prompt } from 'inquirer';
+import { list, info, create, update, remove, install, listJobsByPipelineId } from '../service/pipeline';
 
 
 program
@@ -41,9 +42,30 @@ program
   .command('remove [id]')
   .helpOption('--help', 'show help')
   .description('remove all pipelines or specific 1 pipeline via id')
+  .option('-y|--yes', 'remove jobs without confirmation')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
-  .action(remove);
+  .action(async (id: string, opts: any) => {
+    if (id === 'all') {
+      id = undefined;
+    }
+    const jobs = await listJobsByPipelineId(id, opts);
+    let confirm = !!opts.yes;
+    if (!opts.yes && jobs.length > 0) {
+      const answer = await prompt([
+        {
+          type: 'confirm',
+          name: 'remove',
+          message: `${jobs.length} ${jobs.length > 1 ? 'jobs' : 'job'} which belong to the pipeline will be removed too, continue?`,
+          default: false
+        }
+      ]);
+      confirm = answer.remove;
+    }
+    if (confirm) {
+      return remove(id, jobs, opts);
+    }
+  });
 
 program
   .command('install <pipeline>')
