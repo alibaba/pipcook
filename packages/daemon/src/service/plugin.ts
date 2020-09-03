@@ -3,7 +3,7 @@ import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pi
 import { PluginStatus, generateId } from '@pipcook/pipcook-core';
 import { TraceManager, Tracer } from './trace-manager';
 import PluginRuntime from '../boot/plugin';
-import { PluginModel } from '../model/plugin';
+import { PluginModel, PluginEntity } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
 import { pluginQueue } from '../utils';
 
@@ -110,7 +110,7 @@ export class PluginManager {
     return count;
   }
 
-  async findOrCreateByPkg(pkg: PluginPackage): Promise<PluginModel> {
+  async findOrCreateByPkg(pkg: PluginPackage): Promise<PluginEntity> {
     const [ plugin ] = await PluginModel.findOrCreate({
       where: {
         // TODO(feely): support the different versions of plugins
@@ -128,7 +128,7 @@ export class PluginManager {
         status: PluginStatus.INITIALIZED
       }
     });
-    return plugin;
+    return plugin.toJSON() as PluginEntity;
   }
 
   async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {
@@ -164,9 +164,9 @@ export class PluginManager {
           this.traceManager.destroy(tracer.id, err);
         }
       });
-      return { ...(plugin.toJSON() as PluginResp), traceId: tracer.id };
+      return { ...plugin, traceId: tracer.id };
     } else {
-      return { ...(plugin.toJSON() as PluginResp), traceId: '' };
+      return { ...plugin, traceId: '' };
     }
   }
   /**
@@ -180,7 +180,7 @@ export class PluginManager {
     return this.installAtNextTick(pkg, pyIndex, force);
   }
 
-  async uninstall(plugin: PluginModel | PluginModel[]): Promise<void> {
+  async uninstall(plugin: PluginEntity | PluginEntity[]): Promise<void> {
     const { costa } = this.pluginRT;
     if (Array.isArray(plugin)) {
       const names = plugin.map(singlePlugin => singlePlugin.name);
@@ -190,7 +190,7 @@ export class PluginManager {
       });
     } else {
       await costa.uninstall(plugin.name);
-      await plugin.destroy();
+      await this.removeById(plugin.id);
     }
   }
 

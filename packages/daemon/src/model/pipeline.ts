@@ -1,7 +1,7 @@
 import { STRING, Model, Sequelize } from 'sequelize';
 import { JobModel } from './job';
 
-export class PipelineModel extends Model {
+export interface PipelineEntity {
   id: string;
   name: string;
 
@@ -37,6 +37,8 @@ export class PipelineModel extends Model {
   modelEvaluate: string;
   modelEvaluateParams: string;
 }
+
+export class PipelineModel extends Model {}
 
 export default async function model(sequelize: Sequelize): Promise<void> {
   PipelineModel.init({

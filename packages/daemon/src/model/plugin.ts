@@ -1,6 +1,6 @@
 import { STRING, INTEGER, Model, Sequelize } from 'sequelize';
 
-export class PluginModel extends Model {
+export interface PluginEntity {
   id: string;
   name: string;
   version: string;
@@ -11,8 +11,10 @@ export class PluginModel extends Model {
   sourceFrom: string;
   sourceUri: string;
   status: number;
-  error: string;
+  error?: string;
 }
+
+export class PluginModel extends Model {}
 
 export default async function model(sequelize: Sequelize): Promise<void> {
   PluginModel.init({

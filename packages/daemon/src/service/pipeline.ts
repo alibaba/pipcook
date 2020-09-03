@@ -16,7 +16,7 @@ import {
   PluginTypeI
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
-import { PipelineModel } from '../model/pipeline';
+import { PipelineModel, PipelineEntity } from '../model/pipeline';
 import { JobModel } from '../model/job';
 import { PluginManager } from './plugin';
 import { Tracer, JobStatusChangeEvent } from './trace-manager';
@@ -63,12 +63,12 @@ export class PipelineService {
   pluginManager: PluginManager;
 
   // FIXME(feely): change to IPipelineModel
-  createPipeline(config: PipelineModel): Promise<PipelineModel> {
+  async createPipeline(config: PipelineEntity): Promise<PipelineEntity> {
     console.log('config.id', config.id, config);
     if (typeof config.id !== 'string') {
       config.id = generateId();
     }
-    return PipelineModel.create(config.toJSON());
+    return (await PipelineModel.create(config)).toJSON() as PipelineEntity;
   }
 
   async getPipeline(idOrName: string): Promise<PipelineModel> {
