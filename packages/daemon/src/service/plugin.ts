@@ -186,7 +186,8 @@ export class PluginManager {
   async uninstall(plugin: PluginModel | PluginModel[]): Promise<void> {
     const { costa } = this.pluginRT;
     if (Array.isArray(plugin)) {
-      await costa.uninstall(plugin);
+      const plugins = plugin.map(plugin => plugin.toJSON() as PluginModel);
+      await costa.uninstall(plugins);
       await plugin.map(async (singlePlugin) => {
         await singlePlugin.destroy();
       });

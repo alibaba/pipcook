@@ -420,6 +420,7 @@ export class CostaRuntime {
       if (pkg.dependencies && pkg.dependencies[name]) {
         delete pkg.dependencies[name];
       }
+      return true;
     };
 
     let success = false;
