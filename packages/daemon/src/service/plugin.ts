@@ -60,7 +60,7 @@ export class PluginManager {
     return this.pluginRT.costa.createRunnable({ id, logger: tracer.getLogger() } as BootstrapArg);
   }
 
-  async list(filter?: ListPluginsFilter): Promise<PluginModel[]> {
+  async list(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
     const where = {} as any;
     if (filter?.category) {
       where.category = filter.category;
@@ -71,10 +71,10 @@ export class PluginManager {
     if (filter?.name) {
       where.name = filter.name;
     }
-    return PluginModel.findAll({ where });
+    return (await PluginModel.findAll({ where })).map(plugin => plugin.toJSON() as PluginEntity);
   }
 
-  async query(filter?: ListPluginsFilter): Promise<PluginModel[]> {
+  async query(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
     const where = {} as any;
     if (filter.category) {
       where.category = filter.category;
@@ -82,18 +82,18 @@ export class PluginManager {
     if (filter.datatype) {
       where.datatype = filter.datatype;
     }
-    return PluginModel.findAll({ where });
+    return (await PluginModel.findAll({ where })).map(plugin => plugin.toJSON() as PluginEntity);
   }
 
-  async findById(id: string): Promise<PluginModel> {
-    return PluginModel.findOne({ where: { id } });
+  async findById(id: string): Promise<PluginEntity> {
+    return (await PluginModel.findOne({ where: { id } })).toJSON() as PluginEntity;
   }
 
-  async findByIds(ids: string[]): Promise<PluginModel[]> {
-    return PluginModel.findAll({ where: { id: ids } });
+  async findByIds(ids: string[]): Promise<PluginEntity[]> {
+    return (await PluginModel.findAll({ where: { id: ids } })).map(plugin => plugin.toJSON() as PluginEntity);
   }
-  async findByName(name: string): Promise<PluginModel> {
-    return PluginModel.findOne({ where: { name } });
+  async findByName(name: string): Promise<PluginEntity> {
+    return (await PluginModel.findOne({ where: { name } })).toJSON() as PluginEntity;
   }
 
   async removeById(id: string): Promise<number> {

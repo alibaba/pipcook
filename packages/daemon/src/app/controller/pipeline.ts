@@ -8,8 +8,7 @@ import { parseConfig } from '../../runner/helper';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { Tracer } from '../../service/trace-manager';
-import { PluginResp } from '../../interface';
-import { PipelineModel } from '../../model/pipeline';
+import { PipelineEntity } from '../../model/pipeline';
 const debug = Debug('daemon.app.pipeline');
 
 const createSchema = Joi.object({
@@ -59,7 +58,7 @@ export class PipelineController extends BaseEventController {
       }
     }
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    this.ctx.success({ ...pipeline.toJSON(), plugins }, HttpStatus.CREATED);
+    this.ctx.success({ ...pipeline, plugins }, HttpStatus.CREATED);
   }
 
   /**
@@ -145,7 +144,7 @@ export class PipelineController extends BaseEventController {
       }
     });
     const plugins = await this.pluginManager.findByIds(pluginIds);
-    this.ctx.success({ ...pipeline.toJSON(), plugins });
+    this.ctx.success({ ...pipeline, plugins });
   }
 
   /**
@@ -181,13 +180,13 @@ export class PipelineController extends BaseEventController {
           this.traceManager.destroy(log.id, err);
         }
       });
-      this.ctx.success({ ...(pipeline.toJSON() as PluginResp), traceId: log.id });
+      this.ctx.success({ ...pipeline, traceId: log.id });
     } else {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'no pipeline found');
     }
   }
 
-  private async installByPipeline(pipeline: PipelineModel, tracer: Tracer, pyIndex?: string): Promise<void> {
+  private async installByPipeline(pipeline: PipelineEntity, tracer: Tracer, pyIndex?: string): Promise<void> {
     const { stdout, stderr } = tracer.getLogger();
     for (const type of constants.PLUGINS) {
       if (!pipeline[type]) {

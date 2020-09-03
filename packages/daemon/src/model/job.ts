@@ -1,6 +1,6 @@
 import { STRING, INTEGER, BOOLEAN, Model, Sequelize } from 'sequelize';
 
-export class JobModel extends Model {
+export interface JobEntity {
   id: string;
   pipelineId: string;
   specVersion: string;
@@ -14,6 +14,8 @@ export class JobModel extends Model {
   status: number;
   dataset: string;
 }
+
+export class JobModel extends Model {}
 
 export default async function model(sequelize: Sequelize): Promise<void> {
   JobModel.init({

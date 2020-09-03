@@ -12,9 +12,9 @@ import {
   generateId,
   PluginTypeI
 } from '@pipcook/pipcook-core';
-import { PipelineModel } from '../model/pipeline';
+import { PipelineEntity } from '../model/pipeline';
 
-const { PLUGINS, PIPCOOK_LOGS } = constants;
+const { PIPCOOK_LOGS } = constants;
 
 /**
  * The pipeline database schema.
@@ -49,28 +49,38 @@ async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> 
   }
 }
 
-export async function parseConfig(configPath: string | RunConfigI, isGenerateId = true): Promise<PipelineModel> {
+export async function parseConfig(configPath: string | RunConfigI, isGenerateId = true): Promise<PipelineEntity> {
   const configJson = await loadConfig(configPath);
-  const result: PipelineModel = new PipelineModel();
+  const parseParams = function (params: any): string {
+    return params ? JSON.stringify(params) : '{}';
+  };
+  return {
+    id: isGenerateId ? generateId() : undefined,
+    name: configJson.name,
+    dataCollect: configJson.plugins.dataCollect.package,
+    dataCollectParams: parseParams(configJson.plugins.dataCollect.params),
 
-  if (isGenerateId) {
-    result.id = generateId();
-  }
-  if (configJson.name) {
-    result.name = configJson.name;
-  }
+    dataAccess: configJson.plugins.dataAccess.package,
+    dataAccessParams: parseParams(configJson.plugins.dataAccess.params),
 
-  PLUGINS.forEach((pluginType) => {
-    if (configJson.plugins[pluginType]?.package) {
-      const pluginName = configJson.plugins[pluginType].package;
-      const params = configJson.plugins[pluginType].params || {};
+    dataProcess: configJson.plugins.dataProcess.package,
+    dataProcessParams: parseParams(configJson.plugins.dataProcess.params),
 
-      result[pluginType] = pluginName;
-      const paramsAttribute: PipelineDBParams = (pluginType + 'Params') as PipelineDBParams;
-      result[paramsAttribute] = JSON.stringify(params);
-    }
-  });
-  return result;
+    datasetProcess: configJson.plugins.dataProcess.package,
+    datasetProcessParams: parseParams(configJson.plugins.dataProcess.params),
+
+    modelDefine: configJson.plugins.modelDefine.package,
+    modelDefineParams: parseParams(configJson.plugins.modelDefine.params),
+
+    modelLoad: configJson.plugins.modelLoad.package,
+    modelLoadParams: parseParams(configJson.plugins.modelLoad.params),
+
+    modelTrain: configJson.plugins.modelTrain.package,
+    modelTrainParams: parseParams(configJson.plugins.modelTrain.params),
+
+    modelEvaluate: configJson.plugins.modelEvaluate.package,
+    modelEvaluateParams: parseParams(configJson.plugins.modelLoad.params)
+  };
 }
 
 export async function writeOutput(jobId: string, content: string, stderr = false): Promise<void> {
