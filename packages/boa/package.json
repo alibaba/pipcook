@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/boa",
-  "version": "1.2.0-rc",
+  "version": "1.2.0-rc1",
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {
