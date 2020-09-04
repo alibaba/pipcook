@@ -55,7 +55,7 @@ jobs:
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
           git add .
-          git commit -m "bump version" --allow-empty
+          git commit -m "bump version"
           npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
