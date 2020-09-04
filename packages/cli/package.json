@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "1.2.0-rc3",
+  "version": "1.2.0",
   "description": "",
   "main": "dist/bin/index.js",
   "scripts": {
@@ -23,8 +23,8 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^1.2.0-rc3",
-    "@pipcook/sdk": "^1.2.0-rc3",
+    "@pipcook/pipcook-core": "^1.2.0",
+    "@pipcook/sdk": "^1.2.0",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
