@@ -10,7 +10,7 @@ on:
 
 jobs:
   markdown-link-check:
-    if: ${{ github.event.pull_request.draft == false }}
+    if: ${{ github.event_name == 'pull' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
