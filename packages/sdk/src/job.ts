@@ -74,9 +74,9 @@ export class Job extends BaseApi {
     const resp = await getFile(`${this.route}/${id}/output`);
     // header['content-disposition'] value looks like: 'attachment; filename="pipcook-output-u9fo9dlt.tar.gz"'
     let fileName = resp.headers['content-disposition']?.match(/\"(.*?)\"/g)[0]?.replace(/\"/g, '');
-    fileName = fileName ? fileName : 'output.tar.gz';
+    fileName = fileName || 'output.tar.gz';
     let fileType = resp.headers['content-type'];
-    if (fileType.startsWith('application/')) {
+    if (fileType && fileType.startsWith('application/')) {
       fileType = fileType.substr('application/'.length);
     } else {
       fileType = '';
