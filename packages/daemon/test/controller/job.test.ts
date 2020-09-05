@@ -111,7 +111,6 @@ describe('test job controller', () => {
       .get('/api/job/job-id/output')
       .expect('content-disposition', 'attachment; filename="pipcook-output-job-id.tar.gz"')
       .expect(async (resp) => {
-        console.log(resp.header);
         sandbox.assert.calledOnceWithExactly(mockCreateReadStream, join(__dirname, 'job.test.ts'));
       })
       .expect(204);
@@ -127,6 +126,24 @@ describe('test job controller', () => {
       .expect('Content-Type', /json/)
       .expect(async (resp) => {
         assert.equal(resp.body.message, 'invalid job status');
+      })
+      .expect(400);
+  });
+  it('download a job but file not exists', () => {
+    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+      assert.equal(id, 'job-id');
+      return { status: PipelineStatus.SUCCESS };
+    });
+    app.mockClassFunction('pipelineService', 'getOutputTarByJobId', (id: string) => {
+      assert.equal(id, 'job-id');
+      return 'not-exist';
+    });
+    return app
+      .httpRequest()
+      .get('/api/job/job-id/output')
+      .expect('Content-Type', /json/)
+      .expect(async (resp) => {
+        assert.equal(resp.body.message, 'output file not found');
       })
       .expect(400);
   });
