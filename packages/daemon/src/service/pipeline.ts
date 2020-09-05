@@ -65,7 +65,6 @@ export class PipelineService {
 
   // FIXME(feely): change to IPipelineModel
   async createPipeline(config: PipelineEntity): Promise<PipelineEntity> {
-    console.log('config.id', config.id, config);
     if (typeof config.id !== 'string') {
       config.id = generateId();
     }

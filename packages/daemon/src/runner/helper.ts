@@ -7,21 +7,12 @@ import * as request from 'request-promise';
 import * as url from 'url';
 import {
   RunConfigI,
-  PipelineDBParams,
   constants,
-  generateId,
-  PluginTypeI
+  generateId
 } from '@pipcook/pipcook-core';
 import { PipelineEntity } from '../model/pipeline';
 
 const { PIPCOOK_LOGS } = constants;
-
-/**
- * The pipeline database schema.
- */
-export declare type PipelineDB = Partial<Record<'id' | 'name' |
-  'dataCollectId' | 'dataAccessId' | 'dataProcessId' | 'modelDefineId'
-  | 'modelLoadId' | 'modelTrainId' | 'modelEvaluateId' | PluginTypeI | PipelineDBParams, string>>;
 
 async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
   if (typeof configPath === 'string') {
