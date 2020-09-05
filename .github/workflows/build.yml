@@ -9,6 +9,7 @@ on:
     - 'notebooks/**'
     - '.github/markdown.yml'
   pull_request:
+    types: [ review_requested, ready_for_review ]
     branches:
     - master
     paths-ignore:
