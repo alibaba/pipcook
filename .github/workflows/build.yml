@@ -20,6 +20,7 @@ on:
 jobs:
   universal:
     name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    if: github.event.pull_request.draft == false
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
