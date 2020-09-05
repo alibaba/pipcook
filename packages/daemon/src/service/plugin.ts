@@ -93,7 +93,7 @@ export class PluginManager {
     return (await PluginModel.findAll({ where: { id: ids } })).map(plugin => plugin.toJSON() as PluginEntity);
   }
   async findByName(name: string): Promise<PluginEntity> {
-    return (await PluginModel.findOne({ where: { name } })).toJSON() as PluginEntity;
+    return (await PluginModel.findOne({ where: { name } }))?.toJSON() as PluginEntity;
   }
 
   async removeById(id: string): Promise<number> {
