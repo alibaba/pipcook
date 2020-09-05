@@ -96,9 +96,20 @@ describe('test pipeline controller', () => {
         };
       }
     });
+    app.mockClassFunction('pluginManager', 'findByName', async (name: string) => {
+      const nameList = [ 'dataCollect', 'dataAccess' ];
+      assert.ok(nameList.indexOf(name) >= 0);
+      if (name === 'dataCollect') {
+        return {
+          id: 'dataCollectInstalled',
+          name: 'dataCollect',
+          status: 1
+        };
+      }
+    });
     app.mockClassFunction('pipelineService', 'createPipeline', async (pipeline: PipelineEntity) => {
       assert.equal(pipeline.name, 'name');
-      assert.equal(pipeline.dataCollectId, 'dataCollectId');
+      assert.equal(pipeline.dataCollectId, 'dataCollectInstalled');
       assert.equal(pipeline.dataCollect, 'dataCollect');
       assert.equal(pipeline.dataCollectParams, '{"testParam":"123"}');
       assert.equal(pipeline.dataAccessId, 'dataAccessId');
@@ -131,14 +142,14 @@ describe('test pipeline controller', () => {
       .expect(201).then((res) => {
         assert.equal(res.body.id, 'id');
         assert.equal(res.body.name, 'name');
-        assert.equal(res.body.dataCollectId, 'dataCollectId');
+        assert.equal(res.body.dataCollectId, 'dataCollectInstalled');
         assert.equal(res.body.dataCollect, 'dataCollect');
         assert.equal(res.body.dataCollectParams, '{"testParam":"123"}');
         assert.equal(res.body.dataAccessId, 'dataAccessId');
         assert.equal(res.body.dataAccess, 'dataAccess');
         assert.equal(res.body.dataAccessParams, '{"testParam":"456"}');
         assert.deepEqual(res.body.plugins, [
-          {id: 'dataCollectId', name: 'dataCollect'},
+          {id: 'dataCollectInstalled', name: 'dataCollect', status: 1},
           {id: 'dataAccessId', name: 'dataAccess'}
         ]);
       });

@@ -43,8 +43,12 @@ export class PipelineController extends BaseEventController {
     // the plugin name could be git/web url, we need the real name, and create plugin object
     const createPlugin = async (field: string) => {
       if (parsedConfig[field]) {
-        const pkg = await this.pluginManager.fetch(parsedConfig[field]);
-        return this.pluginManager.findOrCreateByPkg(pkg);
+        let plugin = await this.pluginManager.findByName(parsedConfig[field]);
+        if (!plugin || plugin.status !== PluginStatus.INSTALLED) {
+          const pkg = await this.pluginManager.fetch(parsedConfig[field]);
+          plugin = await this.pluginManager.findOrCreateByPkg(pkg);
+        }
+        return plugin;
       }
     };
     const plugins = [];
