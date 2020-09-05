@@ -4,9 +4,9 @@ on:
     branches:
     - master
   pull_request:
+    types: [ pened, synchronize, reopened, review_requested, ready_for_review ]
     branches:
     - master
-    types: [ review_requested, ready_for_review ]
 
 jobs:
   markdown-link-check:
