@@ -9,7 +9,7 @@ export class BaseApi {
   }
 
   /**
-   * trace event
+   * trace event, after `Job.run()`, `Pipeline.install()`, `Plugin.createByName()`, `Plugin.createByTarball()` we can get the `traceId` for tracing the progress event.
    * @param traceId trace id
    * @param eventCallback event callback
    */

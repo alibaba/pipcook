@@ -1,6 +1,6 @@
-import { get, getFile, del, post, FileDownloadResp } from './request';
+import { get, getFile, del, post } from './request';
 import { BaseApi } from './base';
-import { JobResp, TraceResp, JobListFilter } from './interface';
+import { JobResp, TraceResp, JobListFilter, FileDownloadResp } from './interface';
 
 /**
  * Job API object.
@@ -70,8 +70,18 @@ export class Job extends BaseApi {
    * you should check the job status before downloading
    * @param id job id
    */
-  downloadOutput(id: string): Promise<FileDownloadResp> {
-    return getFile(`${this.route}/${id}/output`);
+  async downloadOutput(id: string): Promise<FileDownloadResp> {
+    const resp = await getFile(`${this.route}/${id}/output`);
+    // header['content-disposition'] value looks like: 'attachment; filename="pipcook-output-u9fo9dlt.tar.gz"'
+    let fileName = resp.headers['content-disposition']?.match(/\"(.*?)\"/g)[0]?.replace(/\"/g, '');
+    fileName = fileName ? fileName : 'output.tar.gz';
+    let fileType = resp.headers['content-type'];
+    if (fileType.startsWith('application/')) {
+      fileType = fileType.substr('application/'.length);
+    } else {
+      fileType = '';
+    }
+    return { fileName, fileType, totalBytes: resp.totalBytes, stream: resp.stream };
   }
 
   /**
