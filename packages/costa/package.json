@@ -13,7 +13,7 @@
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts --outdir=dist --tsconfig=tsconfig.json",
+    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts --format=cjs --outdir=dist --tsconfig=tsconfig.json",
     "compile": "tsc -b tsconfig.json"
   },
   "license": "Apache 2.0",
