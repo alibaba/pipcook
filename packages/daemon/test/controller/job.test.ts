@@ -1,7 +1,12 @@
 import { app, assert } from 'midway-mock/bootstrap';
 import * as HttpStatus from 'http-status';
 import * as createHttpError from 'http-errors';
+import { PipelineStatus } from '@pipcook/pipcook-core';
+import { join } from 'path';
+import * as fs from 'fs-extra';
+import * as sinon from 'sinon';
 
+const sandbox = sinon.createSandbox();
 let mockPipeline = {
   id: '',
   name: 'pipeline-name',
@@ -47,6 +52,9 @@ const mockJob = {
 const mockPlugins = [ { id: '123' }, { id: '456' } ];
 
 describe('test job controller', () => {
+  beforeEach(function () {
+    sandbox.restore();
+});
   it('should list jobs', () => {
     return app
       .httpRequest()
@@ -87,6 +95,57 @@ describe('test job controller', () => {
         assert.equal(typeof resp.body.traceId, 'string');
       })
       .expect(200);
+  });
+  it('should download job', () => {
+    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+      assert.equal(id, 'job-id');
+      return { status: PipelineStatus.SUCCESS };
+    });
+    app.mockClassFunction('pipelineService', 'getOutputTarByJobId', (id: string) => {
+      assert.equal(id, 'job-id');
+      return join(__dirname, 'job.test.ts');
+    });
+    const mockCreateReadStream = sandbox.stub(fs, 'createReadStream');
+    return app
+      .httpRequest()
+      .get('/api/job/job-id/output')
+      .expect('content-disposition', 'attachment; filename="pipcook-output-job-id.tar.gz"')
+      .expect(async (resp) => {
+        sandbox.assert.calledOnceWithExactly(mockCreateReadStream, join(__dirname, 'job.test.ts'));
+      })
+      .expect(204);
+  });
+  it('download a invalid job', () => {
+    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+      assert.equal(id, 'job-id');
+      return { status: PipelineStatus.FAIL };
+    });
+    return app
+      .httpRequest()
+      .get('/api/job/job-id/output')
+      .expect('Content-Type', /json/)
+      .expect(async (resp) => {
+        assert.equal(resp.body.message, 'invalid job status');
+      })
+      .expect(400);
+  });
+  it('download a job but file not exists', () => {
+    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+      assert.equal(id, 'job-id');
+      return { status: PipelineStatus.SUCCESS };
+    });
+    app.mockClassFunction('pipelineService', 'getOutputTarByJobId', (id: string) => {
+      assert.equal(id, 'job-id');
+      return 'not-exist';
+    });
+    return app
+      .httpRequest()
+      .get('/api/job/job-id/output')
+      .expect('Content-Type', /json/)
+      .expect(async (resp) => {
+        assert.equal(resp.body.message, 'output file not found');
+      })
+      .expect(400);
   });
   it('should throw error run a uninstalled job', () => {
     app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
