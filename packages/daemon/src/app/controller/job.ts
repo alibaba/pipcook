@@ -1,7 +1,7 @@
 import { controller, inject, provide, get, post, del } from 'midway';
 import * as HttpStatus from 'http-status';
-import { constants } from '@pipcook/pipcook-core';
-import { createReadStream, ensureDir, ensureFile } from 'fs-extra';
+import { constants, PipelineStatus } from '@pipcook/pipcook-core';
+import { createReadStream, ensureDir, ensureFile, pathExists } from 'fs-extra';
 import { join } from 'path';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
@@ -107,7 +107,14 @@ export class JobController extends BaseEventController {
 
   @get('/:id/output')
   public async download(): Promise<void> {
+    const job = await this.pipelineService.getJobById(this.ctx.params.id);
+    if (job.status !== PipelineStatus.SUCCESS) {
+      this.ctx.throw(HttpStatus.BAD_REQUEST, 'invalid job status');
+    }
     const outputPath = this.pipelineService.getOutputTarByJobId(this.ctx.params.id);
+    if (!await pathExists(outputPath)) {
+      this.ctx.throw(HttpStatus.BAD_REQUEST, 'output file not found');
+    }
     this.ctx.attachment(`pipcook-output-${this.ctx.params.id}.tar.gz`);
     this.ctx.body = createReadStream(outputPath);
   }
