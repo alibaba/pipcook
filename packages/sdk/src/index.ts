@@ -2,7 +2,7 @@ import { Job } from './job';
 import { Pipeline } from './pipeline';
 import { Plugin } from './plugin';
 import { get } from './request';
-import { VersionsResp, ConfigResp, ApiOption } from './interface';
+import { VersionsResp, ConfigResp, InitOption } from './interface';
 import { errorHandle } from './base';
 export { JobStatusValue, PluginStatusValue } from './utils';
 export * from './interface';
@@ -18,7 +18,10 @@ export * from './interface';
  * ```
  */
 export class PipcookClient {
-
+  /**
+   * The error handler, if set, the error will be callback instead of throwing.
+   */
+  onError: (err: Error) => void;
   /**
    * The endpoint to Pipcook.
    */
@@ -43,8 +46,8 @@ export class PipcookClient {
    * @param protocolWithHostname the daemon hostname with protocol, like "http://192.168.1.50"
    * @param port the port
    */
-  constructor(protocolWithHostname = 'http://127.0.0.1', port = 6927, opts?: ApiOption) {
-    console.log(protocolWithHostname, port);
+  constructor(protocolWithHostname = 'http://127.0.0.1', port = 6927, opts?: InitOption) {
+    this.onError = opts?.onError;
     this.endpoint = `${protocolWithHostname}:${port}/api`;
     this.pipeline = new Pipeline(this.endpoint, opts);
     this.job = new Job(this.endpoint, opts);

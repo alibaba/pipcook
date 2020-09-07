@@ -1,13 +1,13 @@
 import { get, post, del, uploadFile } from './request';
 import { BaseApi, errorHandle } from './base';
-import { PluginResp, TraceResp, PluginListParams, ApiOption } from './interface';
+import { PluginResp, TraceResp, PluginListParams, InitOption } from './interface';
 import { ReadStream } from 'fs-extra';
 
 /**
  * API for plugin
  */
 export class Plugin extends BaseApi {
-  constructor(url: string, opts?: ApiOption) {
+  constructor(url: string, opts?: InitOption) {
     super(`${url}/plugin`, opts);
   }
 

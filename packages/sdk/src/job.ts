@@ -1,6 +1,6 @@
 import { get, getFile, del, post, FileDownloadResp } from './request';
 import { BaseApi, errorHandle } from './base';
-import { JobResp, TraceResp, JobListFilter, ApiOption } from './interface';
+import { JobResp, TraceResp, JobListFilter, InitOption } from './interface';
 
 /**
  * Job API object.
@@ -10,7 +10,7 @@ export class Job extends BaseApi {
    * Use PipcookClient instead.
    * @private
    */
-  constructor(url: string, opts?: ApiOption) {
+  constructor(url: string, opts?: InitOption) {
     super(`${url}/job`, opts);
   }
 

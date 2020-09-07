@@ -1,11 +1,11 @@
 import { get, post, put, del } from './request';
-import { PipelineResp, PipelineInstallOption, TraceResp, ListFilter, PipelineConfig, ApiOption } from './interface';
+import { PipelineResp, PipelineInstallOption, TraceResp, ListFilter, PipelineConfig, InitOption } from './interface';
 import { BaseApi, errorHandle } from './base';
 /**
  * API for pipeline
  */
 export class Pipeline extends BaseApi {
-  constructor(url: string, opts?: ApiOption) {
+  constructor(url: string, opts?: InitOption) {
     super(`${url}/pipeline`, opts);
   }
 

@@ -1,5 +1,7 @@
 import { listen } from './request';
-import { EventCallback, LogEvent, JobStatusChangeEvent, ApiOption } from './interface';
+import { types } from 'util';
+
+import { EventCallback, LogEvent, JobStatusChangeEvent, InitOption } from './interface';
 
 /**
  * detector for catching error and call the callback, if type of `onError` is function.
@@ -7,15 +9,20 @@ import { EventCallback, LogEvent, JobStatusChangeEvent, ApiOption } from './inte
 export function errorHandle() {
   return function (target: any, name: string, desc: any) {
     const original = desc.value;
-    desc.value = async function (...args: any[]) {
+    desc.value = function (...args: any[]) {
       if (typeof this.onError === 'function') {
         try {
-          return await original.apply(this, args);
+          const result = original.apply(this, args);
+          if (types.isPromise(result)) {
+            return result.catch(this.onError);
+          } else {
+            return result;
+          }
         } catch (err) {
           this.onError(err);
         }
       } else {
-        original.apply(this, args);
+        return original.apply(this, args);
       }
     };
     return desc;
@@ -26,7 +33,7 @@ export class BaseApi {
   onError: (err: Error) => void;
   route: string;
 
-  constructor(uri: string, opts?: ApiOption) {
+  constructor(uri: string, opts?: InitOption) {
     this.route = uri;
     this.onError = opts?.onError;
   }
