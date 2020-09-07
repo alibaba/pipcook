@@ -4,13 +4,13 @@ on:
     branches:
     - master
   pull_request:
-    types: [ pened, synchronize, reopened, review_requested, ready_for_review ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
     branches:
     - master
 
 jobs:
   markdown-link-check:
-    if: ${{ github.event_name == 'pull' || github.event.pull_request.draft == false }}
+    if: ${{ github.event_name == 'push' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
