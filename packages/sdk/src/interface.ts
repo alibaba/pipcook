@@ -2,6 +2,14 @@
 import { PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
 
 /**
+ * options for the client.
+ */
+export interface ApiOption {
+  // if set, the error will callback though this funciton
+  onError?: (err: Error) => void;
+}
+
+/**
  * `/api/versions` response
  */
 export interface VersionsResp {

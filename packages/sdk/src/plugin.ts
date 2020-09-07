@@ -1,21 +1,21 @@
 import { get, post, del, uploadFile } from './request';
-import { BaseApi, emitError } from './base';
-import { PluginResp, TraceResp, PluginListParams } from './interface';
+import { BaseApi, errorHandle } from './base';
+import { PluginResp, TraceResp, PluginListParams, ApiOption } from './interface';
 import { ReadStream } from 'fs-extra';
 
 /**
  * API for plugin
  */
 export class Plugin extends BaseApi {
-  constructor(url: string, onError?: (err: Error) => void) {
-    super(`${url}/plugin`, onError);
+  constructor(url: string, opts?: ApiOption) {
+    super(`${url}/plugin`, opts);
   }
 
   /**
    * list all plugins
    * @param params params
    */
-  @emitError()
+  @errorHandle()
   list(params?: PluginListParams): Promise<PluginResp[]> {
     return get(`${this.route}`, params);
   }
@@ -24,7 +24,7 @@ export class Plugin extends BaseApi {
    * get plugin by id
    * @param id string plugin id
    */
-  @emitError()
+  @errorHandle()
   get(id: string): Promise<PluginResp> {
     return get(`${this.route}/${id}`);
   }
@@ -33,7 +33,7 @@ export class Plugin extends BaseApi {
    * get plugin metadata by id
    * @param id string plugin id
    */
-  @emitError()
+  @errorHandle()
   fetch(id: string): Promise<any> {
     return get(`${this.route}/${id}/metadata`);
   }
@@ -42,7 +42,7 @@ export class Plugin extends BaseApi {
    * fetch specific plugin metadata by name
    * @param name the plugin name, for example "@pipcook/plugins-image-classification-data-collect"
    */
-  @emitError()
+  @errorHandle()
   fetchByName(name: string): Promise<any> {
     return get(`${this.route}/metadata`, { name });
   }
@@ -51,7 +51,7 @@ export class Plugin extends BaseApi {
    * remove plugin or plugins
    * @param id string if null, remove all
    */
-  @emitError()
+  @errorHandle()
   remove(id?: string): Promise<void> {
     return del(`${this.route}/${id ? id : ''}`);
   }
@@ -61,7 +61,7 @@ export class Plugin extends BaseApi {
    * @param name package name
    * @param pyIndex the python package index
    */
-  @emitError()
+  @errorHandle()
   createByName(name: string, pyIndex?: string): Promise<TraceResp<PluginResp>> {
     return post(`${this.route}`, { name, pyIndex });
   }
@@ -71,7 +71,7 @@ export class Plugin extends BaseApi {
    * @param pkgStream file stream
    * @param pyIndex the python package index
    */
-  @emitError()
+  @errorHandle()
   createByTarball(pkgStream: ReadStream, pyIndex?: string): Promise<TraceResp<PluginResp>> {
     return uploadFile(`${this.route}/tarball`, pkgStream, { pyIndex });
   }

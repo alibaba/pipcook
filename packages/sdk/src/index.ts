@@ -2,8 +2,8 @@ import { Job } from './job';
 import { Pipeline } from './pipeline';
 import { Plugin } from './plugin';
 import { get } from './request';
-import { VersionsResp, ConfigResp } from './interface';
-import { emitError } from './base';
+import { VersionsResp, ConfigResp, ApiOption } from './interface';
+import { errorHandle } from './base';
 export { JobStatusValue, PluginStatusValue } from './utils';
 export * from './interface';
 
@@ -43,18 +43,18 @@ export class PipcookClient {
    * @param protocolWithHostname the daemon hostname with protocol, like "http://192.168.1.50"
    * @param port the port
    */
-  constructor(protocolWithHostname = 'http://127.0.0.1', port = 6927, onError?: (err: Error) => void) {
+  constructor(protocolWithHostname = 'http://127.0.0.1', port = 6927, opts?: ApiOption) {
     console.log(protocolWithHostname, port);
     this.endpoint = `${protocolWithHostname}:${port}/api`;
-    this.pipeline = new Pipeline(this.endpoint, onError);
-    this.job = new Job(this.endpoint, onError);
-    this.plugin = new Plugin(this.endpoint, onError);
+    this.pipeline = new Pipeline(this.endpoint, opts);
+    this.job = new Job(this.endpoint, opts);
+    this.plugin = new Plugin(this.endpoint, opts);
   }
 
   /**
    * list versions
    */
-  @emitError()
+  @errorHandle()
   listVersions(): Promise<VersionsResp> {
     return get(`${this.endpoint}/versions`);
   }
@@ -62,7 +62,7 @@ export class PipcookClient {
   /**
    * get daemon config
    */
-  @emitError()
+  @errorHandle()
   getConfig(): Promise<ConfigResp> {
     return get(`${this.endpoint}/config`);
   }

@@ -1,19 +1,19 @@
 import { get, post, put, del } from './request';
-import { PipelineResp, PipelineInstallOption, TraceResp, ListFilter, PipelineConfig } from './interface';
-import { BaseApi, emitError } from './base';
+import { PipelineResp, PipelineInstallOption, TraceResp, ListFilter, PipelineConfig, ApiOption } from './interface';
+import { BaseApi, errorHandle } from './base';
 /**
  * API for pipeline
  */
 export class Pipeline extends BaseApi {
-  constructor(url: string, onError?: (err: Error) => void) {
-    super(`${url}/pipeline`, onError);
+  constructor(url: string, opts?: ApiOption) {
+    super(`${url}/pipeline`, opts);
   }
 
   /**
    * list all pipelines
    * @param filter the filter option to list pipelines
    */
-  @emitError()
+  @errorHandle()
   list(filter?: ListFilter): Promise<PipelineResp[]> {
     return get(`${this.route}`, filter);
   }
@@ -22,7 +22,7 @@ export class Pipeline extends BaseApi {
    * get pipeline info by pipeline id
    * @param id pipeline id
    */
-  @emitError()
+  @errorHandle()
   get(id: string): Promise<PipelineResp> {
     return get(`${this.route}/${id}`);
   }
@@ -32,7 +32,7 @@ export class Pipeline extends BaseApi {
    * get pipeline config by pipeline id
    * @param id pipeline id
    */
-  @emitError()
+  @errorHandle()
   getConfig(id: string): Promise<PipelineConfig> {
     return get(`${this.route}/${id}/config`);
   }
@@ -42,7 +42,7 @@ export class Pipeline extends BaseApi {
    * @param config pipeline config
    * @param opts name: pipeline name
    */
-  @emitError()
+  @errorHandle()
   create(config: PipelineConfig, opts?: any): Promise<PipelineResp> {
     return post(`${this.route}`, {
       config,
@@ -55,7 +55,7 @@ export class Pipeline extends BaseApi {
    * @param configUri pipeline config file uri
    * @param opts name: pipeline name
    */
-  @emitError()
+  @errorHandle()
   createByUri(configUri: string, opts?: any): Promise<PipelineResp> {
     return post(`${this.route}`, {
       configUri,
@@ -68,7 +68,7 @@ export class Pipeline extends BaseApi {
    * @param id pipeline id
    * @param config pipeline config
    */
-  @emitError()
+  @errorHandle()
   update(id: string, config: PipelineConfig): Promise<PipelineResp> {
     return put(`${this.route}/${id}`, {
       config
@@ -79,7 +79,7 @@ export class Pipeline extends BaseApi {
    * remove pipeline by id, if the id is undefined, remove all
    * @param id pipline id or undefined
    */
-  @emitError()
+  @errorHandle()
   remove(id?: string): Promise<void> {
     return del(`${this.route}/${id ? id : ''}`);
   }
@@ -89,7 +89,7 @@ export class Pipeline extends BaseApi {
    * @param id pipeline id
    * @param opt installation options
    */
-  @emitError()
+  @errorHandle()
   install(id: string, opt?: PipelineInstallOption): Promise<TraceResp<PipelineResp>> {
     return post(`${this.route}/${id}/installation`, opt);
   }

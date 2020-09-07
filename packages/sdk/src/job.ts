@@ -1,6 +1,6 @@
 import { get, getFile, del, post, FileDownloadResp } from './request';
-import { BaseApi, emitError } from './base';
-import { JobResp, TraceResp, JobListFilter } from './interface';
+import { BaseApi, errorHandle } from './base';
+import { JobResp, TraceResp, JobListFilter, ApiOption } from './interface';
 
 /**
  * Job API object.
@@ -10,8 +10,8 @@ export class Job extends BaseApi {
    * Use PipcookClient instead.
    * @private
    */
-  constructor(url: string, onError?: (err: Error) => void) {
-    super(`${url}/job`, onError);
+  constructor(url: string, opts?: ApiOption) {
+    super(`${url}/job`, opts);
   }
 
   /**
@@ -19,7 +19,7 @@ export class Job extends BaseApi {
    * @param filter the filter to list the jobs.
    * @returns The jobs list.
    */
-  @emitError()
+  @errorHandle()
   list(filter?: JobListFilter): Promise<JobResp[]> {
     return get(this.route, filter);
   }
@@ -28,7 +28,7 @@ export class Job extends BaseApi {
    * remove pipeline by id, if the id is undefined remove all
    * @param id pipline id or undefined
    */
-  @emitError()
+  @errorHandle()
   remove(id?: string): Promise<void> {
     return del(`${this.route}/${id ? id : ''}`);
   }
@@ -37,7 +37,7 @@ export class Job extends BaseApi {
    * get job info by job id
    * @param id job id
    */
-  @emitError()
+  @errorHandle()
   get(id: string): Promise<JobResp> {
     return get(`${this.route}/${id}`);
   }
@@ -47,7 +47,7 @@ export class Job extends BaseApi {
    * cancel job by id
    * @param id job id
    */
-  @emitError()
+  @errorHandle()
   cancel(id: string): Promise<void> {
     return post(`${this.route}/${id}/cancel`);
   }
@@ -56,7 +56,7 @@ export class Job extends BaseApi {
    * get job log
    * @param id job id
    */
-  @emitError()
+  @errorHandle()
   log(id: string): Promise<any> {
     return get(`${this.route}/${id}/log`);
   }
@@ -65,7 +65,7 @@ export class Job extends BaseApi {
    * start to run a pipeline by pipeline id
    * @param piplineId pipeline id
    */
-  @emitError()
+  @errorHandle()
   run(pipelineId: string): Promise<TraceResp<JobResp>> {
     return post(`${this.route}`, { pipelineId });
   }
@@ -76,7 +76,7 @@ export class Job extends BaseApi {
    * you should check the job status before downloading
    * @param id job id
    */
-  @emitError()
+  @errorHandle()
   downloadOutput(id: string): Promise<FileDownloadResp> {
     return getFile(`${this.route}/${id}/output`);
   }
@@ -86,7 +86,7 @@ export class Job extends BaseApi {
    * @param id job id
    * @experimental
    */
-  @emitError()
+  @errorHandle()
   getOutputDownloadURL(id: string): string {
     return `${this.route}/${id}/output`;
   }
