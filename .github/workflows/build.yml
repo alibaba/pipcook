@@ -1,4 +1,4 @@
-name: build
+name: dev-build
 on:
   push:
     branches:
