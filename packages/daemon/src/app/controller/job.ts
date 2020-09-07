@@ -56,9 +56,10 @@ export class JobController extends BaseEventController {
    */
   @get()
   public async list(): Promise<void> {
-    const { pipelineId, offset, limit } = this.ctx.query;
-    const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
-    this.ctx.success(jobs);
+    // const { pipelineId, offset, limit } = this.ctx.query;
+    // const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
+    this.ctx.throw(HttpStatus.NOT_FOUND, 'not job found');
+    // this.ctx.success(jobs);
   }
 
   /**
