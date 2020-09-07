@@ -38,6 +38,7 @@ jobs:
     - name: Building Pipcook
       run: |
         npm install
+        npm run build
         npm run dev-build
         npm run init-dev
         du -h -d 1
