@@ -7,7 +7,7 @@ import { pipeLog, LogStdio } from './utils';
 import Debug from 'debug';
 import { generateId } from '@pipcook/pipcook-core';
 const debug = Debug('costa.runnable');
-
+generateId()
 /**
  * Returns when called `start()`
  */

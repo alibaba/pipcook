@@ -26,37 +26,11 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        node_version: ['12', '14']
-        os: [ubuntu-latest, macOS-latest]
+        node_version: ['14']
+        os: [ubuntu-latest]
     steps:
-    - name: cancel previous runs
-      uses: imgcook/cancel-workflow-action@81524cf
-      with:
-        access_token: ${{ github.token }}
-        exception: master
     - uses: actions/checkout@v2
-    - name: restore lerna
-      uses: actions/cache@v2
-      with:
-        path: |
-          node_modules
-          */*/node_modules
-          packages/boa/pybind11
-          packages/boa/pyodide
-        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json,packages/boa/pybind11/Makefile,packages/boa/pyodide/Makefile') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ matrix.node_version }}
-          ${{ runner.os }}
-    - name: restore miniconda
-      uses: actions/cache@v2
-      with:
-        path: |
-          packages/boa/.miniconda
-          packages/boa/Miniconda3-latest*.sh
-          packages/boa/.CONDA_INSTALL_DIR
-        key: ${{ runner.os }}-miniconda-${{ hashFiles('packages/boa/Miniconda3-latest*.sh') }}
-        restore-keys: |
-          ${{ runner.os }}-miniconda
+  
     - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
@@ -64,16 +38,12 @@ jobs:
     - name: Building Pipcook
       run: |
         npm install
-        npm run build
+        npm run dev-build
         npm run init-dev
         du -h -d 1
     - name: Running unit tests
       run: |
         npm test
-    - name: migration
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db
     - name: daemon start
       run: |
         ./packages/cli/dist/bin/pipcook daemon start
