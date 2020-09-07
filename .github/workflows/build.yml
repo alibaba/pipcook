@@ -64,7 +64,7 @@ jobs:
       run: |
         npm install
         npm run build
-        if [ ${{ matrix.command = "dev-build" }} ]
+        if [ ${{ matrix.command }} = "dev-build" ]
         then
           npm run dev-build
         fi
