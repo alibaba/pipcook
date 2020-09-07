@@ -19,13 +19,14 @@ on:
 
 jobs:
   universal:
-    name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }} with ${{ matrix.command }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       matrix:
         node_version: ['12', '14']
         os: [ubuntu-latest, macOS-latest]
+        command: [build, dev-build]
     steps:
     - name: cancel previous runs
       uses: imgcook/cancel-workflow-action@81524cf
@@ -63,6 +64,10 @@ jobs:
       run: |
         npm install
         npm run build
+        if [ ${{ matrix.command = "dev-build" }} ]
+        then
+          npm run dev-build
+        fi
         npm run init-dev
         du -h -d 1
     - name: Running unit tests
