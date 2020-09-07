@@ -73,15 +73,10 @@ export class Job extends BaseApi {
   async downloadOutput(id: string): Promise<FileDownloadResp> {
     const resp = await getFile(`${this.route}/${id}/output`);
     // header['content-disposition'] value looks like: 'attachment; filename="pipcook-output-u9fo9dlt.tar.gz"'
-    let fileName = resp.headers['content-disposition']?.match(/\"(.*?)\"/g)[0]?.replace(/\"/g, '');
-    fileName = fileName || 'output.tar.gz';
-    let fileType = resp.headers['content-type'];
-    if (fileType && fileType.startsWith('application/')) {
-      fileType = fileType.substr('application/'.length);
-    } else {
-      fileType = '';
-    }
-    return { fileName, fileType, totalBytes: resp.totalBytes, stream: resp.stream };
+    let filename = resp.headers['content-disposition']?.match(/\"(.*?)\"/g)[0]?.replace(/\"/g, '');
+    filename = filename || 'output.tar.gz';
+    const mimeType = resp.headers['content-type'];
+    return { filename, mimeType, totalBytes: resp.totalBytes, stream: resp.stream };
   }
 
   /**
