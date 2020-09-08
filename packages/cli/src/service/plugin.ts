@@ -131,6 +131,16 @@ export async function list(opts: any): Promise<void> {
   } else {
     console.table(plugins.map((plugin) => {
       return { ...plugin, status: PluginStatusValue[plugin.status] };
-    }), [ 'name', 'version', 'category', 'datatype', 'status' ]);
+    }), [ 'id', 'name', 'version', 'category', 'datatype', 'status' ]);
+  }
+}
+
+export async function info(id: string, opts: any): Promise<void> {
+  const client = initClient(opts.hostIp, opts.port);
+  try {
+    const plugin = await client.plugin.get(id);
+    console.log(JSON.stringify(plugin, undefined, 2));
+  } catch (err) {
+    logger.fail(err.message);
   }
 }

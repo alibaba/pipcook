@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as Url from 'url';
-import { PipelineResp, PluginStatusValue, PipelineConfig } from '@pipcook/sdk';
+import { PipelineResp, PluginStatusValue, PipelineConfig, JobResp } from '@pipcook/sdk';
 import { constants, PluginStatus } from '@pipcook/pipcook-core';
 import { readJson } from 'fs-extra';
 import { install as pluginInstall } from './plugin';
@@ -55,13 +55,22 @@ export async function update(id: string, filename: string, opts: any): Promise<v
   }
 }
 
-export async function remove(id: any, opts: any): Promise<void> {
+export async function listJobsByPipelineId(id: string, opts: any): Promise<JobResp[]> {
+  const client = initClient(opts.hostIp, opts.port);
+  let jobs;
+  if (id === undefined) {
+    jobs = await client.job.list();
+  } else {
+    jobs = await client.job.list({ pipelineId: id });
+  }
+  return jobs;
+}
+
+export async function remove(id: string, jobs: JobResp[], opts: any): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   try {
-    if (id === 'all') {
-      id = undefined;
-    }
     await client.pipeline.remove(id);
+    logger.info(`${jobs.length} ${jobs.length > 1 ? 'jobs' : 'job'} removed.`);
     logger.success(id ? `pipeline ${id} has removed.` : `all pipelines removed.`);
   } catch (err) {
     logger.fail(err.message);

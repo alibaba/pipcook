@@ -81,31 +81,46 @@ $ pipcook pipeline info <id>
 {
   "plugins": {
     "dataCollect": {
-      "name": "./packages/plugins/data-collect/object-detection-coco-data-collect",
+      "package": "./packages/plugins/data-collect/object-detection-coco-data-collect",
       "params": {
         "url": "http://foobar"
       }
     },
     "dataAccess": {
-      "name": "./packages/plugins/data-access/coco-data-access",
+      "package": "./packages/plugins/data-access/coco-data-access",
       "params": {}
     },
     "modelDefine": {
-      "name": "./packages/plugins/model-define/detectron-fasterrcnn-model-define",
+      "package": "./packages/plugins/model-define/detectron-fasterrcnn-model-define",
       "params": {}
     },
     "modelTrain": {
-      "name": "./packages/plugins/model-train/object-detection-detectron-model-train",
+      "package": "./packages/plugins/model-train/object-detection-detectron-model-train",
       "params": {
         "steps": 1
       }
     },
     "modelEvaluate": {
-      "name": "./packages/plugins/model-evaluate/object-detection-detectron-model-evaluate",
+      "package": "./packages/plugins/model-evaluate/object-detection-detectron-model-evaluate",
       "params": {}
     }
   }
 }
+```
+
+remove pipeline via pipeline id or `all`, this operation will remove jobs which belong to the pipeline too:
+
+```sh
+$ pipcook pipeline remove 42lw3pir   
+? 1 job which belong to the pipeline will be removed too, continue? Yes
+ℹ 1 job removed.
+```
+
+```sh
+$ pipcook pipeline remove all
+? 1 job which belong to the pipeline will be removed too, continue? Yes
+ℹ 1 jobs removed.
+✔ all pipelines removed.
 ```
 
 ## Plugins Management
@@ -116,16 +131,36 @@ First, get the installed list through the `list` subcommand:
 
 ```sh
 $ pipcook plugin list
-┌─────────┬───────────────────────────────────────────────────────────────────┬──────────┬─────────────────┬──────────┐
-│ (index) │                               name                                │ version  │    category     │ datatype │
-├─────────┼───────────────────────────────────────────────────────────────────┼──────────┼─────────────────┼──────────┤
-│    0    │                '@pipcook/plugins-csv-data-access'                 │ '0.5.9'  │  'dataAccess'   │  'text'  │
-│    1    │              '@pipcook/plugins-bayesian-model-train'              │ '0.5.10' │  'modelTrain'   │  'text'  │
-│    2    │            '@pipcook/plugins-bayesian-model-evaluate'             │ '0.5.10' │ 'modelEvaluate' │  'text'  │
-│    3    │                '@pipcook/plugins-csv-data-collect'                │ '0.5.9'  │  'dataCollect'  │  'text'  │
-│    4    │             '@pipcook/plugins-bayesian-model-define'              │ '0.5.10' │  'modelDefine'  │  'text'  │
-│    5    │               '@pipcook/plugins-mnist-data-collect'               │ '0.5.9'  │  'dataCollect'  │ 'image'  │
-└─────────┴───────────────────────────────────────────────────────────────────┴──────────┴─────────────────┴──────────┘
+┌─────────┬────────────┬────────────────────────────────────────────┬─────────┬─────────────────┬──────────┬─────────────┐
+│ (index) │     id     │                    name                    │ version │    category     │ datatype │   status    │
+├─────────┼────────────┼────────────────────────────────────────────┼─────────┼─────────────────┼──────────┼─────────────┤
+│    0    │ '6lfansw6' │    '@pipcook/plugins-csv-data-collect'     │ '1.1.0' │  'dataCollect'  │  'text'  │ 'installed' │
+│    1    │ 'mca2mysb' │     '@pipcook/plugins-csv-data-access'     │ '1.1.0' │  'dataAccess'   │  'text'  │ 'installed' │
+│    2    │ 'wbpggj0m' │  '@pipcook/plugins-bayesian-model-define'  │ '1.1.0' │  'modelDefine'  │  'text'  │ 'installed' │
+│    3    │ 'm65a6t7o' │  '@pipcook/plugins-bayesian-model-train'   │ '1.1.0' │  'modelTrain'   │  'text'  │ 'installed' │
+│    4    │ 'nz0iuobj' │ '@pipcook/plugins-bayesian-model-evaluate' │ '1.1.0' │ 'modelEvaluate' │  'text'  │ 'installed' │
+│    5    │ 'asdorgj1' │  '@pipcook/plugins-pascalvoc-data-access'  │ '1.1.0' │  'dataCollect'  │ 'image'  │ 'installed' │
+└─────────┴────────────┴────────────────────────────────────────────┴─────────┴─────────────────┴──────────┴─────────────┘
+```
+
+You can query a plugin detail:
+```sh
+$ pipcook plugin info 6lfansw6
+{
+  "id": "6lfansw6",
+  "name": "@pipcook/plugins-csv-data-collect",
+  "version": "1.1.0",
+  "category": "dataCollect",
+  "datatype": "text",
+  "namespace": null,
+  "dest": "/path/to/.pipcook/plugins/node_modules/@pipcook/plugins-csv-data-collect@1.1.0",
+  "sourceFrom": "npm",
+  "sourceUri": "https://registry.npmjs.com/@pipcook/plugins-csv-data-collect",
+  "status": 1,
+  "error": null,
+  "createdAt": "2020-09-01T05:59:21.286Z",
+  "updatedAt": "2020-09-01T05:59:29.334Z"
+}
 ```
 
 Then you can uninstall the above plugin via the following:

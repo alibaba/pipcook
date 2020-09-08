@@ -7,6 +7,7 @@ on:
     - 'docker/**'
     - 'docs/**'
     - 'notebooks/**'
+    - '.github/markdown.yml'
   pull_request:
     branches:
     - master
@@ -14,6 +15,7 @@ on:
     - 'docker/**'
     - 'docs/**'
     - 'notebooks/**'
+    - '.github/markdown.yml'
 
 jobs:
   universal:
@@ -105,6 +107,9 @@ jobs:
       run: |
         ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
         ls ./output && rm -rf ./output
+    - name: remove pipelines
+      run: |
+        ./packages/cli/dist/bin/pipcook pipeline remove all -y
     - name: "pipcook plugin-dev"
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect

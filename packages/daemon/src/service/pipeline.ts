@@ -8,18 +8,18 @@ import * as createHttpError from 'http-errors';
 import {
   PipelineStatus,
   EvaluateResult,
-  PluginTypeI,
   compressTarFile,
   UniDataset,
   constants as CoreConstants,
   generateId,
-  PluginStatus
+  PluginStatus,
+  PluginTypeI
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 import { PipelineModel, PipelineModelStatic } from '../model/pipeline';
 import { JobModelStatic, JobModel } from '../model/job';
 import { PluginManager } from './plugin';
-import { LogObject } from './log-manager';
+import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { pluginQueue } from '../utils';
 import { PipelineDB } from '../runner/helper';
 
@@ -82,9 +82,9 @@ export class PipelineService {
     });
   }
 
-  async queryPipelines(opts?: QueryOptions): Promise<{rows: PipelineModel[], count: number}> {
+  async queryPipelines(opts?: QueryOptions): Promise<PipelineModel[]> {
     const { offset, limit } = opts || {};
-    return this.pipeline.findAndCountAll({
+    return this.pipeline.findAll({
       offset,
       limit,
       order: [
@@ -106,10 +106,10 @@ export class PipelineService {
 
   async removePipelines(): Promise<number> {
     const list = await this.queryPipelines();
-    await list.rows.map(async (pipeline: PipelineModel) => {
+    await list.map(async (pipeline: PipelineModel) => {
       await pipeline.destroy();
     });
-    return list.count;
+    return list.length;
   }
 
   async updatePipelineById(id: string, config: PipelineDB): Promise<PipelineModel> {
@@ -125,20 +125,26 @@ export class PipelineService {
     });
   }
 
+  async getJobsByPipelineId(pipelineId: string): Promise<JobModel[]> {
+    return this.job.findAll({
+      where: { pipelineId }
+    });
+  }
+
   async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobModel[]> {
     const where = {} as any;
     const { offset, limit } = opts || {};
     if (typeof filter.pipelineId === 'string') {
       where.pipelineId = filter.pipelineId;
     }
-    return (await this.job.findAndCountAll({
+    return this.job.findAll({
       offset,
       limit,
       where,
       order: [
         [ 'createdAt', 'DESC' ]
       ]
-    })).rows;
+    });
   }
 
   async removeJobs(): Promise<number> {
@@ -153,11 +159,31 @@ export class PipelineService {
   async removeJobById(id: string): Promise<number> {
     const job = await this.job.findByPk(id);
     if (job) {
-      await job.destroy();
-      await fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`);
+      await Promise.all([
+        job.destroy(),
+        fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
+      ]);
       return 1;
     }
     return 0;
+  }
+
+  async removeJobByModels(jobs: JobModel[]): Promise<number> {
+    const ids = jobs.map(job => job.id);
+    const fsRemoveFutures = [];
+    for (const id of ids) {
+      fsRemoveFutures.push(fs.remove(`${CoreConstants.PIPCOOK_RUN}/${id}`));
+    }
+    const deleteFuture = this.job.destroy({
+      where: {
+        id: ids
+      }
+    });
+    const results = await Promise.all([
+      deleteFuture,
+      Promise.all(fsRemoveFutures)
+    ]);
+    return results[0];
   }
 
   async createJob(pipelineId: string): Promise<JobModel> {
@@ -200,8 +226,8 @@ export class PipelineService {
     return plugins;
   }
 
-  async startJob(job: JobModel, pipeline: PipelineModel, plugins: Partial<Record<PluginTypeI, PluginInfo>>, logger: LogObject): Promise<void> {
-    const runnable = await this.pluginManager.createRunnable(job.id, logger);
+  async startJob(job: JobModel, pipeline: PipelineModel, plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<void> {
+    const runnable = await this.pluginManager.createRunnable(job.id, tracer);
     // save the runnable object
     runnableMap[job.id] = runnable;
 
@@ -218,10 +244,25 @@ export class PipelineService {
         throw new TypeError(`"${name}" plugin is required`);
       }
     };
-
+    const dispatchJobEvent = (jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end') => {
+      const jobEvent = new JobStatusChangeEvent(
+        jobStatus,
+        step,
+        stepAction
+      );
+      tracer.dispatch(jobEvent);
+    };
+    const run = async (type: PluginTypeI, ...args: any[]) => {
+      const plugin = plugins[type].plugin;
+      dispatchJobEvent(PipelineStatus.RUNNING, type, 'start');
+      const result = await runnable.start(plugin, ...args);
+      dispatchJobEvent(PipelineStatus.RUNNING, type, 'end');
+      return result;
+    };
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
     await job.save();
+    dispatchJobEvent(PipelineStatus.RUNNING);
     try {
       verifyPlugin('dataCollect');
       const dataDir = path.join(this.pluginManager.datasetRoot, `${plugins.dataCollect.plugin.name}@${plugins.dataCollect.plugin.version}`);
@@ -231,25 +272,25 @@ export class PipelineService {
       await fs.ensureDir(modelPath);
 
       // run dataCollect to download dataset.
-      await runnable.start(plugins.dataCollect.plugin, getParams(plugins.dataCollect.params, {
+      await run('dataCollect', getParams(plugins.dataCollect.params, {
         dataDir
       }));
 
       verifyPlugin('dataAccess');
-      const dataset = await runnable.start(plugins.dataAccess.plugin, getParams(plugins.dataAccess.params, {
+      const dataset = await run('dataAccess', getParams(plugins.dataAccess.params, {
         dataDir
       }));
 
       let datasetProcess: PluginPackage;
       if (plugins.datasetProcess) {
         datasetProcess = plugins.datasetProcess.plugin;
-        await runnable.start(plugins.datasetProcess.plugin, dataset, getParams(plugins.datasetProcess.params));
+        await run('datasetProcess', dataset, getParams(plugins.datasetProcess.params));
       }
 
       let dataProcess: PluginPackage;
       if (plugins.dataProcess) {
         dataProcess = plugins.dataProcess.plugin;
-        await runnable.start(plugins.dataProcess.plugin, dataset, getParams(plugins.dataProcess.params));
+        await run('dataProcess', dataset, getParams(plugins.dataProcess.params));
       }
 
       let model: RunnableResponse;
@@ -258,23 +299,23 @@ export class PipelineService {
       // select one of `ModelDefine` and `ModelLoad`.
       if (plugins.modelDefine) {
         modelPlugin = plugins.modelDefine.plugin;
-        model = await runnable.start(plugins.modelDefine.plugin, dataset, getParams(plugins.modelDefine.params));
+        model = await run('modelDefine', dataset, getParams(plugins.modelDefine.params));
       } else if (plugins.modelLoad) {
         modelPlugin = plugins.modelLoad.plugin;
-        model = await runnable.start(plugins.modelLoad.plugin, dataset, getParams(plugins.modelLoad.params, {
+        model = await run('modelLoad', dataset, getParams(plugins.modelLoad.params, {
           // specify the recover path for model loader by default.
           recoverPath: modelPath
         }));
       }
 
       if (plugins.modelTrain) {
-        model = await runnable.start(plugins.modelTrain.plugin, dataset, model, getParams(plugins.modelTrain.params, {
+        model = await run('modelTrain', dataset, model, getParams(plugins.modelTrain.params, {
           modelPath
         }));
       }
 
       verifyPlugin('modelEvaluate');
-      const output = await runnable.start(plugins.modelEvaluate.plugin, dataset, model, getParams(plugins.modelEvaluate.params, {
+      const output = await run('modelEvaluate', dataset, model, getParams(plugins.modelEvaluate.params, {
         modelDir: modelPath
       }));
 
@@ -300,11 +341,15 @@ export class PipelineService {
       });
 
       await job.save();
+      dispatchJobEvent(PipelineStatus.SUCCESS);
     } catch (err) {
       if (!runnable.canceled) {
         job.status = PipelineStatus.FAIL;
         job.error = err.message;
         await job.save();
+        dispatchJobEvent(PipelineStatus.FAIL);
+      } else {
+        dispatchJobEvent(PipelineStatus.CANCELED);
       }
       throw err;
     } finally {
@@ -399,12 +444,23 @@ export class PipelineService {
     }
   }
 
-  async runJob(job: JobModel, pipeline: PipelineModel, plugins: Partial<Record<PluginTypeI, PluginInfo>>, log: LogObject): Promise<void> {
+  async runJob(job: JobModel,
+               pipeline: PipelineModel,
+               plugins: Partial<Record<PluginTypeI, PluginInfo>>,
+               tracer: Tracer): Promise<void> {
     job.status = PipelineStatus.PENDING;
     await job.save();
     return new Promise((resolve, reject) => {
+      let queueLength = pluginQueue.length;
+      const queueReporter = () => {
+        tracer.dispatch(new JobStatusChangeEvent(PipelineStatus.PENDING, undefined, undefined, --queueLength));
+      };
+      if (queueLength > 0) {
+        pluginQueue.on('success', queueReporter);
+      }
       pluginQueue.push((cb) => {
-        this.startJob(job, pipeline, plugins, log).then(() => {
+        pluginQueue.removeListener('success', queueReporter);
+        this.startJob(job, pipeline, plugins, tracer).then(() => {
           resolve();
           cb();
         }).catch((err) => {

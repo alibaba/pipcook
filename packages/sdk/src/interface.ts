@@ -1,4 +1,5 @@
 // TODO: move these defines to core or somewhere to share with daemon
+import { PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
 
 /**
  * `/api/versions` response
@@ -121,6 +122,13 @@ export interface LogEvent {
   // log content
   data: string;
 }
+
+export interface JobStatusChangeEvent {
+  jobStatus: PipelineStatus;
+  step?: PluginTypeI;
+  stepAction?: 'start' | 'end';
+}
+
 
 export interface PluginListParams {
   datatype?: string;
