@@ -47,7 +47,7 @@ export class JobController extends BaseEventController {
       });
       this.ctx.success({ ...(job.toJSON() as JobResp), traceId: tracer.id });
     } else {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'not pipeline found');
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no pipeline found');
     }
   }
 
