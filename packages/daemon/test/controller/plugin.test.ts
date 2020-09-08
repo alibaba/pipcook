@@ -1,8 +1,6 @@
 import { app, assert } from 'midway-mock/bootstrap';
 import { mm } from 'midway-mock/dist/mock';
 import * as fs from 'fs-extra';
-import * as FormData from 'form-data';
-import { promisify } from 'util';
 
 describe('test plugin controller', () => {
   const name = '@pipcook/plugins-image-classification-data-collect';
@@ -93,13 +91,16 @@ describe('test plugin controller', () => {
   });
 
   it('should upload plugin', async () => {
-    const form = new FormData();
-    form.append('file', fs.createReadStream(`${__dirname}/../../../../logo.png`));
-    const getLength = promisify(form.getLength.bind(form));
-    const length = await getLength();
-    const headers = Object.assign({ 'Content-Length': length }, form.getHeaders());
-    
-    app.mockClassFunction('pluginManager', 'installFromTarStream', async (tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<any> => {
+    // const form = new FormData();
+    // form.append('file', fs.createReadStream(`${__dirname}/../../../../logo.png`));
+    // const getLength = promisify(form.getLength.bind(form));
+    // const length = await getLength();
+    // const headers = Object.assign({ 'Content-Length': length }, form.getHeaders());
+
+    app.mockClassFunction(
+      'pluginManager',
+      'installFromTarStream',
+      async (tarball: NodeJS.ReadableStream, pyIndex?: string, force?: boolean): Promise<any> => {
       assert.equal(pyIndex, 'pyindex.com');
       assert.equal(force, false);
       return undefined;
@@ -107,11 +108,9 @@ describe('test plugin controller', () => {
     return app
       .httpRequest()
       .post('/api/plugin/tarball')
-      .set(headers)
-      .field({
-        file: fs.createReadStream(`${__dirname}/../../../../logo.png`),
-        pyIndex: 'pyindex.com'
-      })
+      // .set(headers)
+      .field('pyIndex', 'pyindex.com')
+      .attach('file', fs.createReadStream(`${__dirname}/../../../../logo.png`))
       .expect(204);
   });
 

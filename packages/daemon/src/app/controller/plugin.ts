@@ -117,7 +117,6 @@ export class PluginController extends BaseEventController {
   @post('/tarball')
   public async uploadPackage() {
     const fstream = await this.ctx.getFileStream();
-    console.log('fstream.fields', fstream.fields);
     const { pyIndex } = fstream.fields;
     const installResp = await this.pluginManager.installFromTarStream(fstream, pyIndex, false);
     this.ctx.success(installResp);
