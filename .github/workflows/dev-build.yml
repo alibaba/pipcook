@@ -1,4 +1,4 @@
-name: dev-build
+name: esBuild
 on:
   push:
     branches:
@@ -20,69 +20,24 @@ on:
 
 jobs:
   universal:
-    name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    name: Build with esBuild
     if: ${{ github.event_name == 'push' || github.event.pull_request.draft == false }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     timeout-minutes: 30
-    strategy:
-      matrix:
-        node_version: ['14']
-        os: [ubuntu-latest]
     steps:
     - uses: actions/checkout@v2
   
-    - name: Using Node.js ${{ matrix.node_version }}
+    - name: Using Node.js 14
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node_version }}
-    - name: Building Pipcook
+        node-version: 14
+    - name: Installing Pipcook
       run: |
         npm install
-        npm run build
+    - name: Building Pipcook
+      run: |
         npm run dev-build
-        npm run init-dev
-        du -h -d 1
     - name: Running unit tests
       run: |
+        npm run init-dev
         npm test
-    - name: daemon start
-      run: |
-        ./packages/cli/dist/bin/pipcook daemon start
-    - name: Testing help commands
-      run: |
-        ./packages/cli/dist/bin/pipcook -v
-        ./packages/cli/dist/bin/pipcook -h
-        ./packages/cli/dist/bin/pipcook init --help
-        ./packages/cli/dist/bin/pipcook run --help
-        ./packages/cli/dist/bin/pipcook plugin-dev --help
-        ./packages/cli/dist/bin/pipcook serve --help
-    - name: pipcook sdk test
-      run: |
-        npx ts-node ./run_tests.ts
-    - name: install plugins from specific pipeline
-      run: |
-        ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/chinese-poem-creation.json
-        ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
-    - name: Running an example pipeline
-      run: |
-        npm run test:pipeline -- text-bayes-classification
-    - name: install a new plugin and install a installed plugin
-      run: |
-        ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
-        ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
-    - name: pipcook run from local filename
-      run: |
-        ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
-        ls ./output && rm -rf ./output
-        ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json --output mydir
-        ls ./mydir && rm -rf ./mydir
-    - name: pipcook run from url
-      run: |
-        ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
-        ls ./output && rm -rf ./output
-    - name: remove pipelines
-      run: |
-        ./packages/cli/dist/bin/pipcook pipeline remove all -y
-    - name: "pipcook plugin-dev"
-      run: |
-        ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
