@@ -161,17 +161,6 @@ describe('test job controller', () => {
       .expect(204);
   });
 
-  it('cancel job with error', () => {
-    app.mockClassFunction('pipelineService', 'stopJob', async (id: string) => {
-      assert.equal(id, 'id');
-      throw new TypeError('mock error');
-    });
-    return app
-      .httpRequest()
-      .post('/api/job/id/cancel')
-      .expect(500);
-  });
-
   it('should get job log by id', () => {
     const logs = [
       '1', 

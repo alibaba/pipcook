@@ -1,4 +1,4 @@
-import { app } from 'midway-mock/bootstrap';
+import { app, assert } from 'midway-mock/bootstrap';
 
 
 describe('test base controller', () => {
@@ -16,5 +16,15 @@ describe('test base controller', () => {
       .get('/api/pipeline/event/id')
       .expect('Content-Type', /text/)
       .expect(200);
+  });
+  it('throw 500', () => {
+    app.mockClassFunction('pipelineService', 'stopJob', async (id: string) => {
+      assert.equal(id, 'id');
+      throw new TypeError('mock error');
+    });
+    return app
+      .httpRequest()
+      .post('/api/job/id/cancel')
+      .expect(500);
   });
 });
