@@ -4,6 +4,7 @@
   "description": "pipcook daemon",
   "dependencies": {
     "@pipcook/app": "^1.2.0",
+    "@pipcook/boa": "^1.2.0",
     "@pipcook/costa": "^1.2.0",
     "@pipcook/pipcook-core": "^1.2.0",
     "axios": "^0.18.1",
@@ -61,7 +62,8 @@
     "test": "midway-bin test --ts --full-trace",
     "migration": "sequelize-cli db:migrate",
     "migration:undo": "sequelize-cli db:migrate:undo",
-    "benchmark": "node benchmark/bootstrap.js"
+    "benchmark": "node benchmark/bootstrap.js",
+    "postinstall": "python3 -m pip install pipcook-tvm"
   },
   "ci": {
     "version": "10"
