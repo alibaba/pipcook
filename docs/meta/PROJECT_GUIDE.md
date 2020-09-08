@@ -17,6 +17,10 @@ The **plugin** plays an important role in this project, pipeline does schedule s
 - **SHOULD** have `tsdoc/jsdoc` annotations or HTML version for API references.
 - **SHOULD** have unit tests for code quality.
 
+### Develop Environment 
+
+This project uses `yarn` to develop, for more details about `yarn` please refer to this [link](https://yarnpkg.com/).
+
 ### Release Lifecycle
 
 Pipcook uses [semver][] for release management, therefore the release generally refers to "Major", "Minor", and "Patch".
