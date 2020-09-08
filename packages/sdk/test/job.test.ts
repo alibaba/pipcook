@@ -5,7 +5,9 @@ import { ReadStream } from 'fs-extra';
 
 describe('test job apis', () => {
   const pipcook = new PipcookClient();
-
+  afterEach(() => {
+    sinon.restore();
+  })
   it('should call get output download url by id', async () => {
     expect(pipcook.job.getOutputDownloadURL('myid'))
       .toBe(`${pipcook.endpoint}/job/myid/output`);
