@@ -29,7 +29,7 @@ export class PluginController extends BaseEventController {
    */
   @put()
   public async reinstall() {
-    const { name, pyIndex } = this.ctx.query;
+    const { name, pyIndex } = this.ctx.request.body;
     debug(`checking info: ${name}.`);
     const response = await this.pluginManager.installByName(name, pyIndex, true);
     this.ctx.success(response);
@@ -40,16 +40,12 @@ export class PluginController extends BaseEventController {
    */
   @del('/:id')
   public async remove() {
-    if (typeof this.ctx.params.id === 'string' && this.ctx.params.id) {
-      const plugin = await this.pluginManager.findById(this.ctx.params.id);
-      if (plugin) {
-        await this.pluginManager.uninstall(plugin);
-        this.ctx.success();
-      } else {
-        this.ctx.throw(HttpStatus.NOT_FOUND, `no plugin found by id ${this.ctx.params.id}`);
-      }
+    const plugin = await this.pluginManager.findById(this.ctx.params.id);
+    if (plugin) {
+      await this.pluginManager.uninstall(plugin);
+      this.ctx.success();
     } else {
-      this.ctx.throw(HttpStatus.BAD_REQUEST, 'no id value found');
+      this.ctx.throw(HttpStatus.NOT_FOUND, `no plugin found by id ${this.ctx.params.id}`);
     }
   }
 
@@ -121,6 +117,7 @@ export class PluginController extends BaseEventController {
   @post('/tarball')
   public async uploadPackage() {
     const fstream = await this.ctx.getFileStream();
+    console.log('fstream.fields', fstream.fields);
     const { pyIndex } = fstream.fields;
     const installResp = await this.pluginManager.installFromTarStream(fstream, pyIndex, false);
     this.ctx.success(installResp);

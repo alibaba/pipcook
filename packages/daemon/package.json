@@ -35,6 +35,7 @@
     "@types/request-promise": "^4.1.46",
     "cross-env": "^6.0.0",
     "egg-ci": "^1.8.0",
+    "form-data": "^3.0.0",
     "midway-bin": "1",
     "midway-mock": "1",
     "sinon": "^9.0.3",
