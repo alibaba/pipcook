@@ -55,13 +55,8 @@ jobs:
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
           git add .
-<<<<<<< HEAD
-          git commit -m "bump version"
-          yarn release
-=======
           git commit -m "bump version" --allow-empty
-          npm run release
->>>>>>> master
+          yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
