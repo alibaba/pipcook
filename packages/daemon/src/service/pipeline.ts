@@ -107,7 +107,7 @@ export class PipelineService {
   async removePipelines(): Promise<number> {
     const list = await this.queryPipelines();
     await Promise.all(list.map(async (pipeline: PipelineModel) => {
-      await pipeline.destroy();
+      return pipeline.destroy();
     }));
     return list.length;
   }
