@@ -1,7 +1,7 @@
 import { get, getFile, del, post } from './request';
 import { BaseApi } from './base';
 import { JobResp, TraceResp, JobListFilter, FileDownloadResp } from './interface';
-import * as ContentDisposition from 'content-disposition';
+import { parse } from 'content-disposition';
 /**
  * Job API object.
  */
@@ -73,7 +73,7 @@ export class Job extends BaseApi {
   async downloadOutput(id: string): Promise<FileDownloadResp> {
     const resp = await getFile(`${this.route}/${id}/output`);
     // header['content-disposition'] value looks like: 'attachment; filename="pipcook-output-u9fo9dlt.tar.gz"'
-    let filename = ContentDisposition.parse(resp.headers['content-disposition']).parameters['filename'] || 'output.tar.gz';
+    const filename = parse(resp.headers['content-disposition']).parameters['filename'] || 'output.tar.gz';
     const mimeType = resp.headers['content-type'];
     return { filename, mimeType, totalBytes: resp.totalBytes, stream: resp.stream };
   }
