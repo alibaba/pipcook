@@ -10,6 +10,8 @@ Before starting the installation, please make sure the following environments ar
 - macOS, Linux
 - Node.js 12
 
+**Note:** To use `wasm` output format, you need to manually install [`emsdk`](https://emscripten.org/docs/introducing_emscripten/index.html) and export the `emcc` and `emsdk` to the environmental variable.
+
 ## Install via NPM
 
 Installing [Pipcook][] via NPM is easy, just run:
