@@ -23,7 +23,8 @@ jobs:
           echo {\"registry.cn-hangzhou.aliyuncs.com\": {\"username\": \"$ALI_DOCKER_USERNAME\", \"password\": \"$ALI_DOCKER_PASSWORD\"} \
           , \"registry.hub.docker.com\": {\"username\":\"$DOCKER_USERNAME\", \"password\":\"$DOCKER_PASSWORD\"}} >> auth.json
 
-          echo {\"pipcook/pipcook:latest\": \"registry.cn-hangzhou.aliyuncs.com/pipcook/pipcook:latest,$RELEASE_VERSION\"} >> images.json
+          echo {\"pipcook/pipcook:latest\": \"registry.cn-hangzhou.aliyuncs.com/pipcook/pipcook:latest\", \
+          \"pipcook/pipcook:$RELEASE_VERSION\": \"registry.cn-hangzhou.aliyuncs.com/pipcook/pipcook:$RELEASE_VERSION\"} >> images.json
 
           ./image-syncer --auth=./auth.json --images=./images.json --namespace=pipcook --registry=registry.cn-hangzhou.aliyuncs.com --retries=3
           
