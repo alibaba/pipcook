@@ -10,13 +10,14 @@ test('keyword arguments throws', t => {
   t.end();
 });
 
-test('hash function', t => {
+test('magic methods', t => {
   t.ok(builtins.__hash__());
   t.equal(builtins['__notexists__'], undefined);
 
   const mlist = builtins.list([1, 3, 5]);
   t.strictEqual(JSON.stringify({ foobar: mlist }),
                 '{"foobar":[1,3,5]}');
+
   mlist[0] = 2;
   mlist[1] = 4;
   t.strictEqual(mlist[0], 2);
