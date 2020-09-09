@@ -176,7 +176,7 @@ export class PluginRunnable {
       return;
     }
     this.canceled = true;
-    this.send(PluginOperator.WRITE, { event: 'destroy' });
+    this.handle.kill('SIGHUP');
     return new Promise((resolve) => {
       this.ondestroyed = resolve;
     });

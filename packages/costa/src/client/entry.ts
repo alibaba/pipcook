@@ -135,15 +135,6 @@ async function emitStart(message: PluginMessage): Promise<void> {
 }
 
 /**
- * Emits a destroy event, it exits the current client process.
- */
-async function emitDestroy(): Promise<void> {
-  clientId = null;
-  handshaked = false;
-  process.exit(0);
-}
-
-/**
  * Gets the response by a result.
  * @param message
  */
@@ -179,8 +170,6 @@ const handlers: MessageHandler = {
     debug(`receive an event write.${event}`);
     if (event === 'start') {
       emitStart(proto.message);
-    } else if (event === 'destroy') {
-      emitDestroy();
     }
   },
   /**

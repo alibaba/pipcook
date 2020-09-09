@@ -110,4 +110,22 @@ describe('start runnable in normal way', () => {
     const list = await readdir(costa.options.componentDir);
     expect(list.length).toBe(1);
   });
+
+  it('should start a nodejs plugin and loop 5 seconds', async () => {
+    runnable = new PluginRunnable(costa);
+    await runnable.bootstrap({});
+    const stdoutStream = new StringWritable();
+    const stderrStream = new StringWritable();
+    const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/nodejs-simple'));
+    await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream});
+    setTimeout(() => {
+      runnable.destroy();
+    }, 1000);
+    const start = Date.now();
+    try {
+      await runnable.start(simple, { foobar: true, exitAfter: 5 });
+    } catch (err) {
+    }
+    expect(Date.now() - start < 5000);
+  });
 });
