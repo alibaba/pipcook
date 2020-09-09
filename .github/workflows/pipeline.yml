@@ -30,3 +30,8 @@ jobs:
         ./packages/cli/dist/bin/pipcook daemon start
     - name: pipeline
       run: npm run test:pipeline -- ${{ matrix.pipeline }}
+    - name: wasm export pipeline:
+      run: |
+        ./packages/cli/dist/bin/pipcook daemon stop
+        export WASM=1
+        ./packages/cli/dist/bin/pipcook run ./example/pipelines/databinding-image-classification-mobilenet.json

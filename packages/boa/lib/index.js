@@ -332,6 +332,10 @@ function _internalWrap(T, src={}) {
       writable: false,
       value: () => T.__hash__(),
     },
+    __getattr__: {
+      configurable: true,
+      value: (k) => wrap(T.__getattr__(k)),
+    }
   });
 
   // Create the proxy object for handlers
