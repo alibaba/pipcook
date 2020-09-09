@@ -10,8 +10,9 @@ class StringWritable extends Writable {
     super();
   }
 
-  _write(chunk: any): void {
+  _write(chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
     this.data += chunk;
+    callback();
   }
 }
 
@@ -24,6 +25,10 @@ describe('start runnable in normal way', () => {
   };
   const costa = new CostaRuntime(opts);
   let runnable: PluginRunnable;
+  let logger = {
+    stdout: new StringWritable(),
+    stderr: new StringWritable()
+  };
   it('perpare', async () => {
     await Promise.all([
       remove(opts.installDir),
@@ -38,7 +43,7 @@ describe('start runnable in normal way', () => {
   });
 
   it('should create a new runnable', () => {
-    runnable = new PluginRunnable(costa);
+    runnable = new PluginRunnable(costa, logger);
     expect(runnable.workingDir).toBeInstanceOf(String);
     expect(runnable.state).toBe('init');
   });
@@ -50,13 +55,11 @@ describe('start runnable in normal way', () => {
 
   let tmp: any;
   it('should start a nodejs plugin', async () => {
-    const stdoutStream = new StringWritable();
-    const stderrStream = new StringWritable();
     const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/nodejs-simple'));
-    await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream});
+    await costa.install(simple, process);
     tmp = await runnable.start(simple, { foobar: true });
-    const stdout = stdoutStream.data;
-    expect(stdout.search('{ foobar: true }') !== 0).toBe(true);
+    const stdoutString = logger.stdout.data.toString();
+    expect(stdoutString.indexOf('{ foobar: true }') >= 0).toBe(true);
   });
 
   it('should start a python plugin', async () => {
@@ -69,21 +72,19 @@ describe('start runnable in normal way', () => {
       path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa')
     );
     const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-simple'));
-    const stdoutStream = new StringWritable();
-    const stderrStream = new StringWritable();
-    await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream });
+    await costa.install(simple, process);
     expect(simple.pipcook.runtime).toBe('python');
     // test passing the variable from js to python.
     const tmp2 = await runnable.start(simple, tmp);
-    const stdout = stdoutStream.data;
-    expect(stdout.search('hello python!') !== 0).toBe(true);
-    expect(stdout.search('fn1([0. 0.])') !== 0).toBe(true);
-    expect(stdout.search('fn2()') !== 0).toBe(true);
+    const stdout = logger.stdout.data.toString();
+    expect(stdout.indexOf('hello python!') >= 0).toBe(true, 'hello python check failed');
+    expect(stdout.indexOf('fn1([0. 0.])') >= 0).toBe(true, 'fn1 check failed');
+    expect(stdout.indexOf('fn2()') >= 0).toBe(true, 'fn2 check failed');
 
     // test passing the variable from python to python.
     await runnable.start(simple, tmp2);
-    const stdout2 = stdoutStream.data;
-    expect(stdout2.search('hello python! [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]') !== 0).toBe(true);
+    const stdout2 = logger.stdout.data;
+    expect(stdout2.indexOf('hello python! [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]') >= 0).toBe(true, 'stdout2 check failed');
   });
 
   it('should start a python plugin with scope package name', async () => {
@@ -96,13 +97,11 @@ describe('start runnable in normal way', () => {
       path.join(__dirname, './plugins/python-scope/node_modules/@pipcook/boa')
     );
     const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-scope'));
-    const stdoutStream = new StringWritable();
-    const stderrStream = new StringWritable();
-    await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream });
+    await costa.install(simple, process);
     // test if the plugin is executed successfully
     await runnable.start(simple, tmp);
-    const stdout = stdoutStream.data;
-    expect(stdout.search('hello python!') !== 0).toBe(true);
+    const stdout = logger.stdout.data;
+    expect(stdout.indexOf('hello python!') !== 0).toBe(true);
   });
 
   it('should destroy the runnable', async () => {
@@ -111,20 +110,20 @@ describe('start runnable in normal way', () => {
     expect(list.length).toBe(1);
   });
 
-  it('should start a nodejs plugin and loop 5 seconds', async () => {
-    runnable = new PluginRunnable(costa);
-    await runnable.bootstrap({});
-    const stdoutStream = new StringWritable();
-    const stderrStream = new StringWritable();
+  it('should destroy the runnable when it loops', async () => {
+    const logger = process;
+    const costa = new CostaRuntime(opts);
+    runnable = new PluginRunnable(costa, logger);
+    await runnable.bootstrap({ logger });
     const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/nodejs-simple'));
-    await costa.install(simple, { stdout: stdoutStream, stderr: stderrStream});
+    await costa.install(simple, logger);
     setTimeout(() => {
       runnable.destroy();
     }, 1000);
     const start = Date.now();
-    expect(() => {
-      runnable.start(simple, { foobar: true, exitAfter: 5 });
-    }).toThrowError();
-    expect(Date.now() - start < 5000);
+    await expectAsync(runnable.start(simple, { foobar: true, exitAfter: 5 })).toBeRejected();
+    const cost = Date.now() - start;
+    expect(cost < 5000);
+    console.log(`child process exited after ${cost}ms`);
   });
 });
