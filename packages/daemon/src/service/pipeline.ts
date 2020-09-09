@@ -1,7 +1,6 @@
 import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { Op } from 'sequelize';
 import { provide, inject } from 'midway';
 import * as HttpStatus from 'http-status';
 import * as createHttpError from 'http-errors';
@@ -11,22 +10,16 @@ import {
   compressTarFile,
   UniDataset,
   constants as CoreConstants,
-  generateId,
   PluginStatus,
   PluginTypeI
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
-import { PipelineModel, PipelineEntity } from '../model/pipeline';
+import { PipelineModel, PipelineEntity, QueryOptions } from '../model/pipeline';
 import { JobModel, JobEntity } from '../model/job';
 import { PluginManager } from './plugin';
 import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { pluginQueue } from '../utils';
 import { UpdateParameter } from '../interface/pipeline';
-
-interface QueryOptions {
-  limit: number;
-  offset: number;
-}
 
 interface SelectJobsFilter {
   pipelineId?: string;
@@ -63,108 +56,60 @@ export class PipelineService {
   @inject('pluginManager')
   pluginManager: PluginManager;
 
-  // FIXME(feely): change to IPipelineModel
   async createPipeline(config: PipelineEntity): Promise<PipelineEntity> {
-    if (typeof config.id !== 'string') {
-      config.id = generateId();
-    }
-    return (await PipelineModel.create(config))?.toJSON() as PipelineEntity;
+    return PipelineModel.createPipeline(config);
   }
 
   async getPipeline(idOrName: string): Promise<PipelineEntity> {
-    return (await PipelineModel.findOne({
-      where: { [Op.or]: [ { id: idOrName }, { name: idOrName } ] }
-    }))?.toJSON() as PipelineEntity;
+    return PipelineModel.getPipeline(idOrName);
   }
 
   async queryPipelines(opts?: QueryOptions): Promise<PipelineEntity[]> {
-    const { offset, limit } = opts || {};
-    return (await PipelineModel.findAll({
-      offset,
-      limit,
-      order: [
-        [ 'createdAt', 'DESC' ]
-      ],
-      include: [
-        {
-          all: true
-        }
-      ]
-    })).map(pipeline => pipeline.toJSON() as PipelineEntity);
+    return PipelineModel.queryPipelines(opts);
   }
 
   async removePipelineById(id: string): Promise<number> {
-    return PipelineModel.destroy({
-      where: { id }
-    });
+    return PipelineModel.removePipelineById(id);
   }
 
   async removePipelines(): Promise<number> {
-    const list = await this.queryPipelines();
-    await list.map(async (pipeline) => {
-      await this.removePipelineById(pipeline.id);
-    });
-    return list.length;
+    return PipelineModel.removePipelines();
   }
 
   async updatePipelineById(id: string, config: UpdateParameter): Promise<PipelineEntity> {
-    await PipelineModel.update(config, {
-      where: { id }
-    });
-    return this.getPipeline(id);
-  }
-
-  async getJobById(id: string): Promise<JobEntity> {
-    return (await JobModel.findOne({
-      where: { id }
-    }))?.toJSON() as JobEntity;
-  }
-
-  async saveJob(job: JobEntity): Promise<void> {
-    JobModel.update(job, { where: { id: job.id } });
-  }
-
-  async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
-    return (await JobModel.findAll({
-      where: { pipelineId }
-    })).map(job => job.toJSON() as JobEntity);
-  }
-
-  async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobEntity[]> {
-    const where = {} as any;
-    const { offset, limit } = opts || {};
-    if (typeof filter.pipelineId === 'string') {
-      where.pipelineId = filter.pipelineId;
-    }
-    return (await JobModel.findAll({
-      offset,
-      limit,
-      where,
-      order: [
-        [ 'createdAt', 'DESC' ]
-      ]
-    })).map(job => job.toJSON() as JobEntity);
-  }
-
-  async removeJobs(): Promise<number> {
-    const jobs = await this.queryJobs({});
-    await jobs.map(async (job: JobEntity) => {
-      await this.removeJobById(job.id);
-      fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`);
-    });
-    return jobs.length;
+    return PipelineModel.updatePipelineById(id, config);
   }
 
   async removeJobById(id: string): Promise<number> {
-    const job = await this.getJobById(id);
+    const job = await JobModel.getJobById(id);
     if (job) {
       await Promise.all([
-        this.removeJobById(job.id),
+        JobModel.removeJobById(job.id),
         fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
       ]);
       return 1;
     }
     return 0;
+  }
+
+  async getJobById(id: string): Promise<JobEntity> {
+    return JobModel.getJobById(id);
+  }
+
+  async saveJob(job: JobEntity): Promise<void> {
+    JobModel.saveJob(job);
+  }
+
+  async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
+    return JobModel.getJobsByPipelineId(pipelineId);
+  }
+
+  async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobEntity[]> {
+    return JobModel.queryJobs(filter, opts);
+  }
+
+  async removeJobs(): Promise<number> {
+    return JobModel.destroy({ truncate: true });
   }
 
   async removeJobByModels(jobs: JobEntity[]): Promise<number> {
@@ -173,28 +118,16 @@ export class PipelineService {
     for (const id of ids) {
       fsRemoveFutures.push(fs.remove(`${CoreConstants.PIPCOOK_RUN}/${id}`));
     }
-    const deleteFuture = JobModel.destroy({
-      where: {
-        id: ids
-      }
-    });
+    const deleteFuture = JobModel.removeJobByModels(jobs);
     const results = await Promise.all([
       deleteFuture,
       Promise.all(fsRemoveFutures)
     ]);
     return results[0];
   }
-
   async createJob(pipelineId: string): Promise<JobEntity> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
-    const job = await JobModel.create({
-      id: generateId(),
-      pipelineId,
-      specVersion,
-      status: PipelineStatus.INIT,
-      currentIndex: -1
-    });
-    return job.toJSON() as JobEntity;
+    return JobModel.createJob(pipelineId, specVersion);
   }
 
   async fetchPlugins(pipeline: PipelineEntity): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
@@ -339,13 +272,13 @@ export class PipelineService {
         template: 'node' // set node by default
       });
 
-      await this.saveJob(job);
+      await JobModel.saveJob(job);
       dispatchJobEvent(PipelineStatus.SUCCESS);
     } catch (err) {
       if (!runnable.canceled) {
         job.status = PipelineStatus.FAIL;
         job.error = err.message;
-        await this.saveJob(job);
+        await JobModel.saveJob(job);
         dispatchJobEvent(PipelineStatus.FAIL);
       } else {
         dispatchJobEvent(PipelineStatus.CANCELED);
@@ -358,7 +291,7 @@ export class PipelineService {
   }
 
   async stopJob(id: string): Promise<void> {
-    const job = await this.getJobById(id);
+    const job = await JobModel.getJobById(id);
     if (job && job.status === PipelineStatus.RUNNING) {
       const runnable = runnableMap[id];
       if (runnable) {
@@ -368,7 +301,7 @@ export class PipelineService {
         console.error(`no runnable found: ${id}`);
       }
       job.status = PipelineStatus.CANCELED;
-      await this.saveJob(job);
+      await JobModel.saveJob(job);
     } else {
       throw createHttpError(HttpStatus.BAD_REQUEST, 'job is not running');
     }

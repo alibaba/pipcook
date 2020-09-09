@@ -1,17 +1,11 @@
 import { provide, inject } from 'midway';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
-import { PluginStatus, generateId } from '@pipcook/pipcook-core';
+import { PluginStatus } from '@pipcook/pipcook-core';
 import { TraceManager, Tracer } from './trace-manager';
 import PluginRuntime from '../boot/plugin';
-import { PluginModel, PluginEntity } from '../model/plugin';
+import { PluginModel, PluginEntity, ListPluginsFilter } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
 import { pluginQueue } from '../utils';
-
-interface ListPluginsFilter {
-  datatype?: string;
-  category?: string;
-  name?: string;
-}
 
 @provide('pluginManager')
 export class PluginManager {
@@ -61,74 +55,43 @@ export class PluginManager {
   }
 
   async list(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
-    const where = {} as any;
-    if (filter?.category) {
-      where.category = filter.category;
-    }
-    if (filter?.datatype) {
-      where.datatype = filter.datatype;
-    }
-    if (filter?.name) {
-      where.name = filter.name;
-    }
-    return (await PluginModel.findAll({ where })).map(plugin => plugin.toJSON() as PluginEntity);
+    return PluginModel.list(filter);
   }
 
   async query(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
-    const where = {} as any;
-    if (filter.category) {
-      where.category = filter.category;
-    }
-    if (filter.datatype) {
-      where.datatype = filter.datatype;
-    }
-    return (await PluginModel.findAll({ where })).map(plugin => plugin.toJSON() as PluginEntity);
+    return PluginModel.query(filter);
   }
 
   async findById(id: string): Promise<PluginEntity> {
-    return (await PluginModel.findOne({ where: { id } }))?.toJSON() as PluginEntity;
+    return PluginModel.findById(id);
   }
 
   async findByIds(ids: string[]): Promise<PluginEntity[]> {
-    return (await PluginModel.findAll({ where: { id: ids } })).map(plugin => plugin.toJSON() as PluginEntity);
+    return this.findByIds(ids);
   }
   async findByName(name: string): Promise<PluginEntity> {
-    return (await PluginModel.findOne({ where: { name } }))?.toJSON() as PluginEntity;
+    return PluginModel.findByName(name);
   }
 
   async removeById(id: string): Promise<number> {
-    return PluginModel.destroy({ where: { id } });
+    return PluginModel.removeById(id);
   }
 
   async setStatusById(id: string, status: PluginStatus, errMsg?: string): Promise<number> {
-    const [ count ] = await PluginModel.update({
-      status,
-      error: errMsg
-    }, {
-      where: { id }
-    });
-    return count;
+    return PluginModel.setStatusById(id, status);
   }
 
   async findOrCreateByPkg(pkg: PluginPackage): Promise<PluginEntity> {
-    const [ plugin ] = await PluginModel.findOrCreate({
-      where: {
-        // TODO(feely): support the different versions of plugins
-        name: pkg.name
-      },
-      defaults: {
-        id: generateId(),
-        name: pkg.name,
-        version: pkg.version,
-        category: pkg.pipcook.category,
-        datatype: pkg.pipcook.datatype,
-        dest: pkg.pipcook.target.DESTPATH,
-        sourceFrom: pkg.pipcook.source.from,
-        sourceUri: pkg.pipcook.source.uri,
-        status: PluginStatus.INITIALIZED
-      }
+    return PluginModel.findOrCreateByParams({
+      name: pkg.name,
+      version: pkg.version,
+      category: pkg.pipcook.category,
+      datatype: pkg.pipcook.datatype,
+      dest: pkg.pipcook.target.DESTPATH,
+      sourceFrom: pkg.pipcook.source.from,
+      sourceUri: pkg.pipcook.source.uri,
+      status: PluginStatus.INITIALIZED
     });
-    return plugin?.toJSON() as PluginEntity;
   }
 
   async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {
