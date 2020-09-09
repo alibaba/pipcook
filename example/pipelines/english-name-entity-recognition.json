@@ -1,0 +1,31 @@
+{
+  "plugins": {
+    "dataCollect": {
+      "package": "@pipcook/plugins-csv-data-collect",
+      "params": {
+        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/english-ner/test-dataset.zip"
+      }
+    },
+    "dataAccess": {
+      "package": "@pipcook/plugins-csv-data-access",
+      "params": {
+        "labelColumn": "label"
+      }
+    },
+    "modelDefine": {
+      "package": "@pipcook/plugins-tensorflow-bert-ner-model-define",
+      "params": {
+        "gpus": false
+      }
+    },
+    "modelTrain": {
+      "package": "@pipcook/plugins-tensorflow-bert-ner-model-train",
+      "params": {
+        "epochs": 10
+      }
+    },
+    "modelEvaluate": {
+      "package": "@pipcook/plugins-tensorflow-bert-ner-model-evaluate"
+    }
+  }
+}
