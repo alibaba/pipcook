@@ -101,7 +101,7 @@ describe('start runnable in normal way', () => {
     // test if the plugin is executed successfully
     await runnable.start(simple, tmp);
     const stdout = logger.stdout.data;
-    expect(stdout.indexOf('hello python!') !== 0).toBe(true);
+    expect(stdout.indexOf('hello python!') >= 0).toBe(true);
   });
 
   it('should destroy the runnable', async () => {
