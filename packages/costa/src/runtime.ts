@@ -363,7 +363,12 @@ export class CostaRuntime {
         '--default-timeout=1000',
         `--cache-dir=${this.options.installDir}/.pip`
       ]);
-      return spawnAsync(`${envDir}/bin/pip3`, args, {}, stdio);
+      return spawnAsync(`${envDir}/bin/pip3`, args, {
+        env: {
+          pyIndex: opts.pyIndex,
+          cacheDir: `${this.options.installDir}/.pip`
+        }
+      }, stdio);
     } else {
       debug(`just skip the Python environment installation.`);
     }
