@@ -56,7 +56,7 @@
     "lint": "tslint -p tsconfig.json -t stylish",
     "ci": "npm run cov",
     "compile": "midway-bin build -c --port=6927",
-    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts --tsconfig=tsconfig.json --outdir=dist",
+    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts --format=cjs --tsconfig=tsconfig.json --outdir=dist",
     "clean": "rm -rf src/app/public",
     "test": "midway-bin test --ts --full-trace",
     "migration": "sequelize-cli db:migrate",
