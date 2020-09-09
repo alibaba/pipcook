@@ -67,7 +67,7 @@ export class PluginManager {
   }
 
   async findByIds(ids: string[]): Promise<PluginEntity[]> {
-    return this.findByIds(ids);
+    return PluginModel.findByIds(ids);
   }
   async findByName(name: string): Promise<PluginEntity> {
     return PluginModel.findByName(name);

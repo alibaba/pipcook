@@ -86,10 +86,13 @@ export class PipelineModel extends Model {
   }
 
   static async updatePipelineById(id: string, config: UpdateParameter): Promise<PipelineEntity> {
-    const [ number, pipelines ] = await PipelineModel.update(config, {
+    const [ number ] = await PipelineModel.update(config, {
       where: { id }
     });
-    return number > 0 ? pipelines[0].toJSON() as PipelineEntity : undefined;
+    if (number === 0) {
+      return undefined;
+    }
+    return (await PipelineModel.findByPk(id))?.toJSON() as PipelineEntity;
   }
 }
 
