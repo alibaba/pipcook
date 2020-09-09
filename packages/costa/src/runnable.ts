@@ -161,7 +161,6 @@ export class PluginRunnable {
     });
     this.state = 'idle';
 
-    console.log('resp', resp);
     // return if the result id is provided.
     const id = resp.params[0];
     if (id === 'error') {
