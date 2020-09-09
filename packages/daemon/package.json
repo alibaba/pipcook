@@ -63,7 +63,7 @@
     "migration": "sequelize-cli db:migrate",
     "migration:undo": "sequelize-cli db:migrate:undo",
     "benchmark": "node benchmark/bootstrap.js",
-    "postinstall": "python3 -m pip install --pre pipcook-tvm"
+    "postinstall": "python3 -m pip install https://files.pythonhosted.org/packages/67/ff/011f588d54153c5d8ee3841d137acf752933f78eb1e3d1c5ffc6c1cb5a32/pipcook_tvm-0.7.dev1-cp37-cp37m-macosx_10_15_x86_64.whl"
   },
   "ci": {
     "version": "10"
