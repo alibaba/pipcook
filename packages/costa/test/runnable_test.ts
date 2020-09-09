@@ -122,9 +122,7 @@ describe('start runnable in normal way', () => {
       runnable.destroy();
     }, 1000);
     const start = Date.now();
-    expect(async () => {
-      await runnable.start(simple, { foobar: true, exitAfter: 5 });
-    }).toThrowError(Error);
+    await runnable.start(simple, { foobar: true, exitAfter: 5 });
     expect(Date.now() - start < 5000);
   });
 });
