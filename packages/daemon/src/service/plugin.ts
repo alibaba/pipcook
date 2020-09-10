@@ -147,7 +147,7 @@ export class PluginManager {
     const { costa } = this.pluginRT;
     if (Array.isArray(plugin)) {
       await costa.uninstall(plugin);
-      await Promise.all(plugin.map(async (singlePlugin) => {
+      await Promise.all(plugin.map((singlePlugin) => {
         return PluginModel.removeById(singlePlugin.id);
       }));
     } else {
