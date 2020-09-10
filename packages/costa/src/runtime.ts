@@ -355,8 +355,7 @@ export class CostaRuntime {
       debug('conda environment is setup correctly, start downloading.');
       await spawnAsync(python, [ '-m', 'venv', envDir ], {}, stdio);
       // TODO(yorkie): check for access(pip3)
-      for (let i = 0; i < requirements.length; i++) {
-        const req = requirements[i];
+      for (const req of requirements) {
         let args = [ 'install', req ];
         if (opts.pyIndex) {
           args = args.concat([ '-i', opts.pyIndex ]);
