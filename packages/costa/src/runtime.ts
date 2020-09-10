@@ -355,15 +355,19 @@ export class CostaRuntime {
       debug('conda environment is setup correctly, start downloading.');
       await spawnAsync(python, [ '-m', 'venv', envDir ], {}, stdio);
       // TODO(yorkie): check for access(pip3)
-      let args = [ 'install', '-r', `${envDir}/requirements.txt` ];
-      if (opts.pyIndex) {
-        args = args.concat([ '-i', opts.pyIndex ]);
+      for (let i = 0; i < requirements.length; i++) {
+        const req = requirements[i];
+        let args = [ 'install', req ];
+        if (opts.pyIndex) {
+          args = args.concat([ '-i', opts.pyIndex ]);
+        }
+        args = args.concat([
+          '--default-timeout=1000',
+          `--cache-dir=${this.options.installDir}/.pip`
+        ]);
+        await spawnAsync(`${envDir}/bin/pip3`, args, {}, stdio);
       }
-      args = args.concat([
-        '--default-timeout=1000',
-        `--cache-dir=${this.options.installDir}/.pip`
-      ]);
-      return spawnAsync(`${envDir}/bin/pip3`, args, {}, stdio);
+      return;
     } else {
       debug(`just skip the Python environment installation.`);
     }
