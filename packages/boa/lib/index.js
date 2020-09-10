@@ -344,7 +344,7 @@ function _internalWrap(T, src={}) {
       configurable: true,
       enumerable: true,
       writable: false,
-      value: (k) => wrap(T.__getattr__(k)),
+      value: k => wrap(T.__getattr__(k)),
     },
     /**
      * @method [PySetAttrSymbol]
@@ -364,7 +364,7 @@ function _internalWrap(T, src={}) {
       configurable: true,
       enumerable: true,
       writable: false,
-      value: (k) => wrap(T.__getitem__(k)),
+      value: k => wrap(T.__getitem__(k)),
     },
     /**
      * @method [PySetItemSymbol]
