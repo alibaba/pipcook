@@ -179,11 +179,11 @@ export class PluginRunnable {
       return;
     }
     this.canceled = true;
-    // if not exit after `waitForEnd`, we need to kill it directly.
+    // if not exit after `waitForDestroied`, we need to kill it directly.
     this.termTimer = setTimeout(() => {
       this.handle.kill('SIGKILL');
     }, waitForDestroied);
-    this.handle.kill('SIGTERM');
+    this.send(PluginOperator.WRITE, { event: 'destroy' });
     return new Promise((resolve) => {
       this.ondestroyed = resolve;
     });
@@ -244,6 +244,7 @@ export class PluginRunnable {
     }
     return resp;
   }
+
   /**
    * handle the messages from peer client.
    * @param msg
