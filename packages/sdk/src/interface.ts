@@ -156,3 +156,10 @@ export interface PipelineConfig {
   name: string;
   plugins: PipelinePlugins;
 }
+
+export type FileDownloadResp = {
+  filename: string;
+  mimeType: string;
+  totalBytes: number;
+  stream: NodeJS.ReadStream;
+}
