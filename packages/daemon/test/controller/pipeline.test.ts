@@ -1,6 +1,7 @@
 import { app, assert } from 'midway-mock/bootstrap';
 import { MidwayMockApplication } from 'midway-mock/dist/interface';
 import { PluginPackage } from '@pipcook/costa';
+import { PipelineEntity } from '../../src/model/pipeline';
 import * as helper from '../../src/runner/helper';
 import * as sinon from 'sinon';
 import { mm } from 'midway-mock/dist/mock';
@@ -25,7 +26,39 @@ function mockGetPipeline(app: MidwayMockApplication) {
     return obj;
   });
 }
+const mockConfig = {
+  id: 'id',
+  name: 'name',
+  dataCollectId: 'dataCollectId',
+  dataCollect: 'dataCollect',
+  dataCollectParams: '{}',
+  dataAccessId: 'dataAccessId',
+  dataAccess: 'dataAccess',
+  dataAccessParams: '{"a":1}',
+  dataProcessId: 'dataProcessId',
+  dataProcess: 'dataProcess',
+  dataProcessParams: '{}',
 
+  datasetProcessId: 'datasetProcessId',
+  datasetProcess: 'datasetProcess',
+  datasetProcessParams: '{}',
+
+  modelDefineId: 'modelDefineId',
+  modelDefine: 'modelDefine',
+  modelDefineParams: '{}',
+
+  modelLoadId: 'modelLoadId',
+  modelLoad: 'modelLoad',
+  modelLoadParams: '{}',
+
+  modelTrainId: 'modelTrainId',
+  modelTrain: 'modelTrain',
+  modelTrainParams: '{}',
+
+  modelEvaluateId: 'modelEvaluateId',
+  modelEvaluate: 'modelEvaluate',
+  modelEvaluateParams: '{}'
+};
 describe('test pipeline controller', () => {
   afterEach(() => {
     sinon.restore();
@@ -118,15 +151,6 @@ describe('test pipeline controller', () => {
   });
 
   it('should update pipeline config', async () => {
-    const mockConfig = {
-      name: 'name',
-      dataCollectId: 'dataCollectId',
-      dataCollect: 'dataCollect',
-      dataCollectParams: '{}',
-      dataAccessId: 'dataAccessId',
-      dataAccess: 'dataAccess',
-      dataAccessParams: '{"a":1}'
-    };
     const mockParseConfig = sinon.stub(helper, 'parseConfig').resolves(mockConfig);
     app.mockClassFunction('pipelineService', 'updatePipelineById', async (id: string, config: any): Promise<any> => {
       assert.equal(id, 'id');
@@ -164,15 +188,6 @@ describe('test pipeline controller', () => {
   });
 
   it('update nonexistent pipeline', async () => {
-    const mockConfig = {
-      name: 'name',
-      dataCollectId: 'dataCollectId',
-      dataCollect: 'dataCollect',
-      dataCollectParams: '{}',
-      dataAccessId: 'dataAccessId',
-      dataAccess: 'dataAccess',
-      dataAccessParams: '{"a":1}'
-    };
     const mockParseConfig = sinon.stub(helper, 'parseConfig').resolves(mockConfig);
     app.mockClassFunction('pipelineService', 'updatePipelineById', async (id: string, config: any): Promise<any> => {
       assert.equal(id, 'id');
@@ -276,7 +291,7 @@ describe('test pipeline controller', () => {
         };
       }
     });
-    app.mockClassFunction('pipelineService', 'createPipeline', async (pipeline: helper.PipelineDB) => {
+    app.mockClassFunction('pipelineService', 'createPipeline', async (pipeline: PipelineEntity) => {
       assert.equal(pipeline.name, 'name');
       assert.equal(pipeline.dataCollectId, 'dataCollectInstalled');
       assert.equal(pipeline.dataCollect, 'dataCollect');

@@ -6,7 +6,6 @@ import { join } from 'path';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { PluginManager } from '../../service/plugin';
-import { JobResp } from '../../interface';
 
 @provide()
 @controller('/api/job')
@@ -45,7 +44,7 @@ export class JobController extends BaseEventController {
           this.traceManager.destroy(tracer.id, err);
         }
       });
-      this.ctx.success({ ...(job.toJSON() as JobResp), traceId: tracer.id });
+      this.ctx.success({ ...job, traceId: tracer.id });
     } else {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'no pipeline found');
     }
