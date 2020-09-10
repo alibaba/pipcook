@@ -2744,9 +2744,6 @@ img {
 			<a href="interfaces/eventcallback.html" class="tsd-kind-icon">Event<wbr>Callback</a>
 		</li>
 		<li class=" tsd-kind-interface">
-			<a href="interfaces/filedownloadresp.html" class="tsd-kind-icon">File<wbr>Download<wbr>Resp</a>
-		</li>
-		<li class=" tsd-kind-interface">
 			<a href="interfaces/jobresp.html" class="tsd-kind-icon">Job<wbr>Resp</a>
 		</li>
 		<li class=" tsd-kind-interface">
@@ -2780,7 +2777,13 @@ img {
 			<a href="interfaces/pluginresp.html" class="tsd-kind-icon">Plugin<wbr>Resp</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="interfaces/streamresp.html" class="tsd-kind-icon">Stream<wbr>Resp</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="interfaces/versionsresp.html" class="tsd-kind-icon">Versions<wbr>Resp</a>
+		</li>
+		<li class=" tsd-kind-type-alias">
+			<a href="index.html#filedownloadresp" class="tsd-kind-icon">File<wbr>Download<wbr>Resp</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="index.html#joblistfilter" class="tsd-kind-icon">Job<wbr>List<wbr>Filter</a>
@@ -2853,7 +2856,6 @@ img {
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-interface"><a href="interfaces/configresp.html" class="tsd-kind-icon">Config<wbr>Resp</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/eventcallback.html" class="tsd-kind-icon">Event<wbr>Callback</a></li>
-							<li class="tsd-kind-interface"><a href="interfaces/filedownloadresp.html" class="tsd-kind-icon">File<wbr>Download<wbr>Resp</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/jobresp.html" class="tsd-kind-icon">Job<wbr>Resp</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/jobrunoption.html" class="tsd-kind-icon">Job<wbr>Run<wbr>Option</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/jobstatuschangeevent.html" class="tsd-kind-icon">Job<wbr>Status<wbr>Change<wbr>Event</a></li>
@@ -2865,12 +2867,14 @@ img {
 							<li class="tsd-kind-interface"><a href="interfaces/pluginconfig.html" class="tsd-kind-icon">Plugin<wbr>Config</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/pluginlistparams.html" class="tsd-kind-icon">Plugin<wbr>List<wbr>Params</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/pluginresp.html" class="tsd-kind-icon">Plugin<wbr>Resp</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/streamresp.html" class="tsd-kind-icon">Stream<wbr>Resp</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/versionsresp.html" class="tsd-kind-icon">Versions<wbr>Resp</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
 						<h3>Type aliases</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-type-alias"><a href="index.html#filedownloadresp" class="tsd-kind-icon">File<wbr>Download<wbr>Resp</a></li>
 							<li class="tsd-kind-type-alias"><a href="index.html#joblistfilter" class="tsd-kind-icon">Job<wbr>List<wbr>Filter</a></li>
 							<li class="tsd-kind-type-alias"><a href="index.html#listfilter" class="tsd-kind-icon">List<wbr>Filter</a></li>
 							<li class="tsd-kind-type-alias"><a href="index.html#requestparams" class="tsd-kind-icon">Request<wbr>Params</a></li>
@@ -2905,12 +2909,39 @@ img {
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Type aliases</h2>
 			<section class="tsd-panel tsd-member tsd-kind-type-alias">
+				<a name="filedownloadresp" class="tsd-anchor"></a>
+				<h3>File<wbr>Download<wbr>Resp</h3>
+				<div class="tsd-signature tsd-kind-icon">File<wbr>Download<wbr>Resp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>mimeType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>stream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReadStream</span><span class="tsd-signature-symbol">; </span>totalBytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/interface.ts#L160">interface.ts:160</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-type-declaration">
+					<h4>Type declaration</h4>
+					<ul class="tsd-parameters">
+						<li class="tsd-parameter">
+							<h5>filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+						</li>
+						<li class="tsd-parameter">
+							<h5>mime<wbr>Type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+						</li>
+						<li class="tsd-parameter">
+							<h5>stream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReadStream</span></h5>
+						</li>
+						<li class="tsd-parameter">
+							<h5>total<wbr>Bytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias">
 				<a name="joblistfilter" class="tsd-anchor"></a>
 				<h3>Job<wbr>List<wbr>Filter</h3>
 				<div class="tsd-signature tsd-kind-icon">Job<wbr>List<wbr>Filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>pipelineId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> &amp; </span><a href="index.html#listfilter" class="tsd-signature-type">ListFilter</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/interface.ts#L38">interface.ts:38</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/interface.ts#L38">interface.ts:38</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2925,7 +2956,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">List<wbr>Filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>limit<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>offset<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/interface.ts#L30">interface.ts:30</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/interface.ts#L30">interface.ts:30</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2951,7 +2982,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Request<wbr>Params<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L8">request.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L8">request.ts:8</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2961,7 +2992,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Response<wbr>Params<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L9">request.ts:9</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L9">request.ts:9</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2971,7 +3002,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Trace<wbr>Resp&lt;T&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>traceId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/interface.ts#L25">interface.ts:25</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/interface.ts#L25">interface.ts:25</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2995,7 +3026,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Job<wbr>Status<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [ &#x27;creating&#x27;, &#x27;running&#x27;, &#x27;success&#x27;, &#x27;fail&#x27;, &#x27;canceled&#x27;, &#x27;pending&#x27; ]</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/utils.ts#L3">utils.ts:3</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/utils.ts#L3">utils.ts:3</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3005,7 +3036,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Plugin<wbr>Status<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [ &#x27;installing&#x27;, &#x27;installed&#x27;, &#x27;failed&#x27;, &#x27;pending&#x27;, &#x27;initialized&#x27; ]</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/utils.ts#L4">utils.ts:4</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/utils.ts#L4">utils.ts:4</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3015,7 +3046,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">tuna<wbr>MirrorURI<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"https://pypi.tuna.tsinghua.edu.cn/simple"</span><span class="tsd-signature-symbol"> = &quot;https://pypi.tuna.tsinghua.edu.cn/simple&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/utils.ts#L2">utils.ts:2</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/utils.ts#L2">utils.ts:2</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3032,7 +3063,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L17">request.ts:17</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L18">request.ts:18</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3055,7 +3086,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L34">request.ts:34</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L35">request.ts:35</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3078,7 +3109,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L35">request.ts:35</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L36">request.ts:36</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3101,13 +3132,13 @@ img {
 				<a name="getfile" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> get<wbr>File</h3>
 				<ul class="tsd-signatures tsd-kind-function">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>File<span class="tsd-signature-symbol">(</span>host<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, params<span class="tsd-signature-symbol">?: </span><a href="index.html#requestparams" class="tsd-signature-type">RequestParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="interfaces/filedownloadresp.html" class="tsd-signature-type">FileDownloadResp</a><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">get<wbr>File<span class="tsd-signature-symbol">(</span>host<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, params<span class="tsd-signature-symbol">?: </span><a href="index.html#requestparams" class="tsd-signature-type">RequestParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="interfaces/streamresp.html" class="tsd-signature-type">StreamResp</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L69">request.ts:69</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L70">request.ts:70</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3119,7 +3150,7 @@ img {
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> params: <a href="index.html#requestparams" class="tsd-signature-type">RequestParams</a></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="interfaces/filedownloadresp.html" class="tsd-signature-type">FileDownloadResp</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="interfaces/streamresp.html" class="tsd-signature-type">StreamResp</a><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -3133,7 +3164,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L79">request.ts:79</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L80">request.ts:80</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3162,7 +3193,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L32">request.ts:32</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L33">request.ts:33</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3194,7 +3225,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L33">request.ts:33</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L34">request.ts:34</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3226,7 +3257,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a9530c1/packages/sdk/src/request.ts#L45">request.ts:45</a></li>
+								<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8395a19/packages/sdk/src/request.ts#L46">request.ts:46</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
