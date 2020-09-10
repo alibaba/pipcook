@@ -366,7 +366,7 @@ export class CostaRuntime {
       
       for (const req of requirements) {
         const installArgs = args.concat([ req ]);    
-        await spawnAsync(`${envDir}/bin/pip3`, args, {}, stdio);
+        await spawnAsync(`${envDir}/bin/pip3`, installArgs, {}, stdio);
       }
     } else {
       debug(`just skip the Python environment installation.`);
