@@ -1,6 +1,7 @@
 const test = require('tape');
 const boa = require('../../');
 const builtins = boa.builtins();
+const { PyGetAttrSymbol, PySetAttrSymbol, PyGetItemSymbol, PySetItemSymbol } = boa.symbols;
 
 test('keyword arguments throws', t => {
   t.throws(() => boa.kwargs(false), TypeError);
@@ -17,12 +18,34 @@ test('hash function', t => {
   const mlist = builtins.list([1, 3, 5]);
   t.strictEqual(JSON.stringify({ foobar: mlist }),
                 '{"foobar":[1,3,5]}');
+
   mlist[0] = 2;
   mlist[1] = 4;
   t.strictEqual(mlist[0], 2);
   t.strictEqual(mlist[1], 4);
   t.strictEqual(JSON.stringify({ foofoo: mlist }),
                 '{"foofoo":[2,4,5]}');
+  t.end();
+});
+
+test('getattr and setattr with symbols', t => {
+  // test for getattr and setattr
+  const pybasic = boa.import('tests.base.basic');
+  const f = new pybasic.Foobar();
+  t.strictEqual(f[PyGetAttrSymbol]('test'), 'pythonworld', 'getattr is ok');
+  f[PySetAttrSymbol]('test', 'updated');
+  t.strictEqual(f[PyGetAttrSymbol]('test'), 'updated', 'setattr is ok');
+  t.end();
+});
+
+test('getitem and setitem with symbols', t => {
+  const mlist = builtins.list([1, 3]);
+  // test for getitemm and setitem
+  t.strictEqual(mlist[PyGetItemSymbol](0), 1, 'mlist[0] = 1');
+  t.strictEqual(mlist[PyGetItemSymbol](1), 3, 'mlist[1] = 3');
+  mlist[PySetItemSymbol](0, 100);
+  t.strictEqual(mlist[PyGetItemSymbol](0), 100, 'setitem is ok');
+  t.strictEqual(mlist[PyGetAttrSymbol]('__len__')(), 2, 'use getattr to check mlist length');
   t.end();
 });
 
