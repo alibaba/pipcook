@@ -18,8 +18,8 @@ export class RunnableResponse implements PluginResponse {
   }
 }
 
-// wait 5000ms for chile process finish.
-const waitForDestroied = 5000;
+// wait 1000ms for chile process finish.
+const waitForDestroied = 1000;
 /**
  * The arguments for calling `bootstrap`.
  */
