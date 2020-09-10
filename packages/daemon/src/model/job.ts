@@ -14,7 +14,6 @@ export interface JobEntity {
   endTime?: number;
   status?: number;
   dataset?: string;
-  abc: string;
 }
 
 interface QueryOptions {
