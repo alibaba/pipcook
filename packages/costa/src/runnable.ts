@@ -19,7 +19,7 @@ export class RunnableResponse implements PluginResponse {
 }
 
 // wait 5000ms for chile process finish.
-const waitForEnd = 5000;
+const waitForDestroied = 5000;
 /**
  * The arguments for calling `bootstrap`.
  */
@@ -179,9 +179,10 @@ export class PluginRunnable {
       return;
     }
     this.canceled = true;
+    // if not exit after `waitForEnd`, we need to kill it directly.
     this.termTimer = setTimeout(() => {
-      this.handle.kill('SIGKILL');  
-    }, waitForEnd);
+      this.handle.kill('SIGKILL');
+    }, waitForDestroied);
     this.handle.kill('SIGTERM');
     return new Promise((resolve) => {
       this.ondestroyed = resolve;
