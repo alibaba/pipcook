@@ -363,9 +363,9 @@ export class CostaRuntime {
         '--default-timeout=1000',
         `--cache-dir=${this.options.installDir}/.pip`
       ]);
-      
+
       for (const req of requirements) {
-        const installArgs = args.concat([ req ]);    
+        const installArgs = args.concat([ req ]);
         await spawnAsync(`${envDir}/bin/pip3`, installArgs, {}, stdio);
       }
     } else {
