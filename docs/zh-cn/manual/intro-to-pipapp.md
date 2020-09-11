@@ -53,8 +53,8 @@ $ npm install @pipcook/app --save
 ```sh
 $ pipcook app compile /path/to/your/project/script.ts
 generated 2 pipelines, please click the following links to config them:
-(nlp.classify) > https://pipboard.vercel.app/index.html#/pipeline/info?pipelineId=1a287920-b10e-11ea-a743-792a596edff1
-(nlp.classify) > https://pipboard.vercel.app/index.html#/pipeline/info?pipelineId=1a287921-b10e-11ea-a743-792a596edff1
+(nlp.classify) > https://pipboard.vercel.app/#/pipeline/info?pipelineId=1a287920-b10e-11ea-a743-792a596edff1
+(nlp.classify) > https://pipboard.vercel.app/#/pipeline/info?pipelineId=1a287921-b10e-11ea-a743-792a596edff1
 ```
 
 可以看到执行完命令后，会提示配置 Pipeline，通过链接点击进去去配置即可，开发者需要根据不同的调用接口来配置不同的数据，比如第一个分类是为了对产品进行分类，那么我们配置 Pipeline 的时候，就要准备跟产品分类相关的数据集。
@@ -72,11 +72,11 @@ $ pipcook app train /path/to/your/project/script.ts
 ```sh
 $ pipcook app status /path/to/your/project/script.ts
 job(0acee5e0-b1e5-11ea-85a3-dbb717ca8e27):
-  pipeline: https://pipboard.vercel.app/index.html#/pipeline/info?pipelineId=1a287920-b10e-11ea-a743-792a596edff1
+  pipeline: https://pipboard.vercel.app/#/pipeline/info?pipelineId=1a287920-b10e-11ea-a743-792a596edff1
   status: success
   evaluate: {"pass":true,"accuracy":0.927570093457944}
 job(0d043c70-b1e5-11ea-85a3-dbb717ca8e27):
-  pipeline: https://pipboard.vercel.app/index.html#/pipeline/info?pipelineId=1a287921-b10e-11ea-a743-792a596edff1
+  pipeline: https://pipboard.vercel.app/#/pipeline/info?pipelineId=1a287921-b10e-11ea-a743-792a596edff1
   status: success
   evaluate: {"pass":true,"accuracy":0.927570093457944}
 ```
