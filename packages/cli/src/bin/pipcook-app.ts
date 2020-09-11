@@ -16,7 +16,7 @@ program
     const { pipelines } = app.manifest;
     console.info(`generated ${pipelines.length} pipelines, please click the following links to config them:`);
     pipelines.forEach(({ id, namespace }) => {
-      console.info(`(${namespace.module}.${namespace.method}) > http://localhost:6927/index.html#/pipeline/info?pipelineId=${id}`);
+      console.info(`(${namespace.module}.${namespace.method}) > https://pipboard.vercel.app/index.html#/pipeline/info?pipelineId=${id}`);
     });
   });
 
@@ -64,7 +64,7 @@ program
     const jobs = await app.getJobs();
     jobs.forEach((job) => {
       console.info(`job(${job.id}):`);
-      console.info(`  pipeline: http://localhost:6927/index.html#/pipeline/info?pipelineId=${job.pipelineId}`);
+      console.info(`  pipeline: https://pipboard.vercel.app/index.html#/pipeline/info?pipelineId=${job.pipelineId}`);
       if (job.status === PipelineStatus.INIT) {
         console.info(`  status: initialize`);
       } else if (job.status === PipelineStatus.RUNNING) {
