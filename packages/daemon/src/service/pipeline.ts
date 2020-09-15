@@ -83,6 +83,7 @@ export class PipelineService {
   async removeJobById(id: string): Promise<number> {
     const job = await JobModel.getJobById(id);
     if (job) {
+      console.log('removeJobById', `${CoreConstants.PIPCOOK_RUN}/${job.id}`);
       await Promise.all([
         JobModel.removeJobById(job.id),
         fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
@@ -326,7 +327,7 @@ export class PipelineService {
     await fs.remove(dist);
     await fs.ensureDir(dist);
     await execAsync('npm init -y', { cwd: dist });
-
+    
     // post processing the package.json
     const projPackage = await fs.readJSON(dist + '/package.json');
     projPackage.dependencies = {

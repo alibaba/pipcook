@@ -1,9 +1,8 @@
 import { provide, inject } from 'midway';
-import { RunConfigI, constants as CoreConstants } from '@pipcook/pipcook-core';
+import { RunConfigI, generateId, constants as CoreConstants } from '@pipcook/pipcook-core';
 import { compile, PipelineNode } from '@pipcook/app';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { pseudoRandomBytes } from 'crypto';
 import { PipelineService } from './pipeline';
 import { parseConfig } from '../runner/helper';
 
@@ -12,14 +11,14 @@ interface CompileResult {
   executableSource: string;
 }
 
-@provide('AppService')
+@provide('appService')
 export class AppService {
 
   @inject('pipelineService')
   PipelineService: PipelineService;
 
   async compile(source: string): Promise<CompileResult> {
-    const appId = pseudoRandomBytes(8).toString('hex');
+    const appId = generateId();
     const projRoot = path.join(CoreConstants.PIPCOOK_APP, appId);
     const tsconfig = path.join(projRoot, 'tsconfig.json');
 
@@ -44,6 +43,7 @@ export class AppService {
     // create pipelines
     await Promise.all(ctx.pipelines.map(async (pipeline) => {
       const data = await parseConfig(pipeline.config as RunConfigI);
+      console.log('pipeline.config', pipeline.config);
       const newPipeline = await this.PipelineService.createPipeline(data);
       pipeline.id = newPipeline.id;
     }));

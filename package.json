@@ -18,7 +18,7 @@
     "lerna": "^3.18.4",
     "ts-node": "^8.6.2",
     "typedoc": "^0.17.8",
-    "typescript": "^3.9.7"
+    "typescript": "3.8.3"
   },
   "scripts": {
     "build": "lerna run compile",

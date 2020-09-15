@@ -5,7 +5,7 @@ describe('test app controller', () => {
     mm.restore();
   });
   it('should compile app', () => {
-    app.mockClassFunction('AppService', 'compile', async (src: string) => {
+    app.mockClassFunction('appService', 'compile', async (src: string) => {
       assert.equal(src, 'source');
       return {
         executableSource: 'executableSource',
