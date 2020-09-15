@@ -1,6 +1,11 @@
 import { STRING, INTEGER, BOOLEAN, Model, Sequelize } from 'sequelize';
 import { PipelineStatus, generateId } from '@pipcook/pipcook-core';
 
+interface IParam {
+  pluginName: string,
+  pluginParam: string
+}
+
 export interface JobEntity {
   id: string;
   pipelineId: string;
@@ -14,6 +19,8 @@ export interface JobEntity {
   endTime?: number;
   status?: number;
   dataset?: string;
+
+  params?: Array<IParam>;
 }
 
 interface QueryOptions {
@@ -26,20 +33,29 @@ interface SelectJobsFilter {
 }
 
 export class JobModel extends Model {
+
+  private static __packJob(job: any): JobEntity {
+    job.params = job.params ? JSON.parse(job.params) : '';
+    return job as JobEntity;
+  }
+
   static async getJobById(id: string): Promise<JobEntity> {
-    return (await JobModel.findOne({
+    const internalJob = (await JobModel.findOne({
       where: { id }
-    }))?.toJSON() as JobEntity;
+    }))?.toJSON()
+    return this.__packJob(internalJob);
   }
 
   static async saveJob(job: JobEntity): Promise<void> {
-    JobModel.update(job, { where: { id: job.id } });
+    const inernalJob = job as any;
+    inernalJob.params = job.params ? JSON.stringify(job.params) : '';
+    JobModel.update(inernalJob, { where: { id: job.id } });
   }
 
   static async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
     return (await JobModel.findAll({
       where: { pipelineId }
-    })).map(job => job.toJSON() as JobEntity);
+    })).map(job => this.__packJob(job.toJSON()));
   }
 
   static async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobEntity[]> {
@@ -55,7 +71,7 @@ export class JobModel extends Model {
       order: [
         [ 'createdAt', 'DESC' ]
       ]
-    })).map(job => job.toJSON() as JobEntity);
+    })).map(job => this.__packJob(job.toJSON()));
   }
 
   static async removeJobs(): Promise<number> {
@@ -83,7 +99,7 @@ export class JobModel extends Model {
       status: PipelineStatus.INIT,
       currentIndex: -1
     });
-    return job.toJSON() as JobEntity;
+    return this.__packJob(job.toJSON());
   }
 }
 
@@ -134,6 +150,9 @@ export default async function model(sequelize: Sequelize): Promise<void> {
     },
     endTime: {
       type: INTEGER
+    },
+    params: {
+      type: STRING
     }
   },
   {
