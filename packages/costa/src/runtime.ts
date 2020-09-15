@@ -365,7 +365,7 @@ export class CostaRuntime {
       ]);
 
       for (const pkg of requirements) {
-        const installArgs = args.concat([ req ]);
+        const installArgs = args.concat([ pkg ]);
         await spawnAsync(`${envDir}/bin/pip3`, installArgs, {}, stdio);
       }
     } else {
