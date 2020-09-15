@@ -125,9 +125,9 @@ export class PipelineService {
     ]);
     return results[0];
   }
-  async createJob(pipelineId: string): Promise<JobEntity> {
+  async createJob(pipelineId: string, params: string): Promise<JobEntity> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
-    return JobModel.createJob(pipelineId, specVersion);
+    return JobModel.createJob(pipelineId, specVersion, params);
   }
 
   async fetchPlugins(pipeline: PipelineEntity): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
@@ -204,25 +204,29 @@ export class PipelineService {
       await fs.ensureDir(modelPath);
 
       // run dataCollect to download dataset.
-      await run('dataCollect', getParams(plugins.dataCollect.params, {
+      const dataCollectParam = job.params.filter((it) => it.pluginType == 'dataCollect');
+      await run('dataCollect', getParams(dataCollectParam.length > 0 ? dataCollectParam[0].pluginParam : plugins.dataCollect.params, {
         dataDir
       }));
 
       verifyPlugin('dataAccess');
-      const dataset = await run('dataAccess', getParams(plugins.dataAccess.params, {
+      const dataAccessParam = job.params.filter((it) => it.pluginType == 'dataAccess');
+      const dataset = await run('dataAccess', getParams(dataAccessParam.length > 0 ? dataAccessParam[0].pluginParam : plugins.dataAccess.params, {
         dataDir
       }));
 
       let datasetProcess: PluginPackage;
       if (plugins.datasetProcess) {
         datasetProcess = plugins.datasetProcess.plugin;
-        await run('datasetProcess', dataset, getParams(plugins.datasetProcess.params));
+        const datasetProcessParam = job.params.filter((it) => it.pluginType == 'datasetProcess');
+        await run('datasetProcess', dataset, getParams(datasetProcessParam.length > 0 ? datasetProcessParam[0].pluginParam : plugins.datasetProcess.params));
       }
 
       let dataProcess: PluginPackage;
       if (plugins.dataProcess) {
         dataProcess = plugins.dataProcess.plugin;
-        await run('dataProcess', dataset, getParams(plugins.dataProcess.params));
+        const dataProcessParam = job.params.filter((it) => it.pluginType == 'dataProcess');
+        await run('dataProcess', dataset, getParams(dataProcessParam.length > 0 ? dataProcessParam[0].pluginParam : plugins.dataProcess.params));
       }
 
       let model: RunnableResponse;
@@ -231,23 +235,27 @@ export class PipelineService {
       // select one of `ModelDefine` and `ModelLoad`.
       if (plugins.modelDefine) {
         modelPlugin = plugins.modelDefine.plugin;
-        model = await run('modelDefine', dataset, getParams(plugins.modelDefine.params));
+        const modelDefineParam = job.params.filter((it) => it.pluginType == 'modelDefine');
+        model = await run('modelDefine', dataset, getParams(modelDefineParam.length > 0 ? modelDefineParam[0].pluginParam : plugins.modelDefine.params));
       } else if (plugins.modelLoad) {
         modelPlugin = plugins.modelLoad.plugin;
-        model = await run('modelLoad', dataset, getParams(plugins.modelLoad.params, {
+        const modelLoadParam = job.params.filter((it) => it.pluginType == 'modelLoad');
+        model = await run('modelLoad', dataset, getParams(modelLoadParam.length > 0 ? modelLoadParam[0].pluginParam : plugins.modelLoad.params, {
           // specify the recover path for model loader by default.
           recoverPath: modelPath
         }));
       }
 
       if (plugins.modelTrain) {
-        model = await run('modelTrain', dataset, model, getParams(plugins.modelTrain.params, {
+        const modelTrainParam = job.params.filter((it) => it.pluginType == 'modelTrain');
+        model = await run('modelTrain', dataset, model, getParams(modelTrainParam.length > 0 ? modelTrainParam[0].pluginParam : plugins.modelTrain.params, {
           modelPath
         }));
       }
 
       verifyPlugin('modelEvaluate');
-      const output = await run('modelEvaluate', dataset, model, getParams(plugins.modelEvaluate.params, {
+      const modelEvaluateParam = job.params.filter((it) => it.pluginType == 'modelEvaluate');
+      const output = await run('modelEvaluate', dataset, model, getParams(modelEvaluateParam.length > 0 ? modelEvaluateParam[0].pluginParam : plugins.modelEvaluate.params, {
         modelDir: modelPath
       }));
 
@@ -380,6 +388,7 @@ export class PipelineService {
                pipeline: PipelineEntity,
                plugins: Partial<Record<PluginTypeI, PluginInfo>>,
                tracer: Tracer): Promise<void> {
+                 
     job.status = PipelineStatus.PENDING;
     await this.saveJob(job);
     return new Promise((resolve, reject) => {

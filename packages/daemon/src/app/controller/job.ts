@@ -22,11 +22,11 @@ export class JobController extends BaseEventController {
    */
   @post()
   public async run(): Promise<void> {
-    const { pipelineId } = this.ctx.request.body;
+    const { pipelineId, params } = this.ctx.request.body;
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
       const plugins = await this.pipelineService.fetchPlugins(pipeline);
-      const job = await this.pipelineService.createJob(pipelineId);
+      const job = await this.pipelineService.createJob(pipelineId, params);
       const logPath = join(constants.PIPCOOK_RUN, job.id, 'logs');
       const stdoutFile = join(logPath, 'stdout.log');
       const stderrFile = join(logPath, 'stderr.log');

@@ -2,7 +2,7 @@ import { STRING, INTEGER, BOOLEAN, Model, Sequelize } from 'sequelize';
 import { PipelineStatus, generateId } from '@pipcook/pipcook-core';
 
 interface IParam {
-  pluginName: string,
+  pluginType: string,
   pluginParam: string
 }
 
@@ -35,7 +35,7 @@ interface SelectJobsFilter {
 export class JobModel extends Model {
 
   private static __packJob(job: any): JobEntity {
-    job.params = job.params ? JSON.parse(job.params) : '';
+    job.params = JSON.parse(job.params);
     return job as JobEntity;
   }
 
@@ -47,9 +47,11 @@ export class JobModel extends Model {
   }
 
   static async saveJob(job: JobEntity): Promise<void> {
-    const inernalJob = job as any;
-    inernalJob.params = job.params ? JSON.stringify(job.params) : '';
-    JobModel.update(inernalJob, { where: { id: job.id } });
+    const params = job.params ? JSON.stringify(job.params) : '';
+    JobModel.update({
+      ... job,
+      params
+    }, { where: { id: job.id } });
   }
 
   static async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
@@ -91,13 +93,14 @@ export class JobModel extends Model {
     });
   }
 
-  static async createJob(pipelineId: string, specVersion: string): Promise<JobEntity> {
+  static async createJob(pipelineId: string, specVersion: string, params?: string): Promise<JobEntity> {
     const job = await JobModel.create({
       id: generateId(),
       pipelineId,
       specVersion,
       status: PipelineStatus.INIT,
-      currentIndex: -1
+      currentIndex: -1,
+      params: params.length !== 0 ? params : '[]'
     });
     return this.__packJob(job.toJSON());
   }

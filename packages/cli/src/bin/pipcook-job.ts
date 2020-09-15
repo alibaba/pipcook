@@ -18,6 +18,7 @@ program
   .option('--output <dir>', 'the output directory name', 'output')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
+  .option('-c|config <config file>', 'the config file for this job')
   .action(runAndDownloadById)
   .description('run a job from a pipeline id');
 

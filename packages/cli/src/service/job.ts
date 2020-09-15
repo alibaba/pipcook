@@ -104,7 +104,11 @@ export async function runByPipelineId(id: string, opts: any): Promise<JobResp> {
   const client = initClient(opts.hostIp, opts.port);
   logger.start(`run pipeline from pipeline ${id}`);
   try {
-    const jobRunning = await client.job.run(id);
+    let jsonStr = "";
+    if (opts.config) {
+      jsonStr = JSON.stringify(fs.readJSONSync(opts.config));
+    }
+    const jobRunning = await client.job.run(id, jsonStr);
     logger.success(`job is created: ${jobRunning.id}, running`);
 
     await client.pipeline.traceEvent(jobRunning.traceId, traceLogger);
