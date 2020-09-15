@@ -19,8 +19,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install
-          npm run build
+          yarn
+          yarn build
 
       - name: Get release version
         id: get_version
@@ -56,7 +56,7 @@ jobs:
           git config --global user.email 'queyue.crk@alibaba-inc.com'
           git add .
           git commit -m "bump version" --allow-empty
-          npm run release
+          yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
