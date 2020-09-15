@@ -4051,7 +4051,7 @@ constant-case@^2.0.0:
     snake-case "^2.1.0"
     upper-case "^1.1.1"
 
-content-disposition@~0.5.2:
+content-disposition@^0.5.3, content-disposition@~0.5.2:
   version "0.5.3"
   resolved "https://registry.npm.taobao.org/content-disposition/download/content-disposition-0.5.3.tgz#e130caf7e7279087c5616c2007d0485698984fbd"
   integrity sha1-4TDK9+cnkIfFYWwgB9BIVpiYT70=
@@ -5425,10 +5425,10 @@ es6-weak-map@^2.0.1, es6-weak-map@^2.0.2:
     es6-iterator "^2.0.3"
     es6-symbol "^3.1.1"
 
-esbuild@^0.6.25:
-  version "0.6.28"
-  resolved "https://registry.npm.taobao.org/esbuild/download/esbuild-0.6.28.tgz#b14fc7a2a04d13c416f75024ac5c449f4248edc4"
-  integrity sha1-sU/HoqBNE8QW91AkrFxEn0JI7cQ=
+esbuild@^0.6.32:
+  version "0.6.34"
+  resolved "https://registry.npm.taobao.org/esbuild/download/esbuild-0.6.34.tgz#76565a60e006f45d5f273b6e59e61ed0816551f5"
+  integrity sha1-dlZaYOAG9F1fJztuWeYe0IFlUfU=
 
 escallmatch@^1.5.0:
   version "1.5.0"
