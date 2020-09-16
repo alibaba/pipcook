@@ -100,7 +100,7 @@ export class JobModel extends Model {
       specVersion,
       status: PipelineStatus.INIT,
       currentIndex: -1,
-      params: params.length !== 0 ? params : '[]'
+      params: (params && params.length !== 0) ? params : '[]'
     });
     return this.__packJob(job.toJSON());
   }
