@@ -60,7 +60,7 @@ export class Job extends BaseApi {
    * start to run a pipeline by pipeline id
    * @param piplineId pipeline id
    */
-  run(pipelineId: string, params: string): Promise<TraceResp<JobResp>> {
+  run(pipelineId: string, params?: string): Promise<TraceResp<JobResp>> {
     return post(`${this.route}`, { pipelineId, params });
   }
 
