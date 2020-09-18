@@ -1,7 +1,7 @@
 import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { provide, inject } from 'midway';
+import { provide, inject, scope, ScopeEnum } from 'midway';
 import * as HttpStatus from 'http-status';
 import * as createHttpError from 'http-errors';
 import {
@@ -48,13 +48,14 @@ function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
   });
 }
 
-const runnableMap: Record<string, PluginRunnable> = {};
-
+@scope(ScopeEnum.Singleton)
 @provide('pipelineService')
 export class PipelineService {
 
   @inject('pluginManager')
   pluginManager: PluginManager;
+
+  runnableMap: Record<string, PluginRunnable> = {};
 
   async createPipeline(config: PipelineEntity): Promise<PipelineEntity> {
     return PipelineModel.createPipeline(config);
@@ -138,6 +139,7 @@ export class PipelineService {
       if (pipeline[type]) {
         if (!pipeline[`${type}Id`]) {
           noneInstalledPlugins.push(pipeline[type]);
+          continue;
         }
         const plugin = await this.pluginManager.findById(pipeline[`${type}Id`]);
         if (plugin && plugin.status === PluginStatus.INSTALLED) {
@@ -162,7 +164,7 @@ export class PipelineService {
   async startJob(job: JobEntity, pipeline: PipelineEntity, plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<void> {
     const runnable = await this.pluginManager.createRunnable(job.id, tracer);
     // save the runnable object
-    runnableMap[job.id] = runnable;
+    this.runnableMap[job.id] = runnable;
 
     const getParams = (params: string | null, ...extra: object[]): object => {
       if (params == null) {
@@ -173,7 +175,7 @@ export class PipelineService {
     };
     const verifyPlugin = (name: string): void => {
       if (!plugins[name]) {
-        runnableMap[job.id].destroy();
+        this.runnableMap[job.id].destroy();
         throw new TypeError(`"${name}" plugin is required`);
       }
     };
@@ -287,21 +289,22 @@ export class PipelineService {
       throw err;
     } finally {
       await runnable.destroy();
-      delete runnableMap[job.id];
+      delete this.runnableMap[job.id];
     }
   }
 
   async stopJob(id: string): Promise<void> {
     const job = await JobModel.getJobById(id);
     if (job && job.status === PipelineStatus.RUNNING) {
-      const runnable = runnableMap[id];
+      const runnable = this.runnableMap[id];
       if (runnable) {
         runnable.destroy();
-        delete runnableMap[id];
+        delete this.runnableMap[id];
       } else {
         console.error(`no runnable found: ${id}`);
       }
       job.status = PipelineStatus.CANCELED;
+      console.log(job);
       await JobModel.saveJob(job);
     } else {
       throw createHttpError(HttpStatus.BAD_REQUEST, 'job is not running');
@@ -386,10 +389,14 @@ export class PipelineService {
     return new Promise((resolve, reject) => {
       let queueLength = pluginQueue.length;
       const queueReporter = () => {
-        tracer.dispatch(new JobStatusChangeEvent(PipelineStatus.PENDING, undefined, undefined, --queueLength));
+        queueLength--;
+        if (queueLength > 0) {
+          tracer.dispatch(new JobStatusChangeEvent(PipelineStatus.PENDING, undefined, undefined, queueLength));
+        }
       };
       if (queueLength > 0) {
         pluginQueue.on('success', queueReporter);
+        tracer.dispatch(new JobStatusChangeEvent(PipelineStatus.PENDING, undefined, undefined, queueLength));
       }
       pluginQueue.push((cb) => {
         pluginQueue.removeListener('success', queueReporter);
