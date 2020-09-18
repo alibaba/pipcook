@@ -7,12 +7,9 @@ import * as request from 'request-promise';
 import * as url from 'url';
 import {
   RunConfigI,
-  constants,
   generateId
 } from '@pipcook/pipcook-core';
 import { PipelineEntity } from '../model/pipeline';
-
-const { PIPCOOK_LOGS } = constants;
 
 async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
   if (typeof configPath === 'string') {
@@ -72,10 +69,4 @@ export async function parseConfig(configPath: string | RunConfigI, isGenerateId 
     modelEvaluate: configJson.plugins.modelEvaluate?.package,
     modelEvaluateParams: parseParams(configJson.plugins.modelEvaluate?.params)
   };
-}
-
-export async function writeOutput(jobId: string, content: string, stderr = false): Promise<void> {
-  const filename = stderr ? 'stderr' : 'stdout';
-  const dest = path.join(PIPCOOK_LOGS, jobId, filename);
-  await fs.appendFile(dest, content);
 }
