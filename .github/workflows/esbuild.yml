@@ -20,7 +20,7 @@ on:
 
 jobs:
   universal:
-    name: Build with esBuild
+    name: Build with esBuild and run coverages
     if: ${{ github.event_name == 'push' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -40,3 +40,9 @@ jobs:
       run: |
         npm run init-dev
         npm test
+        npm run cov
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: packages/daemon/coverages/lcov.info
