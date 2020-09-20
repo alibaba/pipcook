@@ -330,7 +330,7 @@ export class PipelineService {
     await fs.remove(dist);
     await fs.ensureDir(dist);
     await execAsync('npm init -y', { cwd: dist });
-    
+
     // post processing the package.json
     const projPackage = await fs.readJSON(dist + '/package.json');
     projPackage.dependencies = {
