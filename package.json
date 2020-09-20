@@ -35,7 +35,6 @@
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
     "beta-release": "lerna publish from-package --yes --no-verify-access --dist-tag beta",
     "init-dev": "node ./tools/init_dev.js -f",
-    "cov": "lerna run cov",
-    "commit-cov": "lerna run commit-cov"
+    "cov": "lerna run cov"
   }
 }
