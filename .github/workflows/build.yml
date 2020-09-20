@@ -79,7 +79,7 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: packages/daemon/coverages/lcov.info
+        path-to-lcov: packages/daemon/coverage/lcov.info
     - name: migration
       if: ${{ runner.os == 'Linux' }}
       run: |
