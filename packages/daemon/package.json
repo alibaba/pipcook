@@ -33,7 +33,6 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.5.5",
     "@types/request-promise": "^4.1.46",
-    "coveralls": "^3.1.0",
     "cross-env": "^6.0.0",
     "egg-ci": "^1.8.0",
     "midway-bin": "1",
