@@ -250,8 +250,8 @@ export class CostaRuntime {
    * @param from where the plugin installed from
    */
   async fetchFromInstalledPlugin(name: string, version: string, from: PluginProtocol): Promise<PluginPackage> {
-    return this.assignPackage(await readJson(
-      path.join(constants.PIPCOOK_PLUGINS, 'node_modules', getPluginDirectory(name, version, from), 'package.json')),
+    return this.assignPackage(
+      await readJson(path.join(constants.PIPCOOK_PLUGINS, 'node_modules', getPluginDirectory(name, version, from), 'package.json')),
       { from, name }
     );
   }
