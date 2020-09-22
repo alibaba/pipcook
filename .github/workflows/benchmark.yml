@@ -56,11 +56,11 @@ jobs:
           mnist_time=$((t2-t1))
           echo ::set-output name=mnist_time::$mnist_time
       - name: save bench
-          run: |
-            git config --global user.name 'pipcook'
-            git config --global user.email 'queyue.crk@alibaba-inc.com'
-            git clone https://github.com/imgcook/pipcook-benchmark.git
-            cd pipcook-benchmark
-            echo "{install_time:$steps.vars.outputs.install_time, esbuild_time:$steps.vars.outputs.esbuild_time, build_time:$steps.vars.outputs.build_time, test_time:$steps.vars.outputs.test_time, mnist_time:$steps.vars.outputs.mnist_time}"
-            git commit -m "add data" --allow-empty
-            git push
+        run: |
+          git config --global user.name 'pipcook'
+          git config --global user.email 'queyue.crk@alibaba-inc.com'
+          git clone https://github.com/imgcook/pipcook-benchmark.git
+          cd pipcook-benchmark
+          echo "{install_time:$steps.vars.outputs.install_time, esbuild_time:$steps.vars.outputs.esbuild_time, build_time:$steps.vars.outputs.build_time, test_time:$steps.vars.outputs.test_time, mnist_time:$steps.vars.outputs.mnist_time}"
+          git commit -m "add data" --allow-empty
+          git push
