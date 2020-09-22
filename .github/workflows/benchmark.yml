@@ -23,7 +23,7 @@ jobs:
           npm install
           t2=$(date +%s)
           install_time=$((t2-t1))
-          set-env ::set-env name=install_time::$install_time
+          echo set-env ::set-env name=install_time::$install_time
 
       - name: esBuild
           run: |
@@ -31,7 +31,7 @@ jobs:
             npm run dev-build
             t2=$(date +%s)
             esbuild_time=$((t2-t1))
-            set-env ::set-env name=esbuild_time::$esbuild_time
+            echo set-env ::set-env name=esbuild_time::$esbuild_time
 
       - name: build packages
           run: |
@@ -39,7 +39,7 @@ jobs:
             npm run build
             t2=$(date +%s)
             build_time=$((t2-t1))
-            set-env ::set-env name=build_time::$build_time
+            echo set-env ::set-env name=build_time::$build_time
 
       - name: unit test
           run: |
@@ -48,8 +48,8 @@ jobs:
             npm run test
             t2=$(date +%s)
             test_time=$((t2-t1))
-            set-env ::set-env name=test_time::$test_time
-            
+            echo set-env ::set-env name=test_time::$test_time
+
       - name: run pipeline
           run: |
             t1=$(date +%s)
