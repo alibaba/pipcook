@@ -76,7 +76,6 @@ const removeMidwayTS = () => new Promise((resolve, reject) => {
 
 const futures = [removeMidwayTS()];
 
-futures.push()
 for (const projConfig of config) {
   if (Array.isArray(projConfig.dependencies)) {
     futures.push(init(join(PIPCOOK_HOME_PATH, projConfig.destDir), projConfig.dependencies, force));
