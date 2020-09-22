@@ -65,7 +65,7 @@ if (process.argv.length > 2 && process.argv[2] === '-f') {
   force = true;
 }
 
-// need to manually delete ts under midway since midway does not handle yarn installation properly 
+// need to manually delete ts under midway since midway does not handle yarn installation properly
 const removeMidwayTS = () => new Promise((resolve, reject) => {
   const tsPath = path.join(__dirname, "../", "./node_modules/midway-bin/node_modules/typescript/");
   exec(`rm -rf ${tsPath}`, (err, stdout, stderr) => {
@@ -74,7 +74,7 @@ const removeMidwayTS = () => new Promise((resolve, reject) => {
   });
 });
 
-const futures = [removeMidwayTS()];
+const futures = [ removeMidwayTS() ];
 
 for (const projConfig of config) {
   if (Array.isArray(projConfig.dependencies)) {
