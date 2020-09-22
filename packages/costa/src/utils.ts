@@ -1,3 +1,5 @@
+import { PluginProtocol } from "@pipcook/pipcook-core";
+
 export interface LogStdio {
   stdout: NodeJS.WritableStream;
   stderr: NodeJS.WritableStream;
@@ -28,4 +30,14 @@ export function pipeLog(readable: NodeJS.ReadableStream, writable: NodeJS.Writab
       writable.write(data);
     }
   });
+}
+
+/**
+ * get the plugin directory name.
+ * @param name plugin name
+ * @param version plugin version
+ * @param from where the plugin installed from
+ */
+export function getPluginDirectory(name: string, version: string, from: PluginProtocol) {
+  return from === 'npm' ? `${name}-${version}` : name;
 }

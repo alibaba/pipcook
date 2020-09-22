@@ -1,6 +1,6 @@
 import { provide, inject } from 'midway';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
-import { PluginStatus } from '@pipcook/pipcook-core';
+import { PluginStatus, PluginProtocol } from '@pipcook/pipcook-core';
 import { TraceManager, Tracer } from './trace-manager';
 import PluginRuntime from '../boot/plugin';
 import { PluginModel, PluginEntity, QueryPluginsFilter } from '../model/plugin';
@@ -27,9 +27,11 @@ export class PluginManager {
   /**
    * fetch pakcage info by plugin name
    * @param name plugin name
+   * @param version plugin version
+   * @param from plugin source
    */
-  async fetchFromInstalledPlugin(name: string): Promise<PluginPackage> {
-    return this.pluginRT.costa.fetchFromInstalledPlugin(name);
+  async fetchFromInstalledPlugin(name: string, version: string, from: PluginProtocol): Promise<PluginPackage> {
+    return this.pluginRT.costa.fetchFromInstalledPlugin(name, version, from);
   }
   async fetchByStream(stream: NodeJS.ReadableStream): Promise<PluginPackage> {
     return this.pluginRT.costa.fetchByStream(stream);

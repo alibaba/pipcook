@@ -1,5 +1,5 @@
 import { STRING, INTEGER, Model, Sequelize } from 'sequelize';
-import { PluginStatus, generateId } from '@pipcook/pipcook-core';
+import { PluginStatus, generateId, PluginProtocol } from '@pipcook/pipcook-core';
 
 export interface PluginEntity {
   id: string;
@@ -9,7 +9,7 @@ export interface PluginEntity {
   datatype: string;
   namespace: string;
   dest: string;
-  sourceFrom: string;
+  sourceFrom: PluginProtocol;
   sourceUri: string;
   status: number;
   error?: string;

@@ -140,7 +140,7 @@ export class PipelineService {
           // ignore if any plugin not installed, because will throw an error after processing.
           if (noneInstalledPlugins.length === 0) {
             plugins[type] = await {
-              plugin: await this.pluginManager.fetchFromInstalledPlugin(plugin.name),
+              plugin: await this.pluginManager.fetchFromInstalledPlugin(plugin.name, plugin.version, plugin.sourceFrom),
               params: pipeline[`${type}Params`]
             };
           }

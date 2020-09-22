@@ -10239,6 +10239,11 @@ platform@^1.3.4:
   resolved "https://registry.npmjs.org/platform/-/platform-1.3.6.tgz#48b4ce983164b209c2d45a107adb31f473a6e7a7"
   integrity sha512-fnWVljUchTro6RiCFvCXBbNhJc2NijN7oIQxbwsyL0buWJPG85v81ehlHI9fXrJsMNgTofEoWIQeClKpgxFLrg==
 
+pnpm@^5.7.0:
+  version "5.12.0"
+  resolved "https://registry.npmjs.org/pnpm/-/pnpm-5.12.0.tgz#97692135fb7adcc280dbf3c606c7dd2239ed177d"
+  integrity sha512-ag+ar3N2DgYM2Tx5XMr0rCnuFteAokiEUZQRNJjuWNt091i3m68FDLxxfBTqM14ZnI6Z55S70XYWkesPo232BQ==
+
 portfinder@^1.0.25:
   version "1.0.28"
   resolved "https://registry.npmjs.org/portfinder/-/portfinder-1.0.28.tgz#67c4622852bd5374dd1dd900f779f53462fac778"

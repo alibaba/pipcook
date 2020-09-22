@@ -3,7 +3,7 @@ import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
 import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
 import { CostaRuntime, PluginPackage } from './runtime';
-import { pipeLog, LogStdio } from './utils';
+import { pipeLog, LogStdio, getPluginDirectory } from './utils';
 import Debug from 'debug';
 import { generateId } from '@pipcook/pipcook-core';
 const debug = Debug('costa.runnable');
@@ -151,9 +151,10 @@ export class PluginRunnable {
     }
 
     // prepare boa and miniconda environment
+    const dirName = getPluginDirectory(pkg.name, pkg.version, pkg.pipcook.source.from);
     await ensureSymlink(
-      path.join(installDir, 'node_modules', pkg.name),
-      compPath + `/node_modules/${pkg.name}`);
+      path.join(installDir, 'node_modules', dirName),
+      compPath + `/node_modules/${dirName}`);
 
     const resp = await this.sendAndWait(PluginOperator.WRITE, {
       event: 'start',

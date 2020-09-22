@@ -14,7 +14,7 @@ import {
   readJson,
   writeJson
 } from 'fs-extra';
-import { download, constants, generateId, parsePluginName } from '@pipcook/pipcook-core';
+import { download, constants, generateId, parsePluginName, PluginProtocol } from '@pipcook/pipcook-core';
 import * as tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
@@ -28,7 +28,7 @@ import {
   PluginSource,
   CondaConfig
 } from './index';
-import { pipeLog, LogStdio } from './utils';
+import { pipeLog, LogStdio, getPluginDirectory } from './utils';
 
 import { get, RequestPromiseOptions } from 'request-promise';
 import Debug from 'debug';
@@ -246,9 +246,14 @@ export class CostaRuntime {
   /**
    * fetch plugin package info by plugin name
    * @param name plugin name
+   * @param version plugin version
+   * @param from where the plugin installed from
    */
-  async fetchFromInstalledPlugin(name: string): Promise<PluginPackage> {
-    return this.assignPackage(await readJson(path.join(constants.PIPCOOK_PLUGINS, 'node_modules', name, 'package.json')), undefined);
+  async fetchFromInstalledPlugin(name: string, version: string, from: PluginProtocol): Promise<PluginPackage> {
+    return this.assignPackage(await readJson(
+      path.join(constants.PIPCOOK_PLUGINS, 'node_modules', getPluginDirectory(name, version, from), 'package.json')),
+      { from, name }
+    );
   }
 
   /**
@@ -308,10 +313,10 @@ export class CostaRuntime {
    * @param optsinstall options
    */
   private async installNodeModules(pkg: PluginPackage, opts: InstallOptions): Promise<void> {
-    const pluginStdName = `${pkg.name}@${pkg.version}`;
     let pluginAbsName;
     if (pkg.pipcook.source.from === 'npm') {
-      pluginAbsName = pluginStdName;
+      // install with alias if the plugin is from npm
+      pluginAbsName = `${getPluginDirectory(pkg.name, pkg.version, 'npm')}@npm:${pkg.name}@${pkg.version}`;
       debug(`install the plugin from npm registry: ${pluginAbsName}`);
     } else {
       pluginAbsName = pkg.pipcook.source.uri;
@@ -319,8 +324,7 @@ export class CostaRuntime {
     }
     const stdio = { stdout: opts.stdout, stderr: opts.stderr, prefix: 'NODE' };
     const npmExecOpts = { cwd: this.options.installDir };
-    const npmArgs = [ 'install', pluginAbsName, '-E', '--production' ];
-
+    const npmArgs = [ 'pnpm', 'install', pluginAbsName, '-E', '--production' ];
     if (this.options.npmRegistryPrefix) {
       npmArgs.push(`--registry=${this.options.npmRegistryPrefix}`);
     }
@@ -328,7 +332,7 @@ export class CostaRuntime {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts, stdio);
     }
-    return spawnAsync('npm', npmArgs, npmExecOpts, stdio);
+    return spawnAsync('npx', npmArgs, npmExecOpts, stdio);
   }
 
   /**
