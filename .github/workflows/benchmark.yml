@@ -56,6 +56,7 @@ jobs:
           mnist_time=$((t2-t1))
           echo ::set-output name=mnist_time::$mnist_time
       - name: save bench
+          run: |
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
           git clone https://github.com/imgcook/pipcook-benchmark.git
