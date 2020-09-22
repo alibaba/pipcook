@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      
+
 jobs:
   release:
     name: Release
@@ -24,6 +24,7 @@ jobs:
           t2=$(date +%s)
           install_time=$((t2-t1))
           set-env ::set-env name=install_time::$install_time
+
       - name: esBuild
           run: |
             t1=$(date +%s)
@@ -31,6 +32,7 @@ jobs:
             t2=$(date +%s)
             esbuild_time=$((t2-t1))
             set-env ::set-env name=esbuild_time::$esbuild_time
+
       - name: build packages
           run: |
             t1=$(date +%s)
@@ -38,6 +40,7 @@ jobs:
             t2=$(date +%s)
             build_time=$((t2-t1))
             set-env ::set-env name=build_time::$build_time
+
       - name: unit test
           run: |
             ./packages/cli/dist/bin/pipcook daemon start
@@ -46,6 +49,7 @@ jobs:
             t2=$(date +%s)
             test_time=$((t2-t1))
             set-env ::set-env name=test_time::$test_time
+            
       - name: run pipeline
           run: |
             t1=$(date +%s)
