@@ -3,8 +3,8 @@ on:
   pull_request:
 
 jobs:
-  release:
-    name: Release
+  Benchmark:
+    name: Benchmark
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
