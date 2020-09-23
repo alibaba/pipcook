@@ -66,7 +66,7 @@ describe('create a costa runtime', () => {
     expect(npmPkg.pipcook.category).toBe('dataCollect');
     await costa.install(npmPkg, process);
     // make sure js packages are installed.
-    await stat(path.join(costa.options.installDir, 'node_modules', npmPkg.name));
+    await stat(path.join(costa.options.installDir, 'node_modules', `${npmPkg.name}-${npmPkg.version}`));
     // make sure python caches are used.
     await stat(path.join(costa.options.installDir, '.pip/selfcheck.json'));
   });
