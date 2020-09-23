@@ -315,7 +315,7 @@ export class CostaRuntime {
   private async installNodeModules(pkg: PluginPackage, opts: InstallOptions): Promise<void> {
     let pluginAbsName;
     if (pkg.pipcook.source.from === 'npm') {
-      // install with alias if the plugin is from npm
+      // install with alias if the plugin is from npm for multiple versions
       pluginAbsName = `${getPluginDirectory(pkg.name, pkg.version, 'npm')}@npm:${pkg.name}@${pkg.version}`;
       debug(`install the plugin from npm registry: ${pluginAbsName}`);
     } else {
@@ -324,7 +324,7 @@ export class CostaRuntime {
     }
     const stdio = { stdout: opts.stdout, stderr: opts.stderr, prefix: 'NODE' };
     const npmExecOpts = { cwd: this.options.installDir };
-    const npmArgs = [ 'pnpm', 'install', pluginAbsName, '-E', '--production' ];
+    const npmArgs = [ 'pnpm', 'install', pluginAbsName, '-E', '-P' ];
     if (this.options.npmRegistryPrefix) {
       npmArgs.push(`--registry=${this.options.npmRegistryPrefix}`);
     }
