@@ -1,3 +1,6 @@
+const util = require('util');
+const { pipeline } = require('stream');
+
 export interface LogStdio {
   stdout: NodeJS.WritableStream;
   stderr: NodeJS.WritableStream;
@@ -30,16 +33,4 @@ export function pipeLog(readable: NodeJS.ReadableStream, writable: NodeJS.Writab
   });
 }
 
-/**
- * pipe read stream to write steam with finish event
- * @param readStream the read stream
- * @param writeStream the write stream
- */
-export function pipeGracefully(readStream: NodeJS.ReadableStream, writeStream: NodeJS.WritableStream): Promise<void> {
-  return new Promise((resolve, reject) => {
-    readStream.pipe(writeStream);
-    readStream.on('error', reject);
-    writeStream.on('error', reject);
-    writeStream.on('finish', resolve);
-  });
-}
+export const pipeGracefully = util.promisify(pipeline);
