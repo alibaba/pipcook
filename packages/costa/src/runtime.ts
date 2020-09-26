@@ -28,11 +28,14 @@ import {
   PluginSource,
   CondaConfig
 } from './index';
-import { pipeLog, LogStdio, pipeGracefully } from './utils';
+import { pipeLog, LogStdio } from './utils';
 
 import { get, RequestPromiseOptions } from 'request-promise';
 import Debug from 'debug';
+import * as util from 'util';
+import { pipeline } from 'stream';
 
+const pipelinePromisify = util.promisify(pipeline);
 const debug = Debug('costa.runtime');
 
 function selectNpmPackage(metadata: NpmPackageMetadata, source: PluginSource): NpmPackage {
@@ -87,7 +90,7 @@ async function extractPackageJsonFromReadable(readable: NodeJS.ReadableStream, p
     stream.once('end', next);
     stream.resume();
   });
-  await pipeGracefully(readable, extract);
+  await pipelinePromisify(readable, extract);
   return JSON.parse(packageJson);
 }
 
@@ -121,7 +124,7 @@ async function fetchPackageJsonFromTarballStream(fileStream: NodeJS.ReadableStre
     stream.once('end', next);
     stream.resume();
   });
-  await pipeGracefully(fileStream, unzip, extract);
+  await pipelinePromisify(fileStream, unzip, extract);
   return JSON.parse(packageJson);
 }
 
@@ -289,7 +292,7 @@ export class CostaRuntime {
     const filename = path.join(fileDir, 'pkg.tgz');
     await mkdirp(fileDir);
     const writeStream = createWriteStream(filename);
-    await pipeGracefully(stream, writeStream);
+    await pipelinePromisify(stream, writeStream);
     const pkg = await fetchPackageJsonFromTarball(filename);
     const source: PluginSource = {
       from: 'tarball',

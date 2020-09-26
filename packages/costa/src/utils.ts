@@ -1,6 +1,3 @@
-const util = require('util');
-const { pipeline } = require('stream');
-
 export interface LogStdio {
   stdout: NodeJS.WritableStream;
   stderr: NodeJS.WritableStream;
@@ -32,5 +29,3 @@ export function pipeLog(readable: NodeJS.ReadableStream, writable: NodeJS.Writab
     }
   });
 }
-
-export const pipeGracefully = util.promisify(pipeline);
