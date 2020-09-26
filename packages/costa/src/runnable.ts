@@ -18,6 +18,8 @@ export class RunnableResponse implements PluginResponse {
   }
 }
 
+// wait 1000ms for chile process finish.
+const waitForDestroyed = 1000;
 /**
  * The arguments for calling `bootstrap`.
  */
@@ -47,7 +49,8 @@ export class PluginRunnable {
   private onread: Function | null;
   private onreadfail: Function | null;
   private ondestroyed: Function | null;
-
+  // timer for wait the process to exit itself
+  private notRespondTimer: NodeJS.Timeout;
   /**
    * The runnable id.
    */
@@ -176,6 +179,10 @@ export class PluginRunnable {
       return;
     }
     this.canceled = true;
+    // if not exit after `waitForDestroied`, we need to kill it directly.
+    this.notRespondTimer = setTimeout(() => {
+      this.handle.kill('SIGKILL');
+    }, waitForDestroyed);
     this.send(PluginOperator.WRITE, { event: 'destroy' });
     return new Promise((resolve) => {
       this.ondestroyed = resolve;
@@ -237,6 +244,7 @@ export class PluginRunnable {
     }
     return resp;
   }
+
   /**
    * handle the messages from peer client.
    * @param msg
@@ -252,6 +260,10 @@ export class PluginRunnable {
    */
   private async afterDestroy(code: number, signal: NodeJS.Signals): Promise<void> {
     debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
+    if (this.notRespondTimer) {
+      clearTimeout(this.notRespondTimer);
+      this.notRespondTimer = null;
+    }
     // FIXME(Yorkie): remove component directory?
     // await remove(path.join(this.rt.options.componentDir, this.id));
     if (typeof this.onread === 'function' && typeof this.onreadfail === 'function') {
