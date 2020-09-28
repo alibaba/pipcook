@@ -17,11 +17,13 @@
     <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/alibaba/pipcook"></a>
   <a href="https://opensource.org/licenses/Apache-2.0">
     <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
-  <a href='https://coveralls.io/github/alibaba/pipcook'>
-    <img src='https://coveralls.io/repos/github/alibaba/pipcook/badge.svg' alt='Coverage Status' /></a>
 </p>
 
 ## Builds
+
+| Sub Project | Coverages |
+|---------------|--------|
+| daemon        | <a href='https://coveralls.io/github/alibaba/pipcook'><img src='https://coveralls.io/repos/github/alibaba/pipcook/badge.svg' alt='Coverage Status' /></a> |
 
 | Build Types | Status |
 |---------------|--------|

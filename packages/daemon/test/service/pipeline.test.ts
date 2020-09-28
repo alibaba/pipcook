@@ -9,7 +9,6 @@ import { PipelineService } from '../../src/service/pipeline';
 import { Tracer } from '../../src/service/trace-manager';
 import { JobModel, JobEntity } from '../../src/model/job';
 import { PipelineEntity } from '../../src/model/pipeline';
-// import { pluginQueue } from '../../src/utils';
 
 const mockPipeline = {
   id: 'mockId',

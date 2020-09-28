@@ -43,7 +43,6 @@ export class AppService {
     // create pipelines
     await Promise.all(ctx.pipelines.map(async (pipeline) => {
       const data = await parseConfig(pipeline.config as RunConfigI);
-      console.log('pipeline.config', pipeline.config);
       const newPipeline = await this.PipelineService.createPipeline(data);
       pipeline.id = newPipeline.id;
     }));

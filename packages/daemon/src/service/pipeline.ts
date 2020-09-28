@@ -84,7 +84,6 @@ export class PipelineService {
   async removeJobById(id: string): Promise<number> {
     const job = await JobModel.getJobById(id);
     if (job) {
-      console.log('removeJobById', `${CoreConstants.PIPCOOK_RUN}/${job.id}`);
       await Promise.all([
         JobModel.removeJobById(job.id),
         fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
@@ -304,7 +303,6 @@ export class PipelineService {
         console.error(`no runnable found: ${id}`);
       }
       job.status = PipelineStatus.CANCELED;
-      console.log(job);
       await JobModel.saveJob(job);
     } else {
       throw createHttpError(HttpStatus.BAD_REQUEST, 'job is not running');
