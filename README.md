@@ -21,10 +21,6 @@
 
 ## Builds
 
-| Sub Project | Coverages |
-|---------------|--------|
-| daemon        | <a href='https://coveralls.io/github/alibaba/pipcook'><img src='https://coveralls.io/repos/github/alibaba/pipcook/badge.svg' alt='Coverage Status' /></a> |
-
 | Build Types | Status |
 |---------------|--------|
 | tests         | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Abuild"><img src="https://github.com/alibaba/pipcook/workflows/build/badge.svg?branch=master&event=push"></a> |
