@@ -131,3 +131,9 @@ jobs:
     - name: "pipcook plugin-dev"
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
+    - name: "daemon start on customized port"
+      run: |
+        ./packages/cli/dist/bin/pipcook daemon stop
+        echo "{ \"host\": \"127.0.0.1\", \"port\": 7000 }" > ~/.pipcook/daemon.config.json
+        ./packages/cli/dist/bin/pipcook daemon start
+        ./packages/cli/dist/bin/pipcook pipeline list -h 127.0.0.1 -p 7000

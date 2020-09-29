@@ -11,7 +11,8 @@ const PIPCOOK_HOME = os.homedir() + '/.pipcook';
 const DAEMON_PIDFILE = PIPCOOK_HOME + '/daemon.pid';
 const DAEMON_CONFIG = PIPCOOK_HOME + '/daemon.config.json';
 const PIPCOOK_DB = PIPCOOK_HOME + '/db/pipcook.db';
-const PORT = 6927;
+let PORT = 6927;
+let HOST = '127.0.0.1';
 
 const isChildMode = typeof process.send === 'function';
 const bootstrapProcessState = {
@@ -53,9 +54,15 @@ function createPidfileSync(pathname) {
   // load config
   if (await pathExists(DAEMON_CONFIG)) {
     const config = require(DAEMON_CONFIG);
-    if (config && config.env) {
+    if (config?.env) {
       process.env.BOA_CONDA_MIRROR = config.env.BOA_CONDA_MIRROR;
       console.info(`set env BOA_CONDA_MIRROR=${config.env.BOA_CONDA_MIRROR}`);
+    }
+    if (config?.port) {
+      PORT = config.port;
+    }
+    if (config?.host) {
+      HOST = config.host;
     }
   }
 
@@ -84,14 +91,14 @@ function createPidfileSync(pathname) {
 
     // server listen
     await new Promise(resolve => {
-      server.listen(PORT, resolve);
+      server.listen(PORT, HOST, resolve);
     });
   } catch (err) {
     return exitProcessWithError(err);
   }
 
   process.title = 'pipcook.daemon';
-  console.info('Server is listening at http://localhost:%s, cost %ss', PORT, process.uptime());
+  console.info('Server is listening at http://%s:%s, cost %ss', HOST, PORT, process.uptime());
 
   prepareToReady();
 })();
@@ -134,7 +141,8 @@ function prepareToReady() {
   process.send({
     event: 'ready',
     data: {
-      listen: PORT
+      host: HOST,
+      port: PORT
     }
   });
 }

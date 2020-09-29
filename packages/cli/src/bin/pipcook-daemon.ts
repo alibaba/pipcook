@@ -16,7 +16,8 @@ const BOOTSTRAP_HOME = path.join(DAEMON_HOME, 'bootstrap.js');
 interface DaemonBootstrapMessage {
   event: string;
   data: {
-    listen: number;
+    host: string;
+    port: number;
   };
 }
 
@@ -36,7 +37,8 @@ async function start(): Promise<void> {
     if (message.event === 'ready') {
       daemon.disconnect();
       daemon.unref();
-      logger.success(`Pipcook service started on ${message.data.listen}. To open pipboard, please visit https://pipboard.vercel.app`);
+      let serverInfo = (message.data as any).listen ?? `${message.data.host}:${message.data.port}`;
+      logger.success(`Pipcook service started on ${serverInfo}. To open pipboard, please visit https://pipboard.vercel.app`);
     }
   });
   daemon.on('exit', async (code: number) => {
