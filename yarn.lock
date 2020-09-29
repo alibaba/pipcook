@@ -13190,6 +13190,11 @@ yargs@^7.0.1:
     y18n "^3.2.1"
     yargs-parser "5.0.0-security.0"
 
+yarn@^1.22.10:
+  version "1.22.10"
+  resolved "https://registry.npm.taobao.org/yarn/download/yarn-1.22.10.tgz?cache=0&sync_timestamp=1601300116023&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fyarn%2Fdownload%2Fyarn-1.22.10.tgz#c99daa06257c80f8fa2c3f1490724e394c26b18c"
+  integrity sha1-yZ2qBiV8gPj6LD8UkHJOOUwmsYw=
+
 yauzl@^2.10.0:
   version "2.10.0"
   resolved "https://registry.npm.taobao.org/yauzl/download/yauzl-2.10.0.tgz#c7eb17c93e112cb1086fa6d8e51fb0667b79a5f9"
