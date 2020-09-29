@@ -21,7 +21,7 @@ describe('test LogPassthrough', () => {
   it('#create and destroy with log file', async () => {
     const logger = new LogPassthrough(logFilename);
     await logger.finish();
-    assert(await fs.pathExists(logFilename));
+    assert.ok(await fs.pathExists(logFilename));
     await removeLog();
   });
   it('#create and destroy with log file', async () => {
@@ -33,7 +33,7 @@ describe('test LogPassthrough', () => {
       logger.write(`log test ${i}\n`);
     }
     await logger.finish();
-    assert(await fs.pathExists(logFilename));
+    assert.ok(await fs.pathExists(logFilename));
     assert.equal(await fs.readFile(logFilename, 'utf8'), inputContext);
     await removeLog();
   });

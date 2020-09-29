@@ -19,16 +19,5 @@ export default {
         ]);
       }
     });
-  },
-
-  down: (queryInterface: QueryInterface) => {
-    return queryInterface.sequelize.transaction(async t => {
-      const tbNames = await queryInterface.showAllTables();
-      if (tbNames.indexOf('plugins') >= 0) {
-        const columns = await queryInterface.describeTable('plugins');
-        !columns['status'] && await queryInterface.removeColumn('plugins', 'status', { transaction: t });
-        !columns['status'] && await queryInterface.removeColumn('plugins', 'error', { transaction: t });
-      }
-    });
   }
 };

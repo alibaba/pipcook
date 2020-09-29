@@ -70,6 +70,16 @@ jobs:
     - name: Running unit tests
       run: |
         npm test
+    - name: run cov
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      run: |
+        npm run cov
+    - name: Coveralls
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: packages/daemon/coverage/lcov.info
     - name: migration
       if: ${{ runner.os == 'Linux' }}
       run: |
@@ -99,6 +109,12 @@ jobs:
       run: |
         ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
         ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
+    - name: install plugin from local project
+      run: |
+        ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/test/plugins/nodejs-simple
+        npm pack ./packages/costa/test/plugins/nodejs-simple
+        ./packages/cli/dist/bin/pipcook plugin install ./nodejs-simple-1.0.0.tgz
+        rm ./nodejs-simple-1.0.0.tgz
     - name: pipcook run from local filename
       run: |
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
