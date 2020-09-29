@@ -1,0 +1,16 @@
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+
+jobs:
+  bench:
+    docker:
+        - image: cimg/node:14.11.0
+    steps:
+      - checkout
+      - run: bash ./tools/bench.sh
+
+workflows:
+  node-bench:
+    jobs:
+      - bench
