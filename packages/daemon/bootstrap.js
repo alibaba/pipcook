@@ -12,7 +12,7 @@ const DAEMON_PIDFILE = PIPCOOK_HOME + '/daemon.pid';
 const DAEMON_CONFIG = PIPCOOK_HOME + '/daemon.config.json';
 const PIPCOOK_DB = PIPCOOK_HOME + '/db/pipcook.db';
 let PORT = 6927;
-let HOST = '127.0.0.1';
+let HOST = 'locahost';
 
 const isChildMode = typeof process.send === 'function';
 const bootstrapProcessState = {

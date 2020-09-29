@@ -37,7 +37,7 @@ async function start(): Promise<void> {
     if (message.event === 'ready') {
       daemon.disconnect();
       daemon.unref();
-      let serverInfo = (message.data as any).listen ?? `${message.data.host}:${message.data.port}`;
+      const serverInfo = (message.data as any).listen ?? `${message.data.host}:${message.data.port}`;
       logger.success(`Pipcook service started on ${serverInfo}. To open pipboard, please visit https://pipboard.vercel.app`);
     }
   });
