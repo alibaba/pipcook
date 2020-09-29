@@ -12,7 +12,7 @@ const DAEMON_PIDFILE = PIPCOOK_HOME + '/daemon.pid';
 const DAEMON_CONFIG = PIPCOOK_HOME + '/daemon.config.json';
 const PIPCOOK_DB = PIPCOOK_HOME + '/db/pipcook.db';
 let PORT = 6927;
-let HOST = 'locahost';
+let HOST = null;
 
 const isChildMode = typeof process.send === 'function';
 const bootstrapProcessState = {
@@ -91,14 +91,18 @@ function createPidfileSync(pathname) {
 
     // server listen
     await new Promise(resolve => {
-      server.listen(PORT, HOST, resolve);
+      if (HOST) {
+        server.listen(PORT, HOST, resolve);
+      } else {
+        server.listen(PORT, resolve).address();
+      }
     });
   } catch (err) {
     return exitProcessWithError(err);
   }
 
   process.title = 'pipcook.daemon';
-  console.info('Server is listening at http://%s:%s, cost %ss', HOST, PORT, process.uptime());
+  console.info('Server is listening at http://%s:%s, cost %ss', HOST ?? '0.0.0.0', PORT, process.uptime());
 
   prepareToReady();
 })();
@@ -141,7 +145,7 @@ function prepareToReady() {
   process.send({
     event: 'ready',
     data: {
-      host: HOST,
+      host: HOST ?? '0.0.0.0',
       port: PORT
     }
   });
