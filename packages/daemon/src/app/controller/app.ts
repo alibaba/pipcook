@@ -5,7 +5,7 @@ import { AppService } from '../../service/app';
 @provide()
 @controller('/app')
 export class AppController extends BaseController {
-  @inject('AppService')
+  @inject('appService')
   AppService: AppService;
 
   @post('/compile')

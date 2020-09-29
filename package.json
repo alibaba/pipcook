@@ -10,7 +10,7 @@
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
     "docsify-cli": "^4.4.0",
-    "esbuild": "^0.6.32",
+    "esbuild": "^0.7.2",
     "eslint": "^6.6.0",
     "http-server": "^0.12.3",
     "jasmine": "^3.5.0",
@@ -18,7 +18,7 @@
     "lerna": "^3.18.4",
     "ts-node": "^8.6.2",
     "typedoc": "^0.17.8",
-    "typescript": "^3.9.7"
+    "typescript": "3.8.3"
   },
   "scripts": {
     "build": "lerna run compile",
@@ -34,6 +34,7 @@
     "release": "lerna publish from-package --yes --no-verify-access",
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
     "beta-release": "lerna publish from-package --yes --no-verify-access --dist-tag beta",
-    "init-dev": "node ./tools/init_dev.js -f"
+    "init-dev": "node ./tools/init_dev.js -f",
+    "cov": "lerna run cov"
   }
 }
