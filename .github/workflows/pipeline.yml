@@ -11,7 +11,7 @@ jobs:
       matrix:
         node_version: ['12']
         os: [ubuntu-latest]
-        pipeline: ['mnist-image-classification', 'databinding-image-classification-resnet', 'text-bayes-classification', 'fasttext', 'english-name-entity-recognition']
+        pipeline: ['mnist-image-classification', 'databinding-image-classification-resnet', 'text-bayes-classification', 'fasttext']
     steps:
     - uses: actions/checkout@v2
     - name: Using Node.js ${{ matrix.node_version }}
