@@ -32,11 +32,11 @@ jobs:
         node-version: 14
     - name: Installing Pipcook
       run: |
-        npm install
+        yarn
     - name: Building Pipcook
       run: |
-        npm run dev-build
+        yarn dev-build
     - name: Running unit tests
       run: |
-        npm run init-dev
+        yarn init-dev
         npm test

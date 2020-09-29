@@ -63,9 +63,9 @@ jobs:
         node-version: ${{ matrix.node_version }}
     - name: Building Pipcook
       run: |
-        npm install
-        npm run build
-        npm run init-dev
+        yarn
+        yarn build
+        yarn init-dev
         du -h -d 1
     - name: Running unit tests
       run: |
@@ -104,7 +104,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
     - name: Running an example pipeline
       run: |
-        npm run test:pipeline -- text-bayes-classification
+        yarn test:pipeline -- text-bayes-classification
     - name: install a new plugin and install a installed plugin
       run: |
         ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
