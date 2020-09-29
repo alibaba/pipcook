@@ -4,7 +4,7 @@ import { PluginStatus } from '@pipcook/pipcook-core';
 import { spawnSync } from 'child_process';
 import fs from 'fs-extra';
 import { tunaMirrorURI } from '../config';
-import { logger, initClient, traceLogger } from '../utils/common';
+import { logger, initClient, traceLogger, readPkgFromTgz } from '../utils/common';
 
 /**
  * trace install event
@@ -40,26 +40,41 @@ async function traceInstallEvent(traceObj: TraceResp<PluginResp>, opts: any): Pr
  */
 export async function installFromLocal(localPath: string, opts: any): Promise<PluginResp> {
   const client = initClient(opts.hostIp, opts.port);
+  let tarball: string;
   let pkg: any;
+  const isDirectory = (await fs.stat(localPath)).isDirectory();
+  if (!isDirectory && path.extname(localPath) !== '.tgz') {
+    logger.fail('invalid local plugin path, it should be a plugin project directory or a tarball');
+  }
   try {
-    pkg = await fs.readJSON(path.join(localPath, 'package.json'));
-    logger.start(`installing ${pkg.name} from ${localPath}`);
+    if (isDirectory) {
+      pkg = await fs.readJSON(path.join(localPath, 'package.json'));
+      if (!pkg?.pipcook) {
+        throw new TypeError('invalid plugin package');
+      }
+      const output = spawnSync('npm', [ 'pack' ], { cwd: localPath });
+      logger.start(`installing ${pkg.name} from ${localPath}`);
+      if (output.status !== 0) {
+        throw new TypeError(`read local package error: ${output.stderr.toString()}`);
+      } else {
+        tarball = path.join(localPath, output.stdout.toString().replace(/[\n\r]/g, ''));
+      }
+    } else {
+      pkg = await readPkgFromTgz(localPath);
+      if (!pkg?.pipcook) {
+        throw new TypeError('invalid plugin package');
+      }
+      logger.start(`installing ${pkg.name} from ${localPath}`);
+      tarball = localPath;
+    }
   } catch (err) {
     throw new TypeError(`read package.json error: ${err.message}`);
   }
-  if (!pkg?.pipcook) {
-    throw new TypeError('invalid plugin package');
-  }
-  const output = spawnSync('npm', [ 'pack' ], { cwd: localPath });
-  let tarball: string;
-  if (output.status !== 0) {
-    throw new TypeError(`read local package error: ${output.stderr.toString()}`);
-  } else {
-    tarball = output.stdout.toString().replace(/[\n\r]/g, '');
-  }
-  const fstream = fs.createReadStream(path.join(localPath, tarball));
+  const fstream = fs.createReadStream(tarball);
   const resp = await client.plugin.createByTarball(fstream, opts.tuna ? tunaMirrorURI : undefined);
-  await fs.remove(path.join(localPath, tarball));
+  if (isDirectory) {
+    await fs.remove(tarball);
+  }
   if (resp.status === PluginStatus.INSTALLED) {
     logger.success(`${pkg.name} already installed`);
     return resp;
@@ -95,7 +110,7 @@ export async function install(name: string, opts: any): Promise<PluginResp> {
     name = path.join(process.cwd(), name);
   }
   try {
-    if (await fs.pathExists(name) && (await fs.stat(name)).isDirectory()) {
+    if (await fs.pathExists(name)) {
       // install from local package directory
       return await installFromLocal(name, opts);
     } else {

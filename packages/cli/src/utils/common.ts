@@ -8,12 +8,16 @@ import {
   ExecException
 } from 'child_process';
 import tar from 'tar-stream';
-import { createGunzip } from 'zlib';
-import { pathExists, mkdirp, createWriteStream } from 'fs-extra';
+import { createGunzip, createUnzip } from 'zlib';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
+import { pathExists, mkdirp, createWriteStream, createReadStream } from 'fs-extra';
 import path from 'path';
 import { constants as CoreConstants, PipelineStatus } from '@pipcook/pipcook-core';
 import { PipcookClient } from '@pipcook/sdk';
 import realOra = require('ora');
+
+const pipelinePromisify = promisify(pipeline);
 
 export const Constants = {
   BOA_CONDA_INDEX: 'https://pypi.tuna.tsinghua.edu.cn/simple',
@@ -217,4 +221,24 @@ export function traceLogger(event: string, data: any) {
       logger.info('[job] run successfully');
     }
   }
+}
+
+/**
+ * read package.json as json object from tgz.
+ * @param file package file path
+ */
+export async function readPkgFromTgz(file: string): Promise<any> {
+  let packageJson = '';
+  const fileStream = createReadStream(file);
+  const unzip = createUnzip();
+  const extract = tar.extract();
+  extract.on('entry', (header, stream, next) => {
+    if (header.name === 'package/package.json') {
+      stream.on('data', (buf) => packageJson += buf);
+    }
+    stream.once('end', next);
+    stream.resume();
+  });
+  await pipelinePromisify(fileStream, unzip, extract);
+  return JSON.parse(packageJson);
 }
