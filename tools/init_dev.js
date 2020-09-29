@@ -9,6 +9,9 @@ const { join, dirname } = path;
 const { mkdirp, stat, readJson, writeJson, remove, pathExists, symlink } = fs;
 const config = require('./dev_config.json');
 const { exec } = require('child_process');
+const { promisify } = require('util');
+
+const execAsync = promisify(exec);
 
 const PIPCOOK_HOME_PATH = join(homedir(), '.pipcook');
 
@@ -66,13 +69,10 @@ if (process.argv.length > 2 && process.argv[2] === '-f') {
 }
 
 // need to manually delete ts under midway since midway does not handle yarn installation properly
-const removeMidwayTS = () => new Promise((resolve, reject) => {
+const removeMidwayTS = () => {
   const tsPath = path.join(__dirname, '../', './node_modules/midway-bin/node_modules/typescript/');
-  exec(`rm -rf ${tsPath}`, (err, stdout, stderr) => {
-    if (err) reject(stderr);
-    else resolve(stdout);
-  });
-});
+  return execAsync(`rm -rf ${tsPath}`);
+};
 
 const futures = [ removeMidwayTS() ];
 
