@@ -105,7 +105,7 @@ function createPidfileSync(pathname) {
   }
 
   process.title = 'pipcook.daemon';
-  console.info('Server is listening at http://%s:%s, cost %ss', HOST ?? '0.0.0.0', PORT, process.uptime());
+  console.info('Server is listening at http://%s:%s, cost %ss', HOST || '0.0.0.0', PORT, process.uptime());
 
   prepareToReady();
 })();
@@ -148,7 +148,7 @@ function prepareToReady() {
   process.send({
     event: 'ready',
     data: {
-      host: HOST ?? '0.0.0.0',
+      host: HOST || '0.0.0.0',
       port: PORT,
       // for compatibility with older versions
       listen: PORT
