@@ -27,6 +27,8 @@ $(BUILD):
 	$(MD5CMD)
 	tar -C $(DOWNLOAD_DIR) -xf $(TARBALL)
 	mv $(ARCHIVE_DIR) $(BUILD)
+	# apply patches
+	patch -u -b src/include/pybind11/pytypes.h -i patches/2.4.3-fix-object-destruct.patch
 
 clean:
 	rm -rf $(BUILD)

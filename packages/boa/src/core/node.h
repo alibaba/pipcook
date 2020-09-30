@@ -23,9 +23,6 @@ private:
   Napi::Value Globals(const CallbackInfo &);
   Napi::Value Import(const CallbackInfo &);
   Napi::Value Print(const CallbackInfo &);
-
-private:
-  bool _initialized = false;
 };
 
 } // namespace boa

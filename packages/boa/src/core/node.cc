@@ -49,14 +49,12 @@ PythonNode::PythonNode(const CallbackInfo &info)
       for (wchar_t *item : argv)
         PyMem_RawFree(item);
     }
-    _initialized = true;
   }
 }
 
 PythonNode::~PythonNode() {
-  if (_initialized == true) {
+  if (Py_IsInitialized() == true) {
     pybind::finalize_interpreter();
-    _initialized = false;
   }
 }
 

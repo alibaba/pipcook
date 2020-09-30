@@ -214,12 +214,6 @@ function _internalWrap(T, src={}) {
       writable: false,
       value: () => T.toString(),
     },
-    toPointer: {
-      configurable: true,
-      enumerable: false,
-      writable: false,
-      value: () => T.toPointer(),
-    },
     /**
      * @method toJSON
      * @public
@@ -239,6 +233,16 @@ function _internalWrap(T, src={}) {
         // TODO(Yorkie): more performant way to serialize objects?
         return JSON.parse(wrap(str));
       },
+    },
+    /**
+     * @method toPointer
+     * @public
+     */
+    toPointer: {
+      configurable: true,
+      enumerable: false,
+      writable: false,
+      value: () => T.toPointer(),
     },
     /**
      * Shortcut for slicing object.
@@ -508,6 +512,10 @@ module.exports = {
       return v;
     })();
   },
+  /**
+   * Evaluate a Python expression.
+   * @param {string} strs the Python exprs.
+   */
   'eval': (strs, ...params) => {
     let src = '';
     let env = globals;
@@ -539,8 +547,9 @@ module.exports = {
       { globals: env, locals: env }
     ));
   },
-
-  from(pointer) {
-    return wrap(new native.PythonObject(pointer));
-  },
+  /**
+   * Create a shadow object from pointer via `obj.toPointer()`.
+   * @param {number} pointer the pointer to the object in Python.
+   */
+  from: (pointer) => wrap(new native.PythonObject(pointer)),
 };
