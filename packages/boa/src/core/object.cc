@@ -20,6 +20,7 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
           InstanceMethod("toBigInt", &PythonObject::ToBigInt),
           InstanceMethod("toPrimitive", &PythonObject::ToPrimitive),
           InstanceMethod("toString", &PythonObject::ToString),
+          InstanceMethod("toPointer", &PythonObject::ToPointer),
           InstanceMethod("setClassMethod", &PythonObject::SetClassMethod),
           // Python magic methods
           InstanceMethod("__hash__", &PythonObject::Hash),
@@ -58,7 +59,14 @@ PythonObject::PythonObject(const CallbackInfo &info)
     : ObjectWrap<PythonObject>(info) {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
-  _self = *(info[0].As<External<pybind::object>>().Data());
+  if (info[0].IsNumber()) {
+    auto p = (uintptr_t)info[0].As<Number>().DoubleValue();
+    auto o = reinterpret_cast<PyObject*>(p);
+    fprintf(stderr, "from %p(native)\n", o);
+    _self = pybind::reinterpret_borrow<pybind::object>(o);
+  } else {
+    _self = *(info[0].As<External<pybind::object>>().Data());
+  }
 }
 
 pybind::object PythonObject::value() { return _self; }
@@ -203,6 +211,13 @@ Napi::Value PythonObject::ToPrimitive(const CallbackInfo &info) {
 
 Napi::Value PythonObject::ToString(const CallbackInfo &info) {
   return String::New(info.Env(), ToString());
+}
+
+Napi::Value PythonObject::ToPointer(const CallbackInfo &info) {
+  auto pnative = _self.ptr();
+  auto pointer = reinterpret_cast<uintptr_t>(pnative);
+  fprintf(stderr, "to %p(native)\n", pnative);
+  return Number::New(info.Env(), pointer);
 }
 
 // See

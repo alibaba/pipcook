@@ -29,6 +29,7 @@ private:
   Napi::Value ToBigInt(const CallbackInfo &);
   Napi::Value ToPrimitive(const CallbackInfo &);
   Napi::Value ToString(const CallbackInfo &);
+  Napi::Value ToPointer(const CallbackInfo &);
   Napi::Value SetClassMethod(const CallbackInfo &);
 
   // Python magic methods

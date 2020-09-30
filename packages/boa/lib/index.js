@@ -214,6 +214,12 @@ function _internalWrap(T, src={}) {
       writable: false,
       value: () => T.toString(),
     },
+    toPointer: {
+      configurable: true,
+      enumerable: false,
+      writable: false,
+      value: () => T.toPointer(),
+    },
     /**
      * @method toJSON
      * @public
@@ -532,5 +538,9 @@ module.exports = {
       lines.map(utils.removeIndent(indent)).join('\n'),
       { globals: env, locals: env }
     ));
+  },
+
+  from(pointer) {
+    return wrap(new native.PythonObject(pointer));
   },
 };
