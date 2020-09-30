@@ -18,6 +18,10 @@ interface DaemonBootstrapMessage {
   data: {
     host: string;
     port: number;
+    /**
+     * deprecated feild
+     */
+    listen: number;
   };
 }
 
@@ -37,14 +41,20 @@ async function start(): Promise<void> {
     if (message.event === 'ready') {
       daemon.disconnect();
       daemon.unref();
-      const serverInfo = (message.data as any).listen ?? `${message.data.host}:${message.data.port}`;
+      let serverInfo;
+      // TODO(Feely): the listen field is deprecated, we will remove this
+      if (message.data.listen) {
+        serverInfo = message.data.listen;
+      } else if (message.data.host && message.data.port) {
+        serverInfo = `${message.data.host}:${message.data.port}`;
+      }
       logger.success(`Pipcook service started on ${serverInfo}. To open pipboard, please visit https://pipboard.vercel.app`);
     }
   });
   daemon.on('exit', async (code: number) => {
     logger.fail(`Pipcook daemon starts failed with code(${code}).`, false);
     // TODO(yorkie): check if this is local mode.
-    console.error(await readFile(ACCESS_LOG, 'utf8'));
+    logger.fail(await readFile(ACCESS_LOG, 'utf8'));
   });
 }
 

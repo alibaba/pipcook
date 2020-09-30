@@ -54,15 +54,17 @@ function createPidfileSync(pathname) {
   // load config
   if (await pathExists(DAEMON_CONFIG)) {
     const config = require(DAEMON_CONFIG);
-    if (config?.env) {
-      process.env.BOA_CONDA_MIRROR = config.env.BOA_CONDA_MIRROR;
-      console.info(`set env BOA_CONDA_MIRROR=${config.env.BOA_CONDA_MIRROR}`);
-    }
-    if (config?.port) {
-      PORT = config.port;
-    }
-    if (config?.host) {
-      HOST = config.host;
+    if (config) {
+      if (env) {
+        process.env.BOA_CONDA_MIRROR = config.env.BOA_CONDA_MIRROR;
+        console.info(`set env BOA_CONDA_MIRROR=${config.env.BOA_CONDA_MIRROR}`);
+      }
+      if (port) {
+        PORT = config.port;
+      }
+      if (host) {
+        HOST = config.host;
+      }
     }
   }
 
