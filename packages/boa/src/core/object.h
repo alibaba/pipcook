@@ -85,7 +85,7 @@ public:
 
 private:
   pybind::object _self;
-  ObjectOwnership* _ownership = nullptr;
+  ObjectOwnership *_ownership = nullptr;
   uintptr_t _borrowedOwnershipId = 0x0;
   std::vector<PythonFunction *> _funcs;
 };

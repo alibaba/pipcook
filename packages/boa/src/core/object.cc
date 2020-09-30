@@ -5,12 +5,14 @@
 using namespace boa;
 using namespace Napi;
 
-#define ACQUIRE_OWNERSHIP_AND_THROW() do { \
-  if (GetOwnership() == false) { \
-    Error::New(info.Env(), "Object is owned by another thread.").ThrowAsJavaScriptException(); \
-    return info.Env().Undefined(); \
-  } \
-} while (0) \
+#define ACQUIRE_OWNERSHIP_AND_THROW()                                          \
+  do {                                                                         \
+    if (GetOwnership() == false) {                                             \
+      Error::New(info.Env(), "Object is owned by another thread.")             \
+          .ThrowAsJavaScriptException();                                       \
+      return info.Env().Undefined();                                           \
+    }                                                                          \
+  } while (0)
 
 Object PythonObject::Init(Napi::Env env, Object exports) {
   Napi::HandleScope scope(env);
@@ -71,10 +73,11 @@ PythonObject::PythonObject(const CallbackInfo &info)
   if (info[0].IsNumber()) {
     // initialized from pointer.
     _borrowedOwnershipId = (uintptr_t)info[0].As<Number>().DoubleValue();
-    auto ownership = reinterpret_cast<ObjectOwnership*>(_borrowedOwnershipId);
+    auto ownership = reinterpret_cast<ObjectOwnership *>(_borrowedOwnershipId);
     _self = pybind::reinterpret_steal<pybind::object>(ownership->getObject());
   } else {
-    // initlialized from external object which contains the pybind::object instance.
+    // initlialized from external object which contains the pybind::object
+    // instance.
     _self = *(info[0].As<External<pybind::object>>().Data());
   }
 }
@@ -247,11 +250,12 @@ Napi::Value PythonObject::RequestOwnership(const CallbackInfo &info) {
 Napi::Value PythonObject::ReturnOwnership(const CallbackInfo &info) {
   if (_borrowedOwnershipId == 0x0) {
     Error::New(info.Env(), "return ownership on invalid object")
-      .ThrowAsJavaScriptException();
+        .ThrowAsJavaScriptException();
     return info.Env().Undefined();
   }
-  // found the ownership, and set it owned thus the main thread can use this object.
-  auto ownership = reinterpret_cast<ObjectOwnership*>(_borrowedOwnershipId);
+  // found the ownership, and set it owned thus the main thread can use this
+  // object.
+  auto ownership = reinterpret_cast<ObjectOwnership *>(_borrowedOwnershipId);
   ownership->setOwned(true);
   return Boolean::New(info.Env(), true);
 }
