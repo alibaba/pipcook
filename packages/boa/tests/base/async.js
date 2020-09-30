@@ -1,3 +1,4 @@
+const test = require('tape');
 const { Worker, isMainThread, workerData, parentPort } = require('worker_threads');
 const boa = require('../../');
 const pybasic = boa.import('tests.base.basic');
@@ -10,27 +11,38 @@ class Foobar extends pybasic.Foobar {
 }
 
 if (isMainThread) {
-  const foo = new Foobar();
-  const descriptor = foo.toString();
-  console.log(`create a foo object with ownership(${foo[symbols.GetOwnershipSymbol]()})`);
+  test('async worker', t => {
+    t.plan(4);
 
-  const worker = new Worker(__filename, {
-    workerData: {
-      foo: new SharedPythonObject(foo),
-    },
-  });
-  console.log('main: worker is started and send an object', descriptor);
-  let alive = setInterval(() => {
-    console.log(`main: still training, ownership(${foo[symbols.GetOwnershipSymbol]()})`);
-  }, 1000);
+    const foo = new Foobar();
+    const descriptor = foo.toString();
+    console.log(`create a foo object with ownership(${foo[symbols.GetOwnershipSymbol]()})`);
+  
+    const worker = new Worker(__filename, {
+      workerData: {
+        foo: new SharedPythonObject(foo),
+      },
+    });
+    console.log('main: worker is started and send an object', descriptor);
+    t.throws(() => foo.toString(), 'Object is owned by another thread.');
 
-  worker.on('message', state => {
-    if (state === 'done') {
-      console.log('train task is completed');
-      setTimeout(() => {
-        clearInterval(alive);
-      }, 1000);
-    }
+    let expectedOwnership = false;
+    let alive = setInterval(() => {
+      const ownership = foo[symbols.GetOwnershipSymbol]();
+      t.equal(ownership, expectedOwnership, `ownership should be ${expectedOwnership}.`);
+    }, 1000);
+  
+    worker.on('message', state => {
+      if (state === 'done') {
+        expectedOwnership = true;
+        console.log('train task is completed');
+        setTimeout(() => {
+          clearInterval(alive);
+          console.log(foo.ping('x'));
+          t.end();
+        }, 1000);
+      }
+    });
   });
 } else {
   const { foo } = workerData;
@@ -40,5 +52,5 @@ if (isMainThread) {
   console.log('python sleep is done, and sleep in nodejs(thread)');
   setTimeout(() => {
     parentPort.postMessage('done');
-  }, 2000);
+  }, 1000);
 }

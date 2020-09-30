@@ -14,7 +14,7 @@ class Foobar(object):
     return self.hellomsg(x)
 
   def sleep(self):
-    time.sleep(5)
+    time.sleep(1)
 
   def callfunc(self, fn):
     return fn(233)

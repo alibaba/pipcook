@@ -32,6 +32,7 @@ PythonNode::PythonNode(const CallbackInfo &info)
   {
     if (Py_IsInitialized() == 0) {
       pybind::initialize_interpreter();
+      initialized = true;
     }
     // Set Python Arguments.
     if (info[0].IsArray()) {
@@ -53,7 +54,7 @@ PythonNode::PythonNode(const CallbackInfo &info)
 }
 
 PythonNode::~PythonNode() {
-  if (Py_IsInitialized() == true) {
+  if (initialized && Py_IsInitialized() == true) {
     pybind::finalize_interpreter();
   }
 }
