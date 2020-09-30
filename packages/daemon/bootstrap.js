@@ -42,16 +42,19 @@ function createPidfileSync(pathname) {
   // delegate the stdio to access log.
   delegateStdio();
 
+  console.log('1');
   // create pidfile firstly
   createPidfileSync(DAEMON_PIDFILE);
-
+  console.log('2');
+  
   if (fs.existsSync(PIPCOOK_DB)) {
     // run migration in sub-process
     const res = execSync('npm run migration', {
       'cwd': __dirname
     });
   }
-
+  console.log('3');
+  
   // load config
   if (await pathExists(DAEMON_CONFIG)) {
     const config = require(DAEMON_CONFIG);
@@ -66,7 +69,8 @@ function createPidfileSync(pathname) {
       HOST = config.host;
     }
   }
-
+  console.log('4');
+  
   let midwayPathname = path.join(__dirname, 'node_modules/midway');
   if (!await pathExists(midwayPathname)) {
     midwayPathname = path.join(__dirname, '../../midway');
@@ -74,6 +78,7 @@ function createPidfileSync(pathname) {
   if (!await pathExists(midwayPathname)) {
     throw new TypeError('daemon is not installed correctly.');
   }
+  console.log('5');
   const opts = {
     mode: 'single',
     baseDir: __dirname,
@@ -89,13 +94,16 @@ function createPidfileSync(pathname) {
     });
     // emit `server` event in app
     app.emit('server', server);
-
+    console.log('6');
+  
     // server listen
     await new Promise(resolve => {
       if (HOST) {
         server.listen(PORT, HOST, resolve);
       } else {
+        console.log('7');
         server.listen(PORT, resolve);
+        console.log('8');
       }
     });
   } catch (err) {
@@ -105,7 +113,9 @@ function createPidfileSync(pathname) {
   process.title = 'pipcook.daemon';
   console.info('Server is listening at http://%s:%s, cost %ss', HOST ?? '0.0.0.0', PORT, process.uptime());
 
+  console.log('9');
   prepareToReady();
+  console.log('10');
 })();
 
 function exitProcessWithError(err) {
