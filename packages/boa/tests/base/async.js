@@ -1,7 +1,7 @@
 const { Worker, isMainThread, workerData, parentPort } = require('worker_threads');
 const boa = require('../../');
 const pybasic = boa.import('tests.base.basic');
-const { SharedPythonObject, GetOwnershipSymbol } = boa;
+const { SharedPythonObject, symbols } = boa;
 
 class Foobar extends pybasic.Foobar {
   hellomsg(x) {
@@ -12,7 +12,7 @@ class Foobar extends pybasic.Foobar {
 if (isMainThread) {
   const foo = new Foobar();
   const descriptor = foo.toString();
-  console.log(`create a foo object with ownership(${foo[GetOwnershipSymbol]()})`);
+  console.log(`create a foo object with ownership(${foo[symbols.GetOwnershipSymbol]()})`);
 
   const worker = new Worker(__filename, {
     workerData: {
@@ -21,7 +21,7 @@ if (isMainThread) {
   });
   console.log('main: worker is started and send an object', descriptor);
   let alive = setInterval(() => {
-    console.log(`main: still training, ownership(${foo[GetOwnershipSymbol]()})`);
+    console.log(`main: still training, ownership(${foo[symbols.GetOwnershipSymbol]()})`);
   }, 1000);
 
   worker.on('message', state => {
