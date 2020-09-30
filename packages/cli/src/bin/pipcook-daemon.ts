@@ -54,7 +54,11 @@ async function start(): Promise<void> {
   daemon.on('exit', async (code: number) => {
     logger.fail(`Pipcook daemon starts failed with code(${code}).`, false);
     // TODO(yorkie): check if this is local mode.
-    logger.fail(await readFile(ACCESS_LOG, 'utf8'));
+    if (await pathExists(ACCESS_LOG)) {
+      logger.fail(await readFile(ACCESS_LOG, 'utf8'));
+    } else {
+      logger.fail('unknown error');
+    }
   });
 }
 

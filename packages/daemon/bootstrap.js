@@ -11,14 +11,15 @@ const PIPCOOK_HOME = os.homedir() + '/.pipcook';
 const DAEMON_PIDFILE = PIPCOOK_HOME + '/daemon.pid';
 const DAEMON_CONFIG = PIPCOOK_HOME + '/daemon.config.json';
 const PIPCOOK_DB = PIPCOOK_HOME + '/db/pipcook.db';
-let PORT = 6927;
-let HOST = null;
 
 const isChildMode = typeof process.send === 'function';
 const bootstrapProcessState = {
   willExit: null,
   exitCode: 0
 };
+
+let PORT = 6927;
+let HOST = null;
 
 function createPidfileSync(pathname) {
   if (fs.existsSync(DAEMON_PIDFILE)) {
@@ -54,17 +55,15 @@ function createPidfileSync(pathname) {
   // load config
   if (await pathExists(DAEMON_CONFIG)) {
     const config = require(DAEMON_CONFIG);
-    if (config) {
-      if (env) {
-        process.env.BOA_CONDA_MIRROR = config.env.BOA_CONDA_MIRROR;
-        console.info(`set env BOA_CONDA_MIRROR=${config.env.BOA_CONDA_MIRROR}`);
-      }
-      if (port) {
-        PORT = config.port;
-      }
-      if (host) {
-        HOST = config.host;
-      }
+    if (config?.env) {
+      process.env.BOA_CONDA_MIRROR = config.env.BOA_CONDA_MIRROR;
+      console.info(`set env BOA_CONDA_MIRROR=${config.env.BOA_CONDA_MIRROR}`);
+    }
+    if (config?.port) {
+      PORT = config.port;
+    }
+    if (config?.host) {
+      HOST = config.host;
     }
   }
 
@@ -96,7 +95,7 @@ function createPidfileSync(pathname) {
       if (HOST) {
         server.listen(PORT, HOST, resolve);
       } else {
-        server.listen(PORT, resolve).address();
+        server.listen(PORT, resolve);
       }
     });
   } catch (err) {
@@ -148,7 +147,9 @@ function prepareToReady() {
     event: 'ready',
     data: {
       host: HOST ?? '0.0.0.0',
-      port: PORT
+      port: PORT,
+      // for compatibility with older versions
+      listen: PORT
     }
   });
 }
