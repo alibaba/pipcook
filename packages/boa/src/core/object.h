@@ -10,7 +10,7 @@ namespace boa {
 
 class ObjectOwnership {
 public:
-  ObjectOwnership(PyObject *o) : _pyobject(o), _owned(true) {}
+  ObjectOwnership(PyObject *o) : _pyobject(o), _owned(false) {}
 
 public:
   PyObject *getObject() { return _pyobject; }
@@ -73,6 +73,7 @@ public:
   inline bool IsBytes(Napi::Value);
   inline bool IsPythonObject(Napi::Value);
   std::string ToString();
+  bool GetOwnership();
   PyObject *Cast(Napi::Env, Napi::Value, bool finalizeFuncType = false);
   PyObject *Cast(Napi::Env, String);
   PyObject *Cast(Napi::Env, Boolean);
@@ -85,6 +86,7 @@ public:
 private:
   pybind::object _self;
   ObjectOwnership* _ownership = nullptr;
+  uintptr_t _borrowedOwnershipId = 0x0;
   std::vector<PythonFunction *> _funcs;
 };
 

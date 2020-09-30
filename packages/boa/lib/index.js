@@ -4,7 +4,7 @@ const vm = require('vm');
 const path = require('path');
 const native = require('bindings')('boa');
 
-const { notEmpty, getIndent, removeIndent } = require('./utils');
+const { notEmpty, getIndent, removeIndent, GetOwnershipSymbol } = require('./utils');
 const { SharedPythonObject } = require('./worker');
 const { condaPath, pyInst, globals, builtins } = require('./factory');
 const { wrap, _internalWrap } = require('./proxy');
@@ -175,4 +175,8 @@ module.exports = {
       { globals: env, locals: env }
     ));
   },
+  /**
+   * The symbol is used to get the ownership value on an object.
+   */
+  GetOwnershipSymbol,
 };

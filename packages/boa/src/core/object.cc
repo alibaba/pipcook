@@ -5,6 +5,13 @@
 using namespace boa;
 using namespace Napi;
 
+#define ACQUIRE_OWNERSHIP_AND_THROW() do { \
+  if (GetOwnership() == false) { \
+    Error::New(info.Env(), "Object is owned by another thread.").ThrowAsJavaScriptException(); \
+    return info.Env().Undefined(); \
+  } \
+} while (0) \
+
 Object PythonObject::Init(Napi::Env env, Object exports) {
   Napi::HandleScope scope(env);
   Napi::Function func = DefineClass(
@@ -63,9 +70,9 @@ PythonObject::PythonObject(const CallbackInfo &info)
   Napi::HandleScope scope(env);
   if (info[0].IsNumber()) {
     // initialized from pointer.
-    auto pointer = (uintptr_t)info[0].As<Number>().DoubleValue();
-    _ownership = reinterpret_cast<ObjectOwnership*>(pointer);
-    _self = pybind::reinterpret_steal<pybind::object>(_ownership->getObject());
+    _borrowedOwnershipId = (uintptr_t)info[0].As<Number>().DoubleValue();
+    auto ownership = reinterpret_cast<ObjectOwnership*>(_borrowedOwnershipId);
+    _self = pybind::reinterpret_steal<pybind::object>(ownership->getObject());
   } else {
     // initlialized from external object which contains the pybind::object instance.
     _self = *(info[0].As<External<pybind::object>>().Data());
@@ -82,6 +89,7 @@ void PythonObject::Finalize(Napi::Env env) {
 }
 
 Napi::Value PythonObject::Next(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   if (!PyIter_Check(_self.ptr())) {
     Error::New(info.Env(), "Must be an iterator object")
         .ThrowAsJavaScriptException();
@@ -105,6 +113,7 @@ Napi::Value PythonObject::Next(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::Invoke(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   pybind::tuple args(info.Length());
   PyObject *args_ = args.release().ptr();
   PyObject *kwargs = NULL;
@@ -147,6 +156,7 @@ Napi::Value PythonObject::Invoke(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::CreateClass(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   std::string name = std::string(info[0].As<String>());
   Object jbase = info[1].As<Object>().Get(NODE_PYTHON_HANDLE_NAME).As<Object>();
   pybind::object base = ObjectWrap<PythonObject>::Unwrap(jbase)->value();
@@ -160,32 +170,38 @@ Napi::Value PythonObject::CreateClass(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::IsCallable(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   int callable = PyCallable_Check(_self.ptr());
   return Number::New(info.Env(), callable);
 }
 
 Napi::Value PythonObject::IsIterator(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   int r = PyIter_Check(_self.ptr());
   return Boolean::New(info.Env(), r);
 }
 
 Napi::Value PythonObject::IsMapping(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   int r = PyMapping_Check(_self.ptr());
   return Boolean::New(info.Env(), r);
 }
 
 Napi::Value PythonObject::IsSequence(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   int r = PySequence_Check(_self.ptr());
   return Boolean::New(info.Env(), r);
 }
 
 Napi::Value PythonObject::ToBigDecimal(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   // See https://github.com/littledan/proposal-bigdecimal
   Error::New(info.Env(), "Not implemented").ThrowAsJavaScriptException();
   return info.Env().Null();
 }
 
 Napi::Value PythonObject::ToBigInt(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   PyObject *thisobj = _self.ptr();
   if (!PyLong_Check(thisobj)) {
     Error::New(info.Env(), "Must be a number type.")
@@ -197,6 +213,7 @@ Napi::Value PythonObject::ToBigInt(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::ToPrimitive(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   PyObject *thisobj = _self.ptr();
   if (!thisobj) {
     return info.Env().Null();
@@ -213,20 +230,12 @@ Napi::Value PythonObject::ToPrimitive(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::ToString(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   return String::New(info.Env(), ToString());
 }
 
 Napi::Value PythonObject::GetOwnership(const CallbackInfo &info) {
-  if (_ownership == nullptr) {
-    return Boolean::New(info.Env(), false);
-  } else {
-    bool owned = _ownership->getOwned();
-    if (owned == false) {
-      delete _ownership;
-      _ownership = nullptr;
-    }
-    return Boolean::New(info.Env(), owned);
-  }
+  return Boolean::New(info.Env(), GetOwnership());
 }
 
 Napi::Value PythonObject::RequestOwnership(const CallbackInfo &info) {
@@ -236,7 +245,14 @@ Napi::Value PythonObject::RequestOwnership(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::ReturnOwnership(const CallbackInfo &info) {
-  _ownership->setOwned(false);
+  if (_borrowedOwnershipId == 0x0) {
+    Error::New(info.Env(), "return ownership on invalid object")
+      .ThrowAsJavaScriptException();
+    return info.Env().Undefined();
+  }
+  // found the ownership, and set it owned thus the main thread can use this object.
+  auto ownership = reinterpret_cast<ObjectOwnership*>(_borrowedOwnershipId);
+  ownership->setOwned(true);
   return Boolean::New(info.Env(), true);
 }
 
@@ -262,7 +278,21 @@ std::string PythonObject::ToString() {
   return ret;
 }
 
+bool PythonObject::GetOwnership() {
+  if (_ownership == nullptr) {
+    return true;
+  } else {
+    bool owned = _ownership->getOwned();
+    if (owned == true) {
+      delete _ownership;
+      _ownership = nullptr;
+    }
+    return owned;
+  }
+}
+
 Napi::Value PythonObject::SetClassMethod(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   std::string nameStr = std::string(info[0].As<String>());
   int r = PyObject_SetAttrString(
       _self.ptr(), nameStr.c_str(),
@@ -274,17 +304,20 @@ Napi::Value PythonObject::SetClassMethod(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::Hash(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   Py_hash_t hash = PyObject_Hash(_self.ptr());
   return Number::New(info.Env(), hash);
 }
 
 Napi::Value PythonObject::HasAttr(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   std::string nameStr = std::string(info[0].As<String>());
   bool r = pybind::hasattr(_self, nameStr.c_str());
   return Boolean::New(info.Env(), r);
 }
 
 Napi::Value PythonObject::GetAttr(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   try {
     std::string nameStr = std::string(info[0].As<String>());
     pybind::object obj = _self.attr(nameStr.c_str());
@@ -296,6 +329,7 @@ Napi::Value PythonObject::GetAttr(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::SetAttr(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   std::string nameStr = std::string(info[0].As<String>());
   int r = PyObject_SetAttrString(_self.ptr(), nameStr.c_str(),
                                  Cast(info.Env(), info[1]));
@@ -306,12 +340,14 @@ Napi::Value PythonObject::SetAttr(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::DelAttr(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   std::string nameStr = std::string(info[0].As<String>());
   pybind::delattr(_self, nameStr.c_str());
   return info.Env().Undefined();
 }
 
 Napi::Value PythonObject::GetItem(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   pybind::object itemVal;
   try {
     if (IsPythonObject(info[0])) {
@@ -342,6 +378,7 @@ Napi::Value PythonObject::GetItem(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::SetItem(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   PyObject *value = Cast(info.Env(), info[1]);
   int r = -1;
 
@@ -367,6 +404,7 @@ Napi::Value PythonObject::SetItem(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::DelItem(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   int r = -1;
   if (info[0].IsNumber()) {
     // if item key is a number

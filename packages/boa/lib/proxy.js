@@ -5,6 +5,7 @@ const native = require('bindings')('boa');
 const debug = require('debug')('boa');
 const DelegatorLoader = require('./delegator-loader');
 const { pyInst, builtins } = require('./factory');
+const { GetOwnershipSymbol } = require('./utils');
 
 const delegators = DelegatorLoader.load();
 
@@ -174,16 +175,6 @@ function _internalWrap(T, src={}) {
       },
     },
     /**
-     * @method getOwnership
-     * @public
-     */
-    getOwnership: {
-      configurable: true,
-      enumerable: false,
-      writable: false,
-      value: () => T.getOwnership(),
-    },
-    /**
      * Shortcut for slicing object.
      * @method slice
      * @public
@@ -280,6 +271,16 @@ function _internalWrap(T, src={}) {
       enumerable: true,
       writable: false,
       value: () => T.__hash__(),
+    },
+    /**
+     * @method [GetOwnershipSymbol]
+     * @public
+     */
+    [GetOwnershipSymbol]: {
+      configurable: true,
+      enumerable: false,
+      writable: false,
+      value: () => T.getOwnership(),
     },
   });
 
