@@ -32,12 +32,7 @@ PythonNode::PythonNode(const CallbackInfo &info)
   {
     if (Py_IsInitialized() == 0) {
       pybind::initialize_interpreter();
-    } else {
-      // initialized in current process, create sub interpreter.
-      // PyThreadState* sub = Py_NewInterpreter();
-      // PyThreadState_Swap(sub);
     }
-
     // Set Python Arguments.
     if (info[0].IsArray()) {
       Napi::Array jargv = info[0].As<Napi::Array>();
