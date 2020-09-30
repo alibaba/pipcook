@@ -60,10 +60,8 @@ PythonObject::PythonObject(const CallbackInfo &info)
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
   if (info[0].IsNumber()) {
-    auto p = (uintptr_t)info[0].As<Number>().DoubleValue();
-    auto o = reinterpret_cast<PyObject*>(p);
-    fprintf(stderr, "from %p(native)\n", o);
-    _self = pybind::reinterpret_borrow<pybind::object>(o);
+    auto pointer = (uintptr_t)info[0].As<Number>().DoubleValue();
+    _self = pybind::reinterpret_borrow<pybind::object>(reinterpret_cast<PyObject*>(pointer));
   } else {
     _self = *(info[0].As<External<pybind::object>>().Data());
   }
