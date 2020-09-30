@@ -4,7 +4,6 @@ class Foobar(object):
   """docstring for Foobar"""
   def __init__(self):
     super(Foobar, self).__init__()
-    self.count = 0
     self.test = "pythonworld"
     self.__exitcode__ = 0
 

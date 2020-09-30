@@ -8,6 +8,27 @@ using namespace Napi;
 
 namespace boa {
 
+class ObjectOwnership {
+public:
+  ObjectOwnership(PyObject *o) : _pyobject(o), _owned(true) {}
+
+public:
+  PyObject *getObject() { return _pyobject; }
+  bool getOwned() const {
+    std::lock_guard<std::mutex> l(_mtx);
+    return _owned;
+  }
+  void setOwned(bool owned) {
+    std::lock_guard<std::mutex> l(_mtx);
+    _owned = owned;
+  }
+
+private:
+  mutable std::mutex _mtx;
+  PyObject *_pyobject;
+  bool _owned;
+};
+
 class PythonObject : public ObjectWrap<PythonObject>,
                      pybind::detail::generic_type {
 public:
@@ -29,8 +50,12 @@ private:
   Napi::Value ToBigInt(const CallbackInfo &);
   Napi::Value ToPrimitive(const CallbackInfo &);
   Napi::Value ToString(const CallbackInfo &);
-  Napi::Value ToPointer(const CallbackInfo &);
   Napi::Value SetClassMethod(const CallbackInfo &);
+
+  // ownership releated methods.
+  Napi::Value GetOwnership(const CallbackInfo &);
+  Napi::Value RequestOwnership(const CallbackInfo &);
+  Napi::Value ReturnOwnership(const CallbackInfo &);
 
   // Python magic methods
   Napi::Value Hash(const CallbackInfo &);
@@ -59,6 +84,7 @@ public:
 
 private:
   pybind::object _self;
+  ObjectOwnership* _ownership = nullptr;
   std::vector<PythonFunction *> _funcs;
 };
 

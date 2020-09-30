@@ -9,29 +9,33 @@ class Foobar extends pybasic.Foobar {
 }
 
 if (isMainThread) {
-  const f = new Foobar();
+  const foo = new Foobar();
   const worker = new Worker(__filename, {
-    env: {
-      ...process.env
-    },
     workerData: {
-      fpointer: f.toPointer(),
+      foo: new boa.SharedPythonObject(foo),
     },
   });
-  console.log('main: worker is started and send an object', f);
+  console.log('main: worker is started and send an object', foo);
+  console.log('main: foo ownership', foo.getOwnership());
   let alive = setInterval(() => {
-    console.log('main: still training...');
+    console.log(`main: still training, ownership(${foo.getOwnership()})`);
   }, 1000);
 
   worker.on('message', (state) => {
     if (state === 'done') {
-      clearInterval(alive);
       console.log('train task is completed');
+      setTimeout(() => {
+        clearInterval(alive);
+      }, 1000);
     }
   });
 } else {
-  const f = boa.from(workerData.fpointer);
-  console.log(`worker: get an object<${f}> and start train`);
-  f.sleep();
-  parentPort.postMessage('done');
+  const { foo } = workerData;
+  console.log(`worker: get an object${foo} and sleep 5s in Python`);
+  foo.sleep();
+  
+  console.log('python sleep is done, and sleep in nodejs(thread)');
+  setTimeout(() => {
+    parentPort.postMessage('done');
+  }, 2000);
 }

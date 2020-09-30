@@ -1,4 +1,6 @@
+'use strict';
 
+const GetOwnershipSymbol = Symbol('GET_OWNERSHIP');
 
 function notEmpty(line) {
   return /^\s*$/.test(line) === false;
@@ -20,6 +22,10 @@ function removeIndent(n) {
   };
 }
 
-exports.notEmpty = notEmpty;
-exports.getIndent = getIndent;
-exports.removeIndent = removeIndent;
+module.exports = {
+  notEmpty,
+  getIndent,
+  removeIndent,
+  // symbols
+  GetOwnershipSymbol,
+};

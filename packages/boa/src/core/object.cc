@@ -20,8 +20,10 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
           InstanceMethod("toBigInt", &PythonObject::ToBigInt),
           InstanceMethod("toPrimitive", &PythonObject::ToPrimitive),
           InstanceMethod("toString", &PythonObject::ToString),
-          InstanceMethod("toPointer", &PythonObject::ToPointer),
           InstanceMethod("setClassMethod", &PythonObject::SetClassMethod),
+          InstanceMethod("getOwnership", &PythonObject::GetOwnership),
+          InstanceMethod("requestOwnership", &PythonObject::RequestOwnership),
+          InstanceMethod("returnOwnership", &PythonObject::ReturnOwnership),
           // Python magic methods
           InstanceMethod("__hash__", &PythonObject::Hash),
           InstanceMethod("__hasattr__", &PythonObject::HasAttr),
@@ -62,7 +64,8 @@ PythonObject::PythonObject(const CallbackInfo &info)
   if (info[0].IsNumber()) {
     // initialized from pointer.
     auto pointer = (uintptr_t)info[0].As<Number>().DoubleValue();
-    _self = pybind::reinterpret_steal<pybind::object>(reinterpret_cast<PyObject*>(pointer));
+    _ownership = reinterpret_cast<ObjectOwnership*>(pointer);
+    _self = pybind::reinterpret_steal<pybind::object>(_ownership->getObject());
   } else {
     // initlialized from external object which contains the pybind::object instance.
     _self = *(info[0].As<External<pybind::object>>().Data());
@@ -213,9 +216,28 @@ Napi::Value PythonObject::ToString(const CallbackInfo &info) {
   return String::New(info.Env(), ToString());
 }
 
-Napi::Value PythonObject::ToPointer(const CallbackInfo &info) {
-  auto pointer = reinterpret_cast<uintptr_t>(_self.ptr());
-  return Number::New(info.Env(), pointer);
+Napi::Value PythonObject::GetOwnership(const CallbackInfo &info) {
+  if (_ownership == nullptr) {
+    return Boolean::New(info.Env(), false);
+  } else {
+    bool owned = _ownership->getOwned();
+    if (owned == false) {
+      delete _ownership;
+      _ownership = nullptr;
+    }
+    return Boolean::New(info.Env(), owned);
+  }
+}
+
+Napi::Value PythonObject::RequestOwnership(const CallbackInfo &info) {
+  _ownership = new ObjectOwnership(_self.ptr());
+  auto p = reinterpret_cast<uintptr_t>(_ownership);
+  return Number::New(info.Env(), p);
+}
+
+Napi::Value PythonObject::ReturnOwnership(const CallbackInfo &info) {
+  _ownership->setOwned(false);
+  return Boolean::New(info.Env(), true);
 }
 
 // See
