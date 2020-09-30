@@ -4,7 +4,17 @@ const vm = require('vm');
 const path = require('path');
 const native = require('bindings')('boa');
 
-const { notEmpty, getIndent, removeIndent, GetOwnershipSymbol } = require('./utils');
+const {
+  notEmpty,
+  getIndent,
+  removeIndent,
+  asHandleObject,
+  GetOwnershipSymbol,
+  PyGetAttrSymbol,
+  PySetAttrSymbol,
+  PyGetItemSymbol,
+  PySetItemSymbol,
+} = require('./utils');
 const { SharedPythonObject } = require('./worker');
 const { condaPath, pyInst, globals, builtins } = require('./factory');
 const { wrap, _internalWrap } = require('./proxy');

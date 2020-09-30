@@ -26,10 +26,18 @@ function removeIndent(n) {
   };
 }
 
+function asHandleObject(T) {
+  return {
+    // namely shortcut for Python object.
+    [native.NODE_PYTHON_HANDLE_NAME]: T
+  };
+}
+
 module.exports = {
   notEmpty,
   getIndent,
   removeIndent,
+  asHandleObject,
   // symbols
   GetOwnershipSymbol,
   PyGetAttrSymbol,

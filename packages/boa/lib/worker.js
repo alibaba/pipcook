@@ -29,10 +29,12 @@ if (!isMainThread) {
   const sharedPythonObjectMaps = [];
 
   for (let name in workerData) {
-    const data = workerData[name];
-    if (isSharedPythonObject(data)) {
-      workerData[name] = wrap(new PythonObject(data.ownershipId));
-      sharedPythonObjectMaps.push(workerData[name]);
+    if (Object.prototype.hasOwnProperty.call(workerData, name)) {
+      const data = workerData[name];
+      if (isSharedPythonObject(data)) {
+        workerData[name] = wrap(new PythonObject(data.ownershipId));
+        sharedPythonObjectMaps.push(workerData[name]);
+      }
     }
   }
   process.on('exit', () => {

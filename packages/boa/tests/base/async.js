@@ -24,7 +24,7 @@ if (isMainThread) {
     console.log(`main: still training, ownership(${foo[GetOwnershipSymbol]()})`);
   }, 1000);
 
-  worker.on('message', (state) => {
+  worker.on('message', state => {
     if (state === 'done') {
       console.log('train task is completed');
       setTimeout(() => {
