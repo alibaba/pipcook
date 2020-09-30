@@ -212,9 +212,7 @@ Napi::Value PythonObject::ToString(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::ToPointer(const CallbackInfo &info) {
-  auto pnative = _self.ptr();
-  auto pointer = reinterpret_cast<uintptr_t>(pnative);
-  fprintf(stderr, "to %p(native)\n", pnative);
+  auto pointer = reinterpret_cast<uintptr_t>(_self.ptr());
   return Number::New(info.Env(), pointer);
 }
 
