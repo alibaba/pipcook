@@ -1,5 +1,7 @@
 'use strict';
 
+const { NODE_PYTHON_HANDLE_NAME } = require('bindings')('boa');
+
 const GetOwnershipSymbol = Symbol('GET_OWNERSHIP');
 const PyGetAttrSymbol = Symbol('PYTHON_GETATTR_SYMBOL');
 const PySetAttrSymbol = Symbol('PYTHON_SETATTR_SYMBOL');
@@ -29,7 +31,7 @@ function removeIndent(n) {
 function asHandleObject(T) {
   return {
     // namely shortcut for Python object.
-    [native.NODE_PYTHON_HANDLE_NAME]: T
+    [NODE_PYTHON_HANDLE_NAME]: T
   };
 }
 
