@@ -86,7 +86,7 @@ jobs:
         mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db
     - name: daemon start
       run: |
-        node ./packages/daemon/bootstrap.js
+        ./packages/cli/dist/bin/pipcook daemon start
     - name: Testing help commands
       run: |
         ./packages/cli/dist/bin/pipcook -v
