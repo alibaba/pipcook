@@ -1,6 +1,10 @@
 'use strict';
 
 const GetOwnershipSymbol = Symbol('GET_OWNERSHIP');
+const PyGetAttrSymbol = Symbol('PYTHON_GETATTR_SYMBOL');
+const PySetAttrSymbol = Symbol('PYTHON_SETATTR_SYMBOL');
+const PyGetItemSymbol = Symbol('PYTHON_GETITEM_SYMBOL');
+const PySetItemSymbol = Symbol('PYTHON_SETITEM_SYMBOL');
 
 function notEmpty(line) {
   return /^\s*$/.test(line) === false;
@@ -28,4 +32,8 @@ module.exports = {
   removeIndent,
   // symbols
   GetOwnershipSymbol,
+  PyGetAttrSymbol,
+  PySetAttrSymbol,
+  PyGetItemSymbol,
+  PySetItemSymbol,
 };

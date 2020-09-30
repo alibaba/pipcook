@@ -175,8 +175,30 @@ module.exports = {
       { globals: env, locals: env }
     ));
   },
+  
   /**
-   * The symbol is used to get the ownership value on an object.
+   * Symbols
    */
-  GetOwnershipSymbol,
+  symbols: {
+    /**
+     * The symbol is used to get the ownership value on an object.
+     */
+    GetOwnershipSymbol,
+    /**
+     * __getattr__
+     */
+    PyGetAttrSymbol,
+    /**
+     * __setattr__
+     */
+    PySetAttrSymbol,
+    /**
+     * __getitem__
+     */
+    PyGetItemSymbol,
+    /**
+     * __setitem__
+     */
+    PySetItemSymbol,
+  },
 };

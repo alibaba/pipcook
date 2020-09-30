@@ -4,11 +4,11 @@ import * as HttpStatus from 'http-status';
 import * as Joi from 'joi';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
-import { parseConfig, PipelineDB } from '../../runner/helper';
+import { parseConfig } from '../../runner/helper';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { Tracer } from '../../service/trace-manager';
-import { PluginResp } from '../../interface';
+import { PipelineEntity } from '../../model/pipeline';
 const debug = Debug('daemon.app.pipeline');
 
 const createSchema = Joi.object({
@@ -43,8 +43,12 @@ export class PipelineController extends BaseEventController {
     // the plugin name could be git/web url, we need the real name, and create plugin object
     const createPlugin = async (field: string) => {
       if (parsedConfig[field]) {
-        const pkg = await this.pluginManager.fetch(parsedConfig[field]);
-        return this.pluginManager.findOrCreateByPkg(pkg);
+        let plugin = await this.pluginManager.findByName(parsedConfig[field]);
+        if (!plugin || plugin.status !== PluginStatus.INSTALLED) {
+          const pkg = await this.pluginManager.fetch(parsedConfig[field]);
+          plugin = await this.pluginManager.findOrCreateByPkg(pkg);
+        }
+        return plugin;
       }
     };
     const plugins = [];
@@ -58,7 +62,7 @@ export class PipelineController extends BaseEventController {
       }
     }
     const pipeline = await this.pipelineService.createPipeline(parsedConfig);
-    this.ctx.success({ ...pipeline.toJSON(), plugins }, HttpStatus.CREATED);
+    this.ctx.success({ ...pipeline, plugins }, HttpStatus.CREATED);
   }
 
   /**
@@ -69,7 +73,7 @@ export class PipelineController extends BaseEventController {
     this.validate(listSchema, this.ctx.query);
     const { offset, limit } = this.ctx.query;
     const pipelines = await this.pipelineService.queryPipelines({ offset, limit });
-    this.ctx.success(pipelines.rows);
+    this.ctx.success(pipelines);
   }
 
   /**
@@ -77,16 +81,20 @@ export class PipelineController extends BaseEventController {
    */
   @del()
   public async remove() {
+    const jobs = await this.pipelineService.queryJobs({});
+    await this.pipelineService.removeJobByModels(jobs);
     await this.pipelineService.removePipelines();
     this.ctx.success();
   }
 
   /**
-   * delete pipeline by id
+   * delete pipeline by id, it will remove the jobs which belong to the pipeline.
    */
   @del('/:id')
   public async removeOne() {
     const { id } = this.ctx.params;
+    const jobs = await this.pipelineService.getJobsByPipelineId(id);
+    await this.pipelineService.removeJobByModels(jobs);
     const count = await this.pipelineService.removePipelineById(id);
     if (count > 0) {
       this.ctx.success();
@@ -140,7 +148,7 @@ export class PipelineController extends BaseEventController {
       }
     });
     const plugins = await this.pluginManager.findByIds(pluginIds);
-    this.ctx.success({ ...pipeline.toJSON(), plugins });
+    this.ctx.success({ ...pipeline, plugins });
   }
 
   /**
@@ -176,13 +184,13 @@ export class PipelineController extends BaseEventController {
           this.traceManager.destroy(log.id, err);
         }
       });
-      this.ctx.success({ ...(pipeline.toJSON() as PluginResp), traceId: log.id });
+      this.ctx.success({ ...pipeline, traceId: log.id });
     } else {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'no pipeline found');
     }
   }
 
-  private async installByPipeline(pipeline: PipelineDB, tracer: Tracer, pyIndex?: string): Promise<void> {
+  private async installByPipeline(pipeline: PipelineEntity, tracer: Tracer, pyIndex?: string): Promise<void> {
     const { stdout, stderr } = tracer.getLogger();
     for (const type of constants.PLUGINS) {
       if (!pipeline[type]) {

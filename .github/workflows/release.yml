@@ -19,8 +19,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install
-          npm run build
+          yarn
+          yarn build
 
       - name: Get release version
         id: get_version
@@ -55,8 +55,8 @@ jobs:
           git config --global user.name 'pipcook'
           git config --global user.email 'queyue.crk@alibaba-inc.com'
           git add .
-          git commit -m "bump version"
-          npm run release
+          git commit -m "bump version" --allow-empty
+          yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
@@ -72,3 +72,22 @@ jobs:
           dockerfile: docker/Dockerfile
           build_args: VER=${{ env.RELEASE_VERSION }}
           tags: "latest,${{ env.RELEASE_VERSION }}"
+
+
+      - name: Sync from dockerhub to Aliyun
+        env:
+          ALI_DOCKER_USERNAME: ${{ secrets.ALI_DOCKER_USERNAME }}
+          ALI_DOCKER_PASSWORD: ${{secrets.ALI_DOCKER_PASSWORD}}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          wget https://github.com/AliyunContainerService/image-syncer/releases/download/v1.2.0/image-syncer-v1.2.0-linux-amd64.tar.gz
+          tar -zxvf image-syncer-v1.2.0-linux-amd64.tar.gz
+
+          echo {\"registry.cn-hangzhou.aliyuncs.com\": {\"username\": \"$ALI_DOCKER_USERNAME\", \"password\": \"$ALI_DOCKER_PASSWORD\"} \
+          , \"registry.hub.docker.com\": {\"username\":\"$DOCKER_USERNAME\", \"password\":\"$DOCKER_PASSWORD\"}} >> auth.json
+
+          echo {\"pipcook/pipcook:latest\": \"registry.cn-hangzhou.aliyuncs.com/pipcook/pipcook:latest\", \
+          \"pipcook/pipcook:$RELEASE_VERSION\": \"registry.cn-hangzhou.aliyuncs.com/pipcook/pipcook:$RELEASE_VERSION\"} >> images.json
+
+          ./image-syncer --auth=./auth.json --images=./images.json --namespace=pipcook --registry=registry.cn-hangzhou.aliyuncs.com --retries=3

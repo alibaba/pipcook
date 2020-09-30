@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "",
   "main": "dist/bin/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compiles",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -rf ./assets/server",
-    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts --outdir=dist --tsconfig=tsconfig.json && sh setup.sh",
+    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts --format=cjs --outdir=dist --tsconfig=tsconfig.json && sh setup.sh",
     "compile": "tsc -b tsconfig.json && sh setup.sh"
   },
   "bin": {
@@ -23,8 +23,8 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^1.1.2",
-    "@pipcook/sdk": "^1.1.2",
+    "@pipcook/pipcook-core": "^1.2.0",
+    "@pipcook/sdk": "^1.2.0",
     "axios": "^0.18.1",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",

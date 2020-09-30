@@ -54,7 +54,7 @@ export async function log(id: string, opts: any): Promise<void> {
   }
 }
 
-export async function run(filename: string, opts: any): Promise<JobResp> {
+export async function runByFile(filename: string, opts: any): Promise<JobResp> {
   const client = initClient(opts.hostIp, opts.port);
   let config: any;
 
@@ -94,7 +94,17 @@ export async function run(filename: string, opts: any): Promise<JobResp> {
     await client.pipeline.traceEvent(installingResp.traceId, traceLogger);
     logger.success('pipeline installed successfully, start to run job');
 
-    const jobRunning = await client.job.run(pipeline.id);
+    return runByPipelineId(pipeline.id, opts);
+  } catch (err) {
+    logger.fail(`something wrong when run job: ${err.message}`);
+  }
+}
+
+export async function runByPipelineId(id: string, opts: any): Promise<JobResp> {
+  const client = initClient(opts.hostIp, opts.port);
+  logger.start(`run pipeline from pipeline ${id}`);
+  try {
+    const jobRunning = await client.job.run(id);
     logger.success(`job is created: ${jobRunning.id}, running`);
 
     await client.pipeline.traceEvent(jobRunning.traceId, traceLogger);
@@ -112,8 +122,7 @@ export async function run(filename: string, opts: any): Promise<JobResp> {
   }
 }
 
-export async function runAndDownload(filename: string, opts: any) {
-  const job = await run(filename, opts);
+async function download(id: string, opts: any) {
   const client = initClient(opts.hostIp, opts.port);
   const outputRootPath = join(process.cwd(), opts.output || 'output');
   logger.info(`start to download output to ${outputRootPath}`);
@@ -121,10 +130,20 @@ export async function runAndDownload(filename: string, opts: any) {
   await fs.remove(outputRootPath);
   try {
     // generate output
-    const fileDownloadResp = await client.job.downloadOutput(job.id);
+    const fileDownloadResp = await client.job.downloadOutput(id);
     await extractToPath(fileDownloadResp.stream, outputRootPath);
     logger.success('download finished');
   } catch (err) {
     logger.fail(err.message);
   }
+}
+
+export async function runAndDownload(filename: string, opts: any) {
+  const job = await runByFile(filename, opts);
+  await download(job.id, opts);
+}
+
+export async function runAndDownloadById(id: string, opts: any) {
+  const job = await runByPipelineId(id, opts);
+  await download(job.id, opts);
 }

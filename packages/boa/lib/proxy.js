@@ -5,7 +5,13 @@ const native = require('bindings')('boa');
 const debug = require('debug')('boa');
 const DelegatorLoader = require('./delegator-loader');
 const { pyInst, builtins } = require('./factory');
-const { GetOwnershipSymbol } = require('./utils');
+const {
+  PyGetAttrSymbol,
+  PySetAttrSymbol,
+  PyGetItemSymbol,
+  PySetItemSymbol,
+  GetOwnershipSymbol,
+} = require('./utils');
 
 const delegators = DelegatorLoader.load();
 
@@ -281,6 +287,46 @@ function _internalWrap(T, src={}) {
       enumerable: false,
       writable: false,
       value: () => T.getOwnership(),
+    },
+    /**
+     * @method [PyGetAttrSymbol]
+     * @public
+     */
+    [PyGetAttrSymbol]: {
+      configurable: true,
+      enumerable: true,
+      writable: false,
+      value: k => wrap(T.__getattr__(k)),
+    },
+    /**
+     * @method [PySetAttrSymbol]
+     * @public
+     */
+    [PySetAttrSymbol]: {
+      configurable: true,
+      enumerable: true,
+      writable: false,
+      value: (k, v) => T.__setattr__(k, v),
+    },
+    /**
+     * @method [PyGetItemSymbol]
+     * @public
+     */
+    [PyGetItemSymbol]: {
+      configurable: true,
+      enumerable: true,
+      writable: false,
+      value: k => wrap(T.__getitem__(k)),
+    },
+    /**
+     * @method [PySetItemSymbol]
+     * @public
+     */
+    [PySetItemSymbol]: {
+      configurable: true,
+      enumerable: true,
+      writable: false,
+      value: (k, v) => T.__setitem__(k, v),
     },
   });
 

@@ -1,26 +1,17 @@
 import { provide, inject } from 'midway';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
-import { PluginStatus, generateId } from '@pipcook/pipcook-core';
+import { PluginStatus } from '@pipcook/pipcook-core';
 import { TraceManager, Tracer } from './trace-manager';
 import PluginRuntime from '../boot/plugin';
-import { PluginModelStatic, PluginModel } from '../model/plugin';
+import { PluginModel, PluginEntity, ListPluginsFilter } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
 import { pluginQueue } from '../utils';
-
-interface ListPluginsFilter {
-  datatype?: string;
-  category?: string;
-  name?: string;
-}
 
 @provide('pluginManager')
 export class PluginManager {
 
   @inject('traceManager')
   traceManager: TraceManager;
-
-  @inject('pluginModel')
-  model: PluginModelStatic;
 
   @inject('pluginRT')
   pluginRT: PluginRuntime;
@@ -63,75 +54,44 @@ export class PluginManager {
     return this.pluginRT.costa.createRunnable({ id, logger: tracer.getLogger() } as BootstrapArg);
   }
 
-  async list(filter?: ListPluginsFilter): Promise<PluginModel[]> {
-    const where = {} as any;
-    if (filter?.category) {
-      where.category = filter.category;
-    }
-    if (filter?.datatype) {
-      where.datatype = filter.datatype;
-    }
-    if (filter?.name) {
-      where.name = filter.name;
-    }
-    return this.model.findAll({ where });
+  async list(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
+    return PluginModel.list(filter);
   }
 
-  async query(filter?: ListPluginsFilter): Promise<PluginModel[]> {
-    const where = {} as any;
-    if (filter.category) {
-      where.category = filter.category;
-    }
-    if (filter.datatype) {
-      where.datatype = filter.datatype;
-    }
-    return this.model.findAll({ where });
+  async query(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
+    return PluginModel.query(filter);
   }
 
-  async findById(id: string): Promise<PluginModel> {
-    return this.model.findOne({ where: { id } });
+  async findById(id: string): Promise<PluginEntity> {
+    return PluginModel.findById(id);
   }
 
-  async findByIds(ids: string[]): Promise<PluginModel[]> {
-    return this.model.findAll({ where: { id: ids } });
+  async findByIds(ids: string[]): Promise<PluginEntity[]> {
+    return PluginModel.findByIds(ids);
   }
-  async findByName(name: string): Promise<PluginModel> {
-    return this.model.findOne({ where: { name } });
+  async findByName(name: string): Promise<PluginEntity> {
+    return PluginModel.findByName(name);
   }
 
   async removeById(id: string): Promise<number> {
-    return this.model.destroy({ where: { id } });
+    return PluginModel.removeById(id);
   }
 
   async setStatusById(id: string, status: PluginStatus, errMsg?: string): Promise<number> {
-    const [ count ] = await this.model.update({
-      status,
-      error: errMsg
-    }, {
-      where: { id }
-    });
-    return count;
+    return PluginModel.setStatusById(id, status);
   }
 
-  async findOrCreateByPkg(pkg: PluginPackage): Promise<PluginModel> {
-    const [ plugin ] = await this.model.findOrCreate({
-      where: {
-        // TODO(feely): support the different versions of plugins
-        name: pkg.name
-      },
-      defaults: {
-        id: generateId(),
-        name: pkg.name,
-        version: pkg.version,
-        category: pkg.pipcook.category,
-        datatype: pkg.pipcook.datatype,
-        dest: pkg.pipcook.target.DESTPATH,
-        sourceFrom: pkg.pipcook.source.from,
-        sourceUri: pkg.pipcook.source.uri,
-        status: PluginStatus.INITIALIZED
-      }
+  async findOrCreateByPkg(pkg: PluginPackage): Promise<PluginEntity> {
+    return PluginModel.findOrCreateByParams({
+      name: pkg.name,
+      version: pkg.version,
+      category: pkg.pipcook.category,
+      datatype: pkg.pipcook.datatype,
+      dest: pkg.pipcook.target.DESTPATH,
+      sourceFrom: pkg.pipcook.source.from,
+      sourceUri: pkg.pipcook.source.uri,
+      status: PluginStatus.INITIALIZED
     });
-    return plugin;
   }
 
   async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {
@@ -143,7 +103,7 @@ export class PluginManager {
           cb();
         }).catch((err) => {
           // uninstall if occurring an error on installing.
-          this.pluginRT.costa.uninstall(pkg.name);
+          this.pluginRT.costa.uninstall(pkg);
           reject(err);
           cb();
         });
@@ -167,9 +127,9 @@ export class PluginManager {
           this.traceManager.destroy(tracer.id, err);
         }
       });
-      return { ...(plugin.toJSON() as PluginResp), traceId: tracer.id };
+      return { ...plugin, traceId: tracer.id };
     } else {
-      return { ...(plugin.toJSON() as PluginResp), traceId: '' };
+      return { ...plugin, traceId: '' };
     }
   }
   /**
@@ -183,17 +143,16 @@ export class PluginManager {
     return this.installAtNextTick(pkg, pyIndex, force);
   }
 
-  async uninstall(plugin: PluginModel | PluginModel[]): Promise<void> {
+  async uninstall(plugin: PluginEntity | PluginEntity[]): Promise<void> {
     const { costa } = this.pluginRT;
     if (Array.isArray(plugin)) {
-      const names = plugin.map(singlePlugin => singlePlugin.name);
-      await costa.uninstall(names);
-      await plugin.map(async (singlePlugin) => {
-        await singlePlugin.destroy();
-      });
+      await costa.uninstall(plugin);
+      await Promise.all(plugin.map((singlePlugin) => {
+        return PluginModel.removeById(singlePlugin.id);
+      }));
     } else {
-      await costa.uninstall(plugin.name);
-      await plugin.destroy();
+      await costa.uninstall(plugin);
+      await PluginModel.removeById(plugin.id);
     }
   }
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import { list, runAndDownload, remove, log, stop } from '../service/job';
+import { list, runAndDownloadById, remove, log, stop } from '../service/job';
 
 program
   .command('list')
@@ -18,7 +18,7 @@ program
   .option('--output <dir>', 'the output directory name', 'output')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
-  .action(runAndDownload)
+  .action(runAndDownloadById)
   .description('run a job from a pipeline id');
 
 program

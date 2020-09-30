@@ -19,9 +19,9 @@ jobs:
       with:
         node-version: ${{ matrix.node_version }}
     - name: install
-      run: npm install
+      run: yarn
     - name: compile
-      run: npm run build
+      run: yarn build
     - name: initilize pipcook
       env:
         NODE_ENV: local
@@ -29,4 +29,4 @@ jobs:
         ./packages/cli/dist/bin/pipcook init
         ./packages/cli/dist/bin/pipcook daemon start
     - name: pipeline
-      run: npm run test:pipeline -- ${{ matrix.pipeline }}
+      run: yarn test:pipeline -- ${{ matrix.pipeline }}

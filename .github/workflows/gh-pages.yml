@@ -16,8 +16,9 @@ jobs:
           node-version: 12
       - name: Build documentation
         run: |
-          npm install
-          npm run typedoc
+          yarn
+          yarn build
+          yarn typedoc
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
