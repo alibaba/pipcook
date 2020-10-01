@@ -242,9 +242,10 @@ Napi::Value PythonObject::GetOwnership(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::RequestOwnership(const CallbackInfo &info) {
+  ACQUIRE_OWNERSHIP_AND_THROW();
   _ownership = new ObjectOwnership(_self.ptr());
-  auto p = reinterpret_cast<uintptr_t>(_ownership);
-  return Number::New(info.Env(), p);
+  auto id = reinterpret_cast<uintptr_t>(_ownership);
+  return Number::New(info.Env(), id);
 }
 
 Napi::Value PythonObject::ReturnOwnership(const CallbackInfo &info) {

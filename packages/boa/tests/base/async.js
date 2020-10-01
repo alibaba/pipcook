@@ -11,12 +11,14 @@ class Foobar extends pybasic.Foobar {
 }
 
 if (isMainThread) {
-  test('async worker', t => {
-    t.plan(4);
+  test('run functions with worker_threads', t => {
+    t.plan(6);
 
     const foo = new Foobar();
     const descriptor = foo.toString();
-    console.log(`create a foo object with ownership(${foo[symbols.GetOwnershipSymbol]()})`);
+    const owned = foo[symbols.GetOwnershipSymbol]();
+    t.equal(owned, true, 'the main thread owns the object before creating shared objects');
+    console.log(`create a foo object with ownership(${owned})`);
   
     const worker = new Worker(__filename, {
       workerData: {
@@ -25,6 +27,7 @@ if (isMainThread) {
     });
     console.log('main: worker is started and send an object', descriptor);
     t.throws(() => foo.toString(), 'Object is owned by another thread.');
+    t.throws(() => new SharedPythonObject(foo), 'Object is owned by another thread.');
 
     let expectedOwnership = false;
     let alive = setInterval(() => {
