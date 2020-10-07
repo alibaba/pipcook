@@ -71,6 +71,7 @@ function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio: 
   return new Promise((resolve, reject) => {
     opts.stdio = [ null, 'pipe', 'pipe' ];
     opts.detached = false;
+    console.info('exec', command);
     const child = spawn(command, args, opts);
     pipeLog(child.stdout, stdio.stdout, stdio.prefix);
     pipeLog(child.stderr, stdio.stderr, stdio.prefix);
