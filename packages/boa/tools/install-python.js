@@ -25,6 +25,8 @@ if (PLATFORM === 'linux') {
 
 if (ARCH === 'x64') {
   condaDownloadName += '-x86_64';
+} else if (ARCH === 'ppc64') {
+  condaDownloadName += '-ppc64le';
 } else if (PLATFORM !== 'darwin') {
   condaDownloadName += '-x86';
 }
