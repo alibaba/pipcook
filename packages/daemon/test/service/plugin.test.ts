@@ -230,14 +230,20 @@ describe('test the plugin manager', () => {
       { id: 'mockId', status: 1 /* INSTALLED */ } as any
     );
     assert.deepEqual(
-      await pluginManager.installAtNextTick({ name: 'mockName' } as any, 'mockPyIndex', false),
+      await pluginManager.installAtNextTick({ name: 'mockName', pipcook: {
+        source: {
+          from: 'npm'
+        }
+      }} as any, 'mockPyIndex', false),
       {
         id: 'mockId',
         status: 1,
         traceId: ''
       }
     );
-    assert.ok(mockFindOrCreateByPkg.calledOnceWith({ name: 'mockName' } as any));
+    assert.ok(mockFindOrCreateByPkg.calledOnceWith({
+      name: 'mockName', pipcook: { source: { from: 'npm' } }
+    } as any));
   });
   it('#should install by name', async () => {
     const pluginManager: PluginManager = await app.applicationContext.getAsync<PluginManager>('pluginManager');
