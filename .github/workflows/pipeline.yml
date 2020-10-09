@@ -30,7 +30,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook daemon start
     - name: pipeline
       run: npm run test:pipeline -- ${{ matrix.pipeline }}
-    - name: wasm export pipeline:
+    - name: wasm export pipeline
       run: |
         git clone https://github.com/emscripten-core/emsdk.git && cd emsdk
         ./emsdk install latest && source ./emsdk_env.sh
