@@ -329,6 +329,7 @@ export class CostaRuntime {
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts, stdio);
     }
     spawnAsync('echo $PATH', npmArgs, npmExecOpts, stdio);
+    spawnAsync('which python', npmArgs, npmExecOpts, stdio);
     return spawnAsync('npm', npmArgs, npmExecOpts, stdio);
   }
 
