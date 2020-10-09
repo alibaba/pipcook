@@ -328,8 +328,9 @@ export class CostaRuntime {
       // if not init for plugin directory, just run `npm init` and install boa firstly.
       await spawnAsync('npm', [ 'init', '-y' ], npmExecOpts, stdio);
     }
-    spawnAsync('echo $PATH', npmArgs, npmExecOpts, stdio);
-    spawnAsync('which python', npmArgs, npmExecOpts, stdio);
+    spawnAsync('echo', ['$PATH'], npmExecOpts, stdio);
+    spawnAsync('which', ['python'], npmExecOpts, stdio);
+    spawnAsync('node', ['-e', 'console.log(process.env)'], npmExecOpts, stdio);
     return spawnAsync('npm', npmArgs, npmExecOpts, stdio);
   }
 
