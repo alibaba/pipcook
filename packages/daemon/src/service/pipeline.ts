@@ -177,7 +177,7 @@ export class PipelineService {
     const verifyPlugin = (name: string): void => {
       if (!plugins[name]) {
         this.runnableMap[job.id].destroy();
-        throw new TypeError(`"${name}" plugin is required`);
+        throw new TypeError(`'${name}' plugin is required`);
       }
     };
     const dispatchJobEvent = (jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end') => {
@@ -265,7 +265,7 @@ export class PipelineService {
       job.evaluatePass = result.pass;
       job.endTime = Date.now();
       job.status = PipelineStatus.SUCCESS;
-      
+
       await this.generateOutput(job, {
         modelPath,
         modelPlugin,
@@ -320,16 +320,16 @@ export class PipelineService {
   }
 
   private _generateWASMOutput(dist: string, opts: GenerateOptions, fileQueue: Array<Promise<void | string>>): void {
-    const relay = boa.import("tvm.relay");
-    const emcc = boa.import("tvm.contrib.emcc")
-    const keras = boa.import("tensorflow.keras");
+    const relay = boa.import('tvm.relay');
+    const emcc = boa.import('tvm.contrib.emcc');
+    const keras = boa.import('tensorflow.keras');
     const {dict, open} = boa.builtins();
 
     // download tvm runtime from oss
     const tvmjsPromise = execAsync(`wget http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/dist/tvmjs.bundle.js`, {cwd: dist});
     fileQueue.push(tvmjsPromise);
 
-    const model = keras.models.load_model(path.join(opts.modelPath, "model.h5"));
+    const model = keras.models.load_model(path.join(opts.modelPath, 'model.h5'));
 
     const inputName = 'input_1';
     const inputShape = model.layers[0].input_shape[0];
@@ -340,18 +340,18 @@ export class PipelineService {
 
     const [ mod, params ] = relay.frontend.from_keras(model, dict(boa.kwargs({[inputName]: shape})));
     const [ graph, lib, param ] = relay.build(mod, boa.kwargs({
-      params: params,
-      target: "llvm -mtriple=wasm32--unknown-emcc -system-lib"
+      params,
+      target: 'llvm -mtriple=wasm32--unknown-emcc -system-lib'
     }));
 
-    lib.save(path.join(dist, "model.bc"));
+    lib.save(path.join(dist, 'model.bc'));
 
-    const jsonWriter = open(path.join(dist, "modelDesc.json"), "w");
+    const jsonWriter = open(path.join(dist, 'modelDesc.json'), 'w');
     jsonWriter.write(graph);
-    const paramWriter = open(path.join(dist,"modelParams.parmas"), "wb");
+    const paramWriter = open(path.join(dist, 'modelParams.parmas'), 'wb');
     paramWriter.write(relay.save_param_dict(param));
-    emcc.create_tvmjs_wasm(path.join(dist, "model.wasi.js"), path.join(dist, "model.bc"), boa.kwargs({
-      options: ["-O3", "-std=c++14", "-Wno-ignored-attributes", "-s", "ALLOW_MEMORY_GROWTH=1", "-s", "STANDALONE_WASM=1", "-s", "ERROR_ON_UNDEFINED_SYMBOLS=0", "-s", "ASSERTIONS=1", "--no-entry", "--pre-js", "./packages/daemon/binary/preload.js"]
+    emcc.create_tvmjs_wasm(path.join(dist, 'model.wasi.js'), path.join(dist, 'model.bc'), boa.kwargs({
+      options: ['-O3', '-std=c++14', '-Wno-ignored-attributes', '-s', 'ALLOW_MEMORY_GROWTH=1', '-s', 'STANDALONE_WASM=1', '-s', 'ERROR_ON_UNDEFINED_SYMBOLS=0', '-s', 'ASSERTIONS=1', '--no-entry', '--pre-js', './packages/daemon/binary/preload.js']
     }));
 
     const templateHead = `function EmccWASI() {`;
@@ -359,21 +359,21 @@ export class PipelineService {
       this.Module = Module;
       this.start = Module.wasmLibraryProvider.start;
       this.imports = Module.wasmLibraryProvider.imports;
-      this.wasiImport = this.imports["wasi_snapshot_preview1"];
+      this.wasiImport = this.imports['wasi_snapshot_preview1'];
     }
 
-    if (typeof module !== "undefined" && module.exports) {
+    if (typeof module !== 'undefined' && module.exports) {
       module.exports = EmccWASI;
     }
-    `
+    `;
 
-    const result = templateHead + open(path.join(dist, "model.wasi.js")).read() + templateTail;
-    const resultWriter = open(path.join(dist, "model.wasi.js"), "w");
+    const result = templateHead + open(path.join(dist, 'model.wasi.js')).read() + templateTail;
+    const resultWriter = open(path.join(dist, 'model.wasi.js'), 'w');
     resultWriter.write(result);
 
-    const jsonPromise = fs.writeJSON(path.join(dist, "modelSpec.json"), {
+    const jsonPromise = fs.writeJSON(path.join(dist, 'modelSpec.json'), {
       shape,
-      inputName  
+      inputName
     });
 
     fileQueue.push(jsonPromise);
@@ -391,9 +391,9 @@ export class PipelineService {
     await fs.ensureDir(dist);
 
     const fileQueue: Array<Promise<void | string>> = new Array();
-    
+
     // Only support tensorflow at this moment.
-    if (opts.template == 'wasm' && opts.modelPlugin.name.includes("tensorflow")) {
+    if (opts.template === 'wasm' && opts.modelPlugin.name.includes('tensorflow')) {
       this._generateWASMOutput(dist, opts, fileQueue);
     }
 
@@ -402,7 +402,7 @@ export class PipelineService {
     // post processing the package.json
     const projPackage = await fs.readJSON(dist + '/package.json');
 
-    if (opts.template == 'node') {
+    if (opts.template === 'node') {
       projPackage.dependencies = {
         [opts.modelPlugin.name]: opts.modelPlugin.version,
       };
@@ -413,10 +413,10 @@ export class PipelineService {
         projPackage.dependencies[opts.dataProcess.name] = opts.dataProcess.version;
       }
     } else {
-      projPackage.main = 'index.js',
+      projPackage.main = 'index.js';
       projPackage.dependencies = {
-        'ws': '^7.3.1'
-      }
+        ws: '^7.3.1'
+      };
     }
 
     const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
@@ -425,7 +425,7 @@ export class PipelineService {
       output: job,
     };
 
-    if (opts.template == 'node') {
+    if (opts.template === 'node') {
       // copy base components
       fileQueue.push(fs.copy(opts.modelPath, dist + '/model'));
       fileQueue.push(fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boapkg.js`));
