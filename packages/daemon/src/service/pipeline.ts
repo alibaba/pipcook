@@ -34,7 +34,7 @@ interface GenerateOptions {
   datasetProcess?: PluginPackage;
   pipeline: PipelineEntity;
   workingDir: string;
-  template: 'node' | 'wasm';
+  template: string;
 }
 
 interface PluginInfo {
