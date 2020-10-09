@@ -1,4 +1,4 @@
-import { app } from 'midway-mock/bootstrap';
+import { app, assert } from 'midway-mock/bootstrap';
 import { constants } from '@pipcook/pipcook-core';
 import * as fse from 'fs-extra';
 import * as sinon from 'sinon';
@@ -8,6 +8,15 @@ describe('test index controller', () => {
     sinon.restore();
   });
 
+  it('should fetch index', () => {
+    return app
+      .httpRequest()
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(302).expect(res => {
+        assert.equal(res.header['location'], '/index.html');
+      });
+  });
   it('should view versions', () => {
     return app
       .httpRequest()

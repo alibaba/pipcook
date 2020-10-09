@@ -1,5 +1,5 @@
 'use strict';
-import { QueryInterface, DataTypes, Promise } from 'sequelize';
+import { QueryInterface, DataTypes } from 'sequelize';
 
 const types = [ 'dataCollect', 'dataAccess', 'dataProcess',
       'datasetProcess', 'modelDefine', 'modelLoad', 'modelTrain', 'modelEvaluate' ];
@@ -54,42 +54,5 @@ export default {
       await transaction.rollback();
       throw err;
     }
-  },
-
-  down: (queryInterface: QueryInterface) => {
-    return queryInterface.sequelize.transaction(async t => {
-      const tbNames = await queryInterface.showAllTables();
-      const futures = [];
-      if (tbNames.indexOf('pipelines') >= 0) {
-        const columns = await queryInterface.describeTable('pipelines');
-        const removeColumn = async function (columnName: string) {
-          return columns[columnName]
-            && queryInterface.removeColumn('pipelines', columnName, { transaction: t });
-        };
-        futures.push(Promise.all([
-          removeColumn('dataCollectId'),
-          removeColumn('dataAccessId'),
-          removeColumn('dataProcessId'),
-          removeColumn('datasetProcessId'),
-          removeColumn('modelDefineId'),
-          removeColumn('modelLoadId'),
-          removeColumn('modelTrainId'),
-          removeColumn('modelEvaluateId')
-        ]));
-      }
-      if (tbNames.indexOf('plugins') >= 0) {
-        const columns = await queryInterface.describeTable('plugins');
-        if (columns['sourceFrom']) {
-          futures.push(queryInterface.removeColumn('plugins', 'sourceFrom', { transaction: t }));
-        }
-      }
-      if (tbNames.indexOf('plugins') >= 0) {
-        const columns = await queryInterface.describeTable('plugins');
-        if (columns['sourceUri']) {
-          futures.push(queryInterface.removeColumn('plugins', 'sourceUri', { transaction: t }));
-        }
-      }
-      return Promise.all(futures);
-    });
   }
 };

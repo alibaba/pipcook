@@ -6,7 +6,7 @@ import { install, uninstall, list, info } from '../service/plugin';
 program
   .command('install <name>')
   .helpOption('--help', 'show help')
-  .description('install the given plugin.')
+  .description('install the given plugin name, plugin directory path, plugin tarball, git uri or tarball url.')
   .option('--tuna', 'use tuna mirror to install python packages')
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
