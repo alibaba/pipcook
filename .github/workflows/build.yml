@@ -63,6 +63,7 @@ jobs:
         node-version: ${{ matrix.node_version }}
     - name: Building Pipcook
       run: |
+        sudo apt-get install -y python3-setuptools
         yarn
         yarn build
         yarn init-dev

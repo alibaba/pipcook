@@ -35,7 +35,6 @@ jobs:
         yarn
     - name: Building Pipcook
       run: |
-        sudo apt-get install -y python3-setuptools
         yarn dev-build
     - name: Running unit tests
       run: |
