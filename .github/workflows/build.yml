@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - master
+    - debug
     paths-ignore:
     - 'docker/**'
     - 'docs/**'
