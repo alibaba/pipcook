@@ -20,14 +20,8 @@ import { PluginManager } from './plugin';
 import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { pluginQueue } from '../utils';
 import { UpdateParameter } from '../interface/pipeline';
-import { PipelineDB } from '../runner/helper';
 
 const boa = require('@pipcook/boa');
-
-interface QueryOptions {
-  limit: number;
-  offset: number;
-}
 
 interface SelectJobsFilter {
   pipelineId?: string;
