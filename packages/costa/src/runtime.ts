@@ -439,6 +439,9 @@ export class CostaRuntime {
    * @param pkgMeta the plugin package name and version.
    */
   async uninstall(pkgMeta: Record<'name' | 'version', string> | Record<'name' | 'version', string>[]): Promise<boolean> {
+    if (!await pathExists(path.join(this.options.installDir, 'package.json'))) {
+      return true;
+    }
     const pkg = await readJson(path.join(this.options.installDir, 'package.json'));
 
     const removePkg = async (name: string, version: string) => {

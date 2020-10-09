@@ -27,7 +27,6 @@
     "postinstall": "node ./tools/init_dev.js -f",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon lint",
-    "pretest": "npm run lint",
     "test": "sh run_tests.sh",
     "test:pipeline": "sh ./run_pipeline.sh",
     "typedoc": "sh tools/mkdoc.sh",
