@@ -90,8 +90,25 @@ export class PluginManager {
       dest: pkg.pipcook.target.DESTPATH,
       sourceFrom: pkg.pipcook.source.from,
       sourceUri: pkg.pipcook.source.uri,
-      status: PluginStatus.INITIALIZED
+      status: PluginStatus.INITIALIZED,
+      md5: pkg.pipcook.md5
     });
+  }
+
+  async resetStatus(pkg: PluginPackage, plugin: PluginEntity) {
+    await this.setStatusById(plugin.id, PluginStatus.PENDING);
+    plugin.status = PluginStatus.PENDING;
+    if (pkg?.pipcook?.md5) {
+      await Promise.all([
+        PluginModel.setMd5ById(plugin.id, pkg.pipcook.md5),
+        PluginModel.setVersionById(plugin.id, pkg.pipcook.md5)
+      ]);
+      plugin.version = plugin.md5 = pkg.pipcook.md5;
+    }
+  }
+
+  async checkInstalled(pkg: PluginPackage, currentPkg: PluginEntity): Promise<boolean> {
+    return this.pluginRT.costa.checkInstalled(pkg, currentPkg.status, currentPkg.md5);
   }
 
   async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {
@@ -113,11 +130,12 @@ export class PluginManager {
 
   async installAtNextTick(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
     const plugin = await this.findOrCreateByPkg(pkg);
-    if (plugin.status !== PluginStatus.INSTALLED) {
+    const isInstalled = await this.checkInstalled(pkg, plugin);
+    if (!isInstalled || force) {
       const tracer = await this.traceManager.create();
+      await this.resetStatus(pkg, plugin);
       process.nextTick(async () => {
         try {
-          this.setStatusById(plugin.id, PluginStatus.PENDING);
           await this.install(plugin.id, pkg, { pyIndex, force, ...tracer.getLogger() });
           this.setStatusById(plugin.id, PluginStatus.INSTALLED);
           this.traceManager.destroy(tracer.id);
@@ -139,6 +157,10 @@ export class PluginManager {
    * @param force boolean if true, the installed plugin will be reinstall
    */
   async installByName(pkgName: string, pyIndex?: string, force?: boolean): Promise<TraceResp<PluginResp>> {
+    const pkgRecord = await this.findByName(pkgName);
+    if (pkgRecord?.status === PluginStatus.INSTALLED && pkgRecord.sourceFrom !== 'npm') {
+      return { ...pkgRecord, traceId: '' };
+    }
     const pkg = await this.fetch(pkgName);
     return this.installAtNextTick(pkg, pyIndex, force);
   }

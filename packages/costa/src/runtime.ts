@@ -14,9 +14,10 @@ import {
   readJson,
   writeJson
 } from 'fs-extra';
-import { download, constants, generateId, parsePluginName } from '@pipcook/pipcook-core';
+import { download, constants, generateId, parsePluginName, PluginStatus } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
+import md5 from 'md5';
 import { PluginRunnable, BootstrapArg } from './runnable';
 import LRUCache from './lrucache';
 import {
@@ -64,13 +65,13 @@ interface InstallOptions {
   stderr: NodeJS.WritableStream;
 }
 
-function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio: LogStdio): Promise<void> {
+function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio?: LogStdio): Promise<void> {
   return new Promise((resolve, reject) => {
     opts.stdio = [ null, 'pipe', 'pipe' ];
     opts.detached = false;
     const child = spawn(command, args, opts);
-    pipeLog(child.stdout, stdio.stdout, stdio.prefix);
-    pipeLog(child.stderr, stdio.stderr, stdio.prefix);
+    stdio?.stdout && pipeLog(child.stdout, stdio.stdout, stdio.prefix);
+    stdio?.stderr && pipeLog(child.stderr, stdio.stderr, stdio.prefix);
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });
@@ -91,14 +92,20 @@ async function extractPackageJsonFromReadable(readable: NodeJS.ReadableStream, p
   return JSON.parse(packageJson);
 }
 
-function fetchPackageJsonFromGit(remote: string, head: string): Promise<any> {
+async function fetchPackageJsonFromGit(remote: string, head: string, source: PluginSource): Promise<any> {
   const child = spawn('git', [
     'archive',
     `--remote=${remote}`,
     head,
     'package.json'
   ]);
-  return extractPackageJsonFromReadable(child.stdout, 'package.json');
+  const pkgJson = await extractPackageJsonFromReadable(child.stdout, 'package.json');
+  const pkgUri = path.join(constants.PIPCOOK_TMPDIR, `${pkgJson.name.replace('@', '').replace('/', '-')}-${pkgJson.version}.tgz`);
+  source.uri = pkgUri;
+  await spawnAsync('npm', [ 'pack', source.name ], {
+    cwd: constants.PIPCOOK_TMPDIR
+  });
+  return pkgJson;
 }
 
 function fetchPackageJsonFromTarball(filename: string): Promise<any> {
@@ -114,6 +121,10 @@ async function fetchPackageJsonFromTarballStream(fileStream: NodeJS.ReadableStre
    * look at: https://github.com/npm/cli/blob/3e7ed30d6e9211e39bd93ec4e254cc5a2b159947/lib/pack.js#L146
   */
   return extractPackageJsonFromReadable(unzip, 'package/package.json');
+}
+
+async function fetchMd5(filePath: string): Promise<string> {
+  return md5(await readFile(filePath));
 }
 
 function createRequirements(name: string, config: CondaConfig): string[] {
@@ -217,10 +228,10 @@ export class CostaRuntime {
    * @param pkg plugin package package info.
    * @param source source info.
    */
-  validAndAssign(pkg: PluginPackage, source: PluginSource): PluginPackage {
+  async validAndAssign(pkg: PluginPackage, source: PluginSource): Promise<PluginPackage> {
     try {
       this.validPackage(pkg);
-      this.assignPackage(pkg, source);
+      await this.assignPackage(pkg, source);
     } catch (err) {
       if (process.env.NODE_ENV === 'test') {
         console.warn('skip the valid package and assign because NODE_ENV is set to "test".');
@@ -229,6 +240,19 @@ export class CostaRuntime {
       }
     }
     return pkg;
+  }
+
+  async checkInstalled(pkg: PluginPackage, status: number, md5: string): Promise<boolean> {
+    if (status === PluginStatus.INSTALLED) {
+      if (pkg.pipcook.source.from === 'npm') {
+        return true;
+      } else {
+        if (pkg.pipcook.md5 === md5) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
@@ -258,7 +282,7 @@ export class CostaRuntime {
       const { hostname, auth, hash } = source.urlObject;
       let pathname = source.urlObject.pathname.replace(/^\/:?/, '');
       const remote = `${auth || 'git'}@${hostname}:${pathname}${hash || ''}`;
-      pkg = await fetchPackageJsonFromGit(remote, 'HEAD');
+      pkg = await fetchPackageJsonFromGit(remote, 'HEAD', source);
     } else if (source.from === 'fs') {
       debug(`linking the url ${source.uri}`);
       pkg = await readJson(`${source.uri}/package.json`);
@@ -379,14 +403,7 @@ export class CostaRuntime {
    * @param opts install options
    */
   async install(pkg: PluginPackage, opts: InstallOptions): Promise<boolean> {
-    if (opts.force === true) {
-      await this.uninstall(pkg);
-    }
-    // check if the pkg is installed
-    if ((await this.isInstalled(pkg.name)) && !opts.force) {
-      debug(`skip install "${pkg.name}" because it already exists`);
-      return true;
-    }
+    await this.uninstall(pkg);
 
     let boaSrcPath = path.join(__dirname, '../node_modules/@pipcook/boa');
     if (!await pathExists(boaSrcPath)) {
@@ -413,7 +430,7 @@ export class CostaRuntime {
     const pkg = await readJson(path.join(this.options.installDir, 'package.json'));
 
     const removePkg = async (name: string, version: string) => {
-      if (!await this.isInstalled(name)) {
+      if (!await this.isPkgExisted(name)) {
         debug(`skip uninstall "${name}" because it not exists.`);
         return false;
       }
@@ -465,7 +482,7 @@ export class CostaRuntime {
    * Check the plugin installed
    * @param name
    */
-  private isInstalled(name: string): Promise<boolean> {
+  private isPkgExisted(name: string): Promise<boolean> {
     return pathExists(`${this.options.installDir}/node_modules/${name}`);
   }
   /**
@@ -530,7 +547,7 @@ export class CostaRuntime {
    * @param pkg plugin info
    * @param source plugin source for installation
    */
-  private assignPackage(pkg: PluginPackage, source: PluginSource): PluginPackage {
+  private async assignPackage(pkg: PluginPackage, source: PluginSource): Promise<PluginPackage> {
     const { installDir } = this.options;
     pkg.pipcook.source = source;
     pkg.pipcook.target = {
@@ -540,6 +557,11 @@ export class CostaRuntime {
         // TODO(feely): not implement the version
         installDir, `node_modules/${pkg.name}@${pkg.version}`)
     };
+    if (source && source.from !== 'npm') {
+      const pkgMd5 = await fetchMd5(source.uri);
+      pkg.pipcook.md5 = pkgMd5;
+      pkg.version = pkgMd5;
+    }
     return pkg;
   }
 }

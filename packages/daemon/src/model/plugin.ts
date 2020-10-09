@@ -11,6 +11,7 @@ export interface PluginEntity {
   dest: string;
   sourceFrom: string;
   sourceUri: string;
+  md5?: string;
   status: number;
   error?: string;
 }
@@ -23,6 +24,7 @@ export interface CreationParameter {
   dest: string;
   sourceFrom: string;
   sourceUri: string;
+  md5?: string;
   status: number;
   error?: string;
   namespace?: string;
@@ -85,6 +87,24 @@ export class PluginModel extends Model {
     return count;
   }
 
+  static async setMd5ById(id: string, md5: string): Promise<number> {
+    const [ count ] = await PluginModel.update({
+      md5
+    }, {
+      where: { id }
+    });
+    return count;
+  }
+
+  static async setVersionById(id: string, version: string): Promise<number> {
+    const [ count ] = await PluginModel.update({
+      version
+    }, {
+      where: { id }
+    });
+    return count;
+  }
+
   static async findOrCreateByParams(creationParameter: CreationParameter): Promise<PluginEntity> {
     const [ plugin ] = await PluginModel.findOrCreate({
       where: {
@@ -116,6 +136,7 @@ export default async function model(sequelize: Sequelize): Promise<void> {
     dest: STRING,
     sourceFrom: STRING,
     sourceUri: STRING,
+    md5: STRING,
     status: {
       type: INTEGER,
       allowNull: false,

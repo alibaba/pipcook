@@ -105,6 +105,10 @@ export interface PluginPackage {
      * The plugin runtime
      */
     runtime?: 'nodejs' | 'python';
+    /**
+     * md5 of the tarball
+     */
+    md5?: string;
   };
   /**
    * The below is some information related to Python.

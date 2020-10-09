@@ -10,7 +10,7 @@
   ],
   "version": "independent",
   "loglevel": "verbose",
-  "npmClient": "npm",
+  "npmClient": "cnpm",
   "command": {
     "publishConfig": {
       "access": "public"
