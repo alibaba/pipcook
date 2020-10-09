@@ -12,6 +12,9 @@ export interface LogStdio {
  * @param prefix the log prefix
  */
 export function pipeLog(readable: NodeJS.ReadableStream, writable: NodeJS.WritableStream, prefix?: string): void {
+  if (!readable || !writable) {
+    return;
+  }
   let buffer = '';
   readable.on('error', (err) => {
     writable.emit('error', err);

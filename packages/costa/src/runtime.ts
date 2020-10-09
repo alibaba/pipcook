@@ -17,7 +17,7 @@ import {
 import { download, constants, generateId, parsePluginName, PluginStatus } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
-import md5 from 'md5';
+import crypto from 'crypto';
 import { PluginRunnable, BootstrapArg } from './runnable';
 import LRUCache from './lrucache';
 import {
@@ -73,8 +73,8 @@ function spawnAsync(command: string, args: string[], opts: SpawnOptions, stdio?:
     opts.stdio = [ null, 'pipe', 'pipe' ];
     opts.detached = false;
     const child = spawn(command, args, opts);
-    stdio?.stdout && pipeLog(child.stdout, stdio.stdout, stdio.prefix);
-    stdio?.stderr && pipeLog(child.stderr, stdio.stderr, stdio.prefix);
+    pipeLog(child.stdout, stdio.stdout, stdio.prefix);
+    pipeLog(child.stderr, stdio.stderr, stdio.prefix);
     child.on('close', (code: number) => {
       code === 0 ? resolve() : reject(new TypeError(`invalid code ${code} from ${command}`));
     });
@@ -136,7 +136,19 @@ async function fetchPackageJsonFromTarballStream(fileStream: NodeJS.ReadableStre
 }
 
 async function fetchMd5(filePath: string): Promise<string> {
-  return md5(await readFile(filePath));
+  return new Promise((resolve, reject) => {
+    const md5 = crypto.createHash('md5');
+    md5.setEncoding('hex');
+    const fd = createReadStream(filePath);
+    fd.on('end', () => {
+      md5.end();
+      resolve(md5.read());
+    });
+    fd.on('error', (err) => {
+      reject(err);
+    })
+    fd.pipe(md5);
+  });
 }
 
 function createRequirements(name: string, config: CondaConfig): string[] {
