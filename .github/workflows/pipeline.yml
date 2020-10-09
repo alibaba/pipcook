@@ -33,6 +33,6 @@ jobs:
     - name: wasm export pipeline
       run: |
         git clone https://github.com/emscripten-core/emsdk.git && cd emsdk
-        ./emsdk install latest && source ./emsdk_env.sh
+        ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh
         ./packages/cli/dist/bin/pipcook daemon stop
         export WASM=1 && ./packages/cli/dist/bin/pipcook run ./example/pipelines/databinding-image-classification-mobilenet.json
