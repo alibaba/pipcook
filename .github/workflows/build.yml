@@ -3,7 +3,7 @@ on:
   push:
     branches:
     - master
-    - debug
+    - debug/tvm
     paths-ignore:
     - 'docker/**'
     - 'docs/**'
