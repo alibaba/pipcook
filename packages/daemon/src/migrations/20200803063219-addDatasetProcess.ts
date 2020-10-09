@@ -17,16 +17,5 @@ export default {
         ]);
       }
     });
-  },
-
-  down: (queryInterface: QueryInterface) => {
-    return queryInterface.sequelize.transaction(async t => {
-      const tableNames = await queryInterface.showAllTables();
-      if (tableNames.indexOf('pipelines') >= 0) {
-        const columns = await queryInterface.describeTable('pipelines');
-        columns['datasetProcess'] && await queryInterface.removeColumn('pipelines', 'datasetProcess', { transaction: t });
-        columns['datasetProcess'] && await queryInterface.removeColumn('pipelines', 'datasetProcessParams', { transaction: t });
-      }
-    });
   }
 };

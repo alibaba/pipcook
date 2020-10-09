@@ -9,7 +9,7 @@
   "scripts": {
     "test": "ts-node ../../run_tests.ts",
     "build": "npm run clean && npm run compile",
-    "dev-build": "npm run clean && npm run dev-compile",
+    "dev-build": "npm run build",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts --tsconfig=tsconfig.json --format=cjs --outdir=dist && sh setup.sh",
     "compile": "tsc -b tsconfig.json && sh setup.sh"
