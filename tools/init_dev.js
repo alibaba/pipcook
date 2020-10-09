@@ -8,6 +8,10 @@ const fs = require('fs-extra');
 const { join, dirname } = path;
 const { mkdirp, stat, readJson, writeJson, remove, pathExists, symlink } = fs;
 const config = require('./dev_config.json');
+const { exec } = require('child_process');
+const { promisify } = require('util');
+
+const execAsync = promisify(exec);
 
 const PIPCOOK_HOME_PATH = join(homedir(), '.pipcook');
 
@@ -64,7 +68,14 @@ if (process.argv.length > 2 && process.argv[2] === '-f') {
   force = true;
 }
 
-const futures = [];
+// need to manually delete ts under midway since midway does not handle yarn installation properly
+const removeMidwayTS = () => {
+  const tsPath = path.join(__dirname, '../', './node_modules/midway-bin/node_modules/typescript/');
+  return execAsync(`rm -rf ${tsPath}`);
+};
+
+const futures = [ removeMidwayTS() ];
+
 for (const projConfig of config) {
   if (Array.isArray(projConfig.dependencies)) {
     futures.push(init(join(PIPCOOK_HOME_PATH, projConfig.destDir), projConfig.dependencies, force));

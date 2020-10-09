@@ -1,16 +1,9 @@
-import { STRING, Model, BuildOptions } from 'sequelize';
-import { providerWrapper, IApplicationContext } from 'midway';
-import { JobModelStatic } from './job';
-import DB from '../boot/database';
+import { STRING, Model, Sequelize, Op } from 'sequelize';
+import { generateId } from '@pipcook/pipcook-core';
+import { JobModel } from './job';
+import { UpdateParameter } from '../interface/pipeline';
 
-providerWrapper([
-  {
-    id: 'pipelineModel',
-    provider: model
-  }
-]);
-
-export class PipelineModel extends Model {
+export interface PipelineEntity {
   id: string;
   name: string;
 
@@ -47,14 +40,64 @@ export class PipelineModel extends Model {
   modelEvaluateParams: string;
 }
 
-export type PipelineModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): PipelineModel;
-};
+export interface QueryOptions {
+  limit: number;
+  offset: number;
+}
 
-export default async function model(context: IApplicationContext): Promise<PipelineModelStatic> {
-  const db = await context.getAsync('pipcookDB') as DB;
-  const JobModel = await context.getAsync('jobModel') as JobModelStatic;
-  const PipelineModel = db.sequelize.define('pipeline', {
+export class PipelineModel extends Model {
+  static async createPipeline(config: PipelineEntity): Promise<PipelineEntity> {
+    if (typeof config.id !== 'string') {
+      config.id = generateId();
+    }
+    return (await PipelineModel.create(config))?.toJSON() as PipelineEntity;
+  }
+
+  static async getPipeline(idOrName: string): Promise<PipelineEntity> {
+    return (await PipelineModel.findOne({
+      where: { [Op.or]: [ { id: idOrName }, { name: idOrName } ] }
+    }))?.toJSON() as PipelineEntity;
+  }
+
+  static async queryPipelines(opts?: QueryOptions): Promise<PipelineEntity[]> {
+    const { offset, limit } = opts || {};
+    return (await PipelineModel.findAll({
+      offset,
+      limit,
+      order: [
+        [ 'createdAt', 'DESC' ]
+      ],
+      include: [
+        {
+          all: true
+        }
+      ]
+    })).map(pipeline => pipeline.toJSON() as PipelineEntity);
+  }
+
+  static async removePipelineById(id: string): Promise<number> {
+    return PipelineModel.destroy({
+      where: { id }
+    });
+  }
+
+  static async removePipelines(): Promise<number> {
+    return PipelineModel.destroy({ truncate: true });
+  }
+
+  static async updatePipelineById(id: string, config: UpdateParameter): Promise<PipelineEntity> {
+    const [ number ] = await PipelineModel.update(config, {
+      where: { id }
+    });
+    if (number === 0) {
+      return undefined;
+    }
+    return (await PipelineModel.findByPk(id))?.toJSON() as PipelineEntity;
+  }
+}
+
+export default async function model(sequelize: Sequelize): Promise<void> {
+  PipelineModel.init({
     id: {
       type: STRING,
       primaryKey: true,
@@ -144,8 +187,11 @@ export default async function model(context: IApplicationContext): Promise<Pipel
     modelEvaluateParams: {
       type: STRING
     }
-  }) as PipelineModelStatic;
+  },
+  {
+    sequelize,
+    modelName: 'pipeline'
+  });
   PipelineModel.hasMany(JobModel);
   await PipelineModel.sync();
-  return PipelineModel;
 }

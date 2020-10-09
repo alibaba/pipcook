@@ -9,6 +9,10 @@ const DelegatorLoader = require('./delegator-loader');
 
 // internal symbols
 const IterIdxForSeqSymbol = Symbol('The iteration index for sequence');
+const PyGetAttrSymbol = Symbol('PYTHON_GETATTR_SYMBOL');
+const PySetAttrSymbol = Symbol('PYTHON_SETATTR_SYMBOL');
+const PyGetItemSymbol = Symbol('PYTHON_GETITEM_SYMBOL');
+const PySetItemSymbol = Symbol('PYTHON_SETITEM_SYMBOL');
 
 // read the conda path from the .CONDA_INSTALL_DIR
 // eslint-disable-next-line no-sync
@@ -332,10 +336,47 @@ function _internalWrap(T, src={}) {
       writable: false,
       value: () => T.__hash__(),
     },
-    __getattr__: {
+
+    /**
+     * @method [PyGetAttrSymbol]
+     * @public
+     */
+    [PyGetAttrSymbol]: {
       configurable: true,
-      value: (k) => wrap(T.__getattr__(k)),
-    }
+      enumerable: true,
+      writable: false,
+      value: k => wrap(T.__getattr__(k)),
+    },
+    /**
+     * @method [PySetAttrSymbol]
+     * @public
+     */
+    [PySetAttrSymbol]: {
+      configurable: true,
+      enumerable: true,
+      writable: false,
+      value: (k, v) => T.__setattr__(k, v),
+    },
+    /**
+     * @method [PyGetItemSymbol]
+     * @public
+     */
+    [PyGetItemSymbol]: {
+      configurable: true,
+      enumerable: true,
+      writable: false,
+      value: k => wrap(T.__getitem__(k)),
+    },
+    /**
+     * @method [PySetItemSymbol]
+     * @public
+     */
+    [PySetItemSymbol]: {
+      configurable: true,
+      enumerable: true,
+      writable: false,
+      value: (k, v) => T.__setitem__(k, v),
+    },
   });
 
   // Create the proxy object for handlers
@@ -430,6 +471,27 @@ module.exports = {
    * @param {string} extraSearchPath
    */
   setenv,
+  /**
+   * Public symbols
+   */
+  symbols: {
+    /**
+     * __getattr__
+     */
+    PyGetAttrSymbol,
+    /**
+     * __setattr__
+     */
+    PySetAttrSymbol,
+    /**
+     * __getitem__
+     */
+    PyGetItemSymbol,
+    /**
+     * __setitem__
+     */
+    PySetItemSymbol,
+  },
   /*
    * Import a Python module.
    * @method import

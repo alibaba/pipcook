@@ -53,8 +53,8 @@ After creating the project and completing the code, you can start to compile the
 ```sh
 $ pipcook app compile /path/to/your/project/script.ts
 generated 2 pipelines, please click the following links to config them:
-(nlp.classify) > http://localhost:6927/index.html#/pipeline/info?pipelineId=1a287920-b10e-11ea-a743-792a596edff1
-(nlp.classify) > http://localhost:6927/index.html#/pipeline/info?pipelineId=1a287921-b10e-11ea-a743-792a596edff1
+(nlp.classify) > https://pipboard.vercel.app/#/pipeline/info?pipelineId=1a287920-b10e-11ea-a743-792a596edff1
+(nlp.classify) > https://pipboard.vercel.app/#/pipeline/info?pipelineId=1a287921-b10e-11ea-a743-792a596edff1
 ```
 
 You can see that after executing the above command, you will be prompted to configure Pipeline, click on the link to configure them, the developer needs to configure different data according to different call interfaces, for example, the first classification is to classify products, then we when configuring Pipeline, we must prepare dataset related to product classification.
@@ -72,11 +72,11 @@ During the training process, you can view the training progress on the Pipboard,
 ```sh
 $ pipcook app status /path/to/your/project/script.ts
 job(0acee5e0-b1e5-11ea-85a3-dbb717ca8e27):
-  pipeline: http://localhost:6927/index.html#/pipeline/info?pipelineId=1a287920-b10e-11ea-a743-792a596edff1
+  pipeline: https://pipboard.vercel.app/#/pipeline/info?pipelineId=1a287920-b10e-11ea-a743-792a596edff1
   status: success
   evaluate: {"pass":true,"accuracy":0.927570093457944}
 job(0d043c70-b1e5-11ea-85a3-dbb717ca8e27):
-  pipeline: http://localhost:6927/index.html#/pipeline/info?pipelineId=1a287921-b10e-11ea-a743-792a596edff1
+  pipeline: https://pipboard.vercel.app/#/pipeline/info?pipelineId=1a287921-b10e-11ea-a743-792a596edff1
   status: success
   evaluate: {"pass":true,"accuracy":0.927570093457944}
 ```

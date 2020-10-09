@@ -36,7 +36,7 @@ async function start(): Promise<void> {
     if (message.event === 'ready') {
       daemon.disconnect();
       daemon.unref();
-      logger.success(`Pipcook is on http://localhost:${message.data.listen}`);
+      logger.success(`Pipcook service started on ${message.data.listen}. To open pipboard, please visit https://pipboard.vercel.app`);
     }
   });
   daemon.on('exit', async (code: number) => {

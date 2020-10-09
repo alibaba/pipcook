@@ -11,13 +11,14 @@
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "dev-compile": "esbuild ./src/*.ts --tsconfig=tsconfig.json --outdir=dist",
+    "dev-compile": "esbuild ./src/*.ts --format=cjs --tsconfig=tsconfig.json --outdir=dist",
     "compile": "tsc -b tsconfig.json",
     "test": "ts-node ../../run_tests.ts"
   },
   "dependencies": {
     "@pipcook/pipcook-core": "^1.2.0",
     "axios": "^0.18.1",
+    "content-disposition": "^0.5.3",
     "eventsource": "^1.0.7",
     "form-data": "^3.0.0",
     "fs-extra": "^8.1.0"
