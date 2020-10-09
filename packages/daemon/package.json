@@ -62,8 +62,7 @@
     "test": "midway-bin test --ts --full-trace",
     "migration": "sequelize-cli db:migrate",
     "migration:undo": "sequelize-cli db:migrate:undo",
-    "benchmark": "node benchmark/bootstrap.js",
-    "postinstall": "python3 -m pip install tvm -f https://tlcpack.ai/wheels.html"
+    "benchmark": "node benchmark/bootstrap.js"
   },
   "ci": {
     "version": "10"
