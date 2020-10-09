@@ -319,7 +319,7 @@ export class CostaRuntime {
     }
     const stdio = { stdout: opts.stdout, stderr: opts.stderr, prefix: 'NODE' };
     const npmExecOpts = { cwd: this.options.installDir };
-    const npmArgs = [ 'install', pluginAbsName, '-E', '--production' ];
+    const npmArgs = [ 'install', pluginAbsName, '-E', '--production', '--silly' ];
 
     if (this.options.npmRegistryPrefix) {
       npmArgs.push(`--registry=${this.options.npmRegistryPrefix}`);
