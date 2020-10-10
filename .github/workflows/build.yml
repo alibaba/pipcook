@@ -109,12 +109,18 @@ jobs:
       run: |
         ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
         ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
-    - name: install plugin from local project
+    - name: install plugin from local project and change the content
       run: |
         ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/test/plugins/nodejs-simple
         npm pack ./packages/costa/test/plugins/nodejs-simple
+        touch ./packages/costa/test/plugins/nodejs-simple/change.js
+        ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/test/plugins/nodejs-simple
         ./packages/cli/dist/bin/pipcook plugin install ./nodejs-simple-1.0.0.tgz
         rm ./nodejs-simple-1.0.0.tgz
+    - name: install plugin from remote url and install it again by its name
+      run: |
+      ./packages/cli/dist/bin/pipcook plugin install https://registry.npmjs.org/@pipcook/plugins-csv-data-access/-/plugins-csv-data-access-1.1.0.tgz
+      ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-csv-data-access
     - name: pipcook run from local filename
       run: |
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
