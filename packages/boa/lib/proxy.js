@@ -198,7 +198,7 @@ function _internalWrap(T, src={}) {
       },
     },
     /**
-     * This is used to cusom the console.log output by calling toString().
+     * This is used to custom the console.log output by calling toString().
      * @method util.inspect.custom
      * @public
      */
