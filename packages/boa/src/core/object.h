@@ -8,27 +8,6 @@ using namespace Napi;
 
 namespace boa {
 
-class ObjectOwnership {
-public:
-  ObjectOwnership(PyObject *o) : _pyobject(o), _owned(false) {}
-
-public:
-  PyObject *getObject() { return _pyobject; }
-  bool getOwned() const {
-    std::lock_guard<std::mutex> l(_mtx);
-    return _owned;
-  }
-  void setOwned(bool owned) {
-    std::lock_guard<std::mutex> l(_mtx);
-    _owned = owned;
-  }
-
-private:
-  mutable std::mutex _mtx;
-  PyObject *_pyobject;
-  bool _owned;
-};
-
 class PythonObject : public ObjectWrap<PythonObject>,
                      pybind::detail::generic_type {
 public:
@@ -85,7 +64,7 @@ public:
 
 private:
   pybind::object _self;
-  ObjectOwnership *_ownership = nullptr;
+  ObjectOwnership<PyObject> *_ownership = nullptr;
   uintptr_t _borrowedOwnershipId = 0x0;
   std::vector<PythonFunction *> _funcs;
 };

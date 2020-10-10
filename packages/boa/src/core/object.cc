@@ -73,7 +73,8 @@ PythonObject::PythonObject(const CallbackInfo &info)
   if (info[0].IsNumber()) {
     // initialized from pointer.
     _borrowedOwnershipId = (uintptr_t)info[0].As<Number>().DoubleValue();
-    auto ownership = reinterpret_cast<ObjectOwnership *>(_borrowedOwnershipId);
+    auto ownership =
+        reinterpret_cast<ObjectOwnership<PyObject> *>(_borrowedOwnershipId);
     _self = pybind::reinterpret_steal<pybind::object>(ownership->getObject());
   } else {
     // initlialized from external object which contains the pybind::object
@@ -243,7 +244,10 @@ Napi::Value PythonObject::GetOwnership(const CallbackInfo &info) {
 
 Napi::Value PythonObject::RequestOwnership(const CallbackInfo &info) {
   ACQUIRE_OWNERSHIP_AND_THROW();
-  _ownership = new ObjectOwnership(_self.ptr());
+  if (_ownership != nullptr) {
+    delete _ownership;
+  }
+  _ownership = new ObjectOwnership<PyObject>(_self.ptr());
   auto id = reinterpret_cast<uintptr_t>(_ownership);
   return Number::New(info.Env(), id);
 }
@@ -256,7 +260,8 @@ Napi::Value PythonObject::ReturnOwnership(const CallbackInfo &info) {
   }
   // found the ownership, and set it owned thus the main thread can use this
   // object.
-  auto ownership = reinterpret_cast<ObjectOwnership *>(_borrowedOwnershipId);
+  auto ownership =
+      reinterpret_cast<ObjectOwnership<PyObject> *>(_borrowedOwnershipId);
   ownership->setOwned(true);
   return Boolean::New(info.Env(), true);
 }
@@ -287,12 +292,7 @@ bool PythonObject::GetOwnership() {
   if (_ownership == nullptr) {
     return true;
   } else {
-    bool owned = _ownership->getOwned();
-    if (owned == true) {
-      delete _ownership;
-      _ownership = nullptr;
-    }
-    return owned;
+    return _ownership->getOwned();
   }
 }
 
