@@ -21,7 +21,8 @@ namespace boa {
 #define NODE_PYTHON_JS_DISPATCH "__jsdispatch__"
 
 /**
- * a RAII wrapper for `std::atomic_flag`, just like the class `lock_guard<Mutex>`.
+ * a RAII wrapper for `std::atomic_flag`, just like the class
+ * `lock_guard<Mutex>`.
  */
 class atomic_guard {
 public:
