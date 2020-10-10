@@ -25,7 +25,8 @@ private:
   Napi::Value Print(const CallbackInfo &);
 
 private:
-  bool _initialized = false;
+  // flag if this is initialized manually.
+  bool initialized = false;
 };
 
 } // namespace boa

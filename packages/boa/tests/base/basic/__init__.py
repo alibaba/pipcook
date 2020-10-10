@@ -1,3 +1,5 @@
+import time
+
 class Foobar(object):
   """docstring for Foobar"""
   def __init__(self):
@@ -10,6 +12,9 @@ class Foobar(object):
 
   def ping(self, x):
     return self.hellomsg(x)
+
+  def sleep(self):
+    time.sleep(1)
 
   def callfunc(self, fn):
     return fn(233)

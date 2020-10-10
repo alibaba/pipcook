@@ -31,6 +31,11 @@ private:
   Napi::Value ToString(const CallbackInfo &);
   Napi::Value SetClassMethod(const CallbackInfo &);
 
+  // ownership releated methods.
+  Napi::Value GetOwnership(const CallbackInfo &);
+  Napi::Value RequestOwnership(const CallbackInfo &);
+  Napi::Value ReturnOwnership(const CallbackInfo &);
+
   // Python magic methods
   Napi::Value Hash(const CallbackInfo &);
   Napi::Value HasAttr(const CallbackInfo &);
@@ -47,6 +52,7 @@ public:
   inline bool IsBytes(Napi::Value);
   inline bool IsPythonObject(Napi::Value);
   std::string ToString();
+  bool GetOwnership();
   PyObject *Cast(Napi::Env, Napi::Value, bool finalizeFuncType = false);
   PyObject *Cast(Napi::Env, String);
   PyObject *Cast(Napi::Env, Boolean);
@@ -58,6 +64,8 @@ public:
 
 private:
   pybind::object _self;
+  ObjectOwnership<PyObject> *_ownership = nullptr;
+  uintptr_t _borrowedOwnershipId = 0x0;
   std::vector<PythonFunction *> _funcs;
 };
 

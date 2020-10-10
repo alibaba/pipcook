@@ -30,7 +30,10 @@ PythonNode::PythonNode(const CallbackInfo &info)
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
   {
-    pybind::initialize_interpreter();
+    if (Py_IsInitialized() == 0) {
+      pybind::initialize_interpreter();
+      initialized = true;
+    }
     // Set Python Arguments.
     if (info[0].IsArray()) {
       Napi::Array jargv = info[0].As<Napi::Array>();
@@ -47,14 +50,12 @@ PythonNode::PythonNode(const CallbackInfo &info)
       for (wchar_t *item : argv)
         PyMem_RawFree(item);
     }
-    _initialized = true;
   }
 }
 
 PythonNode::~PythonNode() {
-  if (_initialized == true) {
+  if (initialized && Py_IsInitialized() == true) {
     pybind::finalize_interpreter();
-    _initialized = false;
   }
 }
 
