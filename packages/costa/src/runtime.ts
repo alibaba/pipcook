@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import path from 'path';
 import { createUnzip } from 'zlib';
 import {
@@ -17,7 +18,6 @@ import {
 import { download, constants, generateId, parsePluginName, PluginStatus } from '@pipcook/pipcook-core';
 import tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
-import crypto from 'crypto';
 import { PluginRunnable, BootstrapArg } from './runnable';
 import LRUCache from './lrucache';
 import {
@@ -252,10 +252,10 @@ export class CostaRuntime {
    * @param pkg plugin package package info.
    * @param source source info.
    */
-  async validAndAssign(pkg: PluginPackage, source: PluginSource): Promise<PluginPackage> {
+  async validAndAssign(pkg: PluginPackage, source: PluginSource, assignMd5 = false): Promise<PluginPackage> {
     try {
       this.validPackage(pkg);
-      await this.assignPackage(pkg, source);
+      await this.assignPackage(pkg, source, assignMd5);
     } catch (err) {
       if (process.env.NODE_ENV === 'test') {
         console.warn('skip the valid package and assign because NODE_ENV is set to "test".');
@@ -315,7 +315,7 @@ export class CostaRuntime {
       await download(source.name, source.uri);
       pkg = await fetchPackageJsonFromTarball(source.uri);
     }
-    return this.validAndAssign(pkg, source);
+    return this.validAndAssign(pkg, source, source.from !== 'npm');
   }
 
   /**
@@ -335,7 +335,7 @@ export class CostaRuntime {
       name: `${pkg.name}@${pkg.version}`,
       uri: filename
     };
-    return this.validAndAssign(pkg, source);
+    return this.validAndAssign(pkg, source, true);
   }
 
   /**
@@ -574,7 +574,7 @@ export class CostaRuntime {
    * @param pkg plugin info
    * @param source plugin source for installation
    */
-  private async assignPackage(pkg: PluginPackage, source: PluginSource): Promise<PluginPackage> {
+  private async assignPackage(pkg: PluginPackage, source: PluginSource, assignMd5 = false): Promise<PluginPackage> {
     const { installDir } = this.options;
     pkg.pipcook.source = source;
     pkg.pipcook.target = {
@@ -584,7 +584,7 @@ export class CostaRuntime {
         // TODO(feely): not implement the version
         installDir, `node_modules/${pkg.name}@${pkg.version}`)
     };
-    if (source && source.from !== 'npm') {
+    if (assignMd5) {
       const pkgMd5 = await fetchMd5(source.uri);
       pkg.pipcook.md5 = pkgMd5;
       pkg.version = pkgMd5;

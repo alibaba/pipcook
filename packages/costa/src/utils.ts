@@ -11,7 +11,7 @@ export interface LogStdio {
  * @param writable the log stream
  * @param prefix the log prefix
  */
-export function pipeLog(readable: NodeJS.ReadableStream, writable: NodeJS.WritableStream, prefix?: string): void {
+export function pipeLog(readable?: NodeJS.ReadableStream, writable?: NodeJS.WritableStream, prefix?: string): void {
   if (!readable || !writable) {
     return;
   }
