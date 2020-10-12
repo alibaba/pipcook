@@ -43,10 +43,10 @@ async function start(): Promise<void> {
       daemon.unref();
       let serverInfo;
       // TODO(Feely): the listen field is deprecated, we will remove this
-      if (message.data.listen) {
-        serverInfo = message.data.listen;
-      } else if (message.data.host && message.data.port) {
+      if (message.data.host && message.data.port) {
         serverInfo = `${message.data.host}:${message.data.port}`;
+      } else if (message.data.listen) {
+        serverInfo = message.data.listen;
       }
       logger.success(`Pipcook service started on ${serverInfo}. To open pipboard, please visit https://pipboard.vercel.app`);
     }
