@@ -274,6 +274,76 @@ In Node.js version < `v14.x`, you also need to add the [`--experimental-modules`
 $ node --experimental-modules --experimental-loader @pipcook/boa/esm/loader.mjs app.mjs
 ```
 
+## Python functions in `worker_threads`
+
+The `@pipcook/boa` package calls Python function in blocking way, which is because of the Python(CPython)'s object model is not thread-safe, thus Python limits to run Python functions in different threads.
+
+However the `@pipcook/boa` package allows running Python function in another thread with Node.js `worker_threads`, an non-blocking example is:
+
+```js
+const { Worker, isMainThread, workerData, parentPort } = require('worker_threads');
+const boa = require('@pipcook/boa');
+const pybasic = boa.import('tests.base.basic'); // a Python example
+const { SharedPythonObject, symbols } = boa;
+
+class Foobar extends pybasic.Foobar {
+  hellomsg(x) {
+    return `hello <${x}> on ${this.test}(${this.count})`;
+  }
+}
+
+if (isMainThread) {
+  const foo = new Foobar();
+  const worker = new Worker(__filename, {
+    workerData: {
+      foo: new SharedPythonObject(foo),
+    },
+  });
+  let alive = setInterval(() => {
+    const ownership = foo[symbols.GetOwnershipSymbol]();
+    console.log(`ownership should be ${expectedOwnership}.`);
+  }, 1000);
+
+  worker.on('message', state => {
+    if (state === 'done') {
+      console.log('task is completed');
+      setTimeout(() => {
+        clearInterval(alive);
+        console.log(foo.ping('x'));
+      }, 1000);
+    }
+  });
+} else {
+  const { foo } = workerData;
+  console.log(`worker: get an object${foo} and sleep 5s in Python`);
+  foo.sleep(); // this is a blocking function which is implemented at Python to sleep 1s
+  
+  console.log('python sleep is done, and sleep in nodejs(thread)');
+  setTimeout(() => parentPort.postMessage('done'), 1000);
+}
+```
+
+In the new sub-thread created by `worker_threads`, the `@pipcook/boa` won't create the new interrupter, it means all the threads by Node.js shares the same Python interpreter to avoid the Python GIL.
+
+To make sure the thread-safty works, we introduce a `SharedPythonObject` class to share the Python objects between threads via the following:
+
+```js
+// main thread
+const foo = new Foobar(); // Python object
+const worker = new Worker(__filename, {
+  workerData: {
+    foo: new SharedPythonObject(foo),
+  },
+});
+
+// worker thread
+const { workerData } = require('worker_threads');
+const boa = require('@pipcook/boa');
+console.log(workerData.foo);
+```
+
+The `SharedPythonObject` accepts a Python object created by `@pipcook/boa`, once created, the original object won't be used util the worker thread exits, this is to make sure the thread-safty of the shared objects, it means an object could only be used by worker or main thread at the same time.
+
 ## Build from source
 
 ```bash
