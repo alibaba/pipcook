@@ -11,13 +11,15 @@ const PIPCOOK_HOME = os.homedir() + '/.pipcook';
 const DAEMON_PIDFILE = PIPCOOK_HOME + '/daemon.pid';
 const DAEMON_CONFIG = PIPCOOK_HOME + '/daemon.config.json';
 const PIPCOOK_DB = PIPCOOK_HOME + '/db/pipcook.db';
-const PORT = 6927;
 
 const isChildMode = typeof process.send === 'function';
 const bootstrapProcessState = {
   willExit: null,
   exitCode: 0
 };
+
+let PORT = 6927;
+let HOST = null;
 
 function createPidfileSync(pathname) {
   if (fs.existsSync(DAEMON_PIDFILE)) {
@@ -53,12 +55,20 @@ function createPidfileSync(pathname) {
   // load config
   if (await pathExists(DAEMON_CONFIG)) {
     const config = require(DAEMON_CONFIG);
-    if (config && config.env) {
-      process.env.BOA_CONDA_MIRROR = config.env.BOA_CONDA_MIRROR;
-      console.info(`set env BOA_CONDA_MIRROR=${config.env.BOA_CONDA_MIRROR}`);
+    if (config) {
+      if (config.env) {
+        process.env.BOA_CONDA_MIRROR = config.env.BOA_CONDA_MIRROR;
+        console.info(`set env BOA_CONDA_MIRROR=${config.env.BOA_CONDA_MIRROR}`);
+      }
+      if (config.port) {
+        PORT = config.port;
+      }
+      if (config.host) {
+        HOST = config.host;
+      }
     }
   }
-
+  
   let midwayPathname = path.join(__dirname, 'node_modules/midway');
   if (!await pathExists(midwayPathname)) {
     midwayPathname = path.join(__dirname, '../../midway');
@@ -85,17 +95,21 @@ function createPidfileSync(pathname) {
     });
     // emit `server` event in app
     app.emit('server', server);
-
+  
     // server listen
     await new Promise(resolve => {
-      server.listen(PORT, resolve);
+      if (HOST) {
+        server.listen(PORT, HOST, resolve);
+      } else {
+        server.listen(PORT, resolve);
+      }
     });
   } catch (err) {
     return exitProcessWithError(err);
   }
 
   process.title = 'pipcook.daemon';
-  console.info('Server is listening at http://localhost:%s, cost %ss', PORT, process.uptime());
+  console.info('Server is listening at %s:%s, cost %ss', HOST || '0.0.0.0', PORT, process.uptime());
 
   prepareToReady();
 })();
@@ -138,6 +152,9 @@ function prepareToReady() {
   process.send({
     event: 'ready',
     data: {
+      host: HOST || '0.0.0.0',
+      port: PORT,
+      // for compatibility with older versions
       listen: PORT
     }
   });
