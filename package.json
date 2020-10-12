@@ -24,7 +24,7 @@
   "scripts": {
     "build": "lerna run compile",
     "dev-build": "lerna run dev-compile --parallel --concurrency 10",
-    "postinstall": "node ./tools/init_dev.js -f && node ./tools/lock_treater.js",
+    "postinstall": "node ./tools/init_dev.js -f",
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon lint",
     "pretest": "npm run lint",
