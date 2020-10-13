@@ -146,7 +146,7 @@ async function fetchMd5(filePath: string): Promise<string> {
     });
     fd.on('error', (err) => {
       reject(err);
-    })
+    });
     fd.pipe(md5);
   });
 }
