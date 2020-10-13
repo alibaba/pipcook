@@ -129,6 +129,7 @@ open https://pipboard.vercel.app/
 ```
 
 You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. 
+You also can try [Pipcook][] online with [Google Colab Notebook][https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_image_classification.ipynb].
 
 ### Pipelines
 
