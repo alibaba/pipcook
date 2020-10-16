@@ -13,7 +13,6 @@ test('builtins.generator', t => {
   t.end();
 });
 
-
 test('builtins.generator with next', t => {
   const obj = pybasic.Foobar();
   const generator = obj.testGen(0);
