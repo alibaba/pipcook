@@ -347,6 +347,8 @@ function _internalWrap(T, src={}, type={}) {
               `or one-level properties.`);
 
         if (typeof value === 'function') {
+          // the next called on generator expects its caller to be a `generator` type where
+          // proxy does not have such base class
           if (name.toString() === 'next' && type.name === 'generator') {
             return value.bind(src);
           }
