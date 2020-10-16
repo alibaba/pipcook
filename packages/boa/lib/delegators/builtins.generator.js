@@ -1,13 +1,13 @@
 module.exports = (T, wrap) => {
   
   function *generator() {
-    do { 
+    do {
       let curr = T.next();
       if (curr.done) {
         break;
       }
       yield wrap(curr.value);
-    } while (true)
+    } while (true);
   };
 
   return generator();
