@@ -90,7 +90,7 @@ function wrap(T) {
     fn = getDelegator('default');
   }
   // use internalWrap to generate proxy object with corresponding delegator.
-  const wrapped = _internalWrap(T, fn(T, wrap), type);
+  const wrapped = _internalWrap(T, fn(T, wrap));
   T[native.NODE_PYTHON_WRAPPED_NAME] = wrapped;
   return wrapped;
 }
@@ -102,7 +102,7 @@ function asHandleObject(T) {
   };
 }
 
-function _internalWrap(T, src={}, type={}) {
+function _internalWrap(T, src={}) {
   Object.defineProperties(src, {
     /**
      * @property native.NODE_PYTHON_WRAPPED_NAME
@@ -349,7 +349,7 @@ function _internalWrap(T, src={}, type={}) {
         if (typeof value === 'function') {
           // the next called on generator expects its caller to be a `generator` type where
           // proxy does not have such base class
-          if (name.toString() === 'next' && type.name === 'generator') {
+          if (name.toString() === 'next' && getTypeInfo(T).name === 'generator') {
             return value.bind(src);
           }
           // FIXME(Yorkie): make sure the function's this is correct.

@@ -1,5 +1,5 @@
 module.exports = (T, wrap) => {
-  
+
   function *generator() {
     do {
       let curr = T.next();
@@ -8,7 +8,7 @@ module.exports = (T, wrap) => {
       }
       yield wrap(curr.value);
     } while (true);
-  };
+  }
 
   return generator();
 };
