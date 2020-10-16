@@ -349,7 +349,8 @@ function _internalWrap(T, src={}) {
         if (typeof value === 'function') {
           // the `next` called on generator expects its caller to be a `generator` type where
           // proxy does not have such base class.
-          if (type.module === 'builtins' && type.name === 'generator' && name === 'next') {
+          const thisType = getTypeInfo(T);
+          if (thisType.module === 'builtins' && thisType.name === 'generator' && name === 'next') {
             return value.bind(src);
           }
           // FIXME(Yorkie): make sure the function's this is correct.
