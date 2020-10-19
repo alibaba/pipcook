@@ -131,6 +131,32 @@ bytes.fromhex(foobar.toString('hex'));
 // "b'foobar'"
 ```
 
+### Use of Generator
+
+`Boa` will also handle `Generator` class in the native python runtime. JavaScript syntax of `Generator` could be applied to Python `Generator` directly:
+
+```js
+
+const generator = generatorFromPython(); // Generator
+
+// You can access data via the following syntax
+for (const element of generator) {
+  console.log(element)
+}
+
+// or use typical next syntax
+
+const generator = generatorFromPython(); // Generator
+
+let curr = generator.next();
+
+while (curr.done) {
+  console.log(curr.value);
+  curr = generator.next()
+}
+
+```
+
 ### Class `PythonObjectWrapper`
 
 This class represents a wrapper for the corresponding object in Python runtime, it must be returned only from [`boa`](#boa) methods like `boa.builtins` and `boa.import`.
