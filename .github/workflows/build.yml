@@ -114,8 +114,8 @@ jobs:
     - name: install plugin from local project
       run: |
         ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/test/plugins/nodejs-simple
-        yarn pack ./packages/costa/test/plugins/nodejs-simple
-        ./packages/cli/dist/bin/pipcook plugin install ./nodejs-simple-1.0.0.tgz
+        cd ./packages/costa/test/plugins/nodejs-simple && yarn pack && cd -
+        ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/test/plugins/nodejs-simple/nodejs-simple-v1.0.0.tgz
         rm ./nodejs-simple-1.0.0.tgz
     - name: pipcook run from local filename
       run: |
