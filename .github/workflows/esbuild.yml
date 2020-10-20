@@ -39,4 +39,4 @@ jobs:
     - name: Running unit tests
       run: |
         yarn init-dev
-        npm test
+        yarn test
