@@ -7,6 +7,8 @@ import { PluginModel, PluginEntity, ListPluginsFilter } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
 import { pluginQueue } from '../utils';
 
+export { PluginEntity } from '../model/plugin';
+
 @provide('pluginManager')
 export class PluginManager {
 
@@ -64,6 +66,10 @@ export class PluginManager {
 
   async findById(id: string): Promise<PluginEntity> {
     return PluginModel.findById(id);
+  }
+
+  async findByPrefixId(prefixId: string): Promise<PluginEntity[]> {
+    return PluginModel.findByPrefixId(prefixId);
   }
 
   async findByIds(ids: string[]): Promise<PluginEntity[]> {

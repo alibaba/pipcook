@@ -21,6 +21,9 @@ import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { pluginQueue } from '../utils';
 import { UpdateParameter } from '../interface/pipeline';
 
+export { JobEntity } from '../model/job';
+export { PipelineEntity } from '../model/pipeline';
+
 interface SelectJobsFilter {
   pipelineId?: string;
 }
@@ -65,6 +68,22 @@ export class PipelineService {
     return PipelineModel.getPipeline(idOrName);
   }
 
+  /**
+   * query pipelines by id prefix
+   * @param prefixId pipeline id
+   */
+  async getPipelinesByPrefixId(prefixId: string): Promise<PipelineEntity[]> {
+    return PipelineModel.getPipelinesByPrefixId(prefixId);
+  }
+
+  /**
+   * query pipeline by name
+   * @param name pipeline name
+   */
+  async getPipelinesByName(name: string): Promise<PipelineEntity> {
+    return PipelineModel.getPipelineByName(name);
+  }
+
   async queryPipelines(opts?: QueryOptions): Promise<PipelineEntity[]> {
     return PipelineModel.queryPipelines(opts);
   }
@@ -96,6 +115,14 @@ export class PipelineService {
   async getJobById(id: string): Promise<JobEntity> {
     return JobModel.getJobById(id);
   }
+
+  /**
+   * query jobs by id prefix
+   * @param prefixId pipeline id
+   */
+  async getJobsByPrefixId(prefixId: string): Promise<JobEntity[]> {
+    return JobModel.findByPrefixId(prefixId);
+  } 
 
   async saveJob(job: JobEntity): Promise<void> {
     JobModel.saveJob(job);

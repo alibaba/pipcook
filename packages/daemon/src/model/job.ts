@@ -1,4 +1,4 @@
-import { STRING, INTEGER, BOOLEAN, Model, Sequelize } from 'sequelize';
+import { STRING, INTEGER, BOOLEAN, Model, Sequelize, Op } from 'sequelize';
 import { PipelineStatus, generateId } from '@pipcook/pipcook-core';
 
 export interface JobEntity {
@@ -39,6 +39,14 @@ export class JobModel extends Model {
   static async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
     return (await JobModel.findAll({
       where: { pipelineId }
+    })).map(job => job.toJSON() as JobEntity);
+  }
+
+  static async findByPrefixId(prefixId: string): Promise<JobEntity[]> {
+    return (await JobModel.findAll({
+      where: { id:  {
+        [Op.like]: `${prefixId}%`
+      }}
     })).map(job => job.toJSON() as JobEntity);
   }
 

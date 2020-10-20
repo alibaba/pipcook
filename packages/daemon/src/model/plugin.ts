@@ -1,4 +1,4 @@
-import { STRING, INTEGER, Model, Sequelize } from 'sequelize';
+import { STRING, INTEGER, Model, Sequelize, Op } from 'sequelize';
 import { PluginStatus, generateId } from '@pipcook/pipcook-core';
 
 export interface PluginEntity {
@@ -67,6 +67,15 @@ export class PluginModel extends Model {
   static async findByIds(ids: string[]): Promise<PluginEntity[]> {
     return (await PluginModel.findAll({ where: { id: ids } })).map(plugin => plugin.toJSON() as PluginEntity);
   }
+
+  static async findByPrefixId(prefixId: string): Promise<PluginEntity[]> {
+    return (await PluginModel.findAll({
+      where: { id:  {
+        [Op.like]: `${prefixId}%`
+      }}
+    })).map(plugin => plugin.toJSON() as PluginEntity);
+  }
+
   static async findByName(name: string): Promise<PluginEntity> {
     return (await PluginModel.findOne({ where: { name } }))?.toJSON() as PluginEntity;
   }

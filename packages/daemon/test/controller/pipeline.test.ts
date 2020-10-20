@@ -8,7 +8,7 @@ import { mm } from 'midway-mock/dist/mock';
 import { PluginStatus } from '@pipcook/pipcook-core';
 
 function mockGetPipeline(app: MidwayMockApplication) {
-  app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
+  app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string) => {
     assert.equal(id, 'id');
     const obj: any = {
       id,
@@ -23,9 +23,17 @@ function mockGetPipeline(app: MidwayMockApplication) {
     obj.toJSON = function () {
       return this;  
     };
-    return obj;
+    return [ obj ];
   });
 }
+
+function mockGetPipelineByName(app: MidwayMockApplication) {
+  app.mockClassFunction('pipelineService', 'getPipelinesByName', async (id: string) => {
+    assert.equal(id, 'id');
+    return undefined;
+  });
+}
+
 const mockConfig = {
   id: 'id',
   name: 'name',
@@ -88,6 +96,7 @@ describe('test pipeline controller', () => {
   });
 
   it('should remove pipeline by id', () => {
+    mockGetPipeline(app);
     const mockJobs = [ { id: '1' }, { id: '2' } ];
     app.mockClassFunction('pipelineService', 'getJobsByPipelineId', async (id: string) => {
       assert.equal(id, 'id');
@@ -106,18 +115,10 @@ describe('test pipeline controller', () => {
       .expect(204);
   });
 
-  it('should remove pipeline by id', () => {
-    const mockJobs = [ { id: '1' }, { id: '2' } ];
-    app.mockClassFunction('pipelineService', 'getJobsByPipelineId', async (id: string) => {
+  it('should remove pipeline by id but pipeline not found', () => {
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
-      return mockJobs;
-    });
-    app.mockClassFunction('pipelineService', 'removeJobByModels', async (jobs: any) => {
-      assert.equal(mockJobs, jobs);
-    });
-    app.mockClassFunction('pipelineService', 'removePipelineById', async (id: string) => {
-      assert.equal(id, 'id');
-      return 0;
+      return [];
     });
     return app
       .httpRequest()
@@ -125,9 +126,10 @@ describe('test pipeline controller', () => {
       .expect(404);
   });
   it('get nonexistent pipeline config', () => {
-    app.mockClassFunction('pipelineService', 'getPipeline', async (id: string): Promise<any> => {
+    mockGetPipelineByName(app);
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string): Promise<any> => {
       assert.equal(id, 'id');
-      return undefined;
+      return [];
     });
     return app
       .httpRequest()
@@ -150,8 +152,55 @@ describe('test pipeline controller', () => {
       });
   });
 
+  it('should get pipeline config but multiple pipelines found', async () => {
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string) => {
+      assert.equal(id, 'id');
+      return [ {}, {} ];
+    });
+    return app
+      .httpRequest()
+      .get('/api/pipeline/id/config')
+      .expect('Content-Type', /json/)
+      .expect(500);
+  });
+
+  it('should get pipeline config by name', async () => {
+    app.mockClassFunction('pipelineService', 'getPipelinesByName', async (name: string) => {
+      assert.equal(name, 'name');
+      const obj: any = {
+        id: 'id',
+        name,
+        dataCollectId: 'dataCollectId',
+        dataCollect: 'dataCollect',
+        dataCollectParams: '{}',
+        dataAccessId: 'dataAccessId',
+        dataAccess: 'dataAccess',
+        dataAccessParams: '{"a":1}'
+      };
+      obj.toJSON = function () {
+        return this;  
+      };
+      return obj;
+    });
+    return app
+      .httpRequest()
+      .get('/api/pipeline/name/config')
+      .expect('Content-Type', /json/)
+      .expect(200).then((res) => {
+        assert.equal(res.body.name, 'name');
+        assert.equal(res.body.plugins.dataCollect.package, 'dataCollect');
+        assert.deepEqual(res.body.plugins.dataCollect.params, {});
+        assert.equal(res.body.plugins.dataAccess.package, 'dataAccess');
+        assert.deepEqual(res.body.plugins.dataAccess.params, { a: 1 });
+      });
+  });
+
   it('should update pipeline config', async () => {
     const mockParseConfig = sinon.stub(helper, 'parseConfig').resolves(mockConfig);
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string): Promise<any> => {
+      assert.equal(id, 'id');
+      return [{ id }];
+    });
     app.mockClassFunction('pipelineService', 'updatePipelineById', async (id: string, config: any): Promise<any> => {
       assert.equal(id, 'id');
       assert.equal(mockConfig, config);
@@ -252,9 +301,9 @@ describe('test pipeline controller', () => {
       });
   });
   it('get nonexsitent pipeline info', async () => {
-    app.mockClassFunction('pipelineService', 'getPipeline', async (id: string): Promise<any> => {
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string): Promise<any> => {
       assert.equal(id, 'id');
-      return undefined;
+      return [];
     });
     return app
       .httpRequest()
@@ -339,9 +388,9 @@ describe('test pipeline controller', () => {
       });
   });
   it('install nonexistent pipeline', async () => {
-    app.mockClassFunction('pipelineService', 'getPipeline', async (id: string): Promise<any> => {
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string): Promise<any> => {
       assert.equal(id, 'id');
-      return undefined;
+      return [];
     });
     return app
       .httpRequest()

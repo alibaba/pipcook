@@ -22,6 +22,10 @@ describe('test base controller', () => {
       assert.equal(id, 'id');
       throw new TypeError('mock error');
     });
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (prefix: string) => {
+      assert.equal(prefix, 'id');
+      return [ { id: prefix } ];
+    });
     return app
       .httpRequest()
       .post('/api/job/id/cancel')

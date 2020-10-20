@@ -66,26 +66,38 @@ describe('test job controller', () => {
       })
       .expect(200);
   });
-
-  it('should get job info', () => {
-    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+  it('should get job info but multiple jobs found', () => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
-      return mockJob;
+      return [ {}, {} ];
+    });
+    return app
+      .httpRequest()
+      .get('/api/job/id')
+      .expect('Content-Type', /json/)
+      .expect(500);
+  });
+  
+  it('should get job info', () => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
+      assert.equal(id, 'id');
+      return [ { ...mockJob } ];
     });
     return app
       .httpRequest()
       .get('/api/job/id')
       .expect('Content-Type', /json/)
       .expect((resp) => {
+        console.log('resp.body', resp.body);
         assert.equal(resp.body.id, mockJob.id);
       })
       .expect(200);
   });
 
   it('get nonexistent job info', () => {
-    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
-      return undefined;
+      return [];
     });
     return app
       .httpRequest()
@@ -117,6 +129,10 @@ describe('test job controller', () => {
   });
 
   it('should delete job by id', () => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
+      assert.equal(id, 'id');
+      return [ { id } ];
+    });
     app.mockClassFunction('pipelineService', 'removeJobById', async (id: string) => {
       assert.equal(id, 'id');
       return 1;
@@ -152,6 +168,10 @@ describe('test job controller', () => {
   });
 
   it('should cancel job by id', () => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
+      assert.equal(id, 'id');
+      return [ { id } ];
+    });
     app.mockClassFunction('pipelineService', 'stopJob', async (id: string) => {
       assert.equal(id, 'id');
     });
@@ -166,11 +186,11 @@ describe('test job controller', () => {
       '1', 
       '2'
     ];
-    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
-      return {
+      return [{
         id: 'id'
-      }
+      }];
     });
     app.mockClassFunction('pipelineService', 'getLogById', async (id: string) => {
       assert.equal(id, 'id');
@@ -185,21 +205,31 @@ describe('test job controller', () => {
   });
 
   it('get nonexistent job log by id', () => {
-    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
-      return undefined;
+      return [];
     });
     return app
       .httpRequest()
       .get('/api/job/id/log')
       .expect(404);
   });
-
+  it('should run a job but multiple pipeline found', () => {
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string) => {
+      assert.equal(id, 'id');
+      return [ {}, {} ];
+    });
+    return app
+      .httpRequest()
+      .post('/api/job')
+      .send({ pipelineId: 'id' })
+      .expect(500);
+  });
   it('should run a job', () => {
-    app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
       mockPipeline = { ...mockPipeline, id };
-      return mockPipeline;
+      return [ mockPipeline ];
     });
     app.mockClassFunction('pipelineService', 'fetchPlugins', async (pipeline: any): Promise<any[]> => {
       assert.deepEqual(pipeline, mockPipeline);
@@ -229,10 +259,10 @@ describe('test job controller', () => {
       .expect(200);
   });
   it('should run a job with error', () => {
-    app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
       mockPipeline = { ...mockPipeline, id };
-      return mockPipeline;
+      return [ mockPipeline ];
     });
     app.mockClassFunction('pipelineService', 'fetchPlugins', async (pipeline: any): Promise<any[]> => {
       assert.deepEqual(pipeline, mockPipeline);
@@ -281,9 +311,9 @@ describe('test job controller', () => {
       .expect(404);
   });
   it('should download job', () => {
-    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
       assert.equal(id, 'job-id');
-      return { status: PipelineStatus.SUCCESS };
+      return [{ status: PipelineStatus.SUCCESS }];
     });
     app.mockClassFunction('pipelineService', 'getOutputTarByJobId', (id: string) => {
       assert.equal(id, 'job-id');
@@ -300,9 +330,9 @@ describe('test job controller', () => {
       .expect(204);
   });
   it('download a invalid job', () => {
-    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
       assert.equal(id, 'job-id');
-      return { status: PipelineStatus.FAIL };
+      return [{ status: PipelineStatus.FAIL }];
     });
     return app
       .httpRequest()
@@ -314,9 +344,9 @@ describe('test job controller', () => {
       .expect(400);
   });
   it('download a job but file not exists', () => {
-    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+    app.mockClassFunction('pipelineService', 'getJobsByPrefixId', async (id: string) => {
       assert.equal(id, 'job-id');
-      return { status: PipelineStatus.SUCCESS };
+      return [{ status: PipelineStatus.SUCCESS }];
     });
     app.mockClassFunction('pipelineService', 'getOutputTarByJobId', (id: string) => {
       assert.equal(id, 'job-id');
@@ -332,10 +362,10 @@ describe('test job controller', () => {
       .expect(400);
   });
   it('should throw error run a uninstalled job', () => {
-    app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
+    app.mockClassFunction('pipelineService', 'getPipelinesByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
       mockPipeline = {...mockPipeline, id};
-      return mockPipeline;
+      return [ mockPipeline ];
     });
     app.mockClassFunction('pipelineService', 'fetchPlugins', async (pipeline: any): Promise<any[]> => {
       assert.deepEqual(pipeline, mockPipeline);

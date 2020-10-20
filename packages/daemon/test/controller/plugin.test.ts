@@ -62,12 +62,12 @@ describe('test plugin controller', () => {
   });
 
   it('should get the plugin', () => {
-    app.mockClassFunction('pluginManager', 'findById', async (id: string) => {
+    app.mockClassFunction('pluginManager', 'findByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
-      return {
+      return [{
         id,
         name
-      };
+      }];
     });
     return app
       .httpRequest()
@@ -79,10 +79,21 @@ describe('test plugin controller', () => {
       .expect(200);
   });
 
-  it('try to get a nonexistent plugin', () => {
-    app.mockClassFunction('pluginManager', 'findById', async (id: string): Promise<any> => {
+  it('should get the plugin but multiple plugins found', () => {
+    app.mockClassFunction('pluginManager', 'findByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
-      return undefined;
+      return [ {}, {} ];
+    });
+    return app
+      .httpRequest()
+      .get('/api/plugin/id')
+      .expect(500);
+  });
+
+  it('try to get a nonexistent plugin', () => {
+    app.mockClassFunction('pluginManager', 'findByPrefixId', async (id: string): Promise<any> => {
+      assert.equal(id, 'id');
+      return [];
     });
     return app
       .httpRequest()
@@ -119,9 +130,9 @@ describe('test plugin controller', () => {
       id: 'id',
       name
     }
-    app.mockClassFunction('pluginManager', 'findById', async (id: string) => {
+    app.mockClassFunction('pluginManager', 'findByPrefixId', async (id: string) => {
       assert.equal(id, 'id');
-      return mockPlugin;
+      return [ mockPlugin ];
     });
     app.mockClassFunction('pluginManager', 'uninstall', async (plugin: any) => {
       assert.deepEqual(plugin, mockPlugin);
@@ -133,9 +144,9 @@ describe('test plugin controller', () => {
   });
 
   it('remove nonexistent plugin', () => {
-    app.mockClassFunction('pluginManager', 'findById', async (id: string): Promise<any> => {
+    app.mockClassFunction('pluginManager', 'findByPrefixId', async (id: string): Promise<any> => {
       assert.equal(id, 'id');
-      return undefined;
+      return [];
     });
     return app
       .httpRequest()
@@ -157,11 +168,11 @@ describe('test plugin controller', () => {
   });
 
   it('should get the plugin metadata', () => {
-    app.mockClassFunction('pluginManager', 'findById', async (id: string) => {
-      return {
+    app.mockClassFunction('pluginManager', 'findByPrefixId', async (id: string) => {
+      return [{
         name,
         version: '1.0.0'
-      };
+      }];
     });
     app.mockClassFunction('pluginManager', 'fetch', async (fetchName: string) => {
       assert.equal(fetchName, `${name}@1.0.0`);
@@ -184,6 +195,9 @@ describe('test plugin controller', () => {
       .expect(200);
   });
   it('should get 404 if id is not found', () => {
+    app.mockClassFunction('pluginManager', 'findByPrefixId', async (id: string) => {
+      return [];
+    });
     return app
       .httpRequest()
       .get(`/api/plugin/not-exists/metadata`)

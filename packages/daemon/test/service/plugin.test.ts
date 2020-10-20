@@ -289,4 +289,10 @@ describe('test the plugin manager', () => {
     assert.ok(mockFetch.calledOnceWith(stream));
     assert.ok(mockInstallAtNextTick.calledOnceWith({ name: 'mockName' } as any, 'mockPyIndex', false), 'mockInstallAtNextTick check');
   });
+  it('#should find plugins by id prefix', async () => {
+    const pluginManager: PluginManager = await app.applicationContext.getAsync<PluginManager>('pluginManager');
+    const mockFetch = sinon.stub(PluginModel, 'findByPrefixId').resolves([{ name: 'mockName' } as any]);
+    assert.deepEqual(await pluginManager.findByPrefixId('mockName'), [{ name: 'mockName' }], 'result check');
+    assert.ok(mockFetch.calledOnceWith('mockName'), 'mockFetch check');
+  });
 });

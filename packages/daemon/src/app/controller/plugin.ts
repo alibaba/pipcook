@@ -1,7 +1,7 @@
 import { controller, inject, provide, get, post, del, put } from 'midway';
 import * as HttpStatus from 'http-status';
 import { BaseEventController } from './base';
-import { PluginManager } from '../../service/plugin';
+import { PluginManager, PluginEntity } from '../../service/plugin';
 import Debug from 'debug';
 const debug = Debug('daemon.app.plugin');
 
@@ -11,6 +11,22 @@ export class PluginController extends BaseEventController {
 
   @inject('pluginManager')
   pluginManager: PluginManager;
+
+  /**
+   * fetch plugin by plugin id prefix, return plugin entity object
+   * if zero or more than one plugin found, throw error
+   * @param prefix id prefix
+   */
+  async fetchPluginByIdPrefix(prefix: string): Promise<PluginEntity> {
+    const plugins = await this.pluginManager.findByPrefixId(prefix);
+    if (plugins.length > 1) {
+      return this.ctx.throw(HttpStatus.INTERNAL_SERVER_ERROR, `multiple plugins found with prefix: ${prefix}`);
+    }
+    if (plugins.length === 0) {
+      return this.ctx.throw(HttpStatus.NOT_FOUND, 'plugin not found');
+    }
+    return plugins[0];
+  }
 
   // TODO(feely): check if the plugin has been installed
   /**
@@ -36,17 +52,13 @@ export class PluginController extends BaseEventController {
   }
 
   /**
-   * delete plugin by name
+   * delete plugin by id
    */
   @del('/:id')
   public async remove() {
-    const plugin = await this.pluginManager.findById(this.ctx.params.id);
-    if (plugin) {
-      await this.pluginManager.uninstall(plugin);
-      this.ctx.success();
-    } else {
-      this.ctx.throw(HttpStatus.NOT_FOUND, `no plugin found by id ${this.ctx.params.id}`);
-    }
+    const plugin = await this.fetchPluginByIdPrefix(this.ctx.params.id);
+    await this.pluginManager.uninstall(plugin);
+    this.ctx.success();
   }
 
   /**
@@ -77,12 +89,8 @@ export class PluginController extends BaseEventController {
    */
   @get('/:id')
   public async get() {
-    const plugin = await this.pluginManager.findById(this.ctx.params.id);
-    if (plugin) {
-      this.ctx.success(plugin);
-    } else {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
-    }
+    const plugin = await this.fetchPluginByIdPrefix(this.ctx.params.id);
+    this.ctx.success(plugin);
   }
 
   /**
@@ -90,10 +98,7 @@ export class PluginController extends BaseEventController {
    */
   @get('/:id/metadata')
   public async getMetadataById() {
-    const plugin = await this.pluginManager.findById(this.ctx.params.id);
-    if (!plugin) {
-      return this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
-    }
+    const plugin = await this.fetchPluginByIdPrefix(this.ctx.params.id);
     const md = await this.pluginManager.fetch(`${plugin.name}@${plugin.version}`);
     this.ctx.success(md);
   }

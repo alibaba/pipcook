@@ -6,9 +6,8 @@ import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
 import { parseConfig } from '../../runner/helper';
 import { BaseEventController } from './base';
-import { PipelineService } from '../../service/pipeline';
+import { PipelineService, PipelineEntity } from '../../service/pipeline';
 import { Tracer } from '../../service/trace-manager';
-import { PipelineEntity } from '../../model/pipeline';
 const debug = Debug('daemon.app.pipeline');
 
 const createSchema = Joi.object({
@@ -30,6 +29,22 @@ export class PipelineController extends BaseEventController {
 
   @inject('pluginManager')
   pluginManager: PluginManager;
+
+  /**
+   * fetch pipeline by pipeline id prefix, return pipeline entity object
+   * if zero or more than one pipeline found, throw error
+   * @param prefix id prefix
+   */
+  async fetchPipelineByIdPrefix(prefix: string): Promise<PipelineEntity> {
+    const pipelines = await this.pipelineService.getPipelinesByPrefixId(prefix);
+    if (pipelines.length > 1) {
+      return this.ctx.throw(HttpStatus.INTERNAL_SERVER_ERROR, `multiple pipelines found with prefix: ${prefix}`);
+    }
+    if (pipelines.length === 0) {
+      return this.ctx.throw(HttpStatus.NOT_FOUND, 'pipeline not found');
+    }
+    return pipelines[0];
+  }
 
   /**
    * create pipeline
@@ -93,14 +108,11 @@ export class PipelineController extends BaseEventController {
   @del('/:id')
   public async removeOne() {
     const { id } = this.ctx.params;
-    const jobs = await this.pipelineService.getJobsByPipelineId(id);
+    const pipeline = await this.fetchPipelineByIdPrefix(id);
+    const jobs = await this.pipelineService.getJobsByPipelineId(pipeline.id);
     await this.pipelineService.removeJobByModels(jobs);
-    const count = await this.pipelineService.removePipelineById(id);
-    if (count > 0) {
-      this.ctx.success();
-    } else {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'remove pipeline error, id not exists');
-    }
+    await this.pipelineService.removePipelineById(pipeline.id);
+    this.ctx.success();
   }
 
   /**
@@ -111,9 +123,12 @@ export class PipelineController extends BaseEventController {
     const { id } = this.ctx.params;
     const json = { plugins: {} } as any;
 
-    const pipeline = await this.pipelineService.getPipeline(id);
-    if (!pipeline) {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'pipeline not found');
+    let pipeline;
+    const pipelineFromName = await this.pipelineService.getPipelinesByName(id);
+    if (pipelineFromName) {
+      pipeline = pipelineFromName;
+    } else {
+      pipeline = await this.fetchPipelineByIdPrefix(id);
     }
     constants.PLUGINS.forEach(name => {
       if (typeof pipeline[name] === 'string') {
@@ -137,10 +152,7 @@ export class PipelineController extends BaseEventController {
   @get('/:id')
   public async get() {
     const { id } = this.ctx.params;
-    const pipeline = await this.pipelineService.getPipeline(id);
-    if (!pipeline) {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'pipeline not found');
-    }
+    const pipeline = await this.fetchPipelineByIdPrefix(id);
     const pluginIds = [];
     constants.PLUGINS.forEach((pluginType) => {
       if (pipeline[`${pluginType}Id`]) {
@@ -160,10 +172,8 @@ export class PipelineController extends BaseEventController {
     this.validate(createSchema, this.ctx.request.body);
     const { config } = this.ctx.request.body;
     const parsedConfig = await parseConfig(config, false);
-    const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
-    if (!data) {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
-    }
+    const pipeline = await this.fetchPipelineByIdPrefix(id);
+    const data = await this.pipelineService.updatePipelineById(pipeline.id, parsedConfig);
     this.ctx.success(data);
   }
 
@@ -173,21 +183,17 @@ export class PipelineController extends BaseEventController {
   @post('/:id/installation')
   public async installById() {
     const { pyIndex } = this.ctx.request.body;
-    const pipeline = await this.pipelineService.getPipeline(this.ctx.params.id);
+    const pipeline = await this.fetchPipelineByIdPrefix(this.ctx.params.id);
     const log = await this.traceManager.create();
-    if (pipeline) {
-      process.nextTick(async () => {
-        try {
-          await this.installByPipeline(pipeline, log, pyIndex);
-          this.traceManager.destroy(log.id);
-        } catch (err) {
-          this.traceManager.destroy(log.id, err);
-        }
-      });
-      this.ctx.success({ ...pipeline, traceId: log.id });
-    } else {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'no pipeline found');
-    }
+    process.nextTick(async () => {
+      try {
+        await this.installByPipeline(pipeline, log, pyIndex);
+        this.traceManager.destroy(log.id);
+      } catch (err) {
+        this.traceManager.destroy(log.id, err);
+      }
+    });
+    this.ctx.success({ ...pipeline, traceId: log.id });
   }
 
   private async installByPipeline(pipeline: PipelineEntity, tracer: Tracer, pyIndex?: string): Promise<void> {

@@ -59,6 +59,20 @@ export class PipelineModel extends Model {
     }))?.toJSON() as PipelineEntity;
   }
 
+  static async getPipelineByName(name: string): Promise<PipelineEntity> {
+    return (await PipelineModel.findOne({
+      where: { name }
+    }))?.toJSON() as PipelineEntity;
+  }
+
+  static async getPipelinesByPrefixId(prefixId: string): Promise<PipelineEntity[]> {
+    return (await PipelineModel.findAll({
+      where: { id:  {
+        [Op.like]: `${prefixId}%`
+      }}
+    })).map(pipeline => pipeline.toJSON() as PipelineEntity);
+  }
+
   static async queryPipelines(opts?: QueryOptions): Promise<PipelineEntity[]> {
     const { offset, limit } = opts || {};
     return (await PipelineModel.findAll({

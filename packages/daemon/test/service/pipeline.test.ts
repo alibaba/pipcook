@@ -8,7 +8,7 @@ import { app, assert, mm } from 'midway-mock/bootstrap';
 import { PipelineService } from '../../src/service/pipeline';
 import { Tracer } from '../../src/service/trace-manager';
 import { JobModel, JobEntity } from '../../src/model/job';
-import { PipelineEntity } from '../../src/model/pipeline';
+import { PipelineModel, PipelineEntity } from '../../src/model/pipeline';
 
 const mockPipeline = {
   id: 'mockId',
@@ -367,5 +367,17 @@ describe('test the pipeline service', () => {
     }
     assert.ok(mockFindById.calledOnceWith('mockDataCollectId')), 'mockFindById check';
     assert.ok(catched, 'error check');
+  });
+  it('#should find pipelines by id prefix', async () => {
+    const pipelineService = await app.applicationContext.getAsync<PipelineService>('pipelineService');
+    const mockFetch = sinon.stub(PipelineModel, 'getPipelinesByPrefixId').resolves([{ name: 'mockName' } as any]);
+    assert.deepEqual(await pipelineService.getPipelinesByPrefixId('mockIdPrefix'), [{ name: 'mockName' }], 'result check');
+    assert.ok(mockFetch.calledOnceWith('mockIdPrefix'), 'mockFetch check');
+  });
+  it('#should find jobs by id prefix', async () => {
+    const pipelineService = await app.applicationContext.getAsync<PipelineService>('pipelineService');
+    const mockFetch = sinon.stub(JobModel, 'findByPrefixId').resolves([{ id: 'mockId' } as any]);
+    assert.deepEqual(await pipelineService.getJobsByPrefixId('mockIdPrefix'), [{ id: 'mockId' }], 'result check');
+    assert.ok(mockFetch.calledOnceWith('mockIdPrefix'), 'mockFetch check');
   });
 });
