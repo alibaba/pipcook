@@ -122,7 +122,7 @@ export class PipelineService {
    */
   async getJobsByPrefixId(prefixId: string): Promise<JobEntity[]> {
     return JobModel.findByPrefixId(prefixId);
-  } 
+  }
 
   async saveJob(job: JobEntity): Promise<void> {
     JobModel.saveJob(job);
