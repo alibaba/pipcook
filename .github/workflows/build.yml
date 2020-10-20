@@ -116,7 +116,6 @@ jobs:
         ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/test/plugins/nodejs-simple
         cd ./packages/costa/test/plugins/nodejs-simple && yarn pack && cd -
         ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/test/plugins/nodejs-simple/nodejs-simple-v1.0.0.tgz
-        rm ./nodejs-simple-1.0.0.tgz
     - name: pipcook run from local filename
       run: |
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
