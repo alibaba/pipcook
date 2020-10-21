@@ -6,7 +6,8 @@ import { join } from 'path';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { PluginManager } from '../../service/plugin';
-import { JobEntity } from '../../model/job';
+import { IParam, JobEntity } from '../../model/job';
+import { PipelineEntity } from '../../model/pipeline';
 
 @provide()
 @controller('/api/job')
@@ -31,6 +32,24 @@ export class JobController extends BaseEventController {
     return tracer;
   }
 
+  _makeParam(pipeline: PipelineEntity, jobParams?: IParam[]) {
+    const PLUGIN_TYPES = ['dataCollect', 'dataAccess', 'datasetProcess', 'dataProcess', 'modelDefine', 'modelTrain', 'modelEvaluate', 'modelLoad'];
+    const params: IParam[] = [];
+
+    for (const pluginType of PLUGIN_TYPES) {
+      const tempParam = JSON.parse(pipeline[`${pluginType}Params`]);
+      const jobParam = jobParams ? jobParams.filter((it) => it.pluginType === pluginType)
+                                .map((it) => it.pluginParam) : [];
+
+      const temp: IParam = {
+        pluginType,
+        pluginParam: Object.assign(tempParam, ...jobParam)
+      };
+      params.push(temp);
+    }
+    return params;
+  }
+
   /**
    * start a job from pipeline id or name
    */
@@ -40,7 +59,8 @@ export class JobController extends BaseEventController {
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
       const plugins = await this.pipelineService.fetchPlugins(pipeline);
-      const job = await this.pipelineService.createJob(pipelineId);
+      const realParam = this._makeParam(pipeline);
+      const job = await this.pipelineService.createJob(pipelineId, realParam);
 
       const tracer = await this._setupTracer(job);
 
@@ -101,6 +121,13 @@ export class JobController extends BaseEventController {
     this.ctx.success();
   }
 
+  @get('/:id/param')
+  public async getParam(): Promise<void> {
+    const { id } = this.ctx.params;
+    const job = await this.pipelineService.getJobById(id);
+    this.ctx.success(job.params);
+  }
+
   /**
    * Run job with new param
    */
@@ -113,8 +140,10 @@ export class JobController extends BaseEventController {
 
     if (job) {
       const pipeline = await this.pipelineService.getPipeline(job.pipelineId);
+      const realParam = this._makeParam(pipeline, params);
       const plugins = await this.pipelineService.fetchPlugins(pipeline);
-      const newJob = await this.pipelineService.createJob(pipeline.id, params);
+
+      const newJob = await this.pipelineService.createJob(pipeline.id, realParam);
 
       const tracer = await this._setupTracer(newJob);
 
@@ -127,7 +156,7 @@ export class JobController extends BaseEventController {
         }
       });
 
-      this.ctx.success({ ...job, traceId: tracer.id });
+      this.ctx.success({ ...newJob, traceId: tracer.id });
     } else {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'no job found');
     }
