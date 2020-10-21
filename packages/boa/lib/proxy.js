@@ -332,7 +332,8 @@ function _internalWrap(T, src={}, thisType={}) {
 
   // Create the proxy object for handlers
   
-  let newTarget = new Proxy(src, {
+  let newTarget;
+  return (target = new Proxy(src, {
     'get'(target, name) {
       debug(`get property on "${target.constructor.name}", ` +
             `name is "${name.toString()}"`);
@@ -417,9 +418,7 @@ function _internalWrap(T, src={}, thisType={}) {
       // return the instance
       return newClass.prototype.$pyclass.apply(null, argumentsList);
     },
-  });
-
-  return newTarget;
+  }));
 }
 
 module.exports = {
