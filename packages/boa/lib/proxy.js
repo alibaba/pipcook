@@ -333,7 +333,7 @@ function _internalWrap(T, src={}, thisType={}) {
   // Create the proxy object for handlers
   
   let newTarget;
-  return (target = new Proxy(src, {
+  return (newTarget = new Proxy(src, {
     'get'(target, name) {
       debug(`get property on "${target.constructor.name}", ` +
             `name is "${name.toString()}"`);
