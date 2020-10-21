@@ -125,7 +125,12 @@ export class JobController extends BaseEventController {
   public async getParam(): Promise<void> {
     const { id } = this.ctx.params;
     const job = await this.pipelineService.getJobById(id);
-    this.ctx.success(job.params);
+
+    if (job) {
+      this.ctx.success(job.params);
+    } else {
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no job found');
+    }
   }
 
   /**
@@ -137,7 +142,6 @@ export class JobController extends BaseEventController {
     const { params } = this.ctx.request.body;
 
     const job = await this.pipelineService.getJobById(id);
-
     if (job) {
       const pipeline = await this.pipelineService.getPipeline(job.pipelineId);
       const realParam = this._makeParam(pipeline, params);

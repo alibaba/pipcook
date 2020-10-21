@@ -43,8 +43,35 @@ let mockPipeline = {
   modelEvaluate: 'modelEvaluate',
   modelEvaluateParams: '{}'
 };
+
+const mockParams = [
+  {
+    pluginType: 'modelDefine',
+    pluginParam: {
+      test: 1
+    }
+  }
+]
+
+const mockParamsUpdate = [
+  { pluginType: 'modelDefine', pluginParam: { test: 2 } },
+]
+
+const mockParamsUpdated = [
+  { pluginType: 'dataCollect', pluginParam: {} },
+  { pluginType: 'dataAccess', pluginParam: {} },
+  { pluginType: 'datasetProcess', pluginParam: {} },
+  { pluginType: 'dataProcess', pluginParam: {} },
+  { pluginType: 'modelDefine', pluginParam: { test: 2 } },
+  { pluginType: 'modelTrain', pluginParam: {} },
+  { pluginType: 'modelEvaluate', pluginParam: {} },
+  { pluginType: 'modelLoad', pluginParam: {} }
+]
+
 const mockJob = {
   id: 'jobId',
+  pipelineId: 'id',
+  params: mockParams,
   toJSON: function () {
     return this;
   }
@@ -358,6 +385,75 @@ describe('test job controller', () => {
         console.log(resp.body)
         assert.equal(resp.body.message, 'mock error');
       })
+      .expect(404);
+  });
+  it('should show the param infomation', () => {
+    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+      assert.equal(id, 'jobId');
+      return mockJob;
+    });
+
+    return app
+            .httpRequest()
+            .get('/api/job/jobId/param')
+            .expect((resp) => {
+              assert.deepEqual(resp.body, mockParams);
+            })
+            .expect(200);
+  });
+  it('should not show the param infomation if not exist', () => {
+    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+      assert.equal(id, 'id');
+      return undefined;
+    });
+
+    return app
+            .httpRequest()
+            .get('/api/job/id/param')
+            .expect(404);
+  });
+  it('should run the job with new params', () => {
+    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+      assert.equal(id, 'jobId');
+      return mockJob;
+    });
+    app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
+      assert.equal(id, 'id');
+      mockPipeline = { ...mockPipeline, id };
+      return mockPipeline;
+    });
+    app.mockClassFunction('pipelineService', 'createJob', async (pipelineId: string, realParam: any[]): Promise<any> => {
+      assert.equal(pipelineId, 'id');
+      mockJob.params = realParam;
+      console.log(realParam)
+      return mockJob;
+    });
+    app.mockClassFunction('pipelineService', 'fetchPlugins', async (pipeline: any): Promise<any[]> => {
+      assert.deepEqual(pipeline, mockPipeline);
+      return mockPlugins;
+    });
+    app.mockClassFunction('pipelineService', 'runJob', async (job: any, pipeline: any, plugins: any[], log: any): Promise<any> => {
+      assert.deepEqual(job, mockJob);
+      assert.deepEqual(pipeline, mockPipeline);
+      assert.deepEqual(plugins, mockPlugins);
+    });
+    return app
+            .httpRequest()
+            .post('/api/job/jobId/param')
+            .send({params: mockParamsUpdate})
+            .expect((resp) => {
+              assert.deepEqual(resp.body.params, mockParamsUpdated);
+            })
+            .expect(200);
+  });
+  it('run unexistent job', () => {
+    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+      assert.equal(id, 'id');
+      return undefined;
+    });
+    return app
+      .httpRequest()
+      .post('/api/job/id/param')
       .expect(404);
   });
 });
