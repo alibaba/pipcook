@@ -1,6 +1,11 @@
 import { STRING, INTEGER, BOOLEAN, Model, Sequelize } from 'sequelize';
 import { PipelineStatus, generateId } from '@pipcook/pipcook-core';
 
+interface IParam {
+  pluginType: string;
+  pluginParam: Object;
+}
+
 export interface JobEntity {
   id: string;
   pipelineId: string;
@@ -14,6 +19,8 @@ export interface JobEntity {
   endTime?: number;
   status?: number;
   dataset?: string;
+
+  params?: Array<IParam>;
 }
 
 interface QueryOptions {
@@ -75,13 +82,14 @@ export class JobModel extends Model {
     });
   }
 
-  static async createJob(pipelineId: string, specVersion: string): Promise<JobEntity> {
+  static async createJob(pipelineId: string, specVersion: string, params?: string): Promise<JobEntity> {
     const job = await JobModel.create({
       id: generateId(),
       pipelineId,
       specVersion,
       status: PipelineStatus.INIT,
-      currentIndex: -1
+      currentIndex: -1,
+      params: params
     });
     return job.toJSON() as JobEntity;
   }
@@ -134,6 +142,18 @@ export default async function model(sequelize: Sequelize): Promise<void> {
     },
     endTime: {
       type: INTEGER
+    },
+    params: {
+      type: STRING,
+      get() {
+        // @ts-ignore
+        const rawParams: string = this.getDataValue('params');
+        return JSON.parse(rawParams) as Array<IParam>;
+      },
+      set(params) {
+        // @ts-ignore
+        this.setDataValue('params', JSON.stringify(params));
+      }
     }
   },
   {

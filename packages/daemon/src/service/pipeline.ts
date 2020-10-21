@@ -126,9 +126,9 @@ export class PipelineService {
     ]);
     return results[0];
   }
-  async createJob(pipelineId: string): Promise<JobEntity> {
+  async createJob(pipelineId: string, params?: string): Promise<JobEntity> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
-    return JobModel.createJob(pipelineId, specVersion);
+    return JobModel.createJob(pipelineId, specVersion, params);
   }
 
   async fetchPlugins(pipeline: PipelineEntity): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
@@ -186,6 +186,11 @@ export class PipelineService {
       );
       tracer.dispatch(jobEvent);
     };
+    const getJobParamByNmae = (job: JobEntity, pluginType: string) => {
+      return job.params.filter((it) => it.pluginType === pluginType)
+                .map((it) => it.pluginParam);
+    }
+
     const run = async (type: PluginTypeI, ...args: any[]) => {
       const plugin = plugins[type].plugin;
       dispatchJobEvent(PipelineStatus.RUNNING, type, 'start');
@@ -195,6 +200,7 @@ export class PipelineService {
     };
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
+    
     this.saveJob(job);
     dispatchJobEvent(PipelineStatus.RUNNING);
     try {
@@ -205,26 +211,30 @@ export class PipelineService {
       // ensure the model dir exists
       await fs.ensureDir(modelPath);
 
+      const dataCollectJobParam = getJobParamByNmae(job, 'dataCollect');
       // run dataCollect to download dataset.
-      await run('dataCollect', getParams(plugins.dataCollect.params, {
+      await run('dataCollect', getParams(plugins.dataCollect.params, ...dataCollectJobParam, {
         dataDir
       }));
 
       verifyPlugin('dataAccess');
-      const dataset = await run('dataAccess', getParams(plugins.dataAccess.params, {
+      const dataAccessJobParam = getJobParamByNmae(job, 'dataAccess');
+      const dataset = await run('dataAccess', getParams(plugins.dataAccess.params, ...dataAccessJobParam, {
         dataDir
       }));
 
       let datasetProcess: PluginPackage;
       if (plugins.datasetProcess) {
         datasetProcess = plugins.datasetProcess.plugin;
-        await run('datasetProcess', dataset, getParams(plugins.datasetProcess.params));
+        const datasetProcessJobParam = getJobParamByNmae(job, 'datasetProcess');
+        await run('datasetProcess', dataset, getParams(plugins.datasetProcess.params, ...datasetProcessJobParam));
       }
 
       let dataProcess: PluginPackage;
       if (plugins.dataProcess) {
         dataProcess = plugins.dataProcess.plugin;
-        await run('dataProcess', dataset, getParams(plugins.dataProcess.params));
+        const dataProcessJobParam = getJobParamByNmae(job, 'dataProcess');
+        await run('dataProcess', dataset, getParams(plugins.dataProcess.params, ...dataProcessJobParam));
       }
 
       let model: RunnableResponse;
@@ -233,23 +243,27 @@ export class PipelineService {
       // select one of `ModelDefine` and `ModelLoad`.
       if (plugins.modelDefine) {
         modelPlugin = plugins.modelDefine.plugin;
-        model = await run('modelDefine', dataset, getParams(plugins.modelDefine.params));
+        const modelDefineJobParam = getJobParamByNmae(job, 'modelDefine');
+        model = await run('modelDefine', dataset, getParams(plugins.modelDefine.params, ...modelDefineJobParam));
       } else if (plugins.modelLoad) {
         modelPlugin = plugins.modelLoad.plugin;
-        model = await run('modelLoad', dataset, getParams(plugins.modelLoad.params, {
+        const modelLoadJobParam = getJobParamByNmae(job, 'modelLoad');
+        model = await run('modelLoad', dataset, getParams(plugins.modelLoad.params, ...modelLoadJobParam, {
           // specify the recover path for model loader by default.
           recoverPath: modelPath
         }));
       }
 
       if (plugins.modelTrain) {
-        model = await run('modelTrain', dataset, model, getParams(plugins.modelTrain.params, {
+        const modelTrainJobParam = getJobParamByNmae(job, 'modelTrain');
+        model = await run('modelTrain', dataset, model, getParams(plugins.modelTrain.params, ...modelTrainJobParam, {
           modelPath
         }));
       }
 
       verifyPlugin('modelEvaluate');
-      const output = await run('modelEvaluate', dataset, model, getParams(plugins.modelEvaluate.params, {
+      const modelEvaluateJobParam = getJobParamByNmae(job, 'modelEvaluate');
+      const output = await run('modelEvaluate', dataset, model, getParams(plugins.modelEvaluate.params, ...modelEvaluateJobParam, {
         modelDir: modelPath
       }));
 

@@ -6,6 +6,7 @@ import { join } from 'path';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { PluginManager } from '../../service/plugin';
+import { JobEntity } from '../../model/job';
 
 @provide()
 @controller('/api/job')
@@ -17,6 +18,19 @@ export class JobController extends BaseEventController {
   @inject('pluginManager')
   pluginManager: PluginManager;
 
+  async _setupTracer(job: JobEntity) {
+    const logPath = join(constants.PIPCOOK_RUN, job.id, 'logs');
+    const stdoutFile = join(logPath, 'stdout.log');
+    const stderrFile = join(logPath, 'stderr.log');
+    await ensureDir(logPath);
+    await [
+      ensureFile(stdoutFile),
+      ensureFile(stderrFile)
+    ];
+    const tracer = await this.traceManager.create({ stdoutFile, stderrFile });
+    return tracer;
+  }
+
   /**
    * start a job from pipeline id or name
    */
@@ -27,15 +41,9 @@ export class JobController extends BaseEventController {
     if (pipeline) {
       const plugins = await this.pipelineService.fetchPlugins(pipeline);
       const job = await this.pipelineService.createJob(pipelineId);
-      const logPath = join(constants.PIPCOOK_RUN, job.id, 'logs');
-      const stdoutFile = join(logPath, 'stdout.log');
-      const stderrFile = join(logPath, 'stderr.log');
-      await ensureDir(logPath);
-      await [
-        ensureFile(stdoutFile),
-        ensureFile(stderrFile)
-      ];
-      const tracer = await this.traceManager.create({ stdoutFile, stderrFile });
+
+      const tracer = await this._setupTracer(job);
+
       process.nextTick(async () => {
         try {
           await this.pipelineService.runJob(job, pipeline, plugins, tracer);
@@ -91,6 +99,38 @@ export class JobController extends BaseEventController {
     const { id } = this.ctx.params;
     await this.pipelineService.stopJob(id);
     this.ctx.success();
+  }
+
+  /**
+   * Run job with new param
+   */
+  @post('/:id/param')
+  public async updateParam(): Promise<void> {
+    const { id } = this.ctx.params;
+    const { params } = this.ctx.request.body;
+
+    const job = await this.pipelineService.getJobById(id);
+
+    if (job) {
+      const pipeline = await this.pipelineService.getPipeline(job.pipelineId);
+      const plugins = await this.pipelineService.fetchPlugins(pipeline);
+      const newJob = await this.pipelineService.createJob(pipeline.id, params);
+
+      const tracer = await this._setupTracer(newJob);
+
+      process.nextTick(async () => {
+        try {
+          await this.pipelineService.runJob(newJob, pipeline, plugins, tracer);
+          this.traceManager.destroy(tracer.id);
+        } catch (err) {
+          this.traceManager.destroy(tracer.id, err);
+        }
+      });
+
+      this.ctx.success({ ...job, traceId: tracer.id });
+    } else {
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no job found');
+    }
   }
 
   @get('/:id/log')
