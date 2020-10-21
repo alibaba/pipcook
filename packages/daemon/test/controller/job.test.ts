@@ -456,4 +456,35 @@ describe('test job controller', () => {
       .post('/api/job/id/param')
       .expect(404);
   });
+  it('run job throws an error', () => {
+    app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
+      assert.equal(id, 'jobId');
+      return mockJob;
+    });
+    app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
+      assert.equal(id, 'id');
+      mockPipeline = { ...mockPipeline, id };
+      return mockPipeline;
+    });
+    app.mockClassFunction('pipelineService', 'createJob', async (pipelineId: string, realParam: any[]): Promise<any> => {
+      assert.equal(pipelineId, 'id');
+      mockJob.params = realParam;
+      console.log(realParam)
+      return mockJob;
+    });
+    app.mockClassFunction('pipelineService', 'fetchPlugins', async (pipeline: any): Promise<any[]> => {
+      assert.deepEqual(pipeline, mockPipeline);
+      return mockPlugins;
+    });
+    app.mockClassFunction('pipelineService', 'runJob', async (job: any, pipeline: any, plugins: any[], log: any): Promise<any> => {
+      assert.deepEqual(job, mockJob);
+      assert.deepEqual(pipeline, mockPipeline);
+      assert.deepEqual(plugins, mockPlugins);
+      throw Error("test");
+    });
+    return app
+      .httpRequest()
+      .post('/api/job/id/param')
+      .expect(500);
+  });
 });
