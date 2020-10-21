@@ -102,7 +102,7 @@ function asHandleObject(T) {
   };
 }
 
-function _internalWrap(T, src={}, thisType={}) {
+function _internalWrap(T, src={}, pyType={}) {
   Object.defineProperties(src, {
     /**
      * @property native.NODE_PYTHON_WRAPPED_NAME
@@ -350,7 +350,7 @@ function _internalWrap(T, src={}, thisType={}) {
         if (typeof value === 'function') {
           // the `next` called on generator expects its caller to be a `generator` type where
           // proxy does not have such base class.
-          if (thisType.module === 'builtins' && thisType.name === 'generator' && name === 'next') {
+          if (pyType.module === 'builtins' && pyType.name === 'generator' && name === 'next') {
             return value.bind(src);
           }
           // FIXME(Yorkie): make sure the function's this is correct.

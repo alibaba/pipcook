@@ -1,6 +1,5 @@
 module.exports = (T, wrap) => {
-
-  function *generator() {
+  function *generatorProxy() {
     do {
       let curr = T.next();
       if (curr.done) {
@@ -10,5 +9,5 @@ module.exports = (T, wrap) => {
     } while (true);
   }
 
-  return generator();
+  return generatorProxy();
 };

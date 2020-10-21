@@ -42,7 +42,6 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
           InstanceMethod("__getitem__", &PythonObject::GetItem),
           InstanceMethod("__setitem__", &PythonObject::SetItem),
           InstanceMethod("__delitem__", &PythonObject::DelItem),
-          InstanceMethod("__next__", &PythonObject::Next),
       });
 
   Napi::FunctionReference *constructor = new Napi::FunctionReference();
