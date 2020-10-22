@@ -131,32 +131,6 @@ bytes.fromhex(foobar.toString('hex'));
 // "b'foobar'"
 ```
 
-### Use of Generator
-
-`Boa` will also handle `Generator` class in the native python runtime. JavaScript syntax of `Generator` could be applied to Python `Generator` directly:
-
-```js
-
-const generator = generatorFromPython(); // Generator
-
-// You can access data via the following syntax
-for (const element of generator) {
-  console.log(element)
-}
-
-// or use typical next syntax
-
-const generator = generatorFromPython(); // Generator
-
-let curr = generator.next();
-
-while (curr.done) {
-  console.log(curr.value);
-  curr = generator.next()
-}
-
-```
-
 ### Class `PythonObjectWrapper`
 
 This class represents a wrapper for the corresponding object in Python runtime, it must be returned only from [`boa`](#boa) methods like `boa.builtins` and `boa.import`.
@@ -299,6 +273,42 @@ In Node.js version < `v14.x`, you also need to add the [`--experimental-modules`
 ```sh
 $ node --experimental-modules --experimental-loader @pipcook/boa/esm/loader.mjs app.mjs
 ```
+
+### Python Generators in JS
+
+The package is able to handle the Python generator class in JavaScript directly:
+
+```python
+# Write a Python Generator in count_down.py
+def count_down(count):
+  while count >= 0:
+    yield count
+    count -= 1
+```
+
+```js
+const boa = require('@pipcook/boa')
+const countDown = boa.import('path_to_above_py')
+const generator = countDown(3); // Generator
+
+// You can access data via the following syntax
+for (const element of generator) {
+  console.log(element) // 3 2 1 0
+}
+
+// or use typical next syntax
+
+const generator = countDown(3); // Generator
+
+let curr = generator.next();
+
+while (curr.done) {
+  console.log(curr.value); // 3 2 1 0
+  curr = generator.next()
+}
+
+```
+
 
 ## Python functions in `worker_threads`
 
