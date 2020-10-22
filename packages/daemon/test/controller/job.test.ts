@@ -457,6 +457,8 @@ describe('test job controller', () => {
       .expect(404);
   });
   it('run job throws an error', () => {
+    const error = new TypeError('mock error');
+
     app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
       assert.equal(id, 'jobId');
       return mockJob;
@@ -480,11 +482,15 @@ describe('test job controller', () => {
       assert.deepEqual(job, mockJob);
       assert.deepEqual(pipeline, mockPipeline);
       assert.deepEqual(plugins, mockPlugins);
-      throw Error("test");
+      throw error;
+    });
+    app.mockClassFunction('traceManager', 'destroy', async (id, err): Promise<any> => {
+      assert.equal(id, 'traceId');
+      assert.equal(err, error);
     });
     return app
       .httpRequest()
-      .post('/api/job/id/param')
-      .expect(500);
+      .post('/api/job/jobId/param')
+      .expect(200);
   });
 });
