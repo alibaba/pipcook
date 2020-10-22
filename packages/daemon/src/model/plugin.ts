@@ -49,17 +49,6 @@ export class PluginModel extends Model {
     return (await PluginModel.findAll({ where })).map(plugin => plugin.toJSON() as PluginEntity);
   }
 
-  static async query(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
-    const where = {} as any;
-    if (filter.category) {
-      where.category = filter.category;
-    }
-    if (filter.datatype) {
-      where.datatype = filter.datatype;
-    }
-    return (await PluginModel.findAll({ where })).map(plugin => plugin.toJSON() as PluginEntity);
-  }
-
   static async findById(id: string): Promise<PluginEntity> {
     return (await PluginModel.findOne({ where: { id } }))?.toJSON() as PluginEntity;
   }
@@ -95,6 +84,7 @@ export class PluginModel extends Model {
   }
 
   static async findOrCreateByParams(creationParameter: CreationParameter): Promise<PluginEntity> {
+    console.log('create', creationParameter);
     const [ plugin ] = await PluginModel.findOrCreate({
       where: {
         // TODO(feely): support the different versions of plugins

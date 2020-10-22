@@ -98,12 +98,6 @@ describe('test the plugin manager', () => {
     assert.deepEqual(await pluginManager.createRunnable('mockId', { getLogger: () => { return {}; } } as any), { id: 'mockId' }, 'result check');
     assert.ok(mockCreateRunnable.calledOnceWith({ id: 'mockId', logger: {} } as any), 'mockCreateRunnable check');
   });
-  it('#should query plugin', async () => {
-    const pluginManager: PluginManager = await app.applicationContext.getAsync<PluginManager>('pluginManager');
-    const mockQuery = sinon.stub(PluginModel, 'query').resolves({ id: 'mockId' } as any);
-    assert.deepEqual(await pluginManager.query({ name: 'mockName' }), { id: 'mockId' }, 'result check');
-    assert.ok(mockQuery.calledOnceWith({ name: 'mockName' } as any), 'mockQuery check');
-  });
   it('#should find plugins by ids', async () => {
     const pluginManager: PluginManager = await app.applicationContext.getAsync<PluginManager>('pluginManager');
     const mockFindByIds = sinon.stub(PluginModel, 'findByIds').resolves([{ id: 'mockId1' }, { id: 'mockId2' }] as any);
@@ -127,12 +121,6 @@ describe('test the plugin manager', () => {
     const mockSetStatusById = sinon.stub(PluginModel, 'setStatusById').resolves(1);
     assert.deepEqual(await pluginManager.setStatusById('mockId', 1 /* installed */), 1, 'result check');
     assert.ok(mockSetStatusById.calledOnceWith('mockId', 1), 'mockSetStatusById check');
-  });
-  it('#should remove plugin by id', async () => {
-    const pluginManager: PluginManager = await app.applicationContext.getAsync<PluginManager>('pluginManager');
-    const mockRemoveById = sinon.stub(PluginModel, 'removeById').resolves(1);
-    assert.deepEqual(await pluginManager.removeById('mockId'), 1, 'result check');
-    assert.ok(mockRemoveById.calledOnceWith('mockId'), 'mockRemoveById check');
   });
   it('#should find or create plugin', async () => {
     const pluginManager: PluginManager = await app.applicationContext.getAsync<PluginManager>('pluginManager');

@@ -60,10 +60,6 @@ export class PluginManager {
     return PluginModel.list(filter);
   }
 
-  async query(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
-    return PluginModel.query(filter);
-  }
-
   async findById(id: string): Promise<PluginEntity> {
     return PluginModel.findById(id);
   }
