@@ -48,6 +48,200 @@ function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
   });
 }
 
+interface RunnerOptions {
+  job: JobEntity;
+  pipeline: PipelineEntity;
+  plugins: Partial<Record<PluginTypeI, PluginInfo>>;
+  tracer: Tracer;
+  runnable: PluginRunnable;
+  datasetRoot: string;
+}
+
+interface ModelResult {
+  model: RunnableResponse;
+  modelPlugin: PluginPackage;
+}
+
+interface RunnerResult {
+  output: any;
+  dataset: any;
+  modelPath: string;
+  modelPlugin: PluginPackage;
+  dataProcess: PluginPackage;
+  datasetProcess: PluginPackage;
+}
+
+/**
+ * job runner
+ */
+export class JobRunner {
+  opts: RunnerOptions;
+  constructor(
+    opts: RunnerOptions) {
+    this.opts = opts;
+  }
+  getParams(params: string | null, ...extra: object[]): object {
+    if (params == null) {
+      return Object.assign({}, ...extra);
+    } else {
+      return Object.assign(JSON.parse(params), ...extra);
+    }
+  }
+  verifyPlugin (name: string): void {
+    if (!this.opts.plugins[name]) {
+      throw new TypeError(`"${name}" plugin is required`);
+    }
+  }
+  dispatchJobEvent(jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end') {
+    const jobEvent = new JobStatusChangeEvent(
+      jobStatus,
+      step,
+      stepAction
+    );
+    this.opts.tracer.dispatch(jobEvent);
+  }
+  async runPlugin(type: PluginTypeI, ...args: any[]) {
+    const plugin = this.opts.plugins[type].plugin;
+    this.dispatchJobEvent(PipelineStatus.RUNNING, type, 'start');
+    const result = await this.opts.runnable.start(plugin, ...args);
+    this.dispatchJobEvent(PipelineStatus.RUNNING, type, 'end');
+    return result;
+  }
+
+  async runDataCollect(dataDir: string, modelPath: string) {
+    this.verifyPlugin('dataCollect');
+    // ensure the model dir exists
+    await fs.ensureDir(modelPath);
+    // run dataCollect to download dataset.
+    return this.runPlugin('dataCollect', this.getParams(this.opts.plugins.dataCollect.params, {
+      dataDir
+    }));
+  }
+  async runDataAccess(dataDir: string) {
+    this.verifyPlugin('dataAccess');
+    return this.runPlugin('dataAccess', this.getParams(this.opts.plugins.dataAccess.params, {
+      dataDir
+    }));
+  }
+
+  async runDatasetProcess(dataset: any) {
+    if (this.opts.plugins.datasetProcess) {
+      return this.runPlugin('datasetProcess', dataset, this.getParams(this.opts.plugins.datasetProcess.params));
+    }
+  }
+
+  async runDataProcess(dataset: any) {
+    if (this.opts.plugins.dataProcess) {
+      await this.runPlugin('dataProcess', dataset, this.getParams(this.opts.plugins.dataProcess.params));
+    }
+  }
+
+  async runModelDefine(dataset: any): Promise<ModelResult> {
+    return {
+      modelPlugin: this.opts.plugins.modelDefine.plugin,
+      model: await this.runPlugin('modelDefine', dataset, this.getParams(this.opts.plugins.modelDefine.params))
+    };
+  }
+
+  async runModelLoad(dataset: any, modelPath: string): Promise<ModelResult> {
+    return {
+      modelPlugin: this.opts.plugins.modelLoad.plugin,
+      model: await this.runPlugin('modelLoad', dataset, this.getParams(this.opts.plugins.modelLoad.params, {
+        // specify the recover path for model loader by default.
+        recoverPath: modelPath
+      }))
+    };
+  }
+
+  async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string) {
+    return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain.params, {
+      modelPath
+    }));
+  }
+
+  async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
+    this.verifyPlugin('modelEvaluate');
+    return this.runPlugin('modelEvaluate', dataset, model, this.getParams(this.opts.plugins.modelEvaluate.params, {
+      modelDir: modelPath
+    }));
+  }
+  /**
+   * Generate the output package for a given job.
+   * @param job the job model for output.
+   * @param opts the options to used for generating the output.
+   */
+  async generateOutput(job: JobEntity, opts: GenerateOptions) {
+    // start generates the output directory
+    const dist = path.join(opts.workingDir, 'output');
+    await fs.remove(dist);
+    await fs.ensureDir(dist);
+    await execAsync('npm init -y', { cwd: dist });
+
+    // post processing the package.json
+    const projPackage = await fs.readJSON(dist + '/package.json');
+    projPackage.dependencies = {
+      [opts.modelPlugin.name]: opts.modelPlugin.version,
+    };
+    projPackage.scripts = {
+      postinstall: 'node boapkg.js'
+    };
+    if (opts.dataProcess) {
+      projPackage.dependencies[opts.dataProcess.name] = opts.dataProcess.version;
+    }
+
+    const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
+    const metadata = {
+      pipeline: opts.pipeline,
+      output: job,
+    };
+
+    await Promise.all([
+      // copy base components
+      fs.copy(opts.modelPath, dist + '/model'),
+      fs.copy(path.join(__dirname, `../../templates/${opts.template}/predict.js`), `${dist}/index.js`),
+      fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boapkg.js`),
+      // copy logs
+      fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
+      // write package.json
+      fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
+      // write metadata.json
+      fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
+    ]);
+    console.info(`trained the model to ${dist}`);
+
+    // packing the output directory.
+    await compressTarFile(dist, path.join(opts.workingDir, 'output.tar.gz'));
+  }
+  async run(): Promise<RunnerResult> {
+    const dataDir = path.join(this.opts.datasetRoot, `${this.opts.plugins.dataCollect.plugin.name}@${this.opts.plugins.dataCollect.plugin.version}`);
+    const modelPath = path.join(this.opts.runnable.workingDir, 'model');
+
+    await this.runDataCollect(dataDir, modelPath);
+    const dataset = await this.runDataAccess(dataDir);
+    await this.runDatasetProcess(dataset);
+    await this.runDataProcess(dataset);
+
+    let modelResult: ModelResult;
+    // select one of `ModelDefine` and `ModelLoad`.
+    if (this.opts.plugins.modelDefine) {
+      modelResult = await this.runModelDefine(dataset);
+    } else if (this.opts.plugins.modelLoad) {
+      modelResult = await this.runModelLoad(dataset, modelPath);
+    }
+    if (this.opts.plugins.modelTrain) {
+      modelResult.model = await this.runModelTrain(dataset, modelResult.model, modelPath);
+    }
+    const output = await this.runModelEvaluate(dataset, modelResult.model, modelPath);
+    return {
+      output,
+      dataset,
+      modelPath,
+      modelPlugin: modelResult.modelPlugin,
+      dataProcess: this.opts.plugins.dataProcess?.plugin,
+      datasetProcess: this.opts.plugins.datasetProcess?.plugin
+    };
+  }
+}
 @scope(ScopeEnum.Singleton)
 @provide('pipelineService')
 export class PipelineService {
@@ -164,96 +358,31 @@ export class PipelineService {
     const runnable = await this.pluginManager.createRunnable(job.id, tracer);
     // save the runnable object
     this.runnableMap[job.id] = runnable;
-
-    const getParams = (params: string | null, ...extra: object[]): object => {
-      if (params == null) {
-        return Object.assign({}, ...extra);
-      } else {
-        return Object.assign(JSON.parse(params), ...extra);
-      }
-    };
-    const verifyPlugin = (name: string): void => {
-      if (!plugins[name]) {
-        this.runnableMap[job.id].destroy();
-        throw new TypeError(`"${name}" plugin is required`);
-      }
-    };
-    const dispatchJobEvent = (jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end') => {
-      const jobEvent = new JobStatusChangeEvent(
-        jobStatus,
-        step,
-        stepAction
-      );
-      tracer.dispatch(jobEvent);
-    };
-    const run = async (type: PluginTypeI, ...args: any[]) => {
-      const plugin = plugins[type].plugin;
-      dispatchJobEvent(PipelineStatus.RUNNING, type, 'start');
-      const result = await runnable.start(plugin, ...args);
-      dispatchJobEvent(PipelineStatus.RUNNING, type, 'end');
-      return result;
-    };
     // update the job status to running
     job.status = PipelineStatus.RUNNING;
-    this.saveJob(job);
-    dispatchJobEvent(PipelineStatus.RUNNING);
+    await JobModel.saveJob(job);
+    // creater runner
+    const runner = new JobRunner({
+      job,
+      pipeline,
+      plugins,
+      tracer,
+      runnable,
+      datasetRoot: this.pluginManager.datasetRoot
+    });
+
+    runner.dispatchJobEvent(PipelineStatus.RUNNING);
     try {
-      verifyPlugin('dataCollect');
-      const dataDir = path.join(this.pluginManager.datasetRoot, `${plugins.dataCollect.plugin.name}@${plugins.dataCollect.plugin.version}`);
-      const modelPath = path.join(runnable.workingDir, 'model');
-
-      // ensure the model dir exists
-      await fs.ensureDir(modelPath);
-
-      // run dataCollect to download dataset.
-      await run('dataCollect', getParams(plugins.dataCollect.params, {
-        dataDir
-      }));
-
-      verifyPlugin('dataAccess');
-      const dataset = await run('dataAccess', getParams(plugins.dataAccess.params, {
-        dataDir
-      }));
-
-      let datasetProcess: PluginPackage;
-      if (plugins.datasetProcess) {
-        datasetProcess = plugins.datasetProcess.plugin;
-        await run('datasetProcess', dataset, getParams(plugins.datasetProcess.params));
-      }
-
-      let dataProcess: PluginPackage;
-      if (plugins.dataProcess) {
-        dataProcess = plugins.dataProcess.plugin;
-        await run('dataProcess', dataset, getParams(plugins.dataProcess.params));
-      }
-
-      let model: RunnableResponse;
-      let modelPlugin: PluginPackage;
-
-      // select one of `ModelDefine` and `ModelLoad`.
-      if (plugins.modelDefine) {
-        modelPlugin = plugins.modelDefine.plugin;
-        model = await run('modelDefine', dataset, getParams(plugins.modelDefine.params));
-      } else if (plugins.modelLoad) {
-        modelPlugin = plugins.modelLoad.plugin;
-        model = await run('modelLoad', dataset, getParams(plugins.modelLoad.params, {
-          // specify the recover path for model loader by default.
-          recoverPath: modelPath
-        }));
-      }
-
-      if (plugins.modelTrain) {
-        model = await run('modelTrain', dataset, model, getParams(plugins.modelTrain.params, {
-          modelPath
-        }));
-      }
-
-      verifyPlugin('modelEvaluate');
-      const output = await run('modelEvaluate', dataset, model, getParams(plugins.modelEvaluate.params, {
-        modelDir: modelPath
-      }));
-
-      // update job status to successful
+      // step1: run job
+      const {
+        output,
+        dataset,
+        modelPath,
+        modelPlugin,
+        dataProcess,
+        datasetProcess
+      } = await runner.run();
+      // step2: run finished, save job to database
       const result = await runnable.valueOf(output) as EvaluateResult;
       const datasetVal = await runnable.valueOf(dataset) as UniDataset;
       if (datasetVal?.metadata) {
@@ -264,7 +393,9 @@ export class PipelineService {
       job.endTime = Date.now();
       job.status = PipelineStatus.SUCCESS;
 
-      await this.generateOutput(job, {
+      await JobModel.saveJob(job);
+      // step3: generate output
+      await runner.generateOutput(job, {
         modelPath,
         modelPlugin,
         dataProcess,
@@ -273,17 +404,16 @@ export class PipelineService {
         workingDir: runnable.workingDir,
         template: 'node' // set node by default
       });
-
-      await JobModel.saveJob(job);
-      dispatchJobEvent(PipelineStatus.SUCCESS);
+      // step4: all done
+      runner.dispatchJobEvent(PipelineStatus.SUCCESS);
     } catch (err) {
       if (!runnable.canceled) {
         job.status = PipelineStatus.FAIL;
         job.error = err.message;
         await JobModel.saveJob(job);
-        dispatchJobEvent(PipelineStatus.FAIL);
+        runner.dispatchJobEvent(PipelineStatus.FAIL);
       } else {
-        dispatchJobEvent(PipelineStatus.CANCELED);
+        runner.dispatchJobEvent(PipelineStatus.CANCELED);
       }
       throw err;
     } finally {
@@ -315,54 +445,6 @@ export class PipelineService {
    */
   getOutputTarByJobId(id: string): string {
     return path.join(CoreConstants.PIPCOOK_RUN, id, 'output.tar.gz');
-  }
-
-  /**
-   * Generate the output package for a given job.
-   * @param job the job model for output.
-   * @param opts the options to used for generating the output.
-   */
-  async generateOutput(job: JobEntity, opts: GenerateOptions) {
-    // start generates the output directory
-    const dist = path.join(opts.workingDir, 'output');
-    await fs.remove(dist);
-    await fs.ensureDir(dist);
-    await execAsync('npm init -y', { cwd: dist });
-
-    // post processing the package.json
-    const projPackage = await fs.readJSON(dist + '/package.json');
-    projPackage.dependencies = {
-      [opts.modelPlugin.name]: opts.modelPlugin.version,
-    };
-    projPackage.scripts = {
-      postinstall: 'node boapkg.js'
-    };
-    if (opts.dataProcess) {
-      projPackage.dependencies[opts.dataProcess.name] = opts.dataProcess.version;
-    }
-
-    const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
-    const metadata = {
-      pipeline: opts.pipeline,
-      output: job,
-    };
-
-    await Promise.all([
-      // copy base components
-      fs.copy(opts.modelPath, dist + '/model'),
-      fs.copy(path.join(__dirname, `../../templates/${opts.template}/predict.js`), `${dist}/index.js`),
-      fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boapkg.js`),
-      // copy logs
-      fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
-      // write package.json
-      fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
-      // write metadata.json
-      fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
-    ]);
-    console.info(`trained the model to ${dist}`);
-
-    // packing the output directory.
-    await compressTarFile(dist, path.join(opts.workingDir, 'output.tar.gz'));
   }
 
   async getLogById(id: string): Promise<string[]> {
