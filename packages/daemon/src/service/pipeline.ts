@@ -108,29 +108,29 @@ export class JobRunner {
     return result;
   }
 
-  async runDataCollect(dataDir: string, modelPath: string) {
+  async runDataCollect(dataDir: string, modelPath: string): Promise<any> {
     this.verifyPlugin('dataCollect');
     // ensure the model dir exists
     await fs.ensureDir(modelPath);
     // run dataCollect to download dataset.
-    return this.runPlugin('dataCollect', this.getParams(this.opts.plugins.dataCollect.params, {
+    await this.runPlugin('dataCollect', this.getParams(this.opts.plugins.dataCollect.params, {
       dataDir
     }));
   }
-  async runDataAccess(dataDir: string) {
+  async runDataAccess(dataDir: string): Promise<any> {
     this.verifyPlugin('dataAccess');
     return this.runPlugin('dataAccess', this.getParams(this.opts.plugins.dataAccess.params, {
       dataDir
     }));
   }
 
-  async runDatasetProcess(dataset: any) {
+  async runDatasetProcess(dataset: any): Promise<void> {
     if (this.opts.plugins.datasetProcess) {
-      return this.runPlugin('datasetProcess', dataset, this.getParams(this.opts.plugins.datasetProcess.params));
+      await this.runPlugin('datasetProcess', dataset, this.getParams(this.opts.plugins.datasetProcess.params));
     }
   }
 
-  async runDataProcess(dataset: any) {
+  async runDataProcess(dataset: any): Promise<void> {
     if (this.opts.plugins.dataProcess) {
       await this.runPlugin('dataProcess', dataset, this.getParams(this.opts.plugins.dataProcess.params));
     }
