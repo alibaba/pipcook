@@ -1,5 +1,3 @@
-
-
 class Enumerate {
   constructor(T, wrap) {
     this._T = T;
