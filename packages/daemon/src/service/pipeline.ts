@@ -76,8 +76,7 @@ interface RunnerResult {
  */
 export class JobRunner {
   opts: RunnerOptions;
-  constructor(
-    opts: RunnerOptions) {
+  constructor(opts: RunnerOptions) {
     this.opts = opts;
   }
   getParams(params: string | null, ...extra: object[]): object {
@@ -87,12 +86,14 @@ export class JobRunner {
       return Object.assign(JSON.parse(params), ...extra);
     }
   }
-  verifyPlugin (name: string): void {
+
+  assertPlugin (name: string): void {
     if (!this.opts.plugins[name]) {
       throw new TypeError(`"${name}" plugin is required`);
     }
   }
-  dispatchJobEvent(jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end') {
+
+  dispatchJobEvent(jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end'): void {
     const jobEvent = new JobStatusChangeEvent(
       jobStatus,
       step,
@@ -100,7 +101,7 @@ export class JobRunner {
     );
     this.opts.tracer.dispatch(jobEvent);
   }
-  async runPlugin(type: PluginTypeI, ...args: any[]) {
+  async runPlugin(type: PluginTypeI, ...args: any[]): Promise<any> {
     const plugin = this.opts.plugins[type].plugin;
     this.dispatchJobEvent(PipelineStatus.RUNNING, type, 'start');
     const result = await this.opts.runnable.start(plugin, ...args);
@@ -109,7 +110,7 @@ export class JobRunner {
   }
 
   async runDataCollect(dataDir: string, modelPath: string): Promise<any> {
-    this.verifyPlugin('dataCollect');
+    this.assertPlugin('dataCollect');
     // ensure the model dir exists
     await fs.ensureDir(modelPath);
     // run dataCollect to download dataset.
@@ -118,7 +119,7 @@ export class JobRunner {
     }));
   }
   async runDataAccess(dataDir: string): Promise<any> {
-    this.verifyPlugin('dataAccess');
+    this.assertPlugin('dataAccess');
     return this.runPlugin('dataAccess', this.getParams(this.opts.plugins.dataAccess.params, {
       dataDir
     }));
@@ -153,65 +154,19 @@ export class JobRunner {
     };
   }
 
-  async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string) {
+  async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
     return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain.params, {
       modelPath
     }));
   }
 
   async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
-    this.verifyPlugin('modelEvaluate');
+    this.assertPlugin('modelEvaluate');
     return this.runPlugin('modelEvaluate', dataset, model, this.getParams(this.opts.plugins.modelEvaluate.params, {
       modelDir: modelPath
     }));
   }
-  /**
-   * Generate the output package for a given job.
-   * @param job the job model for output.
-   * @param opts the options to used for generating the output.
-   */
-  async generateOutput(job: JobEntity, opts: GenerateOptions) {
-    // start generates the output directory
-    const dist = path.join(opts.workingDir, 'output');
-    await fs.remove(dist);
-    await fs.ensureDir(dist);
-    await execAsync('npm init -y', { cwd: dist });
 
-    // post processing the package.json
-    const projPackage = await fs.readJSON(dist + '/package.json');
-    projPackage.dependencies = {
-      [opts.modelPlugin.name]: opts.modelPlugin.version,
-    };
-    projPackage.scripts = {
-      postinstall: 'node boapkg.js'
-    };
-    if (opts.dataProcess) {
-      projPackage.dependencies[opts.dataProcess.name] = opts.dataProcess.version;
-    }
-
-    const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
-    const metadata = {
-      pipeline: opts.pipeline,
-      output: job,
-    };
-
-    await Promise.all([
-      // copy base components
-      fs.copy(opts.modelPath, dist + '/model'),
-      fs.copy(path.join(__dirname, `../../templates/${opts.template}/predict.js`), `${dist}/index.js`),
-      fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boapkg.js`),
-      // copy logs
-      fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
-      // write package.json
-      fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
-      // write metadata.json
-      fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
-    ]);
-    console.info(`trained the model to ${dist}`);
-
-    // packing the output directory.
-    await compressTarFile(dist, path.join(opts.workingDir, 'output.tar.gz'));
-  }
   async run(): Promise<RunnerResult> {
     const dataDir = path.join(this.opts.datasetRoot, `${this.opts.plugins.dataCollect.plugin.name}@${this.opts.plugins.dataCollect.plugin.version}`);
     const modelPath = path.join(this.opts.runnable.workingDir, 'model');
@@ -354,6 +309,54 @@ export class PipelineService {
     return plugins;
   }
 
+  /**
+   * Generate the output package for a given job.
+   * @param job the job model for output.
+   * @param opts the options to used for generating the output.
+   */
+  async generateOutput(job: JobEntity, opts: GenerateOptions): Promise<void> {
+    // start generates the output directory
+    const dist = path.join(opts.workingDir, 'output');
+    await fs.remove(dist);
+    await fs.ensureDir(dist);
+    await execAsync('npm init -y', { cwd: dist });
+
+    // post processing the package.json
+    const projPackage = await fs.readJSON(dist + '/package.json');
+    projPackage.dependencies = {
+      [opts.modelPlugin.name]: opts.modelPlugin.version,
+    };
+    projPackage.scripts = {
+      postinstall: 'node boapkg.js'
+    };
+    if (opts.dataProcess) {
+      projPackage.dependencies[opts.dataProcess.name] = opts.dataProcess.version;
+    }
+
+    const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
+    const metadata = {
+      pipeline: opts.pipeline,
+      output: job,
+    };
+
+    await Promise.all([
+      // copy base components
+      fs.copy(opts.modelPath, dist + '/model'),
+      fs.copy(path.join(__dirname, `../../templates/${opts.template}/predict.js`), `${dist}/index.js`),
+      fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boapkg.js`),
+      // copy logs
+      fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
+      // write package.json
+      fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
+      // write metadata.json
+      fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
+    ]);
+    console.info(`trained the model to ${dist}`);
+
+    // packing the output directory.
+    await compressTarFile(dist, path.join(opts.workingDir, 'output.tar.gz'));
+  }
+
   async startJob(job: JobEntity, pipeline: PipelineEntity, plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<void> {
     const runnable = await this.pluginManager.createRunnable(job.id, tracer);
     // save the runnable object
@@ -395,7 +398,7 @@ export class PipelineService {
 
       await JobModel.saveJob(job);
       // step3: generate output
-      await runner.generateOutput(job, {
+      await this.generateOutput(job, {
         modelPath,
         modelPlugin,
         dataProcess,
