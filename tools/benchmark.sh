@@ -42,10 +42,14 @@ t1=$(date +%s)
 t2=$(date +%s)
 mnist_time=$((t2-t1))
 
-git clone https://github.com/imgcook/pipcook-benchmark.git
-cd pipcook-benchmark
+if [ -z ${UPLOAD} ]
+then
+  echo "{\"install_time\":${install_time}, \"init_time\":$init_time, \"esbuild_time\":$esbuild_time, \"build_time\":$build_time, \"test_time\":$test_time, \"mnist_time\":$mnist_time, \"timestamp\": $time_stamp }" | jq
+else 
+  git clone https://github.com/imgcook/pipcook-benchmark.git
+  cd pipcook-benchmark
 
-echo $(cat data.json | 
+  echo $(cat data.json | 
           jq --arg install_time $install_time \
             --arg esbuild_time $esbuild_time \
             --arg build_time $build_time \
@@ -55,13 +59,9 @@ echo $(cat data.json |
             --arg mnist_time $mnist_time \
             '. + [{install_time:$install_time, init_time:$init_time, esbuild_time:$esbuild_time, build_time:$build_time, test_time:$test_time, mnist_time:$mnist_time, timestamp: $time_stamp }]')  > data.json
 
-if [ -z ${UPLOAD} ]
-then
-  echo "benchmark has been saved to data.json!"
-else 
   git config user.email ${EMAIL}
   git config user.name ${USERNAME}
   git add data.json
-  git commit --allow-empty  -am"[circleci]: update data"
+  git commit --allow-empty  -am\"[circleci]: update data"
   git push -q https://${TOKEN}@github.com/imgcook/pipcook-benchmark.git
 fi
