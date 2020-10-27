@@ -147,12 +147,11 @@ export default async function model(sequelize: Sequelize): Promise<void> {
       type: STRING,
       get() {
         // @ts-ignore
-        const rawParams: string = this.getDataValue('params');
+        const rawParams: string = this.getDataValue.call(this, 'params')
         return JSON.parse(rawParams) as IParam[];
       },
       set(params) {
-        // @ts-ignore
-        this.setDataValue('params', JSON.stringify(params));
+        this.setDataValue.call(this, 'params', JSON.stringify(params));
       }
     }
   },

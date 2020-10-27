@@ -19,7 +19,7 @@ export class JobController extends BaseEventController {
   @inject('pluginManager')
   pluginManager: PluginManager;
 
-  async _setupTracer(job: JobEntity) {
+  private async setupTracer(job: JobEntity) {
     const logPath = join(constants.PIPCOOK_RUN, job.id, 'logs');
     const stdoutFile = join(logPath, 'stdout.log');
     const stderrFile = join(logPath, 'stderr.log');
@@ -62,7 +62,7 @@ export class JobController extends BaseEventController {
       const realParam = this._makeParam(pipeline);
       const job = await this.pipelineService.createJob(pipelineId, realParam);
 
-      const tracer = await this._setupTracer(job);
+      const tracer = await this.setupTracer(job);
 
       process.nextTick(async () => {
         try {
@@ -149,7 +149,7 @@ export class JobController extends BaseEventController {
 
       const newJob = await this.pipelineService.createJob(pipeline.id, realParam);
 
-      const tracer = await this._setupTracer(newJob);
+      const tracer = await this.setupTracer(newJob);
 
       process.nextTick(async () => {
         try {
