@@ -1,3 +1,16 @@
+#!/bin/bash
+
+# get flag argument
+for i in $@
+do
+case $i in 
+  -u=*|--upload=*)
+  UPLOAD=${i#*=}
+  shift
+  ;;
+esac
+done
+
 t1=$(date +%s)
 npm install
 t2=$(date +%s)
@@ -42,8 +55,13 @@ echo $(cat data.json |
             --arg mnist_time $mnist_time \
             '. + [{install_time:$install_time, init_time:$init_time, esbuild_time:$esbuild_time, build_time:$build_time, test_time:$test_time, mnist_time:$mnist_time, timestamp: $time_stamp }]')  > data.json
 
-git config user.email "eric.lwh@alibaba-inc.com"
-git config user.name "WenheLI"
-git add data.json
-git commit --allow-empty  -am"[circleci]: update data"
-git push -q https://${TOKEN}@github.com/imgcook/pipcook-benchmark.git
+if [ -z ${UPLOAD} ]
+then
+  echo "benchmark has been saved to data.json!"
+else 
+  git config user.email ${EMAIL}
+  git config user.name ${USERNAME}
+  git add data.json
+  git commit --allow-empty  -am"[circleci]: update data"
+  git push -q https://${TOKEN}@github.com/imgcook/pipcook-benchmark.git
+fi
