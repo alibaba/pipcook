@@ -59,7 +59,7 @@ interface RunnerOptions {
 
 interface ModelResult {
   model: RunnableResponse;
-  modelPlugin: PluginPackage;
+  plugin: PluginPackage;
 }
 
 interface RunnerResult {
@@ -73,12 +73,19 @@ interface RunnerResult {
 
 /**
  * job runner
+ * handle the pipeline running: check pipeline config, load and run plugins, dispatch pipeline running event.
  */
 export class JobRunner {
   opts: RunnerOptions;
   constructor(opts: RunnerOptions) {
     this.opts = opts;
   }
+
+  /**
+   * assign the params
+   * @param params param string from config
+   * @param extra extra config from pipeline running
+   */
   getParams(params: string | null, ...extra: object[]): object {
     if (params == null) {
       return Object.assign({}, ...extra);
@@ -87,12 +94,22 @@ export class JobRunner {
     }
   }
 
+  /**
+   * check if the plugin is configured, throw error if not
+   * @param name plugin name
+   */
   assertPlugin (name: string): void {
     if (!this.opts.plugins[name]) {
       throw new TypeError(`"${name}" plugin is required`);
     }
   }
 
+  /**
+   * dispatch plugin running events
+   * @param jobStatus job status
+   * @param step which step the pipeline belongs
+   * @param stepAction what action the plugin takes
+   */
   dispatchJobEvent(jobStatus: PipelineStatus, step?: PluginTypeI, stepAction?: 'start' | 'end'): void {
     const jobEvent = new JobStatusChangeEvent(
       jobStatus,
@@ -101,6 +118,12 @@ export class JobRunner {
     );
     this.opts.tracer.dispatch(jobEvent);
   }
+
+  /**
+   * run plugin with args
+   * @param type plugin type
+   * @param args args for plugin running
+   */
   async runPlugin(type: PluginTypeI, ...args: any[]): Promise<any> {
     const plugin = this.opts.plugins[type].plugin;
     this.dispatchJobEvent(PipelineStatus.RUNNING, type, 'start');
@@ -109,6 +132,11 @@ export class JobRunner {
     return result;
   }
 
+  /**
+   * run data collect plugin
+   * @param dataDir data dir
+   * @param modelPath model path
+   */
   async runDataCollect(dataDir: string, modelPath: string): Promise<any> {
     this.assertPlugin('dataCollect');
     // ensure the model dir exists
@@ -118,6 +146,11 @@ export class JobRunner {
       dataDir
     }));
   }
+
+  /**
+   * run data access plugin
+   * @param dataDir data dir
+   */
   async runDataAccess(dataDir: string): Promise<any> {
     this.assertPlugin('dataAccess');
     return this.runPlugin('dataAccess', this.getParams(this.opts.plugins.dataAccess.params, {
@@ -125,28 +158,45 @@ export class JobRunner {
     }));
   }
 
+  /**
+   * run dataset process plugin
+   * @param dataset dataset from data collect plugin
+   */
   async runDatasetProcess(dataset: any): Promise<void> {
     if (this.opts.plugins.datasetProcess) {
       await this.runPlugin('datasetProcess', dataset, this.getParams(this.opts.plugins.datasetProcess.params));
     }
   }
 
+  /**
+   * run data process plugin
+   * @param dataset dataset from data collect plugin
+   */
   async runDataProcess(dataset: any): Promise<void> {
     if (this.opts.plugins.dataProcess) {
       await this.runPlugin('dataProcess', dataset, this.getParams(this.opts.plugins.dataProcess.params));
     }
   }
 
+  /**
+   * run model define plugin
+   * @param dataset dataset from data collect/dataset process/data process plugin
+   */
   async runModelDefine(dataset: any): Promise<ModelResult> {
     return {
-      modelPlugin: this.opts.plugins.modelDefine.plugin,
+      plugin: this.opts.plugins.modelDefine.plugin,
       model: await this.runPlugin('modelDefine', dataset, this.getParams(this.opts.plugins.modelDefine.params))
     };
   }
 
+  /**
+   * run the model load plugin, return 
+   * @param dataset dataset from data collect/dataset process/data process plugin
+   * @param modelPath where the model loads from
+   */
   async runModelLoad(dataset: any, modelPath: string): Promise<ModelResult> {
     return {
-      modelPlugin: this.opts.plugins.modelLoad.plugin,
+      plugin: this.opts.plugins.modelLoad.plugin,
       model: await this.runPlugin('modelLoad', dataset, this.getParams(this.opts.plugins.modelLoad.params, {
         // specify the recover path for model loader by default.
         recoverPath: modelPath
@@ -154,12 +204,24 @@ export class JobRunner {
     };
   }
 
+  /**
+   * run model train plugin and return model
+   * @param dataset dataset from data collect/dataset process/data process plugin
+   * @param model model from model define
+   * @param modelPath where the model saves to
+   */
   async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
     return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain.params, {
       modelPath
     }));
   }
 
+  /**
+   * run model evalute plugin and return evaluation results
+   * @param dataset dataset from data collect/dataset process/data process plugin
+   * @param model model from model define
+   * @param modelPath where the model loads from
+   */
   async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
     this.assertPlugin('modelEvaluate');
     return this.runPlugin('modelEvaluate', dataset, model, this.getParams(this.opts.plugins.modelEvaluate.params, {
@@ -167,6 +229,9 @@ export class JobRunner {
     }));
   }
 
+  /**
+   * run the pipeline
+   */
   async run(): Promise<RunnerResult> {
     const dataDir = path.join(this.opts.datasetRoot, `${this.opts.plugins.dataCollect.plugin.name}@${this.opts.plugins.dataCollect.plugin.version}`);
     const modelPath = path.join(this.opts.runnable.workingDir, 'model');
@@ -191,7 +256,7 @@ export class JobRunner {
       output,
       dataset,
       modelPath,
-      modelPlugin: modelResult.modelPlugin,
+      modelPlugin: modelResult.plugin,
       dataProcess: this.opts.plugins.dataProcess?.plugin,
       datasetProcess: this.opts.plugins.datasetProcess?.plugin
     };
@@ -275,6 +340,7 @@ export class PipelineService {
     ]);
     return results[0];
   }
+
   async createJob(pipelineId: string): Promise<JobEntity> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
     return JobModel.createJob(pipelineId, specVersion);
