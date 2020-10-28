@@ -95,7 +95,7 @@ export class JobRunner {
    * check if the plugin is configured, throw error if not
    * @param name plugin name
    */
-  assertPlugin (name: string): void {
+  assertPlugin(name: string): void {
     if (!this.opts.plugins[name]) {
       throw new TypeError(`"${name}" plugin is required`);
     }
