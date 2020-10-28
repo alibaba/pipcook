@@ -179,7 +179,7 @@ export class JobRunner {
   }
 
   /**
-   * run model define plugin
+   * run model define plugin, return plugin and model
    * @param dataset dataset from data collect/dataset process/data process plugin
    */
   async runModelDefine(dataset: any): Promise<ModelResult> {
@@ -190,7 +190,7 @@ export class JobRunner {
   }
 
   /**
-   * run the model load plugin, return 
+   * run the model load plugin, return plugin and model
    * @param dataset dataset from data collect/dataset process/data process plugin
    * @param modelPath where the model loads from
    */
