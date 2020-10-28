@@ -8,9 +8,9 @@ import {
   PluginTypeI
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
-import { PipelineEntity } from './model/pipeline';
-import { JobEntity } from './model/job';
-import { Tracer, JobStatusChangeEvent } from './service/trace-manager';
+import { PipelineEntity } from '../model/pipeline';
+import { JobEntity } from '../model/job';
+import { Tracer, JobStatusChangeEvent } from '../service/trace-manager';
 
 export class ServerSentEmitter {
   private handle: SseStream;

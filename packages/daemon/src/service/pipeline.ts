@@ -18,7 +18,7 @@ import { PipelineModel, PipelineEntity, QueryOptions } from '../model/pipeline';
 import { JobModel, JobEntity } from '../model/job';
 import { PluginManager } from './plugin';
 import { Tracer, JobStatusChangeEvent } from './trace-manager';
-import { pluginQueue, PluginInfo, JobRunner } from '../utils';
+import { pluginQueue, PluginInfo, JobRunner } from '../utils/common';
 import { UpdateParameter } from '../interface/pipeline';
 
 interface SelectJobsFilter {
