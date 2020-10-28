@@ -227,7 +227,7 @@ export class PipelineService {
     try {
       // step1: run job
       const {
-        output,
+        evaluateOutput,
         dataset,
         modelPath,
         plugins: {
@@ -237,7 +237,7 @@ export class PipelineService {
         }
       } = await runner.run();
       // step2: run finished, save job to database
-      const result = await runnable.valueOf(output) as EvaluateResult;
+      const result = await runnable.valueOf(evaluateOutput) as EvaluateResult;
       const datasetVal = await runnable.valueOf(dataset) as UniDataset;
       if (datasetVal?.metadata) {
         job.dataset = JSON.stringify(datasetVal.metadata);

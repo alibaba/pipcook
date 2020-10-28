@@ -35,11 +35,17 @@ export class ServerSentEmitter {
 
 export const pluginQueue = new Queue({ autostart: true, concurrency: 1 });
 
+/**
+ * plugin info from pipeline config
+ */
 export interface PluginInfo {
   plugin: PluginPackage;
   params: string;
 }
 
+/**
+ * Runner options
+ */
 export interface RunnerOptions {
   job: JobEntity;
   pipeline: PipelineEntity;
@@ -57,8 +63,11 @@ export interface ModelResult {
   plugin: PluginPackage;
 }
 
+/**
+ * job run result
+ */
 export interface JobResult {
-  output: any;
+  evaluateOutput: any;
   dataset: any;
   modelPath: string;
   plugins: {
@@ -248,9 +257,9 @@ export class JobRunner {
     if (this.opts.plugins.modelTrain) {
       modelResult.model = await this.runModelTrain(dataset, modelResult.model, modelPath);
     }
-    const output = await this.runModelEvaluate(dataset, modelResult.model, modelPath);
+    const evaluateOutput = await this.runModelEvaluate(dataset, modelResult.model, modelPath);
     return {
-      output,
+      evaluateOutput,
       dataset,
       modelPath,
       plugins: {
