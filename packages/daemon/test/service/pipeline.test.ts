@@ -163,12 +163,14 @@ describe('test the pipeline service', () => {
 
     await pipeline.generateOutput({ id: 'mockId' } as JobEntity, {
       modelPath: 'mockPath',
-      modelPlugin: { name: 'modelPlugin', version: 'mockVersion' } as PluginPackage,
+      plugins: {
+        modelDefine: { name: 'modelPlugin', version: 'mockVersion' } as PluginPackage,
+        dataProcess: {
+          version: 'mockVersion',
+          name: 'dataProcess'
+        } as PluginPackage,
+      },
       pipeline: {} as PipelineEntity,
-      dataProcess: {
-        version: 'mockVersion',
-        name: 'dataProcess'
-      } as PluginPackage,
       workingDir: '/home',
       template: 'mock template'
     });

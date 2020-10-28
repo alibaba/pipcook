@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as core from '@pipcook/pipcook-core';
 import { strict as assert } from 'assert';
-import { JobRunner } from '../../src/service/pipeline';
+import { JobRunner } from '../../src/utils';
 import { JobStatusChangeEvent } from '../../src/service/trace-manager';
 
 const runner = new JobRunner({
@@ -270,7 +270,7 @@ describe('test JobRunner', () => {
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockModel as any);
     const mockDataset = { mockDataset: '' };
     assert.deepEqual(await runner.runModelDefine(mockDataset), {
-      modelPlugin: 'mockPlugin',
+      plugin: 'mockPlugin',
       model: mockModel
     });
     assert.ok(runPlugin.calledOnceWith('modelDefine', mockDataset, { mockParam: 'value' }));
@@ -294,7 +294,7 @@ describe('test JobRunner', () => {
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockModel as any);
     const mockDataset = { mockDataset: '' };
     assert.deepEqual(await runner.runModelLoad(mockDataset, '/model/path'), {
-      modelPlugin: 'mockPlugin',
+      plugin: 'mockPlugin',
       model: mockModel
     });
     assert.ok(runPlugin.calledOnceWith('modelLoad', mockDataset, { mockParam: 'value', recoverPath: '/model/path' }));
@@ -393,7 +393,7 @@ describe('test JobRunner', () => {
     const mockModelAfterTraining = { mockModel: 'after training' };
     const mockModelDefineResult = {
       model: mockModel as any,
-      modelPlugin: 'modelDefine' as any
+      plugin: 'modelDefine' as any
     }
     const runDataCollect = sinon.stub(runner, 'runDataCollect').resolves();
     const runDataAccess = sinon.stub(runner, 'runDataAccess').resolves(mockDataset);
