@@ -159,7 +159,7 @@ export class PipelineService {
   }
 
   /**
-   * Generate the output package for a given job.
+   * Generate the output dist for a given job.
    * @param job the job model for output.
    * @param opts the options to used for generating the output.
    */
