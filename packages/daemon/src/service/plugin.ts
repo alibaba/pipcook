@@ -5,7 +5,7 @@ import { TraceManager, Tracer } from './trace-manager';
 import PluginRuntime from '../boot/plugin';
 import { PluginModel, PluginEntity, ListPluginsFilter } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
-import { pluginQueue } from '../utils/common';
+import { pluginQueue } from '../utils';
 
 @provide('pluginManager')
 export class PluginManager {

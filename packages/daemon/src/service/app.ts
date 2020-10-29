@@ -4,7 +4,7 @@ import { compile, PipelineNode } from '@pipcook/app';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { PipelineService } from './pipeline';
-import { parseConfig } from '../runner/helper';
+import { parseConfig } from '../utils';
 
 interface CompileResult {
   pipelines: PipelineNode[];

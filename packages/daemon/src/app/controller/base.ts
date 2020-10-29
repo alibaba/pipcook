@@ -1,7 +1,7 @@
 import { inject, Context } from 'midway';
 import { ObjectSchema } from 'joi';
 import * as HttpStatus from 'http-status';
-import { ServerSentEmitter } from '../../utils/common';
+import { ServerSentEmitter } from '../../utils';
 import { TraceManager } from '../../service/trace-manager';
 import Debug from 'debug';
 

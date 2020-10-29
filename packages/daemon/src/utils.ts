@@ -1,6 +1,6 @@
-/**
- * @file This file is for helper functions related to Pipcook-core
- */
+import Queue from 'queue';
+import { Context } from 'midway';
+import SseStream from 'ssestream';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as request from 'request-promise';
@@ -9,7 +9,30 @@ import {
   RunConfigI,
   generateId
 } from '@pipcook/pipcook-core';
-import { PipelineEntity } from '../model/pipeline';
+import { PipelineEntity } from './model/pipeline';
+
+export class ServerSentEmitter {
+  private handle: SseStream;
+  private response: NodeJS.WritableStream;
+
+  constructor(ctx: Context) {
+    this.response = ctx.res as NodeJS.WritableStream;
+    this.handle = new SseStream(ctx.req);
+    this.handle.pipe(this.response);
+    this.emit('session', 'start');
+  }
+
+  emit(event: string, data: any): boolean {
+    return this.handle.write({ event, data });
+  }
+
+  finish(): void {
+    this.emit('session', 'close');
+    this.handle.unpipe(this.response);
+  }
+}
+
+export const pluginQueue = new Queue({ autostart: true, concurrency: 1 });
 
 async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
   if (typeof configPath === 'string') {

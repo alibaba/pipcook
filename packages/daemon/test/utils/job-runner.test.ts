@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as core from '@pipcook/pipcook-core';
 import { strict as assert } from 'assert';
-import { JobRunner } from '../../src/utils/job-runner';
+import { JobRunner } from '../../src/runner/job-runner';
 import { JobStatusChangeEvent } from '../../src/service/trace-manager';
 
 const runner = new JobRunner({
