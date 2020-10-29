@@ -1,0 +1,20 @@
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+
+jobs:
+  benchmark:
+    docker:
+        - image: cimg/node:14.11.0
+    steps:
+      - when:
+        condition:
+          euqal: [master, << pipeline.git.branch >>]
+        steps:
+          - checkout
+          - run: bash ./tools/benchmark.sh
+
+workflows:
+  node-bench:
+    jobs:
+      - benchmark
