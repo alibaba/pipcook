@@ -42,7 +42,7 @@ t1=$(date +%s)
 t2=$(date +%s)
 mnist_time=$((t2-t1))
 
-if [ -z ${UPLOAD} ] || [ ${CIRCLE_BRANCH}!='master' ]
+if [ -z ${UPLOAD} ]
 then
   echo "{\"install_time\":${install_time}, \"init_time\":$init_time, \
   \"esbuild_time\":$esbuild_time, \"build_time\":$build_time, \"test_time\":$test_time, \
