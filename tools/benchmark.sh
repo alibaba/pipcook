@@ -42,7 +42,7 @@ t1=$(date +%s)
 t2=$(date +%s)
 mnist_time=$((t2-t1))
 
-if [ -z ${UPLOAD} ]
+if [ -z ${UPLOAD} ] || [ ${CIRCLE_BRANCH}!='master' ]
 then
   echo "{\"install_time\":${install_time}, \"init_time\":$init_time, \
   \"esbuild_time\":$esbuild_time, \"build_time\":$build_time, \"test_time\":$test_time, \
@@ -59,7 +59,7 @@ else
             --arg test_time $test_time \
             --arg time_stamp $(date +%s) \
             --arg mnist_time $mnist_time \
-            ". + [{install_time:$install_time, init_time:$init_time, \
+            ". + [{commitId: $CIRCLE_SHA1, install_time:$install_time, init_time:$init_time, \
                   esbuild_time:$esbuild_time, build_time:$build_time, test_time:$test_time, \
                   mnist_time:$mnist_time, timestamp: $time_stamp }]")  > data.json
 
