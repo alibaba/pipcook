@@ -13,4 +13,4 @@ jobs:
 workflows:
   node-bench:
     jobs:
-      - bench
+      - benchmark
