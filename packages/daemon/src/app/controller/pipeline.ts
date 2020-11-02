@@ -4,7 +4,7 @@ import * as HttpStatus from 'http-status';
 import * as Joi from 'joi';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
-import { parseConfig } from '../../runner/helper';
+import { parseConfig } from '../../utils';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { Tracer } from '../../service/trace-manager';
@@ -162,7 +162,7 @@ export class PipelineController extends BaseEventController {
     const parsedConfig = await parseConfig(config, false);
     const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
     if (!data) {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no pipeline found');
     }
     this.ctx.success(data);
   }

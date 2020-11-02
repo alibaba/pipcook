@@ -1,6 +1,6 @@
 import * as core from '@pipcook/pipcook-core';
 import { assert } from 'midway-mock/bootstrap';
-import * as helper from '../../src/runner/helper';
+import * as helper from '../../src/utils';
 import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import { join } from 'path';

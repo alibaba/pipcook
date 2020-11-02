@@ -274,6 +274,47 @@ In Node.js version < `v14.x`, you also need to add the [`--experimental-modules`
 $ node --experimental-modules --experimental-loader @pipcook/boa/esm/loader.mjs app.mjs
 ```
 
+### Generators
+
+The package is able to handle the Python generator in JavaScript directly:
+
+```python
+# Write a Python Generator in count_down.py
+def count_down(count):
+  while count >= 0:
+    yield count
+    count -= 1
+```
+
+The above code will take a number and keep yielding and decreasing the value until 0.
+
+```js
+const boa = require('@pipcook/boa')
+const countDown = boa.import('count_down')
+const generator = countDown(3); // Generator
+
+// You can use typical next syntax
+let curr = generator.next();
+
+while (curr.done) {
+  console.log(curr.value); // 3 2 1 0
+  curr = generator.next()
+}
+```
+Or use the syntactic suger:
+
+```js
+const boa = require('@pipcook/boa')
+const countDown = boa.import('count_down')
+const generator = countDown(3); // Generator
+
+// Or access data via the following syntax
+for (const element of generator) {
+  console.log(element) // 3 2 1 0
+}
+```
+
+
 ## Python functions in `worker_threads`
 
 The `@pipcook/boa` package calls Python function in blocking way, which is because of the Python(CPython)'s object model is not thread-safe, thus Python limits to run Python functions in different threads.

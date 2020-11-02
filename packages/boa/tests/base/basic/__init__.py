@@ -23,6 +23,11 @@ class Foobar(object):
     v = obj.fn1(obj.input)
     return obj.scope.fn2(v)
 
+  def testGen(self, count):
+    while count >= 0:
+      yield count
+      count -= 1
+
   def __enter__(self):
     self.entered = True
 

@@ -2,7 +2,7 @@ import { app, assert } from 'midway-mock/bootstrap';
 import { MidwayMockApplication } from 'midway-mock/dist/interface';
 import { PluginPackage } from '@pipcook/costa';
 import { PipelineEntity } from '../../src/model/pipeline';
-import * as helper from '../../src/runner/helper';
+import * as helper from '../../src/utils';
 import * as sinon from 'sinon';
 import { mm } from 'midway-mock/dist/mock';
 import { PluginStatus } from '@pipcook/pipcook-core';
