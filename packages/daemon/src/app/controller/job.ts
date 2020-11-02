@@ -32,14 +32,17 @@ export class JobController extends BaseEventController {
     return tracer;
   }
 
-  _makeParam(pipeline: PipelineEntity, jobParams?: IParam[]) {
+  private makeParam(pipeline: PipelineEntity, jobParams?: IParam[]) {
     const PLUGIN_TYPES = ['dataCollect', 'dataAccess', 'datasetProcess', 'dataProcess', 'modelDefine', 'modelTrain', 'modelEvaluate', 'modelLoad'];
     const params: IParam[] = [];
 
     for (const pluginType of PLUGIN_TYPES) {
       const tempParam = JSON.parse(pipeline[`${pluginType}Params`]);
-      const jobParam = jobParams ? jobParams.filter((it) => it.pluginType === pluginType)
-                                .map((it) => it.pluginParam) : [];
+      let jobParam = [];
+      if (jobParams) {
+        jobParam = jobParams.filter((it) => it.pluginType === pluginType)
+                            .map((it) => it.pluginParam);
+      }
 
       const temp: IParam = {
         pluginType,
@@ -59,7 +62,7 @@ export class JobController extends BaseEventController {
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
       const plugins = await this.pipelineService.fetchPlugins(pipeline);
-      const realParam = this._makeParam(pipeline);
+      const realParam = this.makeParam(pipeline);
       const job = await this.pipelineService.createJob(pipelineId, realParam);
 
       const tracer = await this.setupTracer(job);
@@ -121,7 +124,7 @@ export class JobController extends BaseEventController {
     this.ctx.success();
   }
 
-  @get('/:id/param')
+  @get('/:id/parameters')
   public async getParam(): Promise<void> {
     const { id } = this.ctx.params;
     const job = await this.pipelineService.getJobById(id);
@@ -136,7 +139,7 @@ export class JobController extends BaseEventController {
   /**
    * Run job with new param
    */
-  @post('/:id/param')
+  @post('/:id/parameters')
   public async updateParam(): Promise<void> {
     const { id } = this.ctx.params;
     const { params } = this.ctx.request.body;
@@ -144,11 +147,9 @@ export class JobController extends BaseEventController {
     const job = await this.pipelineService.getJobById(id);
     if (job) {
       const pipeline = await this.pipelineService.getPipeline(job.pipelineId);
-      const realParam = this._makeParam(pipeline, params);
+      const realParam = this.makeParam(pipeline, params);
       const plugins = await this.pipelineService.fetchPlugins(pipeline);
-
       const newJob = await this.pipelineService.createJob(pipeline.id, realParam);
-
       const tracer = await this.setupTracer(newJob);
 
       process.nextTick(async () => {
