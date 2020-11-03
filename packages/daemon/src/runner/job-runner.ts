@@ -128,7 +128,6 @@ export class JobRunner {
    */
   async runDataCollect(dataDir: string, modelPath: string, jobParam: IJobParam[]): Promise<any> {
     this.assertPlugin('dataCollect');
-
     const param = this.getJobParam('dataCollect', jobParam);
 
     // ensure the model dir exists
@@ -136,7 +135,7 @@ export class JobRunner {
     // run dataCollect to download dataset.
     await this.runPlugin('dataCollect', this.getParams(this.opts.plugins.dataCollect.params, {
       dataDir
-    }, param));
+    }, ...param));
   }
 
   /**
@@ -150,7 +149,7 @@ export class JobRunner {
 
     return this.runPlugin('dataAccess', this.getParams(this.opts.plugins.dataAccess.params, {
       dataDir
-    }, param));
+    }, ...param));
   }
 
   /**
@@ -161,7 +160,7 @@ export class JobRunner {
     if (this.opts.plugins.datasetProcess) {
       const param = this.getJobParam('datasetProcess', jobParam);
 
-      await this.runPlugin('datasetProcess', dataset, this.getParams(this.opts.plugins.datasetProcess.params, param));
+      await this.runPlugin('datasetProcess', dataset, this.getParams(this.opts.plugins.datasetProcess.params, ...param));
     }
   }
 
@@ -173,7 +172,7 @@ export class JobRunner {
     if (this.opts.plugins.dataProcess) {
       const param = this.getJobParam('dataProcess', jobParam);
 
-      await this.runPlugin('dataProcess', dataset, this.getParams(this.opts.plugins.dataProcess.params, param));
+      await this.runPlugin('dataProcess', dataset, this.getParams(this.opts.plugins.dataProcess.params, ...param));
     }
   }
 
@@ -186,7 +185,7 @@ export class JobRunner {
 
     return {
       plugin: this.opts.plugins.modelDefine.plugin,
-      model: await this.runPlugin('modelDefine', dataset, this.getParams(this.opts.plugins.modelDefine.params, param))
+      model: await this.runPlugin('modelDefine', dataset, this.getParams(this.opts.plugins.modelDefine.params, ...param))
     };
   }
 
@@ -203,7 +202,7 @@ export class JobRunner {
       model: await this.runPlugin('modelLoad', dataset, this.getParams(this.opts.plugins.modelLoad.params, {
         // specify the recover path for model loader by default.
         recoverPath: modelPath
-      }, param))
+      }, ...param))
     };
   }
 
@@ -218,7 +217,7 @@ export class JobRunner {
 
     return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain.params, {
       modelPath
-    }, param));
+    }, ...param));
   }
 
   /**
@@ -233,7 +232,7 @@ export class JobRunner {
 
     return this.runPlugin('modelEvaluate', dataset, model, this.getParams(this.opts.plugins.modelEvaluate.params, {
       modelDir: modelPath
-    }, param));
+    }, ...param));
   }
 
   /**

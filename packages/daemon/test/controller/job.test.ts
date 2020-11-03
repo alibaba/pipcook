@@ -395,7 +395,7 @@ describe('test job controller', () => {
 
     return app
             .httpRequest()
-            .get('/api/job/jobId/param')
+            .get('/api/job/jobId/parameters')
             .expect((resp) => {
               assert.deepEqual(resp.body, mockParams);
             })
@@ -409,7 +409,7 @@ describe('test job controller', () => {
 
     return app
             .httpRequest()
-            .get('/api/job/id/param')
+            .get('/api/job/id/parameters')
             .expect(404);
   });
   it('should run the job with new params', () => {
@@ -439,7 +439,7 @@ describe('test job controller', () => {
     });
     return app
             .httpRequest()
-            .post('/api/job/jobId/param')
+            .post('/api/job/jobId/parameters')
             .send({params: mockParamsUpdate})
             .expect((resp) => {
               assert.deepEqual(resp.body.params, mockParamsUpdated);
@@ -453,7 +453,7 @@ describe('test job controller', () => {
     });
     return app
       .httpRequest()
-      .post('/api/job/id/param')
+      .post('/api/job/id/parameters')
       .expect(404);
   });
   it('run job throws an error', () => {
@@ -484,7 +484,7 @@ describe('test job controller', () => {
     });
     return app
       .httpRequest()
-      .post('/api/job/id/param')
+      .post('/api/job/id/parameters')
       .expect(500);
   });
 });
