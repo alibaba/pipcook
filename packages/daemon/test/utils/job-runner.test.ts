@@ -5,6 +5,7 @@ import * as core from '@pipcook/pipcook-core';
 import { strict as assert } from 'assert';
 import { JobRunner } from '../../src/runner/job-runner';
 import { JobStatusChangeEvent } from '../../src/service/trace-manager';
+import { IJobParam } from '../../src/model/job';
 
 const runner = new JobRunner({
   job: {} as any,
@@ -14,6 +15,41 @@ const runner = new JobRunner({
   runnable: {} as any,
   datasetRoot: __dirname
 });
+
+const jobParam: IJobParam[] = [
+  {
+    pluginType: 'dataAccess',
+    pluginParam: {}
+  },
+  {
+    pluginType: 'dataProcess',
+    pluginParam: {}
+  },
+  {
+    pluginType: 'dataCollect',
+    pluginParam: {}
+  },
+  {
+    pluginType: 'datasetProcess',
+    pluginParam: {}
+  },
+  {
+    pluginType: 'modelDefine',
+    pluginParam: {}
+  },
+  {
+    pluginType: 'modelLoad',
+    pluginParam: {}
+  },
+  {
+    pluginType: 'modelEvaluate',
+    pluginParam: {}
+  },
+  {
+    pluginType: 'modelTrain',
+    pluginParam: {}
+  }
+]
 
 describe('test JobRunner', () => {
   afterEach(() => {
@@ -151,7 +187,7 @@ describe('test JobRunner', () => {
     });
     const ensureDir = sinon.stub(fs, 'ensureDir').resolves();
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves();
-    await runner.runDataCollect('/data/dir', '/model/path');
+    await runner.runDataCollect('/data/dir', '/model/path', jobParam);
     assert.ok(ensureDir.calledOnceWithExactly('/model/path'));
     assert.ok(runPlugin.calledOnceWith('dataCollect', { mockParam: 'value', dataDir: '/data/dir' }));
   });
@@ -173,7 +209,7 @@ describe('test JobRunner', () => {
     const ensureDir = sinon.stub(fs, 'ensureDir').resolves();
     const runPlugin = sinon.stub(runner, 'runPlugin').rejects();
     await assert.rejects(async () => {
-      await runner.runDataCollect('/data/dir', '/model/path');
+      await runner.runDataCollect('/data/dir', '/model/path', jobParam);
     });
     assert.ok(ensureDir.calledOnceWith('/model/path'));
     assert.ok(runPlugin.calledOnceWith('dataCollect', { mockParam: 'value', dataDir: '/data/dir' }));
@@ -194,7 +230,7 @@ describe('test JobRunner', () => {
       datasetRoot: __dirname
     });
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves();
-    await runner.runDataAccess('/data/dir');
+    await runner.runDataAccess('/data/dir', jobParam);
     assert.ok(runPlugin.calledOnceWith('dataAccess', { mockParam: 'value', dataDir: '/data/dir' }));
   });
 
@@ -214,14 +250,14 @@ describe('test JobRunner', () => {
     });
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves();
     const mockDataset = { mockDataset: '' };
-    await runner.runDatasetProcess(mockDataset);
+    await runner.runDatasetProcess(mockDataset, jobParam);
     assert.ok(runPlugin.calledOnceWith('datasetProcess', mockDataset, { mockParam: 'value' }));
   });
 
   it('#test runDatasetProcess but not exists', async () => {
     const runPlugin = sinon.stub(runner, 'runPlugin');
     const mockDataset = { mockDataset: '' };
-    await runner.runDatasetProcess(mockDataset);
+    await runner.runDatasetProcess(mockDataset, jobParam);
     assert.ok(runPlugin.notCalled);
   });
 
@@ -241,14 +277,14 @@ describe('test JobRunner', () => {
     });
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves();
     const mockDataset = { mockDataset: '' };
-    await runner.runDataProcess(mockDataset);
+    await runner.runDataProcess(mockDataset, jobParam);
     assert.ok(runPlugin.calledOnceWith('dataProcess', mockDataset, { mockParam: 'value' }));
   });
 
   it('#test runDataProcess but not exists', async () => {
     const runPlugin = sinon.stub(runner, 'runPlugin');
     const mockDataset = { mockDataset: '' };
-    await runner.runDataProcess(mockDataset);
+    await runner.runDataProcess(mockDataset, jobParam);
     assert.ok(runPlugin.notCalled);
   });
 
@@ -269,7 +305,7 @@ describe('test JobRunner', () => {
     const mockModel = { mockModel: '' };
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockModel as any);
     const mockDataset = { mockDataset: '' };
-    assert.deepEqual(await runner.runModelDefine(mockDataset), {
+    assert.deepEqual(await runner.runModelDefine(mockDataset, jobParam), {
       plugin: 'mockPlugin',
       model: mockModel
     });
@@ -293,7 +329,7 @@ describe('test JobRunner', () => {
     const mockModel = { mockModel: '' };
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockModel as any);
     const mockDataset = { mockDataset: '' };
-    assert.deepEqual(await runner.runModelLoad(mockDataset, '/model/path'), {
+    assert.deepEqual(await runner.runModelLoad(mockDataset, '/model/path', jobParam), {
       plugin: 'mockPlugin',
       model: mockModel
     });
@@ -318,7 +354,7 @@ describe('test JobRunner', () => {
     const mockResult = { mockResult: '' };
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockResult as any);
     const mockDataset = { mockDataset: '' };
-    assert.equal(await runner.runModelTrain(mockDataset, mockModel as any, '/model/path'), mockResult);
+    assert.equal(await runner.runModelTrain(mockDataset, mockModel as any, '/model/path', jobParam), mockResult);
     assert.ok(runPlugin.calledOnceWith('modelTrain', mockDataset, mockModel, { mockParam: 'value', modelPath: '/model/path' }));
   });
 
@@ -340,7 +376,7 @@ describe('test JobRunner', () => {
     const mockResult = { mockResult: '' };
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockResult as any);
     const mockDataset = { mockDataset: '' };
-    assert.equal(await runner.runModelEvaluate(mockDataset, mockModel as any, '/model/path'), mockResult);
+    assert.equal(await runner.runModelEvaluate(mockDataset, mockModel as any, '/model/path', jobParam), mockResult);
     assert.ok(runPlugin.calledOnceWith('modelEvaluate', mockDataset, mockModel, { mockParam: 'value', modelDir: '/model/path' }));
   });
 
@@ -349,7 +385,7 @@ describe('test JobRunner', () => {
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves();
     const mockDataset = { mockDataset: '' };
     await assert.rejects(async () => {
-      await runner.runModelEvaluate(mockDataset, mockModel as any, '/model/path');
+      await runner.runModelEvaluate(mockDataset, mockModel as any, '/model/path', jobParam);
     });
     assert.ok(runPlugin.notCalled);
   });
@@ -411,8 +447,8 @@ describe('test JobRunner', () => {
     assert.deepStrictEqual(runDataProcess.args[0][0], mockDataset, 'check runDataProcess');
     assert.deepStrictEqual(runDatasetProcess.args[0][0], mockDataset, 'check runDatasetProcess');
     assert.deepStrictEqual(runModelDefine.args[0][0], mockDataset, 'check runModelDefine');
-    assert.ok(runModelTrain.calledOnceWith(mockDataset, mockModel as any, path.join('/workingDir', 'model')));
-    assert.ok(runModelEvaluate.calledOnceWith(mockDataset, mockModelAfterTraining as any, path.join('/workingDir', 'model')));
+    assert.ok(runModelTrain.calledOnceWith(mockDataset, mockModel as any, path.join('/workingDir', 'model'), jobParam));
+    assert.ok(runModelEvaluate.calledOnceWith(mockDataset, mockModelAfterTraining as any, path.join('/workingDir', 'model'), jobParam));
     assert.ok(runDataAccess.calledOnce);
   });
 });
