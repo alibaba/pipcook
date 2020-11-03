@@ -1,12 +1,12 @@
 import { controller, inject, provide, get, post, del } from 'midway';
 import * as HttpStatus from 'http-status';
-import { constants, PipelineStatus } from '@pipcook/pipcook-core';
+import { constants, PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
 import { createReadStream, ensureDir, ensureFile, pathExists } from 'fs-extra';
 import { join } from 'path';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { PluginManager } from '../../service/plugin';
-import { IParam, JobEntity } from '../../model/job';
+import { IJobParam, JobEntity } from '../../model/job';
 import { PipelineEntity } from '../../model/pipeline';
 
 @provide()
@@ -32,9 +32,9 @@ export class JobController extends BaseEventController {
     return tracer;
   }
 
-  private makeParam(pipeline: PipelineEntity, jobParams?: IParam[]) {
-    const PLUGIN_TYPES = ['dataCollect', 'dataAccess', 'datasetProcess', 'dataProcess', 'modelDefine', 'modelTrain', 'modelEvaluate', 'modelLoad'];
-    const params: IParam[] = [];
+  private makeParam(pipeline: PipelineEntity, jobParams?: IJobParam[]) {
+    const PLUGIN_TYPES: PluginTypeI[] = ['dataCollect', 'dataAccess', 'datasetProcess', 'dataProcess', 'modelDefine', 'modelTrain', 'modelEvaluate', 'modelLoad'];
+    const params: IJobParam[] = [];
 
     for (const pluginType of PLUGIN_TYPES) {
       const tempParam = JSON.parse(pipeline[`${pluginType}Params`]);
@@ -44,7 +44,7 @@ export class JobController extends BaseEventController {
                             .map((it) => it.pluginParam);
       }
 
-      const temp: IParam = {
+      const temp: IJobParam = {
         pluginType,
         pluginParam: Object.assign(tempParam, ...jobParam)
       };
