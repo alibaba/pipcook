@@ -66,7 +66,7 @@ export class JobRunner {
    * @param params param string from config
    * @param extra extra config from pipeline running
    */
-    getParams(params: string | null, ...extra: object[]): object {
+  getParams(params: string | null, ...extra: object[]): object {
     if (params == null) {
       return Object.assign({}, ...extra);
     } else {
@@ -89,7 +89,7 @@ export class JobRunner {
    * @param type plugin type
    * @param params job param
    */
-  private getJobParam(type:PluginTypeI, params: IJobParam[]) {
+  private getJobParam(type: PluginTypeI, params: IJobParam[]) {
     return params.filter((it) => it.pluginType === type).map((it) => it.pluginParam);
   }
 
@@ -128,7 +128,7 @@ export class JobRunner {
    */
   async runDataCollect(dataDir: string, modelPath: string, jobParam: IJobParam[]): Promise<any> {
     this.assertPlugin('dataCollect');
-  
+
     const param = this.getJobParam('dataCollect', jobParam);
 
     // ensure the model dir exists

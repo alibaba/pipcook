@@ -222,7 +222,7 @@ export class PipelineService {
       runnable,
       datasetRoot: this.pluginManager.datasetRoot
     });
-    
+
     runner.dispatchJobEvent(PipelineStatus.RUNNING);
 
     try {
