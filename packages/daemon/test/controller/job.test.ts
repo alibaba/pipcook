@@ -47,25 +47,25 @@ let mockPipeline = {
 const mockParams = [
   {
     pluginType: 'modelDefine',
-    pluginParam: {
+    data: {
       test: 1
     }
   }
 ]
 
 const mockParamsUpdate = [
-  { pluginType: 'modelDefine', pluginParam: { test: 2 } },
+  { pluginType: 'modelDefine', data: { test: 2 } },
 ]
 
 const mockParamsUpdated = [
-  { pluginType: 'dataCollect', pluginParam: {} },
-  { pluginType: 'dataAccess', pluginParam: {} },
-  { pluginType: 'datasetProcess', pluginParam: {} },
-  { pluginType: 'dataProcess', pluginParam: {} },
-  { pluginType: 'modelDefine', pluginParam: { test: 2 } },
-  { pluginType: 'modelTrain', pluginParam: {} },
-  { pluginType: 'modelEvaluate', pluginParam: {} },
-  { pluginType: 'modelLoad', pluginParam: {} }
+  { pluginType: 'dataCollect', data: {} },
+  { pluginType: 'dataAccess', data: {} },
+  { pluginType: 'datasetProcess', data: {} },
+  { pluginType: 'dataProcess', data: {} },
+  { pluginType: 'modelDefine', data: { test: 2 } },
+  { pluginType: 'modelTrain', data: {} },
+  { pluginType: 'modelEvaluate', data: {} },
+  { pluginType: 'modelLoad', data: {} }
 ]
 
 const mockJob = {

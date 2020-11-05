@@ -6,7 +6,7 @@ import { join } from 'path';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { PluginManager } from '../../service/plugin';
-import { IJobParam, JobEntity } from '../../model/job';
+import { JobParam, JobEntity } from '../../model/job';
 import { PipelineEntity } from '../../model/pipeline';
 
 @provide()
@@ -24,29 +24,29 @@ export class JobController extends BaseEventController {
     const stdoutFile = join(logPath, 'stdout.log');
     const stderrFile = join(logPath, 'stderr.log');
     await ensureDir(logPath);
-    await [
+    await Promise.all([
       ensureFile(stdoutFile),
       ensureFile(stderrFile)
-    ];
+    ]);
     const tracer = await this.traceManager.create({ stdoutFile, stderrFile });
     return tracer;
   }
 
-  private makeParam(pipeline: PipelineEntity, jobParams?: IJobParam[]) {
+  private makeParam(pipeline: PipelineEntity, jobParams?: JobParam[]) {
     const PLUGIN_TYPES: PluginTypeI[] = ['dataCollect', 'dataAccess', 'datasetProcess', 'dataProcess', 'modelDefine', 'modelTrain', 'modelEvaluate', 'modelLoad'];
-    const params: IJobParam[] = [];
+    const params: JobParam[] = [];
 
     for (const pluginType of PLUGIN_TYPES) {
       const tempParam = JSON.parse(pipeline[`${pluginType}Params`]);
       let jobParam = [];
       if (jobParams) {
         jobParam = jobParams.filter((it) => it.pluginType === pluginType)
-                            .map((it) => it.pluginParam);
+                            .map((it) => it.data);
       }
 
-      const temp: IJobParam = {
+      const temp: JobParam = {
         pluginType,
-        pluginParam: Object.assign(tempParam, ...jobParam)
+        data: Object.assign(tempParam, ...jobParam)
       };
       params.push(temp);
     }

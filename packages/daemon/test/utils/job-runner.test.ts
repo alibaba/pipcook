@@ -5,7 +5,7 @@ import * as core from '@pipcook/pipcook-core';
 import { strict as assert } from 'assert';
 import { JobRunner } from '../../src/runner/job-runner';
 import { JobStatusChangeEvent } from '../../src/service/trace-manager';
-import { IJobParam } from '../../src/model/job';
+import { JobParam } from '../../src/model/job';
 
 const runner = new JobRunner({
   job: {} as any,
@@ -16,38 +16,38 @@ const runner = new JobRunner({
   datasetRoot: __dirname
 });
 
-const jobParams: IJobParam[] = [
+const jobParams: JobParam[] = [
   {
     pluginType: 'dataAccess',
-    pluginParam: {}
+    data: {}
   },
   {
     pluginType: 'dataProcess',
-    pluginParam: {}
+    data: {}
   },
   {
     pluginType: 'dataCollect',
-    pluginParam: {}
+    data: {}
   },
   {
     pluginType: 'datasetProcess',
-    pluginParam: {}
+    data: {}
   },
   {
     pluginType: 'modelDefine',
-    pluginParam: {}
+    data: {}
   },
   {
     pluginType: 'modelLoad',
-    pluginParam: {}
+    data: {}
   },
   {
     pluginType: 'modelEvaluate',
-    pluginParam: {}
+    data: {}
   },
   {
     pluginType: 'modelTrain',
-    pluginParam: {}
+    data: {}
   }
 ]
 

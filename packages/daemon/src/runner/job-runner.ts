@@ -6,7 +6,7 @@ import {
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 import { PipelineEntity } from '../model/pipeline';
-import { IJobParam, JobEntity } from '../model/job';
+import { JobParam, JobEntity } from '../model/job';
 import { Tracer, JobStatusChangeEvent } from '../service/trace-manager';
 
 /**
@@ -89,8 +89,8 @@ export class JobRunner {
    * @param type plugin type
    * @param params job param
    */
-  private getJobParam(type: PluginTypeI, params: IJobParam[]) {
-    return params.filter((it) => it.pluginType === type).map((it) => it.pluginParam);
+  private getJobParam(type: PluginTypeI, params: JobParam[]) {
+    return params.filter((it) => it.pluginType === type).map((it) => it.data);
   }
 
   /**
@@ -126,7 +126,7 @@ export class JobRunner {
    * @param dataDir data dir
    * @param modelPath model path
    */
-  async runDataCollect(dataDir: string, modelPath: string, jobParam: IJobParam[]): Promise<any> {
+  async runDataCollect(dataDir: string, modelPath: string, jobParam: JobParam[]): Promise<any> {
     this.assertPlugin('dataCollect');
     const param = this.getJobParam('dataCollect', jobParam);
 
@@ -142,7 +142,7 @@ export class JobRunner {
    * run data access plugin
    * @param dataDir data dir
    */
-  async runDataAccess(dataDir: string, jobParam: IJobParam[]): Promise<any> {
+  async runDataAccess(dataDir: string, jobParam: JobParam[]): Promise<any> {
     this.assertPlugin('dataAccess');
 
     const param = this.getJobParam('dataAccess', jobParam);
@@ -156,7 +156,7 @@ export class JobRunner {
    * run dataset process plugin
    * @param dataset dataset from data collect plugin
    */
-  async runDatasetProcess(dataset: any, jobParam: IJobParam[]): Promise<void> {
+  async runDatasetProcess(dataset: any, jobParam: JobParam[]): Promise<void> {
     if (this.opts.plugins.datasetProcess) {
       const param = this.getJobParam('datasetProcess', jobParam);
 
@@ -168,7 +168,7 @@ export class JobRunner {
    * run data process plugin
    * @param dataset dataset from data collect plugin
    */
-  async runDataProcess(dataset: any, jobParam: IJobParam[]): Promise<void> {
+  async runDataProcess(dataset: any, jobParam: JobParam[]): Promise<void> {
     if (this.opts.plugins.dataProcess) {
       const param = this.getJobParam('dataProcess', jobParam);
 
@@ -180,7 +180,7 @@ export class JobRunner {
    * run model define plugin, return plugin and model
    * @param dataset dataset from data collect/dataset process/data process plugin
    */
-  async runModelDefine(dataset: any, jobParam: IJobParam[]): Promise<ModelResult> {
+  async runModelDefine(dataset: any, jobParam: JobParam[]): Promise<ModelResult> {
     const param = this.getJobParam('modelDefine', jobParam);
 
     return {
@@ -194,7 +194,7 @@ export class JobRunner {
    * @param dataset dataset from data collect/dataset process/data process plugin
    * @param modelPath where the model loads from
    */
-  async runModelLoad(dataset: any, modelPath: string, jobParam: IJobParam[]): Promise<ModelResult> {
+  async runModelLoad(dataset: any, modelPath: string, jobParam: JobParam[]): Promise<ModelResult> {
     const param = this.getJobParam('modelLoad', jobParam);
 
     return {
@@ -212,7 +212,7 @@ export class JobRunner {
    * @param model model from model define
    * @param modelPath where the model saves to
    */
-  async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string, jobParam: IJobParam[]): Promise<any> {
+  async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string, jobParam: JobParam[]): Promise<any> {
     const param = this.getJobParam('modelLoad', jobParam);
 
     return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain.params, {
@@ -226,7 +226,7 @@ export class JobRunner {
    * @param model model from model define
    * @param modelPath where the model loads from
    */
-  async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string, jobParam: IJobParam[]): Promise<any> {
+  async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string, jobParam: JobParam[]): Promise<any> {
     this.assertPlugin('modelEvaluate');
     const param = this.getJobParam('modelLoad', jobParam);
 
