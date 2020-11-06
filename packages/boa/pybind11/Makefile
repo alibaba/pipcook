@@ -9,7 +9,7 @@ URL=https://github.com/pybind/pybind11/archive/v$(VERSION).tar.gz
 
 ifeq ($(DISABLE_AUTO_SWITCH),)
 	# check the network and switch to corresponding mirror.
-  CCODE := $(shell curl https://api.userinfo.io/userinfos | node ../tools/check-network-env.js)
+	CCODE := $(shell curl https://api.userinfo.io/userinfos | node ../tools/check-network-env.js)
 endif
 UNAME_S := $(shell uname -s)
 
