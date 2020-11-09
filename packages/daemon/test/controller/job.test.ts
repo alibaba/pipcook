@@ -458,7 +458,7 @@ describe('test job controller', () => {
   });
   it('run job throws an error', () => {
     app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
-      assert.equal(id, 'jobId');
+      assert.equal(id, 'id');
       return mockJob;
     });
     app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
@@ -485,6 +485,10 @@ describe('test job controller', () => {
     return app
       .httpRequest()
       .post('/api/job/id/parameters')
-      .expect(500);
+      .expect((resp) => {
+        assert.equal(resp.body.id, mockJob.id);
+        assert.equal(typeof resp.body.traceId, 'string');
+      })
+      .expect(200);
   });
 });
