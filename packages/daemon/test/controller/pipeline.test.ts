@@ -77,7 +77,7 @@ describe('test pipeline controller', () => {
     app.mockClassFunction('pipelineService', 'queryJobs', async () => {
       return mockJobs;
     });
-    app.mockClassFunction('pipelineService', 'removeJobByModels', async (jobs: any) => {
+    app.mockClassFunction('pipelineService', 'removeJobByEntities', async (jobs: any) => {
       assert.equal(mockJobs, jobs);
     });
     app.mockClassFunction('pipelineService', 'removePipelines', async () => {});
@@ -93,7 +93,7 @@ describe('test pipeline controller', () => {
       assert.equal(id, 'id');
       return mockJobs;
     });
-    app.mockClassFunction('pipelineService', 'removeJobByModels', async (jobs: any) => {
+    app.mockClassFunction('pipelineService', 'removeJobByEntities', async (jobs: any) => {
       assert.equal(mockJobs, jobs);
     });
     app.mockClassFunction('pipelineService', 'removePipelineById', async (id: string) => {
@@ -112,7 +112,7 @@ describe('test pipeline controller', () => {
       assert.equal(id, 'id');
       return mockJobs;
     });
-    app.mockClassFunction('pipelineService', 'removeJobByModels', async (jobs: any) => {
+    app.mockClassFunction('pipelineService', 'removeJobByEntities', async (jobs: any) => {
       assert.equal(mockJobs, jobs);
     });
     app.mockClassFunction('pipelineService', 'removePipelineById', async (id: string) => {

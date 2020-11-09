@@ -82,7 +82,7 @@ export class PipelineController extends BaseEventController {
   @del()
   public async remove() {
     const jobs = await this.pipelineService.queryJobs({});
-    await this.pipelineService.removeJobByModels(jobs);
+    await this.pipelineService.removeJobByEntities(jobs);
     await this.pipelineService.removePipelines();
     this.ctx.success();
   }
@@ -94,7 +94,7 @@ export class PipelineController extends BaseEventController {
   public async removeOne() {
     const { id } = this.ctx.params;
     const jobs = await this.pipelineService.getJobsByPipelineId(id);
-    await this.pipelineService.removeJobByModels(jobs);
+    await this.pipelineService.removeJobByEntities(jobs);
     const count = await this.pipelineService.removePipelineById(id);
     if (count > 0) {
       this.ctx.success();

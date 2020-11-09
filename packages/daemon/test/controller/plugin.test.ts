@@ -144,7 +144,7 @@ describe('test plugin controller', () => {
   });
 
   it('remove all plugins', () => {
-    app.mockClassFunction('pluginManager', 'list', async (): Promise<any> => {
+    app.mockClassFunction('pluginManager', 'query', async (): Promise<any> => {
       return [];
     });
     app.mockClassFunction('pluginManager', 'uninstall', async (plugins: any[]): Promise<any> => {

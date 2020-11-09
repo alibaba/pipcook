@@ -5,7 +5,7 @@ export interface JobEntity {
   id: string;
   pipelineId: string;
   specVersion: string;
-  metadata: number;
+  metadata: string;
 
   evaluateMap?: string;
   evaluatePass?: boolean;
@@ -66,7 +66,7 @@ export class JobModel extends Model {
     return JobModel.destroy({ where: { id }});
   }
 
-  static async removeJobByModels(jobs: JobEntity[]): Promise<number> {
+  static async removeJobByEntities(jobs: JobEntity[]): Promise<number> {
     const ids = jobs.map(job => job.id);
     return JobModel.destroy({
       where: {

@@ -140,9 +140,9 @@ describe('test the pipeline service', () => {
       }
     ];
     const mockFsRemove = sinon.stub(fs, 'remove').resolves(true);
-    const mockRemoveJobByModels = sinon.stub(JobModel, 'removeJobByModels').resolves(2);
-    assert.equal(await pipeline.removeJobByModels(mockJobs as JobEntity[]), 2, 'check result');
-    assert.ok(mockRemoveJobByModels.calledOnceWithExactly(mockJobs as JobEntity[]), 'check mockSaveJob');
+    const mockRemoveJobByEntities = sinon.stub(JobModel, 'removeJobByEntities').resolves(2);
+    assert.equal(await pipeline.removeJobByEntities(mockJobs as JobEntity[]), 2, 'check result');
+    assert.ok(mockRemoveJobByEntities.calledOnceWithExactly(mockJobs as JobEntity[]), 'check mockSaveJob');
     // TODO(Feely): check args
     assert.ok(mockFsRemove.calledTwice, 'check mockFsRemove');
   });
