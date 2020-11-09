@@ -90,7 +90,7 @@ export class JobRunner {
    * @param params job param
    */
   private getJobParam(type: PluginTypeI, params: JobParam[]) {
-    return params.filter((it) => it.pluginType === type).map((it) => it.data);
+    return params ? params.filter((it) => it.pluginType === type).map((it) => it.data) : [{}];
   }
 
   /**
@@ -126,9 +126,10 @@ export class JobRunner {
    * @param dataDir data dir
    * @param modelPath model path
    */
-  async runDataCollect(dataDir: string, modelPath: string, jobParam: JobParam[]): Promise<any> {
+  async runDataCollect(dataDir: string, modelPath: string): Promise<any> {
     this.assertPlugin('dataCollect');
-    const param = this.getJobParam('dataCollect', jobParam);
+
+    const param = this.getJobParam('dataCollect', this.opts.job.params);
 
     // ensure the model dir exists
     await fs.ensureDir(modelPath);
@@ -142,10 +143,10 @@ export class JobRunner {
    * run data access plugin
    * @param dataDir data dir
    */
-  async runDataAccess(dataDir: string, jobParam: JobParam[]): Promise<any> {
+  async runDataAccess(dataDir: string): Promise<any> {
     this.assertPlugin('dataAccess');
 
-    const param = this.getJobParam('dataAccess', jobParam);
+    const param = this.getJobParam('dataAccess', this.opts.job.params);
 
     return this.runPlugin('dataAccess', this.getParams(this.opts.plugins.dataAccess.params, {
       dataDir
@@ -156,9 +157,9 @@ export class JobRunner {
    * run dataset process plugin
    * @param dataset dataset from data collect plugin
    */
-  async runDatasetProcess(dataset: any, jobParam: JobParam[]): Promise<void> {
+  async runDatasetProcess(dataset: any): Promise<void> {
     if (this.opts.plugins.datasetProcess) {
-      const param = this.getJobParam('datasetProcess', jobParam);
+      const param = this.getJobParam('datasetProcess', this.opts.job.params);
 
       await this.runPlugin('datasetProcess', dataset, this.getParams(this.opts.plugins.datasetProcess.params, ...param));
     }
@@ -168,9 +169,9 @@ export class JobRunner {
    * run data process plugin
    * @param dataset dataset from data collect plugin
    */
-  async runDataProcess(dataset: any, jobParam: JobParam[]): Promise<void> {
+  async runDataProcess(dataset: any): Promise<void> {
     if (this.opts.plugins.dataProcess) {
-      const param = this.getJobParam('dataProcess', jobParam);
+      const param = this.getJobParam('dataProcess', this.opts.job.params);
 
       await this.runPlugin('dataProcess', dataset, this.getParams(this.opts.plugins.dataProcess.params, ...param));
     }
@@ -180,8 +181,8 @@ export class JobRunner {
    * run model define plugin, return plugin and model
    * @param dataset dataset from data collect/dataset process/data process plugin
    */
-  async runModelDefine(dataset: any, jobParam: JobParam[]): Promise<ModelResult> {
-    const param = this.getJobParam('modelDefine', jobParam);
+  async runModelDefine(dataset: any): Promise<ModelResult> {
+    const param = this.getJobParam('modelDefine', this.opts.job.params);
 
     return {
       plugin: this.opts.plugins.modelDefine.plugin,
@@ -194,8 +195,9 @@ export class JobRunner {
    * @param dataset dataset from data collect/dataset process/data process plugin
    * @param modelPath where the model loads from
    */
-  async runModelLoad(dataset: any, modelPath: string, jobParam: JobParam[]): Promise<ModelResult> {
-    const param = this.getJobParam('modelLoad', jobParam);
+  async runModelLoad(dataset: any, modelPath: string): Promise<ModelResult> {
+    console.log(`test`, this.opts);
+    const param = this.getJobParam('modelLoad', this.opts.job.params);
 
     return {
       plugin: this.opts.plugins.modelLoad.plugin,
@@ -212,8 +214,8 @@ export class JobRunner {
    * @param model model from model define
    * @param modelPath where the model saves to
    */
-  async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string, jobParam: JobParam[]): Promise<any> {
-    const param = this.getJobParam('modelLoad', jobParam);
+  async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
+    const param = this.getJobParam('modelLoad', this.opts.job.params);
 
     return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain.params, {
       modelPath
@@ -226,9 +228,9 @@ export class JobRunner {
    * @param model model from model define
    * @param modelPath where the model loads from
    */
-  async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string, jobParam: JobParam[]): Promise<any> {
+  async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
     this.assertPlugin('modelEvaluate');
-    const param = this.getJobParam('modelLoad', jobParam);
+    const param = this.getJobParam('modelLoad', this.opts.job.params);
 
     return this.runPlugin('modelEvaluate', dataset, model, this.getParams(this.opts.plugins.modelEvaluate.params, {
       modelDir: modelPath
@@ -241,24 +243,23 @@ export class JobRunner {
   async run(): Promise<JobResult> {
     const dataDir = path.join(this.opts.datasetRoot, `${this.opts.plugins.dataCollect.plugin.name}@${this.opts.plugins.dataCollect.plugin.version}`);
     const modelPath = path.join(this.opts.runnable.workingDir, 'model');
-    const jobParams = this.opts.job.params;
 
-    await this.runDataCollect(dataDir, modelPath, jobParams);
-    const dataset = await this.runDataAccess(dataDir, jobParams);
-    await this.runDatasetProcess(dataset, jobParams);
-    await this.runDataProcess(dataset, jobParams);
+    await this.runDataCollect(dataDir, modelPath);
+    const dataset = await this.runDataAccess(dataDir);
+    await this.runDatasetProcess(dataset);
+    await this.runDataProcess(dataset);
 
     let modelResult: ModelResult;
     // select one of `ModelDefine` and `ModelLoad`.
     if (this.opts.plugins.modelDefine) {
-      modelResult = await this.runModelDefine(dataset, jobParams);
+      modelResult = await this.runModelDefine(dataset);
     } else if (this.opts.plugins.modelLoad) {
-      modelResult = await this.runModelLoad(dataset, modelPath, jobParams);
+      modelResult = await this.runModelLoad(dataset, modelPath);
     }
     if (this.opts.plugins.modelTrain) {
-      modelResult.model = await this.runModelTrain(dataset, modelResult.model, modelPath, jobParams);
+      modelResult.model = await this.runModelTrain(dataset, modelResult.model, modelPath);
     }
-    const evaluateOutput = await this.runModelEvaluate(dataset, modelResult.model, modelPath, jobParams);
+    const evaluateOutput = await this.runModelEvaluate(dataset, modelResult.model, modelPath);
     return {
       evaluateOutput,
       dataset,
