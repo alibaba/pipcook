@@ -36,12 +36,6 @@ export class JobModel extends Model {
     JobModel.update(job, { where: { id: job.id } });
   }
 
-  static async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
-    return (await JobModel.findAll({
-      where: { pipelineId }
-    })).map(job => job.toJSON() as JobEntity);
-  }
-
   static async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobEntity[]> {
     const where = {} as any;
     const { offset, limit } = opts || {};

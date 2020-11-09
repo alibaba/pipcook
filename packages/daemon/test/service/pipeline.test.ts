@@ -125,9 +125,9 @@ describe('test the pipeline service', () => {
         id: 'jobId2'
       }
     ];
-    const mockGetJobsByPipelineId = sinon.stub(JobModel, 'getJobsByPipelineId').resolves(mockJobs as JobEntity[]);
-    assert.deepEqual(await pipeline.getJobsByPipelineId('mockPipelineId'), mockJobs, 'check result');
-    assert.ok(mockGetJobsByPipelineId.calledOnceWithExactly('mockPipelineId'), 'check mockGetJobsByPipelineId');
+    const mockQueryJobs = sinon.stub(JobModel, 'queryJobs').resolves(mockJobs as JobEntity[]);
+    assert.deepEqual(await pipeline.queryJobs({ pipelineId: 'mockPipelineId' }), mockJobs, 'check result');
+    assert.ok(mockQueryJobs.calledOnceWithExactly({ pipelineId: 'mockPipelineId' }, undefined), 'check mockPipelineId');
   });
   it('#remove job by models', async () => {
     const pipeline: PipelineService = await app.applicationContext.getAsync<PipelineService>('pipelineService');

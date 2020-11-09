@@ -99,10 +99,6 @@ export class PipelineService {
     JobModel.saveJob(job);
   }
 
-  async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
-    return JobModel.getJobsByPipelineId(pipelineId);
-  }
-
   async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobEntity[]> {
     return JobModel.queryJobs(filter, opts);
   }

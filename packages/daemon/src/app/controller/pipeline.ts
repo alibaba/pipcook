@@ -93,7 +93,7 @@ export class PipelineController extends BaseEventController {
   @del('/:id')
   public async removeOne() {
     const { id } = this.ctx.params;
-    const jobs = await this.pipelineService.getJobsByPipelineId(id);
+    const jobs = await this.pipelineService.queryJobs({ pipelineId: id });
     await this.pipelineService.removeJobByEntities(jobs);
     const count = await this.pipelineService.removePipelineById(id);
     if (count > 0) {
