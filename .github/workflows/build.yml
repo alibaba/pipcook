@@ -76,12 +76,27 @@ jobs:
       if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       run: |
         yarn run cov
-    - name: Coveralls
+    - name: Coveralls-daemon
       if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: packages/daemon/coverage/lcov.info
+        flag-name: run-daemon
+        parallel: true
+    - name: Coveralls-core
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: packages/core/coverage/lcov.info
+        flag-name: run-daemon
+        parallel: true
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true
     - name: migration
       if: ${{ runner.os == 'Linux' }}
       run: |

@@ -22,6 +22,8 @@ ENV
 .test
 packages/cli/assets/server/**
 packages/daemon/.github/**
+packages/**/coverage
+packages/**/.nyc_output
 .pipcook
 __pycache__
 .history
