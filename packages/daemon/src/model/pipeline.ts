@@ -4,7 +4,7 @@ import { JobModel } from './job';
 import { UpdateParameter } from '../interface/pipeline';
 
 export interface PipelineEntity {
-  id: string;
+  id?: string;
   name: string;
 
   dataCollectId?: string;

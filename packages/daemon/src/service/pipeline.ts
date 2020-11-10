@@ -99,10 +99,6 @@ export class PipelineService {
     JobModel.saveJob(job);
   }
 
-  async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
-    return JobModel.getJobsByPipelineId(pipelineId);
-  }
-
   async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobEntity[]> {
     return JobModel.queryJobs(filter, opts);
   }
@@ -111,13 +107,13 @@ export class PipelineService {
     return JobModel.destroy({ truncate: true });
   }
 
-  async removeJobByModels(jobs: JobEntity[]): Promise<number> {
+  async removeJobByEntities(jobs: JobEntity[]): Promise<number> {
     const ids = jobs.map(job => job.id);
     const fsRemoveFutures = [];
     for (const id of ids) {
       fsRemoveFutures.push(fs.remove(`${CoreConstants.PIPCOOK_RUN}/${id}`));
     }
-    const deleteFuture = JobModel.removeJobByModels(jobs);
+    const deleteFuture = JobModel.removeJobByEntities(jobs);
     const results = await Promise.all([
       deleteFuture,
       Promise.all(fsRemoveFutures)

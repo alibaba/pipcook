@@ -7,14 +7,13 @@ jobs:
     docker:
         - image: cimg/node:14.11.0
     steps:
-      - when:
-        condition:
-          euqal: [master, << pipeline.git.branch >>]
-        steps:
-          - checkout
-          - run: bash ./tools/benchmark.sh
+        - checkout
+        - run: bash ./tools/benchmark.sh
 
 workflows:
   node-bench:
+    when:
+      condition:
+        euqal: [master, << pipeline.git.branch >>]
     jobs:
       - benchmark
