@@ -19,7 +19,6 @@ export interface JobEntity {
   endTime?: number;
   status?: number;
   dataset?: string;
-
   params?: JobParam[];
 }
 
@@ -82,14 +81,14 @@ export class JobModel extends Model {
     });
   }
 
-  static async createJob(pipelineId: string, specVersion: string, params?: JobParam[]): Promise<JobEntity> {
+  static async createJob(pipelineId: string, specVersion: string, params: JobParam[]): Promise<JobEntity> {
     const job = await JobModel.create({
       id: generateId(),
       pipelineId,
       specVersion,
       status: PipelineStatus.INIT,
       currentIndex: -1,
-      params: params ? params : ''
+      params
     });
     return job.toJSON() as JobEntity;
   }

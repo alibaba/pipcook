@@ -1248,14 +1248,6 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@pipcook/plugins-bayesian-model-define@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/@pipcook/plugins-bayesian-model-define/-/plugins-bayesian-model-define-1.1.0.tgz#86733856efd594e4bf2d570f03e6d83dc8a8389d"
-  integrity sha512-li0Vc5vAZKm9cOKp5jyZaGiQI/1sRbqbJf2OiIYjMg6gdJvvzQcNvTteKG7FdrftAZhsxUmOqsCBVJEFovLncw==
-  dependencies:
-    "@pipcook/boa" "^1.1.0"
-    "@pipcook/pipcook-core" "^1.1.0"
-
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.npmjs.org/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -1722,13 +1714,6 @@
   integrity sha512-Xt8TbEyZTnD5Xulw95GLMOkmjGICrOQyJ2jqgkSjAUR3mm7pAIzSR0NFBaMcwlzVvlpCjNwbATcWWwjNiZiFrQ==
   dependencies:
     "@types/superagent" "*"
-
-"@types/tape@^4.13.0":
-  version "4.13.0"
-  resolved "https://registry.npmjs.org/@types/tape/-/tape-4.13.0.tgz#7a3f656f78a7eeee962fe4c8bedf016061e2d0ea"
-  integrity sha512-0V8cKowBdsiA9nbxAg7531sF2cdPZNiUogcfIUeUGm+bejUBE/bvibz3rH36iQP9bQjO/sOzFwU97/uC5mCyoA==
-  dependencies:
-    "@types/node" "*"
 
 "@types/tar-stream@^2.1.0":
   version "2.1.0"

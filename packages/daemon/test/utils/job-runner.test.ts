@@ -16,40 +16,9 @@ const runner = new JobRunner({
   datasetRoot: __dirname
 });
 
-const jobParams: JobParam[] = [
-  {
-    pluginType: 'dataAccess',
-    data: {}
-  },
-  {
-    pluginType: 'dataProcess',
-    data: {}
-  },
-  {
-    pluginType: 'dataCollect',
-    data: {}
-  },
-  {
-    pluginType: 'datasetProcess',
-    data: {}
-  },
-  {
-    pluginType: 'modelDefine',
-    data: {}
-  },
-  {
-    pluginType: 'modelLoad',
-    data: {}
-  },
-  {
-    pluginType: 'modelEvaluate',
-    data: {}
-  },
-  {
-    pluginType: 'modelTrain',
-    data: {}
-  }
-]
+const jobParams: JobParam[] = core.constants.PLUGINS.map((plugin) => {
+  return {pluginType: plugin, data: {}}
+});
 
 describe('test JobRunner', () => {
   afterEach(() => {

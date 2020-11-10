@@ -196,7 +196,6 @@ export class JobRunner {
    * @param modelPath where the model loads from
    */
   async runModelLoad(dataset: any, modelPath: string): Promise<ModelResult> {
-    console.log(`test`, this.opts);
     const param = this.getJobParam('modelLoad', this.opts.job.params);
 
     return {

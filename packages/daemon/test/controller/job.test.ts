@@ -1,7 +1,7 @@
 import { app, assert, mm } from 'midway-mock/bootstrap';
 import * as HttpStatus from 'http-status';
 import * as createHttpError from 'http-errors';
-import { PipelineStatus } from '@pipcook/pipcook-core';
+import { PipelineStatus, constants } from '@pipcook/pipcook-core';
 import { join } from 'path';
 import * as fs from 'fs-extra';
 import * as sinon from 'sinon';
@@ -51,22 +51,18 @@ const mockParams = [
       test: 1
     }
   }
-]
+];
 
 const mockParamsUpdate = [
   { pluginType: 'modelDefine', data: { test: 2 } },
-]
+];
 
-const mockParamsUpdated = [
-  { pluginType: 'dataCollect', data: {} },
-  { pluginType: 'dataAccess', data: {} },
-  { pluginType: 'datasetProcess', data: {} },
-  { pluginType: 'dataProcess', data: {} },
-  { pluginType: 'modelDefine', data: { test: 2 } },
-  { pluginType: 'modelTrain', data: {} },
-  { pluginType: 'modelEvaluate', data: {} },
-  { pluginType: 'modelLoad', data: {} }
-]
+const mockParamsUpdated = constants.PLUGINS.map((plugin) => {
+  return {
+    pluginType: plugin, 
+    data: plugin === 'modelDefine' ? { test: 2 } : {}
+  };
+});
 
 const mockJob = {
   id: 'jobId',
