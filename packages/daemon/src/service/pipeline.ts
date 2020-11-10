@@ -124,7 +124,7 @@ export class PipelineService {
     ]);
     return results[0];
   }
-  async createJob(pipelineId: string, params?: JobParam[]): Promise<JobEntity> {
+  async createJob(pipelineId: string, params: JobParam[]): Promise<JobEntity> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
     return JobModel.createJob(pipelineId, specVersion, params);
   }
