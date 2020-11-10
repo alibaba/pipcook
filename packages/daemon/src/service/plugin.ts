@@ -3,7 +3,7 @@ import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pi
 import { PluginStatus } from '@pipcook/pipcook-core';
 import { TraceManager, Tracer } from './trace-manager';
 import PluginRuntime from '../boot/plugin';
-import { PluginModel, PluginEntity, ListPluginsFilter } from '../model/plugin';
+import { PluginModel, PluginEntity, QueryPluginsFilter } from '../model/plugin';
 import { PluginResp, TraceResp } from '../interface';
 import { pluginQueue } from '../utils';
 
@@ -54,11 +54,7 @@ export class PluginManager {
     return this.pluginRT.costa.createRunnable({ id, logger: tracer.getLogger() } as BootstrapArg);
   }
 
-  async list(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
-    return PluginModel.list(filter);
-  }
-
-  async query(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
+  async query(filter?: QueryPluginsFilter): Promise<PluginEntity[]> {
     return PluginModel.query(filter);
   }
 

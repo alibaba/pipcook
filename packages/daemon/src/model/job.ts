@@ -5,7 +5,7 @@ export interface JobEntity {
   id: string;
   pipelineId: string;
   specVersion: string;
-  metadata: number;
+  metadata: string;
 
   evaluateMap?: string;
   evaluatePass?: boolean;
@@ -36,12 +36,6 @@ export class JobModel extends Model {
     JobModel.update(job, { where: { id: job.id } });
   }
 
-  static async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
-    return (await JobModel.findAll({
-      where: { pipelineId }
-    })).map(job => job.toJSON() as JobEntity);
-  }
-
   static async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobEntity[]> {
     const where = {} as any;
     const { offset, limit } = opts || {};
@@ -66,7 +60,7 @@ export class JobModel extends Model {
     return JobModel.destroy({ where: { id }});
   }
 
-  static async removeJobByModels(jobs: JobEntity[]): Promise<number> {
+  static async removeJobByEntities(jobs: JobEntity[]): Promise<number> {
     const ids = jobs.map(job => job.id);
     return JobModel.destroy({
       where: {
