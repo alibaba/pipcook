@@ -25,7 +25,7 @@ describe('test the job model', () => {
   it('#should create by params with id', async () => {
     const mockGenerateId = sinon.stub(core, 'generateId').returns('mockJobId');
     await PipelineModel.create({ ...pipelineData, id: 'mockPipelineId' });
-    const job = await JobModel.createJob('mockPipelineId', '1.0');
+    const job = await JobModel.createJob('mockPipelineId', '1.0', []);
     assert.equal(job.id, 'mockJobId');
     assert.equal(job.specVersion, '1.0');
     assert.ok(mockGenerateId.calledOnce);
@@ -46,7 +46,7 @@ describe('test the job model', () => {
   it('#should create 4 random id jobs', async () => {
     await PipelineModel.create({ ...anotherPipelineData, id: 'mockAnotherPipelineId' });
     for (let i = 0; i < 4; ++i) {
-      const job = await JobModel.createJob('mockAnotherPipelineId', '2.0');
+      const job = await JobModel.createJob('mockAnotherPipelineId', '2.0', []);
       assert.equal(job.specVersion, '2.0');
       jobEntities.push(job);
     }
