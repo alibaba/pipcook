@@ -93,6 +93,7 @@ jobs:
         flag-name: run-daemon
         parallel: true
     - name: Coveralls Finished
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
