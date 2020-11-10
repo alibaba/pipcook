@@ -1,6 +1,6 @@
 import { controller, inject, provide, get, post, del } from 'midway';
 import * as HttpStatus from 'http-status';
-import { constants, PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
+import { constants, PipelineStatus } from '@pipcook/pipcook-core';
 import { createReadStream, ensureDir, ensureFile, pathExists } from 'fs-extra';
 import { join } from 'path';
 import { BaseEventController } from './base';

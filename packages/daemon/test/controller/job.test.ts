@@ -472,16 +472,12 @@ describe('test job controller', () => {
             .post('/api/job/jobId/parameters')
             .expect((resp) => {
               console.log("my-test", resp.body);
-              assert.deepEqual(resp.body.params, [
-                { pluginType: 'dataCollect', data: {} },
-                { pluginType: 'dataAccess', data: {} },
-                { pluginType: 'datasetProcess', data: {} },
-                { pluginType: 'dataProcess', data: {} },
-                { pluginType: 'modelDefine', data: {} },
-                { pluginType: 'modelTrain', data: {} },
-                { pluginType: 'modelEvaluate', data: {} },
-                { pluginType: 'modelLoad', data: {} }
-              ]);
+              assert.deepEqual(resp.body.params, constants.PLUGINS.map((plugin) => {
+                return {
+                  pluginType: plugin,
+                  data: {}
+                }
+              }));
             })
             .expect(200);
   });
