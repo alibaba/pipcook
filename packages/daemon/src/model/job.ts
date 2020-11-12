@@ -39,7 +39,7 @@ export class JobModel extends Model {
   }
 
   static async saveJob(job: JobEntity): Promise<void> {
-    JobModel.update(job, { where: { id: job.id } });
+    await JobModel.update(job, { where: { id: job.id } });
   }
 
   static async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobEntity[]> {
