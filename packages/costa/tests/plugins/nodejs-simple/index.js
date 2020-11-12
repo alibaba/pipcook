@@ -4,7 +4,7 @@ module.exports = function(data) {
   if (data && data.exitAfter && typeof data.exitAfter === 'number') {
     const start = Date.now();
     console.log('loop in');
-    while (true) {
+    for (;;) {
       if (Date.now() - start > data.exitAfter * 1000) {
         break;
       }
@@ -15,7 +15,7 @@ module.exports = function(data) {
     foobar: data.foobar,
     fn1: (a) => console.log(`fn1(${a})`),
     obj: {
-      fn2: () => console.log(`fn2()`),
-    },
+      fn2: () => console.log(`fn2()`)
+    }
   };
 };

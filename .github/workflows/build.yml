@@ -76,7 +76,7 @@ jobs:
       if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       run: |
         yarn run cov
-    - name: Coveralls-daemon
+    - name: Coveralls on daemon
       if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       uses: coverallsapp/github-action@master
       with:
@@ -84,7 +84,7 @@ jobs:
         path-to-lcov: packages/daemon/coverage/lcov.info
         flag-name: daemon
         parallel: true
-    - name: Coveralls-core
+    - name: Coveralls on core
       if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       uses: coverallsapp/github-action@master
       with:
@@ -92,11 +92,19 @@ jobs:
         path-to-lcov: packages/core/coverage/lcov.info
         flag-name: core
         parallel: true
+    - name: Coveralls on costa
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: packages/costa/coverage/lcov.info
+        flag-name: costa
+        parallel: true
     - name: Coveralls Finished
       if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       uses: coverallsapp/github-action@master
       with:
-        github-token: ${{ secrets.github_token }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         parallel-finished: true
     - name: migration
       if: ${{ runner.os == 'Linux' }}

@@ -15,8 +15,8 @@ describe('create a costa runtime', () => {
   let pythonSimple: PluginPackage;
   let npmPkg: PluginPackage;
   let collectCsvWithSpecificVer: PluginPackage;
-  const nodeSimplePath = path.join(__dirname, '../../test/plugins/nodejs-simple');
-  const pythonSimplePath = path.join(__dirname, '../../test/plugins/python-simple');
+  const nodeSimplePath = path.join(__dirname, '../../tests/plugins/nodejs-simple');
+  const pythonSimplePath = path.join(__dirname, '../../tests/plugins/python-simple');
 
   it('should fetch a plugin and install from local', async () => {
     nodeSimple = await costa.fetch(nodeSimplePath);
@@ -131,7 +131,7 @@ describe('create a costa runtime', () => {
       npmPkg,
       collectCsvWithSpecificVer
     ]);
-    const nodeDirCheck = async (name :string) => {
+    const nodeDirCheck = async (name: string) => {
       expect(!await pathExists(path.join(
         costa.options.installDir,
         'node_modules',
