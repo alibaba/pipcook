@@ -20,6 +20,7 @@ packages/pipboard/build
 .eslintcache
 ENV
 .test
+.pip
 packages/cli/assets/server/**
 packages/daemon/.github/**
 packages/**/coverage
