@@ -15,11 +15,12 @@
     "http-server": "^0.12.3",
     "jasmine": "^3.5.0",
     "jasmine-spec-reporter": "^5.0.2",
+    "lcov-result-merger": "^3.1.0",
     "lerna": "^3.18.4",
     "ts-node": "^8.6.2",
     "typedoc": "^0.17.8",
-    "yarn": "^1.22.10",
-    "typescript": "3.8.3"
+    "typescript": "3.8.3",
+    "yarn": "^1.22.10"
   },
   "scripts": {
     "build": "lerna run compile",
@@ -36,6 +37,6 @@
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
     "beta-release": "lerna publish from-package --yes --no-verify-access --dist-tag beta",
     "init-dev": "node ./tools/init_dev.js -f",
-    "cov": "lerna run cov"
+    "cov": "lerna run cov && lcov-result-merger 'packages/**/coverage/lcov.info' 'all-coverage.info'"
   }
 }

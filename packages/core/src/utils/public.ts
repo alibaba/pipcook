@@ -283,15 +283,15 @@ export async function convertPascal2CocoFileOutput(files: string[], targetPath: 
  */
 export function getOsInfo(): Promise<string> {
   return new Promise((resolve) => {
-    switch(platform()) {
-      case 'linux':
-        return resolve('linux');
-      case 'win32':
-        return resolve('windows');
-      case 'darwin':
-        return resolve('mac');
-      default:
-        return resolve('other');
+    switch (platform()) {
+    case 'linux':
+      return resolve('linux');
+    case 'win32':
+      return resolve('windows');
+    case 'darwin':
+      return resolve('mac');
+    default:
+      return resolve('other');
     }
   });
 }

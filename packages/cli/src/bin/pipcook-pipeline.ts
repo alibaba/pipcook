@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import program from 'commander';
+import * as program from 'commander';
 import { prompt } from 'inquirer';
 import { list, info, create, update, remove, install, listJobsByPipelineId } from '../service/pipeline';
 

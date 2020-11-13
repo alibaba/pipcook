@@ -41,7 +41,7 @@
     "@types/request": "^2.48.4",
     "@types/request-promise": "^4.1.46",
     "jasmine": "^3.5.0",
-    "nyc": "14.1.1",
+    "nyc": "^15.0.0",
     "sinon": "^9.0.3",
     "ts-node": "^8.6.2"
   },

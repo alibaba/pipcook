@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import semver from 'semver';
-import chalk from 'chalk';
-import program from 'commander';
+import * as semver from 'semver';
+import * as chalk from 'chalk';
+import * as program from 'commander';
 import { execSync as exec } from 'child_process';
 import { join } from 'path';
 import { constants } from '@pipcook/pipcook-core';

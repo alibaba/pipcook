@@ -25,7 +25,7 @@ const xml2js = require('xml2js');
 describe('public utils', () => {
   afterEach(() => {
     sinon.restore();
-  })
+  });
 
   it('should generate correct coco json from pascal voc format', async () => {
     const dir = process.cwd();
@@ -128,21 +128,25 @@ describe('public utils', () => {
     let mockPlatform = sinon.stub(os, 'platform').returns('linux');
     let osName = await getOsInfo();
     expect(osName).toBe('linux');
+    expect(mockPlatform.calledOnce);
 
     sinon.restore();
     mockPlatform = sinon.stub(os, 'platform').returns('darwin');
     osName = await getOsInfo();
     expect(osName).toBe('mac');
+    expect(mockPlatform.calledOnce);
 
     sinon.restore();
     mockPlatform = sinon.stub(os, 'platform').returns('win32');
     osName = await getOsInfo();
     expect(osName).toBe('windows');
+    expect(mockPlatform.calledOnce);
 
     sinon.restore();
     mockPlatform = sinon.stub(os, 'platform').returns('android');
     osName = await getOsInfo();
     expect(osName).toBe('other');
+    expect(mockPlatform.calledOnce);
   });
 
   it('test getMetaData', async () => {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import program from 'commander';
+import * as program from 'commander';
 import { list, runAndDownloadById, remove, log, stop } from '../service/job';
 
 program

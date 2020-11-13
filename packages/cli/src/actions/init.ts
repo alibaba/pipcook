@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { execSync as exec } from 'child_process';
-import fse, { readJson, writeJson, ensureDir, symlink, remove, pathExists } from 'fs-extra';
+import { readJson, writeJson, ensureDir, symlink, remove, pathExists } from 'fs-extra';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
@@ -120,7 +120,7 @@ const init: InitCommandHandler = async (version: string, { beta, client, tuna })
     await ensureDir(CoreConstants.PIPCOOK_DAEMON);
     if (tuna) {
       // write the daemon config
-      await fse.writeJSON(join(CoreConstants.PIPCOOK_HOME_PATH, 'daemon.config.json'), {
+      await writeJson(join(CoreConstants.PIPCOOK_HOME_PATH, 'daemon.config.json'), {
         env: {
           BOA_CONDA_MIRROR
         }

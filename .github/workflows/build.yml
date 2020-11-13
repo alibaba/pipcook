@@ -31,13 +31,13 @@ jobs:
         node_version: ['12', '14']
         os: [ubuntu-latest, macOS-latest]
     steps:
-    - name: cancel previous runs
+    - name: Cancel previous runs
       uses: imgcook/cancel-workflow-action@81524cf
       with:
         access_token: ${{ github.token }}
         exception: master
     - uses: actions/checkout@v2
-    - name: restore lerna
+    - name: Restore lerna
       uses: actions/cache@v2
       with:
         path: |
@@ -49,7 +49,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-${{ matrix.node_version }}
           ${{ runner.os }}
-    - name: restore miniconda
+    - name: Restore miniconda
       uses: actions/cache@v2
       with:
         path: |
@@ -72,45 +72,22 @@ jobs:
     - name: Running unit tests
       run: |
         yarn test
-    - name: run cov
+    - name: Run cov
       if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       run: |
         yarn run cov
-    - name: Coveralls on daemon
+    - name: Coveralls
       if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: packages/daemon/coverage/lcov.info
-        flag-name: daemon
+        path-to-lcov: all-coverage.info
         parallel: true
-    - name: Coveralls on core
-      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: packages/core/coverage/lcov.info
-        flag-name: core
-        parallel: true
-    - name: Coveralls on costa
-      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: packages/costa/coverage/lcov.info
-        flag-name: costa
-        parallel: true
-    - name: Coveralls Finished
-      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        parallel-finished: true
-    - name: migration
+    - name: Migration
       if: ${{ runner.os == 'Linux' }}
       run: |
         mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db
-    - name: daemon start
+    - name: Daemon start
       run: |
         ./packages/cli/dist/bin/pipcook daemon start
     - name: Testing help commands
@@ -121,7 +98,7 @@ jobs:
         ./packages/cli/dist/bin/pipcook run --help
         ./packages/cli/dist/bin/pipcook plugin-dev --help
         ./packages/cli/dist/bin/pipcook serve --help
-    - name: pipcook sdk test
+    - name: Pipcook sdk test
       run: |
         npx ts-node ./run_tests.ts
     - name: install plugins from specific pipeline
@@ -131,32 +108,32 @@ jobs:
     - name: Running an example pipeline
       run: |
         yarn test:pipeline -- text-bayes-classification
-    - name: install a new plugin and install a installed plugin
+    - name: Install a new plugin and install a installed plugin
       run: |
         ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
         ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
-    - name: install plugin from local project
+    - name: Install plugin from local project
       run: |
         ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/tests/plugins/nodejs-simple
         cd ./packages/costa/test/plugins/nodejs-simple && yarn pack && cd -
         ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/tests/plugins/nodejs-simple/nodejs-simple-v1.0.0.tgz
-    - name: pipcook run from local filename
+    - name: Pipcook run from local filename
       run: |
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
         ls ./output && rm -rf ./output
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json --output mydir
         ls ./mydir && rm -rf ./mydir
-    - name: pipcook run from url
+    - name: Pipcook run from url
       run: |
         ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
         ls ./output && rm -rf ./output
-    - name: remove pipelines
+    - name: Remove pipelines
       run: |
         ./packages/cli/dist/bin/pipcook pipeline remove all -y
-    - name: "pipcook plugin-dev"
+    - name: Pipcook plugin development
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
-    - name: "daemon start on customized port"
+    - name: Daemon start on customized port
       run: |
         ./packages/cli/dist/bin/pipcook daemon stop
         echo "{ \"host\": \"127.0.0.1\", \"port\": 7000 }" > ~/.pipcook/daemon.config.json
