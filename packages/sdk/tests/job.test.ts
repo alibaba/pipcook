@@ -1,5 +1,5 @@
 import { PipcookClient } from '../src';
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 import * as request from '../src/request';
 
 describe('test job apis', () => {
