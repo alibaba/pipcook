@@ -218,7 +218,7 @@ describe('test downloading utils', () => {
   it('download a nonexistent file', async () => {
     await expectAsync(
       download('http://unknown-host/nonexists.zip', './nonexistent.zip')
-    ).toBeRejectedWith(new Error('getaddrinfo ENOTFOUND unknown-host'));
+    ).toBeRejected();
   });
 });
 
