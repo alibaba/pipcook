@@ -82,7 +82,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: all-coverage.info
-        parallel: true
     - name: Migration
       if: ${{ runner.os == 'Linux' }}
       run: |
