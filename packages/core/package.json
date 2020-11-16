@@ -13,8 +13,7 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "dev-compile": "tsc -b tsconfig.json",
     "compile": "tsc -b tsconfig.json",
-    "cov": "nyc -r text-summary npm run test",
-    "cov-report": "nyc report -r lcov"
+    "cov": "npx nyc --reporter=lcov --reporter=text-summary npm run test"
   },
   "author": "",
   "license": "ISC",
