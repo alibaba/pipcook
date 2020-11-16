@@ -70,16 +70,16 @@ jobs:
         yarn init-dev
         du -h -d 1
     - name: Run cov
-      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      if: ${{ matrix.node_version == 12 }}
       run: |
         yarn run cov && yarn run cov-report
     - name: Coveralls
-      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      if: ${{ matrix.node_version == 12 }}
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: echo lcov.info
-      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      if: ${{ matrix.node_version == 12 }}
       run: |
         cat coverage/lcov.info
     - name: Migration
