@@ -41,6 +41,6 @@
     "cov-report": "nyc report -r=lcov"
   },
   "resolutions": {
-    "**/nyc": "^15.1.0"
+    "egg-bin/nyc": "^15.1.0"
   }
 }
