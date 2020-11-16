@@ -10,7 +10,7 @@
   ],
   "version": "independent",
   "loglevel": "verbose",
-  "npmClient": "npm",
+  "npmClient": "yarn",
   "command": {
     "publishConfig": {
       "access": "public"
