@@ -4,6 +4,8 @@ import * as helper from '../../src/utils';
 import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import { join } from 'path';
+import * as request from 'request-promise';
+const Bluebird = require( 'bluebird');
 
 const result: any = {
   name: undefined,
@@ -23,6 +25,14 @@ const result: any = {
   modelTrainParams: '{}',
   modelEvaluate: '@pipcook/plugins-bayesian-model-evaluate',
   modelEvaluateParams: '{}'
+};
+
+const mockPipelineConfig = {
+  plugins: {
+    dataCollect: {
+      package: '@pipcook/dataCollect'
+    }
+  }
 };
 
 describe('test the app service', () => {
@@ -60,5 +70,55 @@ describe('test the app service', () => {
       assert.equal(err.message, 'config URI is not supported')
     }
     assert.ok(catched, 'error check')
+  });
+  it('#load config from http', async () => {
+    const mockUrl = 'http://a.b.c';
+    let called = false;
+    sinon.stub(request, 'get').callsFake((params) => {
+      assert.equal(params, mockUrl);
+      called = true;
+      return Bluebird.resolve(JSON.stringify(mockPipelineConfig));
+    });
+    const configObj = await helper.loadConfig(mockUrl);
+    assert.deepEqual(configObj, JSON.parse(JSON.stringify(mockPipelineConfig)), 'config object check');
+    assert.ok(called, 'function call check');
+  });
+  it('#load config from http but absolute path found', async () => {
+    const mockUrl = 'http://a.b.c';
+    let called = false, throwError = false;
+    let mockConfig = { ...mockPipelineConfig };
+    mockConfig.plugins.dataCollect.package = '/root/plugin';
+    sinon.stub(request, 'get').callsFake((params) => {
+      assert.equal(params, mockUrl);
+      called = true;
+      return Bluebird.resolve(JSON.stringify(mockConfig));
+    });
+    try {
+      await helper.loadConfig(mockUrl);
+    } catch (err) {
+      throwError = true;
+      assert.equal('local path is invalid for plugin package: /root/plugin', err.message);
+    }
+    assert.ok(called, 'function call check');
+    assert.ok(throwError, 'error call check');
+  });
+  it('#load config from http but relative path found', async () => {
+    const mockUrl = 'http://a.b.c';
+    let called = false, throwError = false;
+    let mockConfig = { ...mockPipelineConfig };
+    mockConfig.plugins.dataCollect.package = './plugin';
+    sinon.stub(request, 'get').callsFake((params) => {
+      assert.equal(params, mockUrl);
+      called = true;
+      return Bluebird.resolve(JSON.stringify(mockConfig));
+    });
+    try {
+      await helper.loadConfig(mockUrl);
+    } catch (err) {
+      throwError = true;
+      assert.equal('local path is invalid for plugin package: ./plugin', err.message);
+    }
+    assert.ok(called, 'function call check');
+    assert.ok(throwError, 'error call check');
   });
 });

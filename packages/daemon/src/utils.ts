@@ -34,7 +34,7 @@ export class ServerSentEmitter {
 
 export const pluginQueue = new Queue({ autostart: true, concurrency: 1 });
 
-async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
+export async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
   if (typeof configPath === 'string') {
     let configJson: RunConfigI;
     const urlObj = url.parse(configPath);
@@ -42,7 +42,7 @@ async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> 
       throw new TypeError('config URI is not supported');
     }
     if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) >= 0) {
-      configJson = JSON.parse(await request(configPath));
+      configJson = JSON.parse(await request.get(configPath));
       for (const key in configJson.plugins) {
         const plugin = configJson.plugins[key];
         if (path.isAbsolute(plugin.package) || plugin.package.startsWith('.')) {
