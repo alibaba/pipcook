@@ -390,12 +390,12 @@ describe('test job controller', () => {
     });
 
     return app
-            .httpRequest()
-            .get('/api/job/jobId/parameters')
-            .expect((resp) => {
-              assert.deepEqual(resp.body, mockParams);
-            })
-            .expect(200);
+      .httpRequest()
+      .get('/api/job/jobId/parameters')
+      .expect((resp) => {
+        assert.deepEqual(resp.body, mockParams);
+      })
+      .expect(200);
   });
   it('should not show the param infomation if not exist', () => {
     app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
@@ -404,9 +404,9 @@ describe('test job controller', () => {
     });
 
     return app
-            .httpRequest()
-            .get('/api/job/id/parameters')
-            .expect(404);
+      .httpRequest()
+      .get('/api/job/id/parameters')
+      .expect(404);
   });
   it('should run the job with new params', () => {
     app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
@@ -434,13 +434,13 @@ describe('test job controller', () => {
       assert.deepEqual(plugins, mockPlugins);
     });
     return app
-            .httpRequest()
-            .post('/api/job/jobId/parameters')
-            .send({params: mockParamsUpdate})
-            .expect((resp) => {
-              assert.deepEqual(resp.body.params, mockParamsUpdated);
-            })
-            .expect(200);
+      .httpRequest()
+      .post('/api/job/jobId/parameters')
+      .send({params: mockParamsUpdate})
+      .expect((resp) => {
+        assert.deepEqual(resp.body.params, mockParamsUpdated);
+      })
+      .expect(200);
   });
   it('should run the job when no param is provided', () => {
     app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {
@@ -468,18 +468,18 @@ describe('test job controller', () => {
       assert.deepEqual(plugins, mockPlugins);
     });
     return app
-            .httpRequest()
-            .post('/api/job/jobId/parameters')
-            .expect((resp) => {
-              console.log("my-test", resp.body);
-              assert.deepEqual(resp.body.params, constants.PLUGINS.map((plugin) => {
-                return {
-                  pluginType: plugin,
-                  data: {}
-                }
-              }));
-            })
-            .expect(200);
+      .httpRequest()
+      .post('/api/job/jobId/parameters')
+      .expect((resp) => {
+        console.log("my-test", resp.body);
+        assert.deepEqual(resp.body.params, constants.PLUGINS.map((plugin) => {
+          return {
+            pluginType: plugin,
+            data: {}
+          }
+        }));
+      })
+      .expect(200);
   });
   it('run unexistent job', () => {
     app.mockClassFunction('pipelineService', 'getJobById', async (id: string) => {

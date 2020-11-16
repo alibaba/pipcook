@@ -17,7 +17,7 @@ const runner = new JobRunner({
 });
 
 const jobParams: JobParam[] = core.constants.PLUGINS.map((plugin) => {
-  return {pluginType: plugin, data: {}}
+  return { pluginType: plugin, data: {} }
 });
 
 describe('test JobRunner', () => {
