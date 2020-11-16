@@ -37,7 +37,7 @@
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
     "beta-release": "lerna publish from-package --yes --no-verify-access --dist-tag beta",
     "init-dev": "node ./tools/init_dev.js -f",
-    "cov": "rm -rf .nyc_output coverage && lerna run cov && find packages -name .nyc_output | xargs -I {} cp -r {}/ ./.nyc_output",
+    "cov": "./tools/coverage.sh",
     "cov-report": "nyc report -r=lcov"
   }
 }

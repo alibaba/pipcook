@@ -37,6 +37,7 @@
     "egg-ci": "^1.8.0",
     "midway-bin": "1",
     "midway-mock": "1",
+    "nyc": "^15.1.0",
     "sinon": "^9.0.3",
     "ts-node": "^8.3.0",
     "tslib": "^1.8.1",
@@ -80,5 +81,8 @@
     "port": 6927,
     "mode": "single"
   },
-  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
+  "resolutions": {
+    "nyc": "^15.1.0"
+  }
 }
