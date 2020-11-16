@@ -1,13 +1,13 @@
 import { PipcookClient } from '../src';
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 import * as request from '../src/request';
-import { ReadStream } from 'fs-extra';
 
 describe('test job apis', () => {
   const pipcook = new PipcookClient();
   afterEach(() => {
     sinon.restore();
-  })
+  });
+
   it('should call get output download url by id', async () => {
     expect(pipcook.job.getOutputDownloadURL('myid'))
       .toBe(`${pipcook.endpoint}/job/myid/output`);
@@ -29,5 +29,4 @@ describe('test job apis', () => {
     expect(fileDownload.stream).toBe(null);
     getFile.calledOnceWithExactly(`${pipcook.endpoint}/job/myid/output`);
   });
-
 });

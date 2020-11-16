@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { spawn, fork } from 'child_process';
-import path from 'path';
-import program from 'commander';
+import * as path from 'path';
+import * as program from 'commander';
 import { readFile, pathExists, remove } from 'fs-extra';
 import { constants } from '@pipcook/pipcook-core';
 import { logger } from '../utils/common';

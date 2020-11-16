@@ -1,4 +1,4 @@
-import { PluginOperator, PluginProtocol } from '../src/protocol';
+import { PluginOperator, PluginProtocol } from './protocol';
 
 describe('test the plugin operator classes', () => {
   it('should read the correct number from PluginOperator', () => {
