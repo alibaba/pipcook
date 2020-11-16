@@ -1,4 +1,4 @@
-import { STRING, INTEGER, BOOLEAN, Model, Sequelize } from 'sequelize';
+import { STRING, INTEGER, BOOLEAN, Model, Sequelize, JSON } from 'sequelize';
 import { PipelineStatus, generateId, PluginTypeI } from '@pipcook/pipcook-core';
 
 export interface JobParam {
@@ -137,14 +137,7 @@ export default async function model(sequelize: Sequelize): Promise<void> {
       type: INTEGER
     },
     params: {
-      type: STRING,
-      get() {
-        const rawParams: string = this.getDataValue.call(this, 'params');
-        return JSON.parse(rawParams) as JobParam[];
-      },
-      set(params) {
-        this.setDataValue.call(this, 'params', JSON.stringify(params));
-      }
+      type: JSON
     }
   },
   {
