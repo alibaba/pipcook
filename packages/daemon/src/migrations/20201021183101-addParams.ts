@@ -18,7 +18,7 @@ export default {
           }, { transaction });
         };
         for (const type of types) {
-            await addColumn(type);
+          await addColumn(type);
         }
       }
       // commit the table changes, otherwise there will throw an error 'no column dataCollect'
