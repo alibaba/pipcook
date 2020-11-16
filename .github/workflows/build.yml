@@ -45,7 +45,7 @@ jobs:
           */*/node_modules
           packages/boa/pybind11
           packages/boa/pyodide
-        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/yarn.json,packages/boa/pybind11/Makefile,packages/boa/pyodide/Makefile') }}
+        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/yarn.lock,packages/boa/pybind11/Makefile,packages/boa/pyodide/Makefile') }}
         restore-keys: |
           ${{ runner.os }}-${{ matrix.node_version }}
           ${{ runner.os }}
