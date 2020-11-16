@@ -23,9 +23,9 @@ ENV
 .pip
 packages/cli/assets/server/**
 packages/daemon/.github/**
+packages/**/coverage
+packages/**/.nyc_output
 .pipcook
 __pycache__
 .history
 *.pb
-coverage
-.nyc_output

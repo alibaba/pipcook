@@ -21,7 +21,7 @@
   "devDependencies": {
     "@types/jasmine": "^3.5.7",
     "jasmine": "^3.5.0",
-    "nyc": "^15.1.0",
+    "nyc": "^15.0.0",
     "ts-node": "^8.6.2"
   },
   "publishConfig": {
