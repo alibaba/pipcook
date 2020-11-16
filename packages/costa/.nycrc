@@ -9,7 +9,9 @@
     "**/*.ts"
   ],
   "exclude": [
+    "benchmark/**",
     "coverage/**",
+    "tests/**",
     "node_modules/**",
     "**/*.d.ts",
     "**/*.test.ts"
@@ -23,4 +25,3 @@
   "all": true,
   "instrument": true
 }
-

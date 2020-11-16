@@ -52,7 +52,7 @@
     "clear": "midway-bin clean",
     "dev": "cross-env NODE_ENV=local midway-bin dev --port=6927 --ts",
     "debug": "cross-env NODE_ENV=local midway-bin debug --port=6927 --ts",
-    "cov": "midway-bin cov --ts",
+    "cov": "midway-bin cov --ts --nyc='-r lcov -r text-summary'",
     "lint": "tslint -p tsconfig.json -t stylish",
     "ci": "npm run cov",
     "compile": "midway-bin build -c --port=6927",
