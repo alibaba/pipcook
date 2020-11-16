@@ -1,4 +1,5 @@
 name: build
+name: build
 on:
   push:
     branches:
@@ -69,19 +70,18 @@ jobs:
         yarn build
         yarn init-dev
         du -h -d 1
+    - name: Running unit tests
+      run: |
+        yarn test
     - name: Run cov
-      if: ${{ matrix.node_version == 12 }}
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       run: |
         yarn run cov && yarn run cov-report
     - name: Coveralls
-      if: ${{ matrix.node_version == 12 }}
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-    - name: echo lcov.info
-      if: ${{ matrix.node_version == 12 }}
-      run: |
-        cat coverage/lcov.info
     - name: Migration
       if: ${{ runner.os == 'Linux' }}
       run: |

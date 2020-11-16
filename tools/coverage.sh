@@ -1,9 +1,8 @@
 #!/bin/bash
 
+# clear old data
 rm -rf .nyc_output coverage
+# generate coverage file
 npx lerna run cov
-echo 'find packages:'
-find packages -name .nyc_output
-find packages -name .nyc_output | xargs -I {} cp -r {}/ ./.nyc_output
-echo 'ls:'
-ls ./.nyc_output/
+# merge coverage directory into package root
+find packages -type d -name .nyc_output -exec cp -r {} ./ \;
