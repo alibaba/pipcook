@@ -43,11 +43,12 @@ if (!fs.existsSync(path.join(CONDA_LOCAL_PATH, 'bin', 'python'))) {
   run('sh', `./${condaDownloadName}`, `-f -b -p ${CONDA_LOCAL_PATH}`);
 }
 
+// cleanup the standard libs.
+if (PLATFORM === 'darwin') {
+  run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libc++*`);
+}
+
 // dump info
 py(`${CONDA_LOCAL_PATH}/bin/conda`, 'info -a');
 
-// ensure the libpython source.
-run('mkdir', `-p ${CONDA_LOCAL_PATH}/lib/cpython`);
-run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/cpython/*`);
-run('cp', `${CONDA_LOCAL_PATH}/lib/libpython* ${CONDA_LOCAL_PATH}/lib/cpython/`);
 

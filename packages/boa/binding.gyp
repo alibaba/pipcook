@@ -27,11 +27,11 @@
         "<!@(cat .CONDA_INSTALL_DIR)/include/python3.7m",
       ],
       "library_dirs": [
-        "<!@(cat .CONDA_INSTALL_DIR)/lib/cpython",
+        "<!@(cat .CONDA_INSTALL_DIR)/lib",
       ],
       "libraries": [
         "-lpython3.7m",
-        "-Wl,-rpath,'<!@(cat .CONDA_INSTALL_DIR)/lib/cpython'",
+        "-Wl,-rpath,'<!@(cat .CONDA_INSTALL_DIR)/lib'",
       ],
       "defines": [
         "NAPI_CPP_EXCEPTIONS",
