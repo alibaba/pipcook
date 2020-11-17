@@ -89,7 +89,7 @@ export class JobRunner {
    * @param type plugin type
    * @param params job param
    */
-  private findParamsByType(type: PluginTypeI, params: JobParam[]) : object[] {
+  private findParamsByType(type: PluginTypeI, params: JobParam[]): object[] {
     return params ? params.filter((it) => it.pluginType === type).map((it) => it.data) : [{}];
   }
 

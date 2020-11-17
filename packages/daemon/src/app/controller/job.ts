@@ -43,7 +43,7 @@ export class JobController extends BaseEventController {
     for (const pluginType of constants.PLUGINS) {
       const defaultParam = JSON.parse(pipeline[`${pluginType}Params`]);
       const jobParam = jobParamsMap[pluginType] ? jobParamsMap[pluginType] : {};
-      
+
       params.push({ pluginType, data: Object.assign(defaultParam, jobParam) });
     }
     return params;
