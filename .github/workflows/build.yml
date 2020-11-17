@@ -37,7 +37,7 @@ jobs:
         access_token: ${{ github.token }}
         exception: master
     - uses: actions/checkout@v2
-    - name: Restore lerna
+    - name: Restore node_modules and boa dependencies
       uses: actions/cache@v2
       with:
         path: |
@@ -45,18 +45,18 @@ jobs:
           */*/node_modules
           packages/boa/pybind11
           packages/boa/pyodide
-        key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/package-lock.json,packages/boa/pybind11/Makefile,packages/boa/pyodide/Makefile') }}
+        key: ${{ runner.os }}-${{ matrix.node_version }}-yarnpkg-${{ hashFiles('**/yarn.lock', 'packages/boa/pybind11/Makefile', 'packages/boa/pyodide/Makefile') }}
         restore-keys: |
-          ${{ runner.os }}-${{ matrix.node_version }}
-          ${{ runner.os }}
+          ${{ runner.os }}-yarnpkg-${{ matrix.node_version }}
+          ${{ runner.os }}-yarnpkg
     - name: Restore miniconda
       uses: actions/cache@v2
       with:
         path: |
           packages/boa/.miniconda
-          packages/boa/Miniconda3-latest*.sh
+          packages/boa/Miniconda3-*.sh
           packages/boa/.CONDA_INSTALL_DIR
-        key: ${{ runner.os }}-miniconda-${{ hashFiles('packages/boa/Miniconda3-latest*.sh') }}
+        key: ${{ runner.os }}-miniconda-${{ hashFiles('packages/boa/Miniconda3-*.sh') }}
         restore-keys: |
           ${{ runner.os }}-miniconda
     - name: Using Node.js ${{ matrix.node_version }}
