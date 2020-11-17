@@ -56,7 +56,7 @@ export class JobController extends BaseEventController {
   @post()
   public async run(): Promise<void> {
     const { pipelineId } = this.ctx.request.body;
-    const { updateParams=[] } = this.ctx.request.body;
+    const { updateParams = [] } = this.ctx.request.body;
 
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
