@@ -14,7 +14,7 @@
     "dev-compile": "tsc -b tsconfig.json",
     "compile": "tsc -b tsconfig.json",
     "cov": "nyc -r text-summary npm run test",
-    "cov-report": "nyc report -r lcov"
+    "cov:report": "nyc report -r lcov"
   },
   "author": "",
   "license": "ISC",

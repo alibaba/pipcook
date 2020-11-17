@@ -38,7 +38,7 @@
     "beta-release": "lerna publish from-package --yes --no-verify-access --dist-tag beta",
     "init-dev": "node ./tools/init_dev.js -f",
     "cov": "./tools/coverage.sh",
-    "cov-report": "nyc report -r=lcov"
+    "cov:report": "nyc report -r=lcov"
   },
   "resolutions": {
     "**/nyc": "^15.1.0"
