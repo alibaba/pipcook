@@ -37,7 +37,7 @@ jobs:
         access_token: ${{ github.token }}
         exception: master
     - uses: actions/checkout@v2
-    - name: Restore lerna
+    - name: Restore node_modules and boa dependencies
       uses: actions/cache@v2
       with:
         path: |
