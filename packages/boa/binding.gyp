@@ -16,12 +16,10 @@
         "-fno-rtti",
       ],
       "cflags_cc!": [
-        "-fno-exceptions",
-        "-fno-rtti",
-      ],
-      "cflags_cc": [
         "-std=c++11",
         "-stdlib=libc++",
+        "-fno-exceptions",
+        "-fno-rtti",
       ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
