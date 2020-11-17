@@ -37,7 +37,7 @@ jobs:
         access_token: ${{ github.token }}
         exception: master
     - uses: actions/checkout@v2
-    - name: Restore lerna
+    - name: Restore node_modules and boa dependencies
       uses: actions/cache@v2
       with:
         path: |
@@ -45,10 +45,10 @@ jobs:
           */*/node_modules
           packages/boa/pybind11
           packages/boa/pyodide
-        key: ${{ runner.os }}-${{ matrix.node_version }}-yarn-${{ hashFiles('yarn.lock', 'packages/boa/pybind11/Makefile', 'packages/boa/pyodide/Makefile') }}
+        key: ${{ runner.os }}-${{ matrix.node_version }}-yarnpkg-${{ hashFiles('**/yarn.lock', 'packages/boa/pybind11/Makefile', 'packages/boa/pyodide/Makefile') }}
         restore-keys: |
-          ${{ runner.os }}-${{ matrix.node_version }}-yarn
-          ${{ runner.os }}-yarn
+          ${{ runner.os }}-${{ matrix.node_version }}-yarnpkg
+          ${{ runner.os }}-yarnpkg
     - name: Restore miniconda
       uses: actions/cache@v2
       with:
