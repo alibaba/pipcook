@@ -46,9 +46,10 @@ if (!fs.existsSync(path.join(CONDA_LOCAL_PATH, 'bin', 'python'))) {
 // cleanup the standard libs.
 if (PLATFORM === 'darwin') {
   run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libc++*`);
+} else if (PLATFORM === 'linux') {
+  run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libstdc++.so*`);
+  run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libgcc_s.so*`);
 }
 
 // dump info
 py(`${CONDA_LOCAL_PATH}/bin/conda`, 'info -a');
-
-
