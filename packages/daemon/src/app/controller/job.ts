@@ -44,8 +44,7 @@ export class JobController extends BaseEventController {
           .map((it) => it.data);
       }
 
-      const temp: JobParam = { pluginType, data: Object.assign(tempParam, ...jobParam) };
-      params.push(temp);
+      params.push({ pluginType, data: Object.assign(tempParam, ...jobParam) });
     }
     return params;
   }
