@@ -121,7 +121,7 @@ export class JobController extends BaseEventController {
     this.ctx.success();
   }
 
-  @get('/:id/parameters')
+  @get('/:id/params')
   public async getParams(): Promise<void> {
     const { id } = this.ctx.params;
     const job = await this.pipelineService.getJobById(id);
