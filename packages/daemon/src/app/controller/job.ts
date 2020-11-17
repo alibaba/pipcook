@@ -39,14 +39,12 @@ export class JobController extends BaseEventController {
       const tempParam = JSON.parse(pipeline[`${pluginType}Params`]);
       let jobParam = [];
       if (jobParams) {
-        jobParam = jobParams.filter((it) => it.pluginType === pluginType)
-                            .map((it) => it.data);
+        jobParam = jobParams
+          .filter((it) => it.pluginType === pluginType)
+          .map((it) => it.data);
       }
 
-      const temp: JobParam = {
-        pluginType,
-        data: Object.assign(tempParam, ...jobParam)
-      };
+      const temp: JobParam = { pluginType, data: Object.assign(tempParam, ...jobParam) };
       params.push(temp);
     }
     return params;
@@ -58,12 +56,13 @@ export class JobController extends BaseEventController {
   @post()
   public async run(): Promise<void> {
     const { pipelineId } = this.ctx.request.body;
+    const { updateParams=[] } = this.ctx.request.body;
+
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
       const plugins = await this.pipelineService.fetchPlugins(pipeline);
-      const realParam = this.createParams(pipeline);
-      const job = await this.pipelineService.createJob(pipelineId, realParam);
-
+      const params = this.createParams(pipeline, updateParams);
+      const job = await this.pipelineService.createJob(pipelineId, params);
       const tracer = await this.setupTracer(job);
 
       process.nextTick(async () => {
@@ -124,43 +123,12 @@ export class JobController extends BaseEventController {
   }
 
   @get('/:id/parameters')
-  public async getParam(): Promise<void> {
+  public async getParams(): Promise<void> {
     const { id } = this.ctx.params;
     const job = await this.pipelineService.getJobById(id);
 
     if (job) {
       this.ctx.success(job.params);
-    } else {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'no job found');
-    }
-  }
-
-  /**
-   * Run job with new param
-   */
-  @post('/:id/parameters')
-  public async updateParam(): Promise<void> {
-    const { id } = this.ctx.params;
-    const { params } = this.ctx.request.body;
-
-    const job = await this.pipelineService.getJobById(id);
-    if (job) {
-      const pipeline = await this.pipelineService.getPipeline(job.pipelineId);
-      const realParam = this.createParams(pipeline, params);
-      const plugins = await this.pipelineService.fetchPlugins(pipeline);
-      const newJob = await this.pipelineService.createJob(pipeline.id, realParam);
-      const tracer = await this.setupTracer(newJob);
-
-      process.nextTick(async () => {
-        try {
-          await this.pipelineService.runJob(newJob, pipeline, plugins, tracer);
-          this.traceManager.destroy(tracer.id);
-        } catch (err) {
-          this.traceManager.destroy(tracer.id, err);
-        }
-      });
-
-      this.ctx.success({ ...newJob, traceId: tracer.id });
     } else {
       this.ctx.throw(HttpStatus.NOT_FOUND, 'no job found');
     }
