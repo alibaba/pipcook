@@ -81,8 +81,8 @@ export class JobModel extends Model {
       pipelineId,
       specVersion,
       status: PipelineStatus.INIT,
+      params,
       currentIndex: -1,
-      params
     });
     return job.toJSON() as JobEntity;
   }

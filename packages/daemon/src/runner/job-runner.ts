@@ -89,7 +89,7 @@ export class JobRunner {
    * @param type plugin type
    * @param params job param
    */
-  private getJobParam(type: PluginTypeI, params: JobParam[]) {
+  private findParamsByType(type: PluginTypeI, params: JobParam[]) : object[] {
     return params ? params.filter((it) => it.pluginType === type).map((it) => it.data) : [{}];
   }
 
@@ -129,7 +129,7 @@ export class JobRunner {
   async runDataCollect(dataDir: string, modelPath: string): Promise<any> {
     this.assertPlugin('dataCollect');
 
-    const param = this.getJobParam('dataCollect', this.opts.job.params);
+    const param = this.findParamsByType('dataCollect', this.opts.job.params);
 
     // ensure the model dir exists
     await fs.ensureDir(modelPath);
@@ -146,7 +146,7 @@ export class JobRunner {
   async runDataAccess(dataDir: string): Promise<any> {
     this.assertPlugin('dataAccess');
 
-    const param = this.getJobParam('dataAccess', this.opts.job.params);
+    const param = this.findParamsByType('dataAccess', this.opts.job.params);
 
     return this.runPlugin('dataAccess', this.getParams(this.opts.plugins.dataAccess.params, {
       dataDir
@@ -159,7 +159,7 @@ export class JobRunner {
    */
   async runDatasetProcess(dataset: any): Promise<void> {
     if (this.opts.plugins.datasetProcess) {
-      const param = this.getJobParam('datasetProcess', this.opts.job.params);
+      const param = this.findParamsByType('datasetProcess', this.opts.job.params);
 
       await this.runPlugin('datasetProcess', dataset, this.getParams(this.opts.plugins.datasetProcess.params, ...param));
     }
@@ -171,7 +171,7 @@ export class JobRunner {
    */
   async runDataProcess(dataset: any): Promise<void> {
     if (this.opts.plugins.dataProcess) {
-      const param = this.getJobParam('dataProcess', this.opts.job.params);
+      const param = this.findParamsByType('dataProcess', this.opts.job.params);
 
       await this.runPlugin('dataProcess', dataset, this.getParams(this.opts.plugins.dataProcess.params, ...param));
     }
@@ -182,7 +182,7 @@ export class JobRunner {
    * @param dataset dataset from data collect/dataset process/data process plugin
    */
   async runModelDefine(dataset: any): Promise<ModelResult> {
-    const param = this.getJobParam('modelDefine', this.opts.job.params);
+    const param = this.findParamsByType('modelDefine', this.opts.job.params);
 
     return {
       plugin: this.opts.plugins.modelDefine.plugin,
@@ -196,7 +196,7 @@ export class JobRunner {
    * @param modelPath where the model loads from
    */
   async runModelLoad(dataset: any, modelPath: string): Promise<ModelResult> {
-    const param = this.getJobParam('modelLoad', this.opts.job.params);
+    const param = this.findParamsByType('modelLoad', this.opts.job.params);
 
     return {
       plugin: this.opts.plugins.modelLoad.plugin,
@@ -214,7 +214,7 @@ export class JobRunner {
    * @param modelPath where the model saves to
    */
   async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
-    const param = this.getJobParam('modelLoad', this.opts.job.params);
+    const param = this.findParamsByType('modelLoad', this.opts.job.params);
 
     return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain.params, {
       modelPath
@@ -229,7 +229,7 @@ export class JobRunner {
    */
   async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
     this.assertPlugin('modelEvaluate');
-    const param = this.getJobParam('modelLoad', this.opts.job.params);
+    const param = this.findParamsByType('modelLoad', this.opts.job.params);
 
     return this.runPlugin('modelEvaluate', dataset, model, this.getParams(this.opts.plugins.modelEvaluate.params, {
       modelDir: modelPath

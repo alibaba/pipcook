@@ -32,19 +32,19 @@ export class JobController extends BaseEventController {
     return tracer;
   }
 
-  private createParams(pipeline: PipelineEntity, jobParams?: JobParam[]): JobParam[] {
+  private initializeParams(pipeline: PipelineEntity, jobParams?: JobParam[]): JobParam[] {
     const params: JobParam[] = [];
+    const jobParamsMap = {};
+
+    jobParams.forEach((it) => {
+      jobParamsMap[it.pluginType] = it.data;
+    });
 
     for (const pluginType of constants.PLUGINS) {
-      const tempParam = JSON.parse(pipeline[`${pluginType}Params`]);
-      let jobParam = [];
-      if (jobParams) {
-        jobParam = jobParams
-          .filter((it) => it.pluginType === pluginType)
-          .map((it) => it.data);
-      }
-
-      params.push({ pluginType, data: Object.assign(tempParam, ...jobParam) });
+      const defaultParam = JSON.parse(pipeline[`${pluginType}Params`]);
+      const jobParam = jobParamsMap[pluginType] ? jobParamsMap[pluginType] : {};
+      
+      params.push({ pluginType, data: Object.assign(defaultParam, jobParam) });
     }
     return params;
   }
@@ -60,7 +60,7 @@ export class JobController extends BaseEventController {
     const pipeline = await this.pipelineService.getPipeline(pipelineId);
     if (pipeline) {
       const plugins = await this.pipelineService.fetchPlugins(pipeline);
-      const params = this.createParams(pipeline, updateParams);
+      const params = this.initializeParams(pipeline, updateParams);
       const job = await this.pipelineService.createJob(pipelineId, params);
       const tracer = await this.setupTracer(job);
 
