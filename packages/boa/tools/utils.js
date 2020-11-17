@@ -13,7 +13,11 @@ if (BOA_TUNA && !BOA_CONDA_INDEX) {
   BOA_CONDA_INDEX = 'https://pypi.tuna.tsinghua.edu.cn/simple';
 }
 
-exports.run = (...args) => execSync.call(null, args.join(' '), { stdio: 'inherit' });
+exports.run = (...args) => {
+  const cmd = args.join(' ');
+  console.log(`sh "${cmd}"`);
+  return execSync.call(null, cmd, { stdio: 'inherit' })
+};
 exports.PLATFORM = os.platform();
 exports.ARCH = os.arch();
 

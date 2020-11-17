@@ -16,10 +16,12 @@
         "-fno-rtti",
       ],
       "cflags_cc!": [
-        "-std=c++11",
-        "-stdlib=libc++",
         "-fno-exceptions",
         "-fno-rtti",
+      ],
+      "cflags_cc": [
+        "-std=c++11",
+        "-stdlib=libc++",
       ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
@@ -27,11 +29,11 @@
         "<!@(cat .CONDA_INSTALL_DIR)/include/python3.7m",
       ],
       "library_dirs": [
-        "<!@(cat .CONDA_INSTALL_DIR)/lib",
+        "<!@(cat .CONDA_INSTALL_DIR)/lib/cpython",
       ],
       "libraries": [
         "-lpython3.7m",
-        "-Wl,-rpath,'<!@(cat .CONDA_INSTALL_DIR)/lib'",
+        "-Wl,-rpath,'<!@(cat .CONDA_INSTALL_DIR)/lib/cpython'",
       ],
       "defines": [
         "NAPI_CPP_EXCEPTIONS",
