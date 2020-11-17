@@ -428,7 +428,7 @@ describe('test job controller', () => {
 
     return app
       .httpRequest()
-      .get('/api/job/jobId/parameters')
+      .get('/api/job/jobId/params')
       .expect((resp) => {
         assert.deepEqual(resp.body, mockParams);
       })
@@ -442,7 +442,7 @@ describe('test job controller', () => {
 
     return app
       .httpRequest()
-      .get('/api/job/id/parameters')
+      .get('/api/job/id/params')
       .expect(404);
   });
 });
