@@ -183,7 +183,7 @@ export class PluginRunnable {
     this.notRespondTimer = setTimeout(() => {
       this.handle.kill('SIGKILL');
     }, waitForDestroyed);
-    this.send(PluginOperator.WRITE, { event: 'destroy' });
+    await this.send(PluginOperator.WRITE, { event: 'destroy' });
     return new Promise((resolve) => {
       this.ondestroyed = resolve;
     });
@@ -239,7 +239,7 @@ export class PluginRunnable {
    * @param msg
    */
   private async sendAndWait(op: PluginOperator, msg: PluginMessage): Promise<PluginMessage> {
-    this.send(op, msg);
+    await this.send(op, msg);
     debug(`sent ${msg.event} for ${this.id}, and wait for response`);
 
     const resp = await this.waitOn(op);
