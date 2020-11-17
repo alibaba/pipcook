@@ -5,7 +5,6 @@ import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import { join } from 'path';
 import * as request from 'request-promise';
-const Bluebird = require( 'bluebird');
 
 const result: any = {
   name: undefined,
@@ -77,7 +76,7 @@ describe('test the app service', () => {
     sinon.stub(request, 'get').callsFake((params) => {
       assert.equal(params, mockUrl);
       called = true;
-      return Bluebird.resolve(JSON.stringify(mockPipelineConfig));
+      return Promise.resolve(JSON.stringify(mockPipelineConfig)) as any;
     });
     const configObj = await helper.loadConfig(mockUrl);
     assert.deepEqual(configObj, JSON.parse(JSON.stringify(mockPipelineConfig)), 'config object check');
@@ -91,7 +90,7 @@ describe('test the app service', () => {
     sinon.stub(request, 'get').callsFake((params) => {
       assert.equal(params, mockUrl);
       called = true;
-      return Bluebird.resolve(JSON.stringify(mockConfig));
+      return Promise.resolve(JSON.stringify(mockConfig)) as any;
     });
     try {
       await helper.loadConfig(mockUrl);
@@ -110,7 +109,7 @@ describe('test the app service', () => {
     sinon.stub(request, 'get').callsFake((params) => {
       assert.equal(params, mockUrl);
       called = true;
-      return Bluebird.resolve(JSON.stringify(mockConfig));
+      return Promise.resolve(JSON.stringify(mockConfig)) as any;
     });
     try {
       await helper.loadConfig(mockUrl);
