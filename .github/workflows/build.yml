@@ -45,10 +45,10 @@ jobs:
           */*/node_modules
           packages/boa/pybind11
           packages/boa/pyodide
-        key: ${{ runner.os }}-${{ matrix.node_version }}-yarn-${{ hashFiles('**/yarn.lock', 'packages/boa/pybind11/Makefile', 'packages/boa/pyodide/Makefile') }}
+        key: ${{ runner.os }}-${{ matrix.node_version }}-yarnpkg-${{ hashFiles('**/yarn.lock', 'packages/boa/pybind11/Makefile', 'packages/boa/pyodide/Makefile') }}
         restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node_version }}
-          ${{ runner.os }}-yarn
+          ${{ runner.os }}-yarnpkg-${{ matrix.node_version }}
+          ${{ runner.os }}-yarnpkg
     - name: Restore miniconda
       uses: actions/cache@v2
       with:
