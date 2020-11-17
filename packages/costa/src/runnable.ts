@@ -193,9 +193,14 @@ export class PluginRunnable {
    * @param op
    * @param msg
    */
-  private send(op: PluginOperator, msg?: PluginMessage): boolean {
+  private send(op: PluginOperator, msg?: PluginMessage): Promise<void> {
     const data = PluginProtocol.stringify(op, msg);
-    return this.handle.send(data);
+    return new Promise((resolve, reject) => {
+      const rst = this.handle.send(data, (err) => {
+        err ? reject(err) : resolve();
+      });
+      rst || reject(new Error('subprocess send failed'));
+    });
   }
   /**
    * Reads the message, it's blocking the async context util.
@@ -209,12 +214,11 @@ export class PluginRunnable {
   /**
    * Do send handshake message to runnable client, and wait for response.
    */
-  private async handshake(): Promise<boolean> {
-    await this.sendAndWait(PluginOperator.START, {
+  private async handshake(): Promise<PluginMessage> {
+    return this.sendAndWait(PluginOperator.START, {
       event: 'handshake',
       params: [ this.id ]
     });
-    return true;
   }
   /**
    * Wait for the next operator util receiving.
@@ -234,7 +238,7 @@ export class PluginRunnable {
    * @param op
    * @param msg
    */
-  private async sendAndWait(op: PluginOperator, msg: PluginMessage) {
+  private async sendAndWait(op: PluginOperator, msg: PluginMessage): Promise<PluginMessage> {
     this.send(op, msg);
     debug(`sent ${msg.event} for ${this.id}, and wait for response`);
 
