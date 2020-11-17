@@ -251,6 +251,43 @@ describe('test job controller', () => {
       })
       .expect(200);
   });
+  it('should run a job with updated parameters', () => {
+    app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
+      assert.equal(id, 'id');
+      mockPipeline = { ...mockPipeline, id };
+      return mockPipeline;
+    });
+    app.mockClassFunction('pipelineService', 'fetchPlugins', async (pipeline: any): Promise<any[]> => {
+      assert.deepEqual(pipeline, mockPipeline);
+      return mockPlugins;
+    });
+    app.mockClassFunction('pipelineService', 'createJob', async (pipelineId: string, params: any): Promise<any> => {
+      assert.equal(pipelineId, 'id');
+      return {
+        ... mockJob,
+        params
+      };
+    });
+    app.mockClassFunction('pipelineService', 'runJob', async (job: any, pipeline: any, plugins: any[], log: any): Promise<any> => {
+      assert.deepEqual(job, mockJob);
+      assert.deepEqual(pipeline, mockPipeline);
+      assert.deepEqual(plugins, mockPlugins);
+    });
+    app.mockClassFunction('traceManager', 'destroy', async (id, err): Promise<any> => {
+      assert.equal(err, undefined);
+    });
+    return app
+      .httpRequest()
+      .post('/api/job')
+      .send({ pipelineId: 'id' , params: mockParamsUpdate})
+      .expect((resp) => {
+        console.log(resp.body)
+        assert.deepEqual(resp.body.params, mockParamsUpdated);
+        assert.equal(resp.body.id, mockJob.id);
+        assert.equal(typeof resp.body.traceId, 'string');
+      })
+      .expect(200);
+  });
   it('should run a job with error', () => {
     app.mockClassFunction('pipelineService', 'getPipeline', async (id: string) => {
       assert.equal(id, 'id');
