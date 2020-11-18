@@ -267,17 +267,17 @@ export class PluginRunnable {
    * @param op
    * @param msg
    */
-  private async sendAndWait(op: PluginOperator, msg: PluginMessage, handler?: (m: string) => void) {
+  private async sendAndWait(op: PluginOperator, msg: PluginMessage, handler?: (s: string) => void) {
     this.send(op, msg);
     debug(`sent ${msg.event} for ${this.id}, and wait for response`);
 
-    let resp;
+    let resp = null;
     do {
-      resp = await this.waitOn(op);
-      const { event } = resp;
+      const data = await this.waitOn(op);
+      const { event } = data;
       if (event === 'emit') {
         if (typeof handler === 'function') {
-          handler(resp.params[0] as string);
+          handler(data.params[0] as string);
         }
       } else {
         // clear the onread/onreadfail if not "emit".
@@ -286,9 +286,10 @@ export class PluginRunnable {
         if (event !== 'pong') {
           throw new TypeError('invalid response because the event is not "pong".');
         }
+        resp = data;
         break;
       }
-    } while (true);
+    } while (resp === null);
     return resp;
   }
   /**

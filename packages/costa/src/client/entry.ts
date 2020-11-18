@@ -26,8 +26,8 @@ function recv(respOp: PluginOperator, ...params: string[]): void {
 
 /**
  * Send a `emit` message back from the client process, this will not stop the message handler.
- * @param respOp 
- * @param msg 
+ * @param respOp the operator of response.
+ * @param msg
  */
 function emit(respOp: PluginOperator, msg: string): void {
   process.send(PluginProtocol.stringify(respOp, {
@@ -209,7 +209,7 @@ const handlers: MessageHandler = {
     if (event === 'deserialize response') {
       getResponse(proto.message);
     }
-  },
+  }
 };
 
 process.on('message', (msg): void => {

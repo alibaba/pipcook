@@ -50,7 +50,7 @@ describe('start runnable in normal way', () => {
 
   it('should bootstrap the runnable', async () => {
     await runnable.bootstrap({
-      pluginNotRespondingTimeout: 2000,
+      pluginNotRespondingTimeout: 2000
     });
     expect(runnable.state).toBe('idle');
   });
