@@ -214,11 +214,12 @@ export class PluginRunnable {
   /**
    * Do send handshake message to runnable client, and wait for response.
    */
-  private async handshake(): Promise<PluginMessage> {
-    return this.sendAndWait(PluginOperator.START, {
+  private async handshake(): Promise<boolean> {
+    const msg = await this.sendAndWait(PluginOperator.START, {
       event: 'handshake',
       params: [ this.id ]
     });
+    return !!msg;
   }
   /**
    * Wait for the next operator util receiving.
