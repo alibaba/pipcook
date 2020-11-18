@@ -15,7 +15,7 @@ import {
 } from '@pipcook/pipcook-core';
 import { PluginPackage, PluginRunnable } from '@pipcook/costa';
 import { PipelineModel, PipelineEntity, QueryOptions } from '../model/pipeline';
-import { JobModel, JobEntity } from '../model/job';
+import { JobModel, JobEntity, JobParam } from '../model/job';
 import { PluginManager } from './plugin';
 import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { pluginQueue } from '../utils';
@@ -120,10 +120,9 @@ export class PipelineService {
     ]);
     return results[0];
   }
-
-  async createJob(pipelineId: string): Promise<JobEntity> {
+  async createJob(pipelineId: string, params?: JobParam[]): Promise<JobEntity> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
-    return JobModel.createJob(pipelineId, specVersion);
+    return JobModel.createJob(pipelineId, specVersion, params ? params : []);
   }
 
   async fetchPlugins(pipeline: PipelineEntity): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
@@ -221,6 +220,7 @@ export class PipelineService {
     });
 
     runner.dispatchJobEvent(PipelineStatus.RUNNING);
+
     try {
       // step1: run job
       const {

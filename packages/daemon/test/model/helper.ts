@@ -71,6 +71,7 @@ export const jobData = {
   currentIndex: -1,
   error: null,
   endTime: null,
+  params: [],
   status: 0,
   dataset: null
 }
@@ -85,6 +86,7 @@ export const anotherJobData = {
   currentIndex: -2,
   error: 'error msg',
   endTime: Date.now(),
+  params: [],
   status: 1,
   dataset: 'dataset'
 }

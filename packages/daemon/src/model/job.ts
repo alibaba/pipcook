@@ -1,5 +1,10 @@
-import { STRING, INTEGER, BOOLEAN, Model, Sequelize } from 'sequelize';
-import { PipelineStatus, generateId } from '@pipcook/pipcook-core';
+import { STRING, INTEGER, BOOLEAN, Model, Sequelize, JSON } from 'sequelize';
+import { PipelineStatus, generateId, PluginTypeI } from '@pipcook/pipcook-core';
+
+export interface JobParam {
+  pluginType: PluginTypeI;
+  data: object;
+}
 
 export interface JobEntity {
   id: string;
@@ -14,6 +19,7 @@ export interface JobEntity {
   endTime?: number;
   status?: number;
   dataset?: string;
+  params?: JobParam[];
 }
 
 interface QueryOptions {
@@ -69,13 +75,14 @@ export class JobModel extends Model {
     });
   }
 
-  static async createJob(pipelineId: string, specVersion: string): Promise<JobEntity> {
+  static async createJob(pipelineId: string, specVersion: string, params: JobParam[]): Promise<JobEntity> {
     const job = await JobModel.create({
       id: generateId(),
       pipelineId,
       specVersion,
       status: PipelineStatus.INIT,
-      currentIndex: -1
+      params,
+      currentIndex: -1,
     });
     return job.toJSON() as JobEntity;
   }
@@ -128,6 +135,9 @@ export default async function model(sequelize: Sequelize): Promise<void> {
     },
     endTime: {
       type: INTEGER
+    },
+    params: {
+      type: JSON
     }
   },
   {

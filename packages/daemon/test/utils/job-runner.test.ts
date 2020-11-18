@@ -5,6 +5,7 @@ import * as core from '@pipcook/pipcook-core';
 import { strict as assert } from 'assert';
 import { JobRunner } from '../../src/runner/job-runner';
 import { JobStatusChangeEvent } from '../../src/service/trace-manager';
+import { JobParam } from '../../src/model/job';
 
 const runner = new JobRunner({
   job: {} as any,
@@ -13,6 +14,10 @@ const runner = new JobRunner({
   tracer: {} as any,
   runnable: {} as any,
   datasetRoot: __dirname
+});
+
+const jobParams: JobParam[] = core.constants.PLUGINS.map((plugin) => {
+  return { pluginType: plugin, data: {} }
 });
 
 describe('test JobRunner', () => {
@@ -356,7 +361,9 @@ describe('test JobRunner', () => {
 
   it('#test run with model define', async () => {
     const runner = new JobRunner({
-      job: {} as any,
+      job: {
+        params: jobParams 
+      } as any,
       pipeline: {} as any,
       plugins: {
         dataCollect: {
