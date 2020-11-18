@@ -1,3 +1,4 @@
-while (true) {
+const blocking = true;
+while (blocking) {
   //
 }
