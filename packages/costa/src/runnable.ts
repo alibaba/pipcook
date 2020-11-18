@@ -195,11 +195,16 @@ export class PluginRunnable {
    */
   private send(op: PluginOperator, msg?: PluginMessage): Promise<void> {
     const data = PluginProtocol.stringify(op, msg);
-    return new Promise((resolve, reject) => {
-      const rst = this.handle.send(data, (err) => {
+    return new Promise<void>((resolve, reject) => {
+      const success = this.handle.send(data, (err) => {
         err ? reject(err) : resolve();
       });
-      rst || reject(new Error('subprocess send failed'));
+      // if the message queue is full, the result will be false,
+      // and the callback will never been called,
+      // so we need to throw the error here
+      if (!success) {
+        reject(new Error('subprocess send failed'));
+      }
     });
   }
   /**
