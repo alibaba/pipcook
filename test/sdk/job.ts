@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { readJson, mkdirp, createWriteStream, remove } from 'fs-extra';
-import tar from 'tar-stream';
+import * as tar from 'tar-stream';
 import { createGunzip } from 'zlib';
 import { PipcookClient, PipelineResp, JobResp, TraceResp, PipelineConfig } from '../../packages/sdk';
 

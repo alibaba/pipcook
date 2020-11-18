@@ -1,6 +1,6 @@
-import fse from 'fs-extra';
-import chalk from 'chalk';
-import path from 'path';
+import * as fse from 'fs-extra';
+import * as chalk from 'chalk';
+import * as path from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { DevPluginCommandHandler } from '../types';
 import { logger } from '../utils/common';

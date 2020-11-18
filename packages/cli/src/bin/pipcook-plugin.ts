@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import program from 'commander';
+import * as program from 'commander';
 import { install, uninstall, list, info } from '../service/plugin';
 
 program

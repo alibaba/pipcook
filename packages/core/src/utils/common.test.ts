@@ -9,6 +9,12 @@ describe('test plugin name parser', () => {
     const { protocol: protocolWithScope } = parsePluginName('core');
     expect(protocolWithScope).toEqual('npm');
   });
+  it('parse from absolute path', async () => {
+    const url = '/root/core.gz';
+    const { protocol, urlObject } = parsePluginName(url);
+    expect(protocol).toEqual('fs');
+    expect(urlObject.href).toEqual(url);
+  });
   it('parse from tarball .tgz', async () => {
     const url = 'http://a.b.c:9090/core.tgz';
     const { protocol, urlObject } = parsePluginName(url);

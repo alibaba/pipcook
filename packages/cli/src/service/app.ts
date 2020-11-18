@@ -1,7 +1,7 @@
 import { dirname, basename, join } from 'path';
 import { createGunzip } from 'zlib';
 import { SpawnOptions } from 'child_process';
-import tar from 'tar-stream';
+import * as tar from 'tar-stream';
 import { readFile, ensureDir, pathExists, readJSON, writeJSON, remove, mkdirp, createWriteStream, writeFile } from 'fs-extra';
 import { get, post, listen, getFile } from '../utils/request';
 import { route } from '../utils/router';

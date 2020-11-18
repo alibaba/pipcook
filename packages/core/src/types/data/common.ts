@@ -1,4 +1,4 @@
-import events from 'events';
+import * as events from 'events';
 
 import { generateId } from '../../utils/public';
 import { Statistic } from '../other';

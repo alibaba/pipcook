@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 import { CostaRuntime } from '../src/runtime';
 import { PluginPackage } from '../src';
 import { stat, pathExists, readJson, createReadStream, remove } from 'fs-extra';
@@ -6,17 +6,17 @@ import { spawnSync } from 'child_process';
 
 describe('create a costa runtime', () => {
   const costa = new CostaRuntime({
-    installDir: path.join(__dirname, 'plugins'),
-    datasetDir: path.join(__dirname, 'datasets'),
-    componentDir: path.join(__dirname, 'components'),
+    installDir: path.join(__dirname, '../.tests/plugins'),
+    datasetDir: path.join(__dirname, '../.tests/datasets'),
+    componentDir: path.join(__dirname, '../.tests/components'),
     npmRegistryPrefix: 'https://registry.npmjs.com/'
   });
   let nodeSimple: PluginPackage;
   let pythonSimple: PluginPackage;
   let npmPkg: PluginPackage;
   let collectCsvWithSpecificVer: PluginPackage;
-  const nodeSimplePath = path.join(__dirname, '../../test/plugins/nodejs-simple');
-  const pythonSimplePath = path.join(__dirname, '../../test/plugins/python-simple');
+  const nodeSimplePath = path.join(__dirname, '../tests/plugins/nodejs-simple');
+  const pythonSimplePath = path.join(__dirname, '../tests/plugins/python-simple');
 
   it('should fetch a plugin and install from local', async () => {
     nodeSimple = await costa.fetch(nodeSimplePath);
@@ -131,7 +131,7 @@ describe('create a costa runtime', () => {
       npmPkg,
       collectCsvWithSpecificVer
     ]);
-    const nodeDirCheck = async (name :string) => {
+    const nodeDirCheck = async (name: string) => {
       expect(!await pathExists(path.join(
         costa.options.installDir,
         'node_modules',
