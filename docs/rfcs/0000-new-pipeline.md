@@ -94,7 +94,7 @@ And we MUST support pipeline check based on the JSON schema as:
 
 ```json
 {
-  "$id": "http://example.com/example.json",
+  "$id": "http://alibaba.github.io/pipcook/pipeline-2.0.json",
   "$schema": "http://json-schema.org/draft-07/schema",
   "default": {},
   "description": "The root schema comprises the entire JSON document.",
@@ -219,7 +219,7 @@ And we MUST support pipeline check based on the JSON schema as:
               "package": {
                 "$id": "#/properties/plugins/items/anyOf/0/properties/package",
                 "type": "string",
-                "title": "The package schema",
+                "title": "The package uri of the plugin",
                 "description": "An explanation about the purpose of this instance.",
                 "default": "",
                 "examples": [
@@ -230,7 +230,7 @@ And we MUST support pipeline check based on the JSON schema as:
                 "$id": "#/properties/plugins/items/anyOf/0/properties/params",
                 "default": {},
                 "description": "An explanation about the purpose of this instance.",
-                "title": "The params schema",
+                "title": "The params of the plugin",
                 "type": "object",
                 "additionalProperties": true
               }
