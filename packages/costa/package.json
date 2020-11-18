@@ -10,7 +10,8 @@
   "scripts": {
     "pretest": "rm -rf .tests",
     "test": "ts-node ../../run_tests.ts",
-    "cov": "nyc --reporter=lcov --reporter=text-summary npm run test",
+    "cov": "nyc --reporter=text-summary npm run test",
+    "cov:report": "nyc report -r=lcov",
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
@@ -36,7 +37,7 @@
     "@types/request-promise": "^4.1.46",
     "@types/tar-stream": "^2.1.0",
     "jasmine": "^3.5.0",
-    "nyc": "^15.0.0",
+    "nyc": "^15.1.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.2"
   },
