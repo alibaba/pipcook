@@ -13,7 +13,7 @@ const debug = Debug('costa.client');
 process.title = 'pipcook.costa';
 
 /**
- * Send a message back from the client process.
+ * Send a `recv` message back from the client process.
  * @param respOp the operator of response.
  * @param params the parameters of response.
  */
@@ -21,6 +21,18 @@ function recv(respOp: PluginOperator, ...params: string[]): void {
   process.send(PluginProtocol.stringify(respOp, {
     event: 'pong',
     params
+  }));
+}
+
+/**
+ * Send a `emit` message back from the client process, this will not stop the message handler.
+ * @param respOp 
+ * @param msg 
+ */
+function emit(respOp: PluginOperator, msg: string): void {
+  process.send(PluginProtocol.stringify(respOp, {
+    event: 'emit',
+    params: [ msg ]
   }));
 }
 
@@ -90,6 +102,8 @@ async function emitStart(message: PluginMessage): Promise<void> {
     }
 
     const fn = loadPlugin(pkg);
+    emit(PluginOperator.WRITE, 'plugin loaded');
+
     if (pkg.pipcook.category === 'dataProcess') {
       // in "dataProcess" plugin, we need to do process them in one by one.
       const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
@@ -195,7 +209,7 @@ const handlers: MessageHandler = {
     if (event === 'deserialize response') {
       getResponse(proto.message);
     }
-  }
+  },
 };
 
 process.on('message', (msg): void => {

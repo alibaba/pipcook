@@ -49,7 +49,9 @@ describe('start runnable in normal way', () => {
   });
 
   it('should bootstrap the runnable', async () => {
-    await runnable.bootstrap({});
+    await runnable.bootstrap({
+      pluginNotRespondingTimeout: 2000,
+    });
     expect(runnable.state).toBe('idle');
   });
 
@@ -60,6 +62,16 @@ describe('start runnable in normal way', () => {
     tmp = await runnable.start(simple, { foobar: true });
     const stdoutString = logger.stdout.data.toString();
     expect(stdoutString.indexOf('{ foobar: true }') >= 0).toBe(true);
+  });
+
+  it('should start a nodejs plugin with blocking', async () => {
+    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
+    await costa.install(simple, process);
+    try {
+      await runnable.start(simple, { foobar: true });
+    } catch (err) {
+      console.log('!!!', err);
+    }
   });
 
   it('should start a python plugin', async () => {
