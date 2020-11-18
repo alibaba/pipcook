@@ -1,0 +1,15 @@
+*                   @FeelyChau @yorkie
+*.ts                @WenheLI @yorkie
+
+/docs/              @yorkie
+/tools/             @FeelyChau
+/test/              @FeelyChau
+/notebooks/         @rickycao-qy
+
+/packages/app/      @yorkie
+/packages/boa/      @yorkie @FeelyChau
+/packages/cli/      @rickycao-qy
+/packages/core/     @WenheLI
+/packages/costa/    @FeelyChau @yorkie
+/packages/daemon/   @FeelyChau @WenheLI
+/packages/sdk       @FeelyChau
