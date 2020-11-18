@@ -249,3 +249,7 @@ And we MUST support pipeline check based on the JSON schema as:
 
 In 2.0, we are going to adapt to change it to the new pipeline syntax, however we still leave the 1.0
 pipeline parser.
+
+# Useful tools
+
+- JSON Schema: https://jsonschema.net/home
