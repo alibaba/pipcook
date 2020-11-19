@@ -178,22 +178,27 @@ export class PluginRunnable {
       }, this.pluginNotRespondingTimeout);
 
       // start sending the "start" message.
-      const r = await this.sendAndWait(PluginOperator.WRITE, {
-        event: 'start',
-        params: [
-          pkg,
-          ...args
-        ]
-      }, (state: string) => {
-        // clear the PNR timer if received the "plugin loaded" message.
-        if (state === 'plugin loaded') {
-          clearTimeout(notRespondingTimer);
-        }
-      });
-
-      // clear the not responding timer when the "pong" is done.
-      clearTimeout(notRespondingTimer);
-      return resolve(r);
+      try {
+        const r = await this.sendAndWait(PluginOperator.WRITE, {
+          event: 'start',
+          params: [
+            pkg,
+            ...args
+          ]
+        }, (state: string) => {
+          // clear the PNR timer if received the "plugin loaded" message.
+          if (state === 'plugin loaded') {
+            clearTimeout(notRespondingTimer);
+          }
+        });
+        // clear the not responding timer when the "pong" is done.
+        clearTimeout(notRespondingTimer);
+        return resolve(r);
+      } catch (e) {
+        // clear the not responding timer if something went wrong.
+        clearTimeout(notRespondingTimer);
+        return reject(e);
+      }
     });
     this.state = 'idle';
 

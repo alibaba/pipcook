@@ -64,15 +64,15 @@ describe('start runnable in normal way', () => {
     expect(stdoutString.indexOf('{ foobar: true }') >= 0).toBe(true);
   });
 
-  it('should start a nodejs plugin with blocking', async () => {
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
-    await costa.install(simple, process);
-    try {
-      await runnable.start(simple, { foobar: true });
-    } catch (err) {
-      console.log('!!!', err);
-    }
-  });
+  // it('should start a nodejs plugin with blocking', async () => {
+  //   const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
+  //   await costa.install(simple, process);
+  //   try {
+  //     await runnable.start(simple, { foobar: true });
+  //   } catch (err) {
+  //     expect(err.message).toBe('plugin not responding.');
+  //   }
+  // });
 
   it('should start a python plugin', async () => {
     await ensureSymlink(
@@ -130,5 +130,19 @@ describe('start runnable in normal way', () => {
     const cost = Date.now() - start;
     expect(cost < 5000);
     console.log(`child process exited after ${cost}ms`);
+  });
+
+  it('should destroy the runnable when it blocks on loading plugin', async () => {
+    const logger = process;
+    const costa = new CostaRuntime(opts);
+    const r2 = new PluginRunnable(costa, logger);
+    await r2.bootstrap({ logger, pluginNotRespondingTimeout: 500 });
+    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
+    await costa.install(simple, process);
+    try {
+      await r2.start(simple, { foobar: true });
+    } catch (e) {
+      expect(e.message).toBe('plugin not responding.');
+    }
   });
 });
