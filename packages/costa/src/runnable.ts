@@ -183,7 +183,7 @@ export class PluginRunnable {
     this.notRespondTimer = setTimeout(() => {
       this.handle.kill('SIGKILL');
     }, waitForDestroyed);
-    this.send(PluginOperator.WRITE, { event: 'destroy' });
+    await this.send(PluginOperator.WRITE, { event: 'destroy' });
     return new Promise((resolve) => {
       this.ondestroyed = resolve;
     });
@@ -193,9 +193,19 @@ export class PluginRunnable {
    * @param op
    * @param msg
    */
-  private send(op: PluginOperator, msg?: PluginMessage): boolean {
+  private send(op: PluginOperator, msg?: PluginMessage): Promise<void> {
     const data = PluginProtocol.stringify(op, msg);
-    return this.handle.send(data);
+    return new Promise<void>((resolve, reject) => {
+      const success = this.handle.send(data, (err) => {
+        err ? reject(err) : resolve();
+      });
+      // if the message queue is full, the result will be false,
+      // and the callback will never been called,
+      // so we need to throw the error here
+      if (!success) {
+        reject(new Error('subprocess send failed'));
+      }
+    });
   }
   /**
    * Reads the message, it's blocking the async context util.
@@ -210,11 +220,11 @@ export class PluginRunnable {
    * Do send handshake message to runnable client, and wait for response.
    */
   private async handshake(): Promise<boolean> {
-    await this.sendAndWait(PluginOperator.START, {
+    const msg = await this.sendAndWait(PluginOperator.START, {
       event: 'handshake',
       params: [ this.id ]
     });
-    return true;
+    return !!msg;
   }
   /**
    * Wait for the next operator util receiving.
@@ -234,8 +244,8 @@ export class PluginRunnable {
    * @param op
    * @param msg
    */
-  private async sendAndWait(op: PluginOperator, msg: PluginMessage) {
-    this.send(op, msg);
+  private async sendAndWait(op: PluginOperator, msg: PluginMessage): Promise<PluginMessage> {
+    await this.send(op, msg);
     debug(`sent ${msg.event} for ${this.id}, and wait for response`);
 
     const resp = await this.waitOn(op);
