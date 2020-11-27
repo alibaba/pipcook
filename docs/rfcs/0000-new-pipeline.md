@@ -16,7 +16,7 @@ Introducing a new Pipeline syntax for supporting:
 
 ```json
 {
-  "version": "2.0",
+  "specVersion": "2.0",
   "plugins": [
     {
       "type": "dataCollect",
@@ -76,7 +76,7 @@ extensible.
 
 # Detailed design
 
-### Add a `version`
+### Add a `specVersion`
 
 Add a version of a pipeline to flag it parser version, "1.0" will be the default version.
 
@@ -88,7 +88,6 @@ object/map to array which owns a `type` property to flag its plugin type.
 Except for the types in 1.0, we supported some new types:
 
 - `deploy` is for model deployment.
-- `rl.env` is for setting the environment on a reinforcement learning.
 
 And we MUST support pipeline check based on the JSON schema as:
 
@@ -100,7 +99,7 @@ And we MUST support pipeline check based on the JSON schema as:
   "description": "The root schema comprises the entire JSON document.",
   "examples": [
     {
-      "version": "2.0",
+      "specVersion": "2.0",
       "plugins": [
         {
           "type": "dataCollect",
@@ -153,13 +152,12 @@ And we MUST support pipeline check based on the JSON schema as:
     }
   ],
   "required": [
-    "version",
     "plugins"
   ],
   "title": "The JSON schema for Pipcook Pipeline.",
   "type": "object",
   "properties": {
-    "version": {
+    "specVersion": {
       "$id": "#/properties/version",
       "type": "string",
       "title": "The version schema",
