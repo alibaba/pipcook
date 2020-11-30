@@ -9,7 +9,6 @@
 Introducing a new Pipeline syntax for supporting:
 
 - multiple nodes for the same plugin.
-- reinforcement learning
 - model deployment and distribution.
 
 # Basic example
@@ -158,10 +157,10 @@ And we MUST support pipeline check based on the JSON schema as:
   "type": "object",
   "properties": {
     "specVersion": {
-      "$id": "#/properties/version",
+      "$id": "#/properties/specVersion",
       "type": "string",
       "title": "The version schema",
-      "description": "An explanation about the purpose of this instance.",
+      "description": "The pipeline spec version",
       "default": "",
       "examples": [
         "2.0"
