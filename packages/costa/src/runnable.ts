@@ -153,6 +153,7 @@ export class PluginRunnable {
       throw new TypeError(`the runnable "${this.id}" is busy or not ready now`);
     }
     this.state = 'busy';
+    debug('set the runnable state to busy.');
 
     const { installDir, componentDir } = this.rt.options;
     const compPath = path.join(componentDir, this.id);
@@ -168,6 +169,7 @@ export class PluginRunnable {
     await ensureSymlink(
       path.join(installDir, 'node_modules', pkg.name),
       compPath + `/node_modules/${pkg.name}`);
+    debug(`file system is ready, start running the plugin(${pkg.name}).`);
 
     // wrap the PNR with the start logic.
     const resp = await new Promise<PluginMessage>((resolve, reject) => {
@@ -188,14 +190,17 @@ export class PluginRunnable {
         // clear the PNR timer if received the "plugin loaded" message.
         if (state === 'plugin loaded') {
           clearTimeout(notRespondingTimer);
+          debug('plugin is loaded.');
         }
       }).then(
         (res: PluginMessage) => {
+          debug('received the plugin response.');
           // clear the not responding timer when the "pong" is done.
           clearTimeout(notRespondingTimer);
           resolve(res);
         },
         (err: Error) => {
+          debug(`received an error ${err} when running the plugin.`);
           // clear the not responding timer if something went wrong.
           clearTimeout(notRespondingTimer);
           reject(err);
@@ -292,6 +297,8 @@ export class PluginRunnable {
     do {
       const data = await this.waitOn(op);
       const { event } = data;
+      debug(`received an event ${event} from ${this.id}.`);
+
       if (event === 'emit') {
         if (typeof handler === 'function') {
           handler(data.params[0] as string);
