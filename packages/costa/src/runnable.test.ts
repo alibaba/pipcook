@@ -12,6 +12,7 @@ class StringWritable extends Writable {
 
   _write(chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
     this.data += chunk;
+    console.log(`<StringWritable> ${chunk.toString()}`);
     callback();
   }
 }
