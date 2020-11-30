@@ -324,6 +324,8 @@ export class PluginRunnable {
     const proto = PluginProtocol.parse(msg);
     if (typeof this.onread === 'function') {
       this.onread(proto);
+    } else {
+      debug(`missing a message ${msg}`);
     }
   }
   /**

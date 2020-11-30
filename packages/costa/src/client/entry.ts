@@ -18,6 +18,8 @@ function send(msg: any): void {
   const success = process.send(msg, (err: Error) => {
     if (err) {
       console.error(onfailMsg, `The error is ${err}`);
+    } else {
+      debug(`sucessfully sent a message ${msg}`);
     }
   });
   if (!success) {
