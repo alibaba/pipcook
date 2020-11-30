@@ -12,7 +12,6 @@ module.exports = {
     'no-trailing-spaces': 'error',
     'prefer-const': 'off',
     'no-useless-escape': 'off',
-    'no-async-promise-executor': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/no-explicit-any': 'off',

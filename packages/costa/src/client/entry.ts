@@ -12,13 +12,26 @@ const debug = Debug('costa.client');
 // Set the costa runtime title.
 process.title = 'pipcook.costa';
 
+function send(msg: any): void {
+  // FIXME(yorkie): here we just print the error message.
+  const onfailMsg = 'failed to send a message to parent process.';
+  const success = process.send(msg, (err: Error) => {
+    if (err) {
+      console.error(onfailMsg, `The error is ${err}`);
+    }
+  });
+  if (!success) {
+    console.error(onfailMsg);
+  }
+}
+
 /**
  * Send a `recv` message back from the client process.
  * @param respOp the operator of response.
  * @param params the parameters of response.
  */
 function recv(respOp: PluginOperator, ...params: string[]): void {
-  process.send(PluginProtocol.stringify(respOp, {
+  return send(PluginProtocol.stringify(respOp, {
     event: 'pong',
     params
   }));
@@ -30,7 +43,7 @@ function recv(respOp: PluginOperator, ...params: string[]): void {
  * @param msg
  */
 function emit(respOp: PluginOperator, msg: string): void {
-  process.send(PluginProtocol.stringify(respOp, {
+  return send(PluginProtocol.stringify(respOp, {
     event: 'emit',
     params: [ msg ]
   }));

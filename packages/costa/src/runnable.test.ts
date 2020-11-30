@@ -129,10 +129,7 @@ describe('start runnable in normal way', () => {
     await r2.bootstrap({ logger, pluginNotRespondingTimeout: 500 });
     const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
     await costa.install(simple, process);
-    try {
-      await r2.start(simple, { foobar: true });
-    } catch (e) {
-      expect(e.message).toBe('plugin not responding.');
-    }
+    await expectAsync(r2.start(simple, { foobar: true }))
+      .toBeRejectedWithError(TypeError, 'plugin not responding.');
   });
 });

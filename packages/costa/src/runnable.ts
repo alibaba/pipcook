@@ -170,7 +170,7 @@ export class PluginRunnable {
       compPath + `/node_modules/${pkg.name}`);
 
     // wrap the PNR with the start logic.
-    const resp = await new Promise<PluginMessage>(async (resolve, reject) => {
+    const resp = await new Promise<PluginMessage>((resolve, reject) => {
       const notRespondingTimer = setTimeout(() => {
         this.state = 'error';
         this.handle.kill('SIGKILL');
@@ -178,27 +178,29 @@ export class PluginRunnable {
       }, this.pluginNotRespondingTimeout);
 
       // start sending the "start" message.
-      try {
-        const r = await this.sendAndWait(PluginOperator.WRITE, {
-          event: 'start',
-          params: [
-            pkg,
-            ...args
-          ]
-        }, (state: string) => {
-          // clear the PNR timer if received the "plugin loaded" message.
-          if (state === 'plugin loaded') {
-            clearTimeout(notRespondingTimer);
-          }
-        });
-        // clear the not responding timer when the "pong" is done.
-        clearTimeout(notRespondingTimer);
-        return resolve(r);
-      } catch (e) {
-        // clear the not responding timer if something went wrong.
-        clearTimeout(notRespondingTimer);
-        return reject(e);
-      }
+      this.sendAndWait(PluginOperator.WRITE, {
+        event: 'start',
+        params: [
+          pkg,
+          ...args
+        ]
+      }, (state: string) => {
+        // clear the PNR timer if received the "plugin loaded" message.
+        if (state === 'plugin loaded') {
+          clearTimeout(notRespondingTimer);
+        }
+      }).then(
+        (res: PluginMessage) => {
+          // clear the not responding timer when the "pong" is done.
+          clearTimeout(notRespondingTimer);
+          resolve(res);
+        },
+        (err: Error) => {
+          // clear the not responding timer if something went wrong.
+          clearTimeout(notRespondingTimer);
+          reject(err);
+        }
+      );
     });
     this.state = 'idle';
 

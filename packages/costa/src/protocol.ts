@@ -20,7 +20,7 @@ export interface PluginResponse {
 export enum PluginOperator {
   START = 0x30,
   WRITE = 0x31,
-  READ = 0x32,
+  READ = 0x32
 }
 
 /**
