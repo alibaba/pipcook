@@ -116,6 +116,7 @@ async function emitStart(message: PluginMessage): Promise<void> {
 
     const fn = loadPlugin(pkg);
     emit(PluginOperator.WRITE, 'plugin loaded');
+    console.info(`${pkg.name} plugin is loaded`);
 
     if (pkg.pipcook.category === 'dataProcess') {
       // in "dataProcess" plugin, we need to do process them in one by one.
