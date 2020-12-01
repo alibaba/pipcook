@@ -28,14 +28,14 @@ export interface CreationParameter {
   namespace?: string;
 }
 
-export interface ListPluginsFilter {
+export interface QueryPluginsFilter {
   datatype?: string;
   category?: string;
   name?: string;
 }
 
 export class PluginModel extends Model {
-  static async list(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
+  static async query(filter?: QueryPluginsFilter): Promise<PluginEntity[]> {
     const where = {} as any;
     if (filter?.category) {
       where.category = filter.category;
@@ -45,17 +45,6 @@ export class PluginModel extends Model {
     }
     if (filter?.name) {
       where.name = filter.name;
-    }
-    return (await PluginModel.findAll({ where })).map(plugin => plugin.toJSON() as PluginEntity);
-  }
-
-  static async query(filter?: ListPluginsFilter): Promise<PluginEntity[]> {
-    const where = {} as any;
-    if (filter.category) {
-      where.category = filter.category;
-    }
-    if (filter.datatype) {
-      where.datatype = filter.datatype;
     }
     return (await PluginModel.findAll({ where })).map(plugin => plugin.toJSON() as PluginEntity);
   }

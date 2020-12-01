@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 import { createUnzip } from 'zlib';
 import {
   createReadStream,
@@ -15,7 +15,7 @@ import {
   writeJson
 } from 'fs-extra';
 import { download, constants, generateId, parsePluginName } from '@pipcook/pipcook-core';
-import tar from 'tar-stream';
+import * as tar from 'tar-stream';
 import { spawn, SpawnOptions } from 'child_process';
 import { PluginRunnable, BootstrapArg } from './runnable';
 import LRUCache from './lrucache';

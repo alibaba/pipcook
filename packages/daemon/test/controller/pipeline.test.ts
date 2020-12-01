@@ -2,7 +2,7 @@ import { app, assert } from 'midway-mock/bootstrap';
 import { MidwayMockApplication } from 'midway-mock/dist/interface';
 import { PluginPackage } from '@pipcook/costa';
 import { PipelineEntity } from '../../src/model/pipeline';
-import * as helper from '../../src/runner/helper';
+import * as helper from '../../src/utils';
 import * as sinon from 'sinon';
 import { mm } from 'midway-mock/dist/mock';
 import { PluginStatus } from '@pipcook/pipcook-core';
@@ -77,7 +77,7 @@ describe('test pipeline controller', () => {
     app.mockClassFunction('pipelineService', 'queryJobs', async () => {
       return mockJobs;
     });
-    app.mockClassFunction('pipelineService', 'removeJobByModels', async (jobs: any) => {
+    app.mockClassFunction('pipelineService', 'removeJobByEntities', async (jobs: any) => {
       assert.equal(mockJobs, jobs);
     });
     app.mockClassFunction('pipelineService', 'removePipelines', async () => {});
@@ -89,11 +89,11 @@ describe('test pipeline controller', () => {
 
   it('should remove pipeline by id', () => {
     const mockJobs = [ { id: '1' }, { id: '2' } ];
-    app.mockClassFunction('pipelineService', 'getJobsByPipelineId', async (id: string) => {
-      assert.equal(id, 'id');
+    app.mockClassFunction('pipelineService', 'queryJobs', async (filter: { pipelineId?: string}) => {
+      assert.equal(filter.pipelineId, 'id');
       return mockJobs;
     });
-    app.mockClassFunction('pipelineService', 'removeJobByModels', async (jobs: any) => {
+    app.mockClassFunction('pipelineService', 'removeJobByEntities', async (jobs: any) => {
       assert.equal(mockJobs, jobs);
     });
     app.mockClassFunction('pipelineService', 'removePipelineById', async (id: string) => {
@@ -106,13 +106,13 @@ describe('test pipeline controller', () => {
       .expect(204);
   });
 
-  it('should remove pipeline by id', () => {
+  it('should remove pipeline by nonexistent id', () => {
     const mockJobs = [ { id: '1' }, { id: '2' } ];
-    app.mockClassFunction('pipelineService', 'getJobsByPipelineId', async (id: string) => {
-      assert.equal(id, 'id');
+    app.mockClassFunction('pipelineService', 'queryJobs', async (filter: { pipelineId?: string}) => {
+      assert.equal(filter.pipelineId, 'id');
       return mockJobs;
     });
-    app.mockClassFunction('pipelineService', 'removeJobByModels', async (jobs: any) => {
+    app.mockClassFunction('pipelineService', 'removeJobByEntities', async (jobs: any) => {
       assert.equal(mockJobs, jobs);
     });
     app.mockClassFunction('pipelineService', 'removePipelineById', async (id: string) => {

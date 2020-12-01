@@ -3,18 +3,20 @@ import { promisify } from 'util';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { customAlphabet } from 'nanoid';
-import _cliProgress from 'cli-progress';
+import * as _cliProgress from 'cli-progress';
 import { PIPCOOK_LOGS, PIPCOOK_TMPDIR } from '../constants/other';
 
 const xml2js = require('xml2js');
 const request = require('request');
-const si = require('systeminformation');
 const targz = require('targz');
 const extract = require('extract-zip');
+const { pipeline } = require('stream');
+import { platform } from 'os';
 
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 8);
 const compressAsync = promisify(targz.compress);
 const extractAsync = promisify(extract);
+
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
  * For more info, you can check the sources codes of plugin: @pipcook/pipcook-plugins-image-class-data-collect
@@ -58,7 +60,7 @@ export async function createAnnotationFromJson(annotationDir: string, json: any)
 
 /**
  * parse the xml file and read into json data
- * filename: file path of xml file
+ * @param filename: file path of xml file
  */
 export async function parseAnnotation(filename: string): Promise<any> {
   const fileContent = await fs.readFile(filename);
@@ -70,7 +72,7 @@ export async function parseAnnotation(filename: string): Promise<any> {
 /**
  * download the file and stored in specified directory
  * @param url: url of the file
- * @param: full path of file that will be stored
+ * @param fileName: full path of file that will be stored
  */
 export async function download(url: string, fileName: string): Promise<void> {
   await fs.ensureFile(fileName);
@@ -78,7 +80,7 @@ export async function download(url: string, fileName: string): Promise<void> {
     const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
     const file = fs.createWriteStream(fileName);
     let receivedBytes = 0;
-    request.get(url)
+    const downloadStream = request.get(url)
       .on('response', (response: any) => {
         const totalBytes = response.headers['content-length'];
         bar1.start(totalBytes, 0);
@@ -86,24 +88,18 @@ export async function download(url: string, fileName: string): Promise<void> {
       .on('data', (chunk: any) => {
         receivedBytes += chunk.length;
         bar1.update(receivedBytes);
-      })
-      .pipe(file)
-      .on('error', (err: Error) => {
+      });
+    return pipeline(downloadStream, file, (err?: Error) => {
+      if (err) {
         fs.unlink(fileName);
         bar1.stop();
         reject(err);
-      });
-
-    file.on('finish', () => {
-      bar1.stop();
-      resolve();
+      } else {
+        bar1.stop();
+        resolve();
+      }
     });
 
-    file.on('error', (err: Error) => {
-      fs.unlink(fileName);
-      bar1.stop();
-      reject(err);
-    });
   });
 }
 
@@ -143,8 +139,8 @@ export function compressTarFile(sourcePath: string, targetPath: string): Promise
 
 /**
  * unzip compressed data
- * @param filePath : path of zip
- * @param targetPath : target full path
+ * @param filePath: path of zip
+ * @param targetPath: target full path
  */
 export function unZipData(filePath: string, targetPath: string): Promise<void> {
   return extractAsync(filePath, { dir: targetPath });
@@ -152,27 +148,27 @@ export function unZipData(filePath: string, targetPath: string): Promise<void> {
 
 /**
  * get pipcook model path
+ * @param jobId: job id
  */
-
 export function getModelDir(jobId: string): string {
   return path.join(PIPCOOK_LOGS, jobId, 'model');
 }
 
 /**
  * get pipcook log's sample data's metadata according to modelId
+ * @param jobId: job id
  */
-
-export function getMetadata(jobId: string): any {
-  const json = require(path.join(PIPCOOK_LOGS, jobId, `log.json`));
-  return json && json.metadata;
+export async function getMetadata(jobId: string): Promise<any> {
+  const json = await fs.readJSON(path.join(PIPCOOK_LOGS, jobId, 'log.json'));
+  return json?.metadata;
 }
 
 /**
  * transform a string to its csv suitable format
- * @param text the text to be converted
+ * @param text: the text to be converted
  */
 export function transformCsv(text: string): string {
-  if (text.includes(',')){
+  if (text.includes(',')) {
     if (text.includes('"')) {
       let newText = '';
       for (let i = 0; i < text.length; i++) {
@@ -281,26 +277,22 @@ export async function convertPascal2CocoFileOutput(files: string[], targetPath: 
 }
 
 /**
+ * @deprecated use os.platform instead
  * return that current system is:
  * mac / linux / windows / other
  */
 export function getOsInfo(): Promise<string> {
-  return new Promise((resolve, reject) => {
-    si.osInfo((info: any, err: Error) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      if (info.platform === 'linux') {
-        resolve('linux');
-      } else if (info.platform === 'win32') {
-        resolve('windows');
-      } else if (info.platform === 'darwin') {
-        resolve('mac');
-      } else {
-        resolve('other');
-      }
-    });
+  return new Promise((resolve) => {
+    switch (platform()) {
+    case 'linux':
+      return resolve('linux');
+    case 'win32':
+      return resolve('windows');
+    case 'darwin':
+      return resolve('mac');
+    default:
+      return resolve('other');
+    }
   });
 }
 

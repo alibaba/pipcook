@@ -4,7 +4,7 @@ import * as HttpStatus from 'http-status';
 import * as Joi from 'joi';
 import Debug from 'debug';
 import { PluginManager } from '../../service/plugin';
-import { parseConfig } from '../../runner/helper';
+import { parseConfig } from '../../utils';
 import { BaseEventController } from './base';
 import { PipelineService } from '../../service/pipeline';
 import { Tracer } from '../../service/trace-manager';
@@ -82,7 +82,7 @@ export class PipelineController extends BaseEventController {
   @del()
   public async remove() {
     const jobs = await this.pipelineService.queryJobs({});
-    await this.pipelineService.removeJobByModels(jobs);
+    await this.pipelineService.removeJobByEntities(jobs);
     await this.pipelineService.removePipelines();
     this.ctx.success();
   }
@@ -93,8 +93,8 @@ export class PipelineController extends BaseEventController {
   @del('/:id')
   public async removeOne() {
     const { id } = this.ctx.params;
-    const jobs = await this.pipelineService.getJobsByPipelineId(id);
-    await this.pipelineService.removeJobByModels(jobs);
+    const jobs = await this.pipelineService.queryJobs({ pipelineId: id });
+    await this.pipelineService.removeJobByEntities(jobs);
     const count = await this.pipelineService.removePipelineById(id);
     if (count > 0) {
       this.ctx.success();
@@ -162,7 +162,7 @@ export class PipelineController extends BaseEventController {
     const parsedConfig = await parseConfig(config, false);
     const data = await this.pipelineService.updatePipelineById(id, parsedConfig);
     if (!data) {
-      this.ctx.throw(HttpStatus.NOT_FOUND, 'no plugin found');
+      this.ctx.throw(HttpStatus.NOT_FOUND, 'no pipeline found');
     }
     this.ctx.success(data);
   }

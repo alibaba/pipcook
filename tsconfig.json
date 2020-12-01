@@ -6,7 +6,6 @@
     "rootDir": ".",
     "declaration": true,
     "noImplicitAny": true,
-    "esModuleInterop": true,
     "incremental": true,
     "module": "commonjs",
     "target": "es6",
