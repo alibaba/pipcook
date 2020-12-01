@@ -28,4 +28,5 @@ __pycache__
 .history
 *.pb
 coverage
+core
 .nyc_output
