@@ -130,18 +130,16 @@ open https://pipboard.vercel.app/
 
 You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. 
 
-You also can try [Pipcook][] online with [Google Colab Notebook](https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_image_classification.ipynb).
-
 ### Pipelines
 
 If you want to train a model to recognize MNIST handwritten digits by yourself, you could try the examples below.
 
-- [pipeline-mnist-image-classification][]: pipeline for classific MNIST image classification problem.
-- [pipeline-databinding-image-classification][]: pipeline example to train the image classification task which is 
-  to classify [imgcook](https://www.imgcook.com/) databinding pictures.
-- [pipeline-object-detection][]: pipeline example to train object detection task which is for component recognition 
-  used by imgcook.
-- [pipeline-text-bayes-classification][]: pipeline example to train text classification task with bayes
+| Name | Description | Open in Colab |
+| ---- | ----------- | ----- |
+| mnist-image-classification | pipeline for classific MNIST image classification problem. | N/A |
+| databinding-image-classification | pipeline example to train the image classification task which is <br/>to classify [imgcook](https://www.imgcook.com/) databinding pictures. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_image_classification.ipynb) |
+| object-detection | pipeline example to train object detection task which is for component recognition <br/>used by imgcook. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_object_detection.ipynb) |
+| text-bayes-classification | pipeline example to train text classification task with bayes | N/A |
 
 See [here](./example) for complete list, and it's easy and quick to run these examples. For example, to do a MNIST 
 image classification, just run the following to start the pipeline:
