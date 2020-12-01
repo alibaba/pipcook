@@ -57,6 +57,6 @@ jobs:
     - name: Printing the stacktrace from coredump
       if: ${{ failure() }}
       run: |
-        apt-get install gdb
+        sudo apt-get install gdb
         gdb -h
         gdb -ex=bt -ex=quit -c core/*.core
