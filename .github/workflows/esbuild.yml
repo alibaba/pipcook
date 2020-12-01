@@ -22,8 +22,11 @@ jobs:
   universal:
     name: Build with esBuild
     if: ${{ github.event_name == 'push' || github.event.pull_request.draft == false }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v2
     - name: Using Node.js 14
@@ -43,16 +46,11 @@ jobs:
         mkdir -p .logs
         yarn init-dev
         yarn test
-    - name: Checking coredump
-      if: ${{ failure() }}
-      run: |
-        ls -lah ./.logs
-        ls -lah ./packages/boa/build
     - name: Uploading coredump
       uses: actions/upload-artifact@v2
       if: ${{ failure() }}
       with:
         name: build-core-dump
         path: |
-          .logs/
+          .logs/*.core
           packages/boa/build/
