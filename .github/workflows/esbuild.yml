@@ -53,6 +53,6 @@ jobs:
       if: ${{ failure() }}
       with:
         name: build-core-dump
-        path:
-          ./.logs/*.core
-          ./packages/boa/build/*
+        path: ｜
+          .logs/
+          packages/boa/build/
