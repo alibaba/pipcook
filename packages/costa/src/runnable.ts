@@ -61,7 +61,7 @@ export class PluginRunnable {
 
   // private states
   private queue: PluginProtocol[] = [];
-  private awaitingMessage: boolean = false;
+  private awaitingMessage = false;
 
   // timer for wait the process to exit itself
   private notRespondingTimer: NodeJS.Timeout;
