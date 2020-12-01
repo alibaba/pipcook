@@ -159,7 +159,7 @@ export class PluginRunnable {
       throw new TypeError(`the runnable "${this.id}" is busy or not ready now`);
     }
     this.state = 'busy';
-    debug('set the runnable state to busy.');
+    debug(`set the runnable(${this.id}) to busy when starting ${pkg.name}.`);
 
     const { installDir, componentDir } = this.rt.options;
     const compPath = path.join(componentDir, this.id);
@@ -175,7 +175,9 @@ export class PluginRunnable {
     await ensureSymlink(
       path.join(installDir, 'node_modules', pkg.name),
       compPath + `/node_modules/${pkg.name}`);
-    debug(`file system is ready, start running the plugin(${pkg.name}).`);
+
+    // log all the requirements are ready to tell the debugger it's going to run.
+    debug(`env is ready, start running the plugin(${pkg.name}) at ${this.id}.`);
 
     // wrap the PNR with the start logic.
     const resp = await new Promise<PluginMessage>((resolve, reject) => {
@@ -196,17 +198,17 @@ export class PluginRunnable {
         // clear the PNR timer if received the "plugin loaded" message.
         if (state === 'plugin loaded') {
           clearTimeout(notRespondingTimer);
-          debug('plugin is loaded.');
+          debug(`the plugin(${pkg.name}) is loaded.`);
         }
       }).then(
         (res: PluginMessage) => {
-          debug('received the plugin response.');
+          debug(`received the plugin(${pkg.name}) response.`);
           // clear the not responding timer when the "pong" is done.
           clearTimeout(notRespondingTimer);
           resolve(res);
         },
         (err: Error) => {
-          debug(`received an error ${err} when running the plugin.`);
+          debug(`received an error ${err} when running the plugin(${pkg.name}).`);
           // clear the not responding timer if something went wrong.
           clearTimeout(notRespondingTimer);
           reject(err);
@@ -342,9 +344,12 @@ export class PluginRunnable {
   private handleMessage(msg: string) {
     debug('recv a raw message', msg);
     const proto = PluginProtocol.parse(msg);
+    // if runnable is awaiting for a message, and the onread is a function, we call the
+    // `this.onread` directly to trigger the await Promise.
     if (this.awaitingMessage && typeof this.onread === 'function') {
       return this.onread(proto);
     }
+    // otherwise, just push the message to queue, and the next read() is able to pop it.
     this.queue.push(proto);
   }
   /**
