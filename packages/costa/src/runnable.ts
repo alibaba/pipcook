@@ -62,6 +62,11 @@ export class PluginRunnable {
   public workingDir: string;
 
   /**
+   * the current data directory for this runnable
+   */
+  public dataDir: string;
+
+  /**
    * The current state.
    */
   public state: 'init' | 'idle' | 'busy';
@@ -83,6 +88,7 @@ export class PluginRunnable {
     this.id = id || generateId();
     this.rt = rt;
     this.workingDir = path.join(this.rt.options.componentDir, this.id);
+    this.dataDir = path.join(this.workingDir, 'data');
     this.state = 'init';
     this.logger = logger || process;
   }
@@ -94,6 +100,7 @@ export class PluginRunnable {
 
     debug(`make sure the component dir is existed.`);
     await ensureDir(compPath + '/node_modules');
+    await ensureDir(this.dataDir);
 
     debug(`bootstrap a new process for ${this.id}.`);
     this.handle = fork(__dirname + '/client/entry', [], {

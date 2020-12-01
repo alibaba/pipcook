@@ -25,6 +25,10 @@ describe('test JobRunner', () => {
     sinon.restore();
   });
 
+  beforeEach(() => {
+    sinon.stub(fs, 'copy').resolves();
+  });
+
   it('#test getParam with param string and empty extra field', async () => {
     assert.deepEqual(runner.getParams('{ "param": "v" }', undefined), { param: 'v' });
   });

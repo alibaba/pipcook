@@ -244,7 +244,11 @@ export class JobRunner {
     const modelPath = path.join(this.opts.runnable.workingDir, 'model');
 
     await this.runDataCollect(dataDir, modelPath);
-    const dataset = await this.runDataAccess(dataDir);
+
+    // move plugin data directory data to job's data directory
+    await fs.copy(dataDir, this.opts.runnable.dataDir);
+
+    const dataset = await this.runDataAccess(this.opts.runnable.dataDir);
     await this.runDatasetProcess(dataset);
     await this.runDataProcess(dataset);
 
