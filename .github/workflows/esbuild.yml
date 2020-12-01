@@ -46,11 +46,6 @@ jobs:
         mkdir -p core
         yarn init-dev
         yarn test
-    - name: Printing the stacktrace from coredump
-      if: ${{ failure() }}
-      run: |
-        gdb -h
-        eu-stack -h
     - name: Uploading coredump
       uses: actions/upload-artifact@v2
       if: ${{ failure() }}
@@ -59,3 +54,9 @@ jobs:
         path: |
           core/
           packages/boa/build/
+    - name: Printing the stacktrace from coredump
+      if: ${{ failure() }}
+      run: |
+        apt-get install gdb
+        gdb -h
+        gdb -ex=bt -ex=quit -c core/*.core
