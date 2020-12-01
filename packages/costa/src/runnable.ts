@@ -58,10 +58,16 @@ export class PluginRunnable {
   private onread: Function | null;
   private onreadfail: Function | null;
   private ondestroyed: Function | null;
+
+  // private states
+  private queue: PluginProtocol[] = [];
+  private awaitingMessage: boolean = false;
+
   // timer for wait the process to exit itself
   private notRespondingTimer: NodeJS.Timeout;
   // PNR(Plugin Not Responding) timeout.
   private pluginNotRespondingTimeout: number = defaultPluginNotRespondingTimeout;
+
   /**
    * The runnable id.
    */
@@ -256,9 +262,24 @@ export class PluginRunnable {
    * Reads the message, it's blocking the async context util.
    */
   private async read(): Promise<PluginProtocol> {
+    if (this.queue.length >= 1) {
+      return this.queue.pop();
+    }
     return new Promise((resolve, reject) => {
-      this.onread = resolve;
-      this.onreadfail = reject;
+      const clearReadCallbacks = () => {
+        this.onread = undefined;
+        this.onreadfail = undefined;
+        this.awaitingMessage = false;
+      };
+      this.onread = (proto: PluginProtocol) => {
+        clearReadCallbacks();
+        resolve(proto);
+      };
+      this.onreadfail = (err: Error) => {
+        clearReadCallbacks();
+        reject(err);
+      };
+      this.awaitingMessage = true;
     });
   }
   /**
@@ -323,11 +344,10 @@ export class PluginRunnable {
   private handleMessage(msg: string) {
     debug('recv a raw message', msg);
     const proto = PluginProtocol.parse(msg);
-    if (typeof this.onread === 'function') {
-      this.onread(proto);
-    } else {
-      debug(`missing a message ${msg}`);
+    if (this.awaitingMessage && typeof this.onread === 'function') {
+      return this.onread(proto);
     }
+    this.queue.push(proto);
   }
   /**
    * Fired when the peer client is exited.
