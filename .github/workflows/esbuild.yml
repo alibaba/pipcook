@@ -38,5 +38,10 @@ jobs:
         yarn dev-build
     - name: Running unit tests
       run: |
+        ulimit -c unlimited
+        sudo cat /proc/sys/kernel/core_pattern
         yarn init-dev
         yarn test
+    - name: Uploading artifacts
+      run: |
+        echo "aha failed"
