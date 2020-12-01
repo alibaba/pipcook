@@ -13,6 +13,7 @@ const debug = Debug('costa.client');
 process.title = 'pipcook.costa';
 
 function send(msg: any): void {
+  debug(`try to send a message ${msg}`);
   // FIXME(yorkie): here we just print the error message.
   const onfailMsg = 'failed to send a message to parent process.';
   const success = process.send(msg, (err: Error) => {
