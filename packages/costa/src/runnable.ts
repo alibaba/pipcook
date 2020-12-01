@@ -326,9 +326,6 @@ export class PluginRunnable {
           handler(data.params[0] as string);
         }
       } else {
-        // clear the onread/onreadfail if not "emit".
-        this.onread = undefined;
-        this.onreadfail = undefined;
         if (event !== 'pong') {
           throw new TypeError('invalid response because the event is not "pong".');
         }
