@@ -58,4 +58,7 @@ jobs:
       if: ${{ failure() }}
       run: |
         sudo apt-get install gdb
+        file packages/boa/build/Release/boa.node
+        file packages/boa/.miniconda/lib/libpython3.7m.so.1.0
+        file /lib/x86_64-linux-gnu/libc.so.6
         gdb -ex='info sharedlibrary' -ex='bt' -ex='quit' -c core/*.core
