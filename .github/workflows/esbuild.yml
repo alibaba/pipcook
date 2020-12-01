@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest]
     steps:
     - uses: actions/checkout@v2
     - name: Using Node.js 14
@@ -58,5 +58,4 @@ jobs:
       if: ${{ failure() }}
       run: |
         sudo apt-get install gdb
-        gdb -h
-        gdb -ex=bt -ex=quit -c core/*.core
+        gdb -ex='info sharedlibrary' -ex='bt' -ex='quit' -c core/*.core
