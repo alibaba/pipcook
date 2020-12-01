@@ -39,12 +39,15 @@ jobs:
     - name: Running unit tests
       run: |
         ulimit -c unlimited
-        echo "$PWD/core/core-%e-%p-%t" | sudo tee /proc/sys/kernel/core_pattern
-        mkdir -p core
+        echo "$PWD/.core/core-%e-%p-%t" | sudo tee /proc/sys/kernel/core_pattern
+        mkdir -p .core
         yarn init-dev
         yarn test
     - name: Uploading artifacts
+      uses: actions/upload-artifact@v2
       if: ${{ failure() }}
-      run: |
-        echo "aha failed"
-        ls -lah core
+      with:
+        name: build-core-dump
+        path:
+          ./.core
+          ./packages/boa/build
