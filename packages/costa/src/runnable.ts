@@ -321,6 +321,7 @@ export class PluginRunnable {
    * @param msg
    */
   private handleMessage(msg: string) {
+    debug('recv a raw message', msg);
     const proto = PluginProtocol.parse(msg);
     if (typeof this.onread === 'function') {
       this.onread(proto);
