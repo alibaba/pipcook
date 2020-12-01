@@ -76,6 +76,7 @@ describe('start runnable in normal way', () => {
     // test passing the variable from js to python.
     const tmp2 = await runnable.start(simple, tmp);
     const stdout = logger.stdout.data.toString();
+    console.log('stdout output is', stdout);
     expect(stdout.indexOf('hello python!') >= 0).toBe(true, 'hello python check failed');
     expect(stdout.indexOf('fn1([0. 0.])') >= 0).toBe(true, 'fn1 check failed');
     expect(stdout.indexOf('fn2()') >= 0).toBe(true, 'fn2 check failed');

@@ -232,6 +232,7 @@ export class PluginRunnable {
     this.canceled = true;
     // if not exit after `waitForDestroied`, we need to kill it directly.
     this.notRespondingTimer = setTimeout(() => {
+      this.state = 'error';
       this.handle.kill('SIGKILL');
     }, waitForDestroyed);
     await this.send(PluginOperator.WRITE, { event: 'destroy' });
