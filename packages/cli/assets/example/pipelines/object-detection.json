@@ -10,16 +10,16 @@
       "package": "@pipcook/plugins-coco-data-access"
     },
     "modelDefine": {
-      "package": "@pipcook/plugins-detectron-fasterrcnn-model-define"
+      "package": "@pipcook/plugins-pytorch-yolov5-model-define"
     },
     "modelTrain": {
-      "package": "@pipcook/plugins-detectron-model-train",
+      "package": "@pipcook/plugins-pytorch-yolov5-model-train",
       "params": {
-        "steps": 100000
+        "epochs": 300
       }
     },
     "modelEvaluate": {
-      "package": "@pipcook/plugins-detectron-model-evaluate"
+      "package": "@pipcook/plugins-pytorch-yolov5-model-evaluate"
     }
   }
 }
