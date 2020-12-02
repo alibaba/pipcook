@@ -120,4 +120,11 @@ describe('test the app service', () => {
     assert.ok(called, 'function call check');
     assert.ok(throwError, 'error call check');
   });
+  it('#should copy the folder successfully', async () => {
+    const src = './src';
+    const dest = './dest';
+    sinon.stub(fs, 'copyFile');
+    sinon.stub(fs, 'chmod');
+    await helper.copyDir(src, dest);
+  });
 });

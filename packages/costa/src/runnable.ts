@@ -99,8 +99,7 @@ export class PluginRunnable {
     const compPath = this.workingDir;
 
     debug(`make sure the component dir is existed.`);
-    await ensureDir(compPath + '/node_modules');
-    await ensureDir(this.dataDir);
+    await Promise.all([ ensureDir(compPath + '/node_modules'), ensureDir(this.dataDir) ]);
 
     debug(`bootstrap a new process for ${this.id}.`);
     this.handle = fork(__dirname + '/client/entry', [], {
