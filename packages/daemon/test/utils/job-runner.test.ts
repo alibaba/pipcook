@@ -6,6 +6,7 @@ import { strict as assert } from 'assert';
 import { JobRunner } from '../../src/runner/job-runner';
 import { JobStatusChangeEvent } from '../../src/service/trace-manager';
 import { JobParam } from '../../src/model/job';
+import * as util from '../../src/utils';
 
 const runner = new JobRunner({
   job: {} as any,
@@ -26,7 +27,7 @@ describe('test JobRunner', () => {
   });
 
   beforeEach(() => {
-    sinon.stub(fs, 'copy').resolves();
+    sinon.stub(util, 'copyDir').resolves();
   });
 
   it('#test getParam with param string and empty extra field', async () => {
