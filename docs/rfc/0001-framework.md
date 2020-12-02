@@ -18,15 +18,15 @@ Unit test is the test of functions. Before writing the unit test code for an fun
 
 In this way, we can ensure that the function works normally according to the design expectation. We have written many unit tests in 1.0, but there are still some problems as follows:
 
-* insufficient coverage: `cli` is not covered, the coverage rate in other projects is 88%;
-* case design is not enough: there is no complete test design each unit;
-* too many test frameworks: `boa` uses `Tape`, `daemon` uses `Mocha`, and other projects use `Jasmine`;
+* insufficient coverage: `cli` is not covered, the coverage rate in other projects is 88%
+* case design is not enough: there is no complete test design each unit
+* too many test frameworks: `boa` uses `Tape`, `daemon` uses `Mocha`, and other projects use `Jasmine`
 
 It is necessary to solve the above problems. The specific objectives and measures:
 
-* the coverage rate of single test should be increased to more than **95%**;
+* the coverage rate of single test should be increased to more than **95%**
 * the boundary of function input and output should be defined, tested and covered, the coverage of  `cli`  shoud be enabled
-* test framework should be unified as `Ava`. Unit test cases should be as free of IO and side effects as possible, the parallel running mechanism of AVA will force us to write more efficient test codes.
+* test framework should be unified as `Ava`. Unit test cases should be as free of IO and side effects as possible, the parallel running mechanism of AVA will force us to write more efficient test codes
 
 Switching the test framework to `Ava` will bring some refactoring work:
 
