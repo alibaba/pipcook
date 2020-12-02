@@ -127,4 +127,13 @@ describe('test the app service', () => {
     sinon.stub(fs, 'chmod');
     await helper.copyDir(src, dest);
   });
+  it('#should copy the symlink successfully', async () => {
+    const src = join(__dirname, './sym.ts');
+    await fs.symlink(join(__dirname, 'helper.test.ts'), src);
+    sinon.stub(fs, 'copyFile');
+    sinon.stub(fs, 'chmod');
+    sinon.stub(fs, 'symlink');
+    await helper.copyDir(__dirname, './dest');
+    await fs.remove(src);
+  });
 });
