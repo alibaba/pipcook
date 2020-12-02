@@ -6,21 +6,21 @@
 
 # Summary
 
-We have accumulated a lot of debt in the iteration process in Pipcook 1.0, and hope to solve these problems in 2.0.
+We have accumulated a lot of debt in the iteration process in 1.x, and hope to solve these problems in 2.0.
 
 # Test
 
-The running cost of unit test and integration test is very different, but Pipcook 1.0 does not classify the tests well, which leads to the mixing of unit test and integration test, which will reduce the efficiency of continuous integration and cause trouble to test coding. In 2.0, we will make a clear division between unit testing and integration testing.
+The running cost of unit test and integration test is very different, but 1.x does not classify the tests well, which leads to the mixing of unit test and integration test, which will reduce the efficiency of continuous integration and cause trouble to test coding. In 2.0, we will make a clear division between unit testing and integration testing.
 
 ## Unit test
 
 Unit test is the test of functions. Before writing the unit test code for an function, we should make clear the input and output boundary of the function to be tested and the exception handling method, and then we should cover the boundary pertinently and run it in a low-cost way so as to verify the change at any time.
 
-In this way, we can ensure that the function works normally according to the design expectation. We have written many unit tests in 1.0, but there are still some problems as follows:
+In this way, we can ensure that the function works normally according to the design expectation. We have written many unit tests in 1.x, but there are still some problems as follows:
 
-* insufficient coverage: `cli` is not covered, the coverage rate in other projects is 88%
-* case design is not enough: there is no complete test design each unit
-* too many test frameworks: `boa` uses `Tape`, `daemon` uses `Mocha`, and other projects use `Jasmine`
+* **insufficient coverage**: `cli` is not covered, the coverage rate in other projects is 88%
+* **case design is not enough**: there is no complete test design each unit
+* **too many test frameworks**: `boa` uses `Tape`, `daemon` uses `Mocha`, and other projects use `Jasmine`
 
 It is necessary to solve the above problems. The specific objectives and measures:
 
@@ -79,10 +79,10 @@ describe('public utils', () => {
 
 ## Integration test
 
-The integration test of pipbook 1.0 depends on the workflow configuration file. In a strict sense, this is not a rigorous integration testing method and hard to maintain. In addition, we do not assert any of the running process except exit code. This situation will be improved in pipbook 2.0 as follows:
+The integration test of 1.x depends on the workflow configuration file. In a strict sense, this is not a rigorous integration testing method and hard to maintain. In addition, we do not assert any of the running processes except exit code. This situation will be improved in 2.0 as follows:
 
 * define integration test cases
-* use or develop an intergration test framework suitable for pipbook
+* use or develop an integration test framework suitable for Pipbook
 * extend the run environment
 
 # Framework migration for Daemon
@@ -91,7 +91,7 @@ The framework of daemon will be moved from the original framework to `loopback 4
 
 * automatic code generation capability
 * framework maturity: the version of typescript cannot be configured in the original framework, resulting in the overall size of the pipbook package unable to be trimmed, and the test framework is constrained and cannot be switched
-* internationalization
+* i18n
 
 # Framework migration for Pipboard
 
