@@ -124,7 +124,7 @@ export async function copyDir(src: string, dest: string): Promise<void> {
     srcStat.isBlockDevice()
   ) {
     await onFile(src, dest, srcStat.mode);
-  } else if (srcStat.isSymbolicLink) {
+  } else if (srcStat.isSymbolicLink()) {
     await onLink(src, dest);
   }
 }

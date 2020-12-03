@@ -121,34 +121,31 @@ describe('test the app service', () => {
     assert.ok(called, 'function call check');
     assert.ok(throwError, 'error call check');
   });
-  it('#should copy the folder successfully', async () => {
+  it('#should copy the file successfully', async () => {
     const src = join(__dirname, 'helper.test.ts');
     const dest = join(__dirname, 'dest.ts');
     const copyStub = sinon.stub(fs, 'copyFile');
     const chmodStub = sinon.stub(fs, 'chmod');
-    try {
-      await assertNode.doesNotReject(async () => {
-        await helper.copyDir(src, dest);
-      }, 'copyDir should not be rejected');
-      assert.ok(copyStub.calledOnce, 'copyFile should be caled only once');
-      assert.ok(chmodStub.calledOnce, 'chmod should be caled only once');
-    } finally {
-      await fs.remove(dest);
-    }
+    await assertNode.doesNotReject(async () => {
+      await helper.copyDir(src, dest);
+    }, 'copyDir should not be rejected');
+    assert.ok(copyStub.calledOnce, 'copyFile should be caled only once');
+    assert.ok(chmodStub.calledOnce, 'chmod should be caled only once');
   });
   it('#should copy the symlink successfully', async () => {
-    const src = join(__dirname, 'src', 'sym.ts');
     const dest = join(__dirname, 'dest');
-    try {
-      await fs.ensureSymlink(join(__dirname, 'helper.test.ts'), src);
-      const symStub = sinon.stub(fs, 'symlink');
-      await assertNode.doesNotReject(async () => {
-        await helper.copyDir(join(__dirname, 'src'), dest);
-      }, 'copyDir should not be rejected');
-      assert.ok(symStub.calledOnce, 'symlink should be caled only once');
-    } finally {
-      await fs.remove(src);
-      await fs.remove(dest);
-    }
+    const symStub = sinon.stub(fs, 'symlink').resolves();
+    sinon.stub(fs, 'readlink').resolves();
+    sinon.stub(fs, 'lstat').resolves({
+      isSymbolicLink: () => true,
+      isDirectory: () => false,
+      isFile: () => false,
+      isBlockDevice: () => false,
+      isCharacterDevice: () => false
+    } as any);
+    await assertNode.doesNotReject(async () => {
+      await helper.copyDir(join(__dirname, 'src'), dest);
+    }, 'copyDir should not be rejected');
+    assert.ok(symStub.calledOnce, 'symlink should be caled only once');
   });
 });
