@@ -26,10 +26,6 @@ describe('test JobRunner', () => {
     sinon.restore();
   });
 
-  beforeEach(() => {
-    sinon.stub(util, 'copyDir').resolves();
-  });
-
   it('#test getParam with param string and empty extra field', async () => {
     assert.deepEqual(runner.getParams('{ "param": "v" }', undefined), { param: 'v' });
   });
@@ -414,6 +410,7 @@ describe('test JobRunner', () => {
     const runModelDefine = sinon.stub(runner, 'runModelDefine').resolves(mockModelDefineResult);
     const runModelTrain = sinon.stub(runner, 'runModelTrain').resolves(mockModelAfterTraining as any);
     const runModelEvaluate = sinon.stub(runner, 'runModelEvaluate').resolves();
+    sinon.stub(util, 'copyDir').resolves();
     await runner.run();
     assert.deepEqual(runDataCollect.args[0],
       [
@@ -475,6 +472,7 @@ describe('test JobRunner', () => {
     const runModelLoad = sinon.stub(runner, 'runModelLoad').resolves(mockModelLoadResult);
     const runModelTrain = sinon.stub(runner, 'runModelTrain').resolves(mockModelAfterTraining as any);
     const runModelEvaluate = sinon.stub(runner, 'runModelEvaluate').resolves();
+    sinon.stub(util, 'copyDir').resolves();
     await runner.run();
     assert.deepEqual(runDataCollect.args[0],
       [

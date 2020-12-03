@@ -1,5 +1,6 @@
 import * as core from '@pipcook/pipcook-core';
 import { assert } from 'midway-mock/bootstrap';
+import * as assertNode from 'assert';
 import * as helper from '../../src/utils';
 import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
@@ -121,19 +122,33 @@ describe('test the app service', () => {
     assert.ok(throwError, 'error call check');
   });
   it('#should copy the folder successfully', async () => {
-    const src = './src';
-    const dest = './dest';
-    sinon.stub(fs, 'copyFile');
-    sinon.stub(fs, 'chmod');
-    await helper.copyDir(src, dest);
+    const src = join(__dirname, 'helper.test.ts');
+    const dest = join(__dirname, 'dest.ts');
+    const copyStub = sinon.stub(fs, 'copyFile');
+    const chmodStub = sinon.stub(fs, 'chmod');
+    try {
+      await assertNode.doesNotReject(async () => {
+        await helper.copyDir(src, dest);
+      }, 'copyDir should not be rejected');
+      assert.ok(copyStub.calledOnce, 'copyFile should be caled only once');
+      assert.ok(chmodStub.calledOnce, 'chmod should be caled only once');
+    } finally {
+      await fs.remove(dest);
+    }
   });
   it('#should copy the symlink successfully', async () => {
-    const src = join(__dirname, './sym.ts');
-    await fs.symlink(join(__dirname, 'helper.test.ts'), src);
-    sinon.stub(fs, 'copyFile');
-    sinon.stub(fs, 'chmod');
-    sinon.stub(fs, 'symlink');
-    await helper.copyDir(__dirname, './dest');
-    await fs.remove(src);
+    const src = join(__dirname, 'src', 'sym.ts');
+    const dest = join(__dirname, 'dest');
+    try {
+      await fs.ensureSymlink(join(__dirname, 'helper.test.ts'), src);
+      const symStub = sinon.stub(fs, 'symlink');
+      await assertNode.doesNotReject(async () => {
+        await helper.copyDir(join(__dirname, 'src'), dest);
+      }, 'copyDir should not be rejected');
+      assert.ok(symStub.calledOnce, 'symlink should be caled only once');
+    } finally {
+      await fs.remove(src);
+      await fs.remove(dest);
+    }
   });
 });
