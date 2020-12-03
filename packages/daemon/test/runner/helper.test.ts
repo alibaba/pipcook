@@ -146,6 +146,6 @@ describe('test the app service', () => {
     await assertNode.doesNotReject(async () => {
       await helper.copyDir(join(__dirname, 'src'), dest);
     }, 'copyDir should not be rejected');
-    assert.ok(symStub.calledOnce, 'symlink should be caled only once');
+    assert.ok(symStub.calledOnce, 'symlink should be called only once');
   });
 });
