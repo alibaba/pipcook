@@ -129,8 +129,8 @@ describe('test the app service', () => {
     await assertNode.doesNotReject(async () => {
       await helper.copyDir(src, dest);
     }, 'copyDir should not be rejected');
-    assert.ok(copyStub.calledOnce, 'copyFile should be caled only once');
-    assert.ok(chmodStub.calledOnce, 'chmod should be caled only once');
+    assert.ok(copyStub.calledOnce, 'copyFile should be called only once');
+    assert.ok(chmodStub.calledOnce, 'chmod should be called only once');
   });
   it('#should copy the symlink successfully', async () => {
     const dest = join(__dirname, 'dest');
