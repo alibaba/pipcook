@@ -314,7 +314,7 @@ export class PluginRunnable {
     debug('recv a raw message', msg);
     const proto = PluginProtocol.parse(msg);
     if (typeof this.onread === 'function') {
-      return this.onread(proto);
+      this.onread(proto);
     }
   }
   /**
