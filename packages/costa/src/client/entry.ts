@@ -1,3 +1,4 @@
+
 import * as path from 'path';
 import { UniDataset, DataLoader, generateId } from '@pipcook/pipcook-core';
 import Debug from 'debug';
@@ -40,18 +41,6 @@ function recv(respOp: PluginOperator, ...params: string[]): void {
   }));
 }
 
-/**
- * Send a `emit` message back from the client process, this will not stop the message handler.
- * @param respOp the operator of response.
- * @param msg
- */
-function emit(respOp: PluginOperator, msg: string): void {
-  return send(PluginProtocol.stringify(respOp, {
-    event: 'emit',
-    params: [ msg ]
-  }));
-}
-
 let tfjsCache: any;
 
 /**
@@ -71,6 +60,11 @@ let handshaked = false;
 let previousResults: Record<string, any> = {};
 
 /**
+ * The `Record` of loaded plugins, the key is a string of pname@pversion.
+ */
+const plugins: Record<string, Function> = {};
+
+/**
  * Deserialize an argument.
  * @param arg
  */
@@ -83,14 +77,12 @@ function deserializeArg(arg: Record<string, any>): any {
 }
 
 /**
- * Run a plugin, before running, a clean sandbox environment will be constructed
- * for the plug-in runtime.
+ * load a plugin.
  * @param message
  */
-async function emitStart(message: PluginMessage): Promise<void> {
+async function emitLoad(message: PluginMessage): Promise<void> {
   const { params } = message;
   const pkg = params[0] as PluginPackage;
-  const [ , ...pluginArgs ] = params;
   console.info(`start loading plugin ${pkg.name}`);
 
   try {
@@ -117,9 +109,31 @@ async function emitStart(message: PluginMessage): Promise<void> {
       }
     }
 
-    const fn = loadPlugin(pkg);
-    emit(PluginOperator.WRITE, 'plugin loaded');
+    const absname = `${pkg.name}@${pkg.version}`;
+    plugins[absname] = loadPlugin(pkg);
     console.info(`${pkg.name} plugin is loaded`);
+    recv(PluginOperator.WRITE);
+  } catch (err) {
+    recv(PluginOperator.WRITE, 'error', err?.stack);
+  }
+}
+
+/**
+ * Run a plugin, before running, a clean sandbox environment will be constructed
+ * for the plug-in runtime.
+ * @param message
+ */
+async function emitStart(message: PluginMessage): Promise<void> {
+  const { params } = message;
+  const pkg = params[0] as PluginPackage;
+  const [ , ...pluginArgs ] = params;
+
+  try {
+    const absname = `${pkg.name}@${pkg.version}`;
+    const fn = plugins[absname];
+    if (typeof fn !== 'function') {
+      throw new TypeError(`the plugin(${absname}) not loaded.`);
+    }
 
     if (pkg.pipcook.category === 'dataProcess') {
       // in "dataProcess" plugin, we need to do process them in one by one.
@@ -208,7 +222,9 @@ const handlers: MessageHandler = {
     }
     const { event } = proto.message;
     debug(`receive an event write.${event}`);
-    if (event === 'start') {
+    if (event === 'load') {
+      emitLoad(proto.message);
+    } else if (event === 'start') {
       emitStart(proto.message);
     } else if (event === 'destroy') {
       emitDestroy();

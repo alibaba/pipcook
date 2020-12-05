@@ -51,7 +51,7 @@ describe('start runnable in normal way', () => {
 
   it('should bootstrap the runnable', async () => {
     await runnable.bootstrap({
-      pluginNotRespondingTimeout: 2000
+      pluginLoadNotRespondingTimeout: 2000
     });
     expect(runnable.state).toBe('idle');
   });
@@ -128,7 +128,7 @@ describe('start runnable in normal way', () => {
     const logger = process;
     const costa = new CostaRuntime(opts);
     const r2 = new PluginRunnable(costa, logger);
-    await r2.bootstrap({ logger, pluginNotRespondingTimeout: 500 });
+    await r2.bootstrap({ logger, pluginLoadNotRespondingTimeout: 500 });
     const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
     await costa.install(simple, process);
     await expectAsync(r2.start(simple, { foobar: true }))

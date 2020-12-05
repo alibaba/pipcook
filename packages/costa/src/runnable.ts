@@ -22,8 +22,8 @@ export class RunnableResponse implements PluginResponse {
 // wait 1000ms for chile process finish.
 const waitForDestroyed = 1000;
 
-// default PNR(Plugin Not Responding) timeout.
-const defaultPluginNotRespondingTimeout = 10 * 1000;
+// default PLNR(Plugin Load Not Responding) timeout.
+const defaultPluginLoadNotRespondingTimeout = 10 * 1000;
 
 /**
  * The arguments for calling `bootstrap`.
@@ -42,9 +42,9 @@ export interface BootstrapArg {
    */
   logger?: LogStdio;
   /**
-   * PNR(Plugin Not Responding) timeout.
+   * the timeout to not responding when loading the plugin.
    */
-  pluginNotRespondingTimeout?: number;
+  pluginLoadNotRespondingTimeout?: number;
 }
 
 /**
@@ -65,8 +65,7 @@ export class PluginRunnable {
 
   // timer for wait the process to exit itself
   private notRespondingTimer: NodeJS.Timeout;
-  // PNR(Plugin Not Responding) timeout.
-  private pluginNotRespondingTimeout: number = defaultPluginNotRespondingTimeout;
+  private pluginLoadNotRespondingTimeout: number = defaultPluginLoadNotRespondingTimeout;
 
   /**
    * The runnable id.
@@ -108,8 +107,8 @@ export class PluginRunnable {
    */
   async bootstrap(arg: BootstrapArg): Promise<void> {
     const compPath = this.workingDir;
-    if (arg.pluginNotRespondingTimeout) {
-      this.pluginNotRespondingTimeout = arg.pluginNotRespondingTimeout;
+    if (arg.pluginLoadNotRespondingTimeout) {
+      this.pluginLoadNotRespondingTimeout = arg.pluginLoadNotRespondingTimeout;
     }
 
     debug(`make sure the component dir is existed.`);
@@ -159,7 +158,6 @@ export class PluginRunnable {
       throw new TypeError(`the runnable "${this.id}" is busy or not ready now`);
     }
     this.state = 'busy';
-    debug(`set the runnable(${this.id}) to busy when starting ${pkg.name}.`);
 
     const { installDir, componentDir } = this.rt.options;
     const compPath = path.join(componentDir, this.id);
@@ -177,44 +175,23 @@ export class PluginRunnable {
       compPath + `/node_modules/${pkg.name}`);
 
     // log all the requirements are ready to tell the debugger it's going to run.
-    debug(`env is ready, start running the plugin(${pkg.name}) at ${this.id}.`);
+    debug(`env is ready, start loading the plugin(${pkg.name}) at ${this.id}.`);
+    await this.sendAndWait(PluginOperator.WRITE, {
+      event: 'load',
+      params: [ pkg ]
+    }, this.pluginLoadNotRespondingTimeout);
 
-    // wrap the PNR with the start logic.
-    const resp = await new Promise<PluginMessage>((resolve, reject) => {
-      const notRespondingTimer = setTimeout(() => {
-        this.state = 'error';
-        this.handle.kill('SIGKILL');
-        return reject(new TypeError('plugin not responding.'));
-      }, this.pluginNotRespondingTimeout);
-
-      // start sending the "start" message.
-      this.sendAndWait(PluginOperator.WRITE, {
-        event: 'start',
-        params: [
-          pkg,
-          ...args
-        ]
-      }, (state: string) => {
-        // clear the PNR timer if received the "plugin loaded" message.
-        if (state === 'plugin loaded') {
-          clearTimeout(notRespondingTimer);
-          debug(`the plugin(${pkg.name}) is loaded.`);
-        }
-      }).then(
-        (res: PluginMessage) => {
-          debug(`received the plugin(${pkg.name}) response.`);
-          // clear the not responding timer when the "pong" is done.
-          clearTimeout(notRespondingTimer);
-          resolve(res);
-        },
-        (err: Error) => {
-          debug(`received an error ${err} when running the plugin(${pkg.name}).`);
-          // clear the not responding timer if something went wrong.
-          clearTimeout(notRespondingTimer);
-          reject(err);
-        }
-      );
+    // when the `load` is complete, start the plugin.
+    debug(`loaded the plugin(${pkg.name}), start it at ${this.id}.`);
+    const resp = await this.sendAndWait(PluginOperator.WRITE, {
+      event: 'start',
+      params: [
+        pkg,
+        ...args
+      ]
     });
+
+    // start is end, now set it to idle.
     this.state = 'idle';
 
     // return if the result id is provided.
@@ -265,24 +242,9 @@ export class PluginRunnable {
    * Reads the message, it's blocking the async context util.
    */
   private async read(): Promise<PluginProtocol> {
-    if (this.queue.length >= 1) {
-      return this.queue.pop();
-    }
     return new Promise((resolve, reject) => {
-      const clearReadCallbacks = () => {
-        this.onread = undefined;
-        this.onreadfail = undefined;
-        this.awaitingMessage = false;
-      };
-      this.onread = (proto: PluginProtocol) => {
-        clearReadCallbacks();
-        resolve(proto);
-      };
-      this.onreadfail = (err: Error) => {
-        clearReadCallbacks();
-        reject(err);
-      };
-      this.awaitingMessage = true;
+      this.onread = resolve;
+      this.onreadfail = reject;
     });
   }
   /**
@@ -301,6 +263,7 @@ export class PluginRunnable {
    */
   private async waitOn(op: PluginOperator): Promise<PluginMessage> {
     let cur, msg;
+    debug(`wait on the next op is: ${op}`);
     do {
       const data = await this.read();
       cur = data.op;
@@ -313,29 +276,35 @@ export class PluginRunnable {
    * @param op
    * @param msg
    */
-  private async sendAndWait(op: PluginOperator, msg: PluginMessage, handler?: (s: string) => void): Promise<PluginMessage> {
-    await this.send(op, msg);
-    debug(`sent ${msg.event} for ${this.id}, and wait for response`);
-
-    let resp = null;
-    do {
-      const data = await this.waitOn(op);
-      const { event } = data;
-      debug(`received an event ${event} from ${this.id}.`);
-
-      if (event === 'emit') {
-        if (typeof handler === 'function') {
-          handler(data.params[0] as string);
-        }
-      } else {
-        if (event !== 'pong') {
-          throw new TypeError('invalid response because the event is not "pong".');
-        }
-        resp = data;
-        break;
+  private async sendAndWait(op: PluginOperator, msg: PluginMessage, timeout?: number): Promise<PluginMessage> {
+    return new Promise<PluginMessage>((resolve, reject) => {
+      let opNotRespondingTimer: NodeJS.Timer;
+      if (typeof timeout === 'number' && timeout > 0) {
+        opNotRespondingTimer = setTimeout(() => {
+          this.state = 'error';
+          this.handle.kill('SIGKILL');
+          return reject(new TypeError(`send op(${op}) not responding over ${timeout}ms.`));
+        }, timeout);
       }
-    } while (resp === null);
-    return resp;
+
+      debug(`start sending ${msg.event} for ${this.id}, and wait for response`);
+      return Promise.all([
+        this.send(op, msg),
+        this.waitOn(op)
+      ])
+        .then(([, data]) => {
+          debug(`received an event ${data.event} from ${this.id}.`);
+          if (data.event !== 'pong') {
+            throw new TypeError('invalid response because the event is not "pong".');
+          }
+          clearTimeout(opNotRespondingTimer);
+          resolve(data);
+        })
+        .catch((err: Error) => {
+          clearTimeout(opNotRespondingTimer);
+          reject(err);
+        });
+    });
   }
   /**
    * handle the messages from peer client.
@@ -344,13 +313,9 @@ export class PluginRunnable {
   private handleMessage(msg: string) {
     debug('recv a raw message', msg);
     const proto = PluginProtocol.parse(msg);
-    // if runnable is awaiting for a message, and the onread is a function, we call the
-    // `this.onread` directly to trigger the await Promise.
-    if (this.awaitingMessage && typeof this.onread === 'function') {
+    if (typeof this.onread === 'function') {
       return this.onread(proto);
     }
-    // otherwise, just push the message to queue, and the next read() is able to pop it.
-    this.queue.push(proto);
   }
   /**
    * Fired when the peer client is exited.
