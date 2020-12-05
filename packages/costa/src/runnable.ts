@@ -292,7 +292,7 @@ export class PluginRunnable {
         this.send(op, msg),
         this.waitOn(op)
       ])
-        .then(([, data]) => {
+        .then(([ , data ]) => {
           debug(`received an event ${data.event} from ${this.id}.`);
           if (data.event !== 'pong') {
             throw new TypeError('invalid response because the event is not "pong".');
