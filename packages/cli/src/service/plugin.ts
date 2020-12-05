@@ -1,8 +1,8 @@
-import path from 'path';
+import * as path from 'path';
 import { PluginResp, TraceResp, PluginStatusValue } from '@pipcook/sdk';
 import { PluginStatus } from '@pipcook/pipcook-core';
 import { spawnSync } from 'child_process';
-import fs from 'fs-extra';
+import * as fs from 'fs-extra';
 import { tunaMirrorURI } from '../config';
 import { logger, initClient, traceLogger, readPkgFromTgz } from '../utils/common';
 

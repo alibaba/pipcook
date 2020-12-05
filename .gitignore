@@ -20,9 +20,12 @@ packages/pipboard/build
 .eslintcache
 ENV
 .test
+.pip
 packages/cli/assets/server/**
 packages/daemon/.github/**
 .pipcook
 __pycache__
 .history
 *.pb
+coverage
+.nyc_output

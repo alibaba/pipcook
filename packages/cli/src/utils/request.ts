@@ -1,10 +1,10 @@
 import * as qs from 'querystring';
 import { promisify } from 'util';
 import axios from 'axios';
-import fs from 'fs-extra';
-import EventSource from 'eventsource';
+import * as fs from 'fs-extra';
+import * as EventSource from 'eventsource';
 import { logger } from './common';
-import FormData from 'form-data';
+import * as FormData from 'form-data';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;

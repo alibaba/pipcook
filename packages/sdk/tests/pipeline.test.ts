@@ -1,6 +1,6 @@
 import { PipcookClient } from '../src';
 import * as request from '../src/request';
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 import { parse } from 'url';
 
 describe('test pipeline apis', () => {

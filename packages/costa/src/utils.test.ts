@@ -1,5 +1,5 @@
 import { Readable, Writable } from 'stream';
-import { pipeLog } from '../src/utils';
+import { pipeLog } from './utils';
 
 class StringWritable extends Writable {
   data = '';
@@ -32,13 +32,13 @@ class StringReadable extends Readable {
     this.push(rst);
   }
 }
- 
+
 it('test pipeLog', async () => {
   const mockString = 'this is a mock string: line1\nline2\n';
   const correctString = 'mockPrefix: this is a mock string: line1\nmockPrefix: line2\n';
   const writeStream = new StringWritable();
   const readStream = new StringReadable(mockString);
   await pipeLog(readStream, writeStream, 'mockPrefix');
-  console.log(writeStream.data)
+  console.log(writeStream.data);
   expect(writeStream.data).toBe(correctString);
 });

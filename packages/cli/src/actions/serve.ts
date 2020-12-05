@@ -1,6 +1,6 @@
-import Fastify from 'fastify';
-import path from 'path';
-import childProcess from 'child_process';
+import * as Fastify from 'fastify';
+import * as path from 'path';
+import * as childProcess from 'child_process';
 import { ServeHandler, PredictHandler } from '../types';
 import { logger } from '../utils/common';
 

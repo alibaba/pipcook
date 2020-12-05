@@ -8,6 +8,7 @@ on:
     - 'docs/**'
     - 'notebooks/**'
     - '.github/markdown.yml'
+    - '*.md'
   pull_request:
     types: [ opened, synchronize, reopened, ready_for_review ]
     branches:
@@ -17,6 +18,7 @@ on:
     - 'docs/**'
     - 'notebooks/**'
     - '.github/markdown.yml'
+    - '*.md'
 
 jobs:
   universal:

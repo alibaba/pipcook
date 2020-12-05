@@ -1,4 +1,4 @@
-import LRUCache from '../src/lrucache';
+import LRUCache from './lrucache';
 
 describe('test lru cache', () => {
   it('should create a string lrucache.', () => {

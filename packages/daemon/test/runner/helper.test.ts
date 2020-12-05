@@ -1,9 +1,11 @@
 import * as core from '@pipcook/pipcook-core';
 import { assert } from 'midway-mock/bootstrap';
+import * as assertNode from 'assert';
 import * as helper from '../../src/utils';
 import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import { join } from 'path';
+import * as request from 'request-promise';
 
 const result: any = {
   name: undefined,
@@ -23,6 +25,14 @@ const result: any = {
   modelTrainParams: '{}',
   modelEvaluate: '@pipcook/plugins-bayesian-model-evaluate',
   modelEvaluateParams: '{}'
+};
+
+const mockPipelineConfig = {
+  plugins: {
+    dataCollect: {
+      package: '@pipcook/dataCollect'
+    }
+  }
 };
 
 describe('test the app service', () => {
@@ -60,5 +70,82 @@ describe('test the app service', () => {
       assert.equal(err.message, 'config URI is not supported')
     }
     assert.ok(catched, 'error check')
+  });
+  it('#load config from http', async () => {
+    const mockUrl = 'http://a.b.c';
+    let called = false;
+    sinon.stub(request, 'get').callsFake((params) => {
+      assert.equal(params, mockUrl);
+      called = true;
+      return Promise.resolve(JSON.stringify(mockPipelineConfig)) as any;
+    });
+    const configObj = await helper.loadConfig(mockUrl);
+    assert.deepEqual(configObj, JSON.parse(JSON.stringify(mockPipelineConfig)), 'config object check');
+    assert.ok(called, 'function call check');
+  });
+  it('#load config from http but absolute path found', async () => {
+    const mockUrl = 'http://a.b.c';
+    let called = false, throwError = false;
+    let mockConfig = { ...mockPipelineConfig };
+    mockConfig.plugins.dataCollect.package = '/root/plugin';
+    sinon.stub(request, 'get').callsFake((params) => {
+      assert.equal(params, mockUrl);
+      called = true;
+      return Promise.resolve(JSON.stringify(mockConfig)) as any;
+    });
+    try {
+      await helper.loadConfig(mockUrl);
+    } catch (err) {
+      throwError = true;
+      assert.equal('local path is invalid for plugin package: /root/plugin', err.message);
+    }
+    assert.ok(called, 'function call check');
+    assert.ok(throwError, 'error call check');
+  });
+  it('#load config from http but relative path found', async () => {
+    const mockUrl = 'http://a.b.c';
+    let called = false, throwError = false;
+    let mockConfig = { ...mockPipelineConfig };
+    mockConfig.plugins.dataCollect.package = './plugin';
+    sinon.stub(request, 'get').callsFake((params) => {
+      assert.equal(params, mockUrl);
+      called = true;
+      return Promise.resolve(JSON.stringify(mockConfig)) as any;
+    });
+    try {
+      await helper.loadConfig(mockUrl);
+    } catch (err) {
+      throwError = true;
+      assert.equal('local path is invalid for plugin package: ./plugin', err.message);
+    }
+    assert.ok(called, 'function call check');
+    assert.ok(throwError, 'error call check');
+  });
+  it('#should copy the file successfully', async () => {
+    const src = join(__dirname, 'helper.test.ts');
+    const dest = join(__dirname, 'dest.ts');
+    const copyStub = sinon.stub(fs, 'copyFile');
+    const chmodStub = sinon.stub(fs, 'chmod');
+    await assertNode.doesNotReject(async () => {
+      await helper.copyDir(src, dest);
+    }, 'copyDir should not be rejected');
+    assert.ok(copyStub.calledOnce, 'copyFile should be called only once');
+    assert.ok(chmodStub.calledOnce, 'chmod should be called only once');
+  });
+  it('#should copy the symlink successfully', async () => {
+    const dest = join(__dirname, 'dest');
+    const symStub = sinon.stub(fs, 'symlink').resolves();
+    sinon.stub(fs, 'readlink').resolves();
+    sinon.stub(fs, 'lstat').resolves({
+      isSymbolicLink: () => true,
+      isDirectory: () => false,
+      isFile: () => false,
+      isBlockDevice: () => false,
+      isCharacterDevice: () => false
+    } as any);
+    await assertNode.doesNotReject(async () => {
+      await helper.copyDir(join(__dirname, 'src'), dest);
+    }, 'copyDir should not be rejected');
+    assert.ok(symStub.calledOnce, 'symlink should be called only once');
   });
 });

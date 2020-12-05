@@ -1,9 +1,9 @@
 import * as qs from 'querystring';
 import axios, { AxiosRequestConfig } from 'axios';
-import EventSource from 'eventsource';
+import * as EventSource from 'eventsource';
 import { promisify } from 'util';
 import { ReadStream } from 'fs-extra';
-import FormData from 'form-data';
+import * as FormData from 'form-data';
 
 export type RequestParams = Record<string, any>;
 export type ResponseParams = Record<string, any>;
