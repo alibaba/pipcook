@@ -24,14 +24,14 @@
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
         "pybind11/src/include",
-        "<!@(cat .CONDA_INSTALL_DIR)/include/python3.7m",
+        "<!@(node -p \"require('./tools/utils').getCondaPath()\")/include/python3.7m",
       ],
       "library_dirs": [
-        "<!@(cat .CONDA_INSTALL_DIR)/lib",
+        "<!@(node -p \"require('./tools/utils').getCondaPath()\")/lib",
       ],
       "libraries": [
         "-lpython3.7m",
-        "-Wl,-rpath,'<!@(cat .CONDA_INSTALL_DIR)/lib'",
+        "-Wl,-rpath,'<!@(node -p \"require('./tools/utils').getCondaPath()\")/lib'",
       ],
       "defines": [
         "NAPI_CPP_EXCEPTIONS",
