@@ -24,7 +24,7 @@ exports.ARCH = os.arch();
 exports.getCondaPath = () => {
   const condaDir = fs.readFileSync(CONDA_INSTALL_DIR, 'utf8');
   return path.resolve(__dirname, '..', condaDir);
-}
+};
 
 
 exports.printCondaPath = () => console.log(this.getCondaPath());
