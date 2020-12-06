@@ -32,13 +32,21 @@ if (ARCH === 'x64') {
 }
 condaDownloadName = `${condaDownloadName}.sh`;
 
+// download it if not exists.
 if (!fs.existsSync(condaDownloadName)) {
   run(`curl ${CONDA_DOWNLOAD_PREFIX}/${condaDownloadName} > ${condaDownloadName}`);
 }
 
+// check if ./bin/python exists, if not then install it.
 if (!fs.existsSync(path.join(CONDA_LOCAL_PATH, 'bin', 'python'))) {
   run('rm', `-rf ${CONDA_LOCAL_PATH}`);
   run('sh', `./${condaDownloadName}`, `-f -b -p ${CONDA_LOCAL_PATH}`);
+}
+
+// cleanup the standard libs.
+if (PLATFORM === 'darwin') {
+  run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libc++*`);
+} else if (PLATFORM === 'linux') {
   run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libstdc++.so*`);
   run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libgcc_s.so*`);
 }

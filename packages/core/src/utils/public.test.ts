@@ -1,3 +1,5 @@
+import * as sinon from 'sinon';
+import * as fs from 'fs-extra';
 import {
   convertPascal2CocoFileOutput,
   createAnnotationFromJson,
@@ -11,16 +13,20 @@ import {
   getModelDir,
   transformCsv,
   getOsInfo,
-  generateId
+  generateId,
+  getMetadata
 } from './public';
-import * as fs from 'fs-extra';
 import * as path from 'path';
 import { constants } from '..';
-import { platform } from 'os';
+import * as os from 'os';
 
 const xml2js = require('xml2js');
 
 describe('public utils', () => {
+  afterEach(() => {
+    sinon.restore();
+  });
+
   it('should generate correct coco json from pascal voc format', async () => {
     const dir = process.cwd();
     const file = generateId();
@@ -97,29 +103,70 @@ describe('public utils', () => {
     expect(parsedData.annotation.object[0].name[0]).toBe('for-test');
     fs.remove(annotationDir);
   });
+
   it('test get the model path name', () => {
     const pathname = getModelDir('test');
     expect(pathname.endsWith('test/model')).toBe(true);
   });
+
   it('test transformCsv', () => {
     const strFromCsv = transformCsv('1, 2, "a", "b", 3.14, "2020-07-18 13:51:00", "img.jpg"');
     expect(strFromCsv).toBe('"1, 2, ""a"", ""b"", 3.14, ""2020-07-18 13:51:00"", ""img.jpg"""');
   });
+
+  it('test transformCsv with one element', () => {
+    const strFromCsv = transformCsv('1');
+    expect(strFromCsv).toBe('1');
+  });
+
+  it('test transformCsv without string', () => {
+    const strFromCsv = transformCsv('1, 2');
+    expect(strFromCsv).toBe('"1, 2"');
+  });
+
   it('test os info', async () => {
-    const os = await getOsInfo();
-    switch (platform()) {
-    case 'linux':
-      expect(os).toBe('linux');
-      break;
-    case 'darwin':
-      expect(os).toBe('mac');
-      break;
-    case 'win32':
-      expect(os).toBe('windows');
-      break;
-    default:
-      expect(os).toBe('other');
-    }
+    let mockPlatform = sinon.stub(os, 'platform').returns('linux');
+    let osName = await getOsInfo();
+    expect(osName).toBe('linux');
+    expect(mockPlatform.calledOnce);
+
+    sinon.restore();
+    mockPlatform = sinon.stub(os, 'platform').returns('darwin');
+    osName = await getOsInfo();
+    expect(osName).toBe('mac');
+    expect(mockPlatform.calledOnce);
+
+    sinon.restore();
+    mockPlatform = sinon.stub(os, 'platform').returns('win32');
+    osName = await getOsInfo();
+    expect(osName).toBe('windows');
+    expect(mockPlatform.calledOnce);
+
+    sinon.restore();
+    mockPlatform = sinon.stub(os, 'platform').returns('android');
+    osName = await getOsInfo();
+    expect(osName).toBe('other');
+    expect(mockPlatform.calledOnce);
+  });
+
+  it('test getMetaData', async () => {
+    const mockReadJson = sinon.stub(fs, 'readJSON').resolves({ metadata: {} });
+    const data = await getMetadata('job-id');
+    expect(data).toEqual({});
+    expect(mockReadJson.calledOnce);
+    expect(mockReadJson.args[0]).toEqual([ path.join(constants.PIPCOOK_LOGS, 'job-id', 'log.json') ]);
+  });
+
+  it('test getMetaData with undefined', async () => {
+    const mockReadJson = sinon.stub(fs, 'readJSON').resolves({});
+    const data = await getMetadata('job-id');
+    expect(data).toBe(undefined);
+    expect(mockReadJson.calledOnce);
+    expect(mockReadJson.args[0]).toEqual([ path.join(constants.PIPCOOK_LOGS, 'job-id', 'log.json') ]);
+  });
+
+  it('test getMetaData with nonexistent file', async () => {
+    await expectAsync(getMetadata('nonexistent-id')).toBeRejectedWithError();
   });
 });
 
@@ -127,10 +174,11 @@ describe('test compress utils', () => {
   it('compress dir to tmp dir', async () => {
     const tarFilename = path.join(constants.PIPCOOK_TMPDIR, generateId() + '.tar');
     await compressTarFile(__filename, tarFilename);
-    expect(await fs.pathExists(tarFilename)).toEqual(true);
+    expect(await fs.pathExists(tarFilename)).toBe(true);
     await fs.remove(tarFilename);
   });
 });
+
 describe('test downloading utils', () => {
   it('download a remote zip package and extract to tmp dir', async () => {
     const tmpDir = await downloadAndExtractTo('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip');
@@ -166,6 +214,11 @@ describe('test downloading utils', () => {
     expect(await fs.pathExists(jsonFile)).toBe(true);
     const stats = await fs.stat(jsonFile);
     expect(stats.size).toBeGreaterThan(0);
+  });
+  it('download a nonexistent file', async () => {
+    await expectAsync(
+      download('http://unknown-host/nonexists.zip', './nonexistent.zip')
+    ).toBeRejected();
   });
 });
 

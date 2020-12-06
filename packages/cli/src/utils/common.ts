@@ -7,12 +7,12 @@ import {
   SpawnOptions,
   ExecException
 } from 'child_process';
-import tar from 'tar-stream';
+import * as tar from 'tar-stream';
 import { createGunzip, createUnzip } from 'zlib';
 import { pipeline } from 'stream';
 import { promisify } from 'util';
 import { pathExists, mkdirp, createWriteStream, createReadStream } from 'fs-extra';
-import path from 'path';
+import * as path from 'path';
 import { constants as CoreConstants, PipelineStatus } from '@pipcook/pipcook-core';
 import { PipcookClient } from '@pipcook/sdk';
 import realOra = require('ora');

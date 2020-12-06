@@ -5,6 +5,8 @@ import * as core from '@pipcook/pipcook-core';
 import { strict as assert } from 'assert';
 import { JobRunner } from '../../src/runner/job-runner';
 import { JobStatusChangeEvent } from '../../src/service/trace-manager';
+import { JobParam } from '../../src/model/job';
+import * as util from '../../src/utils';
 
 const runner = new JobRunner({
   job: {} as any,
@@ -13,6 +15,10 @@ const runner = new JobRunner({
   tracer: {} as any,
   runnable: {} as any,
   datasetRoot: __dirname
+});
+
+const jobParams: JobParam[] = core.constants.PLUGINS.map((plugin) => {
+  return { pluginType: plugin, data: {} }
 });
 
 describe('test JobRunner', () => {
@@ -354,9 +360,11 @@ describe('test JobRunner', () => {
     assert.ok(runPlugin.notCalled);
   });
 
-  it('#test run', async () => {
+  it('#test run with model define', async () => {
     const runner = new JobRunner({
-      job: {} as any,
+      job: {
+        params: jobParams 
+      } as any,
       pipeline: {} as any,
       plugins: {
         dataCollect: {
@@ -402,6 +410,7 @@ describe('test JobRunner', () => {
     const runModelDefine = sinon.stub(runner, 'runModelDefine').resolves(mockModelDefineResult);
     const runModelTrain = sinon.stub(runner, 'runModelTrain').resolves(mockModelAfterTraining as any);
     const runModelEvaluate = sinon.stub(runner, 'runModelEvaluate').resolves();
+    sinon.stub(util, 'copyDir').resolves();
     await runner.run();
     assert.deepEqual(runDataCollect.args[0],
       [
@@ -411,6 +420,68 @@ describe('test JobRunner', () => {
     assert.deepStrictEqual(runDataProcess.args[0][0], mockDataset, 'check runDataProcess');
     assert.deepStrictEqual(runDatasetProcess.args[0][0], mockDataset, 'check runDatasetProcess');
     assert.deepStrictEqual(runModelDefine.args[0][0], mockDataset, 'check runModelDefine');
+    assert.ok(runModelTrain.calledOnceWith(mockDataset, mockModel as any, path.join('/workingDir', 'model')));
+    assert.ok(runModelEvaluate.calledOnceWith(mockDataset, mockModelAfterTraining as any, path.join('/workingDir', 'model')));
+    assert.ok(runDataAccess.calledOnce);
+  });
+  it('#test run with model load', async () => {
+    const runner = new JobRunner({
+      job: {} as any,
+      pipeline: {} as any,
+      plugins: {
+        dataCollect: {
+          plugin: { name: 'mockDataCollect', version: 1 },
+          params: '{"mockParam": "dataCollect"}'
+        },
+        dataAccess: {
+          plugin: 'mockDataAccess',
+          params: '{"mockParam": "dataAccess"}'
+        },
+        dataProcess: {
+          plugin: 'mockDataProcess',
+          params: '{"mockParam": "dataProcess"}'
+        },
+        modelLoad: {
+          plugin: 'mockModelLoad',
+          params: '{"mockParam": "modeLoad"}'
+        },
+        modelTrain: {
+          plugin: 'mockModelTrain',
+          params: '{"mockParam": "modeTrain"}'
+        },
+        modelEvaluate: {
+          plugin: 'mockModelEvaluate',
+          params: '{"mockParam": "modelEvaluate"}'
+        }
+      } as any,
+      tracer: {} as any,
+      runnable: { workingDir: '/workingDir'} as any,
+      datasetRoot: __dirname
+    });
+    const mockDataset = { mockDataset: '' };
+    const mockModel = { mockModel: '' };
+    const mockModelAfterTraining = { mockModel: 'after training' };
+    const mockModelLoadResult = {
+      model: mockModel as any,
+      plugin: 'modelLoad' as any
+    }
+    const runDataCollect = sinon.stub(runner, 'runDataCollect').resolves();
+    const runDataAccess = sinon.stub(runner, 'runDataAccess').resolves(mockDataset);
+    const runDataProcess = sinon.stub(runner, 'runDataProcess').resolves();
+    const runDatasetProcess = sinon.stub(runner, 'runDatasetProcess').resolves();
+    const runModelLoad = sinon.stub(runner, 'runModelLoad').resolves(mockModelLoadResult);
+    const runModelTrain = sinon.stub(runner, 'runModelTrain').resolves(mockModelAfterTraining as any);
+    const runModelEvaluate = sinon.stub(runner, 'runModelEvaluate').resolves();
+    sinon.stub(util, 'copyDir').resolves();
+    await runner.run();
+    assert.deepEqual(runDataCollect.args[0],
+      [
+        path.join(__dirname, 'mockDataCollect@1'),
+        path.join('/workingDir', 'model')
+      ]);
+    assert.deepStrictEqual(runDataProcess.args[0][0], mockDataset, 'check runDataProcess');
+    assert.deepStrictEqual(runDatasetProcess.args[0][0], mockDataset, 'check runDatasetProcess');
+    assert.deepStrictEqual(runModelLoad.args[0][0], mockDataset, 'check runModelLoad');
     assert.ok(runModelTrain.calledOnceWith(mockDataset, mockModel as any, path.join('/workingDir', 'model')));
     assert.ok(runModelEvaluate.calledOnceWith(mockDataset, mockModelAfterTraining as any, path.join('/workingDir', 'model')));
     assert.ok(runDataAccess.calledOnce);

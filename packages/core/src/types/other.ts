@@ -3,10 +3,19 @@ export interface Statistic {
   metricValue: number;
 }
 
-export interface EvaluateResult {
+export interface EvaluateResultItem {
   pass?: boolean;
   [key: string]: any;
 }
+
+export interface EvaluateResultOnDatasets {
+  train?: EvaluateResultItem;
+  validate?: EvaluateResultItem;
+  test?: EvaluateResultItem;
+  pass?: boolean;
+}
+
+export type EvaluateResult = EvaluateResultItem | EvaluateResultOnDatasets;
 
 export class EvaluateError extends TypeError {
   public result: EvaluateResult;

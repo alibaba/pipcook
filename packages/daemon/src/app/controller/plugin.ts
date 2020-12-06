@@ -54,7 +54,7 @@ export class PluginController extends BaseEventController {
    */
   @del()
   public async removeAll() {
-    const plugins = await this.pluginManager.list();
+    const plugins = await this.pluginManager.query();
     await this.pluginManager.uninstall(plugins);
     this.ctx.success();
   }
@@ -103,7 +103,7 @@ export class PluginController extends BaseEventController {
    */
   @get()
   public async list() {
-    const plugins = await this.pluginManager.list({
+    const plugins = await this.pluginManager.query({
       datatype: this.ctx.query.datatype,
       category: this.ctx.query.category,
       name: this.ctx.query.name

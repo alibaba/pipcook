@@ -34,7 +34,7 @@ export class ServerSentEmitter {
 
 export const pluginQueue = new Queue({ autostart: true, concurrency: 1 });
 
-async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
+export async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
   if (typeof configPath === 'string') {
     let configJson: RunConfigI;
     const urlObj = url.parse(configPath);
@@ -42,7 +42,7 @@ async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> 
       throw new TypeError('config URI is not supported');
     }
     if ([ 'http:', 'https:' ].indexOf(urlObj.protocol) >= 0) {
-      configJson = JSON.parse(await request(configPath));
+      configJson = JSON.parse(await request.get(configPath));
       for (const key in configJson.plugins) {
         const plugin = configJson.plugins[key];
         if (path.isAbsolute(plugin.package) || plugin.package.startsWith('.')) {
@@ -92,4 +92,39 @@ export async function parseConfig(configPath: string | RunConfigI, isGenerateId 
     modelEvaluate: configJson.plugins.modelEvaluate?.package,
     modelEvaluateParams: parseParams(configJson.plugins.modelEvaluate?.params)
   };
+}
+
+/**
+ * copy the folder with reflink mode
+ */
+export async function copyDir(src: string, dest: string): Promise<void> {
+  const onDir = async (src: string, dest: string) => {
+    await fs.ensureDir(dest);
+    const items = await fs.readdir(src);
+    const copyPromises = items.map(item => copyDir(path.join(src, item), path.join(dest, item)));
+    return Promise.all(copyPromises);
+  };
+
+  const onFile = async (src: string, dest: string, mode: number) => {
+    await fs.copyFile(src, dest, fs.constants.COPYFILE_FICLONE);
+    await fs.chmod(dest, mode);
+  };
+
+  const onLink = async (src: string, dest: string) => {
+    const resolvedSrc = await fs.readlink(src);
+    await fs.symlink(resolvedSrc, dest);
+  };
+
+  const srcStat = await fs.lstat(src);
+  if (srcStat.isDirectory()) {
+    await onDir(src, dest);
+  } else if (
+    srcStat.isFile() ||
+    srcStat.isCharacterDevice() ||
+    srcStat.isBlockDevice()
+  ) {
+    await onFile(src, dest, srcStat.mode);
+  } else if (srcStat.isSymbolicLink()) {
+    await onLink(src, dest);
+  }
 }

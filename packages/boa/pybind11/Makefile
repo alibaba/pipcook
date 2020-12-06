@@ -7,13 +7,21 @@ ARCHIVE_DIR="$(ROOT)/downloads/pybind11-$(VERSION)"
 TARBALL="$(ROOT)/downloads/pybind11-v$(VERSION).tgz"
 URL=https://github.com/pybind/pybind11/archive/v$(VERSION).tar.gz
 
+ifeq ($(DISABLE_AUTO_SWITCH),)
+	# check the network and switch to corresponding mirror.
+	CCODE := $(shell curl https://api.userinfo.io/userinfos | node ../tools/check-network-env.js)
+endif
 UNAME_S := $(shell uname -s)
+
 ifeq ($(UNAME_S),Linux)
 	MD5CMD=md5sum --quiet --check checksums
 	DOWNLOAD=wget -O $(TARBALL) $(URL)
 endif
 ifeq ($(UNAME_S), Darwin)
 	DOWNLOAD=curl -L -o $(TARBALL) $(URL)
+endif
+ifeq ($(CCODE),CN)
+	URL=https://pipcook.oss-cn-hangzhou.aliyuncs.com/mirrors/pybind11-$(VERSION).tar.gz
 endif
 
 all: pybind11

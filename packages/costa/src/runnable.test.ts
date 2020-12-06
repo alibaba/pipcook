@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { pathExists, readdir, symlink, mkdirp, remove } from 'fs-extra';
+import { readdir, ensureSymlink, mkdirp, remove } from 'fs-extra';
 import { Writable } from 'stream';
 import { CostaRuntime } from '../src/runtime';
 import { PluginRunnable } from '../src/runnable';
@@ -55,7 +55,7 @@ describe('start runnable in normal way', () => {
 
   let tmp: any;
   it('should start a nodejs plugin', async () => {
-    const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/nodejs-simple'));
+    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-simple'));
     await costa.install(simple, process);
     tmp = await runnable.start(simple, { foobar: true });
     const stdoutString = logger.stdout.data.toString();
@@ -63,15 +63,11 @@ describe('start runnable in normal way', () => {
   });
 
   it('should start a python plugin', async () => {
-    await mkdirp(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook'));
-    if (await pathExists(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa'))) {
-      await remove(path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa'));
-    }
-    await symlink(
-      path.join(__dirname, '../../../boa'),
-      path.join(__dirname, './plugins/python-simple/node_modules/@pipcook/boa')
+    await ensureSymlink(
+      path.join(__dirname, '../../boa'),
+      path.join(__dirname, '../tests/plugins/python-simple/node_modules/@pipcook/boa')
     );
-    const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-simple'));
+    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/python-simple'));
     await costa.install(simple, process);
     expect(simple.pipcook.runtime).toBe('python');
     // test passing the variable from js to python.
@@ -88,15 +84,12 @@ describe('start runnable in normal way', () => {
   });
 
   it('should start a python plugin with scope package name', async () => {
-    await mkdirp(path.join(__dirname, './plugins/python-scope/node_modules/@pipcook'));
-    if (await pathExists(path.join(__dirname, './plugins/python-scope/node_modules/@pipcook/boa'))) {
-      await remove(path.join(__dirname, './plugins/python-scope/node_modules/@pipcook/boa'));
-    }
-    await symlink(
-      path.join(__dirname, '../../../boa'),
-      path.join(__dirname, './plugins/python-scope/node_modules/@pipcook/boa')
+    await ensureSymlink(
+      path.join(__dirname, '../../boa'),
+      path.join(__dirname, '../tests/plugins/python-scope/node_modules/@pipcook/boa'),
+      'dir'
     );
-    const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/python-scope'));
+    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/python-scope'));
     await costa.install(simple, process);
     // test if the plugin is executed successfully
     await runnable.start(simple, tmp);
@@ -115,7 +108,7 @@ describe('start runnable in normal way', () => {
     const costa = new CostaRuntime(opts);
     runnable = new PluginRunnable(costa, logger);
     await runnable.bootstrap({ logger });
-    const simple = await costa.fetch(path.join(__dirname, '../../test/plugins/nodejs-simple'));
+    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-simple'));
     await costa.install(simple, logger);
     setTimeout(() => {
       runnable.destroy();

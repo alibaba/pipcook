@@ -15,7 +15,7 @@ import {
 } from '@pipcook/pipcook-core';
 import { PluginPackage, PluginRunnable } from '@pipcook/costa';
 import { PipelineModel, PipelineEntity, QueryOptions } from '../model/pipeline';
-import { JobModel, JobEntity } from '../model/job';
+import { JobModel, JobEntity, JobParam } from '../model/job';
 import { PluginManager } from './plugin';
 import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { pluginQueue } from '../utils';
@@ -99,10 +99,6 @@ export class PipelineService {
     JobModel.saveJob(job);
   }
 
-  async getJobsByPipelineId(pipelineId: string): Promise<JobEntity[]> {
-    return JobModel.getJobsByPipelineId(pipelineId);
-  }
-
   async queryJobs(filter: SelectJobsFilter, opts?: QueryOptions): Promise<JobEntity[]> {
     return JobModel.queryJobs(filter, opts);
   }
@@ -111,23 +107,22 @@ export class PipelineService {
     return JobModel.destroy({ truncate: true });
   }
 
-  async removeJobByModels(jobs: JobEntity[]): Promise<number> {
+  async removeJobByEntities(jobs: JobEntity[]): Promise<number> {
     const ids = jobs.map(job => job.id);
     const fsRemoveFutures = [];
     for (const id of ids) {
       fsRemoveFutures.push(fs.remove(`${CoreConstants.PIPCOOK_RUN}/${id}`));
     }
-    const deleteFuture = JobModel.removeJobByModels(jobs);
+    const deleteFuture = JobModel.removeJobByEntities(jobs);
     const results = await Promise.all([
       deleteFuture,
       Promise.all(fsRemoveFutures)
     ]);
     return results[0];
   }
-
-  async createJob(pipelineId: string): Promise<JobEntity> {
+  async createJob(pipelineId: string, params?: JobParam[]): Promise<JobEntity> {
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
-    return JobModel.createJob(pipelineId, specVersion);
+    return JobModel.createJob(pipelineId, specVersion, params ? params : []);
   }
 
   async fetchPlugins(pipeline: PipelineEntity): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
@@ -225,6 +220,7 @@ export class PipelineService {
     });
 
     runner.dispatchJobEvent(PipelineStatus.RUNNING);
+
     try {
       // step1: run job
       const {

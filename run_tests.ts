@@ -16,7 +16,7 @@ if (indexSpec !== -1 && process.argv[indexSpec + 1]) {
 const runner = new JasmineCtor();
 runner.jasmine.DEFAULT_TIMEOUT_INTERVAL = 20 * 60 * 1000;
 runner.loadConfig({
-  spec_files: spec || [ 'src/**/*_test.ts', 'test/**/*.ts' ],
+  spec_files: spec || [ 'src/**/*.test.ts', 'test/**/*.ts', 'tests/*.ts' ],
   random: false
 });
 runner.clearReporters();
