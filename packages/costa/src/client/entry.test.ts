@@ -1,5 +1,5 @@
 
-import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from '../protocol';
+import { PluginProtocol, PluginOperator } from '../protocol';
 import './entry';
 
 const emit = process.emit.bind(process) as any;
