@@ -25,6 +25,13 @@ const waitForDestroyed = 1000;
 // default PLNR(Plugin Load Not Responding) timeout.
 const defaultPluginLoadNotRespondingTimeout = 10 * 1000;
 
+class ReadTimeoutError extends TypeError {
+  constructor() {
+    super('read timeout');
+    this.code = 'READ_TIMEOUT';
+  }
+}
+
 /**
  * The arguments for calling `bootstrap`.
  */
@@ -240,11 +247,24 @@ export class PluginRunnable {
   }
   /**
    * Reads the message, it's blocking the async context util.
+   * @param timeout
    */
-  private async read(): Promise<PluginProtocol> {
+  private async read(timeout?: number): Promise<PluginProtocol> {
+    let notRespondingTimer: NodeJS.Timer;
     return new Promise((resolve, reject) => {
-      this.onread = resolve;
-      this.onreadfail = reject;
+      if (typeof timeout === 'number' && timeout > 0) {
+        notRespondingTimer = setTimeout(() => {
+          return reject(new ReadTimeoutError());
+        }, timeout);
+      }
+      this.onread = (res: PluginProtocol) => {
+        clearTimeout(notRespondingTimer);
+        resolve(res);
+      };
+      this.onreadfail = (err: Error) => {
+        clearTimeout(notRespondingTimer);
+        reject(err);
+      };
     });
   }
   /**
@@ -260,12 +280,13 @@ export class PluginRunnable {
   /**
    * Wait for the next operator util receiving.
    * @param op operator to wait.
+   * @param timeout
    */
-  private async waitOn(op: PluginOperator): Promise<PluginMessage> {
+  private async waitOn(op: PluginOperator, timeout?: number): Promise<PluginMessage> {
     let cur, msg;
     debug(`wait on the next op is: ${op}`);
     do {
-      const data = await this.read();
+      const data = await this.read(timeout);
       cur = data.op;
       msg = data.message;
     } while (cur !== op);
@@ -277,34 +298,25 @@ export class PluginRunnable {
    * @param msg
    */
   private async sendAndWait(op: PluginOperator, msg: PluginMessage, timeout?: number): Promise<PluginMessage> {
-    return new Promise<PluginMessage>((resolve, reject) => {
-      let opNotRespondingTimer: NodeJS.Timer;
-      if (typeof timeout === 'number' && timeout > 0) {
-        opNotRespondingTimer = setTimeout(() => {
-          this.state = 'error';
-          this.handle.kill('SIGKILL');
-          return reject(new TypeError(`send op(${op}) not responding over ${timeout}ms.`));
-        }, timeout);
-      }
+    debug(`start sending ${msg.event} for ${this.id}, and wait for response`);
+    this.send(op, msg);
 
-      debug(`start sending ${msg.event} for ${this.id}, and wait for response`);
-      return Promise.all([
-        this.send(op, msg),
-        this.waitOn(op)
-      ])
-        .then(([ , data ]) => {
-          debug(`received an event ${data.event} from ${this.id}.`);
-          if (data.event !== 'pong') {
-            throw new TypeError('invalid response because the event is not "pong".');
-          }
-          clearTimeout(opNotRespondingTimer);
-          resolve(data);
-        })
-        .catch((err: Error) => {
-          clearTimeout(opNotRespondingTimer);
-          reject(err);
-        });
-    });
+    try {
+      const data = this.waitOn(op, timeout);
+      debug(`received an event ${data.event} from ${this.id}.`);
+      if (data.event !== 'pong') {
+        throw new TypeError('invalid response because the event is not "pong".');
+      }
+    } catch (err) {
+      if (err instanceof ReadTimeoutError) {
+        // set the `error` state and send a SIGKILL to child once a read is timeout.
+        this.state = 'error';
+        this.handle.kill('SIGKILL');
+        console.error(`send op(${op}) not responding over ${timeout}ms, then kill the entry process.`);
+      } else {
+        throw err;
+      }
+    }
   }
   /**
    * handle the messages from peer client.
