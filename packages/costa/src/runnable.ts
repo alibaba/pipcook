@@ -26,6 +26,7 @@ const waitForDestroyed = 1000;
 const defaultPluginLoadNotRespondingTimeout = 10 * 1000;
 
 class ReadTimeoutError extends TypeError {
+  code: string;
   constructor() {
     super('read timeout');
     this.code = 'READ_TIMEOUT';
@@ -302,11 +303,12 @@ export class PluginRunnable {
     this.send(op, msg);
 
     try {
-      const data = this.waitOn(op, timeout);
+      const data = await this.waitOn(op, timeout);
       debug(`received an event ${data.event} from ${this.id}.`);
       if (data.event !== 'pong') {
         throw new TypeError('invalid response because the event is not "pong".');
       }
+      return data;
     } catch (err) {
       if (err instanceof ReadTimeoutError) {
         // set the `error` state and send a SIGKILL to child once a read is timeout.
