@@ -6,7 +6,8 @@ const { Python } = require('bindings')('boa');
 
 // read the conda path from the .CONDA_INSTALL_DIR
 // eslint-disable-next-line no-sync
-const condaPath = fs.readFileSync(path.join(__dirname, '../.CONDA_INSTALL_DIR'), 'utf8');
+const condaDir = fs.readFileSync(path.join(__dirname, '../.CONDA_INSTALL_DIR'), 'utf8');
+const condaPath = path.resolve(__dirname, '..', condaDir)
 if (!process.env.PYTHONHOME) {
   process.env.PYTHONHOME = condaPath;
 }

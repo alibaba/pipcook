@@ -21,7 +21,11 @@ exports.run = (...args) => {
 exports.PLATFORM = os.platform();
 exports.ARCH = os.arch();
 
-exports.getCondaPath = () => fs.readFileSync(CONDA_INSTALL_DIR, 'utf8');
+exports.getCondaPath = () => {
+  const condaDir = fs.readFileSync(CONDA_INSTALL_DIR, 'utf8');
+  return path.resolve(__dirname, '..', condaDir);
+};
+
 exports.printCondaPath = () => console.log(this.getCondaPath());
 exports.initAndGetCondaPath = () => {
   let condaPath;
