@@ -132,6 +132,6 @@ describe('start runnable in normal way', () => {
     const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
     await costa.install(simple, process);
     await expectAsync(r2.start(simple, { foobar: true }))
-      .toBeRejectedWithError(TypeError, 'send op(49) not responding over 500ms.');
+      .toBeRejectedWithError(TypeError, 'read timeout.');
   });
 });

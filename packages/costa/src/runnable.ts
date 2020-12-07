@@ -28,7 +28,7 @@ const defaultPluginLoadNotRespondingTimeout = 10 * 1000;
 class ReadTimeoutError extends TypeError {
   code: string;
   constructor() {
-    super('read timeout');
+    super('read timeout.');
     this.code = 'READ_TIMEOUT';
   }
 }
@@ -315,9 +315,8 @@ export class PluginRunnable {
         this.state = 'error';
         this.handle.kill('SIGKILL');
         console.error(`send op(${op}) not responding over ${timeout}ms, then kill the entry process.`);
-      } else {
-        throw err;
       }
+      throw err;
     }
   }
   /**
