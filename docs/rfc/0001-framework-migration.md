@@ -95,4 +95,9 @@ The framework of daemon will be moved from the original framework to `loopback 4
 
 # Framework migration for Pipboard
 
-The pipboard UI library will be migrated from the original framework to the [new framework](https://ant.design/), and the packaging tools will be migrated from `webpack` to `parcel`. The advantages of internationalization, familiarity of community contributors and convenience of use of `parcel` are mainly considered.
+The pipboard UI library will be migrated from the ice.js to the [ant.design](https://ant.design/) for the following reasons:
+- The icejs has no English documentation, so it is not easy to contribute
+- Compared with the familiarity of community contributors, the ant.design library is higher than icejs
+- Reduce the complexity of the framework to make it easy to maintain. Ice.js contains some complex functions that are unnecessary for pipboard, such as MPA (Multi-page application), SSR (Server-side rendering), Permission routing, etc.
+
+And the packaging tools will be migrated from `webpack` to `parcel`. Mainly compared the configuration complexity, parcel is lower than webpack, easy to use.
