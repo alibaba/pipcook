@@ -26,7 +26,6 @@ exports.getCondaPath = () => {
   return path.resolve(__dirname, '..', condaDir);
 };
 
-
 exports.printCondaPath = () => console.log(this.getCondaPath());
 exports.initAndGetCondaPath = () => {
   let condaPath;
