@@ -1,85 +1,79 @@
 {
-  "name": "@pipcook/daemon",
-  "version": "1.2.0",
-  "description": "pipcook daemon",
-  "dependencies": {
-    "@pipcook/app": "^1.2.0",
-    "@pipcook/costa": "^1.2.0",
-    "@pipcook/pipcook-core": "^1.2.0",
-    "axios": "^0.18.1",
-    "chalk": "^3.0.0",
-    "cls-hooked": "^4.2.2",
-    "debug": "^4.1.1",
-    "egg": "^2.26.1",
-    "egg-cors": "^2.2.3",
-    "fs-extra": "^8.1.0",
-    "glob": "^7.1.6",
-    "glob-promise": "^3.4.0",
-    "http-errors": "^1.8.0",
-    "http-status": "^1.4.2",
-    "joi": "^17.1.1",
-    "midway": "^1.19.0",
-    "queue": "^6.0.1",
-    "request-promise": "^4.2.5",
-    "sequelize": "^6.3.5",
-    "sequelize-cli": "^6.2.0",
-    "sqlite3": "^4.1.1",
-    "ssestream": "^1.1.0"
-  },
-  "devDependencies": {
-    "@types/cls-hooked": "^4.3.0",
-    "@types/http-errors": "^1.8.0",
-    "@types/joi": "^14.3.4",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^10.5.5",
-    "@types/request-promise": "^4.1.46",
-    "cross-env": "^6.0.0",
-    "egg-ci": "^1.8.0",
-    "midway-bin": "1",
-    "midway-mock": "1",
-    "nyc": "^15.1.0",
-    "sinon": "^9.0.3",
-    "ts-node": "^8.3.0",
-    "tslib": "^1.8.1",
-    "tslint": "^5.11.0",
-    "tslint-midway-contrib": "1",
-    "typescript": "^3.5.0"
-  },
+  "name": "daemon",
+  "version": "0.0.1",
+  "description": "pipcook server",
+  "keywords": [
+    "loopback-application",
+    "loopback"
+  ],
+  "main": "dist",
+  "types": "dist/index.d.ts",
   "engines": {
-    "node": ">=10.16.0"
+    "node": ">=10.16"
   },
   "scripts": {
-    "start_build": "npm run compile",
-    "clear": "midway-bin clean",
-    "dev": "cross-env NODE_ENV=local midway-bin dev --port=6927 --ts",
-    "debug": "cross-env NODE_ENV=local midway-bin debug --port=6927 --ts",
-    "cov": "midway-bin cov --ts -x 'src/migrations' --nyc='-r lcov -r text-summary'",
-    "lint": "tslint -p tsconfig.json -t stylish",
-    "ci": "npm run cov",
-    "compile": "midway-bin build -c --port=6927",
-    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts --format=cjs --tsconfig=tsconfig.json --outdir=dist",
-    "clean": "rm -rf src/app/public",
-    "test": "midway-bin test --ts --full-trace",
-    "migration": "sequelize-cli db:migrate",
-    "migration:undo": "sequelize-cli db:migrate:undo",
-    "benchmark": "node benchmark/bootstrap.js"
+    "build": "lb-tsc",
+    "build:watch": "lb-tsc --watch",
+    "lint": "yarn run prettier:check && yarn run eslint",
+    "lint:fix": "yarn run eslint:fix && yarn run prettier:fix",
+    "prettier:cli": "lb-prettier \"**/*.ts\" \"**/*.js\"",
+    "prettier:check": "yarn run prettier:cli -l",
+    "prettier:fix": "yarn run prettier:cli --write",
+    "eslint": "lb-eslint --report-unused-disable-directives .",
+    "eslint:fix": "yarn run eslint --fix",
+    "pretest": "yarn run rebuild",
+    "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
+    "ava": "ava",
+    "posttest": "yarn run lint",
+    "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && yarn run posttest",
+    "premigrate": "npm run build",
+    "migrate": "node ./dist/migrate",
+    "preopenapi-spec": "npm run build",
+    "openapi-spec": "node ./dist/openapi-spec",
+    "rebuild": "yarn run clean && yarn run build",
+    "prestart": "yarn run rebuild",
+    "start": "node -r source-map-support/register .",
+    "clean": "lb-clean dist *.tsbuildinfo .eslintcache"
   },
-  "ci": {
-    "version": "10"
-  },
-  "midway-bin-clean": [
-    ".vscode/.tsbuildinfo",
-    "dist"
-  ],
   "repository": {
-    "type": "git",
-    "url": ""
+    "type": "git"
   },
-  "author": "anonymous",
-  "license": "Apache 2.0",
-  "midway-server-options": {
-    "port": 6927,
-    "mode": "single"
+  "author": "FeelyChau <feely@outlook.com>",
+  "license": "",
+  "files": [
+    "README.md",
+    "dist",
+    "src",
+    "!*/__tests__"
+  ],
+  "dependencies": {
+    "@loopback/boot": "^3.1.0",
+    "@loopback/core": "^2.12.0",
+    "@loopback/repository": "^3.2.0",
+    "@loopback/rest": "^9.0.0",
+    "@loopback/rest-explorer": "^3.0.3",
+    "@loopback/service-proxy": "^3.0.3",
+    "@pipcook/costa": "^1.2.0",
+    "@pipcook/pipcook-core": "^1.2.0",
+    "debug": "^4.3.1",
+    "loopback-connector-sqlite3": "git+ssh://git@github.com:HugoPoi/loopback-connector-sqlite3.git",
+    "multer": "^1.4.2",
+    "queue": "^6.0.1",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "ssestream": "^1.1.0",
+    "tslib": "^2.0.0"
   },
-  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
+  "devDependencies": {
+    "@loopback/build": "^6.2.6",
+    "@loopback/eslint-config": "^10.0.2",
+    "@loopback/testlab": "^3.2.8",
+    "@types/multer": "^1.4.5",
+    "@types/node": "^10.17.44",
+    "@types/request-promise": "^4.1.46",
+    "ava": "^3.13.0",
+    "eslint": "^7.12.1",
+    "source-map-support": "^0.5.19",
+    "typescript": "~4.0.5"
+  }
 }
