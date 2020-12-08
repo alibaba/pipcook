@@ -131,6 +131,9 @@ jobs:
     - name: Pipcook plugin development
       run: |
         ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
+        ./packages/cli/dist/bin/pipcook plugin create foobar
+        ./packages/cli/dist/bin/pipcook plugin create foobar2 --category data-collect
+        ./packages/cli/dist/bin/pipcook plugin create foobar3 --python
     - name: Daemon start on customized port
       run: |
         ./packages/cli/dist/bin/pipcook daemon stop
