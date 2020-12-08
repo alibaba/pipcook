@@ -18,7 +18,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 #endif
   void* r = dlopen(libpython, RTLD_LAZY | RTLD_GLOBAL);
   if (r == NULL) {
-  	Error::New(env, "dlopen libpython failed.").ThrowAsJavaScriptException();
+    Error::New(env, "dlopen libpython failed.").ThrowAsJavaScriptException();
     return exports;
   }
 
