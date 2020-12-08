@@ -97,7 +97,7 @@ The framework of daemon will be moved from the original framework to `loopback 4
 
 The pipboard UI library will be migrated from the icejs to the [ant.design](https://ant.design/) for the following reasons:
 - The icejs has no English documentation, so it is not easy to foreign contributors
-- Compared with the familiarity of community contributors, the [ant.design](https://ant.design/) library is higher than icejs
+- Compared with the familiarity of community contributors, the [ant.design](https://ant.design/) library is more widely used
 - Reduce the complexity of the framework to make it easy to maintain. The icejs contains some complex functions that are unnecessary for pipboard, such as MPA (Multi-page application), SSR (Server-side rendering), Permission routing, etc
 
 And the packaging tools will be migrated from `webpack` to `parcel`. Mainly compared the configuration complexity, parcel is lower than webpack, easy to use.
