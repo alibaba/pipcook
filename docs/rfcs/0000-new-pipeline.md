@@ -171,62 +171,242 @@ And we MUST support pipeline check based on the JSON schema as:
       "type": "array",
       "title": "The plugins schema",
       "description": "An explanation about the purpose of this instance.",
-      "additionalItems": true,
+      "additionalItems": false,
       "items": {
         "$id": "#/properties/plugins/items",
         "anyOf": [
           {
-            "$id": "#/properties/plugins/items/anyOf/0",
-            "description": "An explanation about the purpose of this instance.",
-            "examples": [
-              {
-                "type": "dataCollect",
-                "package": "@pipcook/plugins-chinese-poem-data-collect",
-                "params": {
-                  "url": "foobar"
-                }
-              }
-            ],
+            "$id": "#/properties/plugins/items/data-collect",
             "required": [
               "type",
               "package"
             ],
-            "title": "plugin types",
+            "title": "a type of plugin to collect the dataset from the source url.",
             "type": "object",
+            "minItems": 1,
+            "maxItems": 1,
             "properties": {
               "type": {
-                "$id": "#/properties/plugins/items/anyOf/0/properties/type",
-                "description": "An explanation about the purpose of this instance.",
-                "examples": [
-                  "dataCollect"
-                ],
-                "title": "The type schema",
-                "enum": [
-                  "dataCollect",
-                  "dataAccess",
-                  "dataProcess",
-                  "datasetProcess",
-                  "modelDefine",
-                  "modelTrain",
-                  "modelEvaluate",
-                  "deploy"
-                ],
+                "enum": [ "dataCollect" ],
                 "type": "string"
               },
               "package": {
-                "$id": "#/properties/plugins/items/anyOf/0/properties/package",
                 "type": "string",
                 "title": "The package uri of the plugin",
-                "description": "An explanation about the purpose of this instance.",
-                "default": "",
-                "examples": [
-                  "@pipcook/plugins-chinese-poem-data-collect"
-                ]
+                "default": ""
               },
               "params": {
-                "$id": "#/properties/plugins/items/anyOf/0/properties/params",
                 "default": {},
-                "description": "An explanation about the purpose of this instance.",
+                "title": "The params of the plugin",
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "title": "the data source url."
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          },
+          {
+            "$id": "#/properties/plugins/items/data-access",
+            "required": [
+              "type",
+              "package"
+            ],
+            "title": "a type of plugin to create the common `UniDataset` object.",
+            "type": "object",
+            "minItems": 1,
+            "maxItems": 1,
+            "properties": {
+              "type": {
+                "enum": [ "dataAccess" ],
+                "type": "string"
+              },
+              "package": {
+                "type": "string",
+                "title": "The package uri of the plugin",
+                "default": ""
+              },
+              "params": {
+                "default": {},
+                "title": "The params of the plugin",
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          },
+          {
+            "$id": "#/properties/plugins/items/data-process",
+            "required": [
+              "type",
+              "package"
+            ],
+            "title": "a type of plugin to process the sample/example in the `UniDataset`.",
+            "type": "object",
+            "minItems": 0,
+            "properties": {
+              "type": {
+                "enum": [ "dataProcess" ],
+                "type": "string"
+              },
+              "package": {
+                "type": "string",
+                "title": "The package uri of the plugin",
+                "default": ""
+              },
+              "params": {
+                "default": {},
+                "title": "The params of the plugin",
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          },
+          {
+            "$id": "#/properties/plugins/items/dataset-process",
+            "required": [
+              "type",
+              "package"
+            ],
+            "title": "a type of plugin to process the whole dataset.",
+            "type": "object",
+            "minItems": 0,
+            "properties": {
+              "type": {
+                "enum": [ "dataProcess" ],
+                "type": "string"
+              },
+              "package": {
+                "type": "string",
+                "title": "The package uri of the plugin",
+                "default": ""
+              },
+              "params": {
+                "default": {},
+                "title": "The params of the plugin",
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          },
+          {
+            "$id": "#/properties/plugins/items/model-define",
+            "required": [
+              "type",
+              "package"
+            ],
+            "title": "a type of plugin to define the model based on `UniDataset`'s metadata.",
+            "type": "object",
+            "minItems": 0,
+            "maxItems": 1,
+            "properties": {
+              "type": {
+                "enum": [ "modelDefine" ],
+                "type": "string"
+              },
+              "package": {
+                "type": "string",
+                "title": "The package uri of the plugin",
+                "default": ""
+              },
+              "params": {
+                "default": {},
+                "title": "The params of the plugin",
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          },
+          {
+            "$id": "#/properties/plugins/items/model-train",
+            "required": [
+              "type",
+              "package"
+            ],
+            "title": "a type of plugin to train the `UniModel` created by the upstream model-define plugin.",
+            "type": "object",
+            "minItems": 0,
+            "maxItems": 1,
+            "properties": {
+              "type": {
+                "enum": [ "modelTrain" ],
+                "type": "string"
+              },
+              "package": {
+                "type": "string",
+                "title": "The package uri of the plugin",
+                "default": ""
+              },
+              "params": {
+                "default": {},
+                "title": "The params of the plugin",
+                "type": "object",
+                "properties": {
+                  "epoch": {
+                    "type": "number",
+                    "title": "the train epoch"
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          },
+          {
+            "$id": "#/properties/plugins/items/model-evaluate",
+            "required": [
+              "type",
+              "package"
+            ],
+            "title": "a type of plugin to evaluate the trained `UniModel` instance.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": [ "modelEvaluate" ],
+                "type": "string"
+              },
+              "package": {
+                "type": "string",
+                "title": "The package uri of the plugin",
+                "default": ""
+              },
+              "params": {
+                "default": {},
+                "title": "The params of the plugin",
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          },
+          {
+            "$id": "#/properties/plugins/items/deploy",
+            "required": [
+              "type",
+              "package"
+            ],
+            "title": "a type of plugin to deploy the upstream artifacts.",
+            "type": "object",
+            "minItems": 0,
+            "properties": {
+              "type": {
+                "enum": [ "deploy" ],
+                "type": "string"
+              },
+              "package": {
+                "type": "string",
+                "title": "The package uri of the plugin",
+                "default": ""
+              },
+              "params": {
+                "default": {},
                 "title": "The params of the plugin",
                 "type": "object",
                 "additionalProperties": true
@@ -238,7 +418,7 @@ And we MUST support pipeline check based on the JSON schema as:
       }
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }
 ```
 
