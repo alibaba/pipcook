@@ -1,0 +1,13 @@
+{
+  "name": "nodejs-not-responding",
+  "version": "1.0.0",
+  "description": "test nodejs not responding",
+  "main": "index.js",
+  "dependencies": {
+    "@pipcook/pipcook-core": "^1.0.4"
+  },
+  "pipcook": {
+    "category": "modelDefine",
+    "datatype": "text"
+  }
+}

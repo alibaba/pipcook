@@ -7,6 +7,7 @@ import { pipeLog, LogStdio } from './utils';
 import Debug from 'debug';
 import { generateId } from '@pipcook/pipcook-core';
 const debug = Debug('costa.runnable');
+
 /**
  * Returns when called `start()`
  */
@@ -20,6 +21,18 @@ export class RunnableResponse implements PluginResponse {
 
 // wait 1000ms for chile process finish.
 const waitForDestroyed = 1000;
+
+// default PLNR(Plugin Load Not Responding) timeout.
+const defaultPluginLoadNotRespondingTimeout = 10 * 1000;
+
+class ReadTimeoutError extends TypeError {
+  code: string;
+  constructor() {
+    super('read timeout.');
+    this.code = 'READ_TIMEOUT';
+  }
+}
+
 /**
  * The arguments for calling `bootstrap`.
  */
@@ -36,6 +49,10 @@ export interface BootstrapArg {
    * the logger
    */
   logger?: LogStdio;
+  /**
+   * the timeout to not responding when loading the plugin.
+   */
+  pluginLoadNotRespondingTimeout?: number;
 }
 
 /**
@@ -49,8 +66,15 @@ export class PluginRunnable {
   private onread: Function | null;
   private onreadfail: Function | null;
   private ondestroyed: Function | null;
+
+  // private states
+  private queue: PluginProtocol[] = [];
+  private awaitingMessage = false;
+
   // timer for wait the process to exit itself
-  private notRespondTimer: NodeJS.Timeout;
+  private notRespondingTimer: NodeJS.Timeout;
+  private pluginLoadNotRespondingTimeout: number = defaultPluginLoadNotRespondingTimeout;
+
   /**
    * The runnable id.
    */
@@ -69,7 +93,7 @@ export class PluginRunnable {
   /**
    * The current state.
    */
-  public state: 'init' | 'idle' | 'busy';
+  public state: 'init' | 'idle' | 'busy' | 'error';
 
   /**
    * The flag somebody stop running
@@ -97,6 +121,9 @@ export class PluginRunnable {
    */
   async bootstrap(arg: BootstrapArg): Promise<void> {
     const compPath = this.workingDir;
+    if (arg.pluginLoadNotRespondingTimeout) {
+      this.pluginLoadNotRespondingTimeout = arg.pluginLoadNotRespondingTimeout;
+    }
 
     debug(`make sure the component dir is existed.`);
     await Promise.all([ ensureDir(compPath + '/node_modules'), ensureDir(this.dataDir) ]);
@@ -161,6 +188,15 @@ export class PluginRunnable {
       path.join(installDir, 'node_modules', pkg.name),
       compPath + `/node_modules/${pkg.name}`);
 
+    // log all the requirements are ready to tell the debugger it's going to run.
+    debug(`env is ready, start loading the plugin(${pkg.name}) at ${this.id}.`);
+    await this.sendAndWait(PluginOperator.WRITE, {
+      event: 'load',
+      params: [ pkg ]
+    }, this.pluginLoadNotRespondingTimeout);
+
+    // when the `load` is complete, start the plugin.
+    debug(`loaded the plugin(${pkg.name}), start it at ${this.id}.`);
     const resp = await this.sendAndWait(PluginOperator.WRITE, {
       event: 'start',
       params: [
@@ -168,6 +204,8 @@ export class PluginRunnable {
         ...args
       ]
     });
+
+    // start is end, now set it to idle.
     this.state = 'idle';
 
     // return if the result id is provided.
@@ -186,7 +224,8 @@ export class PluginRunnable {
     }
     this.canceled = true;
     // if not exit after `waitForDestroied`, we need to kill it directly.
-    this.notRespondTimer = setTimeout(() => {
+    this.notRespondingTimer = setTimeout(() => {
+      this.state = 'error';
       this.handle.kill('SIGKILL');
     }, waitForDestroyed);
     await this.send(PluginOperator.WRITE, { event: 'destroy' });
@@ -215,11 +254,24 @@ export class PluginRunnable {
   }
   /**
    * Reads the message, it's blocking the async context util.
+   * @param timeout
    */
-  private async read(): Promise<PluginProtocol> {
+  private async read(timeout?: number): Promise<PluginProtocol> {
+    let notRespondingTimer: NodeJS.Timer;
     return new Promise((resolve, reject) => {
-      this.onread = resolve;
-      this.onreadfail = reject;
+      if (typeof timeout === 'number' && timeout > 0) {
+        notRespondingTimer = setTimeout(() => {
+          return reject(new ReadTimeoutError());
+        }, timeout);
+      }
+      this.onread = (res: PluginProtocol) => {
+        clearTimeout(notRespondingTimer);
+        resolve(res);
+      };
+      this.onreadfail = (err: Error) => {
+        clearTimeout(notRespondingTimer);
+        reject(err);
+      };
     });
   }
   /**
@@ -235,11 +287,13 @@ export class PluginRunnable {
   /**
    * Wait for the next operator util receiving.
    * @param op operator to wait.
+   * @param timeout
    */
-  private async waitOn(op: PluginOperator): Promise<PluginMessage> {
+  private async waitOn(op: PluginOperator, timeout?: number): Promise<PluginMessage> {
     let cur, msg;
+    debug(`wait on the next op is: ${op}`);
     do {
-      const data = await this.read();
+      const data = await this.read(timeout);
       cur = data.op;
       msg = data.message;
     } while (cur !== op);
@@ -250,22 +304,33 @@ export class PluginRunnable {
    * @param op
    * @param msg
    */
-  private async sendAndWait(op: PluginOperator, msg: PluginMessage): Promise<PluginMessage> {
-    await this.send(op, msg);
-    debug(`sent ${msg.event} for ${this.id}, and wait for response`);
+  private async sendAndWait(op: PluginOperator, msg: PluginMessage, timeout?: number): Promise<PluginMessage> {
+    debug(`start sending ${msg.event} for ${this.id}, and wait for response`);
+    this.send(op, msg);
 
-    const resp = await this.waitOn(op);
-    if (resp.event !== 'pong') {
-      throw new TypeError('invalid response because the event is not "pong".');
+    try {
+      const data = await this.waitOn(op, timeout);
+      debug(`received an event ${data.event} from ${this.id}.`);
+      if (data.event !== 'pong') {
+        throw new TypeError('invalid response because the event is not "pong".');
+      }
+      return data;
+    } catch (err) {
+      if (err instanceof ReadTimeoutError) {
+        // set the `error` state and send a SIGKILL to child once a read is timeout.
+        this.state = 'error';
+        this.handle.kill('SIGKILL');
+        console.error(`send op(${op}) not responding over ${timeout}ms, then kill the entry process.`);
+      }
+      throw err;
     }
-    return resp;
   }
-
   /**
    * handle the messages from peer client.
    * @param msg
    */
   private handleMessage(msg: string) {
+    debug('recv a raw message', msg);
     const proto = PluginProtocol.parse(msg);
     if (typeof this.onread === 'function') {
       this.onread(proto);
@@ -276,9 +341,9 @@ export class PluginRunnable {
    */
   private async afterDestroy(code: number, signal: NodeJS.Signals): Promise<void> {
     debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
-    if (this.notRespondTimer) {
-      clearTimeout(this.notRespondTimer);
-      this.notRespondTimer = null;
+    if (this.notRespondingTimer) {
+      clearTimeout(this.notRespondingTimer);
+      this.notRespondingTimer = null;
     }
     // FIXME(Yorkie): remove component directory?
     // await remove(path.join(this.rt.options.componentDir, this.id));

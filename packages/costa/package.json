@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "pretest": "rm -rf .tests",
-    "test": "ts-node ../../run_tests.ts",
+    "test": "DEBUG=costa* ts-node ../../run_tests.ts",
     "cov": "nyc --reporter=text-summary npm run test",
     "cov:report": "nyc report -r=lcov",
     "build": "npm run clean && npm run compile",
