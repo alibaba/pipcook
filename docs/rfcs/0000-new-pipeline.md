@@ -202,7 +202,8 @@ And we MUST support pipeline check based on the JSON schema as:
                 "properties": {
                   "url": {
                     "type": "string",
-                    "title": "the data source url."
+                    "title": "the data source url.",
+                    "optional": true
                   }
                 },
                 "additionalProperties": true
@@ -349,7 +350,7 @@ And we MUST support pipeline check based on the JSON schema as:
                 "title": "The params of the plugin",
                 "type": "object",
                 "properties": {
-                  "epoch": {
+                  "epochs": {
                     "type": "number",
                     "title": "the train epoch"
                   }
