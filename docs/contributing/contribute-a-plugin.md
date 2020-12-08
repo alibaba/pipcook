@@ -6,10 +6,10 @@ We strongly recommend that you first understand the [plugin specification](../sp
 
 ## Get Started
 
-To get started with developing a new plugin, [Pipcook Tools][] provides `pipcook plugin-dev`:
+To get started with developing a new plugin, [Pipcook Tools][] provides `pipcook plugin create`:
 
 ```sh
-$ pipcook plugin-dev --type <category> --name <plugin>
+$ pipcook plugin create --category <name> foobar
 ```
 
 A plugin script is a TypeScript function that inherits from the corresponding plugin interface, for exmaple, a `DataCollectType` plugin will look like this:
@@ -78,6 +78,12 @@ In this way, when Pipcook loads the plugin, it will use the Python loader to loa
     }
   }
 }
+```
+
+You can also quickly initialize a Python plugin via the command line:
+
+```sh
+$ pipcook plugin create foobar --python
 ```
 
 ## Release
