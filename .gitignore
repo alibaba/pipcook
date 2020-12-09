@@ -29,3 +29,5 @@ __pycache__
 *.pb
 coverage
 .nyc_output
+package-lock.json
+
