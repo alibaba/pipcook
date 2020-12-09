@@ -6,7 +6,7 @@ import { pluginQueue } from '../utils';
 // import { readJSON } from 'fs-extra';
 import { CostaRuntime } from '@pipcook/costa';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
-import { repository } from '@loopback/repository';
+import { model, repository } from '@loopback/repository';
 import { service } from '@loopback/core';
 import { Plugin } from '../models';
 import { PluginRepository } from '../repositories';
@@ -15,6 +15,7 @@ import { property } from '@loopback/repository';
 export class PluginTraceResp extends Plugin {
   @property({ type: 'string' })
   public traceId: string;
+
   constructor() {
     super();
   }
@@ -31,7 +32,7 @@ export class PluginService {
     public traceService: TraceService
   ) {
     const npmRegistryPrefix = 'https://registry.npmjs.com/';
-    // TODO(feely): fix the boot code
+    // FIXME(feely): fix the boot code
     // try {
     //   const config = await readJSON(CoreConstants.PIPCOOK_DAEMON_CONFIG);
     //   npmRegistryPrefix = config.npmRegistryPrefix || npmRegistryPrefix;

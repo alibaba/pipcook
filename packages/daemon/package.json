@@ -1,15 +1,17 @@
 {
   "name": "daemon",
-  "version": "0.0.1",
-  "description": "pipcook server",
+  "version": "2.0.0",
+  "description": "Pipcook Gateway",
   "keywords": [
+    "pipcook",
+    "machine-learning",
     "loopback-application",
     "loopback"
   ],
   "main": "dist",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": ">=10.16"
+    "node": ">=12.19"
   },
   "scripts": {
     "build": "lb-tsc",
@@ -39,7 +41,7 @@
     "type": "git"
   },
   "author": "FeelyChau <feely@outlook.com>",
-  "license": "",
+  "license": "Apache 2.0",
   "files": [
     "README.md",
     "dist",

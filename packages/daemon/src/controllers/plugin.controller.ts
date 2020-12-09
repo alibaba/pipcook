@@ -1,6 +1,8 @@
 import {
   Filter,
-  FilterExcludingWhere,
+  Model,
+  model,
+  property,
   repository
 } from '@loopback/repository';
 import { service, inject } from '@loopback/core';
@@ -10,7 +12,7 @@ import {
   getJsonSchema,
   post, put,
   Request, Response,
-  requestBody, RestBindings
+  requestBody, RestBindings, getJsonSchemaRef
 } from '@loopback/rest';
 import { Plugin } from '../models';
 import { PluginRepository } from '../repositories';
@@ -21,9 +23,19 @@ import multer from 'multer';
 import Debug from 'debug';
 const debug = Debug('daemon.app.plugin');
 
-export interface PluginInstallPararmers {
-  name: string,
-  pyIndex: string
+@model()
+export class PluginInstallPararmers extends Model {
+  @property({ required: true })
+  name: string;
+  @property({
+    jsonSchema: {
+      type: 'string',
+      format: 'uri',
+      pattern: '^(https?|http?)://',
+      minLength: 7,
+      maxLength: 255
+  }})
+  pyIndex: string;
 }
 
 @api({ basePath: '/api/plugin' })
@@ -47,7 +59,7 @@ export class PluginController extends BaseEventController {
         description: 'Plugin model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Plugin)
+            schema: getModelSchemaRef(PluginTraceResp)
           }
         }
       }
@@ -57,19 +69,7 @@ export class PluginController extends BaseEventController {
     @requestBody({
       content: {
         'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              name: { type: 'string' },
-              url: {
-                type: 'string',
-                format: 'uri',
-                pattern: '^(https?|http?)://',
-                minLength: 1,
-                maxLength: 255
-              }
-            }
-          }
+          schema: getModelSchemaRef(PluginInstallPararmers)
         }
       }
     })
@@ -97,7 +97,13 @@ export class PluginController extends BaseEventController {
   })
   async reInstallById(
     @param.path.string('id') id: string,
-    @requestBody() params: PluginInstallPararmers
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(PluginInstallPararmers)
+        }
+      }
+    }) params: PluginInstallPararmers
   ): Promise<PluginTraceResp> {
     const { name, pyIndex } = params;
     debug(`reinstall plugin, checking info: ${name} ${pyIndex}.`);
@@ -180,8 +186,7 @@ export class PluginController extends BaseEventController {
     }
   })
   async findById(
-    @param.path.string('id') id: string,
-    @param.filter(Plugin, { exclude: 'where' }) filter?: FilterExcludingWhere<Plugin>
+    @param.path.string('id') id: string
   ): Promise<Plugin> {
     return this.pluginRepository.findById(id);
   }
@@ -216,7 +221,7 @@ export class PluginController extends BaseEventController {
     }
   })
   async list(
-    @param.filter(Plugin) filter?: Filter<Plugin>,
+    @param.filter(Plugin) filter?: Filter<Plugin>
   ): Promise<Plugin[]> {
     return this.pluginRepository.find(filter);
   }
