@@ -52,7 +52,7 @@
     "@types/eventsource": "^1.1.2",
     "@types/inquirer": "^6.5.0",
     "@types/jasmine": "^3.5.7",
-    "@types/semver": "^7.1.0",
+    "@types/semver": "^7.3.4",
     "nyc": "^15.1.0"
   },
   "publishConfig": {

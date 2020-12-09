@@ -85,7 +85,7 @@ Prepare the following on your machine:
 
 | Installer   | Version Range |
 |-------------|---------------|
-| [Node.js][] | >= 12         |
+| [Node.js][] | >= 12.19      |
 | [npm][]     | >= 6.1        |
 
 Install the command-line tool for managing [Pipcook][] projects:
