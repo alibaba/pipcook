@@ -6,7 +6,7 @@ Pipcook 乐于开发者为我们贡献插件以扩展 Pipcook 的功能。 本�
 
 ## 新手入门
 
-插件开发从一行命令开始：`pipcook plugin-dev`：
+插件开发从一行命令开始：`pipcook plugin create`：
 
 ```sh
 $ pipcook plugin create --category <name> foobar
