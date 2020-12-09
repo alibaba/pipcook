@@ -32,7 +32,7 @@ jobs:
             echo "Last commit is made @ $date"
             
             if [ -n "${date}" ]; then
-              echo ::set-env name=UPDATED::true
+              echo "UPDATED=true" >> $GITHUB_ENV
             fi
         shell: bash
 
