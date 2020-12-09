@@ -6,20 +6,11 @@ import { pluginQueue } from '../utils';
 // import { readJSON } from 'fs-extra';
 import { CostaRuntime } from '@pipcook/costa';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
-import { model, repository } from '@loopback/repository';
+import { repository } from '@loopback/repository';
 import { service } from '@loopback/core';
 import { Plugin } from '../models';
 import { PluginRepository } from '../repositories';
-import { property } from '@loopback/repository';
-
-export class PluginTraceResp extends Plugin {
-  @property({ type: 'string' })
-  public traceId: string;
-
-  constructor() {
-    super();
-  }
-}
+import { PluginTraceResp } from './interface';
 
 @injectable({ scope: BindingScope.TRANSIENT })
 export class PluginService {

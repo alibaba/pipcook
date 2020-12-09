@@ -1,8 +1,5 @@
 import {
   Filter,
-  Model,
-  model,
-  property,
   repository
 } from '@loopback/repository';
 import { service, inject } from '@loopback/core';
@@ -12,31 +9,26 @@ import {
   getJsonSchema,
   post, put,
   Request, Response,
-  requestBody, RestBindings, getJsonSchemaRef
+  requestBody, RestBindings
 } from '@loopback/rest';
 import { Plugin } from '../models';
 import { PluginRepository } from '../repositories';
 import { PluginService, PluginTraceResp } from '../services';
+import { PluginInstallPararmers } from './interface';
 import { BaseEventController } from './base';
 import { PluginPackage } from '@pipcook/costa';
 import multer from 'multer';
 import Debug from 'debug';
+
 const debug = Debug('daemon.app.plugin');
 
-@model()
-export class PluginInstallPararmers extends Model {
-  @property({ required: true })
-  name: string;
-  @property({
-    jsonSchema: {
-      type: 'string',
-      format: 'uri',
-      pattern: '^(https?|http?)://',
-      minLength: 7,
-      maxLength: 255
-  }})
-  pyIndex: string;
-}
+export const pluginInstallSpec = {
+	content: {
+	  'application/json': {
+		schema: getModelSchemaRef(PluginInstallPararmers)
+	  }
+	}
+};
 
 @api({ basePath: '/api/plugin' })
 export class PluginController extends BaseEventController {
@@ -66,14 +58,7 @@ export class PluginController extends BaseEventController {
     }
   })
   async create(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(PluginInstallPararmers)
-        }
-      }
-    })
-    params: PluginInstallPararmers
+    @requestBody(pluginInstallSpec) params: PluginInstallPararmers
   ): Promise<PluginTraceResp> {
     const { name, pyIndex } = params;
     debug(`plugin create, checking info: ${name} ${pyIndex}.`);
@@ -83,7 +68,7 @@ export class PluginController extends BaseEventController {
   /**
    * reinstall plugin
    */
-  @put('/{id}', {
+  @put('/', {
     responses: {
       '204': {
         description: 'Plugin reinstall success',
@@ -96,14 +81,7 @@ export class PluginController extends BaseEventController {
     }
   })
   async reInstallById(
-    @param.path.string('id') id: string,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(PluginInstallPararmers)
-        }
-      }
-    }) params: PluginInstallPararmers
+    @requestBody(pluginInstallSpec) params: PluginInstallPararmers
   ): Promise<PluginTraceResp> {
     const { name, pyIndex } = params;
     debug(`reinstall plugin, checking info: ${name} ${pyIndex}.`);

@@ -1,7 +1,7 @@
 {
-  "name": "daemon",
+  "name": "@pipcook/daemon",
   "version": "2.0.0",
-  "description": "Pipcook Gateway",
+  "description": "pipcook daemon",
   "keywords": [
     "pipcook",
     "machine-learning",
@@ -40,7 +40,7 @@
   "repository": {
     "type": "git"
   },
-  "author": "FeelyChau <feely@outlook.com>",
+  "author": "anonymous",
   "license": "Apache 2.0",
   "files": [
     "README.md",

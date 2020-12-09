@@ -1,5 +1,5 @@
 import Queue from 'queue';
-import { RequestContext } from '@loopback/rest';
+import { RequestContext, Request } from '@loopback/rest';
 import SseStream from 'ssestream';
 import * as path from 'path';
 import * as fs from 'fs-extra';
@@ -10,6 +10,8 @@ import {
   RunConfigI
 } from '@pipcook/pipcook-core';
 import { Pipeline } from '../models';
+import { Readable } from 'stream';
+import multer from 'multer';
 
 export class ServerSentEmitter {
   private handle: SseStream;
@@ -85,4 +87,60 @@ export async function parseConfig(configPath: string | RunConfigI): Promise<Pipe
     modelEvaluate: configJson.plugins.modelEvaluate?.package,
     modelEvaluateParams: configJson.plugins.modelEvaluate?.params
   });
+}
+
+/**
+ * copy the folder with reflink mode
+ */
+export async function copyDir(src: string, dest: string): Promise<void> {
+  const onDir = async (src: string, dest: string) => {
+    await fs.ensureDir(dest);
+    const items = await fs.readdir(src);
+    const copyPromises = items.map(item => copyDir(path.join(src, item), path.join(dest, item)));
+    return Promise.all(copyPromises);
+  };
+
+  const onFile = async (src: string, dest: string, mode: number) => {
+    await fs.copyFile(src, dest, fs.constants.COPYFILE_FICLONE);
+    await fs.chmod(dest, mode);
+  };
+
+  const onLink = async (src: string, dest: string) => {
+    const resolvedSrc = await fs.readlink(src);
+    await fs.symlink(resolvedSrc, dest);
+  };
+
+  const srcStat = await fs.lstat(src);
+  if (srcStat.isDirectory()) {
+    await onDir(src, dest);
+  } else if (
+    srcStat.isFile() ||
+    srcStat.isCharacterDevice() ||
+    srcStat.isBlockDevice()
+  ) {
+    await onFile(src, dest, srcStat.mode);
+  } else if (srcStat.isSymbolicLink()) {
+    await onLink(src, dest);
+  }
+}
+
+export function uploadHelp(cb: (file: Express.Multer.File, body: any, cb: (error?: any, info?: Partial<Express.Multer.File>) => void) => void) {
+  return multer({
+    storage: {
+      _handleFile: (
+        req: Request,
+        file: Express.Multer.File,
+        callback: (error?: any, info?: Partial<Express.Multer.File>) => void
+      ): void => {
+        cb(file, req.body, callback);
+      },
+      _removeFile: (
+        req: Request,
+        file: Express.Multer.File,
+        callback: (error: Error | null) => void
+      ): void => {
+        callback(null);
+      }
+    }
+  })
 }
