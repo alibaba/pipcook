@@ -92,7 +92,8 @@ Install the command-line tool for managing [Pipcook][] projects:
 
 ```shell
 $ npm install -g @pipcook/pipcook-cli
-$ pipcook init && pipcook daemon start
+$ pipcook init
+$ pipcook daemon start
 ```
 
 Occuring the download problems? We use [tuna](https://mirror.tuna.tsinghua.edu.cn/help/pypi/) mirror to address this issue:
@@ -124,8 +125,8 @@ $ pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/p
 
 If you are wondering what you can do in [Pipcook][] and where you can check your training logs and models, you could start from [Pipboard](https://alibaba.github.io/pipcook/#/GLOSSORY?id=pipboard):
 
-```
-open https://imgcook.github.io/pipboard/
+```sh
+open https://pipboard.imgcook.com/#/tutorial
 ```
 
 You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. 
@@ -145,24 +146,10 @@ See [here](./example) for complete list, and it's easy and quick to run these ex
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ pipcook run ./example/pipelines/mnist-image-classification.json
+$ pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/mnist-image-classification.json
 ```
 
-After the above pipeline is completed, you have already trained a model at the current `output` directory, it's an independent NPM package and can be easily integrated in your existing system, to start a simple inference server locally, just run:
-
-```sh
-$ pipcook serve <output> -p 7682
-```
-
-And send the request for result:
-
-```curl
-curl --request POST 'http://localhost:7682' \
---header 'Content-Type: application/json' \
---data-raw '{
-  "data": "<local path of an image>"
-}'
-```
+After the above pipeline is completed, you have already trained a model at the current `output` directory, it's an independent NPM package and can be easily integrated in your existing system.
 
 ## Documentation
 
@@ -190,7 +177,6 @@ $ npm run build
 
 - Developer Documentation [English](./docs/contributing/guide-to-contributor.md) | [中文](./docs/zh-cn/contributing/guide-to-contributor.md)
 - [Project Guide](./docs/meta/PROJECT_GUIDE.md)
-- [Roadmap, 2020](https://github.com/alibaba/pipcook/issues/30)
 
 ## Community
 
@@ -209,6 +195,7 @@ $ npm run build
 #### Who's using it
 
 <a href="https://www.imgcook.com"><img height="40" src="https://img.alicdn.com/tfs/TB1lle4yQzoK1RjSZFlXXai4VXa-200-64.png"></a>
+
 ## License
 
 [Apache 2.0](./LICENSE)
