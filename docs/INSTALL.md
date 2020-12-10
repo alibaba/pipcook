@@ -8,7 +8,7 @@ There are different ways to install [Pipcook][]:
 Before starting the installation, please make sure the following environments are correct:
 
 - macOS, Linux
-- Node.js 12
+- Node.js 12.19
 
 ## Install via NPM
 
