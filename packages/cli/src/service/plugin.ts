@@ -159,3 +159,8 @@ export async function info(id: string, opts: any): Promise<void> {
     logger.fail(err.message);
   }
 }
+
+export async function create(dir: string, opts: any): Promise<void> {
+  const args = [ 'init', '@pipcook/pipcook-plugin' ].concat(opts.parent.rawArgs.slice(3));
+  spawnSync('npm', args, { stdio: 'inherit' });
+}

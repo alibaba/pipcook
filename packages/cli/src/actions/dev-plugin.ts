@@ -10,6 +10,7 @@ import { logger } from '../utils/common';
  * prepare a working dir for developer to develop plugins
  */
 const devPlugin: DevPluginCommandHandler = async ({ type, name }) => {
+  console.warn('`pipcook plugin-dev` is deprecated, please use `pipcook plugin create`.');
   if (!type) {
     console.log('Please provide a plugin type');
     return process.exit(1);
