@@ -1,4 +1,3 @@
-import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { provide, inject, scope, ScopeEnum } from 'midway';
@@ -18,15 +17,17 @@ import { PipelineModel, PipelineEntity, QueryOptions } from '../model/pipeline';
 import { JobModel, JobEntity, JobParam } from '../model/job';
 import { PluginManager } from './plugin';
 import { Tracer, JobStatusChangeEvent } from './trace-manager';
-import { pluginQueue } from '../utils';
+import { execAsync, pluginQueue } from '../utils';
 import { PluginInfo, JobRunner } from '../runner/job-runner';
 import { UpdateParameter } from '../interface/pipeline';
+import { boaGenerator } from '../generator/boa';
+import { tvmGenerator } from '../generator/tvmGeneratorParent';
 
 interface SelectJobsFilter {
   pipelineId?: string;
 }
 
-interface GenerateOptions {
+export interface GenerateOptions {
   pipeline: PipelineEntity;
   plugins: {
     modelDefine: PluginPackage;
@@ -36,14 +37,6 @@ interface GenerateOptions {
   modelPath: string;
   workingDir: string;
   template: string;
-}
-
-function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
-  return new Promise((resolve, reject): void => {
-    exec(cmd, opts, (err: ExecException, stdout: string, stderr: string) => {
-      err == null ? resolve(stdout) : reject(err);
-    });
-  });
 }
 
 @scope(ScopeEnum.Singleton)
@@ -168,34 +161,16 @@ export class PipelineService {
 
     // post processing the package.json
     const projPackage = await fs.readJSON(dist + '/package.json');
-    projPackage.dependencies = {
-      [opts.plugins.modelDefine.name]: opts.plugins.modelDefine.version,
-    };
-    projPackage.scripts = {
-      postinstall: 'node boapkg.js'
-    };
-    if (opts.plugins.dataProcess) {
-      projPackage.dependencies[opts.plugins.dataProcess.name] = opts.plugins.dataProcess.version;
-    }
+    let fileQueue = [];
 
-    const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
-    const metadata = {
-      pipeline: opts.pipeline,
-      output: job,
-    };
-
-    await Promise.all([
-      // copy base components
-      fs.copy(opts.modelPath, dist + '/model'),
-      fs.copy(path.join(__dirname, `../../templates/${opts.template}/predict.js`), `${dist}/index.js`),
-      fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boapkg.js`),
+    console.info('Start generating');
+    fileQueue = [tvmGenerator(dist, projPackage, opts)];
+    fileQueue = fileQueue.concat(boaGenerator(job, projPackage, dist, opts));
+    fileQueue = fileQueue.concat([
       // copy logs
       fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
-      // write package.json
-      fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
-      // write metadata.json
-      fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
     ]);
+    await Promise.all(fileQueue);
     console.info(`trained the model to ${dist}`);
 
     // packing the output directory.
@@ -255,7 +230,7 @@ export class PipelineService {
         },
         pipeline,
         workingDir: runnable.workingDir,
-        template: 'node' // set node by default
+        template: 'wasm'
       });
       // step4: all done
       runner.dispatchJobEvent(PipelineStatus.SUCCESS);

@@ -10,6 +10,7 @@ import {
   generateId
 } from '@pipcook/pipcook-core';
 import { PipelineEntity } from './model/pipeline';
+import { exec, ExecOptions, ExecException } from 'child_process';
 
 export class ServerSentEmitter {
   private handle: SseStream;
@@ -92,4 +93,12 @@ export async function parseConfig(configPath: string | RunConfigI, isGenerateId 
     modelEvaluate: configJson.plugins.modelEvaluate?.package,
     modelEvaluateParams: parseParams(configJson.plugins.modelEvaluate?.params)
   };
+}
+
+export function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
+  return new Promise((resolve, reject): void => {
+    exec(cmd, opts, (err: ExecException, stdout: string, stderr: string) => {
+      err == null ? resolve(stdout) : reject(err);
+    });
+  });
 }
