@@ -1,5 +1,8 @@
 name: Beta Build Packages
 on:
+  push:
+    branches:
+    - fix/beta-release
   schedule:
     - cron: '0 0 * * *'
 
