@@ -22,7 +22,7 @@ export function boaGenerator(job: JobEntity, projPackage: any, dist: string, opt
 
   const filePromise = [
     // copy base components
-    fs.copy(opts.modelPath, dist + 'boa/model'),
+    fs.copy(opts.modelPath, dist + '/boa/model'),
     fs.copy(path.join(__dirname, `../../templates/${opts.template}/predict.js`), `${dist}/boa/index.js`),
     fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boa/boapkg.js`),
     // write package.json
