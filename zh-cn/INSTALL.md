@@ -8,7 +8,7 @@
 在开始安装之前，需要保证下面的环境：
 
 - macOS, Linux
-- Node.js 12
+- Node.js 12.19
 
 ## 通过 NPM 安装
 
