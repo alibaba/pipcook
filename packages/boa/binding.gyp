@@ -24,19 +24,20 @@
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
         "pybind11/src/include",
-        "<!@(node -p \"require('./tools/utils').getCondaPath()\")/include/python3.7m",
+        "<!@(node -p \"require('./tools/utils').getPythonHeaderPath()\")",
       ],
       "library_dirs": [
         "<!@(node -p \"require('./tools/utils').getCondaPath()\")/lib",
       ],
       "libraries": [
-        "-lpython3.7m",
+        "-lpython<!@(node -p \"require('./tools/utils').getPythonVersion()\")",
         "-Wl,-rpath,'<!@(node -p \"require('./tools/utils').getCondaPath()\")/lib'",
       ],
       "defines": [
         "NAPI_CPP_EXCEPTIONS",
         "NAPI_EXPERIMENTAL",
         "NAPI_VERSION=6",
+        "BOA_LIBPYTHON_NAME=python<!@(node -p \"require('./tools/utils').getPythonVersion()\")"
       ],
       "conditions": [
         ['OS=="mac"', {
