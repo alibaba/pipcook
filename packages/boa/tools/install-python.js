@@ -1,55 +1,47 @@
+#!/usr/bin/env node
+
 'use strict';
 
-const { run, py, initAndGetCondaPath, PLATFORM, ARCH } = require('./utils');
+const utils = require('./utils');
 const fs = require('fs');
-const path = require('path');
 
-let CONDA_DOWNLOAD_PREFIX = 'https://repo.anaconda.com/miniconda';
-if (process.env.BOA_TUNA) {
-  CONDA_DOWNLOAD_PREFIX = 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda';
-}
-if (process.env.BOA_CONDA_MIRROR) {
-  CONDA_DOWNLOAD_PREFIX = process.env.BOA_CONDA_MIRROR;
-}
+const run = utils.run.bind(utils);
+const py = utils.py.bind(utils);
 
-const CONDA_LOCAL_PATH = initAndGetCondaPath();
-let condaDownloadName = process.env.CONDA_PACKAGE_NAME || 'Miniconda3-4.7.12.1';
-
-if (PLATFORM === 'linux') {
-  condaDownloadName += '-Linux';
-} else if (PLATFORM === 'darwin') {
-  condaDownloadName += '-MacOSX';
-} else {
-  throw new TypeError(`No support for your platform ${PLATFORM}`);
+if (!utils.shouldInstallConda()) {
+  console.info('skip installing the python from conda.');
+  return process.exit(0);
 }
 
-if (ARCH === 'x64') {
-  condaDownloadName += '-x86_64';
-} else if (ARCH === 'ppc64') {
-  condaDownloadName += '-ppc64le';
-} else if (PLATFORM !== 'darwin') {
-  condaDownloadName += '-x86';
-}
-condaDownloadName = `${condaDownloadName}.sh`;
+// download and install conda
+const remoteURL = utils.getCondaRemote();
+const installDir = utils.resolveAndUpdateCondaPath();
+const downloader = utils.getCondaDownloaderName();
 
-// download it if not exists.
-if (!fs.existsSync(condaDownloadName)) {
-  run(`curl ${CONDA_DOWNLOAD_PREFIX}/${condaDownloadName} > ${condaDownloadName}`);
+// fetch the downloader file if that doesn't exist.
+if (!fs.existsSync(downloader)) {
+  run('curl', `${remoteURL}/${downloader}`, '>', downloader);
 }
 
-// check if ./bin/python exists, if not then install it.
-if (!fs.existsSync(path.join(CONDA_LOCAL_PATH, 'bin', 'python'))) {
-  run('rm', `-rf ${CONDA_LOCAL_PATH}`);
-  run('sh', `./${condaDownloadName}`, `-f -b -p ${CONDA_LOCAL_PATH}`);
+// check if the python is installed correctly, we will skip the installation
+// when it's installed before.
+if (!utils.shouldPythonInstalledOn(installDir)) {
+  // clean the install dir.
+  run('rm', '-rf', installDir);
+  // install
+  run('sh', downloader, `-f -b -p ${installDir}`);
 }
 
 // cleanup the standard libs.
-if (PLATFORM === 'darwin') {
-  run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libc++*`);
-} else if (PLATFORM === 'linux') {
-  run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libstdc++.so*`);
-  run('rm', `-rf ${CONDA_LOCAL_PATH}/lib/libgcc_s.so*`);
+if (utils.PLATFORM === 'darwin') {
+  run('rm', '-rf', `${installDir}/lib/libc++*`);
+} else if (utils.PLATFORM === 'linux') {
+  run('rm', '-rf', `${installDir}/lib/libstdc++.so*`);
+  run('rm', '-rf', `${installDir}/lib/libgcc_s.so*`);
 }
 
 // dump info
-py(`${CONDA_LOCAL_PATH}/bin/conda`, 'info -a');
+py(`${installDir}/bin/conda`, 'info -a');
+
+// install python packages
+utils.installPythonPackages();
