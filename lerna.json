@@ -12,6 +12,10 @@
   "loglevel": "verbose",
   "npmClient": "yarn",
   "command": {
+    "publish": {
+      "npmClient": "npm",
+      "registry": "https://registry.npmjs.org"
+    },
     "publishConfig": {
       "access": "public"
     },
