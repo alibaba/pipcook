@@ -15,7 +15,7 @@
     "modelTrain": {
       "package": "@pipcook/plugins-pytorch-yolov5-model-train",
       "params": {
-        "epochs": 300
+        "epochs": 100
       }
     },
     "modelEvaluate": {

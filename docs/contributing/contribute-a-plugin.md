@@ -128,12 +128,14 @@ Below is the awesome list of Pipcook plugins, we welcome third-party plugin cont
 - @pipcook/plugins-detectron-fasterrcnn-model-define
 - @pipcook/plugins-tfjs-mobilenet-model-define
 - @pipcook/plugins-tfjs-simplecnn-model-define
+- @pipcook/plugins-pytorch-yolov5-model-define
 
 ### `modelTrain`
 
 - @pipcook/plugins-bayesian-model-train
 - @pipcook/plugins-image-classification-tfjs-model-train
 - @pipcook/plugins-detectron-model-train
+- @pipcook/plugins-pytorch-yolov5-model-train
 
 ### `modelEvaluate`
 
@@ -141,5 +143,6 @@ Below is the awesome list of Pipcook plugins, we welcome third-party plugin cont
 - @pipcook/plugins-bayesian-model-evaluate
 - @pipcook/plugins-image-classification-tfjs-model-evaluate
 - @pipcook/plugins-detectron-model-evaluate
+- @pipcook/plugins-pytorch-yolov5-model-evaluate
 
 [Pipcook Tools]: ../../manual/pipcook-tools.md
