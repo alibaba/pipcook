@@ -1,5 +1,4 @@
 import { injectable, BindingScope, service } from '@loopback/core';
-import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as HttpStatus from 'http-status';
@@ -12,35 +11,15 @@ import {
   constants as CoreConstants,
   PluginTypeI
 } from '@pipcook/pipcook-core';
-import { PluginPackage, PluginRunnable } from '@pipcook/costa';
+import { repository } from '@loopback/repository';
+import { PluginRunnable } from '@pipcook/costa';
 import { Pipeline } from '../models';
 import { Job, JobParam } from '../models';
 import { PluginService } from './plugin.service';
-import { Tracer, JobStatusChangeEvent } from './trace.service';
-import { pluginQueue } from '../utils';
+import { pluginQueue, execAsync } from '../utils';
 import { PluginRepository, PipelineRepository, JobRepository } from '../repositories';
 import { PluginInfo, JobRunner } from '../job-runner';
-import { repository } from '@loopback/repository';
-
-interface GenerateOptions {
-  pipeline: Pipeline;
-  plugins: {
-    modelDefine: PluginPackage;
-    dataProcess?: PluginPackage;
-    datasetProcess?: PluginPackage;
-  };
-  modelPath: string;
-  workingDir: string;
-  template: string;
-}
-
-function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
-  return new Promise((resolve, reject): void => {
-    exec(cmd, opts, (err: ExecException | null, stdout: string, stderr: string) => {
-      err == null ? resolve(stdout) : reject(err);
-    });
-  });
-}
+import { Tracer, JobStatusChangeEvent, GenerateOptions } from './interface';
 
 @injectable({ scope: BindingScope.TRANSIENT })
 export class JobService {

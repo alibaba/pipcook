@@ -1,4 +1,5 @@
 import Queue from 'queue';
+import { exec, ExecOptions, ExecException } from 'child_process';
 import { RequestContext, Request } from '@loopback/rest';
 import SseStream from 'ssestream';
 import * as path from 'path';
@@ -10,7 +11,6 @@ import {
   RunConfigI
 } from '@pipcook/pipcook-core';
 import { Pipeline } from '../models';
-import { Readable } from 'stream';
 import multer from 'multer';
 
 export class ServerSentEmitter {
@@ -122,6 +122,14 @@ export async function copyDir(src: string, dest: string): Promise<void> {
   } else if (srcStat.isSymbolicLink()) {
     await onLink(src, dest);
   }
+}
+
+export function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
+  return new Promise((resolve, reject): void => {
+    exec(cmd, opts, (err: ExecException | null, stdout: string, stderr: string) => {
+      err == null ? resolve(stdout) : reject(err);
+    });
+  });
 }
 
 export function uploadHelp(cb: (file: Express.Multer.File, body: any, cb: (error?: any, info?: Partial<Express.Multer.File>) => void) => void) {

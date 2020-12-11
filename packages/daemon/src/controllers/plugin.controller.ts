@@ -32,12 +32,13 @@ export const pluginInstallSpec = {
 
 @api({ basePath: '/api/plugin' })
 export class PluginController extends BaseEventController {
-  @service(PluginService)
-  public pluginService: PluginService;
-  @repository(PluginRepository)
-  public pluginRepository: PluginRepository;
 
-  constructor() {
+  constructor(
+    @service(PluginService)
+    public pluginService: PluginService,
+    @repository(PluginRepository)
+    public pluginRepository: PluginRepository
+) {
     super();
   }
 

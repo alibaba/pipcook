@@ -1,5 +1,5 @@
 import test from 'ava';
-import { AppWithClient, setupApplication } from '../helpers/test-helper';
+import { AppWithClient, setupApplication } from '../__helpers__/test-helper';
 
 test.beforeEach('setupApplication', async t => {
   t.context = await setupApplication();

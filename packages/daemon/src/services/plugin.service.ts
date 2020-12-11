@@ -1,9 +1,9 @@
-import { injectable, /* inject, */ BindingScope } from '@loopback/core';
+import { injectable, BindingScope } from '@loopback/core';
 import { PluginPackage, BootstrapArg, PluginRunnable, InstallOptions } from '@pipcook/costa';
 import { PluginStatus } from '@pipcook/pipcook-core';
-import { TraceService, Tracer } from './trace.service';
+import { TraceService } from './trace.service';
+import { Tracer } from './interface';
 import { pluginQueue } from '../utils';
-// import { readJSON } from 'fs-extra';
 import { CostaRuntime } from '@pipcook/costa';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
 import { repository } from '@loopback/repository';
@@ -12,8 +12,9 @@ import { Plugin } from '../models';
 import { PluginRepository } from '../repositories';
 import { PluginTraceResp } from './interface';
 
-@injectable({ scope: BindingScope.TRANSIENT })
+@injectable({ scope: BindingScope.SINGLETON })
 export class PluginService {
+
   costa: CostaRuntime;
 
   constructor(
