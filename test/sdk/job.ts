@@ -93,8 +93,8 @@ describe('pipeline api.job test', () => {
     const downloadObj = await client.job.downloadOutput(jobObj.id);
     await mkdirp(path.join(__dirname, 'output'));
     await extractToPath(downloadObj.stream, path.join(__dirname, 'output'));
-    const metadata = await readJson(path.join(__dirname, 'output', 'metadata.json'));
-    console.log('metadata', path.join(__dirname, 'output', 'metadata.json'), metadata);
+    const metadata = await readJson(path.join(__dirname, 'output', 'boa', 'metadata.json'));
+    console.log('metadata', path.join(__dirname, 'output', 'boa', 'metadata.json'), metadata);
     expect(typeof downloadObj.filename).toBe('string');
     expect(downloadObj.filename.startsWith('pipcook-output-')).toBeTrue();
     expect(downloadObj.mimeType).toBe('application/gzip');

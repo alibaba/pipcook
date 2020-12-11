@@ -29,13 +29,13 @@ export async function keras2Wasm(dist: string, projPackage: any, opts: GenerateO
     target: 'llvm -mtriple=wasm32--unknown-emcc -system-lib'
   }));
 
-  lib.save(path.join(dist, 'tvm', 'model.bc'));
+  lib.save(path.join(dist, 'model.bc'));
 
-  const jsonWriter = open(path.join(dist, 'tvm', 'modelDesc.json'), 'w');
+  const jsonWriter = open(path.join(dist, 'modelDesc.json'), 'w');
   jsonWriter.write(graph);
-  const paramWriter = open(path.join(dist, 'tvm', 'modelParams.parmas'), 'wb');
+  const paramWriter = open(path.join(dist, 'modelParams.parmas'), 'wb');
   paramWriter.write(relay.save_param_dict(param));
-  emcc.create_tvmjs_wasm(path.join(dist, 'tvm', 'model.wasi.js'), path.join(dist, 'tvm', 'model.bc'), boa.kwargs({
+  emcc.create_tvmjs_wasm(path.join(dist, 'model.wasi.js'), path.join(dist, 'model.bc'), boa.kwargs({
     options: ['-O3', '-std=c++14', '-Wno-ignored-attributes', '-s', 'ALLOW_MEMORY_GROWTH=1', '-s', 'STANDALONE_WASM=1', '-s', 'ERROR_ON_UNDEFINED_SYMBOLS=0', '-s', 'ASSERTIONS=1', '--no-entry', '--pre-js', path.join(dist, 'preload.js')]
   }));
 
@@ -51,21 +51,21 @@ export async function keras2Wasm(dist: string, projPackage: any, opts: GenerateO
   }
   `;
 
-  const result = templateHead + open(path.join(dist, 'tvm', 'model.wasi.js')).read() + templateTail;
-  const resultWriter = open(path.join(dist, 'tvm', 'model.wasi.js'), 'w');
+  const result = templateHead + open(path.join(dist, 'model.wasi.js')).read() + templateTail;
+  const resultWriter = open(path.join(dist, 'model.wasi.js'), 'w');
   resultWriter.write(result);
 
   const fileQueue = [];
 
-  const jsonPromise = fs.writeJSON(path.join(dist, 'tvm', 'modelSpec.json'), {
+  const jsonPromise = fs.writeJSON(path.join(dist, 'modelSpec.json'), {
     shape,
     inputName
   });
   fileQueue.push(jsonPromise);
   fileQueue.concat([
-    fs.copy(path.join(__dirname, `../../templates/wasm/predict.js`), `${dist}/tvm/index.js`),
+    fs.copy(path.join(__dirname, `../../templates/wasm/predict.js`), `${dist}/index.js`),
     // write package.json
-    fs.outputJSON(dist + '/tvm/package.json', projPackage, { spaces: 2 }),
+    fs.outputJSON(dist + '/package.json', projPackage, { spaces: 2 }),
   ]);
 
   await Promise.all(fileQueue);
