@@ -167,16 +167,16 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
       "package": "@pipcook/plugins-coco-data-access"
     },
     "modelDefine": {
-      "package": "@pipcook/plugins-detectron-fasterrcnn-model-define"
+      "package": "@pipcook/plugins-pytorch-yolov5-model-define"
     },
     "modelTrain": {
-      "package": "@pipcook/plugins-detectron-model-train",
+      "package": "@pipcook/plugins-pytorch-yolov5-model-train",
       "params": {
-        "steps": 100000
+        "epochs": 300
       }
     },
     "modelEvaluate": {
-      "package": "@pipcook/plugins-detectron-model-evaluate"
+      "package": "@pipcook/plugins-pytorch-yolov5-model-evaluate"
     }
   }
 }
@@ -184,12 +184,10 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
 ```
 Through the above plugins, we can see that they are used separately:
 1. **@pipcook/plugins-object-detection-pascalvoc-data-collect** This plugin is used to download the dataset in Pascal Voc format. Generally, we need to provide the url parameter. We provide the address of the dataset we prepared above.
-1. **@pipcook/plugins-coco-data-access** Now that we have downloaded the dataset, we need to connect the dataset into the format required by the subsequent model. Since the detectron2 framework used by our model requires the coco format, we use this plugin.
-1. **@pipcook/plugins-detectron-fasterrcnn-model-define** We built a faster rcnn model based on the detectron2 framework. This model has a very good performance in the accuracy of object detection
-1. **@pipcook/plugins-detectron-model-train** This plugin is used to start the training of all kinds of models built on detectron2. We set iteration to 100000. If your dataset is very complex, you need to increase the number of iterations.
-1. **@pipcook/plugins-detectron-model-evaluate** We use this plug-in to evaluate the training effect of the model. This plugin will be effective only if the test testset is provided, and finally the average precision of each category is given.
-
-Since the object detection model, especially the model of the rcnn family is very large, it needs to be trained on a machine prepared with nvidia GPU and cuda 10.1 environment:
+2. **@pipcook/plugins-coco-data-access** Now that we have downloaded the dataset, we need to connect the dataset into the format required by the subsequent model. Since the model plugin used requires the coco format, we use this plugin.
+3. **@pipcook/plugins-pytorch-yolov5-model-define** We built a yolov5 model. This model has a very good performance in the accuracy of object detection
+4. **@pipcook/plugins-pytorch-yolov5-model-train** This plugin is used to start the training of yolov5. We set epochs to 300. If your dataset is very complex, you need to increase the number of iterations.
+5. **@pipcook/plugins-pytorch-yolov5-model-evaluate** We use this plug-in to evaluate the training effect of the model. This plugin will be effective only if the test testset is provided, and finally the average precision of each category is given.
 
 ```shell
 $ pipcook run object-detection.json

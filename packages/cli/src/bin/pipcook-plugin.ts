@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as program from 'commander';
-import { install, uninstall, list, info } from '../service/plugin';
+import { install, uninstall, list, info, create } from '../service/plugin';
 
 program
   .command('install <name>')
@@ -40,4 +40,11 @@ program
   .option('-h|--host-ip <ip>', 'the host ip of daemon')
   .option('-p|--port <port>', 'the port of daemon')
   .action(info);
+
+program
+  .command('create <plugin-directory>')
+  .description('create a new plugin')
+  .allowUnknownOption()
+  .action(create);
+
 program.parse(process.argv);

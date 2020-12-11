@@ -12,13 +12,29 @@ const debug = Debug('costa.client');
 // Set the costa runtime title.
 process.title = 'pipcook.costa';
 
+function send(msg: any): void {
+  debug(`try to send a message ${msg}`);
+  // FIXME(yorkie): here we just print the error message.
+  const onfailMsg = 'failed to send a message to parent process.';
+  const success = process.send(msg, (err: Error) => {
+    if (err) {
+      console.error(onfailMsg, `The error is ${err}`);
+    } else {
+      debug(`sucessfully sent a message ${msg}`);
+    }
+  });
+  if (!success) {
+    console.error(onfailMsg);
+  }
+}
+
 /**
- * Send a message back from the client process.
+ * Send a `recv` message back from the client process.
  * @param respOp the operator of response.
  * @param params the parameters of response.
  */
 function recv(respOp: PluginOperator, ...params: string[]): void {
-  process.send(PluginProtocol.stringify(respOp, {
+  return send(PluginProtocol.stringify(respOp, {
     event: 'pong',
     params
   }));
@@ -43,6 +59,11 @@ let handshaked = false;
 let previousResults: Record<string, any> = {};
 
 /**
+ * The `Record` of loaded plugins, the key is a string of pname@pversion.
+ */
+const plugins: Record<string, Function> = {};
+
+/**
  * Deserialize an argument.
  * @param arg
  */
@@ -55,14 +76,12 @@ function deserializeArg(arg: Record<string, any>): any {
 }
 
 /**
- * Run a plugin, before running, a clean sandbox environment will be constructed
- * for the plug-in runtime.
+ * load a plugin.
  * @param message
  */
-async function emitStart(message: PluginMessage): Promise<void> {
+async function emitLoad(message: PluginMessage): Promise<void> {
   const { params } = message;
   const pkg = params[0] as PluginPackage;
-  const [ , ...pluginArgs ] = params;
   console.info(`start loading plugin ${pkg.name}`);
 
   try {
@@ -89,7 +108,32 @@ async function emitStart(message: PluginMessage): Promise<void> {
       }
     }
 
-    const fn = loadPlugin(pkg);
+    const absname = `${pkg.name}@${pkg.version}`;
+    plugins[absname] = loadPlugin(pkg);
+    console.info(`${pkg.name} plugin is loaded`);
+    recv(PluginOperator.WRITE);
+  } catch (err) {
+    recv(PluginOperator.WRITE, 'error', err?.stack);
+  }
+}
+
+/**
+ * Run a plugin, before running, a clean sandbox environment will be constructed
+ * for the plug-in runtime.
+ * @param message
+ */
+async function emitStart(message: PluginMessage): Promise<void> {
+  const { params } = message;
+  const pkg = params[0] as PluginPackage;
+  const [ , ...pluginArgs ] = params;
+
+  try {
+    const absname = `${pkg.name}@${pkg.version}`;
+    const fn = plugins[absname];
+    if (typeof fn !== 'function') {
+      throw new TypeError(`the plugin(${absname}) not loaded.`);
+    }
+
     if (pkg.pipcook.category === 'dataProcess') {
       // in "dataProcess" plugin, we need to do process them in one by one.
       const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
@@ -177,7 +221,9 @@ const handlers: MessageHandler = {
     }
     const { event } = proto.message;
     debug(`receive an event write.${event}`);
-    if (event === 'start') {
+    if (event === 'load') {
+      emitLoad(proto.message);
+    } else if (event === 'start') {
       emitStart(proto.message);
     } else if (event === 'destroy') {
       emitDestroy();

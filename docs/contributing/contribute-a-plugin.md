@@ -6,10 +6,10 @@ We strongly recommend that you first understand the [plugin specification](../sp
 
 ## Get Started
 
-To get started with developing a new plugin, [Pipcook Tools][] provides `pipcook plugin-dev`:
+To get started with developing a new plugin, [Pipcook Tools][] provides `pipcook plugin create`:
 
 ```sh
-$ pipcook plugin-dev --type <category> --name <plugin>
+$ pipcook plugin create --category <name> foobar
 ```
 
 A plugin script is a TypeScript function that inherits from the corresponding plugin interface, for exmaple, a `DataCollectType` plugin will look like this:
@@ -80,6 +80,12 @@ In this way, when Pipcook loads the plugin, it will use the Python loader to loa
 }
 ```
 
+You can also quickly initialize a Python plugin via the command line:
+
+```sh
+$ pipcook plugin create foobar --python
+```
+
 ## Release
 
 Once you have developed the plugin done, you can create own plugin package on NPM:
@@ -122,12 +128,14 @@ Below is the awesome list of Pipcook plugins, we welcome third-party plugin cont
 - @pipcook/plugins-detectron-fasterrcnn-model-define
 - @pipcook/plugins-tfjs-mobilenet-model-define
 - @pipcook/plugins-tfjs-simplecnn-model-define
+- @pipcook/plugins-pytorch-yolov5-model-define
 
 ### `modelTrain`
 
 - @pipcook/plugins-bayesian-model-train
 - @pipcook/plugins-image-classification-tfjs-model-train
 - @pipcook/plugins-detectron-model-train
+- @pipcook/plugins-pytorch-yolov5-model-train
 
 ### `modelEvaluate`
 
@@ -135,5 +143,6 @@ Below is the awesome list of Pipcook plugins, we welcome third-party plugin cont
 - @pipcook/plugins-bayesian-model-evaluate
 - @pipcook/plugins-image-classification-tfjs-model-evaluate
 - @pipcook/plugins-detectron-model-evaluate
+- @pipcook/plugins-pytorch-yolov5-model-evaluate
 
 [Pipcook Tools]: ../../manual/pipcook-tools.md

@@ -13,7 +13,7 @@ if (process.env.BOA_CONDA_MIRROR) {
 }
 
 const CONDA_LOCAL_PATH = initAndGetCondaPath();
-let condaDownloadName = 'Miniconda3-4.7.12.1';
+let condaDownloadName = process.env.CONDA_PACKAGE_NAME || 'Miniconda3-4.7.12.1';
 
 if (PLATFORM === 'linux') {
   condaDownloadName += '-Linux';

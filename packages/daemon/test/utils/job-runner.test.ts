@@ -6,6 +6,7 @@ import { strict as assert } from 'assert';
 import { JobRunner } from '../../src/runner/job-runner';
 import { JobStatusChangeEvent } from '../../src/service/trace-manager';
 import { JobParam } from '../../src/model/job';
+import * as util from '../../src/utils';
 
 const runner = new JobRunner({
   job: {} as any,
@@ -409,6 +410,7 @@ describe('test JobRunner', () => {
     const runModelDefine = sinon.stub(runner, 'runModelDefine').resolves(mockModelDefineResult);
     const runModelTrain = sinon.stub(runner, 'runModelTrain').resolves(mockModelAfterTraining as any);
     const runModelEvaluate = sinon.stub(runner, 'runModelEvaluate').resolves();
+    sinon.stub(util, 'copyDir').resolves();
     await runner.run();
     assert.deepEqual(runDataCollect.args[0],
       [
@@ -470,6 +472,7 @@ describe('test JobRunner', () => {
     const runModelLoad = sinon.stub(runner, 'runModelLoad').resolves(mockModelLoadResult);
     const runModelTrain = sinon.stub(runner, 'runModelTrain').resolves(mockModelAfterTraining as any);
     const runModelEvaluate = sinon.stub(runner, 'runModelEvaluate').resolves();
+    sinon.stub(util, 'copyDir').resolves();
     await runner.run();
     assert.deepEqual(runDataCollect.args[0],
       [

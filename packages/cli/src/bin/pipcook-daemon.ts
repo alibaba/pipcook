@@ -26,6 +26,9 @@ interface DaemonBootstrapMessage {
 }
 
 async function start(): Promise<void> {
+  if (!await pathExists(BOOTSTRAP_HOME)) {
+    return logger.fail('"pipcook init" is required.');
+  }
   // check if the process is running...
   if (await pathExists(DAEMON_PIDFILE)) {
     return logger.fail(`starting daemon but ${DAEMON_PIDFILE} exists.`);

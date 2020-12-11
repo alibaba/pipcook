@@ -6,10 +6,10 @@ Pipcook 乐于开发者为我们贡献插件以扩展 Pipcook 的功能。 本�
 
 ## 新手入门
 
-插件开发从一行命令开始：`pipcook plugin-dev`：
+插件开发从一行命令开始：`pipcook plugin create`：
 
 ```sh
-$ pipcook plugin-dev --type <category> --name <plugin>
+$ pipcook plugin create --category <name> foobar
 ```
 
 一个插件就是一个继承自 Pipcook 插件接口的 TypeScript 函数，比如一个 `DataCollectType` 插件：
@@ -77,6 +77,12 @@ Pipcook 约定 `main` 函数作为了插件的入口，参数与 Node.js 插件�
     }
   }
 }
+```
+
+也可以通过命令行快速初始化一个 Python 插件：
+
+```sh
+$ pipcook plugin create foobar --python
 ```
 
 ## 发布

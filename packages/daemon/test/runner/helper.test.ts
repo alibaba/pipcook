@@ -1,5 +1,6 @@
 import * as core from '@pipcook/pipcook-core';
 import { assert } from 'midway-mock/bootstrap';
+import * as assertNode from 'assert';
 import * as helper from '../../src/utils';
 import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
@@ -119,5 +120,32 @@ describe('test the app service', () => {
     }
     assert.ok(called, 'function call check');
     assert.ok(throwError, 'error call check');
+  });
+  it('#should copy the file successfully', async () => {
+    const src = join(__dirname, 'helper.test.ts');
+    const dest = join(__dirname, 'dest.ts');
+    const copyStub = sinon.stub(fs, 'copyFile');
+    const chmodStub = sinon.stub(fs, 'chmod');
+    await assertNode.doesNotReject(async () => {
+      await helper.copyDir(src, dest);
+    }, 'copyDir should not be rejected');
+    assert.ok(copyStub.calledOnce, 'copyFile should be called only once');
+    assert.ok(chmodStub.calledOnce, 'chmod should be called only once');
+  });
+  it('#should copy the symlink successfully', async () => {
+    const dest = join(__dirname, 'dest');
+    const symStub = sinon.stub(fs, 'symlink').resolves();
+    sinon.stub(fs, 'readlink').resolves();
+    sinon.stub(fs, 'lstat').resolves({
+      isSymbolicLink: () => true,
+      isDirectory: () => false,
+      isFile: () => false,
+      isBlockDevice: () => false,
+      isCharacterDevice: () => false
+    } as any);
+    await assertNode.doesNotReject(async () => {
+      await helper.copyDir(join(__dirname, 'src'), dest);
+    }, 'copyDir should not be rejected');
+    assert.ok(symStub.calledOnce, 'symlink should be called only once');
   });
 });

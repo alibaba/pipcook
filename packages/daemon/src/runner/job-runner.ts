@@ -8,6 +8,7 @@ import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa'
 import { PipelineEntity } from '../model/pipeline';
 import { JobParam, JobEntity } from '../model/job';
 import { Tracer, JobStatusChangeEvent } from '../service/trace-manager';
+import { copyDir } from '../utils';
 
 /**
  * plugin info from pipeline config
@@ -244,7 +245,11 @@ export class JobRunner {
     const modelPath = path.join(this.opts.runnable.workingDir, 'model');
 
     await this.runDataCollect(dataDir, modelPath);
-    const dataset = await this.runDataAccess(dataDir);
+
+    // move plugin data directory data to job's data directory
+    await copyDir(dataDir, this.opts.runnable.dataDir);
+
+    const dataset = await this.runDataAccess(this.opts.runnable.dataDir);
     await this.runDatasetProcess(dataset);
     await this.runDataProcess(dataset);
 

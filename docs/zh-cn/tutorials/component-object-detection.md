@@ -168,16 +168,16 @@
       "package": "@pipcook/plugins-coco-data-access"
     },
     "modelDefine": {
-      "package": "@pipcook/plugins-detectron-fasterrcnn-model-define"
+      "package": "@pipcook/plugins-pytorch-yolov5-model-define"
     },
     "modelTrain": {
-      "package": "@pipcook/plugins-detectron-model-train",
+      "package": "@pipcook/plugins-pytorch-yolov5-model-train",
       "params": {
-        "steps": 100000
+        "epochs": 300
       }
     },
     "modelEvaluate": {
-      "package": "@pipcook/plugins-detectron-model-evaluate"
+      "package": "@pipcook/plugins-pytorch-yolov5-model-evaluate"
     }
   }
 }
@@ -186,12 +186,10 @@
 通过上面的插件，我们可以看到分别使用了：
 
 1. **@pipcook/plugins-object-detection-pascalvoc-data-collect** 这个插件用于下载 Pascal Voc 格式的数据集，主要，我们需要提供 url 参数，我们提供了上面我们准备好的数据集地址
-1. **@pipcook/plugins-coco-data-access** 我们现在已经下载好了数据集，我们需要将数据集接入成后续模型需要的格式，由于我们模型采用的 detectron2 框架需要 coco 数据集格式，所以我们采用此插件
-1. **@pipcook/plugins-detectron-fasterrcnn-model-define** 我们基于 detectron2 框架构建了 faster rcnn 模型，这个模型在目标检测的精准度方面有着非常不错的表现
-1. **@pipcook/plugins-detectron-model-train** 这个插件用于启动所有基于 detectron2 构建的模型的训练，我们设置了 iteration 为 100000，如果您的数据集非常复杂，则需要调高迭代次数
-1. **@pipcook/plugins-detectron-model-evaluate** 我们使用此插件来进行模型训练效果的评估，只有提供了 test 测试集，此插件才会有效，最终给出的是各个类别的 average precision
-
-由于目标监测模型，尤其是 rcnn 家族的模型非常大，需要在有 nvidia gpu 并且 cuda 10.2 环境预备好的机器上进行训练：
+2. **@pipcook/plugins-coco-data-access** 我们现在已经下载好了数据集，我们需要将数据集接入成后续模型需要的格式，由于我们模型需要 coco 数据集格式，所以我们采用此插件
+3. **@pipcook/plugins-pytorch-yolov5-model-define** 我们基于 构建了 yolov5 模型，这个模型在目标检测的精准度方面有着非常不错的表现
+4. **@pipcook/plugins-pytorch-yolov5-model-train** 这个插件用于启动 yolov5 模型的训练，我们设置了 epochs 为 300，如果您的数据集非常复杂，则需要调高迭代次数
+5. **@pipcook/plugins-pytorch-yolov5-model-evaluate** 我们使用此插件来进行模型训练效果的评估，只有提供了 test 测试集，此插件才会有效，最终给出的是各个类别的 average precision
 
 ```shell
 $ pipcook run object-detection.json --tuna

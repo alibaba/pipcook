@@ -12,6 +12,7 @@ class StringWritable extends Writable {
 
   _write(chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
     this.data += chunk;
+    console.log(`<StringWritable> ${chunk.toString()}`);
     callback();
   }
 }
@@ -49,7 +50,9 @@ describe('start runnable in normal way', () => {
   });
 
   it('should bootstrap the runnable', async () => {
-    await runnable.bootstrap({});
+    await runnable.bootstrap({
+      pluginLoadNotRespondingTimeout: 2000
+    });
     expect(runnable.state).toBe('idle');
   });
 
@@ -73,6 +76,7 @@ describe('start runnable in normal way', () => {
     // test passing the variable from js to python.
     const tmp2 = await runnable.start(simple, tmp);
     const stdout = logger.stdout.data.toString();
+    console.log('stdout output is', stdout);
     expect(stdout.indexOf('hello python!') >= 0).toBe(true, 'hello python check failed');
     expect(stdout.indexOf('fn1([0. 0.])') >= 0).toBe(true, 'fn1 check failed');
     expect(stdout.indexOf('fn2()') >= 0).toBe(true, 'fn2 check failed');
@@ -118,5 +122,16 @@ describe('start runnable in normal way', () => {
     const cost = Date.now() - start;
     expect(cost < 5000);
     console.log(`child process exited after ${cost}ms`);
+  });
+
+  it('should destroy the runnable when it blocks on loading plugin', async () => {
+    const logger = process;
+    const costa = new CostaRuntime(opts);
+    const r2 = new PluginRunnable(costa, logger);
+    await r2.bootstrap({ logger, pluginLoadNotRespondingTimeout: 500 });
+    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
+    await costa.install(simple, process);
+    await expectAsync(r2.start(simple, { foobar: true }))
+      .toBeRejectedWithError(TypeError, 'read timeout.');
   });
 });

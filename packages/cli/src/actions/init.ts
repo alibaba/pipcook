@@ -1,6 +1,8 @@
 import { join } from 'path';
 import { execSync as exec } from 'child_process';
 import { readJson, writeJson, ensureDir, symlink, remove, pathExists } from 'fs-extra';
+import * as semver from 'semver';
+import * as chalk from 'chalk';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import { constants as CoreConstants } from '@pipcook/pipcook-core';
@@ -18,6 +20,19 @@ async function npmInstall(npmClient: string, name: string, cwd: string, env: Nod
   exec(`"${npmClient}" init -f`, { cwd, env, stdio: 'ignore' });
   const cmd = `"${npmClient}" install ${name} -E --production`;
   exec(cmd, { cwd, env, stdio: 'inherit' });
+}
+
+function ensureNodeVersion(minimalVersion: string) {
+  const unsupportedNodeVersion = !semver.satisfies(process.version, `>=${minimalVersion}`);
+  if (unsupportedNodeVersion) {
+    console.log(
+      chalk.yellow(
+        `You are using Node ${process.version} which is not supported.\n` +
+          `Please update to Node ${minimalVersion} or higher for a better, fully supported experience.\n`
+      )
+    );
+    process.exit(1);
+  }
 }
 
 /**
@@ -73,6 +88,8 @@ async function initPlugin(daemonDir: string, pluginDir: string) {
  * install all dependencies of pipcook into working dir
  */
 const init: InitCommandHandler = async (version: string, { beta, client, tuna }) => {
+  ensureNodeVersion('12.19');
+
   let npmClient = 'npm';
   if (beta) {
     version = 'beta';
