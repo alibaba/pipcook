@@ -1,23 +1,26 @@
-import { exec } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { GenerateOptions } from '../service/pipeline';
+import { download } from '@pipcook/pipcook-core/dist/utils/public';
 
 const boa = require('@pipcook/boa');
 
-export async function keras2Wasm(dist: string, projPackage: any, opts: GenerateOptions, inputLayer?: string) {
+export async function keras2Wasm(dist: string, projPackage: any, opts: GenerateOptions, inputLayer?: string): Promise<void> {
   const relay = boa.import('tvm.relay');
   const emcc = boa.import('tvm.contrib.emcc');
   const keras = boa.import('tensorflow.keras');
   const { dict, open, len } = boa.builtins();
-  exec(`wget http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/dist/tvmjs.bundle.js`, {cwd: dist});
-  exec(`wget http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/preload.js`, {cwd: dist});
+
+  const fileQueue = [];
+
+  fileQueue.push(download('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/dist/tvmjs.bundle.js', path.join(dist, 'tvmjs.bundle.js')));
+  await download('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/preload.js', path.join(dist, 'preload.js'));
 
   const model = keras.models.load_model(path.join(opts.modelPath, 'model.h5'));
 
   const inputName = inputLayer ? inputLayer : 'input_1';
   const inputShape = model.layers[0].input_shape[0];
-  if (len(inputShape) > 4) { return ; }
+  if (len(inputShape) > 4) { return; }
   const shape = [1];
   shape.push(inputShape[3]);
   shape.push(inputShape[1]);
@@ -51,19 +54,17 @@ export async function keras2Wasm(dist: string, projPackage: any, opts: GenerateO
   }
   `;
 
-  const result = templateHead + open(path.join(dist, 'model.wasi.js')).read() + templateTail;
-  const resultWriter = open(path.join(dist, 'model.wasi.js'), 'w');
-  resultWriter.write(result);
-
-  const fileQueue = [];
-
+  const result = templateHead + await (fs.readFile(path.join(dist, 'model.wasi.js'))) + templateTail;
+  console.log(path.join(dist, 'modelSpec.json'))
+  fileQueue.push(fs.writeFile(path.join(dist, 'model.wasi.js'), result));
   const jsonPromise = fs.writeJSON(path.join(dist, 'modelSpec.json'), {
     shape,
     inputName
   });
   fileQueue.push(jsonPromise);
   fileQueue.concat([
-    fs.copy(path.join(__dirname, `../../templates/wasm/predict.js`), `${dist}/index.js`),
+    fs.copy(path.join(__dirname, '../../templates/wasm/predictBrowser.js'), `${dist}/predictBrowser.js`),
+    fs.copy(path.join(__dirname, '../../templates/wasm/predictNode.js'), `${dist}/predictNode.js`),
     // write package.json
     fs.outputJSON(dist + '/package.json', projPackage, { spaces: 2 }),
   ]);

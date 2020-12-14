@@ -20,7 +20,7 @@ import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { execAsync, pluginQueue } from '../utils';
 import { PluginInfo, JobRunner } from '../runner/job-runner';
 import { UpdateParameter } from '../interface/pipeline';
-import { boaGenerator } from '../generator/boa';
+import { nodejsGenerator } from '../generator/nodejs';
 import { tvmGenerator } from '../generator/tvmGeneratorParent';
 
 interface SelectJobsFilter {
@@ -165,7 +165,7 @@ export class PipelineService {
 
     console.info('Start generating');
     fileQueue = [tvmGenerator(dist, projPackage, opts)];
-    fileQueue = fileQueue.concat(boaGenerator(job, projPackage, dist, opts));
+    fileQueue = fileQueue.concat(nodejsGenerator(job, projPackage, dist, opts));
     fileQueue = fileQueue.concat([
       // copy logs
       fs.copy(opts.workingDir + '/logs', `${dist}/logs`),

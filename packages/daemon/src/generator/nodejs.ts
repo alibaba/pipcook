@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import { JobEntity } from '../model/job';
 import * as path from 'path';
 
-export function boaGenerator(job: JobEntity, projPackage: any, dist: string, opts: GenerateOptions) {
+export function nodejsGenerator(job: JobEntity, projPackage: any, dist: string, opts: GenerateOptions) {
   projPackage.dependencies = {
     [opts.plugins.modelDefine.name]: opts.plugins.modelDefine.version,
   };
@@ -22,13 +22,13 @@ export function boaGenerator(job: JobEntity, projPackage: any, dist: string, opt
 
   const filePromise = [
     // copy base components
-    fs.copy(opts.modelPath, dist + '/boa/model'),
-    fs.copy(path.join(__dirname, `../../templates/${opts.template}/predict.js`), `${dist}/boa/index.js`),
-    fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boa/boapkg.js`),
+    fs.copy(opts.modelPath, dist + '/nodejs/model'),
+    fs.copy(path.join(__dirname, `../../templates/node/predict.js`), `${dist}/nodejs/index.js`),
+    fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/nodejs/boapkg.js`),
     // write package.json
-    fs.outputJSON(dist + '/boa/package.json', projPackage, jsonWriteOpts),
+    fs.outputJSON(dist + '/nodejs/package.json', projPackage, jsonWriteOpts),
     // write metadata.json
-    fs.outputJSON(dist + '/boa/metadata.json', metadata, jsonWriteOpts),
+    fs.outputJSON(dist + '/nodejs/metadata.json', metadata, jsonWriteOpts),
   ];
 
   return filePromise;

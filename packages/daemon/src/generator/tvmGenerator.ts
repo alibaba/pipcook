@@ -1,4 +1,4 @@
-import { keras2Wasm } from './keras';
+import { keras2Wasm } from '../convertor/keras';
 
 const validModel = ['keras'];
 
