@@ -13,7 +13,7 @@ import {
 } from '@loopback/rest';
 import { Plugin } from '../models';
 import { PluginRepository } from '../repositories';
-import { PluginService, PluginTraceResp } from '../services';
+import { PluginService, PluginTraceResp, TraceService } from '../services';
 import { PluginInstallPararmers } from './interface';
 import { BaseEventController } from './base';
 import { PluginPackage } from '@pipcook/costa';
@@ -36,10 +36,12 @@ export class PluginController extends BaseEventController {
   constructor(
     @service(PluginService)
     public pluginService: PluginService,
+    @service(TraceService)
+    public traceService: TraceService,
     @repository(PluginRepository)
     public pluginRepository: PluginRepository
 ) {
-    super();
+    super(traceService);
   }
 
   // TODO(feely): check if the plugin has been installed
@@ -81,7 +83,7 @@ export class PluginController extends BaseEventController {
       }
     }
   })
-  async reInstallById(
+  async reInstallByName(
     @requestBody(pluginInstallSpec) params: PluginInstallPararmers
   ): Promise<PluginTraceResp> {
     const { name, pyIndex } = params;

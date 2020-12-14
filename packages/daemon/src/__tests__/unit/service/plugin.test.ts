@@ -1,4 +1,3 @@
-// import * as fs from 'fs-extra';
 import {
     createStubInstance,
     StubbedInstanceWithSinonAccessor,
@@ -7,7 +6,6 @@ import {
 import test from 'ava';
 import { PluginRepository } from '../../../repositories';
 import { PluginService, TraceService } from '../../../services';
-// import { Plugin } from '../../../models';
 import * as fs from 'fs-extra';
 
 function initPluginService(): {
@@ -15,8 +13,8 @@ function initPluginService(): {
   traceService: StubbedInstanceWithSinonAccessor<TraceService>,
   pluginService: PluginService
 } {
-  const pluginRepository = createStubInstance(PluginRepository);
-  const traceService = createStubInstance(TraceService);
+  const pluginRepository = createStubInstance<PluginRepository>(PluginRepository);
+  const traceService = createStubInstance<TraceService>(TraceService);
   const pluginService = new PluginService(pluginRepository, traceService);
   return {
     pluginRepository,
