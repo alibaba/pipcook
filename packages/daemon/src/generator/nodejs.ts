@@ -20,7 +20,7 @@ export function nodejsGenerator(job: JobEntity, projPackage: any, dist: string, 
     output: job,
   };
 
-  const filePromise = [
+  return [
     // copy base components
     fs.copy(opts.modelPath, dist + '/nodejs/model'),
     fs.copy(path.join(__dirname, `../../templates/node/predict.js`), `${dist}/nodejs/index.js`),
@@ -30,6 +30,4 @@ export function nodejsGenerator(job: JobEntity, projPackage: any, dist: string, 
     // write metadata.json
     fs.outputJSON(dist + '/nodejs/metadata.json', metadata, jsonWriteOpts),
   ];
-
-  return filePromise;
 }
