@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 'use strict';
 const { run, PLATFORM } = require('./utils');
 
@@ -13,7 +15,7 @@ if (PLATFORM === 'linux') {
 } else if (PLATFORM === 'darwin') {
   cmds.push('curl');
 } else {
-  throw new TypeError(`No support for your platform ${PLATFORM}`);
+  throw new TypeError(`no support for your platform ${PLATFORM}`);
 }
 
 cmds.forEach(cmd => {
