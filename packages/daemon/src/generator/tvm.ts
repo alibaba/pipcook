@@ -7,7 +7,7 @@ export function tvmGenerator(dist: string, projPackage: any, opts: GenerateOptio
   // only support keras for now; Other formats will be supported in the coming commits
   if (! existsSync(path.join(opts.modelPath, 'model.h5'))) { return ; }
   return new Promise((resolve, reject) => {
-    const client = fork(`${path.resolve(__dirname, 'tvmGenerator')}`, [JSON.stringify({
+    const client = fork(`${path.resolve(__dirname, 'tvm.cli')}`, [JSON.stringify({
       dist,
       projPackage,
       opts

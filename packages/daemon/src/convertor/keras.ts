@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { GenerateOptions } from '../service/pipeline';
 import { download } from '@pipcook/pipcook-core';
-import { TVM_PREFIX } from './constant';
+import { TVM_BUNDLE_PREFIX } from './constant';
 
 const boa = require('@pipcook/boa');
 
@@ -14,8 +14,8 @@ export async function keras2wasm(dist: string, projPackage: any, opts: GenerateO
 
   const fileQueue = [];
 
-  fileQueue.push(download(`${TVM_PREFIX}/dist/tvmjs.bundle.js`, path.join(dist, 'wasm', 'tvmjs.bundle.js')));
-  await download(`${TVM_PREFIX}/preload.js`, path.join(dist, 'wasm', 'preload.js'));
+  fileQueue.push(download(`${TVM_BUNDLE_PREFIX}/dist/tvmjs.bundle.js`, path.join(dist, 'wasm', 'tvmjs.bundle.js')));
+  await download(`${TVM_BUNDLE_PREFIX}/preload.js`, path.join(dist, 'wasm', 'preload.js'));
 
   const model = keras.models.load_model(path.join(opts.modelPath, 'model.h5'));
 
@@ -63,12 +63,12 @@ export async function keras2wasm(dist: string, projPackage: any, opts: GenerateO
     })
   );
   fileQueue.concat([
-    fs.copy(path.join(__dirname, '../../templates/wasm/'), path.join(dist, 'wasm')),
+    fs.copy(path.join(__dirname, `../../templates/wasm/predict.js`), `${dist}/wasm/index.js`),
     // write package.json
     fs.outputJSON(dist + '/wasm/package.json', projPackage, { spaces: 2 })
   ]);
 
   await Promise.all(fileQueue);
-
+  
   process.send('done');
 }

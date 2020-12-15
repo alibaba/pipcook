@@ -21,7 +21,7 @@ import { execAsync, pluginQueue } from '../utils';
 import { PluginInfo, JobRunner } from '../runner/job-runner';
 import { UpdateParameter } from '../interface/pipeline';
 import { nodejsGenerator } from '../generator/nodejs';
-import { tvmGenerator } from '../generator/tvmGeneratorParent';
+import { tvmGenerator } from '../generator/tvm';
 
 interface SelectJobsFilter {
   pipelineId?: string;
