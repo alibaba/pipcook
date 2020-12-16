@@ -5,9 +5,10 @@ import * as semver from 'semver';
 import * as chalk from 'chalk';
 import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
-import { constants as CoreConstants } from '@pipcook/pipcook-core';
+import { constants as CoreConstants, download } from '@pipcook/pipcook-core';
+import * as os from 'os';
 
-import { Constants, logger } from '../utils/common';
+import { Constants, execAsync, logger } from '../utils/common';
 import { InitCommandHandler } from '../types';
 import { optionalNpmClients, daemonPackage } from '../config';
 
@@ -150,6 +151,14 @@ const init: InitCommandHandler = async (version: string, { beta, client, tuna })
       daemon += `@${version}`;
     }
     await npmInstall(npmClient, daemon, CoreConstants.PIPCOOK_DAEMON, npmInstallEnvs);
+    await Promise.all([
+      download('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/wasm/tvmjs_support.bc', join(CoreConstants.PIPCOOK_MINICONDA_LIB, 'tvmjs_support.bc')),
+      download('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/wasm/wasm_runtime.bc', join(CoreConstants.PIPCOOK_MINICONDA_LIB, 'wasm_runtime.bc')),
+      download('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/wasm/webgpu_runtime.bc', join(CoreConstants.PIPCOOK_MINICONDA_LIB, 'webgpu_runtime.bc'))
+    ]);
+    if (os.platform() === 'darwin' || os.platform() === 'win32') {
+      await execAsync(`node ${CoreConstants.PIPCOOK_BOA}/tools/bip.js install tlcpack -f https://tlcpack.ai/wheels`);
+    }
     await initPlugin(CoreConstants.PIPCOOK_DAEMON, CoreConstants.PIPCOOK_PLUGINS);
     logger.success('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {

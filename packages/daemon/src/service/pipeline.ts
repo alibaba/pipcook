@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as os from 'os';
 import { provide, inject, scope, ScopeEnum } from 'midway';
 import * as HttpStatus from 'http-status';
 import * as createHttpError from 'http-errors';
@@ -164,7 +165,7 @@ export class PipelineService {
     let fileQueue = [];
 
     console.info('Start generating');
-    fileQueue = [tvmGenerator(dist, projPackage, opts)];
+    if (os.platform() === 'darwin' || os.platform() === 'win32') { fileQueue = [tvmGenerator(dist, projPackage, opts)]; }
     fileQueue = fileQueue.concat(nodejsGenerator(job, projPackage, dist, opts));
     fileQueue = fileQueue.concat([
       // copy logs

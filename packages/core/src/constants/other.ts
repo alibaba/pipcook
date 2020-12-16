@@ -22,6 +22,16 @@ export const PIPCOOK_LOGS = join(PIPCOOK_HOME_PATH, 'logs');
 export const PIPCOOK_DAEMON = join(PIPCOOK_HOME_PATH, 'server');
 
 /**
+ * Pipcook Daemon dep boa directory
+ */
+export const PIPCOOK_BOA = join(PIPCOOK_DAEMON, 'node_modules/@pipcook/boa');
+
+/**
+ * Pipcook Boa dep miniconda lib directory
+ */
+export const PIPCOOK_MINICONDA_LIB = join(PIPCOOK_BOA, '.miniconda/lib');
+
+/**
  * Pipcook daemon source directory.
  */
 export const PIPCOOK_DAEMON_SRC = join(PIPCOOK_DAEMON, 'node_modules/@pipcook/daemon');
