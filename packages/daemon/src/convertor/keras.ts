@@ -10,7 +10,7 @@ export async function keras2wasm(dist: string, projPackage: any, opts: GenerateO
   const relay = boa.import('tvm.relay');
   const emcc = boa.import('tvm.contrib.emcc');
   const keras = boa.import('tensorflow.keras');
-  const { dict, len } = boa.builtins();
+  const { dict, len, open } = boa.builtins();
 
   const fileQueue = [];
 
@@ -33,7 +33,9 @@ export async function keras2wasm(dist: string, projPackage: any, opts: GenerateO
   lib.save(path.join(dist, 'wasm', 'model.bc'));
 
   fileQueue.push(fs.writeFile(path.join(dist, 'wasm', 'modelDesc.json'), graph));
-  fileQueue.push(fs.writeFile(path.join(dist, 'wasm', 'modelParams.parmas'), relay.save_param_dict(param)));
+
+  const paramWriter = open(path.join(dist, 'wasm', 'modelParams.parmas'), 'wb');
+  paramWriter.write(relay.save_param_dict(param));
 
   const emccConfig = ['-O3', '-std=c++14', '-Wno-ignored-attributes', '-s', 'ALLOW_MEMORY_GROWTH=1',
                       '-s', 'STANDALONE_WASM=1', '-s', 'ERROR_ON_UNDEFINED_SYMBOLS=0', '-s', 'ASSERTIONS=1',
