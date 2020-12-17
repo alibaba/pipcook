@@ -3,15 +3,14 @@ import * as fs from 'fs-extra';
 import { GenerateOptions } from '../service/pipeline';
 import { download } from '@pipcook/pipcook-core';
 import { TVM_BUNDLE_PREFIX } from './constant';
+import * as boa from '@pipcook/boa';
 
-const boa = require('@pipcook/boa');
+const { dict, len, open } = boa.builtins();
+const relay = boa.import('tvm.relay');
+const emcc = boa.import('tvm.contrib.emcc');
 
 export async function keras2wasm(dist: string, projPackage: any, opts: GenerateOptions, inputLayer?: string): Promise<void> {
-  const relay = boa.import('tvm.relay');
-  const emcc = boa.import('tvm.contrib.emcc');
   const keras = boa.import('tensorflow.keras');
-  const { dict, len, open } = boa.builtins();
-
   const fileQueue = [];
 
   fileQueue.push(download(`${TVM_BUNDLE_PREFIX}/dist/tvmjs.bundle.js`, path.join(dist, 'wasm', 'tvmjs.bundle.js')));

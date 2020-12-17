@@ -32,13 +32,13 @@ const predict = async (input) => {
     modelSpec = rets.modelSpec;
   }
 
-  const inputData = tvm.empty(modelSpec.shape, "float32", tvm.cpu());
+  const inputData = tvm.empty(modelSpec.shape, 'float32', tvm.cpu());
   const output = model.getOutput(0);
   inputData.copyFrom(input);
   model.setInput(modelSpec.inputName, inputData);
   model.run();
   await ctx.sync();
-  console.log(output.toArray())
+  console.log(output.toArray());
   return output.toArray();
 }
 

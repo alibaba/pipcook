@@ -54,13 +54,12 @@ The trained model will generate an `output` directory under [`cwd(3)`](https://l
 output
 ├─ logs
 ├─ nodejs
-├─ package.json
 └─ wasm
 ```
 
-There are two entry-points here, one for nodejs powered by boa; another one is used for wasm (WebAssembly), a universial virtual machine, powered by TVM.
+There are two entry-points here, one for Node.js powered by boa; another one is used for wasm (WebAssembly), a universial virtual machine, powered by [TVM](https://tvm.apache.org/docs/).
 
-**Note:** TVM does not have linux wheel at this time, therefore, we will only export WASM format for mac platform at this time. We will provide a detailed guide for linux users to build TVM from source, if you want to try it out under linux.
+**Note:** [TVM](https://tvm.apache.org/docs/) does not have linux wheel at this time, therefore, we will only export WASM format for mac platform at this time. We will provide a detailed guide for linux users to build TVM from source, if you want to try it out under linux.
 
 To get started with your trained model, follow the below steps under `nodejs` and `wasm` seperately:
 

@@ -21,8 +21,8 @@ import { Tracer, JobStatusChangeEvent } from './trace-manager';
 import { execAsync, pluginQueue } from '../utils';
 import { PluginInfo, JobRunner } from '../runner/job-runner';
 import { UpdateParameter } from '../interface/pipeline';
-import { nodejsGenerator } from '../generator/nodejs';
-import { tvmGenerator } from '../generator/tvm';
+import { generateNode } from '../generator/nodejs';
+import { generateTVM } from '../generator/tvm';
 
 interface SelectJobsFilter {
   pipelineId?: string;
@@ -165,11 +165,12 @@ export class PipelineService {
     let fileQueue = [];
 
     console.info('Start generating');
-    if (os.platform() === 'darwin' || os.platform() === 'win32') { fileQueue = [tvmGenerator(dist, projPackage, opts)]; }
-    fileQueue = fileQueue.concat(nodejsGenerator(job, projPackage, dist, opts));
+    if (os.platform() === 'darwin' || os.platform() === 'win32') { fileQueue = [generateTVM(dist, projPackage, opts)]; }
+    fileQueue = fileQueue.concat(generateNode(job, projPackage, dist, opts));
     fileQueue = fileQueue.concat([
       // copy logs
       fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
+      fs.unlink(`${dist}/package.json`)
     ]);
     await Promise.all(fileQueue);
     console.info(`trained the model to ${dist}`);

@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import { JobEntity } from '../model/job';
 import * as path from 'path';
 
-export function nodejsGenerator(job: JobEntity, projPackage: any, dist: string, opts: GenerateOptions) {
+export function generateNode(job: JobEntity, projPackage: any, dist: string, opts: GenerateOptions) {
   projPackage.dependencies = {
     [opts.plugins.modelDefine.name]: opts.plugins.modelDefine.version,
   };

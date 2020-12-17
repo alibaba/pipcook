@@ -1,12 +1,12 @@
 # Introduction to Pipcook models
 
-Pipcook now supports two types (nodejs & wasm) of model. In this manual, we will dive into these two types of models and show users how to use them.
+Pipcook now supports two types (Node.js & wasm) of model. In this manual, we will dive into these two types of models and show users how to use them.
 
 ## nodejs
 
 ### Background
 
-Nodejs models are powered by BOA, a python-js bridge that allows users to directly run python module with Javascript syntax.
+Node.js models are powered by boa, a python-js bridge that allows users to directly run python module with Javascript syntax.
 
 The common folder structure for such model is like:
 ```
@@ -17,7 +17,7 @@ The common folder structure for such model is like:
 └── package.json
 ```
 
-The black magic here is to use BOA to connect Javascript and python. This will allow users to use the flourish python eco-system and powerful pc serving as backend in nodejs.
+The black magic here is to use boa to connect Javascript and python. This will allow users to use the flourish python eco-system and powerful pc serving as backend in nodejs.
 
 But the trade-off is a heavy runtime and long installation time.
 
@@ -30,7 +30,10 @@ $ cd output/nodejs
 $ npm install # To install deps
 ```
 
-Then just treat the `output/nodejs` as an npm package with `predict` function. You can include it in any nodejs runtime.
+Then just treat the `output/nodejs` as an npm package with `predict` function. You can include it in any nodejs runtime. And use the following code to call the model:
+```js
+
+```
 
 ## WASM
 
@@ -55,3 +58,17 @@ THe generated folder structure looks like:
 
 The entry files are `browser.js` and `node.js`, as the name suggests, they are prepared for browser environment and nodejs environment.
 To run the model, users just need to include the corresponding entry file and call the `predict` function. 
+
+Node.js:
+```js
+const model = require('./node.js');
+const data = [0, 1, 2, 3]; // Mock data, the real data layout depends on model's define
+const res = model.predict(data); // return type is Float32Array
+```
+
+Browser:
+```js
+const model = require('./node.js');
+const data = [0, 1, 2, 3]; // Mock data, the real data layout depends on model's define
+const res = model.predict(data); // return type is Float32Array
+```
