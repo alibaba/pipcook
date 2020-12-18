@@ -24,7 +24,7 @@ jobs:
 
       - name: Get release version
         id: get_version
-        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:11}" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:11})" >> $GITHUB_ENV
 
       - name: Publish check
         run: |
