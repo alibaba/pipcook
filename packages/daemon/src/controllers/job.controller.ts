@@ -21,9 +21,10 @@ import { Job, JobParam, Pipeline } from '../models';
 import { constants } from '@pipcook/pipcook-core';
 import { JobRepository } from '../repositories';
 import { service } from '@loopback/core';
-import { TraceService } from '../services';
+import { JobService, PipelineService, TraceService } from '../services';
 import { join } from 'path';
 import { createReadStream, ensureDir, ensureFile, pathExists } from 'fs-extra';
+import { CreateJobResp, JobCreateParameters } from './interface';
 
 @api({ basePath: '/api/jobs' })
 export class JobController {
@@ -31,9 +32,12 @@ export class JobController {
     @repository(JobRepository)
     public jobRepository : JobRepository,
     @service(TraceService)
-    public traceService: TraceService
+    public traceService: TraceService,
+    @service(PipelineService)
+    public pipelineService: PipelineService,
+    @service(JobService)
+    public jobService: JobService
   ) {
-    super(traceService);
   }
 
   private async setupTracer(job: Job) {
@@ -82,16 +86,37 @@ export class JobController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Job, {
-            title: 'NewJob',
-            exclude: ['id'],
-          }),
+          schema: getModelSchemaRef(CreateJobResp),
         },
       },
     })
-    job: Omit<Job, 'id'>,
-  ): Promise<Job> {
-    return this.jobRepository.create(job);
+    param: JobCreateParameters,
+  ): Promise<CreateJobResp> {
+    const { pipelineId, params: updateParams = [] } = param;
+    const pipeline = await this.pipelineService.getPipelineByIdOrName(pipelineId);
+    if (pipeline) {
+      const plugins = await this.pipelineService.fetchPlugins(pipeline);
+      const params = this.initializeParams(pipeline, updateParams);
+      const job = await this.jobService.createJob(pipelineId, params);
+      const tracer = await this.setupTracer(job);
+
+      process.nextTick(async () => {
+        try {
+          await this.jobService.runJob(job, pipeline, plugins, tracer);
+          this.traceService.destroy(tracer.id);
+        } catch (err) {
+          this.traceService.destroy(tracer.id, err);
+        }
+      });
+      let resp = {
+        ... job,
+        traceId: tracer.id
+      } as CreateJobResp;
+      return resp;
+    } else {
+      // TODO error handler
+      throw new Error();
+    }
   }
 
   @get('/count', {
@@ -108,6 +133,16 @@ export class JobController {
     return this.jobRepository.count(where);
   }
 
+  @get()
+  public async list(): Promise<void> {
+    const { pipelineId, offset, limit } = this.ctx.query;
+    const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
+    this.ctx.success(jobs);
+  }
+
+  /**
+   * list jobs
+   */
   @get('/', {
     responses: {
       '200': {
@@ -123,8 +158,8 @@ export class JobController {
       },
     },
   })
-  async find(
-    @param.filter(Job) filter?: Filter<Job>,
+  async list(
+    
   ): Promise<Job[]> {
     return this.jobRepository.find(filter);
   }

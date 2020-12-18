@@ -3,6 +3,7 @@ import {
 	property
 } from '@loopback/repository';
 import { getModelSchemaRef } from '@loopback/rest';
+import { Job, JobParam } from '../models';
   
 @input()
 export class PluginInstallPararmers {
@@ -19,4 +20,31 @@ export class PluginInstallPararmers {
 	})
 	pyIndex?: string;
 }
-  
+@input()
+export class JobCreateParameters {
+	@property({ required: true })
+	pipelineId: string;
+	// TODO json validation
+	@property()
+	params?: JobParam[];
+}
+
+
+@input()
+export class GetJobListParameters {
+	@property()
+	pipelineId: string;
+	@property()
+	offset: number;
+	@property()
+	limit: number;
+}
+
+export class CreateJobResp extends Job {
+	@property()
+	traceId: string;
+
+	constructor() {
+		super();
+	}
+}
