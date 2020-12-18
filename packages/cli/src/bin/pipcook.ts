@@ -13,6 +13,7 @@ import init from '../actions/init';
 import serve from '../actions/serve';
 import board from '../actions/board';
 import devPlugin from '../actions/dev-plugin';
+import add from '../actions/add';
 
 (async function(): Promise<void> {
   // check node version
@@ -86,6 +87,10 @@ import devPlugin from '../actions/dev-plugin';
     .option('-n, --name <name>', 'project name')
     .description('initialize plugin development environment')
     .action(devPlugin);
+
+  program
+    .command('add')
+    .action(add);
 
   program
     .command('daemon', 'manage pipcook daemon service')

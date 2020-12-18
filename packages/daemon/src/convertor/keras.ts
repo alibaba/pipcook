@@ -8,9 +8,16 @@ import * as boa from '@pipcook/boa';
 const { dict, len, open } = boa.builtins();
 const relay = boa.import('tvm.relay');
 const emcc = boa.import('tvm.contrib.emcc');
+let keras = null;
+try {
+  keras = boa.import('tensorflow.keras');
+} catch {
+  console.error('Does not detect TensorFlow environment here; Please try to use \n pipcook add tensorflow \n To fix it');
+}
+
 
 export async function keras2wasm(dist: string, projPackage: any, opts: GenerateOptions, inputLayer?: string): Promise<void> {
-  const keras = boa.import('tensorflow.keras');
+  
   const fileQueue = [];
 
   fileQueue.push(download(`${TVM_BUNDLE_PREFIX}/dist/tvmjs.bundle.js`, path.join(dist, 'wasm', 'tvmjs.bundle.js')));

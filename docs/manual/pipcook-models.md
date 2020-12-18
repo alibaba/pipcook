@@ -6,7 +6,7 @@ Pipcook now supports two types (Node.js & wasm) of model. In this manual, we wil
 
 ### Background
 
-Node.js models are powered by boa, a python-js bridge that allows users to directly run python module with Javascript syntax.
+Node.js models are powered by boa, a python-js bridge that allows users to directly run python module with JavaScript syntax.
 
 The common folder structure for such model is like:
 ```
@@ -17,7 +17,7 @@ The common folder structure for such model is like:
 └── package.json
 ```
 
-The black magic here is to use boa to connect Javascript and python. This will allow users to use the flourish python eco-system and powerful pc serving as backend in nodejs.
+The black magic here is to use boa to connect JavaScript and python. This will allow users to use the flourish python eco-system and powerful pc serving as backend in nodejs.
 
 But the trade-off is a heavy runtime and long installation time.
 
@@ -72,3 +72,4 @@ const model = require('./node.js');
 const data = [0, 1, 2, 3]; // Mock data, the real data layout depends on model's define
 const res = model.predict(data); // return type is Float32Array
 ```
+## How to 
