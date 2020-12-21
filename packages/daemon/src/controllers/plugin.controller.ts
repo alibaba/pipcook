@@ -40,7 +40,7 @@ export class PluginController extends BaseEventController {
     public traceService: TraceService,
     @repository(PluginRepository)
     public pluginRepository: PluginRepository
-) {
+  ) {
     super(traceService);
   }
 
@@ -77,7 +77,7 @@ export class PluginController extends BaseEventController {
         description: 'Plugin reinstall success',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Plugin)
+            schema: getModelSchemaRef(PluginTraceResp)
           }
         }
       }

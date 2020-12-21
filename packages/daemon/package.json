@@ -59,7 +59,7 @@
     "@pipcook/costa": "^1.2.0",
     "@pipcook/pipcook-core": "^1.2.0",
     "debug": "^4.3.1",
-    "loopback-connector-sqlite3": "git+ssh://git@github.com:HugoPoi/loopback-connector-sqlite3.git",
+    "loopback-connector-sqlite3": "git+ssh://git@github.com:FeelyChau/loopback-connector-sqlite3.git",
     "multer": "^1.4.2",
     "queue": "^6.0.1",
     "request": "^2.88.2",

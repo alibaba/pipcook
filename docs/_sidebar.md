@@ -2,7 +2,6 @@
 - [Install](/INSTALL.md)
 - User Manual
   - [Introduction to Pipeline](/manual/intro-to-pipeline.md)
-  - [Introduction to PipApp](/manual/intro-to-pipapp.md)
   - [Introduction to Plugin](/manual/intro-to-plugin.md)
   - [Introduction to Boa](/manual/intro-to-boa.md)
   - [Pipcook Tools](/manual/pipcook-tools.md)

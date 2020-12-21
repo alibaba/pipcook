@@ -1,8 +1,8 @@
 import {
-    createStubInstance,
-    StubbedInstanceWithSinonAccessor,
-    sinon
-  } from '@loopback/testlab';
+  createStubInstance,
+  StubbedInstanceWithSinonAccessor,
+  sinon
+} from '@loopback/testlab';
 import test from 'ava';
 import { PluginRepository } from '../../../repositories';
 import { PluginService, TraceService } from '../../../services';
@@ -115,8 +115,8 @@ test('should fetch and install -- not installed', async (t) => {
   t.true(mockInstall.calledOnceWith(
     'mockId',
     { id: 'mockId', name: 'mockName' } as any,
-    { pyIndex: 'mockPyIndex', force: false, stderr: 'mockStderr', stdout: 'mockStdout' } as any)
-  );
+    { pyIndex: 'mockPyIndex', force: false, stderr: 'mockStderr', stdout: 'mockStdout' } as any
+  ));
 });
 
 test('should fetch and install -- throw error', async (t) => {
@@ -142,8 +142,8 @@ test('should fetch and install -- throw error', async (t) => {
   t.true(mockInstall.calledOnceWith(
     'mockId',
     { id: 'mockId', name: 'mockName' } as any,
-    { pyIndex: 'mockPyIndex', force: false, stderr: 'mockStderr', stdout: 'mockStdout' } as any)
-  );
+    { pyIndex: 'mockPyIndex', force: false, stderr: 'mockStderr', stdout: 'mockStdout' } as any
+  ));
   t.true(catched, 'error check');
 });
 
