@@ -9,12 +9,13 @@ import Debug from 'debug';
 const debug = Debug('daemon.controller.base');
 
 export class BaseEventController {
-	@service(TraceService)
-	public traceService: TraceService;
 	@inject(RestBindings.Http.CONTEXT)
 	public ctx: RequestContext;
 	
-	constructor() {	}
+	constructor(
+    @service(TraceService)
+	  public traceService: TraceService
+  ) {	}
 
 	/**
    * trace event
