@@ -17,7 +17,7 @@ The common folder structure for such model is like:
 └── package.json
 ```
 
-The black magic here is to use boa to connect JavaScript and python. This will allow users to use the flourish python eco-system and powerful pc serving as backend in nodejs.
+The black magic here is to use boa to connect JavaScript and python. This will allow users to use the flourish python eco-system and powerful pc serving as backend in Nodejs.
 
 But the trade-off is a heavy runtime and long installation time.
 
@@ -30,16 +30,17 @@ $ cd output/nodejs
 $ npm install # To install deps
 ```
 
-Then just treat the `output/nodejs` as an npm package with `predict` function. You can include it in any nodejs runtime. And use the following code to call the model:
+Then just treat the `output/nodejs` as an npm package with `predict` function. You can include it in any Nodejs runtime. And use the following code to call the model:
 ```js
-
+const model = require('./nodejs/index');
+const result = await model.predict([1, 2, 3, 4]);
 ```
 
 ## WASM
 
 ### Background
 
-To give a more portable and user-friendly model solution, pipcook uses TVM to compile a given model to wasm format. In this way, the model can run in both browser and nodejs natively. However, since the standard for webGPU is not stable yet, Pipcook does not target the compiled model to GPU yet. In another word, **WASM format only works for CPU right now**.
+To give a more portable and user-friendly model solution, Pipcook uses TVM to compile a given model to wasm format. In this way, the model can run in both browser and Nodejs natively. However, since the standard for webGPU is not stable yet, Pipcook does not target the compiled model to GPU yet. In another word, **WASM format only works for CPU right now**.
 
 THe generated folder structure looks like:
 
@@ -56,19 +57,19 @@ THe generated folder structure looks like:
 
 ### How to use
 
-The entry files are `browser.js` and `node.js`, as the name suggests, they are prepared for browser environment and nodejs environment.
+The entry files are `browser.js` and `node.js`, as the name suggests, they are prepared for the browser environment and Nodejs environment.
 To run the model, users just need to include the corresponding entry file and call the `predict` function. 
 
 Node.js:
 ```js
-const model = require('./node.js');
+const model = require('./node');
 const data = [0, 1, 2, 3]; // Mock data, the real data layout depends on model's define
 const res = model.predict(data); // return type is Float32Array
 ```
 
 Browser:
 ```js
-const model = require('./node.js');
+const model = require('./browser.js');
 const data = [0, 1, 2, 3]; // Mock data, the real data layout depends on model's define
 const res = model.predict(data); // return type is Float32Array
 ```

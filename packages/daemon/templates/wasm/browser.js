@@ -1,24 +1,20 @@
 import * as tvmjs from './tvmjs.bundle';
 import * as EmccWASI from './model.wasi';
 
-const loadModel = () => {
-  return new Promise((resolve, reject) => {
-    const reqList = [fetch('./modelSpec.json'), fetch('./modelDesc.json'), fetch('./model.wasi.wasm'), fetch('./modelParams.parmas')];
-    Promise.all(reqList).then(async ([spec, desc, wasmSource, params]) => {
-      const wasm = await wasmSource.arrayBuffer();
-      const param = await params.arrayBuffer();
-      const graph = await desc.json();
-      const modelSpec = await spec.json();
-
-      const tvm = await tvmjs.instantiate(wasm, new EmccWASI());
-      const param = new Uint8Array(param);
-      const ctx = tvm.cpu(0);
-      const sysLib = tvm.systemLib();
-      model = tvm.createGraphRuntime(JSON.stringify(graph), sysLib, ctx);
-      model.loadParams(param);
-      resolve({model, tvm, ctx, modelSpec});
-    });
-  });
+const loadModel = async () => {
+  const reqList = [fetch('./modelSpec.json'), fetch('./modelDesc.json'), fetch('./model.wasi.wasm'), fetch('./modelParams.parmas')];
+  const [spec, desc, wasmSource, params] = await Promise.all(reqList);
+  const wasm = await wasmSource.arrayBuffer();
+  const param = await params.arrayBuffer();
+  const graph = await desc.json();
+  const modelSpec = await spec.json();
+  const tvm = await tvmjs.instantiate(wasm, new EmccWASI());
+  const param = new Uint8Array(param);
+  const ctx = tvm.cpu(0);
+  const sysLib = tvm.systemLib();
+  model = tvm.createGraphRuntime(JSON.stringify(graph), sysLib, ctx);
+  model.loadParams(param);
+  return {model, tvm, ctx, modelSpec};
 }
 
 let model, tvm, ctx, modelSpec;

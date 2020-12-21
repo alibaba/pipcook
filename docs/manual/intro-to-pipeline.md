@@ -80,4 +80,4 @@ import * as predict from './output';
 predict('your input data');
 ```
 
-**Note:** The wasm format is under experiment, in theory, the generated model should be possible to run with GPU via webGPU. However, the standard for webGPU is not finalized. We only enable cpu mode by default at this time.
+**Note:** The wasm format is under experiment, in theory, the generated model should be possible to run with GPU via WebGPU. However, the standard for WebGPU is not finalized. We only enable CPU mode by default at this time.

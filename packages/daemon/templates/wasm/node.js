@@ -5,19 +5,15 @@ const modelSpec = require('./modelSpec.json');
 const graph = require('./modelDesc.json');
 
 const loadModel = async () => {
-  return new Promise((resolve, reject) => {
-    const wasmSource = fs.readFile('./model.wasi.wasm');
-    const paramsSource = fs.readFile('./modelParams.parmas');
-    Promise.all([wasmSource, paramsSource]).then(async ([wasm, params]) => {
-      const tvm = await tvmjs.instantiate(wasm, new EmccWASI());
-      const param = new Uint8Array(params);
-      const ctx = tvm.cpu(0);
-      const sysLib = tvm.systemLib();
-      model = tvm.createGraphRuntime(JSON.stringify(graph), sysLib, ctx);
-      model.loadParams(param);
-      resolve({model, tvm, ctx});
-    });
-  });
+  const wasmSource = await fs.readFile('./model.wasi.wasm');
+  const paramsSource = await fs.readFile('./modelParams.parmas');
+  const tvm = await tvmjs.instantiate(wasmSource, new EmccWASI());
+  const param = new Uint8Array(paramsSource);
+  const ctx = tvm.cpu(0);
+  const sysLib = tvm.systemLib();
+  model = tvm.createGraphRuntime(JSON.stringify(graph), sysLib, ctx);
+  model.loadParams(param);
+  return {model, tvm, ctx};
 }
 
 let model, tvm, ctx;

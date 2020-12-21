@@ -1379,14 +1379,6 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@pipcook/plugins-bayesian-model-define@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/@pipcook/plugins-bayesian-model-define/-/plugins-bayesian-model-define-1.1.0.tgz#86733856efd594e4bf2d570f03e6d83dc8a8389d"
-  integrity sha512-li0Vc5vAZKm9cOKp5jyZaGiQI/1sRbqbJf2OiIYjMg6gdJvvzQcNvTteKG7FdrftAZhsxUmOqsCBVJEFovLncw==
-  dependencies:
-    "@pipcook/boa" "^1.1.0"
-    "@pipcook/pipcook-core" "^1.1.0"
-
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.npmjs.org/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"

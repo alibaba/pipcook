@@ -165,8 +165,10 @@ export class PipelineService {
     let fileQueue = [];
 
     console.info('Start generating');
-    if (os.platform() === 'darwin' || os.platform() === 'win32') { fileQueue.concat([generateTVM(dist, projPackage, opts)]); }
-    fileQueue = fileQueue.concat(generateNode(job, projPackage, dist, opts));
+    if (os.platform() === 'darwin' || os.platform() === 'win32') { 
+      fileQueue.push(generateTVM(dist, projPackage, opts)); 
+    }
+    fileQueue.push(generateNode(job, projPackage, dist, opts));
     fileQueue = fileQueue.concat([
       // copy logs
       fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
