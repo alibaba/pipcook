@@ -5,6 +5,8 @@ import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import { join } from 'path';
 import * as request from 'request-promise';
+import * as ChildProcess from 'child_process';
+
 const result: any = {
   // name: undefined,
   dataCollect: '@pipcook/plugins-csv-data-collect',
@@ -142,3 +144,38 @@ test.serial('should copy the symlink successfully', async (t) => {
   await t.notThrowsAsync(utils.copyDir(join(__dirname, 'src'), dest), 'copyDir should not be rejected');
   t.true(symStub.calledOnce, 'symlink should be called only once');
 });
+
+function testExecAsync(isError: boolean): (t: any) => Promise<void> {
+  return async (t: any) => {
+    const mockCmd = 'mock cmd';
+    const mockOption = {};
+
+    sinon.stub(ChildProcess, 'exec').callsFake(
+      (
+        command: string,
+        options: ChildProcess.ExecOptions | null | undefined,
+        callback?: (error: ChildProcess.ExecException | null, stdout: string, stderr: string) => void
+      ): ChildProcess.ChildProcess => {
+        t.is(command, mockCmd);
+        t.deepEqual(options, mockOption);
+        process.nextTick(() => {
+          if (callback) {
+            if (isError) {
+              callback(new Error('mock Error'), 'stdout', 'stderr');
+            } else {
+              callback(null, 'stdout', 'stderr');
+            }
+          }
+        })
+        return {} as any;
+      }
+    );
+    if (isError) {
+      await t.throwsAsync(utils.execAsync(mockCmd, mockOption), { instanceOf: Error, message: 'mock Error' });
+    } else {
+      await t.notThrowsAsync(utils.execAsync(mockCmd, mockOption));
+    }
+  }
+}
+test.serial('exec command async', testExecAsync(true));
+test.serial('exec command async but error thrown', testExecAsync(false));

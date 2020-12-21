@@ -252,6 +252,6 @@ export class JobController {
     }
   })
   async get(@param.path.string('id') id: string): Promise<Job> {
-    return await this.jobRepository.findById(id);
+    return this.jobRepository.findById(id);
   }
 }
