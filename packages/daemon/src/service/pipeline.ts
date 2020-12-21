@@ -165,7 +165,7 @@ export class PipelineService {
     let fileQueue = [];
 
     console.info('Start generating');
-    if (os.platform() === 'darwin' || os.platform() === 'win32') { fileQueue = [generateTVM(dist, projPackage, opts)]; }
+    if (os.platform() === 'darwin' || os.platform() === 'win32') { fileQueue.concat([generateTVM(dist, projPackage, opts)]); }
     fileQueue = fileQueue.concat(generateNode(job, projPackage, dist, opts));
     fileQueue = fileQueue.concat([
       // copy logs

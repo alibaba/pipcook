@@ -156,9 +156,6 @@ const init: InitCommandHandler = async (version: string, { beta, client, tuna })
       download('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/wasm/wasm_runtime.bc', join(CoreConstants.PIPCOOK_MINICONDA_LIB, 'wasm_runtime.bc')),
       download('http://ai-sample.oss-cn-hangzhou.aliyuncs.com/tvmjs/wasm/webgpu_runtime.bc', join(CoreConstants.PIPCOOK_MINICONDA_LIB, 'webgpu_runtime.bc'))
     ]);
-    if (os.platform() === 'darwin' || os.platform() === 'win32') {
-      await execAsync(`node ${CoreConstants.PIPCOOK_BOA}/tools/bip.js install tlcpack -f https://tlcpack.ai/wheels`);
-    }
     await initPlugin(CoreConstants.PIPCOOK_DAEMON, CoreConstants.PIPCOOK_PLUGINS);
     logger.success('Pipcook is ready, you can try "pipcook --help" to get started.');
   } catch (err) {

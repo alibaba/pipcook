@@ -1,45 +1,23 @@
-import * as fse from 'fs-extra';
-import * as chalk from 'chalk';
-import * as path from 'path';
 import { constants } from '@pipcook/pipcook-core';
-import { DevPluginCommandHandler } from '../types';
-import { logger } from '../utils/common';
+import { execAsync, logger } from '../utils/common';
 
+const supportDeps = [ 'tensorflow', 'tvm' ];
 
 /**
  * Add missing deps
  */
-const add: DevPluginCommandHandler = async ({ type, name }) => {
-  console.warn('`pipcook plugin-dev` is deprecated, please use `pipcook plugin create`.');
-  if (!type) {
-    console.log('Please provide a plugin type');
-    return process.exit(1);
-  }
-  if (!constants.PLUGINS.includes(type)) {
-    console.warn(chalk.red(`Unsupported plugin type: "${type}", it must be one of: \n${constants.PLUGINS.join(',\n')}`));
-    return process.exit(1);
-  }
-
-  if (typeof name !== 'string') {
-    name = 'template-plugin';
-  }
-  let dirname;
-  try {
-    dirname = path.join(process.cwd(), name);
-    if (fse.existsSync(dirname)) {
-      return logger.fail(`a directory or file called ${name} already exists. Please use a new working directory`);
+const add = async () => {
+  if (process.argv.length !== 4) { return; }
+  const name = process.argv[3];
+  if (supportDeps.includes(name)) {
+    if (name === 'tvm') {
+        logger.info('Installing tvm ...');
+        await execAsync(`node ${constants.PIPCOOK_BOA}/tools/bip.js install tlcpack -f https://tlcpack.ai/wheels`);
+    } else {
+      await execAsync(`node ${constants.PIPCOOK_BOA}/tools/bip.js install ${name}`);
     }
-    fse.ensureDirSync(path.join(dirname, 'src'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'package.json'),
-      path.join(dirname, 'package.json'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'tsconfig.json'),
-      path.join(dirname, 'tsconfig.json'));
-    fse.copyFileSync(path.join(__dirname, '..', 'assets', 'pluginPackage', 'src', `${type}.ts`),
-      path.join(dirname, 'src', `index.ts`));
-    console.log('success');
-  } catch (e) {
-    console.error(e);
-    fse.removeSync(dirname);
+  } else {
+    console.warn(`You are trying install ${name}, while it is not supported at this time`);
   }
 };
 

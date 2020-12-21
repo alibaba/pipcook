@@ -6,18 +6,33 @@ import { TVM_BUNDLE_PREFIX } from './constant';
 import * as boa from '@pipcook/boa';
 
 const { dict, len, open } = boa.builtins();
-const relay = boa.import('tvm.relay');
-const emcc = boa.import('tvm.contrib.emcc');
+let relay = null;
+let emcc = null;
 let keras = null;
+
+try {
+  relay = boa.import('tvm.relay');
+} catch {
+  console.error('Does not detect tvm environment here; Please try to use \n pipcook add tvm \n To fix it');
+  throw new Error('tvm does not install');
+}
+
+try {
+  emcc = boa.import('tvm.contrib.emcc');
+} catch {
+  console.error('Does not detect emscripten environment here; Please try to install emscripten');
+  throw new Error('emscripten does not install');
+}
+
 try {
   keras = boa.import('tensorflow.keras');
 } catch {
   console.error('Does not detect TensorFlow environment here; Please try to use \n pipcook add tensorflow \n To fix it');
+  throw new Error('Tensorflow does not install');
 }
 
-
 export async function keras2wasm(dist: string, projPackage: any, opts: GenerateOptions, inputLayer?: string): Promise<void> {
-  
+
   const fileQueue = [];
 
   fileQueue.push(download(`${TVM_BUNDLE_PREFIX}/dist/tvmjs.bundle.js`, path.join(dist, 'wasm', 'tvmjs.bundle.js')));
@@ -71,7 +86,7 @@ export async function keras2wasm(dist: string, projPackage: any, opts: GenerateO
     })
   );
   fileQueue.concat([
-    fs.copy(path.join(__dirname, `../../templates/wasm/predict.js`), `${dist}/wasm/index.js`),
+    fs.copy(path.join(__dirname, `../../templates/wasm/`), `${dist}/wasm/`),
     // write package.json
     fs.outputJSON(dist + '/wasm/package.json', projPackage, { spaces: 2 })
   ]);

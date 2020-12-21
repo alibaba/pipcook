@@ -11,4 +11,3 @@ if (validModel.includes(inputModel)) {
 } else {
   console.error(`The convert type is ${inputModel} but only ${validModel.join(', ')} are available`);
 }
-
