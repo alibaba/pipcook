@@ -11,7 +11,6 @@ import {
   RunConfigI
 } from '@pipcook/pipcook-core';
 import { Pipeline } from '../models';
-import multer from 'multer';
 
 export class ServerSentEmitter {
   private handle: SseStream;
@@ -126,29 +125,8 @@ export async function copyDir(src: string, dest: string): Promise<void> {
 
 export function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
-    exec(cmd, opts, (err: ExecException | null, stdout: string, stderr: string) => {
+    exec(cmd, opts, (err: ExecException | null, stdout: string) => {
       err == null ? resolve(stdout) : reject(err);
     });
   });
-}
-
-export function uploadHelp(cb: (file: Express.Multer.File, body: any, cb: (error?: any, info?: Partial<Express.Multer.File>) => void) => void) {
-  return multer({
-    storage: {
-      _handleFile: (
-        req: Request,
-        file: Express.Multer.File,
-        callback: (error?: any, info?: Partial<Express.Multer.File>) => void
-      ): void => {
-        cb(file, req.body, callback);
-      },
-      _removeFile: (
-        req: Request,
-        file: Express.Multer.File,
-        callback: (error: Error | null) => void
-      ): void => {
-        callback(null);
-      }
-    }
-  })
 }

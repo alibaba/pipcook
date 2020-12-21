@@ -2,7 +2,7 @@ import { injectable, BindingScope, service } from '@loopback/core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as HttpStatus from 'http-status';
-import createHttpError from 'http-errors';
+import * as createHttpError from 'http-errors';
 import {
   PipelineStatus,
   EvaluateResult,

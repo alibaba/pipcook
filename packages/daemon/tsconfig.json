@@ -4,7 +4,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "esModuleInterop": false
   },
   "include": [
     "src"

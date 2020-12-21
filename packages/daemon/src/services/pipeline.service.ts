@@ -1,6 +1,6 @@
 import { injectable, BindingScope, service } from '@loopback/core';
 import * as HttpStatus from 'http-status';
-import createHttpError from 'http-errors';
+import * as createHttpError from 'http-errors';
 import {
   constants as CoreConstants,
   PluginStatus,
