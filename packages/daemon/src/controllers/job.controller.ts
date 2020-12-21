@@ -13,6 +13,7 @@ import {
   Response,
   oas,
   RestBindings,
+  getJsonSchemaRef,
 } from '@loopback/rest';
 import { Job, JobParam, Pipeline } from '../models';
 import { constants, PipelineStatus } from '@pipcook/pipcook-core';
@@ -165,25 +166,57 @@ export class JobController {
       },
     },
   })
-  async deleteById(@param.path.string('id') id: string,): Promise<void> {
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.jobService.removeJobById(id);
   }
 
   /**
    * cancel job
    */
-  @post('/{id}/cancel')
+  @post('/{id}/cancel', {
+    responses: {
+      '204': {
+        description: 'Job CANCEL success'
+      }
+    }
+  })
   async stop(@param.path.string('id') id: string): Promise<void> {
     await this.jobService.stopJob(id);
   }
 
-  @get('/{id}/params')
+  @get('/{id}/params', {
+    responses: {
+      '200': {
+        description: 'GET job params',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array'
+            }
+          }
+        }
+      }
+    }
+  })
   async getParams(@param.path.string('id') id: string): Promise<JobParam[]> {
     const job = await this.jobRepository.findById(id);
-    return job.params;
+    return job.params ? job.params : [];
   }
 
-  @get('/{id}/log')
+  @get('/{id}/log', {
+    responses: {
+      '200': {
+        description: 'GET log by id',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array'
+            }
+          }
+        }
+      }
+    }
+  })
   async viewLog(@param.path.string('id') id: string): Promise<string[]> {
     await this.jobRepository.findById(id);
     return await this.jobService.getLogById(id);
@@ -208,7 +241,16 @@ export class JobController {
     return response;
   }
 
-  @get('/{id}')
+  @get('/{id}', {
+    responses: {
+      '200': {
+        description: 'GET a job by id',
+        content: {
+          'application/json': getModelSchemaRef(Job)
+        }
+      }
+    }
+  })
   async get(@param.path.string('id') id: string): Promise<Job> {
     return await this.jobRepository.findById(id);
   }
