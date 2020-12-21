@@ -35,6 +35,7 @@ export class JobService {
 
   constructor() { }
 
+  // TODO number does not need to ret
   async removeJobById(id: string): Promise<number> {
     const job = await this.jobRepository.findById(id);
     if (job) {

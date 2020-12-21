@@ -1,10 +1,6 @@
 import {
-  Count,
-  CountSchema,
   Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
   api,
@@ -12,18 +8,20 @@ import {
   param,
   get,
   getModelSchemaRef,
-  patch,
-  put,
   del,
   requestBody,
+  Response,
+  oas,
+  RestBindings,
 } from '@loopback/rest';
 import { Job, JobParam, Pipeline } from '../models';
-import { constants } from '@pipcook/pipcook-core';
+import { constants, PipelineStatus } from '@pipcook/pipcook-core';
 import { JobRepository } from '../repositories';
-import { service } from '@loopback/core';
+import { inject, service } from '@loopback/core';
 import { JobService, PipelineService, TraceService } from '../services';
 import { join } from 'path';
-import { createReadStream, ensureDir, ensureFile, pathExists } from 'fs-extra';
+import { ensureDir, ensureFile, pathExists } from 'fs-extra';
+import * as createError from 'http-errors';
 import { CreateJobResp, JobCreateParameters } from './interface';
 
 @api({ basePath: '/api/jobs' })
@@ -119,27 +117,6 @@ export class JobController {
     }
   }
 
-  @get('/count', {
-    responses: {
-      '200': {
-        description: 'Job model count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async count(
-    @param.where(Job) where?: Where<Job>,
-  ): Promise<Count> {
-    return this.jobRepository.count(where);
-  }
-
-  @get()
-  public async list(): Promise<void> {
-    const { pipelineId, offset, limit } = this.ctx.query;
-    const jobs = await this.pipelineService.queryJobs({ pipelineId }, { offset, limit });
-    this.ctx.success(jobs);
-  }
-
   /**
    * list jobs
    */
@@ -159,87 +136,28 @@ export class JobController {
     },
   })
   async list(
-    
+    @param.filter(Job) filter?: Filter<Job>
   ): Promise<Job[]> {
     return this.jobRepository.find(filter);
   }
 
-  @patch('/', {
-    responses: {
-      '200': {
-        description: 'Job PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async updateAll(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Job, {partial: true}),
-        },
-      },
-    })
-    job: Job,
-    @param.where(Job) where?: Where<Job>,
-  ): Promise<Count> {
-    return this.jobRepository.updateAll(job, where);
-  }
-
-  @get('/{id}', {
-    responses: {
-      '200': {
-        description: 'Job model instance',
-        content: {
-          'application/json': {
-            schema: getModelSchemaRef(Job, {includeRelations: true}),
-          },
-        },
-      },
-    },
-  })
-  async findById(
-    @param.path.string('id') id: string,
-    @param.filter(Job, {exclude: 'where'}) filter?: FilterExcludingWhere<Job>
-  ): Promise<Job> {
-    return this.jobRepository.findById(id, filter);
-  }
-
-  @patch('/{id}', {
+  /**
+   * remove all jobs
+   */
+  @del('/', {
     responses: {
       '204': {
-        description: 'Job PATCH success',
+        description: 'Job DELETE success',
       },
     },
   })
-  async updateById(
-    @param.path.string('id') id: string,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Job, {partial: true}),
-        },
-      },
-    })
-    job: Job,
-  ): Promise<void> {
-    await this.jobRepository.updateById(id, job);
+  async deleteAll(): Promise<void> {
+    await this.jobRepository.deleteAll();
   }
 
-  @put('/{id}', {
-    responses: {
-      '204': {
-        description: 'Job PUT success',
-      },
-    },
-  })
-  async replaceById(
-    @param.path.string('id') id: string,
-    @requestBody() job: Job,
-  ): Promise<void> {
-    await this.jobRepository.replaceById(id, job);
-  }
-
+  /**
+   * remove job by id
+   */
   @del('/{id}', {
     responses: {
       '204': {
@@ -247,7 +165,51 @@ export class JobController {
       },
     },
   })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
-    await this.jobRepository.deleteById(id);
+  async deleteById(@param.path.string('id') id: string,): Promise<void> {
+    await this.jobService.removeJobById(id);
+  }
+
+  /**
+   * cancel job
+   */
+  @post('/{id}/cancel')
+  async stop(@param.path.string('id') id: string): Promise<void> {
+    await this.jobService.stopJob(id);
+  }
+
+  @get('/{id}/params')
+  async getParams(@param.path.string('id') id: string): Promise<JobParam[]> {
+    const job = await this.jobRepository.findById(id);
+    return job.params;
+  }
+
+  @get('/{id}/log')
+  async viewLog(@param.path.string('id') id: string): Promise<string[]> {
+    await this.jobRepository.findById(id);
+    return await this.jobService.getLogById(id);
+  }
+
+  @get('/{id}/output')
+  @oas.response.file()
+  async download(
+    @param.path.string('id') id: string, 
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<Response> {
+    const job = await this.jobRepository.findById(id);
+    if (job.status !== PipelineStatus.SUCCESS) {
+      throw new createError.BadRequest('invalid job status');
+    }
+    const outputPath = this.jobService.getOutputTarByJobId(id);
+    if (!await pathExists(outputPath)) {
+      throw new createError.BadRequest('output file not found');
+    }
+    response.download(outputPath, `pipcook-output-${id}.tar.gz`);
+
+    return response;
+  }
+
+  @get('/{id}')
+  async get(@param.path.string('id') id: string): Promise<Job> {
+    return await this.jobRepository.findById(id);
   }
 }
