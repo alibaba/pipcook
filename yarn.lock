@@ -1507,6 +1507,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/content-disposition@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.npmjs.org/@types/content-disposition/-/content-disposition-0.5.3.tgz#0aa116701955c2faa0717fc69cd1596095e49d96"
+  integrity sha512-P1bffQfhD3O4LW0ioENXUhZ9OIa0Zn+P7M+pWgkCKaT53wVLSq0mrKksCID/FGHpFhRSxRGhgrQmfhRuzwtKdg==
+
 "@types/cookiejar@*":
   version "2.1.1"
   resolved "https://registry.npmjs.org/@types/cookiejar/-/cookiejar-2.1.1.tgz#90b68446364baf9efd8e8349bb36bd3852b75b80"
@@ -6690,9 +6695,9 @@ log-symbols@^2.2.0:
   dependencies:
     chalk "^2.0.1"
 
-"loopback-connector-sqlite3@git+ssh://git@github.com:HugoPoi/loopback-connector-sqlite3.git":
+"loopback-connector-sqlite3@git+ssh://git@github.com:FeelyChau/loopback-connector-sqlite3.git":
   version "3.0.0"
-  resolved "git+ssh://git@github.com:HugoPoi/loopback-connector-sqlite3.git#36d997d579591a8d5181d8f4809ccb5c46b3626b"
+  resolved "git+ssh://git@github.com:FeelyChau/loopback-connector-sqlite3.git#36d997d579591a8d5181d8f4809ccb5c46b3626b"
   dependencies:
     async "^2.6.1"
     debug "^3.1.0"
