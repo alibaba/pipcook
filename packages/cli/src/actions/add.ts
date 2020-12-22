@@ -11,8 +11,8 @@ const add = async () => {
   const name = process.argv[3];
   if (supportDeps.includes(name)) {
     if (name === 'tvm') {
-        logger.info('Installing tvm ...');
-        await execAsync(`node ${PIPCOOK_BOA}/tools/bip.js install tlcpack -f https://tlcpack.ai/wheels`);
+      logger.info('Installing tvm ...');
+      await execAsync(`node ${PIPCOOK_BOA}/tools/bip.js install tlcpack -f https://tlcpack.ai/wheels`);
     } else {
       await execAsync(`node ${PIPCOOK_BOA}/tools/bip.js install ${name}`);
     }

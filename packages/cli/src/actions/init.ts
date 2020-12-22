@@ -7,7 +7,7 @@ import { prompt } from 'inquirer';
 import { sync } from 'command-exists';
 import { constants as CoreConstants, download } from '@pipcook/pipcook-core';
 
-import { Constants, execAsync, logger } from '../utils/common';
+import { Constants, logger } from '../utils/common';
 import { InitCommandHandler } from '../types';
 import { optionalNpmClients, daemonPackage } from '../config';
 import { PIPCOOK_MINICONDA_LIB } from '../constants';
