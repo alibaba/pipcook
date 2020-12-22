@@ -166,7 +166,11 @@ export class PipelineService {
 
     console.info('Start generating');
     if (os.platform() === 'darwin' || os.platform() === 'win32') {
-      fileQueue.push(generateTVM(dist, projPackage, opts));
+      const tvmGeneratePromise = generateTVM(dist, projPackage, opts);
+      tvmGeneratePromise.catch((e) => {
+        console.error(e);
+      })
+      fileQueue.push(tvmGeneratePromise);
     }
     fileQueue.push(generateNode(job, projPackage, dist, opts));
     fileQueue = fileQueue.concat([
