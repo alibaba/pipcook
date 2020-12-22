@@ -1,7 +1,7 @@
 import Queue from 'queue';
+import { promisify } from 'util';
+import { pipeline } from 'stream';
 import { exec, ExecOptions, ExecException } from 'child_process';
-import { RequestContext, Request } from '@loopback/rest';
-import SseStream from 'ssestream';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as request from 'request-promise';
@@ -11,27 +11,6 @@ import {
   RunConfigI
 } from '@pipcook/pipcook-core';
 import { Pipeline } from '../models';
-
-export class ServerSentEmitter {
-  private handle: SseStream;
-  private response: NodeJS.WritableStream;
-
-  constructor(ctx: RequestContext) {
-    this.response = ctx.response as NodeJS.WritableStream;
-    this.handle = new SseStream(ctx.request);
-    this.handle.pipe(this.response);
-    this.emit('session', 'start');
-  }
-
-  emit(event: string, data: any): boolean {
-    return this.handle.write({ event, data });
-  }
-
-  finish(): void {
-    this.emit('session', 'close');
-    this.handle.unpipe(this.response);
-  }
-}
 
 export const pluginQueue = new Queue({ autostart: true, concurrency: 1 });
 
@@ -130,3 +109,5 @@ export function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
     });
   });
 }
+
+export const pipelinePromisify = promisify(pipeline);

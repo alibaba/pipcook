@@ -167,7 +167,7 @@ test.serial('should run job', async (t) => {
   futures.push(jobService.runJob(
     { id: 'mockId' } as Job,
     { id: 'mockPipelineId' } as Pipeline,
-    { dataAccess: { plugin: {} as PluginPackage, params: '{}' }},
+    { dataAccess: { plugin: {} as PluginPackage, params: {} }},
     {
       // if assert failed, it will make test timeout, because it's event listener
       dispatch: (event) => {
@@ -198,7 +198,7 @@ test.serial('should run job', async (t) => {
   futures.push(jobService.runJob(
     { id: 'mockId' } as Job,
     { id: 'mockPipelineId' } as Pipeline,
-    { dataAccess: { plugin: {} as PluginPackage, params: '{}' }},
+    { dataAccess: { plugin: {} as PluginPackage, params: {} }},
     {
       // if assert failed, it will make test timeout, because it's event listener
       dispatch: (event) => {

@@ -1,37 +1,41 @@
-import { ServerSentEmitter } from '../utils';
+import { pipelinePromisify } from '../utils';
 import { TraceService } from '../services';
 import { service, inject } from '@loopback/core';
 import {
 	RequestContext, RestBindings, get, param
 } from '@loopback/rest';
+import SseStream from 'ssestream';
 import Debug from 'debug';
 
 const debug = Debug('daemon.controller.base');
 
 export class BaseEventController {
-	@inject(RestBindings.Http.CONTEXT)
+
+  @inject(RestBindings.Http.CONTEXT)
 	public ctx: RequestContext;
-	
-	constructor(
+
+  constructor(
     @service(TraceService)
-	  public traceService: TraceService
-  ) {	}
+    public traceService: TraceService
+  ) {
+  }
 
 	/**
    * trace event
    */
   @get('/event/{traceId}')
   public async event(@param.path.string('traceId') traceId: string): Promise<void> {
-    const sse = new ServerSentEmitter(this.ctx);
+    const sse = new SseStream(this.ctx.request);
     const tracer = this.traceService.get(traceId);
     if (!tracer) {
-		  return sse.finish();
+      this.ctx.response.status(204).send();
+      return;
 		}
 		tracer.listen((data) => {
 		  debug(`[trace ${traceId}]`, data.type, data.data);
-		  sse.emit(data.type, data.data);
-		});
-		await tracer.wait();
-		return sse.finish();
+		  sse.write({ event: data.type, data: data.data });
+    });
+    await pipelinePromisify(sse, this.ctx.response);
+    this.ctx.response.end();
   }
 }
