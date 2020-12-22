@@ -13,7 +13,6 @@ import {
   Response,
   oas,
   RestBindings,
-  getJsonSchemaRef,
 } from '@loopback/rest';
 import { Job, JobParam, Pipeline } from '../models';
 import { constants, PipelineStatus } from '@pipcook/pipcook-core';
@@ -25,7 +24,7 @@ import { ensureDir, ensureFile, pathExists } from 'fs-extra';
 import * as createError from 'http-errors';
 import { CreateJobResp, JobCreateParameters } from './interface';
 
-@api({ basePath: '/api/jobs' })
+@api({ basePath: '/api/job' })
 export class JobController {
   constructor(
     @repository(JobRepository)

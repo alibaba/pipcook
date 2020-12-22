@@ -430,27 +430,27 @@ test.serial('test run with model load', async (t) => {
     plugins: {
       dataCollect: {
         plugin: { name: 'mockDataCollect', version: 1 },
-        params: {'mockParam': 'dataCollect'}
+        params: { 'mockParam': 'dataCollect' }
       },
       dataAccess: {
         plugin: 'mockDataAccess',
-        params: {'mockParam': 'dataAccess'}
+        params: { 'mockParam': 'dataAccess' }
       },
       dataProcess: {
         plugin: 'mockDataProcess',
-        params: {'mockParam': 'dataProcess'}
+        params: { 'mockParam': 'dataProcess' }
       },
       modelLoad: {
         plugin: 'mockModelLoad',
-        params: {'mockParam': 'modeLoad'}
+        params: { 'mockParam': 'modeLoad' }
       },
       modelTrain: {
         plugin: 'mockModelTrain',
-        params: {'mockParam': 'modeTrain'}
+        params: { 'mockParam': 'modeTrain' }
       },
       modelEvaluate: {
         plugin: 'mockModelEvaluate',
-        params: {'mockParam': 'modelEvaluate'}
+        params: { 'mockParam': 'modelEvaluate' }
       }
     } as any,
     tracer: {} as any,
@@ -493,23 +493,23 @@ test.serial('test run with no model load and mode define', async (t) => {
     plugins: {
       dataCollect: {
         plugin: { name: 'mockDataCollect', version: 1 },
-        params: {'mockParam': 'dataCollect'}
+        params: { 'mockParam': 'dataCollect' }
       },
       dataAccess: {
         plugin: 'mockDataAccess',
-        params: {'mockParam': 'dataAccess'}
+        params: { 'mockParam': 'dataAccess' }
       },
       dataProcess: {
         plugin: 'mockDataProcess',
-        params: {'mockParam': 'dataProcess'}
+        params: { 'mockParam': 'dataProcess' }
       },
       modelTrain: {
         plugin: 'mockModelTrain',
-        params: {'mockParam': 'modeTrain'}
+        params: { 'mockParam': 'modeTrain' }
       },
       modelEvaluate: {
         plugin: 'mockModelEvaluate',
-        params: {'mockParam': 'modelEvaluate'}
+        params: { 'mockParam': 'modelEvaluate' }
       }
     } as any,
     tracer: {} as any,

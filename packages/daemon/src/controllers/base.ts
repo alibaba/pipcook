@@ -31,11 +31,14 @@ export class BaseEventController {
       this.ctx.response.status(204).send();
       return;
 		}
+    const pipelineFutrue = pipelinePromisify(sse, this.ctx.response);
 		tracer.listen((data) => {
 		  debug(`[trace ${traceId}]`, data.type, data.data);
 		  sse.write({ event: data.type, data: data.data });
     });
-    await pipelinePromisify(sse, this.ctx.response);
+    await tracer.wait();
+    sse.end();
+    await pipelineFutrue;
     this.ctx.response.end();
   }
 }

@@ -1,4 +1,4 @@
-import { property } from '@loopback/repository';
+import { model, property } from '@loopback/repository';
 import { PluginPackage } from '@pipcook/costa';
 import { Transform, TransformCallback } from 'stream';
 import { EventEmitter } from 'events';
@@ -7,12 +7,13 @@ import { StringDecoder } from 'string_decoder';
 import { generateId, PipelineStatus, PluginTypeI } from '@pipcook/pipcook-core';
 import { Plugin, Pipeline } from '../models';
 
+@model()
 export class PluginTraceResp extends Plugin {
 	@property({ type: 'string' })
 	public traceId: string;
 
-	constructor() {
-		super();
+	constructor(data?: Partial<PluginTraceResp>) {
+		super(data);
 	}
 }
 

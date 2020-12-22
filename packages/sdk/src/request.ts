@@ -79,45 +79,17 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Str
 
 export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {
   return new Promise((resolve, reject) => {
-    let handshaked = false;
     const uri = `${host}${params ? `?${qs.stringify(params)}` : ''}`;
-    const es = new EventSource(uri);
+    const es = new EventSource(uri, {});
     const timeoutHandle = setTimeout(() => {
       es.close();
       reject(new Error(`listen timeout: ${uri}`));
     }, 5000);
-    const onerror = (e: Event) => {
-      if (handshaked === false) {
-        es.close();
-        clearTimeout(timeoutHandle);
-        es.removeEventListener('error', onerror);
-        reject(new Error(`listen error: ${e.type}`));
-      } else if (typeof handlers.error === 'function') {
-        // manually pass the `error` event to user-defined handler.
-        handlers.error(e);
-      }
+    es.onopen = (e: Event) => {
+      clearTimeout(timeoutHandle);
+      resolve(es);
     };
-    es.addEventListener('error', onerror);
-    es.addEventListener('session', (e: MessageEvent) => {
-      if (e.data === 'close') {
-        // close the connection and mark the handshaked is disabled.
-        handshaked = false;
-        es.close();
-        if (typeof handlers.close === 'function') {
-          handlers.close(e);
-        }
-      } else if (e.data === 'start') {
-        handshaked = true;
-        // if `handlers.error` not defined, remove the listener directly.
-        if (typeof handlers.error !== 'function') {
-          es.removeEventListener('error', onerror);
-        }
-        // clear the timeout handle because handshake is finished.
-        clearTimeout(timeoutHandle);
-        resolve(es);
-      }
-    });
-    // register extra handlers.
+    // register handlers.
     Object.keys(handlers)
       // handle `handlers.error` manually.
       .filter((name: string) => name !== 'error')

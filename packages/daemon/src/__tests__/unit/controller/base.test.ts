@@ -48,7 +48,7 @@ test.serial('trace event', async t => {
     (stream1: NodeJS.ReadableStream, stream2: NodeJS.WritableStream): Promise<void> => {
       return new Promise<void>((resolve) => {
         process.nextTick(resolve);
-      })
+      });
     }
   );
   const tracer = createStubInstance<Tracer>(Tracer);
@@ -58,7 +58,9 @@ test.serial('trace event', async t => {
     });
   });
   tracer.stubs.wait.callsFake(() => {
-    return Promise.resolve();
+    return new Promise((resolve) => {
+      process.nextTick(resolve);
+    })
   });
   traceService.stubs.get.returns(tracer);
   await t.notThrowsAsync(baseEventController.event('traceId'), 'event trace check');

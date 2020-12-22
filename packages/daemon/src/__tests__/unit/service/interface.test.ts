@@ -3,14 +3,7 @@ import test from 'ava';
 import { PluginTraceResp, TraceEvent, JobStatusChangeEvent, LogEvent, Tracer } from '../../../services';
 import { PipelineStatus } from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';
-
-function testConstructor<T>(ctor: { new(...args: any[]): T }, ...args: any[]) {
-  const test = (t: any) => {
-    const obj = new ctor(...args);
-    t.truthy(obj);  
-  }
-  return test;
-}
+import { testConstructor } from '../../__helpers__/test-helper';
 
 test('should get a new PluginTraceResp object', testConstructor(PluginTraceResp));
 test('should get a new TraceEvent object', testConstructor(TraceEvent, 'log'));

@@ -9,8 +9,7 @@ import {
   getJsonSchema,
   post, put,
   Request, Response,
-  requestBody, RestBindings,
-  RequestContext
+  requestBody, RestBindings
 } from '@loopback/rest';
 import { Plugin } from '../models';
 import { PluginRepository } from '../repositories';
