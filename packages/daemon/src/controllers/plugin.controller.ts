@@ -17,7 +17,7 @@ import { PluginService, PluginTraceResp, TraceService } from '../services';
 import { PluginInstallPararmers } from './interface';
 import { BaseEventController } from './base';
 import { PluginPackage } from '@pipcook/costa';
-import multer from 'multer';
+import * as multer from 'multer';
 import Debug from 'debug';
 
 const debug = Debug('daemon.app.plugin');
@@ -246,7 +246,7 @@ export class PluginController extends BaseEventController {
     })
     request: Request,
     @inject(RestBindings.Http.RESPONSE) response: Response,
-  ) {
+  ): Promise<PluginTraceResp> {
     let traceResp: PluginTraceResp;
     const upload = multer({
       storage: {
@@ -272,7 +272,7 @@ export class PluginController extends BaseEventController {
         }
       }
     });
-    return new Promise<object>((resolve, reject) => {
+    return new Promise<PluginTraceResp>((resolve, reject) => {
       upload.single('file')(request, response, (err?: any) => {
         if (err) {
           reject(err);

@@ -7,7 +7,7 @@ import {
 import { RepositoryMixin } from '@loopback/repository';
 import { RestApplication, RestBindings } from '@loopback/rest';
 import { ServiceMixin } from '@loopback/service-proxy';
-import path from 'path';
+import * as path from 'path';
 import { MySequence } from './sequence';
 
 export { ApplicationConfig };

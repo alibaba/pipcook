@@ -14,7 +14,7 @@ import { copyDir } from '../utils';
  */
 export interface PluginInfo {
   plugin: PluginPackage;
-  params: string;
+  params: Object | undefined;
 }
 
 /**
@@ -63,14 +63,14 @@ export class JobRunner {
 
   /**
    * assign the params
-   * @param params param string from config
+   * @param params param from config
    * @param extra extra config from pipeline running
    */
-  getParams(params?: string, ...extra: object[]): object {
-    if (params === undefined) {
+  getParams(params?: Object | null | undefined, ...extra: object[]): object {
+    if (!params) {
       return Object.assign({}, ...extra);
     } else {
-      return Object.assign(JSON.parse(params), ...extra);
+      return Object.assign(params, ...extra);
     }
   }
 

@@ -23,8 +23,8 @@ export class BaseEventController {
   @get('/event/{traceId}')
   public async event(@param.path.string('traceId') traceId: string): Promise<void> {
     const sse = new ServerSentEmitter(this.ctx);
-		const tracer = this.traceService.get(traceId);
-		if (!tracer) {
+    const tracer = this.traceService.get(traceId);
+    if (!tracer) {
 		  return sse.finish();
 		}
 		tracer.listen((data) => {

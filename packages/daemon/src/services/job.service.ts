@@ -2,7 +2,7 @@ import { injectable, BindingScope, service } from '@loopback/core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as HttpStatus from 'http-status';
-import createHttpError from 'http-errors';
+import * as createHttpError from 'http-errors';
 import {
   PipelineStatus,
   EvaluateResult,
@@ -17,35 +17,29 @@ import { Pipeline } from '../models';
 import { Job, JobParam } from '../models';
 import { PluginService } from './plugin.service';
 import { pluginQueue, execAsync } from '../utils';
-import { PluginRepository, PipelineRepository, JobRepository } from '../repositories';
+import { PluginRepository, JobRepository } from '../repositories';
 import { PluginInfo, JobRunner } from '../job-runner';
 import { Tracer, JobStatusChangeEvent, GenerateOptions } from './interface';
 
 @injectable({ scope: BindingScope.TRANSIENT })
 export class JobService {
-  @service(PluginService)
-  pluginService: PluginService;
-  @repository(JobRepository)
-  jobRepository: JobRepository;
-  @repository(PipelineRepository)
-  pipelineRepository: PipelineRepository;
-  @repository(PluginRepository)
-  pluginRepository: PluginRepository;
   runnableMap: Record<string, PluginRunnable> = {};
 
-  constructor() { }
+  constructor(
+    @service(PluginService)
+    public pluginService: PluginService,
+    @repository(JobRepository)
+    public jobRepository: JobRepository,
+    @repository(PluginRepository)
+    public pluginRepository: PluginRepository
+  ) { }
 
-  // TODO number does not need to ret
-  async removeJobById(id: string): Promise<number> {
+  async removeJobById(id: string): Promise<void> {
     const job = await this.jobRepository.findById(id);
-    if (job) {
-      await Promise.all([
-        this.jobRepository.deleteById(job.id),
-        fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
-      ]);
-      return 1;
-    }
-    return 0;
+    await Promise.all([
+      this.jobRepository.deleteById(job.id),
+      fs.remove(`${CoreConstants.PIPCOOK_RUN}/${job.id}`)
+    ]);
   }
 
   async removeJobByEntities(jobs: Job[]): Promise<number> {
