@@ -169,7 +169,7 @@ export class PipelineService {
       const tvmGeneratePromise = generateTVM(dist, projPackage, opts);
       tvmGeneratePromise.catch((e) => {
         console.error(e);
-      })
+      });
       fileQueue.push(tvmGeneratePromise);
     }
     fileQueue.push(generateNode(job, projPackage, dist, opts));

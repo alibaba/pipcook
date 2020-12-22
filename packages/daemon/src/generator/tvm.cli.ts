@@ -6,9 +6,9 @@ const inputModel = process.argv[process.argv.length - 1];
 if (validModel.includes(inputModel)) {
   const { dist, projPackage, opts, inputLayers = '' } = JSON.parse(process.argv[process.argv.length - 2]);
   if (inputModel === 'keras') {
-    try{
+    try {
       keras2wasm(dist, projPackage, opts, inputLayers);
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     }
   }
