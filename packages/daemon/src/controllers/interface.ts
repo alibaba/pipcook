@@ -2,7 +2,6 @@ import {
 	model as input,
 	property
 } from '@loopback/repository';
-import { getModelSchemaRef } from '@loopback/rest';
 import { Job, JobParam } from '../models';
   
 @input()
@@ -25,7 +24,7 @@ export class JobCreateParameters {
 	@property({ required: true })
 	pipelineId: string;
 	// TODO json validation
-	@property()
+	@property.array(Object)
 	params?: JobParam[];
 }
 

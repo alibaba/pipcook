@@ -191,7 +191,8 @@ export class JobController {
         content: {
           'application/json': {
             schema: {
-              type: 'array'
+              type: 'array',
+              item: Object
             }
           }
         }
@@ -210,7 +211,8 @@ export class JobController {
         content: {
           'application/json': {
             schema: {
-              type: 'array'
+              type: 'array',
+              item: String
             }
           }
         }
