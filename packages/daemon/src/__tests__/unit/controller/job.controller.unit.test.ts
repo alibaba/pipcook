@@ -6,24 +6,27 @@ import {
 import test from 'ava';
 import { JobController } from '../../../controllers';
 import { JobRepository } from '../../../repositories';
-import { JobService, TraceService } from '../../../services';
+import { JobService, PipelineService, TraceService } from '../../../services';
 
 
 function initJobController(): {
-  JobService: StubbedInstanceWithSinonAccessor<JobService>,
-  TraceService: StubbedInstanceWithSinonAccessor<TraceService>,
-  JobRepository: StubbedInstanceWithSinonAccessor<JobRepository>,
+  jobService: StubbedInstanceWithSinonAccessor<JobService>,
+  traceService: StubbedInstanceWithSinonAccessor<TraceService>,
+  pipelineService: StubbedInstanceWithSinonAccessor<PipelineService>,
+  jobRepository: StubbedInstanceWithSinonAccessor<JobRepository>,
   jobController: JobController
 } {
   const jobRepository = createStubInstance<JobRepository>(JobRepository);
   const jobService = createStubInstance<JobService>(JobService);
   const traceService = createStubInstance<TraceService>(TraceService);
-  const pluginController = new JobController(jobService, traceService, jobRepository);
+  const pipelineService = createStubInstance<PipelineService>(PipelineService);
+  const jobController = new JobController(jobRepository, traceService, pipelineService, jobService);
   return {
-    jobRepository,
-    pluginService,
+    jobService,
     traceService,
-    pluginController
+    pipelineService,
+    jobRepository,
+    jobController
   }
 }
 const mockPluginJson = { name: 'mockPluginName', version: '1.0.0' };
