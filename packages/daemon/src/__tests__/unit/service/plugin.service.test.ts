@@ -5,6 +5,7 @@ import {
 } from '@loopback/testlab';
 import test from 'ava';
 import { PluginRepository } from '../../../repositories';
+import { Plugin } from '../../../models';
 import { PluginService, TraceService } from '../../../services';
 import * as fs from 'fs-extra';
 
@@ -190,9 +191,10 @@ test('install plugin but error happens', async (t) => {
 
 test('should install at next tick', async (t) => {
   const { traceService, pluginService } = initPluginService();
-  const mockFindOrCreateByPkg = sinon.stub(pluginService, 'findOrCreateByPkg').resolves(
-    { id: 'mockIdxxx', status: 2 /* FAILED */ } as any
-  );
+  const mockPlugin = createStubInstance<Plugin>(Plugin);
+  mockPlugin.id = 'mockId';
+  mockPlugin.status = 2; /* FAILED */
+  const mockFindOrCreateByPkg = sinon.stub(pluginService, 'findOrCreateByPkg').resolves(mockPlugin);
   const mockTracerCreate = traceService.stubs.create.returns({ id: 'mockTracerId', getLogger: () => undefined } as any);
   const mockTracerDestory = traceService.stubs.destroy.resolves();
   const mockSetStatusById = sinon.stub(pluginService, 'setStatusById').resolves();
@@ -203,7 +205,7 @@ test('should install at next tick', async (t) => {
     setTimeout(() => {
       t.true(mockSetStatusById.called, 'mockSetStatusById check');
       t.true(mockInstall.calledOnce, 'mockInstall check');
-      t.is(mockInstall.args[0][0], 'mockIdxxx', 'mockInstall args[0] check');
+      t.is(mockInstall.args[0][0], 'mockId', 'mockInstall args[0] check');
       t.deepEqual(mockInstall.args[0][1], { name: 'mockName' } as any, 'mockInstall args[1] check');
       t.deepEqual(mockInstall.args[0][2].pyIndex, 'mockPyIndex', 'mockInstall pyIndex check');
       t.deepEqual(mockInstall.args[0][2].force, false, 'mockInstall force check');
@@ -217,9 +219,10 @@ test('should install at next tick', async (t) => {
 
 test('install at next tick with error', async (t) => {
   const { traceService, pluginService } = initPluginService();
-  const mockFindOrCreateByPkg = sinon.stub(pluginService, 'findOrCreateByPkg').resolves(
-    { id: 'mockId', status: 2 /* FAILED */ } as any
-  );
+  const mockPlugin = createStubInstance<Plugin>(Plugin);
+  mockPlugin.id = 'mockId';
+  mockPlugin.status = 2; /* FAILED */
+  const mockFindOrCreateByPkg = sinon.stub(pluginService, 'findOrCreateByPkg').resolves(mockPlugin);
   const mockSetStatusById = sinon.stub(pluginService, 'setStatusById').resolves();
   const mockInstall = sinon.stub(pluginService, 'install').rejects(new Error('mock error message'));
   const mockTracerCreate = traceService.stubs.create.returns({ id: 'mockTracerId', getLogger: () => undefined } as any);

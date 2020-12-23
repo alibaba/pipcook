@@ -56,10 +56,9 @@ export class Job extends Base {
   })
   dataset?: string;
 
-  @property({
-    type: 'object'
-  })
+  @property.array(Object)
   params?: JobParam[];
+
   constructor(data?: Partial<Job>) {
     super(data);
   }

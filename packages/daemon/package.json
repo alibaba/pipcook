@@ -42,7 +42,7 @@
     "type": "git"
   },
   "author": "anonymous",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "files": [
     "README.md",
     "dist",
@@ -58,6 +58,7 @@
     "@loopback/service-proxy": "^3.0.3",
     "@pipcook/costa": "^1.2.0",
     "@pipcook/pipcook-core": "^1.2.0",
+    "axios": "^0.18.1",
     "debug": "^4.3.1",
     "loopback-connector-sqlite3": "git+ssh://git@github.com:FeelyChau/loopback-connector-sqlite3.git",
     "multer": "^1.4.2",

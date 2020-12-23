@@ -36,7 +36,7 @@ export class BaseApi {
         'close': () => {
           resolve();
         }
-      });
+      })
     });
   }
 }

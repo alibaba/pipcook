@@ -148,9 +148,7 @@ export class PluginService {
           this.traceService.destroy(tracer.id, err);
         }
       });
-      const resp = plugin as PluginTraceResp;
-      resp.traceId = tracer.id;
-      return resp;
+      return new PluginTraceResp({ ...plugin.toJSON(), traceId: tracer.id });
     } else {
       return plugin as PluginTraceResp;
     }

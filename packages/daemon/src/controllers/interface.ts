@@ -7,7 +7,7 @@ import { Job, JobParam, Pipeline, Plugin } from '../models';
 import {
   RunConfigI
 } from '@pipcook/pipcook-core';
-
+  
 @input()
 export class PluginInstallPararmers {
 	@property({ required: true })
@@ -53,7 +53,7 @@ export class JobCreateParameters {
 	@property({ required: true })
 	pipelineId: string;
 	// TODO json validation
-	@property()
+	@property.array(Object)
 	params?: JobParam[];
 }
 
@@ -76,7 +76,10 @@ export class CreateJobResp extends Job {
 		super();
 	}
 }
+<<<<<<< HEAD
 
 export class CreatePipelineResp extends Pipeline {
 	plugins: Plugin[]
 }
+=======
+>>>>>>> a1458bd1a217910e631d03295c46d7ec728622cc

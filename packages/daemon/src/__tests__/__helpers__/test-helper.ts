@@ -29,3 +29,11 @@ export interface AppWithClient {
   app: DaemonApplication;
   client: Client;
 }
+
+export function testConstructor<T>(ctor: { new(...args: any[]): T }, ...args: any[]) {
+  const test = (t: any) => {
+    const obj = new ctor(...args);
+    t.truthy(obj);  
+  }
+  return test;
+}

@@ -145,6 +145,31 @@ test.serial('should copy the symlink successfully', async (t) => {
   t.true(symStub.calledOnce, 'symlink should be called only once');
 });
 
+test.serial('should copy the directory successfully', async (t) => {
+  const src = '/src/';
+  const dest = '/dest/';
+  const copyStub = sinon.stub(fs, 'copyFile');
+  const chmodStub = sinon.stub(fs, 'chmod');
+  const lstatStub = sinon.stub(fs, 'lstat');
+  lstatStub.onCall(0).resolves({
+    isDirectory: () => true
+  } as any);
+  lstatStub.onCall(1).resolves({
+    isDirectory: () => false,
+    isFile: () => true,
+    isCharacterDevice: () => true,
+    isBlockDevice: () => true
+  } as any);
+  const ensureDirStub = sinon.stub(fs, 'ensureDir').resolves();
+  const readdirStub = sinon.stub(fs, 'readdir').resolves([ 'a.jpg' ]);
+  await t.notThrowsAsync(utils.copyDir(src, dest), 'copyDir should not be rejected');
+  t.true(copyStub.calledOnce, 'copyFile should be called only once');
+  t.true(chmodStub.calledOnce, 'chmod should be called only once');
+  t.true(ensureDirStub.calledOnce, 'ensureDirStub should be called only once');
+  t.true(readdirStub.calledOnce, 'ensureDirStub should be called only once');
+  t.true(lstatStub.calledTwice, 'lstat should be called twice');
+});
+
 function testExecAsync(isError: boolean): (t: any) => Promise<void> {
   return async (t: any) => {
     const mockCmd = 'mock cmd';
