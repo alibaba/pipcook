@@ -8,7 +8,8 @@ import * as request from 'request-promise';
 import * as url from 'url';
 import {
   PluginTypeI,
-  RunConfigI
+  RunConfigI,
+  generateId
 } from '@pipcook/pipcook-core';
 import { Pipeline } from '../models';
 
@@ -61,9 +62,10 @@ export async function loadConfig(configPath: string | RunConfigI): Promise<RunCo
   }
 }
 
-export async function parseConfig(configPath: string | RunConfigI): Promise<Pipeline> {
+export async function parseConfig(configPath: string | RunConfigI, isGenerateId = true): Promise<Pipeline> {
   const configJson = await loadConfig(configPath);
   return new Pipeline({
+    id: isGenerateId ? generateId() : undefined,
     name: configJson.name,
     dataCollect: configJson.plugins.dataCollect?.package,
     dataCollectParams: configJson.plugins.dataCollect?.params,

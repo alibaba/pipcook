@@ -3,7 +3,7 @@ import {
   StubbedInstanceWithSinonAccessor
 } from '@loopback/testlab';
 import test from 'ava';
-import { PluginRepository, PipelineRepository } from '../../../repositories';
+import { PluginRepository, PipelineRepository, JobRepository } from '../../../repositories';
 import { PipelineService, PluginService } from '../../../services';
 
 function initPipelineService(): {
@@ -16,7 +16,8 @@ function initPipelineService(): {
   const pluginRepository = createStubInstance<PluginRepository>(PluginRepository);
   const pluginService = createStubInstance<PluginService>(PluginService);
   const pipelineRepository = createStubInstance<PipelineRepository>(PipelineRepository);
-  const pipelineService = new PipelineService(pluginService, pipelineRepository, pluginRepository);
+  const jobRepository = createStubInstance<JobRepository>(JobRepository);
+  const pipelineService = new PipelineService(pluginService, pipelineRepository, jobRepository, pluginRepository);
   return {
     pluginRepository,
     pluginService,

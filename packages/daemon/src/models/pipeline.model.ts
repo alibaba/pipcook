@@ -96,6 +96,21 @@ export class Pipeline extends Base {
   @property({
     type: 'string'
   })
+  modelLoadId?: string;
+
+  @property({
+    type: 'string'
+  })
+  modelLoad?: string;
+
+  @property({
+    type: 'string'
+  })
+  modelLoadParams?: object;
+
+  @property({
+    type: 'string'
+  })
   modelTrainId?: string;
 
   @property({

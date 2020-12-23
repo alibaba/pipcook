@@ -74,6 +74,16 @@ export class PluginService {
     return pkg;
   }
 
+  async findByIds(ids: string[]) {
+    return this.pluginRepository.find({
+      where: {
+        id: {
+          inq: ids
+        }
+      }
+    })
+  }
+
   async createRunnable(id: string, tracer: Tracer): Promise<PluginRunnable> {
     return this.costa.createRunnable({ id, logger: tracer.getLogger() } as BootstrapArg);
   }
@@ -154,6 +164,10 @@ export class PluginService {
   async installByName(pkgName: string, pyIndex?: string, force?: boolean): Promise<PluginTraceResp> {
     const pkg = await this.fetch(pkgName);
     return this.installAtNextTick(pkg, pyIndex, force);
+  }
+
+  async findByName(name: string): Promise<Plugin | null> {
+    return this.pluginRepository.findOne({ where: { name } });
   }
 
   async uninstall(plugin: Plugin | Plugin[]): Promise<void> {

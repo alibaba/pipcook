@@ -3,8 +3,11 @@ import {
 	property
 } from '@loopback/repository';
 import { getModelSchemaRef } from '@loopback/rest';
-import { Job, JobParam } from '../models';
-  
+import { Job, JobParam, Pipeline, Plugin } from '../models';
+import {
+  RunConfigI
+} from '@pipcook/pipcook-core';
+
 @input()
 export class PluginInstallPararmers {
 	@property({ required: true })
@@ -20,6 +23,31 @@ export class PluginInstallPararmers {
 	})
 	pyIndex?: string;
 }
+
+@input()
+export class PipelineCreateParameters {
+	@property({ required: true })
+	name: string;
+
+	@property()
+	config: RunConfigI;
+
+	@property()
+	configUri: string;
+}
+
+@input()
+export class PipelineUpdateParameters {
+	@property({ required: true })
+	config: RunConfigI;
+}
+
+@input()
+export class PipelineInstallParameters {
+	@property({ required: true })
+	pyIndex: string;
+}
+
 @input()
 export class JobCreateParameters {
 	@property({ required: true })
@@ -47,4 +75,8 @@ export class CreateJobResp extends Job {
 	constructor() {
 		super();
 	}
+}
+
+export class CreatePipelineResp extends Pipeline {
+	plugins: Plugin[]
 }
