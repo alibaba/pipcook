@@ -61,7 +61,7 @@ export class JobController {
 
     for (const pluginType of constants.PLUGINS) {
       // @ts-ignore
-      const defaultParam = JSON.parse(pipeline[`${pluginType}Params`]);
+      const defaultParam = pipeline[`${pluginType}Params`];
       const jobParam = jobParamsMap[pluginType] ? jobParamsMap[pluginType] : {};
 
       params.push({ pluginType, data: Object.assign(defaultParam, jobParam) });
