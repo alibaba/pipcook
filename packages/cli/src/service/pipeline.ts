@@ -6,8 +6,9 @@ import { readJson } from 'fs-extra';
 import { install as pluginInstall } from './plugin';
 import { logger, parseConfigFilename, initClient, streamToJson } from "../utils/common";
 import { getFile } from '../utils/request';
+import { CommonOptions, PipelineCreateOptions, PluginInstallOptions } from '../types/options';
 
-export async function list(opts: any): Promise<void> {
+export async function list(opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   let pipelines = await client.pipeline.list();
   if (pipelines.length > 0) {
@@ -17,7 +18,7 @@ export async function list(opts: any): Promise<void> {
   }
 }
 
-export async function info(id: string, opts: any): Promise<void> {
+export async function info(id: string, opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   try {
     const pipeline = await client.pipeline.getConfig(id);
@@ -27,7 +28,7 @@ export async function info(id: string, opts: any): Promise<void> {
   }
 }
 
-export async function create(filename: string, opts: any): Promise<void> {
+export async function create(filename: string, opts: PipelineCreateOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   if (!path.isAbsolute(filename)) {
     filename = path.join(process.cwd(), filename);
@@ -41,7 +42,7 @@ export async function create(filename: string, opts: any): Promise<void> {
   }
 }
 
-export async function update(id: string, filename: string, opts: any): Promise<void> {
+export async function update(id: string, filename: string, opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   if (!path.isAbsolute(filename)) {
     filename = path.join(process.cwd(), filename);
@@ -55,7 +56,7 @@ export async function update(id: string, filename: string, opts: any): Promise<v
   }
 }
 
-export async function listJobsByPipelineId(id: string, opts: any): Promise<JobResp[]> {
+export async function listJobsByPipelineId(id: string, opts: CommonOptions): Promise<JobResp[]> {
   const client = initClient(opts.hostIp, opts.port);
   let jobs;
   if (id === undefined) {
@@ -66,7 +67,7 @@ export async function listJobsByPipelineId(id: string, opts: any): Promise<JobRe
   return jobs;
 }
 
-export async function remove(id: string, jobs: JobResp[], opts: any): Promise<void> {
+export async function remove(id: string, jobs: JobResp[], opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   try {
     await client.pipeline.remove(id);
@@ -77,7 +78,7 @@ export async function remove(id: string, jobs: JobResp[], opts: any): Promise<vo
   }
 }
 
-export async function installPackageFromConfig(config: any, opts: any): Promise<void> {
+export async function installPackageFromConfig(config: any, opts: PluginInstallOptions): Promise<void> {
   for (const plugin of constants.PLUGINS) {
     const packageName = config.plugins[plugin]?.package;
     if (typeof packageName === 'string') {
@@ -87,7 +88,7 @@ export async function installPackageFromConfig(config: any, opts: any): Promise<
   }
 }
 
-export async function install(filename: string, opts: any): Promise<void> {
+export async function install(filename: string, opts: PluginInstallOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   logger.start(`start install pipeline from ${filename}`);
   let fileUrl;

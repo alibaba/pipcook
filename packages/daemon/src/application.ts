@@ -2,7 +2,7 @@ import { BootMixin } from '@loopback/boot';
 import { ApplicationConfig } from '@loopback/core';
 import {
   RestExplorerBindings,
-  RestExplorerComponent,
+  RestExplorerComponent
 } from '@loopback/rest-explorer';
 import { RepositoryMixin } from '@loopback/repository';
 import { RestApplication, RestBindings } from '@loopback/rest';
@@ -12,7 +12,7 @@ import { MySequence } from './sequence';
 
 export { ApplicationConfig };
 
-export class DaemonApplication extends BootMixin(
+export class DaemonApplication extends BootMixin (
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
   constructor(options: ApplicationConfig = {}) {
@@ -26,7 +26,7 @@ export class DaemonApplication extends BootMixin(
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
-      path: '/explorer',
+      path: '/explorer'
     });
     this.component(RestExplorerComponent);
 
@@ -35,10 +35,10 @@ export class DaemonApplication extends BootMixin(
     this.bootOptions = {
       controllers: {
         // Customize ControllerBooter Conventions here
-        dirs: ['controllers'],
-        extensions: ['.controller.js'],
-        nested: true,
-      },
+        dirs: [ 'controllers' ],
+        extensions: [ '.controller.js' ],
+        nested: true
+      }
     };
     // set error handler
     this.bind(RestBindings.ERROR_WRITER_OPTIONS).to({ debug: true, rootProperty: false });

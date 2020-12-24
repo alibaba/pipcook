@@ -73,9 +73,6 @@ test('test verifyPlugin', async (t) => {
     runner.assertPlugin('datasetProcess');
   }, 'datasetProcess check');
   t.notThrows(() => {
-    runner.assertPlugin('modelLoad');
-  }, 'modelLoad check');
-  t.notThrows(() => {
     runner.assertPlugin('modelDefine');
   }, 'modelDefine check');
   t.notThrows(() => {
@@ -123,10 +120,10 @@ test.serial('test runPlugin', async (t) => {
     runnable: { start } as any,
     datasetRoot: __dirname
   });
-  const args = [1, 2, 3];
+  const args = [ 1, 2, 3 ];
   t.is(await runner.runPlugin('dataCollect', args), 'mock result');
   t.is(start.callCount, 1);
-  t.deepEqual(start.args[0], [plugin, args]);
+  t.deepEqual(start.args[0], [ plugin, args ]);
 
   t.is(dispatch.callCount, 2);
   t.deepEqual(dispatch.args[0][0],
@@ -153,7 +150,7 @@ test.serial('test runDataCollect successfully', async (t) => {
   const runPlugin = sinon.stub(runner, 'runPlugin').resolves();
   await runner.runDataCollect('/data/dir', '/model/path');
   t.true(ensureDir.calledOnceWithExactly('/model/path'));
-  t.deepEqual(runPlugin.args, [['dataCollect', { mockParam: 'value', dataDir: '/data/dir' }]]);
+  t.deepEqual(runPlugin.args, [ [ 'dataCollect', { mockParam: 'value', dataDir: '/data/dir' } ] ]);
 });
 
 test.serial('test runDataCollect but run fails', async (t) => {
@@ -174,7 +171,7 @@ test.serial('test runDataCollect but run fails', async (t) => {
   const runPlugin = sinon.stub(runner, 'runPlugin').rejects();
   await t.throwsAsync(runner.runDataCollect('/data/dir', '/model/path'));
   t.true(ensureDir.calledOnceWith('/model/path'));
-  t.deepEqual(runPlugin.args, [['dataCollect', { mockParam: 'value', dataDir: '/data/dir' }]]);
+  t.deepEqual(runPlugin.args, [ [ 'dataCollect', { mockParam: 'value', dataDir: '/data/dir' } ] ]);
 });
 
 test.serial('test runDataAccess', async (t) => {
@@ -193,7 +190,7 @@ test.serial('test runDataAccess', async (t) => {
   });
   const runPlugin = sinon.stub(runner, 'runPlugin').resolves();
   await runner.runDataAccess('/data/dir');
-  t.deepEqual(runPlugin.args, [['dataAccess', { mockParam: 'value', dataDir: '/data/dir' }]]);
+  t.deepEqual(runPlugin.args, [ [ 'dataAccess', { mockParam: 'value', dataDir: '/data/dir' } ] ]);
 });
 
 test.serial('test runDatasetProcess', async (t) => {
@@ -213,7 +210,7 @@ test.serial('test runDatasetProcess', async (t) => {
   const runPlugin = sinon.stub(runner, 'runPlugin').resolves();
   const mockDataset = { mockDataset: '' };
   await runner.runDatasetProcess(mockDataset);
-  t.deepEqual(runPlugin.args, [['datasetProcess', mockDataset, { mockParam: 'value' }]]);
+  t.deepEqual(runPlugin.args, [ [ 'datasetProcess', mockDataset, { mockParam: 'value' } ] ]);
 });
 
 test.serial('test runDatasetProcess but not exists', async (t) => {
@@ -248,7 +245,7 @@ test.serial('test runDataProcess', async (t) => {
   const runPlugin = sinon.stub(runner, 'runPlugin').resolves();
   const mockDataset = { mockDataset: '' };
   await runner.runDataProcess(mockDataset);
-  t.deepEqual(runPlugin.args, [['dataProcess', mockDataset, { mockParam: 'value' }]]);
+  t.deepEqual(runPlugin.args, [ [ 'dataProcess', mockDataset, { mockParam: 'value' } ] ]);
 });
 
 test.serial('test runDataProcess but not exists', async (t) => {
@@ -282,30 +279,6 @@ test('test runModelDefine', async (t) => {
   t.true(runPlugin.calledOnceWith('modelDefine', mockDataset, { mockParam: 'value' }));
 });
 
-test('test runModelLoad', async (t) => {
-  const runner = new JobRunner({
-    job: {} as any,
-    pipeline: {} as any,
-    plugins: {
-      modelLoad: {
-        plugin: 'mockPlugin',
-        params: { 'mockParam': 'value' }
-      }
-    } as any,
-    tracer: {} as any,
-    runnable: {} as any,
-    datasetRoot: __dirname
-  });
-  const mockModel = { mockModel: '' };
-  const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockModel as any);
-  const mockDataset = { mockDataset: '' };
-  t.deepEqual(await runner.runModelLoad(mockDataset, '/model/path'), {
-    plugin: 'mockPlugin',
-    model: mockModel
-  } as any);
-  t.deepEqual(runPlugin.args, [['modelLoad', mockDataset, { mockParam: 'value', recoverPath: '/model/path' }]]);
-});
-
 test('test runModelTrain', async (t) => {
   const runner = new JobRunner({
     job: {} as any,
@@ -325,7 +298,7 @@ test('test runModelTrain', async (t) => {
   const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockResult as any);
   const mockDataset = { mockDataset: '' };
   t.is(await runner.runModelTrain(mockDataset, mockModel as any, '/model/path'), mockResult);
-  t.deepEqual(runPlugin.args, [['modelTrain', mockDataset, mockModel, { mockParam: 'value', modelPath: '/model/path' }]]);
+  t.deepEqual(runPlugin.args, [ [ 'modelTrain', mockDataset, mockModel, { mockParam: 'value', modelPath: '/model/path' } ] ]);
 });
 
 test('test runModelEvaluate', async (t) => {
@@ -347,7 +320,7 @@ test('test runModelEvaluate', async (t) => {
   const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockResult as any);
   const mockDataset = { mockDataset: '' };
   t.is(await runner.runModelEvaluate(mockDataset, mockModel as any, '/model/path'), mockResult);
-  t.deepEqual(runPlugin.args, [['modelEvaluate', mockDataset, mockModel, { mockParam: 'value', modelDir: '/model/path' }]]);
+  t.deepEqual(runPlugin.args, [ [ 'modelEvaluate', mockDataset, mockModel, { mockParam: 'value', modelDir: '/model/path' } ] ]);
 });
 
 test('test runModelEvaluate but plugin not found', async (t) => {
@@ -400,7 +373,7 @@ test.serial('test run with model define', async (t) => {
   const mockModelDefineResult = {
     model: mockModel as any,
     plugin: 'modelDefine' as any
-  }
+  };
   const runDataCollect = sinon.stub(runner, 'runDataCollect').resolves();
   const runDataAccess = sinon.stub(runner, 'runDataAccess').resolves(mockDataset);
   const runDataProcess = sinon.stub(runner, 'runDataProcess').resolves();
@@ -423,70 +396,7 @@ test.serial('test run with model define', async (t) => {
   t.true(runDataAccess.calledOnce);
 });
 
-test.serial('test run with model load', async (t) => {
-  const runner = new JobRunner({
-    job: {} as any,
-    pipeline: {} as any,
-    plugins: {
-      dataCollect: {
-        plugin: { name: 'mockDataCollect', version: 1 },
-        params: { 'mockParam': 'dataCollect' }
-      },
-      dataAccess: {
-        plugin: 'mockDataAccess',
-        params: { 'mockParam': 'dataAccess' }
-      },
-      dataProcess: {
-        plugin: 'mockDataProcess',
-        params: { 'mockParam': 'dataProcess' }
-      },
-      modelLoad: {
-        plugin: 'mockModelLoad',
-        params: { 'mockParam': 'modeLoad' }
-      },
-      modelTrain: {
-        plugin: 'mockModelTrain',
-        params: { 'mockParam': 'modeTrain' }
-      },
-      modelEvaluate: {
-        plugin: 'mockModelEvaluate',
-        params: { 'mockParam': 'modelEvaluate' }
-      }
-    } as any,
-    tracer: {} as any,
-    runnable: { workingDir: '/workingDir' } as any,
-    datasetRoot: __dirname
-  });
-  const mockDataset = { mockDataset: '' };
-  const mockModel = { mockModel: '' };
-  const mockModelAfterTraining = { mockModel: 'after training' };
-  const mockModelLoadResult = {
-    model: mockModel as any,
-    plugin: 'modelLoad' as any
-  }
-  const runDataCollect = sinon.stub(runner, 'runDataCollect').resolves();
-  const runDataAccess = sinon.stub(runner, 'runDataAccess').resolves(mockDataset);
-  const runDataProcess = sinon.stub(runner, 'runDataProcess').resolves();
-  const runDatasetProcess = sinon.stub(runner, 'runDatasetProcess').resolves();
-  const runModelLoad = sinon.stub(runner, 'runModelLoad').resolves(mockModelLoadResult);
-  const runModelTrain = sinon.stub(runner, 'runModelTrain').resolves(mockModelAfterTraining as any);
-  const runModelEvaluate = sinon.stub(runner, 'runModelEvaluate').resolves();
-  sinon.stub(util, 'copyDir').resolves();
-  await runner.run();
-  t.deepEqual(runDataCollect.args[0],
-    [
-      path.join(__dirname, 'mockDataCollect@1'),
-      path.join('/workingDir', 'model')
-    ]);
-  t.deepEqual(runDataProcess.args[0][0], mockDataset, 'check runDataProcess');
-  t.deepEqual(runDatasetProcess.args[0][0], mockDataset, 'check runDatasetProcess');
-  t.deepEqual(runModelLoad.args[0][0], mockDataset, 'check runModelLoad');
-  t.true(runModelTrain.calledOnceWith(mockDataset, mockModel as any, path.join('/workingDir', 'model')));
-  t.true(runModelEvaluate.calledOnceWith(mockDataset, mockModelAfterTraining as any, path.join('/workingDir', 'model')));
-  t.true(runDataAccess.calledOnce);
-});
-
-test.serial('test run with no model load and mode define', async (t) => {
+test.serial('test run with no model define', async (t) => {
   const runner = new JobRunner({
     job: {} as any,
     pipeline: {} as any,
@@ -522,5 +432,5 @@ test.serial('test run with no model load and mode define', async (t) => {
   sinon.stub(runner, 'runDataAccess').resolves(mockDataset);
   sinon.stub(runner, 'runDataProcess').resolves();
   sinon.stub(runner, 'runDatasetProcess').resolves();
-  await t.throwsAsync(runner.run(), { instanceOf: TypeError, message: 'plugin modelDefine or modelLoad must be specified.' });
+  await t.throwsAsync(runner.run(), { instanceOf: TypeError, message: 'plugin modelDefine must be specified.' });
 });

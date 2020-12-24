@@ -3,11 +3,10 @@ import {
   sinon
 } from '@loopback/testlab';
 import test from 'ava';
-import { PluginRepository } from '../../../repositories';
 import * as core from '@pipcook/pipcook-core';
-(core as any).abc = '123';
 import { TraceService, LogEvent, JobStatusChangeEvent } from '../../../services';
 import * as fs from 'fs-extra';
+import { mockFunctionFromGetter } from '../../__helpers__';
 
 function initTraceService(): TraceService {
   return new TraceService();
@@ -22,36 +21,36 @@ const removeLogs = async (opts: any) => {
 
 test.serial.afterEach(() => {
   sinon.restore();
-})
+});
 
 // test the trace manager service
 test('create trace without log file then destroy', async (t) => {
   const traceService = initTraceService();
-  sinon.stub(core, 'generateId').returns('mockId');
+  mockFunctionFromGetter(core, 'generateId').returns('mockId');
   const tracer = traceService.create();
   t.is(tracer.id, 'mockId');
   await t.notThrowsAsync(traceService.destroy(tracer.id));
 });
 
 test.serial('#create trace with log file then destroy', async (t) => {
-  const traceService = initTraceService();;
+  const traceService = initTraceService();
   const opts = { stdoutFile: join(__dirname, 'stdout1.log'), stderrFile: join(__dirname, 'stderr1.log') };
   const mockCreateWriteStream = sinon.stub(fs, 'createWriteStream').returns({
-    on: (event: string, cb: Function) => {
+    on: (event: string, cb: () => void) => {
       if (event === 'close') {
         process.nextTick(cb);
       }
-    }, end: () => { }, close: () => { }
+    }, end: sinon.stub(), close: sinon.stub()
   } as any);
   const tracer = traceService.create(opts);
   await traceService.destroy(tracer.id);
   t.deepEqual(mockCreateWriteStream.args,
-    [[opts.stdoutFile, { flags: 'w+' }], [opts.stderrFile, { flags: 'w+' }]],
+    [ [ opts.stdoutFile, { flags: 'w+' } ], [ opts.stderrFile, { flags: 'w+' } ] ],
     'log file check failed');
 });
 
 test('get tracer', async (t) => {
-  const traceService = initTraceService();;
+  const traceService = initTraceService();
   const tracer1 = traceService.create();
   const tracer2 = traceService.get(tracer1.id);
   t.deepEqual(tracer1, tracer2);
@@ -59,12 +58,12 @@ test('get tracer', async (t) => {
 });
 
 test('destroy a nonexistent tracer', async (t) => {
-  const traceService = initTraceService();;
+  const traceService = initTraceService();
   await t.notThrowsAsync(traceService.destroy('nonexistentId'));
 });
 
 test('test trace', async (t) => {
-  const traceService = initTraceService();;
+  const traceService = initTraceService();
   const opts = { stdoutFile: join(__dirname, 'stdout2.log'), stderrFile: join(__dirname, 'stderr2.log') };
   const tracer = traceService.create(opts);
   let logInfoFlag = false;

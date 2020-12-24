@@ -14,7 +14,7 @@ import { copyDir } from '../utils';
  */
 export interface PluginInfo {
   plugin: PluginPackage;
-  params: Object | undefined;
+  params: Record<string, unknown> | undefined;
 }
 
 /**
@@ -66,7 +66,7 @@ export class JobRunner {
    * @param params param from config
    * @param extra extra config from pipeline running
    */
-  getParams(params?: Object | null | undefined, ...extra: object[]): object {
+  getParams(params?: Record<string, unknown> | null | undefined, ...extra: Record<string, unknown>[]): Record<string, unknown> {
     if (!params) {
       return Object.assign({}, ...extra);
     } else {
@@ -89,7 +89,7 @@ export class JobRunner {
    * @param type plugin type
    * @param params job param
    */
-  private findParamsByType(type: PluginTypeI, params?: JobParam[]): object[] {
+  private findParamsByType(type: PluginTypeI, params?: JobParam[]): Record<string, unknown>[] {
     return params ? params.filter((it) => it.pluginType === type).map((it) => it.data) : [];
   }
 
@@ -131,7 +131,7 @@ export class JobRunner {
    */
   async runDataCollect(dataDir: string, modelPath: string): Promise<any> {
     this.assertPlugin('dataCollect');
-    
+
     const params = this.findParamsByType('dataCollect', this.opts.job.params);
 
     // ensure the model dir exists
@@ -194,30 +194,13 @@ export class JobRunner {
   }
 
   /**
-   * run the model load plugin, return plugin and model
-   * @param dataset dataset from data collect/dataset process/data process plugin
-   * @param modelPath where the model loads from
-   */
-  async runModelLoad(dataset: any, modelPath: string): Promise<ModelResult> {
-    const params = this.findParamsByType('modelLoad', this.opts.job.params);
-
-    return {
-      plugin: this.opts.plugins.modelLoad?.plugin as PluginPackage,
-      model: await this.runPlugin('modelLoad', dataset, this.getParams(this.opts.plugins.modelLoad?.params, {
-        // specify the recover path for model loader by default.
-        recoverPath: modelPath
-      }, ...params))
-    };
-  }
-
-  /**
    * run model train plugin and return model
    * @param dataset dataset from data collect/dataset process/data process plugin
    * @param model model from model define
    * @param modelPath where the model saves to
    */
   async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
-    const params = this.findParamsByType('modelLoad', this.opts.job.params);
+    const params = this.findParamsByType('modelTrain', this.opts.job.params);
 
     return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain?.params, {
       modelPath
@@ -232,11 +215,10 @@ export class JobRunner {
    */
   async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
     this.assertPlugin('modelEvaluate');
-    const params = this.findParamsByType('modelLoad', this.opts.job.params);
 
     return this.runPlugin('modelEvaluate', dataset, model, this.getParams(this.opts.plugins.modelEvaluate?.params, {
       modelDir: modelPath
-    }, ...params));
+    }));
   }
 
   /**
@@ -245,6 +227,9 @@ export class JobRunner {
   async run(): Promise<JobResult> {
     if (typeof this.opts.plugins.dataCollect !== 'object') {
       throw new TypeError('plugin dataCollect must be specified');
+    }
+    if (!this.opts.plugins.modelDefine) {
+      throw new TypeError('plugin modelDefine must be specified.');
     }
     const dataDir = path.join(this.opts.datasetRoot, `${this.opts.plugins.dataCollect.plugin.name}@${this.opts.plugins.dataCollect.plugin.version}`);
     const modelPath = path.join(this.opts.runnable.workingDir, 'model');
@@ -260,13 +245,8 @@ export class JobRunner {
 
     let modelResult: ModelResult;
     // select one of `ModelDefine` and `ModelLoad`.
-    if (this.opts.plugins.modelDefine) {
-      modelResult = await this.runModelDefine(dataset);
-    } else if (this.opts.plugins.modelLoad) {
-      modelResult = await this.runModelLoad(dataset, modelPath);
-    } else {
-      throw new TypeError('plugin modelDefine or modelLoad must be specified.');
-    }
+    modelResult = await this.runModelDefine(dataset);
+
     if (this.opts.plugins.modelTrain) {
       modelResult.model = await this.runModelTrain(dataset, modelResult.model, modelPath);
     }

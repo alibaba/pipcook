@@ -1,6 +1,6 @@
 import { DaemonApplication } from './application';
 
-export async function migrate(args: string[]) {
+export async function migrate(args: string[]): Promise<void> {
   const existingSchema = args.includes('--rebuild') ? 'drop' : 'alter';
   console.log('Migrating schemas (%s existing schema)', existingSchema);
 
@@ -14,7 +14,7 @@ export async function migrate(args: string[]) {
   process.exit(0);
 }
 
-migrate(process.argv).catch(err => {
+migrate(process.argv).catch((err) => {
   console.error('Cannot migrate database schema', err);
   process.exit(1);
 });

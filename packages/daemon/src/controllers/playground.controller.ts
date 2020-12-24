@@ -17,7 +17,7 @@ export class PlayGroundController {
         content: {
           'application/octet-stream': {
             'x-parser': 'stream',
-            schema: { type: 'object'}
+            schema: { type: 'object' }
           }
         }
       }
@@ -26,7 +26,7 @@ export class PlayGroundController {
   async getModelManifest(
     @param.path.string('model') model: string,
     @param.path.string('name') name: string
-  ) {
+  ): Promise<Record<string, unknown>> {
     const resp = await axios.get(`${RES_CDN_PREFIX}/${model}/${name}`, {
       responseType: 'stream'
     });

@@ -12,10 +12,10 @@ import {
   requestBody,
   Response,
   oas,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
 import { Job, JobParam, Pipeline } from '../models';
-import { constants, PipelineStatus } from '@pipcook/pipcook-core';
+import { constants, PipelineStatus, PluginParamI } from '@pipcook/pipcook-core';
 import { JobRepository } from '../repositories';
 import { inject, service } from '@loopback/core';
 import { JobService, PipelineService, TraceService } from '../services';
@@ -47,21 +47,19 @@ export class JobController {
       ensureFile(stdoutFile),
       ensureFile(stderrFile)
     ]);
-    const tracer = await this.traceService.create({ stdoutFile, stderrFile });
-    return tracer;
+    return this.traceService.create({ stdoutFile, stderrFile });
   }
 
   private initializeParams(pipeline: Pipeline, jobParams?: JobParam[]): JobParam[] {
     const params: JobParam[] = [];
-    const jobParamsMap: {[key: string]: object} = {};
+    const jobParamsMap: {[key: string]: Record<string, unknown>} = {};
 
     jobParams?.forEach((it) => {
       jobParamsMap[it.pluginType] = it.data;
     });
 
     for (const pluginType of constants.PLUGINS) {
-      // @ts-ignore
-      const defaultParam = pipeline[`${pluginType}Params`];
+      const defaultParam = pipeline[`${pluginType}Params` as PluginParamI];
       const jobParam = jobParamsMap[pluginType] ? jobParamsMap[pluginType] : {};
 
       params.push({ pluginType, data: Object.assign(defaultParam, jobParam) });
@@ -76,19 +74,19 @@ export class JobController {
     responses: {
       '200': {
         description: 'start a job from pipeline id or name',
-        content: {'application/json': {schema: getModelSchemaRef(Job)}},
-      },
-    },
+        content: { 'application/json': { schema: getModelSchemaRef(Job) } }
+      }
+    }
   })
   async create(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(CreateJobResp),
-        },
-      },
+          schema: getModelSchemaRef(CreateJobResp)
+        }
+      }
     })
-    param: JobCreateParameters,
+      param: JobCreateParameters,
   ): Promise<CreateJobResp> {
     const { pipelineId, params: updateParams = [] } = param;
     const pipeline = await this.pipelineService.getPipelineByIdOrName(pipelineId);
@@ -106,7 +104,7 @@ export class JobController {
           this.traceService.destroy(tracer.id, err);
         }
       });
-      let resp = {
+      const resp = {
         ... job,
         traceId: tracer.id
       } as CreateJobResp;
@@ -128,12 +126,12 @@ export class JobController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(Job, {includeRelations: true}),
-            },
-          },
-        },
-      },
-    },
+              items: getModelSchemaRef(Job, { includeRelations: true })
+            }
+          }
+        }
+      }
+    }
   })
   async list(
     @param.filter(Job) filter?: Filter<Job>
@@ -147,9 +145,9 @@ export class JobController {
   @del('/', {
     responses: {
       '204': {
-        description: 'Job DELETE success',
-      },
-    },
+        description: 'Job DELETE success'
+      }
+    }
   })
   async deleteAll(): Promise<void> {
     await this.jobRepository.deleteAll();
@@ -161,9 +159,9 @@ export class JobController {
   @del('/{id}', {
     responses: {
       '204': {
-        description: 'Job DELETE success',
-      },
-    },
+        description: 'Job DELETE success'
+      }
+    }
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.jobService.removeJobById(id);
@@ -220,13 +218,13 @@ export class JobController {
   })
   async viewLog(@param.path.string('id') id: string): Promise<string[]> {
     await this.jobRepository.findById(id);
-    return await this.jobService.getLogById(id);
+    return this.jobService.getLogById(id);
   }
 
   @get('/{id}/output')
   @oas.response.file()
   async download(
-    @param.path.string('id') id: string, 
+    @param.path.string('id') id: string,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<Response> {
     const job = await this.jobRepository.findById(id);

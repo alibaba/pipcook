@@ -7,7 +7,9 @@ import * as createHttpError from 'http-errors';
 import {
   constants as CoreConstants,
   PluginStatus,
-  PluginTypeI
+  PluginTypeI,
+  PluginParamI,
+  PluginIdI
 } from '@pipcook/pipcook-core';
 import { PluginRunnable } from '@pipcook/costa';
 import { Pipeline, Job } from '../models';
@@ -66,25 +68,25 @@ export class PipelineService {
   }
 
   async getPipelineByIdOrName(idOrName: string): Promise<Pipeline | null> {
-    return this.pipelineRepository.findOne({ where: { or: [{ id: idOrName }, { name: idOrName }] } });
+    return this.pipelineRepository.findOne({ where: { or: [ { id: idOrName }, { name: idOrName } ] } });
   }
 
   async fetchPlugins(pipeline: Pipeline): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
     const plugins: Partial<Record<PluginTypeI, PluginInfo>> = {};
     const noneInstalledPlugins: string[] = [];
     for (const type of CoreConstants.PLUGINS) {
-      if ((pipeline as any)[type]) {
-        if (!(pipeline as any)[`${type}Id`]) {
-          noneInstalledPlugins.push((pipeline as any)[type]);
+      if (pipeline[type]) {
+        if (!pipeline[`${type}Id` as PluginIdI]) {
+          noneInstalledPlugins.push(pipeline[type]);
           continue;
         }
-        const plugin = await this.pluginRepository.findOne({ where: { id: (pipeline as any)[`${type}Id`] }});
+        const plugin = await this.pluginRepository.findOne({ where: { id: pipeline[`${type}Id` as PluginIdI] } });
         if (plugin && plugin.status === PluginStatus.INSTALLED) {
           // ignore if any plugin not installed, because will throw an error after processing.
           if (noneInstalledPlugins.length === 0) {
-            plugins[type] = await {
+            plugins[type] = {
               plugin: await this.pluginService.fetchFromInstalledPlugin(plugin.name),
-              params: (pipeline as any)[`${type}Params`]
+              params: pipeline[`${type}Params` as PluginParamI]
             };
           }
         } else {

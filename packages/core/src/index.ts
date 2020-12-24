@@ -38,6 +38,8 @@ export {
   ModelDefineArgsType,
   ModelTrainArgsType,
   PluginTypeI,
+  PluginParamI,
+  PluginIdI,
   PluginSourceProtocol as PluginProtocol,
   PipcookPlugin,
   PluginStatus

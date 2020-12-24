@@ -2,7 +2,7 @@ import { pipelinePromisify } from '../utils';
 import { TraceService } from '../services';
 import { service, inject } from '@loopback/core';
 import {
-	RequestContext, RestBindings, get, param
+  RequestContext, RestBindings, get, param
 } from '@loopback/rest';
 import SseStream from 'ssestream';
 import Debug from 'debug';
@@ -12,7 +12,7 @@ const debug = Debug('daemon.controller.base');
 export class BaseEventController {
 
   @inject(RestBindings.Http.CONTEXT)
-	public ctx: RequestContext;
+  public ctx: RequestContext;
 
   constructor(
     @service(TraceService)
@@ -20,7 +20,7 @@ export class BaseEventController {
   ) {
   }
 
-	/**
+  /**
    * trace event
    */
   @get('/event/{traceId}')
@@ -30,11 +30,11 @@ export class BaseEventController {
     if (!tracer) {
       this.ctx.response.status(204).send();
       return;
-		}
+    }
     const pipelineFutrue = pipelinePromisify(sse, this.ctx.response);
-		tracer.listen((data) => {
-		  debug(`[trace ${traceId}]`, data.type, data.data);
-		  sse.write({ event: data.type, data: data.data });
+    tracer.listen((data) => {
+      debug(`[trace ${traceId}]`, data.type, data.data);
+      sse.write({ event: data.type, data: data.data });
     });
     await tracer.wait();
     sse.end();

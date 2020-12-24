@@ -40,7 +40,7 @@ export class PluginService {
     });
   }
 
-  get datasetRoot() {
+  get datasetRoot(): string {
     return this.costa.options.datasetDir;
   }
 
@@ -65,9 +65,9 @@ export class PluginService {
     if (plugin.status !== PluginStatus.INSTALLED) {
       try {
         await this.install(plugin.id, pkg, { pyIndex, force: false, ...tracer.getLogger() });
-        this.setStatusById(plugin.id, PluginStatus.INSTALLED);
+        await this.setStatusById(plugin.id, PluginStatus.INSTALLED);
       } catch (err) {
-        this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
+        await this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
         throw err;
       }
     }
@@ -112,21 +112,23 @@ export class PluginService {
 
   async install(pluginId: string, pkg: PluginPackage, opts: InstallOptions): Promise<void> {
     return new Promise((resolve, reject) => {
-      pluginQueue.push((cb) => {
-        this.setStatusById(pluginId, PluginStatus.INSTALLING);
-        this.costa.install(pkg, opts).then(() => {
+      pluginQueue.push(async (cb) => {
+        try {
+          await this.setStatusById(pluginId, PluginStatus.INSTALLING);
+          await this.costa.install(pkg, opts);
+          if (cb) {
+            cb();
+          }
           resolve();
-          if (cb) {
-            cb();
-          }
-        }).catch((err) => {
+        } catch (err) {
           // uninstall if occurring an error on installing.
-          this.costa.uninstall(pkg);
+          await this.costa.uninstall(pkg);
           reject(err);
+        } finally {
           if (cb) {
             cb();
           }
-        });
+        }
       });
     });
   }
@@ -134,18 +136,18 @@ export class PluginService {
   async installAtNextTick(pkg: PluginPackage, pyIndex?: string, force?: boolean): Promise<PluginTraceResp> {
     const plugin = await this.findOrCreateByPkg(pkg);
     if (plugin.status !== PluginStatus.INSTALLED) {
-      const tracer = await this.traceService.create();
+      const tracer = this.traceService.create();
       process.nextTick(async () => {
         try {
-          this.setStatusById(plugin.id, PluginStatus.PENDING);
+          await this.setStatusById(plugin.id, PluginStatus.PENDING);
           await this.install(plugin.id, pkg, { pyIndex, force, ...tracer.getLogger() });
-          this.setStatusById(plugin.id, PluginStatus.INSTALLED);
-          this.traceService.destroy(tracer.id);
+          await this.setStatusById(plugin.id, PluginStatus.INSTALLED);
+          await this.traceService.destroy(tracer.id);
           console.log('install successfully', pkg.name);
         } catch (err) {
-          this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
+          await this.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
           console.error('install plugin error', err.message);
-          this.traceService.destroy(tracer.id, err);
+          await this.traceService.destroy(tracer.id, err);
         }
       });
       return new PluginTraceResp({ ...plugin.toJSON(), traceId: tracer.id });

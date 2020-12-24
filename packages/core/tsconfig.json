@@ -1,9 +1,15 @@
 {
-  "extends": "../../tsconfig.json",
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "extends": "@loopback/build/config/tsconfig.common.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
+    "outDir": "dist",
+    "rootDir": "src",
+    "experimentalDecorators": true,
+    "esModuleInterop": false
   },
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules",
     "dist"

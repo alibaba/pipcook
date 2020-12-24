@@ -6,14 +6,14 @@ import {
 import test from 'ava';
 import { PluginRepository } from '../../../repositories';
 import { Plugin } from '../../../models';
-import { PluginService, TraceService } from '../../../services';
+import { PluginService, TraceService, Tracer } from '../../../services';
 import * as fs from 'fs-extra';
 
 function initPluginService(): {
   pluginRepository: StubbedInstanceWithSinonAccessor<PluginRepository>,
   traceService: StubbedInstanceWithSinonAccessor<TraceService>,
   pluginService: PluginService
-} {
+  } {
   const pluginRepository = createStubInstance<PluginRepository>(PluginRepository);
   const traceService = createStubInstance<TraceService>(TraceService);
   const pluginService = new PluginService(pluginRepository, traceService);
@@ -21,7 +21,7 @@ function initPluginService(): {
     pluginRepository,
     traceService,
     pluginService
-  }
+  };
 }
 
 test('get datasetRoot', async (t) => {
@@ -57,7 +57,7 @@ test('create or find by package: plugin not exists', async (t) => {
     }
   };
   const mockFindOne = pluginRepository.stubs.findOne.resolves();
-  const mockCreate = pluginRepository.stubs.create.resolves({name: 'mockName'} as any);
+  const mockCreate = pluginRepository.stubs.create.resolves({ name: 'mockName' } as any);
   const newPlugin = await pluginService.findOrCreateByPkg(mockPlugin as any);
   t.true(mockFindOne.calledOnce);
   t.true(mockCreate.calledOnce);
@@ -194,8 +194,11 @@ test('should install at next tick', async (t) => {
   const mockPlugin = createStubInstance<Plugin>(Plugin);
   mockPlugin.id = 'mockId';
   mockPlugin.status = 2; /* FAILED */
+  const mockTracer = createStubInstance<Tracer>(Tracer);
+  mockTracer.id = 'mockTracerId';
+  mockTracer.stubs.getLogger.returns({});
   const mockFindOrCreateByPkg = sinon.stub(pluginService, 'findOrCreateByPkg').resolves(mockPlugin);
-  const mockTracerCreate = traceService.stubs.create.returns({ id: 'mockTracerId', getLogger: () => undefined } as any);
+  const mockTracerCreate = traceService.stubs.create.returns(mockTracer);
   const mockTracerDestory = traceService.stubs.destroy.resolves();
   const mockSetStatusById = sinon.stub(pluginService, 'setStatusById').resolves();
   const mockInstall = sinon.stub(pluginService, 'install').resolves();
@@ -222,10 +225,13 @@ test('install at next tick with error', async (t) => {
   const mockPlugin = createStubInstance<Plugin>(Plugin);
   mockPlugin.id = 'mockId';
   mockPlugin.status = 2; /* FAILED */
+  const mockTracer = createStubInstance<Tracer>(Tracer);
+  mockTracer.id = 'mockTracerId';
+  mockTracer.stubs.getLogger.returns({});
   const mockFindOrCreateByPkg = sinon.stub(pluginService, 'findOrCreateByPkg').resolves(mockPlugin);
   const mockSetStatusById = sinon.stub(pluginService, 'setStatusById').resolves();
   const mockInstall = sinon.stub(pluginService, 'install').rejects(new Error('mock error message'));
-  const mockTracerCreate = traceService.stubs.create.returns({ id: 'mockTracerId', getLogger: () => undefined } as any);
+  const mockTracerCreate = traceService.stubs.create.returns(mockTracer);
   const mockTracerDestory = traceService.stubs.destroy.resolves();
   const tracer = await pluginService.installAtNextTick({ name: 'mockName' } as any, 'mockPyIndex', false);
   t.is(tracer.traceId, 'mockTracerId', 'should have traceId');
@@ -286,8 +292,8 @@ test('should uninstall plugins', async (t) => {
   const { pluginRepository, pluginService } = initPluginService();
   const mockUninstall = sinon.stub(pluginService.costa, 'uninstall').resolves();
   const mockRemoveById = pluginRepository.stubs.deleteById.resolves();
-  await pluginService.uninstall([{ id: 'mockId1' }, { id: 'mockId2' }] as any);
-  t.true(mockUninstall.calledOnceWith([{ id: 'mockId1' }, { id: 'mockId2' }] as any), 'mockUninstall check');
+  await pluginService.uninstall([ { id: 'mockId1' }, { id: 'mockId2' } ] as any);
+  t.true(mockUninstall.calledOnceWith([ { id: 'mockId1' }, { id: 'mockId2' } ] as any), 'mockUninstall check');
   t.true(mockRemoveById.calledTwice, 'mockRemoveById check');
   t.deepEqual(mockRemoveById.args[0][0], 'mockId1', 'mockRemoveById args[0] check');
   t.deepEqual(mockRemoveById.args[1][0], 'mockId2', 'mockRemoveById args[1] check');

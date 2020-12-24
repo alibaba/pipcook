@@ -1,4 +1,5 @@
 import {
+  sinon,
   Client, createRestAppClient,
   givenHttpServerConfig
 } from '@loopback/testlab';
@@ -14,7 +15,7 @@ export async function setupApplication(): Promise<AppWithClient> {
   });
 
   const app = new DaemonApplication({
-    rest: restConfig,
+    rest: restConfig
   });
 
   await app.boot();
@@ -30,10 +31,17 @@ export interface AppWithClient {
   client: Client;
 }
 
-export function testConstructor<T>(ctor: { new(...args: any[]): T }, ...args: any[]) {
+export function testConstructor<T>(ctor: { new(...args: any[]): T }, ...args: any[]): (t: any) => void {
   const test = (t: any) => {
     const obj = new ctor(...args);
-    t.truthy(obj);  
-  }
+    t.truthy(obj);
+  };
   return test;
+}
+
+export function mockFunctionFromGetter(obj: any, funcName: string): sinon.SinonStub {
+  const mockFunc = sinon.stub();
+  const getter = sinon.stub().returns(mockFunc);
+  sinon.stub(obj, funcName).get(getter);
+  return mockFunc;
 }

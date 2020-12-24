@@ -1,8 +1,5 @@
 
-import {
-  StubbedInstanceWithSinonAccessor,
-  createStubInstance
-} from '@loopback/testlab';
+import { StubbedInstanceWithSinonAccessor, createStubInstance } from '@loopback/testlab';
 import test from 'ava';
 import { PluginController } from '../../../controllers';
 import { Plugin } from '../../../models';
@@ -14,7 +11,7 @@ function initPluginController(): {
   traceService: StubbedInstanceWithSinonAccessor<TraceService>,
   pluginRepository: StubbedInstanceWithSinonAccessor<PluginRepository>,
   pluginController: PluginController
-} {
+  } {
   const pluginRepository = createStubInstance<PluginRepository>(PluginRepository);
   const pluginService = createStubInstance<PluginService>(PluginService);
   const traceService = createStubInstance<TraceService>(TraceService);
@@ -24,35 +21,32 @@ function initPluginController(): {
     pluginService,
     traceService,
     pluginController
-  }
+  };
 }
 const mockPluginJson = { name: 'mockPluginName', version: '1.0.0' };
 
-test('find an existing plugin', async t => {
+test('find an existing plugin', async (t) => {
   const { pluginRepository, pluginController } = initPluginController();
-  const mockPluginEntity = {id: '123', name: 'Pen', version: 'pen', sourceFrom: ''};
-  const mockPlugin = new Plugin(mockPluginEntity);
+  const mockPlugin = new Plugin({ id: '123', name: 'Pen', version: 'pen', sourceFrom: '' });
 
   pluginRepository.stubs.findById.resolves(mockPlugin);
 
-  const details = await pluginController.findById('123');
+  const detail = await pluginController.findById('123');
 
-  t.deepEqual(details.toJSON(), mockPluginEntity);
+  t.deepEqual(detail, mockPlugin);
   t.true(pluginRepository.stubs.findById.calledOnce);
 });
 
-test('find a nonexistent plugin', async t => {
+test('find a nonexistent plugin', async (t) => {
   const { pluginRepository, pluginController } = initPluginController();
 
-  pluginRepository.stubs.findById.resolves(undefined);
+  pluginRepository.stubs.findById.rejects(new TypeError('mock error'));
 
-  const details = await pluginController.findById('nonexsitentId');
-
-  t.is(details, undefined);
+  await t.throwsAsync(pluginController.findById('nonexsitentId'), { instanceOf: TypeError, message: 'mock error' }, 'should throw error');
   t.true(pluginRepository.stubs.findById.calledOnce);
 });
 
-test('create plugin', async t => {
+test('create plugin', async (t) => {
   const { pluginService, pluginController } = initPluginController();
   const mockPlugin = { name: 'mockPluginName' };
 
@@ -64,7 +58,7 @@ test('create plugin', async t => {
   t.true(pluginService.stubs.installByName.calledOnce);
 });
 
-test('reinstall plugin', async t => {
+test('reinstall plugin', async (t) => {
   const { pluginService, pluginController } = initPluginController();
 
   pluginService.stubs.installByName.resolves(mockPluginJson as any);
@@ -75,7 +69,7 @@ test('reinstall plugin', async t => {
   t.true(pluginService.stubs.installByName.calledOnce);
 });
 
-test('remove plugin by id', async t => {
+test('remove plugin by id', async (t) => {
   const { pluginService, pluginRepository, pluginController } = initPluginController();
 
   pluginService.stubs.uninstall.resolves();
@@ -89,7 +83,7 @@ test('remove plugin by id', async t => {
 
 test.todo('remove plugin by id but no entity found');
 
-test('remove all plugins', async t => {
+test('remove all plugins', async (t) => {
   const { pluginRepository, pluginService, pluginController } = initPluginController();
   const plugins = [ mockPluginJson as any ];
 
@@ -98,11 +92,11 @@ test('remove all plugins', async t => {
 
   await t.notThrowsAsync(pluginController.removeAll(), 'remove all plugins');
 
-  t.deepEqual(pluginService.stubs.uninstall.args, [[ plugins ]]);
+  t.deepEqual(pluginService.stubs.uninstall.args, [ [ plugins ] ]);
   t.true(pluginRepository.stubs.find.calledOnceWith());
 });
 
-test('get plugin meta data from registy by name', async t => {
+test('get plugin meta data from registy by name', async (t) => {
   const { pluginService, pluginController } = initPluginController();
   const pluginPackage = { name : 'mockPackageName' };
 
@@ -110,10 +104,10 @@ test('get plugin meta data from registy by name', async t => {
 
   await t.notThrowsAsync(pluginController.getMetadata('packageName'), 'get plugin meta data by name');
 
-  t.deepEqual(pluginService.stubs.fetch.args, [[ 'packageName' ]]);
+  t.deepEqual(pluginService.stubs.fetch.args, [ [ 'packageName' ] ]);
 });
 
-test('get plugin meta data by id', async t => {
+test('get plugin meta data by id', async (t) => {
   const { pluginRepository, pluginService, pluginController } = initPluginController();
   const pluginPackage = { name : 'mockPackageName' };
 
@@ -122,16 +116,16 @@ test('get plugin meta data by id', async t => {
 
   await t.notThrowsAsync(pluginController.getMetadataById('mockId'), 'get plugin meata data by id');
 
-  t.deepEqual(pluginService.stubs.fetch.args, [[ `${mockPluginJson.name}@${mockPluginJson.version}` ]]);
-  t.deepEqual(pluginRepository.stubs.findById.args, [[ 'mockId' ]]);
+  t.deepEqual(pluginService.stubs.fetch.args, [ [ `${mockPluginJson.name}@${mockPluginJson.version}` ] ]);
+  t.deepEqual(pluginRepository.stubs.findById.args, [ [ 'mockId' ] ]);
 });
 
-test('list plugins', async t => {
+test('list plugins', async (t) => {
   const { pluginRepository, pluginController } = initPluginController();
   const fileter = { where: { name: 'mockName' } };
   pluginRepository.stubs.find.resolves(mockPluginJson as any);
-  
+
   await t.notThrowsAsync(pluginController.list(fileter), 'list plugins');
 
-  t.deepEqual(pluginRepository.stubs.find.args, [[ fileter ]]);
+  t.deepEqual(pluginRepository.stubs.find.args, [ [ fileter ] ]);
 });

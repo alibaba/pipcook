@@ -73,21 +73,21 @@ export async function parseConfig(configPath: string | RunConfigI, isGenerateId 
  * copy the folder with reflink mode
  */
 export async function copyDir(src: string, dest: string): Promise<void> {
-  const onDir = async (src: string, dest: string) => {
-    await fs.ensureDir(dest);
-    const items = await fs.readdir(src);
-    const copyPromises = items.map(item => copyDir(path.join(src, item), path.join(dest, item)));
+  const onDir = async (dirSrc: string, dirDest: string) => {
+    await fs.ensureDir(dirDest);
+    const items = await fs.readdir(dirSrc);
+    const copyPromises = items.map((item) => copyDir(path.join(dirSrc, item), path.join(dirDest, item)));
     return Promise.all(copyPromises);
   };
 
-  const onFile = async (src: string, dest: string, mode: number) => {
-    await fs.copyFile(src, dest, fs.constants.COPYFILE_FICLONE);
-    await fs.chmod(dest, mode);
+  const onFile = async (fileSrc: string, fileDest: string, mode: number) => {
+    await fs.copyFile(fileSrc, fileDest, fs.constants.COPYFILE_FICLONE);
+    await fs.chmod(fileDest, mode);
   };
 
-  const onLink = async (src: string, dest: string) => {
-    const resolvedSrc = await fs.readlink(src);
-    await fs.symlink(resolvedSrc, dest);
+  const onLink = async (linkSrc: string, linkDest: string) => {
+    const resolvedSrc = await fs.readlink(linkSrc);
+    await fs.symlink(resolvedSrc, linkDest);
   };
 
   const srcStat = await fs.lstat(src);
@@ -107,7 +107,11 @@ export async function copyDir(src: string, dest: string): Promise<void> {
 export function execAsync(cmd: string, opts: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
     exec(cmd, opts, (err: ExecException | null, stdout: string) => {
-      err == null ? resolve(stdout) : reject(err);
+      if (err) {
+        reject(err);
+      } else {
+        resolve(stdout);
+      }
     });
   });
 }

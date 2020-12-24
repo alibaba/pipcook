@@ -1,9 +1,10 @@
+import { sinon } from '@loopback/testlab';
 import { join } from 'path';
 import test from 'ava';
 import { PluginTraceResp, TraceEvent, JobStatusChangeEvent, LogEvent, Tracer } from '../../../services';
 import { PipelineStatus } from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';
-import { testConstructor } from '../../__helpers__/test-helper';
+import { testConstructor } from '../../__helpers__';
 
 test('should get a new PluginTraceResp object', testConstructor(PluginTraceResp));
 test('should get a new TraceEvent object', testConstructor(TraceEvent, 'log'));
@@ -24,14 +25,14 @@ test('create and destroy tracer with log files', async (t) => {
       fs.remove(opts.stderrFile)
     ]);
   };
-  let tracerWithFile = new Tracer(opts);
+  const tracerWithFile = new Tracer(opts);
   await t.notThrowsAsync(tracerWithFile.destroy());
   await removeLogs();
 });
 
 test('listen', async (t) => {
   const tracer = new Tracer();
-  tracer.listen(() => { });
+  tracer.listen(sinon.stub());
   await t.notThrowsAsync(tracer.destroy());
 });
 

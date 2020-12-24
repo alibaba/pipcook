@@ -34,7 +34,7 @@ export class LogController extends BaseEventController {
   })
   async view(
     @param.path.string('id') id: string
-  ) {
+  ): Promise<string[]> {
     const data = await this.jobService.getLogById(id);
     return data;
   }

@@ -43,7 +43,7 @@ export class JobService {
   }
 
   async removeJobByEntities(jobs: Job[]): Promise<number> {
-    const ids = jobs.map(job => job.id);
+    const ids = jobs.map((job) => job.id);
     const fsRemoveFutures = [];
     for (const id of ids) {
       fsRemoveFutures.push(fs.remove(`${CoreConstants.PIPCOOK_RUN}/${id}`));
@@ -67,7 +67,7 @@ export class JobService {
       specVersion,
       status: PipelineStatus.INIT,
       params,
-      currentIndex: -1,
+      currentIndex: -1
     });
   }
 
@@ -86,7 +86,7 @@ export class JobService {
     // post processing the package.json
     const projPackage = await fs.readJSON(dist + '/package.json');
     projPackage.dependencies = {
-      [opts.plugins.modelDefine.name]: opts.plugins.modelDefine.version,
+      [opts.plugins.modelDefine.name]: opts.plugins.modelDefine.version
     };
     projPackage.scripts = {
       postinstall: 'node boapkg.js'
@@ -98,7 +98,7 @@ export class JobService {
     const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
     const metadata = {
       pipeline: opts.pipeline,
-      output: job,
+      output: job
     };
 
     await Promise.all([
@@ -111,7 +111,7 @@ export class JobService {
       // write package.json
       fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
       // write metadata.json
-      fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts),
+      fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts)
     ]);
     console.info(`trained the model to ${dist}`);
 
@@ -119,14 +119,18 @@ export class JobService {
     await compressTarFile(dist, path.join(opts.workingDir, 'output.tar.gz'));
   }
 
-  async startJob(job: Job, pipeline: Pipeline, plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<void> {
+  /**
+   * perpare job, create the PluginRunnable and JobRunner
+   * @param job job entity
+   * @param pipeline pipeline entity
+   * @param plugins plugins
+   * @param tracer tracer for job runner
+   */
+  async perpareJob(job: Job, pipeline: Pipeline, plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<{
+    runnable: PluginRunnable,
+    runner: JobRunner
+  }> {
     const runnable = await this.pluginService.createRunnable(job.id, tracer);
-    // save the runnable object
-    this.runnableMap[job.id] = runnable;
-    // update the job status to running
-    job.status = PipelineStatus.RUNNING;
-    await this.jobRepository.updateById(job.id, job);
-    // creater runner
     const runner = new JobRunner({
       job,
       pipeline,
@@ -135,7 +139,20 @@ export class JobService {
       runnable,
       datasetRoot: this.pluginService.datasetRoot
     });
+    return {
+      runnable,
+      runner
+    };
+  }
 
+  async startJob(job: Job, pipeline: Pipeline, plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<void> {
+    const { runnable, runner } = await this.perpareJob(job, pipeline, plugins, tracer);
+
+    // save the runnable object
+    this.runnableMap[job.id] = runnable;
+    // update the job status to running
+    job.status = PipelineStatus.RUNNING;
+    await this.jobRepository.updateById(job.id, job);
     runner.dispatchJobEvent(PipelineStatus.RUNNING);
 
     try {

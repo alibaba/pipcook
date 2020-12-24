@@ -5,7 +5,7 @@ import { constants as CoreConstants } from '@pipcook/pipcook-core';
 const config = {
   name: 'pipcook',
   connector: 'loopback-connector-sqlite3',
-  file: process.env.PIPCOOK_STORAGE || CoreConstants.PIPCOOK_STORAGE
+  file: process.env.PIPCOOK_STORAGE ?? CoreConstants.PIPCOOK_STORAGE
 };
 
 // Observe application's life cycle to disconnect the datasource when
@@ -20,7 +20,7 @@ export class PipcookDataSource extends juggler.DataSource
 
   constructor(
     @inject('datasources.config.pipcook', { optional: true })
-    dsConfig: object = config,
+    dsConfig: Record<string, unknown> = config,
   ) {
     super(dsConfig);
   }

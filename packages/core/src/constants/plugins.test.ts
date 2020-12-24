@@ -2,7 +2,7 @@ import {
   DATACOLLECT,
   DATAACCESS,
   DATAPROCESS,
-  MODELLOAD,
+  DATASETPROCESS,
   MODELTRAIN,
   MODELEVALUATE
 } from './plugins';
@@ -12,7 +12,7 @@ describe('plugins constant', () => {
     expect(DATACOLLECT).toEqual('dataCollect');
     expect(DATAACCESS).toEqual('dataAccess');
     expect(DATAPROCESS).toEqual('dataProcess');
-    expect(MODELLOAD).toEqual('modelLoad');
+    expect(DATASETPROCESS).toEqual('datasetProcess');
     expect(MODELTRAIN).toEqual('modelTrain');
     expect(MODELEVALUATE).toEqual('modelEvaluate');
   });

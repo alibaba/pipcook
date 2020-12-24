@@ -1,6 +1,6 @@
 import * as qs from 'querystring';
 import { promisify } from 'util';
-import axios from 'axios';
+import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as fs from 'fs-extra';
 import * as EventSource from 'eventsource';
 import { logger } from './common';
@@ -13,28 +13,27 @@ type ErrorEvent = {
   message: string;
 } & Event;
 
-function createGeneralRequest(agent: Function): Function {
+function createGeneralRequest(
+  agent: (...args: any[]) => AxiosPromise<any>
+): (...args: any[]) => Promise<any> {
   return async (...args: any[]) => {
     try {
       const response = await agent(...args);
-      if (response.data.status === true) {
-        return response.data.data;
+      if (response.status >= 200 && response.status < 300) {
+        return response.data;
+      } else {
+        throw new Error(response?.data?.message);
       }
     } catch (err) {
-      if (err?.response?.data?.message) {
-        logger.fail(err.response.data.message, false);
-      } else {
-        console.error('daemon is not started, run "pipcook daemon start"');
-      }
-      return process.exit(1);
+      throw new Error(err.response?.data?.message || err.message);
     }
   };
 }
 
-export const post = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.post)(host, body, params);
-export const put = async (host: string, body?: RequestParams, params?: RequestParams) => createGeneralRequest(axios.put)(host, body, params);
-export const del = async (host: string) => createGeneralRequest(axios.delete)(host);
-export const get = async (host: string, params?: RequestParams) => {
+export const post = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => createGeneralRequest(axios.post)(host, body, params, config);
+export const put = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => createGeneralRequest(axios.put)(host, body, params, config);
+export const del = async (host: string): Promise<any> => createGeneralRequest(axios.delete)(host);
+export const get = async (host: string, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => {
   const uri = `${host}?${qs.stringify(params)}`;
   return createGeneralRequest(axios.get)(uri);
 };

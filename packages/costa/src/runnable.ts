@@ -63,9 +63,9 @@ export class PluginRunnable {
   private handle: ChildProcess = null;
 
   // private events
-  private onread: Function | null;
-  private onreadfail: Function | null;
-  private ondestroyed: Function | null;
+  private onread: (res: PluginProtocol) => void;
+  private onreadfail: (err: Error) => void;
+  private ondestroyed: () => void;
 
   // private states
   private queue: PluginProtocol[] = [];
@@ -151,7 +151,7 @@ export class PluginRunnable {
    * Get the runnable value for the given response.
    * @param resp the value to the response.
    */
-  async valueOf(resp: RunnableResponse): Promise<object> {
+  async valueOf(resp: RunnableResponse): Promise<any> {
     const msg = await this.sendAndWait(PluginOperator.READ, {
       event: 'deserialize response',
       params: [
@@ -264,11 +264,11 @@ export class PluginRunnable {
           return reject(new ReadTimeoutError());
         }, timeout);
       }
-      this.onread = (res: PluginProtocol) => {
+      this.onread = (res: PluginProtocol): void => {
         clearTimeout(notRespondingTimer);
         resolve(res);
       };
-      this.onreadfail = (err: Error) => {
+      this.onreadfail = (err: Error): void => {
         clearTimeout(notRespondingTimer);
         reject(err);
       };
