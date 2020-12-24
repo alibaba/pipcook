@@ -4,7 +4,7 @@
 import {
   repository
 } from '@loopback/repository';
-
+import { service } from '@loopback/core';
 import {
   api,
   post,
@@ -15,15 +15,21 @@ import {
   requestBody,
   put,
 } from '@loopback/rest';
-import { service } from '@loopback/core';
-import { PluginService, PipelineService, JobService, TraceService, Tracer } from '../services';
-import { JobRepository, PipelineRepository, PluginRepository } from '../repositories';
-import { Pipeline } from '../models';
-import { PipelineCreateParameters, PipelineUpdateParameters, PipelineInstallParameters, CreatePipelineResp } from './interface';
-import { parseConfig } from '../utils';
 import { constants, PluginTypeI, PluginStatus } from '@pipcook/pipcook-core';
 import debug from 'debug';
 import * as createError from 'http-errors';
+import { Pipeline } from '../models';
+import { JobRepository, PipelineRepository, PluginRepository } from '../repositories';
+import {
+  PluginService,
+  PipelineService,
+  JobService,
+  TraceService,
+  Tracer,
+  PipelineTraceResp
+} from '../services';
+import { PipelineCreateParameters, PipelineUpdateParameters, PipelineInstallParameters, CreatePipelineResp } from './interface';
+import { parseConfig } from '../utils';
 
 const pipelineCreateSpec = {
   content: {
@@ -114,11 +120,6 @@ export class PipelineController {
     return result;
   }
 
-
-
-  /**
-   * list pipelines
-   */
   @get('/', {
     responses: {
       '200': {
@@ -194,7 +195,6 @@ export class PipelineController {
     return json;
   }
 
-
   @get('/{id}', {
     responses: {
       '200': {
@@ -218,7 +218,6 @@ export class PipelineController {
     return result;
   }
 
-
   @put('/{id}', {
     responses: {
       '204': {
@@ -239,7 +238,7 @@ export class PipelineController {
   public async installById(
     @param.path.string('id') id: string,
     @requestBody(pipelineInstallationSpec) params: PipelineInstallParameters
-  ) {
+  ): Promise<PipelineTraceResp> {
     const { pyIndex } = params;
     const pipeline = await this.pipelineRepository.findById(id);
     const log = await this.traceService.create();
@@ -252,7 +251,7 @@ export class PipelineController {
           this.traceService.destroy(log.id, err);
         }
       });
-      return { ...pipeline, traceId: log.id }
+      return { ...pipeline, traceId: log.id } as PipelineTraceResp
     } else {
       throw new createError.NotFound('no pipeline found');
     }

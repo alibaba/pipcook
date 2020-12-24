@@ -26,7 +26,7 @@ export class PluginInstallPararmers {
 
 @input()
 export class PipelineCreateParameters {
-	@property({ required: true })
+	@property()
 	name: string;
 
 	@property()
@@ -76,10 +76,7 @@ export class CreateJobResp extends Job {
 		super();
 	}
 }
-<<<<<<< HEAD
 
 export class CreatePipelineResp extends Pipeline {
 	plugins: Plugin[]
 }
-=======
->>>>>>> a1458bd1a217910e631d03295c46d7ec728622cc

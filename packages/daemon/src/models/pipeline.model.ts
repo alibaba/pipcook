@@ -49,7 +49,6 @@ export class Pipeline extends Base {
 
   @property({
     type: 'string',
-    required: true
   })
   dataProcess: string;
 
@@ -65,10 +64,9 @@ export class Pipeline extends Base {
   datasetProcessId?: string;
 
   @property({
-    type: 'string',
-    required: true
+    type: 'string'
   })
-  datasetProcess: string;
+  datasetProcess?: string;
 
   @property({
     type: 'object',
@@ -82,8 +80,7 @@ export class Pipeline extends Base {
   modelDefineId?: string;
 
   @property({
-    type: 'string',
-    required: true
+    type: 'string'
   })
   modelDefine: string;
 
