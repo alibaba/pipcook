@@ -68,7 +68,7 @@ jobs:
         yarn
         yarn build
         yarn init-dev
-        yarn workspace @pipcook/daemon run migrate 
+        mkdir -p ~/.pipcook/db && yarn workspace @pipcook/daemon run migrate 
         du -h -d 1
     - name: Running unit tests
       run: |
