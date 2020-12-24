@@ -38,6 +38,7 @@ jobs:
     - name: Building Pipcook
       run: |
         yarn dev-build
+        yarn workspace @pipcook/daemon run migrate
     - name: Running unit tests
       run: |
         yarn init-dev
