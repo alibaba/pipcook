@@ -13,13 +13,13 @@ export class Base extends Entity {
 
   @property({
     type: 'date',
-    default: () => new Date(),
+    default: () => new Date()
   })
   createdAt?: Date;
 
   @property({
     type: 'date',
-    default: () => new Date(),
+    default: () => new Date()
   })
   updatedAt?: Date;
 

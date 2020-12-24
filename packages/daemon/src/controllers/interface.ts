@@ -6,7 +6,7 @@ import { Job, JobParam, Pipeline, Plugin } from '../models';
 import {
   RunConfigI
 } from '@pipcook/pipcook-core';
-  
+
 @input()
 export class PluginInstallPararmers {
   @property({ required: true })
@@ -77,5 +77,5 @@ export class CreateJobResp extends Job {
 }
 
 export class CreatePipelineResp extends Pipeline {
-	plugins: Plugin[]
+	plugins: Plugin[];
 }

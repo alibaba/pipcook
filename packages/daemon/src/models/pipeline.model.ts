@@ -48,7 +48,7 @@ export class Pipeline extends Base {
   dataProcessId?: string;
 
   @property({
-    type: 'string',
+    type: 'string'
   })
   dataProcess: string;
 
@@ -89,21 +89,6 @@ export class Pipeline extends Base {
     default: {}
   })
   modelDefineParams?: Record<string, unknown>;
-
-  @property({
-    type: 'string'
-  })
-  modelLoadId?: string;
-
-  @property({
-    type: 'string'
-  })
-  modelLoad?: string;
-
-  @property({
-    type: 'string'
-  })
-  modelLoadParams?: object;
 
   @property({
     type: 'string'

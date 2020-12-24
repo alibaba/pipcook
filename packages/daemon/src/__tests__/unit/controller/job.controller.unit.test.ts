@@ -1,12 +1,8 @@
 
 import {
   StubbedInstanceWithSinonAccessor,
-  createStubInstance,
-  TestSandbox
+  createStubInstance
 } from '@loopback/testlab';
-import {
-  Response,
-} from '@loopback/rest';
 import { PipelineStatus } from '@pipcook/pipcook-core';
 import test from 'ava';
 import { JobController, JobCreateParameters } from '../../../controllers';
@@ -21,7 +17,7 @@ function initJobController(): {
   pipelineService: StubbedInstanceWithSinonAccessor<PipelineService>,
   jobRepository: StubbedInstanceWithSinonAccessor<JobRepository>,
   jobController: JobController
-} {
+  } {
   const jobRepository = createStubInstance<JobRepository>(JobRepository);
   const jobService = createStubInstance<JobService>(JobService);
   const traceService = createStubInstance<TraceService>(TraceService);
@@ -33,17 +29,17 @@ function initJobController(): {
     pipelineService,
     jobRepository,
     jobController
-  }
+  };
 }
 
 const id = '123';
-const mockJobEntity = { 
+const mockJobEntity = {
   id,
   status: PipelineStatus.SUCCESS
 };
 const mockJob = new Job(mockJobEntity);
 
-test('find a job by id', async t => {
+test('find a job by id', async (t) => {
   const { jobController, jobRepository } = initJobController();
 
   jobRepository.stubs.findById.resolves(mockJob);
@@ -54,22 +50,22 @@ test('find a job by id', async t => {
   t.true(jobRepository.stubs.findById.calledOnce);
 });
 
-test('find a log by id', async t => {
+test('find a log by id', async (t) => {
   const { jobController, jobRepository, jobService } = initJobController();
   const mockJobEntity = { id };
   const mockJob = new Job(mockJobEntity);
 
   jobRepository.stubs.findById.resolves(mockJob);
-  jobService.stubs.getLogById.resolves([id]);
+  jobService.stubs.getLogById.resolves([ id ]);
 
   const details = await jobController.viewLog(id);
 
-  t.deepEqual(details, [id]);
+  t.deepEqual(details, [ id ]);
   t.true(jobRepository.stubs.findById.calledOnce);
   t.true(jobService.stubs.getLogById.calledOnce);
 });
 
-test('stop a job by id', async t => {
+test('stop a job by id', async (t) => {
   const { jobController, jobRepository } = initJobController();
   const params: JobParam[] = [];
   const mockJobEntity = { id, params };
@@ -83,7 +79,7 @@ test('stop a job by id', async t => {
   t.true(jobRepository.stubs.findById.calledOnce);
 });
 
-test('cancel a job by id', async t => {
+test('cancel a job by id', async (t) => {
   const { jobController, jobService } = initJobController();
 
   jobService.stubs.stopJob.resolves();
@@ -93,9 +89,9 @@ test('cancel a job by id', async t => {
   t.true(jobService.stubs.stopJob.calledOnce);
 });
 
-test('delete a job by id', async t => {
+test('delete a job by id', async (t) => {
   const { jobController, jobService } = initJobController();
-  
+
   jobService.stubs.removeJobById.resolves();
 
   await jobController.deleteById(id);
@@ -103,7 +99,7 @@ test('delete a job by id', async t => {
   t.true(jobService.stubs.removeJobById.calledOnce);
 });
 
-test('delete all jobs', async t => {
+test('delete all jobs', async (t) => {
   const { jobRepository, jobController } = initJobController();
 
   jobRepository.stubs.deleteAll.resolves();
@@ -113,7 +109,7 @@ test('delete all jobs', async t => {
   t.true(jobRepository.stubs.deleteAll.calledOnce);
 });
 
-test('list all jobs', async t => {
+test('list all jobs', async (t) => {
   const { jobRepository, jobController } = initJobController();
 
   jobRepository.stubs.find.resolves([]);
@@ -124,16 +120,15 @@ test('list all jobs', async t => {
   t.true(jobRepository.stubs.find.calledOnce);
 });
 
-test('start a job', async t => {
+test('start a job', async (t) => {
   const { jobController, pipelineService, jobService, traceService } = initJobController();
 
   const param = new JobCreateParameters();
   param.pipelineId = '1';
   param.params = [];
 
-  
 
-  const mockPipelineEntity = { 
+  const mockPipelineEntity = {
     name: 'mock',
     dataCollectId: '1',
     dataCollect: 'dataCollect',
@@ -165,7 +160,7 @@ test('start a job', async t => {
   const tracer = new Tracer();
 
   pipelineService.stubs.getPipelineByIdOrName.resolves(mockPipeline);
-  traceService.stubs.create.resolves(tracer);  
+  traceService.stubs.create.resolves(tracer);
   jobService.stubs.createJob.resolves(mockJob);
   jobService.stubs.runJob.resolves({});
   traceService.stubs.destroy.resolves({});

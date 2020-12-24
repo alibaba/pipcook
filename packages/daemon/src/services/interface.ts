@@ -19,12 +19,12 @@ export class PluginTraceResp extends Plugin {
 
 @model()
 export class PipelineTraceResp extends Pipeline {
-	@property({ type: 'string' })
-	public traceId: string;
+  @property({ type: 'string' })
+  public traceId: string;
 
-	constructor(data?: Partial<PipelineTraceResp>) {
-		super(data);
-	}
+  constructor(data?: Partial<PipelineTraceResp>) {
+    super(data);
+  }
 }
 
 export interface GenerateOptions {

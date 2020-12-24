@@ -81,7 +81,7 @@ export class PluginService {
           inq: ids
         }
       }
-    })
+    });
   }
 
   async createRunnable(id: string, tracer: Tracer): Promise<PluginRunnable> {

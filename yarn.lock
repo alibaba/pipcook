@@ -6465,9 +6465,9 @@ log-symbols@^4.0.0:
   dependencies:
     chalk "^4.0.0"
 
-"loopback-connector-sqlite3@git+ssh://git@github.com:FeelyChau/loopback-connector-sqlite3.git":
+"loopback-connector-sqlite3@git+https://github.com/FeelyChau/loopback-connector-sqlite3.git#36d997d":
   version "3.0.0"
-  resolved "git+ssh://git@github.com:FeelyChau/loopback-connector-sqlite3.git#36d997d579591a8d5181d8f4809ccb5c46b3626b"
+  resolved "git+https://github.com/FeelyChau/loopback-connector-sqlite3.git#36d997d579591a8d5181d8f4809ccb5c46b3626b"
   dependencies:
     async "^2.6.1"
     debug "^3.1.0"

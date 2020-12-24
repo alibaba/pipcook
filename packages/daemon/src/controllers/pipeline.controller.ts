@@ -13,7 +13,7 @@ import {
   getModelSchemaRef,
   del,
   requestBody,
-  put,
+  put
 } from '@loopback/rest';
 import { constants, PluginTypeI, PluginStatus } from '@pipcook/pipcook-core';
 import debug from 'debug';
@@ -33,19 +33,19 @@ import { parseConfig } from '../utils';
 
 const pipelineCreateSpec = {
   content: {
-	  'application/json': {
-		  schema: getModelSchemaRef(PipelineCreateParameters)
-	  }
-	}
+    'application/json': {
+      schema: getModelSchemaRef(PipelineCreateParameters)
+    }
+  }
 };
 
 const pipelineUpdateSpec = {
   content: {
-	  'application/json': {
-		  schema: getModelSchemaRef(PipelineUpdateParameters)
-	  }
-	}
-}
+    'application/json': {
+      schema: getModelSchemaRef(PipelineUpdateParameters)
+    }
+  }
+};
 
 const pipelineInstallationSpec = {
   content: {
@@ -53,7 +53,7 @@ const pipelineInstallationSpec = {
       schema: getModelSchemaRef(PipelineInstallParameters)
     }
   }
-}
+};
 
 @api({ basePath: '/api/pipeline' })
 export class PipelineController {
@@ -84,7 +84,7 @@ export class PipelineController {
     responses: {
       '201': {
         description: 'create pipeline',
-        content: {'application/json': {schema: getModelSchemaRef(CreatePipelineResp)}},
+        content: { 'application/json': { schema: getModelSchemaRef(CreatePipelineResp) } }
       }
     }
   })
@@ -128,7 +128,7 @@ export class PipelineController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(Pipeline, { includeRelations: true }),
+              items: getModelSchemaRef(Pipeline, { includeRelations: true })
             }
           }
         }
@@ -146,9 +146,9 @@ export class PipelineController {
   @del('/', {
     responses: {
       '204': {
-        description: 'All pipelines DELETE success',
-      },
-    },
+        description: 'All pipelines DELETE success'
+      }
+    }
   })
   async removeAll(): Promise<void> {
     const jobs = await this.jobRepository.find();
@@ -159,9 +159,9 @@ export class PipelineController {
   @del('/{id}', {
     responses: {
       '204': {
-        description: 'Job DELETE success',
-      },
-    },
+        description: 'Job DELETE success'
+      }
+    }
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     const jobs = await this.pipelineService.queryJobs({ pipelineId: id });
@@ -179,7 +179,7 @@ export class PipelineController {
   async getConfig(@param.path.string('id') id: string) {
     const json = { plugins: {} } as any;
     const pipeline = await this.pipelineRepository.findById(id);
-    constants.PLUGINS.forEach(name => {
+    constants.PLUGINS.forEach((name) => {
       if (typeof pipeline[name] === 'string') {
         const params = pipeline[`${name}Params` as PluginTypeI];
         json.plugins[name] = {
@@ -199,7 +199,7 @@ export class PipelineController {
     responses: {
       '200': {
         description: 'get pipeline by id',
-        content: {'application/json': {schema: getModelSchemaRef(CreatePipelineResp)}},
+        content: { 'application/json': { schema: getModelSchemaRef(CreatePipelineResp) } }
       }
     }
   })
@@ -213,7 +213,7 @@ export class PipelineController {
     });
     const plugins = await this.pluginService.findByIds(pluginIds);
 
-    const result: CreatePipelineResp = pipeline as CreatePipelineResp;
+    const result = new CreatePipelineResp(pipeline.toJSON());
     result.plugins = plugins;
     return result;
   }
@@ -251,7 +251,7 @@ export class PipelineController {
           this.traceService.destroy(log.id, err);
         }
       });
-      return { ...pipeline, traceId: log.id } as PipelineTraceResp
+      return new PipelineTraceResp({ ...pipeline.toJSON(), traceId: log.id });
     } else {
       throw new createError.NotFound('no pipeline found');
     }

@@ -3,7 +3,6 @@ import { promisify } from 'util';
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as fs from 'fs-extra';
 import * as EventSource from 'eventsource';
-import { logger } from './common';
 import * as FormData from 'form-data';
 
 export type RequestParams = Record<string, any>;
@@ -33,7 +32,7 @@ function createGeneralRequest(
 export const post = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => createGeneralRequest(axios.post)(host, body, params, config);
 export const put = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => createGeneralRequest(axios.put)(host, body, params, config);
 export const del = async (host: string): Promise<any> => createGeneralRequest(axios.delete)(host);
-export const get = async (host: string, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => {
+export const get = async (host: string, params?: RequestParams): Promise<any> => {
   const uri = `${host}?${qs.stringify(params)}`;
   return createGeneralRequest(axios.get)(uri);
 };

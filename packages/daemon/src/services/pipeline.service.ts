@@ -60,7 +60,7 @@ export class PipelineService {
     return this.jobRepository.find({
       where: opts,
       order: [ 'createdAt DESC' ]
-    })
+    });
   }
 
   async removePipelineById(id: string): Promise<void> {
@@ -73,7 +73,7 @@ export class PipelineService {
 
   async fetchPlugins(pipeline: Pipeline): Promise<Partial<Record<PluginTypeI, PluginInfo>>> {
     const plugins: Partial<Record<PluginTypeI, PluginInfo>> = {};
-    const noneInstalledPlugins: string[] = [];
+    const noneInstalledPlugins = [];
     for (const type of CoreConstants.PLUGINS) {
       if (pipeline[type]) {
         if (!pipeline[`${type}Id` as PluginIdI]) {
