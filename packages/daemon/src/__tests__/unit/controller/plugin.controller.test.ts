@@ -1,10 +1,13 @@
 
-import { StubbedInstanceWithSinonAccessor, createStubInstance } from '@loopback/testlab';
+import { sinon, StubbedInstanceWithSinonAccessor, createStubInstance } from '@loopback/testlab';
 import test from 'ava';
+import { Request, Response } from '@loopback/rest';
 import { PluginController } from '../../../controllers';
 import { Plugin } from '../../../models';
 import { PluginRepository } from '../../../repositories';
-import { PluginService, TraceService } from '../../../services';
+import { PluginService, TraceService, PluginTraceResp } from '../../../services';
+import * as utils from '../../../utils';
+import * as multer from 'multer';
 
 function initPluginController(): {
   pluginService: StubbedInstanceWithSinonAccessor<PluginService>,
@@ -24,6 +27,8 @@ function initPluginController(): {
   };
 }
 const mockPluginJson = { name: 'mockPluginName', version: '1.0.0' };
+
+test.serial.afterEach(() => sinon.restore());
 
 test('find an existing plugin', async (t) => {
   const { pluginRepository, pluginController } = initPluginController();
@@ -128,4 +133,51 @@ test('list plugins', async (t) => {
   await t.notThrowsAsync(pluginController.list(fileter), 'list plugins');
 
   t.deepEqual(pluginRepository.stubs.find.args, [ [ fileter ] ]);
+});
+
+async function uploadPlugin(t: any, isError: boolean): Promise<void> {
+  const { pluginRepository, pluginController, pluginService } = initPluginController();
+  pluginRepository.stubs.find.resolves(mockPluginJson as any);
+  const mockTracer = createStubInstance<PluginTraceResp>(PluginTraceResp);
+  const installError = new Error('mock error');
+  mockTracer.stubs.traceId = 'mockTraceId';
+  if (isError) {
+    pluginService.stubs.installFromTarStream.rejects(installError);
+  } else {
+    pluginService.stubs.installFromTarStream.resolves(mockTracer);
+  }
+  const stubReq = { body: { pyIndex: 'mockIndex' }} as Request;
+  const stubResp = {} as Response;
+  const stubRealUpload = sinon.stub().callsFake((req: Request, resp: Response, cb: (err: Error | null) => void) => {
+    t.is(req, stubReq, 'req is not current');
+    t.is(resp, stubResp, 'resp is not current');
+    setTimeout(() => { isError ? cb(installError) : cb(null)}, 10);
+  });
+  const stubSigle = sinon.stub().callsFake((field: string) => {
+    t.is(field, 'file', 'field name should be \'file\'');
+    return stubRealUpload;
+  });
+  sinon.stub(utils, 'multer').callsFake((opts: Record<string, multer.StorageEngine>) => {
+    const storage = opts.storage;
+    process.nextTick(() => {
+      storage._handleFile(stubReq, {} as any, sinon.stub());
+      storage._removeFile(stubReq, {} as any, sinon.stub());
+    });
+    return {
+      single: stubSigle
+    };
+  });
+  if (isError) {
+    await t.throwsAsync(pluginController.uploadPackage(stubReq, stubResp), { instanceOf: Error, message: 'mock error'});
+  } else {
+    t.deepEqual(await pluginController.uploadPackage(stubReq, stubResp), mockTracer);
+  }
+}
+
+test.serial('upload plugin', async (t) => {
+  await uploadPlugin(t, false);
+});
+
+test.serial('upload plugin but error thrown', async (t) => {
+  await uploadPlugin(t, true);
 });

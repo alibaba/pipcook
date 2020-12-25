@@ -3,11 +3,15 @@ import {
   StubbedInstanceWithSinonAccessor,
   createStubInstance
 } from '@loopback/testlab';
+import { PipelineStatus } from '@pipcook/pipcook-core';
 import test from 'ava';
-import { JobController } from '../../../controllers';
-import { Job } from '../../../models';
+import { JobController, JobCreateParameters } from '../../../controllers';
+import { Job, JobParam, Pipeline } from '../../../models';
 import { JobRepository } from '../../../repositories';
-import { JobService, PipelineService, TraceService } from '../../../services';
+import { JobService, PipelineService, Tracer, TraceService } from '../../../services';
+import * as fs from 'fs-extra';
+import * as sinon from 'sinon';
+import { Response } from '@loopback/rest';
 
 function initJobController(): {
   jobService: StubbedInstanceWithSinonAccessor<JobService>,
@@ -30,13 +34,163 @@ function initJobController(): {
   };
 }
 
-test('find an existing job', async (t) => {
-  const { jobRepository, jobController } = initJobController();
-  const mockJob = new Job({ id: 'mockId' });
+const id = '123';
+const mockJobEntity = {
+  id,
+  status: PipelineStatus.SUCCESS
+};
+const mockJob = new Job(mockJobEntity);
+
+test('find a job by id', async (t) => {
+  const { jobController, jobRepository } = initJobController();
+
   jobRepository.stubs.findById.resolves(mockJob);
 
-  const details = await jobController.get('mockId');
+  const details = await jobController.get(id);
 
-  t.deepEqual(details, mockJob);
+  t.deepEqual(details.toJSON(), mockJobEntity);
   t.true(jobRepository.stubs.findById.calledOnce);
+});
+
+test('find a log by id', async (t) => {
+  const { jobController, jobRepository, jobService } = initJobController();
+  const mockJobEntity = { id };
+  const mockJob = new Job(mockJobEntity);
+
+  jobRepository.stubs.findById.resolves(mockJob);
+  jobService.stubs.getLogById.resolves([ id ]);
+
+  const details = await jobController.viewLog(id);
+
+  t.deepEqual(details, [ id ]);
+  t.true(jobRepository.stubs.findById.calledOnce);
+  t.true(jobService.stubs.getLogById.calledOnce);
+});
+
+test('stop a job by id', async (t) => {
+  const { jobController, jobRepository } = initJobController();
+  const params: JobParam[] = [];
+  const mockJobEntity = { id, params };
+  const mockJob = new Job(mockJobEntity);
+
+  jobRepository.stubs.findById.resolves(mockJob);
+
+  const details = await jobController.getParams(id);
+
+  t.deepEqual(details, params);
+  t.true(jobRepository.stubs.findById.calledOnce);
+});
+
+test('cancel a job by id', async (t) => {
+  const { jobController, jobService } = initJobController();
+
+  jobService.stubs.stopJob.resolves();
+
+  await jobController.stop(id);
+
+  t.true(jobService.stubs.stopJob.calledOnce);
+});
+
+test('delete a job by id', async (t) => {
+  const { jobController, jobService } = initJobController();
+
+  jobService.stubs.removeJobById.resolves();
+
+  await jobController.deleteById(id);
+
+  t.true(jobService.stubs.removeJobById.calledOnce);
+});
+
+test('delete all jobs', async (t) => {
+  const { jobRepository, jobController } = initJobController();
+
+  jobRepository.stubs.deleteAll.resolves();
+
+  await jobController.deleteAll();
+
+  t.true(jobRepository.stubs.deleteAll.calledOnce);
+});
+
+test('list all jobs', async (t) => {
+  const { jobRepository, jobController } = initJobController();
+
+  jobRepository.stubs.find.resolves([]);
+
+  const jobs = await jobController.list();
+
+  t.deepEqual(jobs, []);
+  t.true(jobRepository.stubs.find.calledOnce);
+});
+
+test('start a job', async (t) => {
+  const { jobController, pipelineService, jobService, traceService } = initJobController();
+
+  const param = new JobCreateParameters();
+  param.pipelineId = '1';
+  param.params = [];
+
+
+  const mockPipelineEntity = {
+    name: 'mock',
+    dataCollectId: '1',
+    dataCollect: 'dataCollect',
+    dataCollectParams: {},
+    dataAccessId: '2',
+    dataAccess: 'dataAccessId',
+    dataAccessParams: {},
+    dataProcessId: '3',
+    dataProcess: 'dataProcess',
+    dataProcessParams: {},
+    datasetProcessId: '4',
+    datasetProcess: 'datasetProcess',
+    datasetProcessParams: {},
+    modelDefineId: '5',
+    modelDefine: 'modelDefine',
+    modelDefineParams: {},
+    modelTrainId: '6',
+    modelTrain: 'modelTrain',
+    modelTrainParams: {},
+    modelEvaluateId: '7',
+    modelEvaluate: 'modelEvaluate',
+    modelEvaluateParams: {}
+  };
+  const mockPipeline = new Pipeline(mockPipelineEntity);
+
+  const tracer = new Tracer();
+
+  pipelineService.stubs.getPipelineByIdOrName.resolves(mockPipeline);
+  traceService.stubs.create.resolves(tracer);
+  jobService.stubs.createJob.resolves(mockJob);
+  jobService.stubs.runJob.resolves({});
+  traceService.stubs.destroy.resolves({});
+
+  const resp = await jobController.create(param);
+  const expected = {
+    ... mockJob,
+    traceId: tracer.id
+  };
+  t.deepEqual(resp, expected);
+  t.true(pipelineService.stubs.getPipelineByIdOrName.calledOnce);
+  t.true(traceService.stubs.create.calledOnce);
+  t.true(jobService.stubs.createJob.calledOnce);
+});
+
+test.serial('get output by id', async (t) => {
+  const { jobController, jobRepository, jobService } = initJobController();
+
+  const mockPath = `${__dirname}/mockPath`;
+
+  jobRepository.stubs.findById.resolves(mockJob);
+  jobService.stubs.getOutputTarByJobId.resolves(mockPath);
+  sinon.stub(fs, 'pathExists').resolves(true);
+
+  const response = {} as Response;
+  response.download = () => {
+    return Promise.resolve();
+  };
+
+  await jobController.download(id, response);
+
+  t.true(jobRepository.stubs.findById.called);
+  t.true(jobService.stubs.getOutputTarByJobId.called);
 });
