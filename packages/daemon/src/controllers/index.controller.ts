@@ -47,9 +47,11 @@ export class IndexController {
   })
   async config(): Promise<Record<string, unknown>> {
     let data = {};
-    if (await pathExists(constants.PIPCOOK_DAEMON_CONFIG)) {
-      data = await readJSON(constants.PIPCOOK_DAEMON_CONFIG);
+    try {
+      return await readJSON(constants.PIPCOOK_DAEMON_CONFIG);
+    } catch (err) {
+      console.warn('read config error', err.message);
+      return data;
     }
-    return data;
   }
 }

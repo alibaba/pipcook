@@ -1,19 +1,14 @@
 import { api, get, param } from '@loopback/rest';
 import { service } from '@loopback/core';
-import { JobService, TraceService } from '../services';
-import { BaseEventController } from './base';
+import { JobService } from '../services';
 
 @api({ basePath: '/api/log' })
-export class LogController extends BaseEventController {
+export class LogController {
 
   constructor(
     @service(JobService)
-    public jobService: JobService,
-    @service(TraceService)
-    public traceService: TraceService
-  ) {
-    super(traceService);
-  }
+    public jobService: JobService
+  ) { }
 
   /**
    * get log by id
@@ -35,7 +30,6 @@ export class LogController extends BaseEventController {
   async view(
     @param.path.string('id') id: string
   ): Promise<string[]> {
-    const data = await this.jobService.getLogById(id);
-    return data;
+    return await this.jobService.getLogById(id);
   }
 }

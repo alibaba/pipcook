@@ -17,7 +17,7 @@ import { PluginService, PluginTraceResp, TraceService } from '../services';
 import { PluginInstallPararmers } from './interface';
 import { BaseEventController } from './base';
 import { PluginPackage } from '@pipcook/costa';
-import * as multer from 'multer';
+import { multer } from '../utils';
 import Debug from 'debug';
 
 const debug = Debug('daemon.app.plugin');

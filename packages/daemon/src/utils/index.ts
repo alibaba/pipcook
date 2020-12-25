@@ -13,6 +13,8 @@ import {
 } from '@pipcook/pipcook-core';
 import { Pipeline } from '../models';
 
+export const multer = require('multer');
+
 export const pluginQueue = new Queue({ autostart: true, concurrency: 1 });
 
 export async function loadConfig(configPath: string | RunConfigI): Promise<RunConfigI> {
