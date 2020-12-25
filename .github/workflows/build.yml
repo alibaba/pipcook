@@ -85,7 +85,7 @@ jobs:
     - name: Migration
       if: ${{ runner.os == 'Linux' }}
       run: |
-        mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db
+        mkdir -p ~/.pipcook/db && cp ./packages/daemon/src/__tests__/__res__/baseline-v1.db ~/.pipcook/db/pipcook.db
     - name: Daemon start
       run: |
         ./packages/cli/dist/bin/pipcook daemon start
