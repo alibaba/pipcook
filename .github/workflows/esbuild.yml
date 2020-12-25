@@ -37,6 +37,7 @@ jobs:
         yarn
     - name: Building Pipcook
       run: |
+        yarn build
         yarn dev-build
         mkdir -p ~/.pipcook/db && yarn workspace @pipcook/daemon run migrate
     - name: Running unit tests

@@ -179,7 +179,7 @@ export class PipelineController {
       }
     }
   })
-  async getConfig(@param.path.string('id') id: string) {
+  async getConfig(@param.path.string('id') id: string): Promise<any> {
     const json = { plugins: {} } as any;
     const pipeline = await this.pipelineRepository.findById(id);
     constants.PLUGINS.forEach((name) => {
@@ -230,7 +230,7 @@ export class PipelineController {
   public async update(
     @param.path.string('id') id: string,
     @requestBody(pipelineUpdateSpec) params: PipelineUpdateParameters
-  ) {
+  ): Promise<void> {
     const { config } = params;
     const parsedConfig = await parseConfig(config, false);
     return this.pipelineRepository.updateById(id, parsedConfig);
