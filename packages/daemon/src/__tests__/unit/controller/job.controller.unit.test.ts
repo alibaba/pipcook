@@ -11,6 +11,7 @@ import { JobRepository } from '../../../repositories';
 import { JobService, PipelineService, Tracer, TraceService } from '../../../services';
 import * as fs from 'fs-extra';
 import * as sinon from 'sinon';
+import { Response } from '@loopback/rest';
 
 function initJobController(): {
   jobService: StubbedInstanceWithSinonAccessor<JobService>,

@@ -15,7 +15,7 @@ import {
   RestBindings
 } from '@loopback/rest';
 import { Job, JobParam, Pipeline } from '../models';
-import { constants, PipelineStatus, PluginParamI } from '@pipcook/pipcook-core';
+import { constants, PipelineStatus } from '@pipcook/pipcook-core';
 import { JobRepository } from '../repositories';
 import { inject, service } from '@loopback/core';
 import { JobService, PipelineService, TraceService } from '../services';
@@ -23,6 +23,7 @@ import { join } from 'path';
 import { ensureDir, ensureFile, pathExists } from 'fs-extra';
 import * as createError from 'http-errors';
 import { CreateJobResp, JobCreateParameters } from './interface';
+import { PluginParamI } from '../../../core/dist';
 
 @api({ basePath: '/api/job' })
 export class JobController {
@@ -59,7 +60,8 @@ export class JobController {
     });
 
     for (const pluginType of constants.PLUGINS) {
-      const defaultParam = pipeline[`${pluginType}Params` as PluginParamI];
+      const pluginParam = `${pluginType}Params` as PluginParamI;
+      const defaultParam = pipeline[pluginParam];
       const jobParam = jobParamsMap[pluginType] ? jobParamsMap[pluginType] : {};
 
       params.push({ pluginType, data: Object.assign(defaultParam, jobParam) });
