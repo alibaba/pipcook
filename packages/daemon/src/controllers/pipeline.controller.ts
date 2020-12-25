@@ -92,7 +92,10 @@ export class PipelineController {
     @requestBody(pipelineCreateSpec) params: PipelineCreateParameters
   ): Promise<CreatePipelineResp> {
     const { name, configUri, config } = params;
-    const parsedConfig = await parseConfig(configUri || config);
+    if (!(configUri || config)) {
+      throw new createError.BadRequest('must provide configUri or config');
+    }
+    const parsedConfig = await parseConfig(configUri || config || '');
     parsedConfig.name = name;
     // the plugin name could be git/web url, we need the real name, and create plugin object
     const createPlugin = async (field: PluginTypeI) => {
@@ -184,7 +187,7 @@ export class PipelineController {
         const params = pipeline[`${name}Params` as PluginTypeI];
         json.plugins[name] = {
           package: pipeline[name],
-          params: params != null ? JSON.parse(params) : undefined
+          params
         };
       }
     });
@@ -212,7 +215,6 @@ export class PipelineController {
       }
     });
     const plugins = await this.pluginService.findByIds(pluginIds);
-
     const result = new CreatePipelineResp(pipeline.toJSON());
     result.plugins = plugins;
     return result;

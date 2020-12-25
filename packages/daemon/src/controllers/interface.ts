@@ -26,13 +26,13 @@ export class PluginInstallPararmers {
 @input()
 export class PipelineCreateParameters {
 	@property()
-	name: string;
+	name?: string;
 
 	@property()
-	config: RunConfigI;
+	config?: RunConfigI;
 
 	@property()
-	configUri: string;
+	configUri?: string;
 }
 
 @input()
@@ -43,8 +43,7 @@ export class PipelineUpdateParameters {
 
 @input()
 export class PipelineInstallParameters {
-	@property({ required: true })
-	pyIndex: string;
+	pyIndex?: string;
 }
 
 @input()
