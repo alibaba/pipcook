@@ -1,11 +1,12 @@
 import test from 'ava';
 import * as core from '@pipcook/pipcook-core';
 import * as utils from '../../../utils';
-import * as sinon from 'sinon';
+import { sinon } from '@loopback/testlab';
 import * as fs from 'fs-extra';
 import { join } from 'path';
 import * as request from 'request-promise';
 import * as ChildProcess from 'child_process';
+import { mockFunctionFromGetter } from '../../__helpers__';
 
 const result: any = {
   // name: undefined,
@@ -23,7 +24,7 @@ const result: any = {
   // modelLoadParams: {},
   modelTrain: '@pipcook/plugins-bayesian-model-train',
   // modelTrainParams: {},
-  modelEvaluate: '@pipcook/plugins-bayesian-model-evaluate',
+  modelEvaluate: '@pipcook/plugins-bayesian-model-evaluate'
   // modelEvaluateParams: {}
 };
 
@@ -41,14 +42,14 @@ test.serial.afterEach(() => {
 });
 
 test.serial('should parse config from json and generate id', async (t) => {
-  const mockGenerateId = sinon.stub(core, 'generateId').returns('mockId');
+  const mockGenerateId = mockFunctionFromGetter(core, 'generateId').returns('mockId');
   const configJson = fs.readJSON(join(__dirname, '../../../../../../example/pipelines/text-bayes-classification.json'));
   t.deepEqual((await utils.parseConfig(configJson as any)).toJSON(), { id: 'mockId', ...result }, 'result check');
   t.true(mockGenerateId.calledOnce, 'generateId check');
 });
 
 test.serial('should parse config from local file and without id', async (t) => {
-  sinon.stub(core, 'generateId').returns('mockId');
+  mockFunctionFromGetter(core, 'generateId').returns('mockId');
   const filePath = `file://${join(__dirname, '../../../../../../example/pipelines/text-bayes-classification.json')}`;
   t.deepEqual((await utils.parseConfig(filePath)).toJSON(), { id: 'mockId', ...result }, 'result check');
 });
@@ -72,15 +73,15 @@ test('parse config from invalid path', async (t) => {
     await utils.parseConfig(filePath);
   } catch (err) {
     catched = true;
-    t.is(err.message, 'config URI is not supported')
+    t.is(err.message, 'config URI is not supported');
   }
-  t.true(catched, 'error check')
+  t.true(catched, 'error check');
 });
 
 test.serial('load config from http', async (t) => {
   const mockUrl = 'http://a.b.c';
   let called = false;
-  sinon.stub(request, 'get').callsFake((params) => {
+  sinon.stub(request, 'get').callsFake((params: string) => {
     t.is(params, mockUrl as any);
     called = true;
     return Promise.resolve(JSON.stringify(mockPipelineConfig)) as any;
@@ -92,9 +93,9 @@ test.serial('load config from http', async (t) => {
 
 test.serial('load config from http but absolute path found', async (t) => {
   const mockUrl = 'http://a.b.c';
-  let mockConfig = { ...mockPipelineConfig };
+  const mockConfig = { ...mockPipelineConfig };
   mockConfig.plugins.dataCollect.package = '/root/plugin';
-  const mockGet = sinon.stub(request, 'get').callsFake((params) => {
+  const mockGet = sinon.stub(request, 'get').callsFake((params: string) => {
     t.is(params, mockUrl as any);
     return Promise.resolve(JSON.stringify(mockConfig)) as any;
   });
@@ -107,9 +108,9 @@ test.serial('load config from http but absolute path found', async (t) => {
 
 test.serial('load config from http but relative path found', async (t) => {
   const mockUrl = 'http://a.b.c';
-  let mockConfig = { ...mockPipelineConfig };
+  const mockConfig = { ...mockPipelineConfig };
   mockConfig.plugins.dataCollect.package = './plugin';
-  const mockGet = sinon.stub(request, 'get').callsFake((params) => {
+  const mockGet = sinon.stub(request, 'get').callsFake((params: string) => {
     t.is(params, mockUrl as any);
     return Promise.resolve(JSON.stringify(mockConfig)) as any;
   });
@@ -170,37 +171,36 @@ test.serial('should copy the directory successfully', async (t) => {
   t.true(lstatStub.calledTwice, 'lstat should be called twice');
 });
 
-function testExecAsync(isError: boolean): (t: any) => Promise<void> {
-  return async (t: any) => {
-    const mockCmd = 'mock cmd';
-    const mockOption = {};
+async function testExecAsync(t: any, isError: boolean): Promise<void> {
+  const mockCmd = 'mock cmd';
+  const mockOption = {};
 
-    sinon.stub(ChildProcess, 'exec').callsFake(
-      (
-        command: string,
-        options: ChildProcess.ExecOptions | null | undefined,
-        callback?: (error: ChildProcess.ExecException | null, stdout: string, stderr: string) => void
-      ): ChildProcess.ChildProcess => {
-        t.is(command, mockCmd);
-        t.deepEqual(options, mockOption);
-        process.nextTick(() => {
-          if (callback) {
-            if (isError) {
-              callback(new Error('mock Error'), 'stdout', 'stderr');
-            } else {
-              callback(null, 'stdout', 'stderr');
-            }
+  sinon.stub(ChildProcess, 'exec').callsFake(
+    (
+      command: string,
+      options: ChildProcess.ExecOptions | null | undefined,
+      callback?: (error: ChildProcess.ExecException | null, stdout: string, stderr: string) => void
+    ): ChildProcess.ChildProcess => {
+      t.is(command, mockCmd);
+      t.deepEqual(options, mockOption);
+      process.nextTick(() => {
+        if (callback) {
+          if (isError) {
+            callback(new Error('mock Error'), 'stdout', 'stderr');
+          } else {
+            callback(null, 'stdout', 'stderr');
           }
-        })
-        return {} as any;
-      }
-    );
-    if (isError) {
-      await t.throwsAsync(utils.execAsync(mockCmd, mockOption), { instanceOf: Error, message: 'mock Error' });
-    } else {
-      await t.notThrowsAsync(utils.execAsync(mockCmd, mockOption));
+        }
+      });
+      return {} as any;
     }
+  );
+  if (isError) {
+    await t.throwsAsync(utils.execAsync(mockCmd, mockOption), { instanceOf: Error, message: 'mock Error' }, 'should throw error');
+  } else {
+    await t.notThrowsAsync(utils.execAsync(mockCmd, mockOption), 'should exec successfully');
   }
 }
-test.serial('exec command async', testExecAsync(true));
-test.serial('exec command async but error thrown', testExecAsync(false));
+
+test.serial('exec command async', (t) => testExecAsync(t, false));
+test.serial('exec command async but error thrown', (t) => testExecAsync(t, true));

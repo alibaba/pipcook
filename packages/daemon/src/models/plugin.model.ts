@@ -66,9 +66,8 @@ export class Plugin extends Base {
     super(data);
   }
 }
-
+// TODO(feely): complete the relation
 export interface PluginRelations {
-  // describe navigational properties here
+  __ignore: number;
 }
-
 export type PluginWithRelations = Plugin & PluginRelations;

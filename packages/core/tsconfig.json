@@ -1,9 +1,29 @@
 {
-  "extends": "../../tsconfig.json",
+  "$schema": "http://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
+    "outDir": "dist",
+    "rootDir": "src",
+    "experimentalDecorators": true,
+    "esModuleInterop": false,
+    
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+
+    "incremental": true,
+
+    "lib": ["es2018", "esnext.asynciterable"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2017",
+    "sourceMap": true,
+    "declaration": true
   },
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules",
     "dist"

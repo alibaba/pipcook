@@ -8,7 +8,10 @@ interface InsertParams {
   dataDir: string;
 }
 
-export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'datasetProcess' | 'modelLoad' | 'modelDefine' | 'modelTrain' | 'modelEvaluate';
+export type PluginTypeI = 'dataCollect' | 'dataAccess' | 'dataProcess' | 'datasetProcess' | 'modelDefine' | 'modelTrain' | 'modelEvaluate';
+
+export type PluginParamI = `${PluginTypeI}Params`;
+export type PluginIdI = `${PluginTypeI}Id`;
 
 /**
  * The plugin installation protocol

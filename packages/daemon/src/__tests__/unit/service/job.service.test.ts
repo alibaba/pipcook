@@ -13,13 +13,15 @@ import * as path from 'path';
 import { JobService, PluginService } from '../../../services';
 import { Tracer } from '../../../services';
 import { Job, Pipeline } from '../../../models';
+// import * as JobRunner from '../../../job-runner';
+import { mockFunctionFromGetter } from '../../__helpers__';
 
 function initJobService(): {
   pluginRepository: StubbedInstanceWithSinonAccessor<PluginRepository>,
   pluginService: StubbedInstanceWithSinonAccessor<PluginService>,
   jobRepository: StubbedInstanceWithSinonAccessor<JobRepository>,
   jobService: JobService
-} {
+  } {
   const pluginRepository = createStubInstance<PluginRepository>(PluginRepository);
   const pluginService = createStubInstance<PluginService>(PluginService);
   const jobRepository = createStubInstance<JobRepository>(JobRepository);
@@ -29,26 +31,26 @@ function initJobService(): {
     pluginService,
     jobRepository,
     jobService
-  }
+  };
 }
 
 // test the job service
 test.serial.afterEach(() => {
   sinon.restore();
-})
+});
 test.serial('create job', async (t) => {
   const { jobRepository, jobService } = initJobService();
   const mockObj = { id: 'mockId' };
   const mockReadJSON = sinon.stub(fs, 'readJSON').resolves({ version: '1.1.0' });
   jobRepository.stubs.create.resolves(mockObj as any);
   t.deepEqual(await jobService.createJob('mockId'), mockObj);
-  t.deepEqual(jobRepository.stubs.create.args, [[{
+  t.deepEqual(jobRepository.stubs.create.args, [ [ {
     pipelineId: 'mockId',
     specVersion: '1.1.0',
     status: core.PipelineStatus.INIT,
     params: [],
     currentIndex: -1
-  }]]);
+  } ] ]);
   t.true(mockReadJSON.calledOnce);
 });
 
@@ -61,8 +63,6 @@ test.serial('remove job by id', async (t) => {
   t.true(mockGetJobById.calledOnceWithExactly('mockJobId'), 'check mockGetJobById');
   t.true(mockRemoveJobById.calledOnceWithExactly('mockJobId'), 'check mockRemoveJobById');
   console.log(`${core.constants.PIPCOOK_RUN}/mockJobId`);
-  // ts error for prarameter check: Expected 2 arguments, but got 1.ts(2554)
-  // @ts-ignore
   t.true(mockFsRemove.calledOnceWith(`${core.constants.PIPCOOK_RUN}/mockJobId`), 'check mockFsRemove');
 });
 test.serial('remove job but id not found', async (t) => {
@@ -83,7 +83,7 @@ test.serial('remove job by models', async (t) => {
     }
   ];
   const mockFsRemove = sinon.stub(fs, 'remove').resolves(true);
-  jobRepository.stubs.deleteAll.resolves({ count : 2});
+  jobRepository.stubs.deleteAll.resolves({ count : 2 });
   t.is(await jobService.removeJobByEntities(mockJobs as Job[]), 2, 'check result');
   t.true(jobRepository.stubs.deleteAll.calledOnceWithExactly({
     id: {
@@ -95,18 +95,21 @@ test.serial('remove job by models', async (t) => {
 
 test.serial('generate output', async (t) => {
   const { jobService } = initJobService();
-  // @ts-ignore
-  sinon.replace(ChileProcess, 'exec', (cmd, opts, cb) => {
-    t.is(cmd, 'npm init -y', 'exec command check');
-    t.deepEqual(opts, { cwd: '/home/output' }, 'exec option check');
-    cb();
-  });
+  ChileProcess.exec;
+  sinon.replace(ChileProcess, 'exec',
+    (cmd: string, opts: any, cb?: (error: ChileProcess.ExecException | null, stdout: string, stderr: string) => void) => {
+      t.is(cmd, 'npm init -y', 'exec command check');
+      t.deepEqual(opts, { cwd: '/home/output' }, 'exec option check');
+      if (cb) {
+        cb(null, '', '');
+      }
+    });
   const mockFsRemove = sinon.stub(fs, 'remove').resolves(true);
   const mockFsEnsureDir = sinon.stub(fs, 'ensureDir').resolves(true);
   const mockFsReadJson = sinon.stub(fs, 'readJSON').resolves({});
   const mockFsCopy = sinon.stub(fs, 'copy').resolves(true);
   const mockFsOutputJson = sinon.stub(fs, 'outputJSON').resolves({ });
-  const mockFsCompressTarFile = sinon.stub(core, 'compressTarFile').resolves();
+  const mockFsCompressTarFile = mockFunctionFromGetter(core, 'compressTarFile').resolves();
 
   await jobService.generateOutput({ id: 'mockId' } as Job, {
     modelPath: 'mockPath',
@@ -115,13 +118,12 @@ test.serial('generate output', async (t) => {
       dataProcess: {
         version: 'mockVersion',
         name: 'dataProcess'
-      } as PluginPackage,
+      } as PluginPackage
     },
     pipeline: {} as Pipeline,
     workingDir: '/home',
     template: 'mock template'
   });
-  // @ts-ignore
   t.true(mockFsRemove.calledOnceWith('/home/output'), 'check mockFsRemove');
   t.true(mockFsEnsureDir.calledOnceWith('/home/output'), 'check mockFsEnsureDir');
   t.true(mockFsReadJson.called, 'check mockFsReadJson');
@@ -167,7 +169,7 @@ test.serial('should run job', async (t) => {
   futures.push(jobService.runJob(
     { id: 'mockId' } as Job,
     { id: 'mockPipelineId' } as Pipeline,
-    { dataAccess: { plugin: {} as PluginPackage, params: {} }},
+    { dataAccess: { plugin: {} as PluginPackage, params: {} } },
     {
       // if assert failed, it will make test timeout, because it's event listener
       dispatch: (event) => {
@@ -198,7 +200,7 @@ test.serial('should run job', async (t) => {
   futures.push(jobService.runJob(
     { id: 'mockId' } as Job,
     { id: 'mockPipelineId' } as Pipeline,
-    { dataAccess: { plugin: {} as PluginPackage, params: {} }},
+    { dataAccess: { plugin: {} as PluginPackage, params: {} } },
     {
       // if assert failed, it will make test timeout, because it's event listener
       dispatch: (event) => {
@@ -245,7 +247,7 @@ test.serial('run job with error', async (t) => {
   await t.throwsAsync(jobService.runJob(
     { id: 'mockId' } as Job,
     { id: 'mockPipelineId' } as Pipeline,
-    { dataAccess: { plugin: {} as PluginPackage, params: {} }},
+    { dataAccess: { plugin: {} as PluginPackage, params: {} } },
     {
       getLogger: () => {
         return {};
@@ -260,8 +262,10 @@ test('should stop job', async (t) => {
   const { jobService, jobRepository } = initJobService();
   const mockGetJobById = jobRepository.stubs.findById.resolves({ id: 'mockId', status: 1 /* running */ } as any);
   const mockUpdateById = jobRepository.stubs.updateById.resolves();
-  sinon.replace(jobService, 'runnableMap', { mockId: { destroy: async () => {} } } as any);
+  sinon.replace(jobService, 'runnableMap', { mockId: { destroy: sinon.stub() } } as any);
+
   await jobService.stopJob('mockId');
+
   t.true(mockUpdateById.calledOnceWith('mockId', { id: 'mockId', status: 4 /* canceled */ } as Job), 'mockSaveJob check');
   t.true(mockGetJobById.calledOnceWith('mockId'), 'mockGetJobById check');
 });
@@ -281,3 +285,18 @@ test('should stop job without runnable', async (t) => {
   t.true(mockUpdateById.calledOnceWith('mockId', { id: 'mockId', status: 4 /* canceled */ } as Job), 'mockSaveJob check');
   t.true(mockFindById.calledOnceWith('mockId'), 'mockFindById check');
 });
+
+// test('start job and finish', async (t) => {
+//   const { jobService, jobRepository } = initJobService();
+//   jobRepository.stubs.updateById.resolves();
+//   const SpyJobRunner = sinon.stub(JobRunner, 'JobRunner');
+//   // jobService.startJob();
+//   t.pass();
+// });
+
+// test('start job but error thrown', async (t) => {
+//   const { jobService, jobRepository } = initJobService();
+//   jobRepository.stubs.updateById.resolves();
+//   // jobService.startJob();
+//   t.pass();
+// });

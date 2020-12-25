@@ -108,10 +108,14 @@ export async function download(url: string, fileName: string): Promise<void> {
  * @param resUrl the resource url, support http://, https://, file:///.
  */
 export async function downloadAndExtractTo(resUrl: string): Promise<string> {
-  const filename = resUrl.split(path.sep)[resUrl.split(path.sep).length - 1];
+  const { protocol, pathname } = url.parse(resUrl);
+  if (!protocol || !pathname) {
+    throw new TypeError('invalid url');
+  }
+  const filename = path.basename(pathname);
+  console.log(filename);
   const extname = path.extname(filename);
 
-  const { protocol, pathname } = url.parse(resUrl);
   const destPath = path.join(PIPCOOK_TMPDIR, generateId());
   const pkgName = path.join(destPath, filename);
 

@@ -7,7 +7,7 @@ process.on('unhandledRejection', (e) => {
   throw e;
 });
 
-let spec: string[] = undefined;
+let spec = undefined;
 const indexSpec = process.argv.indexOf('--spec');
 if (indexSpec !== -1 && process.argv[indexSpec + 1]) {
   spec = [ process.argv[indexSpec + 1] ];

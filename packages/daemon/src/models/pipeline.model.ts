@@ -23,7 +23,7 @@ export class Pipeline extends Base {
     type: 'object',
     default: {}
   })
-  dataCollectParams?: object;
+  dataCollectParams?: Record<string, unknown>;
 
   @property({
     type: 'string'
@@ -40,7 +40,7 @@ export class Pipeline extends Base {
     type: 'object',
     default: {}
   })
-  dataAccessParams?: object;
+  dataAccessParams?: Record<string, unknown>;
 
   @property({
     type: 'string'
@@ -48,8 +48,7 @@ export class Pipeline extends Base {
   dataProcessId?: string;
 
   @property({
-    type: 'string',
-    required: true
+    type: 'string'
   })
   dataProcess: string;
 
@@ -57,7 +56,7 @@ export class Pipeline extends Base {
     type: 'object',
     default: {}
   })
-  dataProcessParams?: object;
+  dataProcessParams?: Record<string, unknown>;
 
   @property({
     type: 'string'
@@ -65,16 +64,15 @@ export class Pipeline extends Base {
   datasetProcessId?: string;
 
   @property({
-    type: 'string',
-    required: true
+    type: 'string'
   })
-  datasetProcess: string;
+  datasetProcess?: string;
 
   @property({
     type: 'object',
     default: {}
   })
-  datasetProcessParams?: object;
+  datasetProcessParams?: Record<string, unknown>;
 
   @property({
     type: 'string'
@@ -82,8 +80,7 @@ export class Pipeline extends Base {
   modelDefineId?: string;
 
   @property({
-    type: 'string',
-    required: true
+    type: 'string'
   })
   modelDefine: string;
 
@@ -91,7 +88,7 @@ export class Pipeline extends Base {
     type: 'object',
     default: {}
   })
-  modelDefineParams?: object;
+  modelDefineParams?: Record<string, unknown>;
 
   @property({
     type: 'string'
@@ -106,9 +103,9 @@ export class Pipeline extends Base {
 
   @property({
     type: 'object',
-    default: {},
+    default: {}
   })
-  modelTrainParams?: object;
+  modelTrainParams?: Record<string, unknown>;
 
   @property({
     type: 'string'
@@ -117,23 +114,23 @@ export class Pipeline extends Base {
 
   @property({
     type: 'string',
-    required: true,
+    required: true
   })
   modelEvaluate: string;
 
   @property({
     type: 'object',
-    default: {},
+    default: {}
   })
-  modelEvaluateParams?: object;
+  modelEvaluateParams?: Record<string, unknown>;
 
   constructor(data?: Partial<Pipeline>) {
     super(data);
   }
 }
 
+// TODO(feely): complete the relation
 export interface PipelineRelations {
-  // describe navigational properties here
+  __ignore: number;
 }
-
 export type PipelineWithRelations = Pipeline & PipelineRelations;

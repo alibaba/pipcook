@@ -5,6 +5,7 @@ import { spawnSync } from 'child_process';
 import * as fs from 'fs-extra';
 import { tunaMirrorURI } from '../config';
 import { logger, initClient, traceLogger, readPkgFromTgz } from '../utils/common';
+import { CommonOptions, PluginInstallOptions, ListPluginOptions } from '../types/options';
 
 /**
  * trace install event
@@ -12,7 +13,7 @@ import { logger, initClient, traceLogger, readPkgFromTgz } from '../utils/common
  * @param traceObj trace object
  * @param opts opts from args
  */
-async function traceInstallEvent(traceObj: TraceResp<PluginResp>, opts: any): Promise<PluginResp> {
+async function traceInstallEvent(traceObj: TraceResp<PluginResp>, opts: CommonOptions): Promise<PluginResp> {
   const client = initClient(opts.hostIp, opts.port);
   if (traceObj.status === PluginStatus.INSTALLED) {
     return traceObj as PluginResp;
@@ -38,7 +39,7 @@ async function traceInstallEvent(traceObj: TraceResp<PluginResp>, opts: any): Pr
  * @param localPath package local path
  * @param opts opts from args
  */
-export async function installFromLocal(localPath: string, opts: any): Promise<PluginResp> {
+export async function installFromLocal(localPath: string, opts: PluginInstallOptions): Promise<PluginResp> {
   const client = initClient(opts.hostIp, opts.port);
   let tarball: string;
   let pkg: any;
@@ -85,7 +86,7 @@ export async function installFromLocal(localPath: string, opts: any): Promise<Pl
   }
 }
 
-export async function installFromRemote(uriOrName: string, opts: any): Promise<PluginResp> {
+export async function installFromRemote(uriOrName: string, opts: PluginInstallOptions): Promise<PluginResp> {
   const client = initClient(opts.hostIp, opts.port);
   logger.start(`fetching package info ${uriOrName}`);
   const resp = await client.plugin.createByName(uriOrName, opts.tuna ? tunaMirrorURI : undefined);
@@ -104,7 +105,7 @@ export async function installFromRemote(uriOrName: string, opts: any): Promise<P
   return plugin;
 }
 
-export async function install(name: string, opts: any): Promise<PluginResp> {
+export async function install(name: string, opts: PluginInstallOptions): Promise<PluginResp> {
   logger.start(`installing plugin ${name}`);
   if (name[0] === '.') {
     name = path.join(process.cwd(), name);
@@ -122,7 +123,7 @@ export async function install(name: string, opts: any): Promise<PluginResp> {
   }
 }
 
-export async function uninstall(name: string, opts: any): Promise<void> {
+export async function uninstall(name: string, opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   logger.start(`uninstalling ${name}`);
   const plugins = await client.plugin.list({ name });
@@ -138,7 +139,7 @@ export async function uninstall(name: string, opts: any): Promise<void> {
   }
 }
 
-export async function list(opts: any): Promise<void> {
+export async function list(opts: ListPluginOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   const plugins = await client.plugin.list(opts);
   if (plugins.length === 0) {
@@ -150,7 +151,7 @@ export async function list(opts: any): Promise<void> {
   }
 }
 
-export async function info(id: string, opts: any): Promise<void> {
+export async function info(id: string, opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   try {
     const plugin = await client.plugin.get(id);

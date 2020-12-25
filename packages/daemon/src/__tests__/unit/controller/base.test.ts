@@ -10,9 +10,9 @@ import * as utils from '../../../utils';
 
 test.serial.afterEach(() => {
   sinon.restore();
-})
+});
 
-test.serial('trace event', async t => {
+test.serial('trace event', async (t) => {
   // mock Response
   class MyResponse extends Writable {
     status = sinon.stub();
@@ -23,7 +23,7 @@ test.serial('trace event', async t => {
       this.status.returns(this);
       this.send.returns(undefined);
     }
-    _write(chunk: any, encoding: string, cb: Function) {
+    _write(chunk: any, encoding: string, cb: () => void) {
       cb();
     }
   }
@@ -35,7 +35,7 @@ test.serial('trace event', async t => {
       setNoDelay: sinon.stub(),
       setTimeout: sinon.stub()
     }
-  }
+  };
 
   const traceService = createStubInstance<TraceService>(TraceService);
   const baseEventController = new BaseEventController(traceService);
@@ -44,30 +44,29 @@ test.serial('trace event', async t => {
     request
   } as any;
 
-  const mockPipelinePromisify = sinon.stub(utils, 'pipelinePromisify').callsFake(
-    (stream1: NodeJS.ReadableStream, stream2: NodeJS.WritableStream): Promise<void> => {
-      return new Promise<void>((resolve) => {
-        process.nextTick(resolve);
-      });
-    }
+  const mockPipelinePromisify = sinon.stub(utils, 'pipelinePromisify').callsFake((): Promise<void> => {
+    return new Promise<void>((resolve) => {
+      process.nextTick(resolve);
+    });
+  }
   );
   const tracer = createStubInstance<Tracer>(Tracer);
   tracer.stubs.listen.callsFake((cb: (data: PipcookEvent) => void) => {
     process.nextTick(() => {
-      cb({ type: 'log', data: { data: 'mock message',  level: 'info' } } as any);
+      cb({ type: 'log', data: { data: 'mock message', level: 'info' } } as any);
     });
   });
   tracer.stubs.wait.callsFake(() => {
     return new Promise((resolve) => {
       process.nextTick(resolve);
-    })
+    });
   });
   traceService.stubs.get.returns(tracer);
   await t.notThrowsAsync(baseEventController.event('traceId'), 'event trace check');
   t.true(mockPipelinePromisify.calledOnce, 'pipelinePromisify should be called once');
 });
 
-test('trace an nonexistent tracer', async t => {
+test('trace an nonexistent tracer', async (t) => {
   const traceService = createStubInstance<TraceService>(TraceService);
   const baseEventController = new BaseEventController(traceService);
   const response = {

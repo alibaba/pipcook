@@ -1,13 +1,30 @@
 {
   "$schema": "http://json.schemastore.org/tsconfig",
-  "extends": "@loopback/build/config/tsconfig.common.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
+
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "esModuleInterop": false
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+
+    "incremental": true,
+
+    "lib": ["es2018", "esnext.asynciterable"],
+    "module": "commonjs",
+    "esModuleInterop": false,
+    "moduleResolution": "node",
+    "target": "es2017",
+    "sourceMap": true,
+    "declaration": true
   },
-  "include": [
-    "src"
+  "include": ["src"],
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/*.d.ts"
   ]
 }

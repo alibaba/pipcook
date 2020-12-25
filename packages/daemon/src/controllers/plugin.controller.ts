@@ -23,11 +23,11 @@ import Debug from 'debug';
 const debug = Debug('daemon.app.plugin');
 
 export const pluginInstallSpec = {
-	content: {
-	  'application/json': {
-		schema: getModelSchemaRef(PluginInstallPararmers)
-	  }
-	}
+  content: {
+    'application/json': {
+      schema: getModelSchemaRef(PluginInstallPararmers)
+    }
+  }
 };
 
 @api({ basePath: '/api/plugin' })
@@ -97,7 +97,7 @@ export class PluginController extends BaseEventController {
   @del('/{id}', {
     responses: {
       '204': {
-        description: 'Plugin DELETE success',
+        description: 'Plugin DELETE success'
       }
     }
   })
@@ -112,9 +112,9 @@ export class PluginController extends BaseEventController {
   @del('/', {
     responses: {
       '204': {
-        description: 'All plugins DELETE success',
-      },
-    },
+        description: 'All plugins DELETE success'
+      }
+    }
   })
   public async removeAll(): Promise<void> {
     const plugins = await this.pluginRepository.find();
@@ -160,7 +160,7 @@ export class PluginController extends BaseEventController {
         description: 'Plugin model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Plugin, { includeRelations: true }),
+            schema: getModelSchemaRef(Plugin, { includeRelations: true })
           }
         }
       }
@@ -178,7 +178,7 @@ export class PluginController extends BaseEventController {
   @get('/{id}/metadata')
   public async getMetadataById(
     @param.path.string('id') id: string
-  ) {
+  ): Promise<PluginPackage> {
     const plugin = await this.pluginRepository.findById(id);
     return this.pluginService.fetch(`${plugin.name}@${plugin.version}`);
   }
@@ -194,7 +194,7 @@ export class PluginController extends BaseEventController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(Plugin, { includeRelations: true }),
+              items: getModelSchemaRef(Plugin, { includeRelations: true })
             }
           }
         }
@@ -206,7 +206,7 @@ export class PluginController extends BaseEventController {
   ): Promise<Plugin[]> {
     return this.pluginRepository.find(filter);
   }
-  
+
   /**
    * create a plugin by tarball stream
    */
@@ -244,7 +244,7 @@ export class PluginController extends BaseEventController {
         }
       }
     })
-    request: Request,
+      request: Request,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<PluginTraceResp> {
     let traceResp: PluginTraceResp;
@@ -256,7 +256,7 @@ export class PluginController extends BaseEventController {
           callback: (error?: Error | null, info?: Partial<Express.Multer.File>) => void
         ): void => {
           this.pluginService.installFromTarStream(file.stream, req.body.pyIndex, false).then(
-            traceObj => {
+            (traceObj) => {
               traceResp = traceObj;
               callback(null, file);
             },

@@ -9,25 +9,35 @@ import { Plugin, Pipeline } from '../models';
 
 @model()
 export class PluginTraceResp extends Plugin {
-	@property({ type: 'string' })
-	public traceId: string;
+  @property({ type: 'string' })
+  public traceId: string;
 
-	constructor(data?: Partial<PluginTraceResp>) {
-		super(data);
-	}
+  constructor(data?: Partial<PluginTraceResp>) {
+    super(data);
+  }
+}
+
+@model()
+export class PipelineTraceResp extends Pipeline {
+  @property({ type: 'string' })
+  public traceId: string;
+
+  constructor(data?: Partial<PipelineTraceResp>) {
+    super(data);
+  }
 }
 
 export interface GenerateOptions {
-	pipeline: Pipeline;
-	plugins: {
-	  modelDefine: PluginPackage;
-	  dataProcess?: PluginPackage;
-	  datasetProcess?: PluginPackage;
-	};
-	modelPath: string;
-	workingDir: string;
-	template: string;
-}  
+  pipeline: Pipeline;
+  plugins: {
+    modelDefine: PluginPackage;
+    dataProcess?: PluginPackage;
+    datasetProcess?: PluginPackage;
+  };
+  modelPath: string;
+  workingDir: string;
+  template: string;
+}
 
 
 export type TraceType = 'log' | 'job_status';
@@ -36,7 +46,7 @@ export type TraceType = 'log' | 'job_status';
  * base pipcook event, defined the fields `type` and `data`
  */
 export class TraceEvent {
-  data?: object;
+  data?: Record<string, unknown>;
   constructor(public type: TraceType) { }
 }
 
@@ -72,6 +82,102 @@ export class LogEvent extends TraceEvent {
 }
 
 export type PipcookEvent = JobStatusChangeEvent | LogEvent;
+
+export interface TraceOptions {
+  stdoutFile?: string;
+  stderrFile?: string;
+}
+
+export class LogPassthrough extends Transform {
+  decoder = new StringDecoder('utf8');
+  last: string | undefined;
+  fileStream: WriteStream;
+
+  constructor(filename?: string) {
+    super({ objectMode: true });
+    if (filename) {
+      this.fileStream = createWriteStream(filename, { flags: 'w+' });
+      this.fileStream.on('error', (err) => {
+        console.error(`log [${filename}] write error: ${err.message}`);
+      });
+    }
+  }
+
+  _transform(chunk: any, encoding: string, callback: TransformCallback): void {
+    if (this.last === undefined) {
+      this.last = '';
+    }
+    this.last += this.decoder.write(chunk);
+    const list = this.last.split(/\n|\r/);
+    this.last = list.pop();
+    list.forEach((line) => {
+      this.push(line);
+    });
+    callback();
+  }
+
+  _flush(callback: TransformCallback): void {
+    this.last = this.last ? this.last + this.decoder.end() : this.decoder.end();
+    if (this.last) {
+      this.push(this.last);
+    }
+    callback();
+  }
+
+  /**
+   * cover Transform.write, otherwise if no `data` event listener,
+   * the callback `_transform` will not be called, but we need to save the log to file.
+   * @param chunk data to write
+   * @param cb callback when done
+   */
+  write(chunk: any, cb?: (error: Error | null | undefined) => void): boolean;
+  /**
+   * cover Transform.write, otherwise if no `data` event listener,
+   * the callback `_transform` will not be called, but we need to save the log to file.
+   * @param chunk data to write
+   * @param encoding data encoding
+   * @param cb callback when done
+   */
+  write(chunk: any, encoding?: string, cb?: (error: Error | null | undefined) => void): boolean;
+  write(chunk: any, ...args: any[]): boolean {
+    if (this.fileStream && this.fileStream.writable) {
+      this.fileStream.write(chunk);
+    }
+    return super.write(chunk, args[0], args[1]);
+  }
+
+  writeLine(line: string): void {
+    this.write(`${line}\n`);
+  }
+
+  /**
+   * end and destroy the stream.
+   */
+  async finish(err?: Error): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.end();
+      // make sure someone handles the error, otherwise the process will exit
+      if (err && this.listeners('error').length > 0) {
+        this.destroy(err);
+      } else {
+        if (err) {
+          console.error(`unhandled error from log: ${err.message}`);
+        }
+        this.destroy();
+      }
+      if (this.fileStream) {
+        this.fileStream.on('close', () => {
+          this.fileStream.close();
+          resolve();
+        });
+        this.fileStream.end();
+      } else {
+        resolve();
+      }
+    });
+  }
+}
+
 /**
  * trace handler
  * it has 2 parts: logger and event handler:
@@ -116,11 +222,11 @@ export class Tracer {
 
     // log callback
     const pipeLog = (level: LogLevel, logger: LogPassthrough) => {
-      logger.on('data', data => {
+      logger.on('data', (data) => {
         cb(new LogEvent(level, data));
       });
       logger.on('close', () => this.dispatcher.emit('trace-finished'));
-      logger.on('error', err => {
+      logger.on('error', (err) => {
         cb(new LogEvent('error', err.message));
       });
     };
@@ -132,14 +238,14 @@ export class Tracer {
    * dispatch event to client
    * @param event pipcook event data
    */
-  dispatch(event: PipcookEvent) {
+  dispatch(event: PipcookEvent): void {
     this.dispatcher.emit('trace-event', event);
   }
 
   /**
    * wait for end
    */
-  async wait() {
+  async wait(): Promise<void> {
     return new Promise((resolve) => {
       this.dispatcher.on('trace-finished', resolve);
     });
@@ -149,106 +255,11 @@ export class Tracer {
    * destory tracer
    * @param err error if have
    */
-  async destroy(err?: Error) {
+  async destroy(err?: Error): Promise<[void, void]> {
     // TODO(feely): emit the error by tracer not logger
     return Promise.all([
       this.stderr.finish(err),
       this.stdout.finish()
     ]);
-  }
-}
-
-export interface TraceOptions {
-  stdoutFile?: string;
-  stderrFile?: string;
-}
-
-export class LogPassthrough extends Transform {
-  decoder = new StringDecoder('utf8');
-  last: string | undefined;
-  fileStream: WriteStream;
-
-  constructor(filename?: string) {
-    super({ objectMode: true });
-    if (filename) {
-      this.fileStream = createWriteStream(filename, { flags: 'w+' });
-      this.fileStream.on('error', (err) => {
-        console.error(`log [${filename}] write error: ${err.message}`);
-      });
-    }
-  }
-
-  _transform(chunk: any, encoding: string, callback: TransformCallback): void {
-    if (this.last === undefined) {
-      this.last = '';
-    }
-    this.last += this.decoder.write(chunk);
-    const list = this.last.split(/\n|\r/);
-    this.last = list.pop();
-    list.forEach(line => {
-      this.push(line);
-    });
-    callback();
-  }
-
-  _flush(callback: TransformCallback) {
-    this.last = this.last ? this.last + this.decoder.end() : this.decoder.end();
-    if (this.last) {
-      this.push(this.last);
-    }
-    callback();
-  }
-
-  /**
-   * cover Transform.write, otherwise if no `data` event listener,
-   * the callback `_transform` will not be called, but we need to save the log to file.
-   * @param chunk data to write
-   * @param cb callback when done
-   */
-  write(chunk: any, cb?: (error: Error | null | undefined) => void): boolean;
-  /**
-   * cover Transform.write, otherwise if no `data` event listener,
-   * the callback `_transform` will not be called, but we need to save the log to file.
-   * @param chunk data to write
-   * @param encoding data encoding
-   * @param cb callback when done
-   */
-  write(chunk: any, encoding?: string, cb?: (error: Error | null | undefined) => void): boolean;
-  write(chunk: any, ...args: any[]): boolean {
-    if (this.fileStream && this.fileStream.writable) {
-      this.fileStream.write(chunk);
-    }
-    return super.write(chunk, args[0], args[1]);
-  }
-
-  writeLine(line: string) {
-    this.write(`${line}\n`);
-  }
-
-  /**
-   * end and destroy the stream.
-   */
-  async finish(err?: Error) {
-    return new Promise<void>((resolve) => {
-      this.end();
-      // make sure someone handles the error, otherwise the process will exit
-      if (err && this.listeners('error').length > 0) {
-        this.destroy(err);
-      } else {
-        if (err) {
-          console.error(`unhandled error from log: ${err.message}`);
-        }
-        this.destroy();
-      }
-      if (this.fileStream) {
-        this.fileStream.on('close', () => {
-          this.fileStream.close();
-          resolve();
-        });
-        this.fileStream.end();
-      } else {
-        resolve();
-      }
-    });
   }
 }

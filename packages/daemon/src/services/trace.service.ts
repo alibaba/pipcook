@@ -31,13 +31,14 @@ export class TraceService {
    * @param id trace id
    * @param err error if have
    */
-  async destroy(id: string, err?: Error) {
+  async destroy(id: string, err?: Error): Promise<[ void, void ]> {
     const tracer = this.tracerMap.get(id);
     if (tracer) {
       this.tracerMap.delete(id);
       return tracer.destroy(err);
     } else {
       debug(`tracer ${id} not found for destroy`);
+      return Promise.resolve<[ void, void ]>([ undefined, undefined ]);
     }
   }
 }

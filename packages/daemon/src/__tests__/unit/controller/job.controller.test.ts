@@ -15,7 +15,7 @@ function initJobController(): {
   pipelineService: StubbedInstanceWithSinonAccessor<PipelineService>,
   jobRepository: StubbedInstanceWithSinonAccessor<JobRepository>,
   jobController: JobController
-} {
+  } {
   const jobRepository = createStubInstance<JobRepository>(JobRepository);
   const jobService = createStubInstance<JobService>(JobService);
   const traceService = createStubInstance<TraceService>(TraceService);
@@ -27,10 +27,10 @@ function initJobController(): {
     pipelineService,
     jobRepository,
     jobController
-  }
+  };
 }
 
-test('find an existing job', async t => {
+test('find an existing job', async (t) => {
   const { jobRepository, jobController } = initJobController();
   const mockJob = new Job({ id: 'mockId' });
   jobRepository.stubs.findById.resolves(mockJob);

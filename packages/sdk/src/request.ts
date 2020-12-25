@@ -1,5 +1,5 @@
 import * as qs from 'querystring';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as EventSource from 'eventsource';
 import { promisify } from 'util';
 import { ReadStream } from 'fs-extra';
@@ -15,7 +15,9 @@ export interface StreamResp {
 
 axios.defaults.timeout = 60000;
 
-function createGeneralRequest(agent: Function): Function {
+function createGeneralRequest(
+  agent: (...args: any[]) => AxiosPromise<any>
+): (...args: any[]) => Promise<any> {
   return async (...args: any[]) => {
     try {
       const response = await agent(...args);
@@ -30,10 +32,10 @@ function createGeneralRequest(agent: Function): Function {
   };
 }
 
-export const post = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig) => createGeneralRequest(axios.post)(host, body, params, config);
-export const put = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig) => createGeneralRequest(axios.put)(host, body, params, config);
-export const del = async (host: string) => createGeneralRequest(axios.delete)(host);
-export const get = async (host: string, params?: RequestParams, config?: AxiosRequestConfig) => {
+export const post = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => createGeneralRequest(axios.post)(host, body, params, config);
+export const put = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => createGeneralRequest(axios.put)(host, body, params, config);
+export const del = async (host: string): Promise<any> => createGeneralRequest(axios.delete)(host);
+export const get = async (host: string, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => {
   let uri: string;
   if (params) {
     uri = `${host}?${qs.stringify(params)}`;
@@ -85,7 +87,7 @@ export const listen = async (host: string, params?: RequestParams, handlers?: Re
       es.close();
       reject(new Error(`listen timeout: ${uri}`));
     }, 5000);
-    es.onopen = (e: Event) => {
+    es.onopen = () => {
       clearTimeout(timeoutHandle);
       resolve(es);
     };

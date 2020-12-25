@@ -1,10 +1,10 @@
 import { model, property } from '@loopback/repository';
 import { Base } from './base';
-import { PluginTypeI } from '@pipcook/pipcook-core';
+import { PluginTypeI, EvaluateResult } from '@pipcook/pipcook-core';
 
 export interface JobParam {
   pluginType: PluginTypeI;
-  data: object;
+  data: Record<string, unknown>;
 }
 
 @model()
@@ -23,7 +23,7 @@ export class Job extends Base {
   @property({
     type: 'object'
   })
-  evaluateMap?: object;
+  evaluateMap?: EvaluateResult;
 
   @property({
     type: 'object'
@@ -64,8 +64,8 @@ export class Job extends Base {
   }
 }
 
+// TODO(feely): complete the relation
 export interface JobRelations {
-  // describe navigational properties here
+  __ignore: number;
 }
-
 export type JobWithRelations = Job & JobRelations;

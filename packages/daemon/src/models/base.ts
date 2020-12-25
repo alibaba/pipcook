@@ -7,9 +7,21 @@ export class Base extends Entity {
     type: 'string',
     id: true,
     generated: false,
-    required: true,
+    required: true
   })
   id: string;
+
+  @property({
+    type: 'date',
+    default: () => new Date()
+  })
+  createdAt?: Date;
+
+  @property({
+    type: 'date',
+    default: () => new Date()
+  })
+  updatedAt?: Date;
 
   constructor(data?: Partial<Base>) {
     super(data);

@@ -15,13 +15,13 @@ export class IndexController {
         description: 'list versions',
         content: {
           'application/json': {
-            schema: { type: 'object'}
+            schema: { type: 'object' }
           }
         }
       }
     }
   })
-  async versions() {
+  async versions(): Promise<{ versions: Record<string, unknown> }> {
     const daemonPkg = await readJSON(join(constants.PIPCOOK_DAEMON_SRC, 'package.json'));
     return {
       versions: {
@@ -39,13 +39,13 @@ export class IndexController {
         description: 'get daemon config',
         content: {
           'application/json': {
-            schema: { type: 'object'}
+            schema: { type: 'object' }
           }
         }
       }
     }
   })
-  async config() {
+  async config(): Promise<Record<string, unknown>> {
     let data = {};
     if (await pathExists(constants.PIPCOOK_DAEMON_CONFIG)) {
       data = await readJSON(constants.PIPCOOK_DAEMON_CONFIG);

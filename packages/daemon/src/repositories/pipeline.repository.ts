@@ -1,7 +1,7 @@
-import {DefaultCrudRepository} from '@loopback/repository';
-import {Pipeline, PipelineRelations} from '../models';
-import {PipcookDataSource} from '../datasources';
-import {inject} from '@loopback/core';
+import { DefaultCrudRepository } from '@loopback/repository';
+import { Pipeline, PipelineRelations } from '../models';
+import { PipcookDataSource } from '../datasources';
+import { inject } from '@loopback/core';
 
 export class PipelineRepository extends DefaultCrudRepository<
   Pipeline,
