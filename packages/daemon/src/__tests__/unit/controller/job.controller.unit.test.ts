@@ -13,7 +13,8 @@ import { JobController, JobCreateParameters } from '../../../controllers';
 import { Job, JobParam, Pipeline } from '../../../models';
 import { JobRepository } from '../../../repositories';
 import { JobService, PipelineService, Tracer, TraceService } from '../../../services';
-
+import * as fs from 'fs-extra';
+import * as sinon from 'sinon';
 
 function initJobController(): {
   jobService: StubbedInstanceWithSinonAccessor<JobService>,
@@ -179,28 +180,24 @@ test('start a job', async t => {
   t.true(pipelineService.stubs.getPipelineByIdOrName.calledOnce);
   t.true(traceService.stubs.create.calledOnce);
   t.true(jobService.stubs.createJob.calledOnce);
-  // TODO the two do not work right now
-  // t.true(jobService.stubs.runJob.calledOnce);
-  // t.true(traceService.stubs.destroy.calledOnce);
 });
 
-//TODO: write download
+test.serial('get output by id', async t => {
+  const { jobController, jobRepository, jobService } = initJobController();
 
-// test('get output by id', async t => {
-//   const sandbox = new TestSandbox('./');
+  const mockPath = `${__dirname}/mockPath`;
 
-//   const { jobController, jobRepository, jobService } = initJobController();
+  jobRepository.stubs.findById.resolves(mockJob);
+  jobService.stubs.getOutputTarByJobId.resolves(mockPath);
+  sinon.stub(fs, 'pathExists').resolves(true);
+  
+  const response = {} as Response;
+  response.download = () => {
+    return new Promise((resolve) => resolve({}));
+  }
 
-//   const mockPath = `${__dirname}/mockPath`;
+  await jobController.download(id, response);
 
-//   await sandbox.writeTextFile(mockPath, 'mockFile');
-
-//   jobRepository.stubs.findById.resolves(mockJob);
-//   jobService.stubs.getOutputTarByJobId.resolves(mockPath);
-
-//   jobController.download(id, response);
-
-//   await sandbox.delete();
-
-//   t.true(jobRepository.stubs.findById.called)
-// });
+  t.true(jobRepository.stubs.findById.called);
+  t.true(jobService.stubs.getOutputTarByJobId.called);
+});
