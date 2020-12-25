@@ -152,10 +152,7 @@ test('start a job', async (t) => {
     modelTrainParams: {},
     modelEvaluateId: '7',
     modelEvaluate: 'modelEvaluate',
-    modelEvaluateParams: {},
-    modelLoadId: '8',
-    modelLoad: 'modelLoad',
-    modelLoadParams: {}
+    modelEvaluateParams: {}
   };
   const mockPipeline = new Pipeline(mockPipelineEntity);
 
@@ -178,7 +175,7 @@ test('start a job', async (t) => {
   t.true(jobService.stubs.createJob.calledOnce);
 });
 
-test.serial('get output by id', async t => {
+test.serial('get output by id', async (t) => {
   const { jobController, jobRepository, jobService } = initJobController();
 
   const mockPath = `${__dirname}/mockPath`;
@@ -186,11 +183,11 @@ test.serial('get output by id', async t => {
   jobRepository.stubs.findById.resolves(mockJob);
   jobService.stubs.getOutputTarByJobId.resolves(mockPath);
   sinon.stub(fs, 'pathExists').resolves(true);
-  
+
   const response = {} as Response;
   response.download = () => {
-    return new Promise((resolve) => resolve({}));
-  }
+    return Promise.resolve();
+  };
 
   await jobController.download(id, response);
 

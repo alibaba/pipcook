@@ -24,7 +24,7 @@ export class PluginService {
     public traceService: TraceService
   ) {
     const npmRegistryPrefix = 'https://registry.npmjs.com/';
-    // FIXME(feely): fix the boot code
+    // TODO(feely): fix the boot code
     // try {
     //   const config = await readJSON(CoreConstants.PIPCOOK_DAEMON_CONFIG);
     //   npmRegistryPrefix = config.npmRegistryPrefix || npmRegistryPrefix;
@@ -74,7 +74,7 @@ export class PluginService {
     return pkg;
   }
 
-  async findByIds(ids: string[]) {
+  async findByIds(ids: string[]): Promise<Plugin[]> {
     return this.pluginRepository.find({
       where: {
         id: {
