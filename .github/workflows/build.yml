@@ -2,7 +2,7 @@ name: build
 on:
   push:
     branches:
-    - master
+    - v1.x
     paths-ignore:
     - 'docker/**'
     - 'docs/**'
@@ -12,7 +12,7 @@ on:
   pull_request:
     types: [ opened, synchronize, reopened, ready_for_review ]
     branches:
-    - master
+    - v1.x
     paths-ignore:
     - 'docker/**'
     - 'docs/**'

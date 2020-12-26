@@ -2,11 +2,11 @@ name: check markdown files
 on:
   push:
     branches:
-    - master
+    - v1.x
   pull_request:
     types: [ opened, synchronize, reopened, ready_for_review ]
     branches:
-    - master
+    - v1.x
 
 jobs:
   markdown-link-check:
