@@ -308,7 +308,7 @@ describe('test JobRunner', () => {
 
   it('#test runModelTrain', async () => {
     const runner = new JobRunner({
-      job: {} as any,
+      job: { params: [ { pluginType: 'modelTrain', data: { mockJobParams: 'mockData' } } ] } as any,
       pipeline: {} as any,
       plugins: {
         modelTrain: {
@@ -325,7 +325,11 @@ describe('test JobRunner', () => {
     const runPlugin = sinon.stub(runner, 'runPlugin').resolves(mockResult as any);
     const mockDataset = { mockDataset: '' };
     assert.equal(await runner.runModelTrain(mockDataset, mockModel as any, '/model/path'), mockResult);
-    assert.ok(runPlugin.calledOnceWith('modelTrain', mockDataset, mockModel, { mockParam: 'value', modelPath: '/model/path' }));
+    assert.ok(runPlugin.calledOnceWith('modelTrain', mockDataset, mockModel, {
+      mockParam: 'value',
+      modelPath: '/model/path',
+      mockJobParams: 'mockData'
+    }));
   });
 
   it('#test runModelEvaluate', async () => {
