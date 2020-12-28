@@ -20,7 +20,7 @@
 - Specification
   - [Plugin Specification](/spec/plugin.md)
   - [Dataset Specification](/spec/dataset.md)
-- FAQ
+- FAQ (/faq/index.md)
   - [Pipcook Framework](/faq/pipcook-framework.md)
   - [Plugins](/faq/plugins.md)
 - [Glossory](/GLOSSORY.md)
