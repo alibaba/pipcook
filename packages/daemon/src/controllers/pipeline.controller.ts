@@ -16,7 +16,6 @@ import {
   put
 } from '@loopback/rest';
 import { constants, PluginTypeI, PluginStatus } from '@pipcook/pipcook-core';
-import debug from 'debug';
 import * as createError from 'http-errors';
 import { Pipeline } from '../models';
 import { JobRepository, PipelineRepository, PluginRepository } from '../repositories';
@@ -24,11 +23,9 @@ import {
   PluginService,
   PipelineService,
   JobService,
-  TraceService,
-  Tracer,
-  PipelineTraceResp
+  TraceService
 } from '../services';
-import { PipelineCreateParameters, PipelineUpdateParameters, PipelineInstallParameters, CreatePipelineResp } from './interface';
+import { PipelineCreateParameters, PipelineUpdateParameters, CreatePipelineResp } from './interface';
 import { parseConfig } from '../utils';
 
 const pipelineCreateSpec = {
@@ -43,14 +40,6 @@ const pipelineUpdateSpec = {
   content: {
     'application/json': {
       schema: getModelSchemaRef(PipelineUpdateParameters)
-    }
-  }
-};
-
-const pipelineInstallationSpec = {
-  content: {
-    'application/json': {
-      schema: getModelSchemaRef(PipelineInstallParameters)
     }
   }
 };
@@ -235,62 +224,4 @@ export class PipelineController {
     const parsedConfig = await parseConfig(config, false);
     return this.pipelineRepository.updateById(id, parsedConfig);
   }
-
-  @post('/{id}/installation')
-  public async installById(
-    @param.path.string('id') id: string,
-    @requestBody(pipelineInstallationSpec) params: PipelineInstallParameters
-  ): Promise<PipelineTraceResp> {
-    const { pyIndex } = params;
-    const pipeline = await this.pipelineRepository.findById(id);
-    const log = await this.traceService.create();
-    if (pipeline) {
-      process.nextTick(async () => {
-        try {
-          await this.installByPipeline(pipeline, log, pyIndex);
-          this.traceService.destroy(log.id);
-        } catch (err) {
-          this.traceService.destroy(log.id, err);
-        }
-      });
-      return new PipelineTraceResp({ ...pipeline.toJSON(), traceId: log.id });
-    } else {
-      throw new createError.NotFound('no pipeline found');
-    }
-  }
-
-  private async installByPipeline(pipeline: Pipeline, tracer: Tracer, pyIndex?: string): Promise<void> {
-    const { stdout, stderr } = tracer.getLogger();
-    for (const type of constants.PLUGINS) {
-      if (!pipeline[type]) {
-        continue;
-      }
-      let plugin = await this.pluginService.findByName(pipeline[type] as string);
-      if (plugin && plugin.status === PluginStatus.INSTALLED) {
-        stdout.writeLine(`plugin ${plugin.name}@${plugin.version} already installed`);
-        continue;
-      }
-      debug(`start installation: ${type}`);
-      const pkg = await this.pluginService.fetch(pipeline[type] as string);
-      stdout.writeLine(`start to install plugin ${pkg.name}`);
-
-      debug(`installing ${pipeline[type]}.`);
-      plugin = await this.pluginService.findOrCreateByPkg(pkg);
-      try {
-        await this.pluginService.install(plugin.id, pkg, {
-          pyIndex,
-          force: false,
-          stdout,
-          stderr
-        });
-        this.pluginService.setStatusById(plugin.id, PluginStatus.INSTALLED);
-        stdout.writeLine(`install plugin ${pkg.name}@${pkg.version} successfully`);
-      } catch (err) {
-        this.pluginService.setStatusById(plugin.id, PluginStatus.FAILED, err.message);
-        throw err;
-      }
-    }
-  }
 }
-
-

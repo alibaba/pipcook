@@ -5,7 +5,6 @@ import { PipelineController } from '../../../controllers';
 import { PluginRepository, JobRepository, PipelineRepository } from '../../../repositories';
 import { PluginService, TraceService, PipelineService, JobService } from '../../../services';
 import * as createError from 'http-errors';
-import { PluginStatus } from '@pipcook/pipcook-core';
 
 function initPipelineController(): {
   pluginService: StubbedInstanceWithSinonAccessor<PluginService>,
@@ -172,29 +171,4 @@ test('update pipeline by pipeline id', async (t) => {
   pipelineRepository.stubs.updateById.resolves({} as any);
   await pipelineController.update('mockId', createPipelineParams as any);
   t.true(pipelineRepository.stubs.updateById.calledOnce);
-});
-
-test('install the pipeline by pipeline id', async (t) => {
-  const { pipelineController, pipelineRepository, traceService, pluginService } = initPipelineController();
-  pipelineRepository.stubs.findById.resolves({
-    ...pipelineMock,
-    toJSON: () => ({
-      id: 'mockId'
-    })
-  } as any);
-  pluginService.stubs.findByName
-    .onFirstCall().resolves({ status: PluginStatus.INSTALLED } as any)
-    .resolves(null);
-  pluginService.stubs.fetch.resolves();
-  pluginService.stubs.findOrCreateByPkg.resolves();
-  pluginService.stubs.install.resolves();
-  pluginService.stubs.setStatusById.resolves();
-  traceService.stubs.create.resolves({
-    stdout: {
-      writeLine: () => { return 0; }
-    }
-  });
-  traceService.stubs.destroy.resolves();
-  const installResp = await pipelineController.installById('mockId', {} as any);
-  t.is(installResp.id, 'mockId');
 });
