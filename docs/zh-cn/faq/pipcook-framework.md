@@ -11,4 +11,3 @@ Pipcook 会在后台启动服务，用户可以通过 cli 工具或者可视化�
 
 ## <div id="q4">Pipcook 支持 Windows 系统吗？</div>
 目前不支持，未来将会支持。
-
