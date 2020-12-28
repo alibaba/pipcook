@@ -1,5 +1,4 @@
 import { api, get, param } from '@loopback/rest';
-
 import axios from 'axios';
 
 const RES_CDN_PREFIX = 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/showcase';
