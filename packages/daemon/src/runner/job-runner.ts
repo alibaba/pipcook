@@ -215,7 +215,7 @@ export class JobRunner {
    * @param modelPath where the model saves to
    */
   async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
-    const params = this.findParamsByType('modelLoad', this.opts.job.params);
+    const params = this.findParamsByType('modelTrain', this.opts.job.params);
 
     return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain.params, {
       modelPath
