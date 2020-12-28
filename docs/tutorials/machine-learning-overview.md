@@ -2,7 +2,7 @@
 
 From this article, we will introduce what is machine learning and how to complete a task of machine learning with [Pipcook][].
 
-## The Problem Setting
+## Define Machine Learning Problem
 
 In general, a learning problem considers a set of n samples of data and then tries to returns the corresponding result by given input. The following example shows how we can teach a program about Node.js books and prices:
 
