@@ -146,12 +146,12 @@ async function uploadPlugin(t: any, isError: boolean): Promise<void> {
   } else {
     pluginService.stubs.installFromTarStream.resolves(mockTracer);
   }
-  const stubReq = { body: { pyIndex: 'mockIndex' }} as Request;
+  const stubReq = { body: { pyIndex: 'mockIndex' } } as Request;
   const stubResp = {} as Response;
   const stubRealUpload = sinon.stub().callsFake((req: Request, resp: Response, cb: (err: Error | null) => void) => {
     t.is(req, stubReq, 'req is not current');
     t.is(resp, stubResp, 'resp is not current');
-    setTimeout(() => { isError ? cb(installError) : cb(null)}, 10);
+    setTimeout(() => { isError ? cb(installError) : cb(null); }, 10);
   });
   const stubSigle = sinon.stub().callsFake((field: string) => {
     t.is(field, 'file', 'field name should be \'file\'');
@@ -168,7 +168,7 @@ async function uploadPlugin(t: any, isError: boolean): Promise<void> {
     };
   });
   if (isError) {
-    await t.throwsAsync(pluginController.uploadPackage(stubReq, stubResp), { instanceOf: Error, message: 'mock error'});
+    await t.throwsAsync(pluginController.uploadPackage(stubReq, stubResp), { instanceOf: Error, message: 'mock error' });
   } else {
     t.deepEqual(await pluginController.uploadPackage(stubReq, stubResp), mockTracer);
   }

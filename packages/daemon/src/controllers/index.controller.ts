@@ -1,6 +1,6 @@
 import { api, get } from '@loopback/rest';
 import { constants } from '@pipcook/pipcook-core';
-import { readJSON, pathExists } from 'fs-extra';
+import { readJSON } from 'fs-extra';
 import { join } from 'path';
 
 @api({ basePath: '/api' })

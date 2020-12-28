@@ -57,7 +57,8 @@ test.serial('create job', async (t) => {
 test.serial('remove job by id', async (t) => {
   const { jobRepository, jobService } = initJobService();
   const mockJob = createStubInstance<Job>(Job);
-  const mockGetJobById = jobRepository.stubs.findById.resolves({ id: 'mockJobId' } as Job);
+  mockJob.stubs.id = 'mockJobId';
+  const mockGetJobById = jobRepository.stubs.findById.resolves(mockJob);
   const mockRemoveJobById = jobRepository.stubs.deleteById.resolves();
   const mockFsRemove = sinon.stub(fs, 'remove').resolves(true);
   await t.notThrowsAsync(jobService.removeJobById('mockJobId'), 'check result');

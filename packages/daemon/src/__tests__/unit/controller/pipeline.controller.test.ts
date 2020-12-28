@@ -87,22 +87,22 @@ const createPipelineParams = {
 test('create the pipeline with the given config file', async (t) => {
   const { pipelineController, pluginService, pipelineService } = initPipelineController();
   pluginService.stubs.findByName.resolves(null);
-  pluginService.stubs.fetch.resolves({});
+  pluginService.stubs.fetch.resolves({} as any);
   pluginService.stubs.findOrCreateByPkg.resolves({
     id: 'mockId',
     name: 'mockName'
-  });
+  } as any);
   pipelineService.stubs.createPipeline.resolves({
     id: 'mockId'
-  });
-  const createPipelineResp = await pipelineController.create(createPipelineParams);
+  } as any);
+  const createPipelineResp = await pipelineController.create(createPipelineParams as any);
   const result = { id: 'mockId', plugins: Array(7).fill({ id: 'mockId', name: 'mockName' }) };
   t.deepEqual(createPipelineResp, result);
 });
 
 test('throws error when the config is missing', async (t) => {
   const { pipelineController } = initPipelineController();
-  await t.throwsAsync(pipelineController.create({}), {
+  await t.throwsAsync(pipelineController.create({} as any), {
     instanceOf: createError.BadRequest, message: 'must provide configUri or config'
   }, 'throws error when the config is missing');
 });
@@ -160,7 +160,7 @@ test('get pipeline by pipelien id', async (t) => {
     toJSON: () => ({
       id: 'mockId'
     })
-  });
+  } as any);
   pluginService.stubs.findByIds.resolves([]);
   const pipeline = await pipelineController.get('mockId');
   t.is(pipeline.id, 'mockId');
@@ -169,8 +169,8 @@ test('get pipeline by pipelien id', async (t) => {
 
 test('update pipeline by pipeline id', async (t) => {
   const { pipelineController, pipelineRepository } = initPipelineController();
-  pipelineRepository.stubs.updateById.resolves({});
-  await pipelineController.update('mockId', createPipelineParams);
+  pipelineRepository.stubs.updateById.resolves({} as any);
+  await pipelineController.update('mockId', createPipelineParams as any);
   t.true(pipelineRepository.stubs.updateById.calledOnce);
 });
 
@@ -181,9 +181,9 @@ test('install the pipeline by pipeline id', async (t) => {
     toJSON: () => ({
       id: 'mockId'
     })
-  });
+  } as any);
   pluginService.stubs.findByName
-    .onFirstCall().resolves({ status: PluginStatus.INSTALLED })
+    .onFirstCall().resolves({ status: PluginStatus.INSTALLED } as any)
     .resolves(null);
   pluginService.stubs.fetch.resolves();
   pluginService.stubs.findOrCreateByPkg.resolves();
@@ -195,6 +195,6 @@ test('install the pipeline by pipeline id', async (t) => {
     }
   });
   traceService.stubs.destroy.resolves();
-  const installResp = await pipelineController.installById('mockId', {});
+  const installResp = await pipelineController.installById('mockId', {} as any);
   t.is(installResp.id, 'mockId');
 });
