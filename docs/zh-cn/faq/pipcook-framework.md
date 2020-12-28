@@ -1,13 +1,14 @@
-# Frequently Asked Questions
+# 常见问题
 
-## Where should I put the Pipcook JSON config file?
-Pipcook runs daemon behind the scene and provide the service to the user via command line tool or Pipboard. There is no restriction on the current working directory or where you should put your config file. You can run `pipcook run <url>` at any location and url is the path of your config file, which can be both local path or remote url.
+## <div id="q1">我应该在哪里放置我的 pipeline 的配置文件?</div>
+Pipcook 会在后台启动服务，用户可以通过 cli 工具或者可视化工具访问服务。因此，我们对您的工作目录没有特别的要求，你可以在任意地方放置你的配置文件。只需要使用 `pipcook run <url>` 并且指定正确的配置文件路径就可以进行训练了
 
-## Why is it so slow to install Pipcook
-Currently the installation of Pipcook and plugins rely on npm registry and pip(python) registry. Probably these default registries have slow connection to you. You can specify `pipcook init -c <npm client>`, for example, `pipcook init -c cnpm` to change your npm client. Meanwhile, you can use `pipcook init --tuna` to use tuna pip registry.
+## <div id="q2">为什么 Pipcook 安装非常缓慢？</div>
+目前 Pipcook 的安装依赖于 npm 源和 pip 源。有可能这些默认源的链接非常缓慢。你可以指定 `pipcook init -c <npm client>` 去改变你的 npm 源，同时，你也可以使用 `pipcook init --tuna` 指定 pip 清华源。
 
-## Can I use Pipcook in Electron?
-Thereotically as long as the environment supports Node.js >= 12.19 and corresponding N-API, you can run Pipcook smoothly. Meanwhile, Pipcook will support to produce WASM model so that you can easily integrate the model to your system.
+## <div id="q3">我可以在 Electron 里面使用 Pipcook 吗？</div>
+理论上只要 Node.js >= 12.19 并且相应的 N-API 可用，你就可以使用 Pipcook。同时，Pipcook 也将会支持产出 WASM 模型所以你可以非常容易的集成到你的系统中去
 
-## Does Pipcook support Windows platform?
-Not yet. We will support Windows soon.
+## <div id="q4">Pipcook 支持 Windows 系统吗？</div>
+目前不支持，未来将会支持。
+
