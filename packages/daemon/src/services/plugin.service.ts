@@ -116,9 +116,6 @@ export class PluginService {
         try {
           await this.setStatusById(pluginId, PluginStatus.INSTALLING);
           await this.costa.install(pkg, opts);
-          if (cb) {
-            cb();
-          }
           resolve();
         } catch (err) {
           // uninstall if occurring an error on installing.

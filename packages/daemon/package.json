@@ -14,7 +14,8 @@
     "node": ">=12.19"
   },
   "scripts": {
-    "build": "tsc",
+    "compile": "tsc",
+    "build": "yarn run compile",
     "build:watch": "tsc --watch",
     "lint": "yarn run eslint",
     "lint:fix": "yarn run eslint:fix",

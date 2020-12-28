@@ -3,7 +3,7 @@ import {
   Client, createRestAppClient,
   givenHttpServerConfig
 } from '@loopback/testlab';
-import { DaemonApplication } from '../..';
+import { DaemonApplication } from '../../application';
 
 export async function setupApplication(): Promise<AppWithClient> {
   const restConfig = givenHttpServerConfig({

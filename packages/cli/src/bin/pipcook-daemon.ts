@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { spawn, fork } from 'child_process';
+import { spawn, fork, spawnSync } from 'child_process';
 import * as path from 'path';
 import * as program from 'commander';
 import { readFile, pathExists, remove } from 'fs-extra';
@@ -11,7 +11,7 @@ const PIPCOOK_HOME = constants.PIPCOOK_HOME_PATH;
 const DAEMON_HOME = constants.PIPCOOK_DAEMON_SRC;
 const ACCESS_LOG = path.join(PIPCOOK_HOME, 'daemon.access.log');
 const DAEMON_PIDFILE = path.join(PIPCOOK_HOME, 'daemon.pid');
-const BOOTSTRAP_HOME = path.join(DAEMON_HOME, 'bootstrap.js');
+const BOOTSTRAP_HOME = DAEMON_HOME;
 
 interface DaemonBootstrapMessage {
   event: string;
@@ -31,7 +31,6 @@ async function start(): Promise<void> {
     return logger.fail(`starting daemon but ${DAEMON_PIDFILE} exists.`);
   }
   logger.start('starting Pipcook...');
-
   const daemon = fork(BOOTSTRAP_HOME, [], {
     cwd: DAEMON_HOME,
     stdio: 'ignore',
@@ -89,7 +88,7 @@ async function monitor(): Promise<void> {
 async function debugDaemon(): Promise<void> {
   await stop();
   process.env.DEBUG = 'costa*';
-  require(BOOTSTRAP_HOME);
+  spawnSync(process.execPath, [ DAEMON_HOME ], { stdio: 'inherit' });
 }
 
 program
