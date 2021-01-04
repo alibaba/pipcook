@@ -20,7 +20,11 @@ export class Job extends BaseApi {
    * @returns The jobs list.
    */
   list(filter?: JobListFilter): Promise<JobResp[]> {
-    return get(this.route, filter);
+    let prarm = undefined;
+    if (filter && typeof filter === 'object') {
+      prarm = { filter: JSON.stringify(filter) };
+    }
+    return get(this.route, prarm);
   }
 
   /**

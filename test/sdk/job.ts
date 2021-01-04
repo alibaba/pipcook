@@ -117,10 +117,9 @@ describe('pipeline api.job test', () => {
     expect(jobInfoObj.id).toBe(jobs[0].id);
 
     // list by pipeline id
-    // TODO(feely): filter is not working
-    // const emptyJobs = await client.job.list({ where: { pipelineId: 'id' } });
-    // expect(Array.isArray(emptyJobs)).toBeTruthy();
-    // expect(emptyJobs.length).toBe(1);
+    const emptyJobs = await client.job.list({ where: { pipelineId: 'id-nonexists' } });
+    expect(Array.isArray(emptyJobs)).toBeTruthy();
+    expect(emptyJobs.length).toBe(0);
   });
   it('clean', async () => {
     // stop

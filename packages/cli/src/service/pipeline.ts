@@ -63,7 +63,7 @@ export async function listJobsByPipelineId(id: string, opts: CommonOptions): Pro
   if (id === undefined) {
     jobs = await client.job.list();
   } else {
-    jobs = await client.job.list({ pipelineId: id });
+    jobs = await client.job.list({ where: { pipelineId: id } });
   }
   return jobs;
 }
