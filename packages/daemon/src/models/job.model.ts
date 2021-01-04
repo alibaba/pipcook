@@ -2,8 +2,17 @@ import { model, property } from '@loopback/repository';
 import { Base } from './base';
 import { PluginTypeI, EvaluateResult } from '@pipcook/pipcook-core';
 
-export interface JobParam {
+@model()
+export class JobParam {
+  @property({
+    type: 'string',
+    required: true
+  })
   pluginType: PluginTypeI;
+  @property({
+    type: 'object',
+    required: false
+  })
   data: Record<string, unknown>;
 }
 

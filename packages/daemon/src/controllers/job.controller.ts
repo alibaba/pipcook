@@ -180,7 +180,7 @@ export class JobController extends BaseEventController {
     }
   })
   async stop(@param.path.string('id') id: string): Promise<void> {
-    await this.jobService.stopJob(id);
+    return this.jobService.stopJob(id);
   }
 
   @get('/{id}/params', {
@@ -191,7 +191,7 @@ export class JobController extends BaseEventController {
           'application/json': {
             schema: {
               type: 'array',
-              item: Object
+              items: getModelSchemaRef(JobParam)
             }
           }
         }
@@ -211,7 +211,7 @@ export class JobController extends BaseEventController {
           'application/json': {
             schema: {
               type: 'array',
-              item: String
+              items: { type: 'string' }
             }
           }
         }
