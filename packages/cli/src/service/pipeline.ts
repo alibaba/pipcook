@@ -49,7 +49,8 @@ export async function update(id: string, filename: string, opts: CommonOptions):
   }
   const config = await readJson(filename);
   try {
-    const pipeline = await client.pipeline.update(id, config);
+    await client.pipeline.update(id, config);
+    const pipeline = await client.pipeline.get(id);
     logger.success(`pipeline ${pipeline.id} updated with ${filename}.`);
   } catch (err) {
     logger.fail(err.message);
