@@ -67,7 +67,7 @@ export class GetJobListParameters {
 }
 
 export class CreateJobResp extends Job {
-  @property()
+  @property({ type: 'string', required: false })
   traceId: string;
 
   constructor() {

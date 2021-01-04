@@ -21,7 +21,7 @@ import { PluginRepository, JobRepository } from '../repositories';
 import { PluginInfo, JobRunner } from '../job-runner';
 import { Tracer, JobStatusChangeEvent, GenerateOptions } from './interface';
 
-@injectable({ scope: BindingScope.TRANSIENT })
+@injectable({ scope: BindingScope.SINGLETON })
 export class JobService {
   runnableMap: Record<string, PluginRunnable> = {};
 
@@ -61,6 +61,7 @@ export class JobService {
   }
 
   async createJob(pipelineId: string, params: JobParam[] = []): Promise<Job> {
+    // set daemon version
     const specVersion = (await fs.readJSON(path.join(__dirname, '../../package.json'))).version;
     return this.jobRepository.create({
       pipelineId,
@@ -147,7 +148,6 @@ export class JobService {
 
   async startJob(job: Job, pipeline: Pipeline, plugins: Partial<Record<PluginTypeI, PluginInfo>>, tracer: Tracer): Promise<void> {
     const { runnable, runner } = await this.perpareJob(job, pipeline, plugins, tracer);
-
     // save the runnable object
     this.runnableMap[job.id] = runnable;
     // update the job status to running

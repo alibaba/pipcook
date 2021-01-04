@@ -18,15 +18,16 @@ import { Job, JobParam, Pipeline } from '../models';
 import { constants, PipelineStatus } from '@pipcook/pipcook-core';
 import { JobRepository } from '../repositories';
 import { inject, service } from '@loopback/core';
-import { JobService, PipelineService, TraceService } from '../services';
+import { JobService, PipelineService, Tracer, TraceService } from '../services';
 import { join } from 'path';
 import { ensureDir, ensureFile, pathExists } from 'fs-extra';
 import * as createError from 'http-errors';
 import { CreateJobResp, JobCreateParameters } from './interface';
 import { PluginParamI } from '../../../core/dist';
+import { BaseEventController } from './base';
 
 @api({ basePath: '/api/job' })
-export class JobController {
+export class JobController extends BaseEventController {
   constructor(
     @repository(JobRepository)
     public jobRepository : JobRepository,
@@ -37,9 +38,10 @@ export class JobController {
     @service(JobService)
     public jobService: JobService
   ) {
+    super(traceService);
   }
 
-  private async setupTracer(job: Job) {
+  private async setupTracer(job: Job): Promise<Tracer> {
     const logPath = join(constants.PIPCOOK_RUN, job.id, 'logs');
     const stdoutFile = join(logPath, 'stdout.log');
     const stderrFile = join(logPath, 'stderr.log');
@@ -76,7 +78,7 @@ export class JobController {
     responses: {
       '200': {
         description: 'start a job from pipeline id or name',
-        content: { 'application/json': { schema: getModelSchemaRef(Job) } }
+        content: { 'application/json': { schema: getModelSchemaRef(CreateJobResp) } }
       }
     }
   })
@@ -84,7 +86,7 @@ export class JobController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(CreateJobResp)
+          schema: getModelSchemaRef(JobCreateParameters)
         }
       }
     })
@@ -97,7 +99,6 @@ export class JobController {
       const params = this.initializeParams(pipeline, updateParams);
       const job = await this.jobService.createJob(pipelineId, params);
       const tracer = await this.setupTracer(job);
-
       process.nextTick(async () => {
         try {
           await this.jobService.runJob(job, pipeline, plugins, tracer);
@@ -112,8 +113,7 @@ export class JobController {
       } as CreateJobResp;
       return resp;
     } else {
-      // TODO error handler
-      throw new Error();
+      throw new createError.NotFound(`pipeline not found: ${pipelineId}`);
     }
   }
 

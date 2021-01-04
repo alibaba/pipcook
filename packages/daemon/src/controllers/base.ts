@@ -26,12 +26,12 @@ export class BaseEventController {
   @get('/event/{traceId}')
   public async event(@param.path.string('traceId') traceId: string): Promise<void> {
     debug(`[trace ${traceId}] start`);
-    const sse = new SseStream(this.ctx.request);
     const tracer = this.traceService.get(traceId);
     if (!tracer) {
       this.ctx.response.status(204).send();
       return;
     }
+    const sse = new SseStream(this.ctx.request);
     const pipelineFutrue = pipelinePromisify(sse, this.ctx.response);
     tracer.listen((data) => {
       debug(`[trace ${traceId}]`, data.type, data.data);

@@ -30,6 +30,7 @@ import {
 } from '../services';
 import { PipelineCreateParameters, PipelineUpdateParameters, PipelineInstallParameters, CreatePipelineResp } from './interface';
 import { parseConfig } from '../utils';
+import { BaseEventController } from './base';
 
 const pipelineCreateSpec = {
   content: {
@@ -56,7 +57,7 @@ const pipelineInstallationSpec = {
 };
 
 @api({ basePath: '/api/pipeline' })
-export class PipelineController {
+export class PipelineController extends BaseEventController {
   constructor(
     @repository(JobRepository)
     public jobRepository : JobRepository,
@@ -78,7 +79,9 @@ export class PipelineController {
 
     @service(TraceService)
     public traceService: TraceService
-  ) {}
+  ) {
+    super(traceService);
+  }
 
   @post('/', {
     responses: {

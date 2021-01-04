@@ -3,6 +3,7 @@
   "version": "1.2.0",
   "description": "JavaScript SDK for accessing Pipcook Daemon",
   "main": "dist/index.js",
+  "license": "Apache-2.0",
   "files": [
     "dist",
     "package-lock.json"

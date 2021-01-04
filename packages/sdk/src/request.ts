@@ -14,7 +14,7 @@ export interface StreamResp {
 }
 
 axios.defaults.timeout = 60000;
-
+axios.defaults.headers.post = { 'Content-Type': 'application/json' };
 function createGeneralRequest(
   agent: (...args: any[]) => AxiosPromise<any>
 ): (...args: any[]) => Promise<any> {
@@ -91,12 +91,23 @@ export const listen = async (host: string, params?: RequestParams, handlers?: Re
       clearTimeout(timeoutHandle);
       resolve(es);
     };
+    es.onerror = (event: MessageEvent) => {
+      if ((event as any).status === 204) {
+        if (typeof handlers['close'] === 'function') {
+          handlers['close'](null);
+        }
+      } else {
+        if (es.readyState === 1 && typeof handlers['error'] === 'function') {
+          handlers['error'](event);
+        }
+      }
+    };
     // register handlers.
-    Object.keys(handlers)
+    Object.keys(handlers).forEach((name: string) => {
       // handle `handlers.error` manually.
-      .filter((name: string) => name !== 'error')
-      .forEach((name: string) => {
+      if (name !== 'error') {
         es.addEventListener(name, handlers[name]);
-      });
+      }
+    });
   });
 };
