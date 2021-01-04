@@ -288,17 +288,6 @@ test('should stop job without runnable', async (t) => {
   t.true(mockFindById.calledOnceWith('mockId'), 'mockFindById check');
 });
 
-// test('start job and finish', async (t) => {
-//   const { jobService, jobRepository } = initJobService();
-//   jobRepository.stubs.updateById.resolves();
-//   const SpyJobRunner = sinon.stub(JobRunner, 'JobRunner');
-//   // jobService.startJob();
-//   t.pass();
-// });
+test.todo('start job and finish');
 
-// test('start job but error thrown', async (t) => {
-//   const { jobService, jobRepository } = initJobService();
-//   jobRepository.stubs.updateById.resolves();
-//   // jobService.startJob();
-//   t.pass();
-// });
+test.todo('start job but error thrown');
