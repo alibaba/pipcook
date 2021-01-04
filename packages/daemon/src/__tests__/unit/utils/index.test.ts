@@ -9,23 +9,13 @@ import * as ChildProcess from 'child_process';
 import { mockFunctionFromGetter } from '../../__helpers__';
 
 const result: any = {
-  // name: undefined,
   dataCollect: '@pipcook/plugins-csv-data-collect',
-  dataCollectParams: { "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip" },
+  dataCollectParams: { 'url': 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip' },
   dataAccess: '@pipcook/plugins-csv-data-access',
-  dataAccessParams: { "labelColumn": "output" },
-  // dataProcess: {},
-  // dataProcessParams: {},
-  // datasetProcess: {},
-  // datasetProcessParams: {},
+  dataAccessParams: { 'labelColumn': 'output' },
   modelDefine: '@pipcook/plugins-bayesian-model-define',
-  // modelDefineParams: {},
-  // modelLoad: {},
-  // modelLoadParams: {},
   modelTrain: '@pipcook/plugins-bayesian-model-train',
-  // modelTrainParams: {},
   modelEvaluate: '@pipcook/plugins-bayesian-model-evaluate'
-  // modelEvaluateParams: {}
 };
 
 const mockPipelineConfig = {

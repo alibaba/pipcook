@@ -4,7 +4,7 @@ import { PipelineResp, PluginStatusValue, PipelineConfig, JobResp } from '@pipco
 import { constants, PluginStatus } from '@pipcook/pipcook-core';
 import { readJson } from 'fs-extra';
 import { install as pluginInstall } from './plugin';
-import { logger, parseConfigFilename, initClient, streamToJson } from "../utils/common";
+import { logger, parseConfigFilename, initClient, streamToJson } from '../utils/common';
 import { getFile } from '../utils/request';
 import { CommonOptions, PipelineCreateOptions, PluginInstallOptions } from '../types/options';
 
