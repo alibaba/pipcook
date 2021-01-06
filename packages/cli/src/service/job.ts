@@ -6,8 +6,9 @@ import { getFile } from '../utils/request';
 import { installPackageFromConfig } from './pipeline';
 import { tunaMirrorURI } from '../config';
 import { logger, initClient, traceLogger, extractToPath, parseConfigFilename, streamToJson } from '../utils/common';
+import { CommonOptions, RunAndDownloadOptions, PluginInstallOptions } from '../types/options';
 
-export async function list(opts: any): Promise<void> {
+export async function list(opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   const jobs = await client.job.list();
   if (jobs.length > 0) {
@@ -19,7 +20,7 @@ export async function list(opts: any): Promise<void> {
   }
 }
 
-export async function remove(id: string, opts: any): Promise<void> {
+export async function remove(id: string, opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   logger.start('removing jobs...');
   try {
@@ -33,7 +34,7 @@ export async function remove(id: string, opts: any): Promise<void> {
   }
 }
 
-export async function stop(id: string, opts: any): Promise<void> {
+export async function stop(id: string, opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   logger.start('stopping jobs...');
   try {
@@ -44,7 +45,7 @@ export async function stop(id: string, opts: any): Promise<void> {
   }
 }
 
-export async function log(id: string, opts: any): Promise<void> {
+export async function log(id: string, opts: CommonOptions): Promise<void> {
   const client = initClient(opts.hostIp, opts.port);
   try {
     const log = await client.job.log(id);
@@ -54,7 +55,7 @@ export async function log(id: string, opts: any): Promise<void> {
   }
 }
 
-export async function runByFile(filename: string, opts: any): Promise<JobResp> {
+export async function runByFile(filename: string, opts: PluginInstallOptions): Promise<JobResp> {
   const client = initClient(opts.hostIp, opts.port);
   let config: any;
 
@@ -100,7 +101,7 @@ export async function runByFile(filename: string, opts: any): Promise<JobResp> {
   }
 }
 
-export async function runByPipelineId(id: string, opts: any): Promise<JobResp> {
+export async function runByPipelineId(id: string, opts: CommonOptions): Promise<JobResp> {
   const client = initClient(opts.hostIp, opts.port);
   logger.start(`run pipeline from pipeline ${id}`);
   try {
@@ -122,7 +123,7 @@ export async function runByPipelineId(id: string, opts: any): Promise<JobResp> {
   }
 }
 
-async function download(id: string, opts: any) {
+async function download(id: string, opts: RunAndDownloadOptions) {
   const client = initClient(opts.hostIp, opts.port);
   const outputRootPath = join(process.cwd(), opts.output || 'output');
   logger.info(`start to download output to ${outputRootPath}`);
@@ -138,12 +139,12 @@ async function download(id: string, opts: any) {
   }
 }
 
-export async function runAndDownload(filename: string, opts: any) {
+export async function runAndDownload(filename: string, opts: RunAndDownloadOptions): Promise<void> {
   const job = await runByFile(filename, opts);
   await download(job.id, opts);
 }
 
-export async function runAndDownloadById(id: string, opts: any) {
+export async function runAndDownloadById(id: string, opts: RunAndDownloadOptions): Promise<void> {
   const job = await runByPipelineId(id, opts);
   await download(job.id, opts);
 }

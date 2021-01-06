@@ -1,6 +1,6 @@
 import {
   PluginTypeI
-} from "@pipcook/pipcook-core";
+} from '@pipcook/pipcook-core';
 
 export interface CommandHandler {
   (): Promise<void>;

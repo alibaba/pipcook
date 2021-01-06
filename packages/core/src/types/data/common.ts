@@ -57,9 +57,9 @@ export abstract class DataLoader {
    * Data-access plugin developer needs to implement these three abstract function
    * which is to notify the length of data, how to get and set the specific index of data
    */
-  abstract async len(): Promise<number>;
-  abstract async getItem(id: number): Promise<Sample>;
-  abstract async setItem(id: number, sample: Sample): Promise<void>;
+  abstract len(): Promise<number>;
+  abstract getItem(id: number): Promise<Sample>;
+  abstract setItem(id: number, sample: Sample): Promise<void>;
 
   notifyProcess(): void {
     this.event.emit(this.id);

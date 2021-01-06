@@ -61,7 +61,7 @@ let previousResults: Record<string, any> = {};
 /**
  * The `Record` of loaded plugins, the key is a string of pname@pversion.
  */
-const plugins: Record<string, Function> = {};
+const plugins: Record<string, (...args : any) => any> = {};
 
 /**
  * Deserialize an argument.

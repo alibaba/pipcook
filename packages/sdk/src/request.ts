@@ -1,5 +1,5 @@
 import * as qs from 'querystring';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as EventSource from 'eventsource';
 import { promisify } from 'util';
 import { ReadStream } from 'fs-extra';
@@ -14,8 +14,10 @@ export interface StreamResp {
 }
 
 axios.defaults.timeout = 60000;
-
-function createGeneralRequest(agent: Function): Function {
+axios.defaults.headers.post = { 'Content-Type': 'application/json' };
+function createGeneralRequest(
+  agent: (...args: any[]) => AxiosPromise<any>
+): (...args: any[]) => Promise<any> {
   return async (...args: any[]) => {
     try {
       const response = await agent(...args);
@@ -30,10 +32,10 @@ function createGeneralRequest(agent: Function): Function {
   };
 }
 
-export const post = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig) => createGeneralRequest(axios.post)(host, body, params, config);
-export const put = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig) => createGeneralRequest(axios.put)(host, body, params, config);
-export const del = async (host: string) => createGeneralRequest(axios.delete)(host);
-export const get = async (host: string, params?: RequestParams, config?: AxiosRequestConfig) => {
+export const post = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => createGeneralRequest(axios.post)(host, body, params, config);
+export const put = async (host: string, body?: RequestParams, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => createGeneralRequest(axios.put)(host, body, params, config);
+export const del = async (host: string): Promise<any> => createGeneralRequest(axios.delete)(host);
+export const get = async (host: string, params?: RequestParams, config?: AxiosRequestConfig): Promise<any> => {
   let uri: string;
   if (params) {
     uri = `${host}?${qs.stringify(params)}`;
@@ -79,50 +81,33 @@ export const getFile = async (host: string, params?: RequestParams): Promise<Str
 
 export const listen = async (host: string, params?: RequestParams, handlers?: Record<string, EventListener>): Promise<EventSource> => {
   return new Promise((resolve, reject) => {
-    let handshaked = false;
     const uri = `${host}${params ? `?${qs.stringify(params)}` : ''}`;
-    const es = new EventSource(uri);
+    const es = new EventSource(uri, {});
     const timeoutHandle = setTimeout(() => {
       es.close();
       reject(new Error(`listen timeout: ${uri}`));
     }, 5000);
-    const onerror = (e: Event) => {
-      if (handshaked === false) {
-        es.close();
-        clearTimeout(timeoutHandle);
-        es.removeEventListener('error', onerror);
-        reject(new Error(`listen error: ${e.type}`));
-      } else if (typeof handlers.error === 'function') {
-        // manually pass the `error` event to user-defined handler.
-        handlers.error(e);
+    es.onopen = () => {
+      clearTimeout(timeoutHandle);
+      resolve(es);
+    };
+    es.onerror = (event: MessageEvent) => {
+      if ((event as any).status === 204) {
+        if (typeof handlers['close'] === 'function') {
+          handlers['close'](null);
+        }
+      } else {
+        if (es.readyState === 1 && typeof handlers['error'] === 'function') {
+          handlers['error'](event);
+        }
       }
     };
-    es.addEventListener('error', onerror);
-    es.addEventListener('session', (e: MessageEvent) => {
-      if (e.data === 'close') {
-        // close the connection and mark the handshaked is disabled.
-        handshaked = false;
-        es.close();
-        if (typeof handlers.close === 'function') {
-          handlers.close(e);
-        }
-      } else if (e.data === 'start') {
-        handshaked = true;
-        // if `handlers.error` not defined, remove the listener directly.
-        if (typeof handlers.error !== 'function') {
-          es.removeEventListener('error', onerror);
-        }
-        // clear the timeout handle because handshake is finished.
-        clearTimeout(timeoutHandle);
-        resolve(es);
+    // register handlers.
+    Object.keys(handlers).forEach((name: string) => {
+      // handle `handlers.error` manually.
+      if (name !== 'error') {
+        es.addEventListener(name, handlers[name]);
       }
     });
-    // register extra handlers.
-    Object.keys(handlers)
-      // handle `handlers.error` manually.
-      .filter((name: string) => name !== 'error')
-      .forEach((name: string) => {
-        es.addEventListener(name, handlers[name]);
-      });
   });
 };

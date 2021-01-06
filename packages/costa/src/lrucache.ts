@@ -17,7 +17,7 @@ export default class LruCache<T> {
     return entry;
   }
 
-  public put(key: string, value: T) {
+  public put(key: string, value: T): void {
     if (this.values.size >= this.maxEntries) {
       const keyToDelete = this.values.keys().next().value;
       this.values.delete(keyToDelete);

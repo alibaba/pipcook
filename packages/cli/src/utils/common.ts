@@ -78,7 +78,8 @@ export async function parseConfigFilename(filename: string): Promise<url.UrlWith
   }
   return urlObj;
 }
-export async function streamToJson(stream: NodeJS.ReadStream): Promise<object> {
+
+export async function streamToJson(stream: NodeJS.ReadStream): Promise<any> {
   return new Promise((resolve, reject) => {
     let jsonStr = '';
     stream.on('data', (chunk: any) => {
@@ -203,7 +204,7 @@ class DefaultLogger implements Logger {
 const { rows, columns, isTTY } = process.stdout;
 export const logger = isTTY && rows > 0 && columns > 0 ? new TtyLogger() : new DefaultLogger();
 
-export function traceLogger(event: string, data: any) {
+export function traceLogger(event: string, data: any): void {
   if (event === 'log') {
     if (data.level === 'info') {
       logger.info(data.data);
@@ -214,7 +215,7 @@ export function traceLogger(event: string, data: any) {
     if (data.jobStatus === PipelineStatus.PENDING) {
       logger.info(`[job] pending: ${data.queueLength}`);
     } else if (data.jobStatus === PipelineStatus.RUNNING) {
-      logger.info(`[job] running${data.step ? ` ${data.step} ${data.stepAction}` : ''}`);
+      logger.info(`[job] running ${data.step ? ` ${data.step} ${data.stepAction}` : ''}`);
     } else if (data.jobStatus === PipelineStatus.FAIL) {
       logger.info('[job] fails');
     } else if (data.jobStatus === PipelineStatus.SUCCESS) {

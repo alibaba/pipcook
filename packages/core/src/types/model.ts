@@ -1,4 +1,4 @@
-import { Sample } from "..";
+import { Sample } from '..';
 
 /**
  * This is used to predict something from trained model.

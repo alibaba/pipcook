@@ -35,7 +35,7 @@ export type ListFilter = {
 /**
  * filter options for `job.list()`
  */
-export type JobListFilter = { pipelineId: string } & ListFilter;
+export type JobListFilter = { where: { pipelineId: string } } & ListFilter;
 
 /**
  * job response
