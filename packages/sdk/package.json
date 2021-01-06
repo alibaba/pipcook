@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@pipcook/pipcook-core": "^1.2.0",
-    "axios": "^0.18.1",
+    "axios": ">=0.21.1",
     "content-disposition": "^0.5.3",
     "eventsource": "^1.0.7",
     "form-data": "^3.0.0",
