@@ -1,138 +1,59 @@
+import test from 'ava';
 import * as path from 'path';
-import { readdir, ensureSymlink, mkdirp, remove } from 'fs-extra';
-import { Writable } from 'stream';
-import { CostaRuntime } from '../src/runtime';
-import { PluginRunnable } from '../src/runnable';
+import * as fs from 'fs-extra';
+import { PluginRunnable } from './runnable';
+import * as ChildProcess from 'child_process';
+import * as utils from './utils';
+import * as IPCProxy from './ipc-proxy';
+import sinon = require('sinon');
 
-class StringWritable extends Writable {
-  data = '';
-  constructor() {
-    super();
-  }
+test.serial.after(() => sinon.restore());
 
-  _write(chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
-    this.data += chunk;
-    console.log(`<StringWritable> ${chunk.toString()}`);
-    callback();
-  }
-}
+test('should constrcute the runnable', (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  t.is(runnable.workingDir, path.join('componentDir', 'mockId'), 'working directory is not correct');
+  t.is((runnable as any).logger, process, 'logger not equal');
+});
 
-describe('start runnable in normal way', () => {
-  const opts = {
-    installDir: path.join(__dirname, '../.tests/plugins'),
-    datasetDir: path.join(__dirname, '../.tests/datasets'),
-    componentDir: path.join(__dirname, '../.tests/components'),
-    npmRegistryPrefix: 'https://registry.npmjs.com/'
-  };
-  const costa = new CostaRuntime(opts);
-  let runnable: PluginRunnable;
-  let logger = {
-    stdout: new StringWritable(),
-    stderr: new StringWritable()
-  };
-  it('perpare', async () => {
-    await Promise.all([
-      remove(opts.installDir),
-      remove(opts.datasetDir),
-      remove(opts.componentDir)
-    ]);
-    await Promise.all([
-      mkdirp(opts.installDir),
-      mkdirp(opts.datasetDir),
-      mkdirp(opts.componentDir)
-    ]);
-  });
+test('should constrcute the runnable with default logger and id', (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir');
+  t.true(runnable.workingDir.startsWith('componentDir'), 'working directory is not correct');
+  t.is((runnable as any).logger, process, 'logger not equal');
+});
 
-  it('should create a new runnable', () => {
-    runnable = new PluginRunnable(costa, logger);
-    expect(runnable.workingDir).toBeInstanceOf(String);
-    expect(runnable.state).toBe('init');
-  });
+test.serial('should bootstrap the runnable', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const stubChild = { stdout: 'mock stdout', stderr: 'mock stderr' };
+  const stubHandShake = sinon.stub().resolves('mockId');
+  const stubEntry = { handshake: stubHandShake };
+  sinon.stub(ChildProcess, 'fork').returns(stubChild as any);
+  sinon.stub(utils, 'pipeLog').returns();
+  sinon.stub(IPCProxy, 'setup').returns(stubEntry as any);
+  sinon.stub(fs, 'ensureDir').resolves();
+  await runnable.bootstrap({ pluginLoadNotRespondingTimeout: 1 });
+  t.is(stubHandShake.callCount, 1, 'should call handshake once');
+});
 
-  it('should bootstrap the runnable', async () => {
-    await runnable.bootstrap({
-      pluginLoadNotRespondingTimeout: 2000
-    });
-    expect(runnable.state).toBe('idle');
-  });
+test.serial('bootstrap the runnable but handshake error', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const stubChild = { stdout: 'mock stdout', stderr: 'mock stderr' };
+  const stubHandShake = sinon.stub().resolves(undefined);
+  const stubEntry = { handshake: stubHandShake };
+  sinon.stub(ChildProcess, 'fork').returns(stubChild as any);
+  sinon.stub(utils, 'pipeLog').returns();
+  sinon.stub(IPCProxy, 'setup').returns(stubEntry as any);
+  sinon.stub(fs, 'ensureDir').resolves();
+  await t.throwsAsync(runnable.bootstrap({ pluginLoadNotRespondingTimeout: 1 }),
+    { instanceOf: TypeError, message: 'created runnable "mockId" failed.'}
+  );
+  t.is(stubHandShake.callCount, 1, 'should call handshake once');
+});
 
-  let tmp: any;
-  it('should start a nodejs plugin', async () => {
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-simple'));
-    await costa.install(simple, process);
-    tmp = await runnable.start(simple, { foobar: true });
-    const stdoutString = logger.stdout.data.toString();
-    expect(stdoutString.indexOf('{ foobar: true }') >= 0).toBe(true);
-  });
-
-  it('should start a python plugin', async () => {
-    await ensureSymlink(
-      path.join(__dirname, '../../boa'),
-      path.join(__dirname, '../tests/plugins/python-simple/node_modules/@pipcook/boa')
-    );
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/python-simple'));
-    await costa.install(simple, process);
-    expect(simple.pipcook.runtime).toBe('python');
-    // test passing the variable from js to python.
-    const tmp2 = await runnable.start(simple, tmp);
-    console.log('tmp, tmp2', tmp, tmp2);
-    const stdout = logger.stdout.data.toString();
-    console.log('stdout output is', stdout);
-    expect(stdout.indexOf('hello python!') >= 0).toBe(true, 'hello python check failed');
-    expect(stdout.indexOf('fn1([0. 0.])') >= 0).toBe(true, 'fn1 check failed');
-    expect(stdout.indexOf('fn2()') >= 0).toBe(true, 'fn2 check failed');
-
-    // test passing the variable from python to python.
-    await runnable.start(simple, tmp2);
-    const stdout2 = logger.stdout.data;
-    expect(stdout2.indexOf('hello python! [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]') >= 0).toBe(true, 'stdout2 check failed');
-  });
-
-  it('should start a python plugin with scope package name', async () => {
-    await ensureSymlink(
-      path.join(__dirname, '../../boa'),
-      path.join(__dirname, '../tests/plugins/python-scope/node_modules/@pipcook/boa'),
-      'dir'
-    );
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/python-scope'));
-    await costa.install(simple, process);
-    // test if the plugin is executed successfully
-    await runnable.start(simple, tmp);
-    const stdout = logger.stdout.data;
-    expect(stdout.indexOf('hello python!') >= 0).toBe(true);
-  });
-
-  it('should destroy the runnable', async () => {
-    await runnable.destroy();
-    const list = await readdir(costa.options.componentDir);
-    expect(list.length).toBe(1);
-  });
-
-  it('should destroy the runnable when it loops', async () => {
-    const logger = process;
-    const costa = new CostaRuntime(opts);
-    runnable = new PluginRunnable(costa, logger);
-    await runnable.bootstrap({ logger });
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-simple'));
-    await costa.install(simple, logger);
-    setTimeout(() => {
-      runnable.destroy();
-    }, 1000);
-    const start = Date.now();
-    await expectAsync(runnable.start(simple, { foobar: true, exitAfter: 5 })).toBeRejected();
-    const cost = Date.now() - start;
-    expect(cost < 5000);
-    console.log(`child process exited after ${cost}ms`);
-  });
-
-  it('should destroy the runnable when it blocks on loading plugin', async () => {
-    const logger = process;
-    const costa = new CostaRuntime(opts);
-    const r2 = new PluginRunnable(costa, logger);
-    await r2.bootstrap({ logger, pluginLoadNotRespondingTimeout: 500 });
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
-    await costa.install(simple, process);
-    await expectAsync(r2.start(simple, { foobar: true }))
-      .toBeRejectedWithError(TypeError, 'call \'load\' timeout.');
-  });
+test('should get value of the PluginResponse', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const mockResp = { id: 'mockRespId' };
+  const mockResult = { id: 'mockResult' };
+  const stubValueOf = sinon.stub().resolves(mockResult);
+  (runnable as any).ipcProxy = { valueOf: stubValueOf };
+  t.deepEqual(await runnable.valueOf(mockResp), mockResult);
 });

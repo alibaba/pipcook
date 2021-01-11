@@ -55,7 +55,6 @@ export class JobCreateParameters {
   params?: JobParam[];
 }
 
-
 @input()
 export class GetJobListParameters {
   @property()

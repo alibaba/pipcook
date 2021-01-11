@@ -463,7 +463,7 @@ export class CostaRuntime {
     if (args?.customEnv) {
       throw new TypeError('"customEnv" is not allowed here.');
     }
-    const runnable = new PluginRunnable(this, args?.logger, args?.id);
+    const runnable = new PluginRunnable(this.options.componentDir, this.options.installDir, args?.logger, args?.id);
     const pluginNodePath = path.join(this.options.installDir, 'node_modules');
     await runnable.bootstrap({
       customEnv: {
