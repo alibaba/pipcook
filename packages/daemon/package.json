@@ -6,7 +6,7 @@
     "@pipcook/app": "^1.3.0",
     "@pipcook/costa": "^1.3.0",
     "@pipcook/pipcook-core": "^1.3.0",
-    "axios": ">=0.21.1",
+    "axios": "^0.21.1",
     "chalk": "^3.0.0",
     "cls-hooked": "^4.2.2",
     "debug": "^4.1.1",
