@@ -1,6 +1,7 @@
 import { injectable, BindingScope, service } from '@loopback/core';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as os from 'os';
 import * as HttpStatus from 'http-status';
 import * as createHttpError from 'http-errors';
 import {
@@ -20,6 +21,8 @@ import { pluginQueue, execAsync } from '../utils';
 import { PluginRepository, JobRepository } from '../repositories';
 import { PluginInfo, JobRunner } from '../job-runner';
 import { Tracer, JobStatusChangeEvent, GenerateOptions } from './interface';
+import { generateTVM } from '../generator/tvm';
+import { generateNode } from '../generator/nodejs';
 
 @injectable({ scope: BindingScope.SINGLETON })
 export class JobService {
@@ -86,34 +89,24 @@ export class JobService {
 
     // post processing the package.json
     const projPackage = await fs.readJSON(dist + '/package.json');
-    projPackage.dependencies = {
-      [opts.plugins.modelDefine.name]: opts.plugins.modelDefine.version
-    };
-    projPackage.scripts = {
-      postinstall: 'node boapkg.js'
-    };
-    if (opts.plugins.dataProcess) {
-      projPackage.dependencies[opts.plugins.dataProcess.name] = opts.plugins.dataProcess.version;
+    let fileQueue = [];
+    console.info('Start generating');
+
+    if (os.platform() === 'darwin' || os.platform() === 'win32') {
+      const tvmGeneratePromise = generateTVM(dist, projPackage, opts);
+      tvmGeneratePromise.catch((e) => {
+        console.error(e);
+      });
+      fileQueue.push(tvmGeneratePromise);
     }
-
-    const jsonWriteOpts = { spaces: 2 } as fs.WriteOptions;
-    const metadata = {
-      pipeline: opts.pipeline,
-      output: job
-    };
-
-    await Promise.all([
-      // copy base components
-      fs.copy(opts.modelPath, dist + '/model'),
-      fs.copy(path.join(__dirname, `../../templates/${opts.template}/predict.js`), `${dist}/index.js`),
-      fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/boapkg.js`),
+    fileQueue.push(generateNode(job, projPackage, dist, opts));
+    fileQueue = fileQueue.concat([
       // copy logs
       fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
-      // write package.json
-      fs.outputJSON(dist + '/package.json', projPackage, jsonWriteOpts),
-      // write metadata.json
-      fs.outputJSON(dist + '/metadata.json', metadata, jsonWriteOpts)
+      fs.unlink(`${dist}/package.json`)
     ]);
+
+    await Promise.all(fileQueue);
     console.info(`trained the model to ${dist}`);
 
     // packing the output directory.
@@ -189,7 +182,7 @@ export class JobService {
         },
         pipeline,
         workingDir: runnable.workingDir,
-        template: 'node' // set node by default
+        template: 'wasm'
       });
       // step4: all done
       runner.dispatchJobEvent(PipelineStatus.SUCCESS);

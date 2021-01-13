@@ -39,6 +39,10 @@ $ pipcook init --beta
 
 After executing the above initialization commands and starting the daemon, you can start using Pipcook, let's start with some simple introductions.
 
+**WASM:** To enable wasm export, users need to manually install and activate `emscripten` on theirselves. The detailed installation manual could be found [here](https://emscripten.org/docs/getting_started/downloads.html).
+
+We will try to metigate the gap and abstract the operations within our system in the coming release.
+
 ## Pipeline Usage
 
 To run a pipeline from a config file, just type the following command:

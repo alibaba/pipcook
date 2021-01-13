@@ -3,6 +3,7 @@ import { Pipeline } from './pipeline';
 import { Plugin } from './plugin';
 import { get } from './request';
 import { VersionsResp, ConfigResp } from './interface';
+import { Lib } from './lib';
 export { JobStatusValue, PluginStatusValue } from './utils';
 export * from './interface';
 
@@ -39,6 +40,11 @@ export class PipcookClient {
   plugin: Plugin;
 
   /**
+   * The lib manager object.
+   */
+  lib: Lib;
+
+  /**
    * @param protocolWithHostname the daemon hostname with protocol, like "http://192.168.1.50"
    * @param port the port
    */
@@ -47,6 +53,7 @@ export class PipcookClient {
     this.pipeline = new Pipeline(this.endpoint);
     this.job = new Job(this.endpoint);
     this.plugin = new Plugin(this.endpoint);
+    this.lib = new Lib(this.endpoint);
   }
 
   /**
