@@ -34,6 +34,6 @@ async function predict(data) {
     sample = await dataProcessModule(sample, {}, JSON.parse(pipeline.dataProcessParams));
   }
   return await model.predict(sample);
-};
+}
 
 module.exports = predict;

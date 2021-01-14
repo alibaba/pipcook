@@ -10,9 +10,9 @@ export function parsePluginName(name: string): { protocol: PluginSourceProtocol;
   let protocol: PluginSourceProtocol;
   if (path.isAbsolute(name)) {
     protocol = 'fs';
-  } else if (/^git(\+ssh|\+https|\+http)?:$/.test(urlObject.protocol)) {
+  } else if (urlObject.protocol && /^git(\+ssh|\+https|\+http)?:$/.test(urlObject.protocol)) {
     protocol = 'git';
-  } else if ([ 'https:', 'http:' ].indexOf(urlObject.protocol) !== -1
+  } else if (urlObject.protocol && urlObject.path && [ 'https:', 'http:' ].indexOf(urlObject.protocol) !== -1
     && (urlObject.path.endsWith('.tgz') || urlObject.path.endsWith('.gz'))) {
     protocol = 'tarball';
   } else if (name[0] !== '.' && !urlObject.protocol) {

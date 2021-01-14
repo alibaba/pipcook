@@ -220,6 +220,11 @@ describe('test downloading utils', () => {
       download('http://unknown-host/nonexists.zip', './nonexistent.zip')
     ).toBeRejected();
   });
+  it('download a invalid url', async () => {
+    await expectAsync(
+      download('abcd', './nonexistent.zip')
+    ).toBeRejected();
+  });
 });
 
 describe('test id utils', () => {

@@ -1,12 +1,12 @@
 module.exports = {
   'env': {
     'node': true,
-    'es6': true,
+    'es6': true
   },
   'extends': [
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended'
   ],
   'rules': {
     'no-trailing-spaces': 'error',
@@ -19,7 +19,7 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': [
       'error',
       {
-        'functions': false,
+        'functions': false
       }
     ],
     "@typescript-eslint/no-unused-vars": [ "error" ],
@@ -42,11 +42,11 @@ module.exports = {
     'no-multi-spaces': 'error',
     'no-multiple-empty-lines': 'error',
     'no-irregular-whitespace': 'error',
-    'arrow-parens': ['error', 'always'],
+    'arrow-parens': [ 'error', 'always' ],
     'arrow-spacing': [ 'error', { before: true, after: true } ],
     'block-spacing': 'error',
     'brace-style': [ 'error', '1tbs', { allowSingleLine: true } ],
     'comma-style': 'error',
-    'no-unused-vars': [ 'off' ], // Use @typescript-eslint/no-unused-vars instead, otherwise there will be checked twice
+    'no-unused-vars': [ 'off' ] // Use @typescript-eslint/no-unused-vars instead, otherwise there will be checked twice
   }
 };

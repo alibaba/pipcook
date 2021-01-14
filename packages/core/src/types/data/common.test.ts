@@ -13,7 +13,7 @@ class LocalDataLoader extends DataLoader {
   }
 
   setItem(): Promise<void> {
-    return null;
+    return Promise.resolve();
   }
 }
 

@@ -63,7 +63,7 @@ export class Pipeline extends BaseApi {
    * @param id pipeline id
    * @param config pipeline config
    */
-  update(id: string, config: PipelineConfig): Promise<PipelineResp> {
+  update(id: string, config: PipelineConfig): Promise<void> {
     return put(`${this.route}/${id}`, {
       config
     });
@@ -83,6 +83,6 @@ export class Pipeline extends BaseApi {
    * @param opt installation options
    */
   install(id: string, opt?: PipelineInstallOption): Promise<TraceResp<PipelineResp>> {
-    return post(`${this.route}/${id}/installation`, opt);
+    return post(`${this.route}/${id}/installation`, opt ?? {});
   }
 }

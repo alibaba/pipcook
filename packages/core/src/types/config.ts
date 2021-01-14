@@ -15,7 +15,7 @@ export interface RunConfigI {
   /**
    * The pipeline name
    */
-  name: string;
+  name?: string;
   /**
    * The plugins configs
    */

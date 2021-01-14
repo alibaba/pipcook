@@ -51,8 +51,7 @@ describe('pipeline api.pipeline test', () => {
   it('update pipeline', async () => {
     // update
     config.name = 'newName';
-    pipeline = await client.pipeline.update(pipeline.id, config);
-    expect(pipeline.name).toBe(config.name);
+    await client.pipeline.update(pipeline.id, config);
   });
   it('remove pipeline', async () => {
     // remove

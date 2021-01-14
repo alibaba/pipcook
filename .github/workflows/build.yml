@@ -68,8 +68,10 @@ jobs:
         yarn
         yarn build
         yarn init-dev
+        mkdir -p ~/.pipcook/db && yarn workspace @pipcook/daemon run migrate 
         du -h -d 1
     - name: Running unit tests
+      if: ${{ runner.os != 'Linux' || matrix.node_version != 12 }}
       run: |
         yarn test
     - name: Run cov
@@ -84,7 +86,7 @@ jobs:
     - name: Migration
       if: ${{ runner.os == 'Linux' }}
       run: |
-        mkdir -p ~/.pipcook/db && cp ./packages/daemon/test/res/baseline-v1.db ~/.pipcook/db/pipcook.db
+        mkdir -p ~/.pipcook/db && cp ./packages/daemon/src/__tests__/__res__/baseline-v1.db ~/.pipcook/db/pipcook.db
     - name: Daemon start
       run: |
         ./packages/cli/dist/bin/pipcook daemon start

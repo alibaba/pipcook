@@ -3,10 +3,10 @@ const { spawn } = require('child_process');
 const { join } = require('path');
 
 const start = Date.now();
-const child = spawn('node',[ join(__dirname, '../bootstrap.js') ]);
+const child = spawn('node', [ join(__dirname, '../bootstrap.js') ]);
 let output = '';
 let isStartup = false;
-child.stdout.on('data', data => {
+child.stdout.on('data', (data) => {
   output += data.toString();
   if (output.indexOf('Server is listening at') >= 0) {
     isStartup = true;
