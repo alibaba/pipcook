@@ -1677,7 +1677,7 @@
     "@types/tough-cookie" "*"
     form-data "^2.5.0"
 
-"@types/semver@^7.3.4":
+"@types/semver@^7.1.0":
   version "7.3.4"
   resolved "https://registry.npmjs.org/@types/semver/-/semver-7.3.4.tgz#43d7168fec6fa0988bb1a513a697b29296721afb"
   integrity sha512-+nVsLKlcUCeMzD2ufHEYuJ9a2ovstb6Dp52A5VsoKxDXgvE051XgHI/33I1EymwkRGQkwnA0LkhnUzituGs4EQ==
