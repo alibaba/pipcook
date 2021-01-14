@@ -100,11 +100,7 @@ export class JobService {
       fileQueue.push(tvmGeneratePromise);
     }
     fileQueue.push(generateNode(job, projPackage, dist, opts));
-    fileQueue = fileQueue.concat([
-      // copy logs
-      fs.copy(opts.workingDir + '/logs', `${dist}/logs`),
-      fs.unlink(`${dist}/package.json`)
-    ]);
+    fileQueue.push(fs.copy(opts.workingDir + '/logs', `${dist}/logs`));
 
     await Promise.all(fileQueue);
     console.info(`trained the model to ${dist}`);
