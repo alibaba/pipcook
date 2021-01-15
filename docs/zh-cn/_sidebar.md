@@ -17,4 +17,7 @@
 - 规范
   - [插件](/zh-cn/spec/plugin.md)
   - [数据集](/zh-cn/spec/dataset.md)
+- [FAQ](/zh-cn/faq/index.md)
+  - [pipcook 框架](/zh-cn/faq/pipcook-framework.md)
+  - [插件](/zh-cn/faq/plugins.md)
 - [术语表](/zh-cn/GLOSSORY.md)
