@@ -3,15 +3,14 @@ import { ChildProcess } from 'child_process';
 export class IPCProxy {
   id = 0;
   callMap: Record<number, (err: Error, result: Record<string, any>) => void> = {};
-  listener: (msg: any) => void = null;
   constructor(
     private child: ChildProcess,
     private timeout = 3000
   ) {
     this.child = child;
-    this.listener = this.msgHandler.bind(this);
-    this.child.on('message', this.listener);
-    this.child.on('exit', () => this.child.off('message', this.listener));
+    const listener = this.msgHandler.bind(this);
+    this.child.on('message', listener);
+    this.child.on('exit', () => this.child.off('message', listener));
     this.timeout = timeout;
   }
 
