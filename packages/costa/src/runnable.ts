@@ -48,7 +48,6 @@ export class PluginRunnable {
   private ipcProxy: IPCProxy = null;
 
   // timer for wait the process to exit itself
-  private notRespondingTimer: NodeJS.Timeout;
   private pluginLoadNotRespondingTimeout: number = defaultPluginLoadNotRespondingTimeout;
 
   /**
