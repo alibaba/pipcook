@@ -39,7 +39,6 @@ const plugins: Record<string, (...args : any) => any> = {};
  * @param arg
  */
 function deserializeArg(arg: Record<string, any>): any {
-  console.log('deserializeArg', arg);
   if (arg.__flag__ === '__pipcook_plugin_runnable_result__' &&
     previousResults[arg.id]) {
     return previousResults[arg.id];
