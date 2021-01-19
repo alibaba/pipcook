@@ -119,7 +119,7 @@ export class PluginRunnable {
     this.handle.once('exit', this.afterDestroy.bind(this));
     this.ipcProxy = new IPCProxy(this.handle);
     // send the first message as handshaking with client
-    const ret = await this.ipcProxy.call('handshake');
+    const ret = await this.ipcProxy.call('handshake', [ this.id ]);
     if (!ret) {
       throw new TypeError(`created runnable "${this.id}" failed.`);
     }
@@ -137,6 +137,7 @@ export class PluginRunnable {
    * @param name the plguin name.
    */
   async start(pkg: PluginPackage, ...args: any[]): Promise<RunnableResponse | null> {
+    console.log('this.state', this.state);
     if (this.state !== 'idle') {
       throw new TypeError(`the runnable "${this.id}" is busy or not ready now`);
     }
@@ -163,7 +164,7 @@ export class PluginRunnable {
     // when the `load` is complete, start the plugin.
     debug(`loaded the plugin(${pkg.name}), start it at ${this.id}.`);
     const valueId = await this.ipcProxy.call('start', [ pkg, ...args ], 0);
-    
+    console.log('valueId', valueId);
     // start is end, now set it to idle.
     this.state = 'idle';
 

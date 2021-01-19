@@ -2,7 +2,7 @@ import * as path from 'path';
 import { UniDataset, DataLoader, generateId } from '@pipcook/pipcook-core';
 import Debug from 'debug';
 
-import { IPCInput, IPCOutput } from '../protocol';
+import { IPCInput } from '../protocol';
 import { PluginPackage } from '../index';
 import loadPlugin from './loaders';
 
@@ -82,47 +82,47 @@ async function load(pkg: PluginPackage): Promise<void> {
  * @param message
  */
 async function start(pkg: PluginPackage, pluginArgs: any): Promise<string | undefined> {
-    const absname = `${pkg.name}@${pkg.version}`;
-    const fn = plugins[absname];
-    if (typeof fn !== 'function') {
-      throw new TypeError(`the plugin(${absname}) not loaded.`);
-    }
+  const absname = `${pkg.name}@${pkg.version}`;
+  const fn = plugins[absname];
+  if (typeof fn !== 'function') {
+    throw new TypeError(`the plugin(${absname}) not loaded.`);
+  }
 
-    if (pkg.pipcook.category === 'dataProcess') {
-      // in "dataProcess" plugin, we need to do process them in one by one.
-      const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
-      [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
-        .filter((loader: DataLoader) => loader != null)
-        .forEach(async (loader: DataLoader) => {
-          process.nextTick(async () => {
-            const len = await loader.len();
-            loader.processIndex = 0;
-            for (let i = 0; i < len; i++) {
-              let sample = await loader.getItem(i);
-              sample = await fn(sample, dataset.metadata, args);
-              await loader.setItem(i, sample);
-              loader.processIndex = i + 1;
-              loader.notifyProcess();
-            }
-          });
+  if (pkg.pipcook.category === 'dataProcess') {
+    // in "dataProcess" plugin, we need to do process them in one by one.
+    const [ dataset, args ] = pluginArgs as [ UniDataset, any ];
+    [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
+      .filter((loader: DataLoader) => loader != null)
+      .forEach(async (loader: DataLoader) => {
+        process.nextTick(async () => {
+          const len = await loader.len();
+          loader.processIndex = 0;
+          for (let i = 0; i < len; i++) {
+            let sample = await loader.getItem(i);
+            sample = await fn(sample, dataset.metadata, args);
+            await loader.setItem(i, sample);
+            loader.processIndex = i + 1;
+            loader.notifyProcess();
+          }
         });
-      return;
-    }
+      });
+    return;
+  }
 
-    if (pkg.pipcook.category === 'datasetProcess') {
-      const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
-      await fn(dataset, args);
-      return;
-    }
+  if (pkg.pipcook.category === 'datasetProcess') {
+    const [ dataset, args ] = pluginArgs as [ UniDataset, any ];
+    await fn(dataset, args);
+    return;
+  }
 
-    // default handler for plugins.
-    const resp = await fn(...pluginArgs.map(deserializeArg));
-    if (resp) {
-      const rid = generateId();
-      previousResults[rid] = resp;
-      console.info(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
-      return rid;
-    }
+  // default handler for plugins.
+  const resp = await fn(...pluginArgs);
+  if (resp) {
+    const rid = generateId();
+    previousResults[rid] = resp;
+    console.info(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
+    return rid;
+  }
 }
 
 /**
@@ -148,24 +148,28 @@ process.on('message', async (msg: IPCInput): Promise<void> => {
     && typeof msg === 'object'
     && typeof msg.method === 'string'
     && typeof msg.id === 'number'
-    && msg.method in handlers
   ) {
+    if (!(msg.method in handlers)) {
+      process.send({id: msg.id, error: new TypeError(`no method found: ${msg.method}`), result: null });
+      return;
+    }
     try {
-      const rst = (handlers as any)[msg.method].call(msg.args);
-      let returnValue = undefined;
+      const rst = (handlers as any)[msg.method](...msg.args);
+      let returnValue = rst;
       if (rst instanceof Promise) {
         returnValue = await rst;
       }
       process.send({id: msg.id, error: null, result: returnValue });
     } catch (err) {
-      process.send({id: msg.id, error: err, result: null });
+      process.send({id: msg.id, error: { messsage: err.message, stack: err.stack }, result: null });
     }
   }
 });
 
 const handlers = {
-  'handshake': (): string => {
+  'handshake': (id: string): string => {
     handshaked = true;
+    clientId = id;
     return clientId;
   },
   'load': async (pkg: PluginPackage): Promise<void> => {
@@ -174,7 +178,7 @@ const handlers = {
     }
     return load(pkg);
   },
-  'start': async (pkg: PluginPackage, pluginArgs: any): Promise<string | undefined> => {
+  'start': async (pkg: PluginPackage, ...pluginArgs: any): Promise<string | undefined> => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
