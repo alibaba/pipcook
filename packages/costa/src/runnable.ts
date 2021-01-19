@@ -6,7 +6,7 @@ import { CostaRuntime, PluginPackage } from './runtime';
 import { pipeLog, LogStdio } from './utils';
 import Debug from 'debug';
 import { generateId } from '@pipcook/pipcook-core';
-import { IPCProxy } from './ipc-proxy';
+import { setup, Entry } from './ipc-proxy';
 const debug = Debug('costa.runnable');
 
 // wait 1000ms for chile process finish.
@@ -45,7 +45,7 @@ export interface BootstrapArg {
 export class PluginRunnable {
   private rt: CostaRuntime;
   private handle: ChildProcess = null;
-  private ipcProxy: IPCProxy = null;
+  private ipcProxy: Entry = null;
 
   // timer for wait the process to exit itself
   private pluginLoadNotRespondingTimeout: number = defaultPluginLoadNotRespondingTimeout;
@@ -112,9 +112,9 @@ export class PluginRunnable {
     });
     pipeLog(this.handle.stdout, this.logger.stdout);
     pipeLog(this.handle.stderr, this.logger.stderr);
-    this.ipcProxy = new IPCProxy(this.handle);
+    this.ipcProxy = setup(this.handle);
     // send the first message as handshaking with client
-    const ret = await this.ipcProxy.call('handshake', [ this.id ]);
+    const ret = await this.ipcProxy.handshake(this.id);
     if (!ret) {
       throw new TypeError(`created runnable "${this.id}" failed.`);
     }
@@ -125,7 +125,7 @@ export class PluginRunnable {
    * @param resp the value to the response.
    */
   async valueOf(resp: RunnableResponse): Promise<any> {
-    return await this.ipcProxy.call('valueOf', [ resp.id ]);
+    return await this.ipcProxy.valueOf(resp);
   }
   /**
    * Do start from a specific plugin.
@@ -154,10 +154,10 @@ export class PluginRunnable {
 
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`env is ready, start loading the plugin(${pkg.name}) at ${this.id}.`);
-    await this.ipcProxy.call('load', [ pkg ], this.pluginLoadNotRespondingTimeout);
+    await this.ipcProxy.load(pkg, this.pluginLoadNotRespondingTimeout);
     // when the `load` is complete, start the plugin.
     debug(`loaded the plugin(${pkg.name}), start it at ${this.id}.`);
-    const result = await this.ipcProxy.call('start', [ pkg, ...args ], 0);
+    const result = await this.ipcProxy.start(pkg, ...args);
     // start is end, now set it to idle.
     this.state = 'idle';
 
@@ -173,10 +173,10 @@ export class PluginRunnable {
     this.canceled = true;
     // if not exit after `waitForDestroied`, we need to kill it directly.
     try {
-      await this.ipcProxy.call('destroy', undefined, waitForDestroyed);
+      await this.ipcProxy.destroy(waitForDestroyed);
     } catch (err) {
       this.state = 'error';
-      this.ipcProxy.destory();
+      this.handle.kill('SIGKILL');
     }
   }
 }

@@ -1,5 +1,6 @@
 import { ChildProcess } from 'child_process';
 import { IPCOutput } from './protocol';
+import { PluginPackage, RunnableResponse } from './runtime';
 import Debug from 'debug';
 const debug = Debug('costa.runnable');
 
@@ -79,3 +80,32 @@ export class IPCProxy {
     this.child.kill('SIGKILL');
   }
 }
+
+export interface Entry {
+  handshake: (id: string) => Promise<string>;
+  load: (pkg: PluginPackage, timeout: number) => Promise<void>;
+  start: (pkg: PluginPackage, ...pluginArgs: any) => Promise<RunnableResponse | undefined>;
+  destroy: (timeout: number) => Promise<void>;
+  valueOf: (obj: RunnableResponse) => Promise<any>;
+}
+
+export const setup = (child: ChildProcess): Entry => {
+  const ipc = new IPCProxy(child);
+  return {
+    handshake: async (id: string): Promise<string> => {
+      return ipc.call('handshake', [ id ]);
+    },
+    load: async (pkg: PluginPackage, timeout: number): Promise<void> => {
+      return ipc.call('load', [ pkg ], timeout);
+    },
+    start: (pkg: PluginPackage, ...pluginArgs: any): Promise<RunnableResponse | undefined> => {
+      return ipc.call('start', [ pkg, ...pluginArgs ], 0);
+    },
+    destroy: (timeout: number): Promise<void> => {
+      return ipc.call('destroy', undefined, timeout);
+    },
+    valueOf: (obj: RunnableResponse): Promise<any> => {
+      return ipc.call('valueOf', [ obj ]);
+    }
+  };
+};
