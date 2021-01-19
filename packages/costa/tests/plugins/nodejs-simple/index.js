@@ -1,6 +1,6 @@
 
 module.exports = function(data) {
-  console.log(data);
+  console.log('nodejs-simple input', data);
   if (data && data.exitAfter && typeof data.exitAfter === 'number') {
     const start = Date.now();
     console.log('loop in');

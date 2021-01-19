@@ -38,8 +38,13 @@ const plugins: Record<string, (...args : any) => any> = {};
  * Deserialize an argument.
  * @param arg
  */
-function deserializeArg(id: string): any {
-  return previousResults[id];
+function deserializeArg(arg: Record<string, any>): any {
+  console.log('deserializeArg', arg);
+  if (arg.__flag__ === '__pipcook_plugin_runnable_result__' &&
+    previousResults[arg.id]) {
+    return previousResults[arg.id];
+  }
+  return arg;
 }
 
 /**
@@ -81,7 +86,7 @@ async function load(pkg: PluginPackage): Promise<void> {
  * for the plug-in runtime.
  * @param message
  */
-async function start(pkg: PluginPackage, pluginArgs: any): Promise<string | undefined> {
+async function start(pkg: PluginPackage, pluginArgs: any): Promise<Record<string, any> | undefined> {
   const absname = `${pkg.name}@${pkg.version}`;
   const fn = plugins[absname];
   if (typeof fn !== 'function') {
@@ -90,7 +95,7 @@ async function start(pkg: PluginPackage, pluginArgs: any): Promise<string | unde
 
   if (pkg.pipcook.category === 'dataProcess') {
     // in "dataProcess" plugin, we need to do process them in one by one.
-    const [ dataset, args ] = pluginArgs as [ UniDataset, any ];
+    const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
     [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
       .filter((loader: DataLoader) => loader != null)
       .forEach(async (loader: DataLoader) => {
@@ -110,18 +115,21 @@ async function start(pkg: PluginPackage, pluginArgs: any): Promise<string | unde
   }
 
   if (pkg.pipcook.category === 'datasetProcess') {
-    const [ dataset, args ] = pluginArgs as [ UniDataset, any ];
+    const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
     await fn(dataset, args);
     return;
   }
 
   // default handler for plugins.
-  const resp = await fn(...pluginArgs);
+  const resp = await fn(...pluginArgs.map(deserializeArg));
   if (resp) {
-    const rid = generateId();
-    previousResults[rid] = resp;
-    console.info(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
-    return rid;
+    const id = generateId();
+    previousResults[id] = resp;
+    console.info(`create a result "${id}" for plugin "${pkg.name}@${pkg.version}"`);
+    return {
+      id,
+      __flag__: '__pipcook_plugin_runnable_result__'
+    };
   }
 }
 
@@ -129,44 +137,22 @@ async function start(pkg: PluginPackage, pluginArgs: any): Promise<string | unde
  * Emits a destroy event, it exits the current client process.
  */
 async function destroy(): Promise<void> {
-  clientId = null;
-  handshaked = false;
-  process.exit(0);
+  process.nextTick(() => {
+    clientId = null;
+    handshaked = false;
+    process.exit(0);
+  })
 }
 
 /**
  * Gets the response by a result.
  * @param message
  */
-function getResponse(id: string): any {
-  return deserializeArg(id);
+function getResponse(arg: Record<string, any>): any {
+  return deserializeArg(arg);
 }
 
-process.on('message', async (msg: IPCInput): Promise<void> => {
-  if (
-    msg
-    && typeof msg === 'object'
-    && typeof msg.method === 'string'
-    && typeof msg.id === 'number'
-  ) {
-    if (!(msg.method in handlers)) {
-      process.send({id: msg.id, error: new TypeError(`no method found: ${msg.method}`), result: null });
-      return;
-    }
-    try {
-      const rst = (handlers as any)[msg.method](...msg.args);
-      let returnValue = rst;
-      if (rst instanceof Promise) {
-        returnValue = await rst;
-      }
-      process.send({id: msg.id, error: null, result: returnValue });
-    } catch (err) {
-      process.send({id: msg.id, error: { messsage: err.message, stack: err.stack }, result: null });
-    }
-  }
-});
-
-const handlers = {
+const handlers: Record<string, Function> = {
   'handshake': (id: string): string => {
     handshaked = true;
     clientId = id;
@@ -178,25 +164,61 @@ const handlers = {
     }
     return load(pkg);
   },
-  'start': async (pkg: PluginPackage, ...pluginArgs: any): Promise<string | undefined> => {
+  'start': async (pkg: PluginPackage, ...pluginArgs: any): Promise<Record<string, any> | undefined> => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
     return start(pkg, pluginArgs);
   },
-  'destory': async (): Promise<void> => {
+  'destroy': async (): Promise<void> => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
     return destroy();
   },
-  'valueOf': (id: string): any => {
+  'valueOf': (obj: Record<string, any>): any => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
-    return getResponse(id);
+    return getResponse(obj);
   }
 };
+
+function send(message: Record<string, any>) {
+  if (!process.send(message, (err: Error) => {
+    if (err) {
+      console.error(`failed to send a message to parent process with error: ${err.message}`);
+    }
+  })) {
+    console.error('failed to send a message to parent process.');
+  }
+}
+
+process.on('message', async (msg: IPCInput): Promise<void> => {
+  debug('entry receive message', msg, handlers);
+  if (
+    msg
+    && typeof msg === 'object'
+    && typeof msg.method === 'string'
+    && typeof msg.id === 'number'
+  ) {
+    if (!(msg.method in handlers)) {
+      send({id: msg.id, error: new TypeError(`no method found: ${msg.method}`), result: null });
+      return;
+    }
+    try {
+      const args = msg.args || [];
+      const rst = handlers[msg.method](...args);
+      let returnValue = rst;
+      if (rst instanceof Promise) {
+        returnValue = await rst;
+      }
+      send({id: msg.id, error: null, result: returnValue });
+    } catch (err) {
+      send({id: msg.id, error: { messsage: err.message, stack: err.stack }, result: null });
+    }
+  }
+});
 
 // if any error occurrs by promise chain in `nextTick`,
 // the error will be thrown from event `unhandledRejection`,

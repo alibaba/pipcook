@@ -1,5 +1,16 @@
 import { ChildProcess } from 'child_process';
 import { IPCOutput } from './protocol';
+import Debug from 'debug';
+const debug = Debug('costa.runnable');
+
+export class IPCTimeoutError extends TypeError {
+  code: string;
+  constructor(msg: string) {
+    super(msg || 'read timeout.');
+    this.code = 'READ_TIMEOUT';
+  }
+}
+
 export class IPCProxy {
   id = 0;
   callMap: Record<number, (err: Error, result: Record<string, any>) => void> = {};
@@ -10,11 +21,21 @@ export class IPCProxy {
     this.child = child;
     const listener = this.msgHandler.bind(this);
     this.child.on('message', listener);
-    this.child.once('exit', () => this.child.off('message', listener));
+    this.child.once('exit', this.onCleanup.bind(this, listener));
     this.timeout = timeout;
   }
 
+  onCleanup(listener: any, code: number, signal: string) {
+    debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
+    for(var id in this.callMap) {
+      this.callMap[id](new TypeError(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`), null);
+    }
+    this.callMap = {};
+    this.child.off('message', listener)
+  }
+
   msgHandler(msg: IPCOutput) {
+    debug('msg from child', msg);
     if (msg && typeof msg === 'object' && this.callMap[msg.id]) {
       let err;
       if (msg.error) {
@@ -33,7 +54,7 @@ export class IPCProxy {
       if (timeout > 0) {
         timer = setTimeout(() => {
           delete this.callMap[currentId];
-          j(new TypeError(`call '${method}' timeout`));
+          j(new IPCTimeoutError(`call '${method}' timeout.`));
         }, t);
       }
       this.callMap[currentId] = (err, result) => {

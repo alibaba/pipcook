@@ -47,9 +47,6 @@ export class PluginRunnable {
   private handle: ChildProcess = null;
   private ipcProxy: IPCProxy = null;
 
-  // private events
-  private ondestroyed: () => void;
-
   // timer for wait the process to exit itself
   private notRespondingTimer: NodeJS.Timeout;
   private pluginLoadNotRespondingTimeout: number = defaultPluginLoadNotRespondingTimeout;
@@ -116,7 +113,6 @@ export class PluginRunnable {
     });
     pipeLog(this.handle.stdout, this.logger.stdout);
     pipeLog(this.handle.stderr, this.logger.stderr);
-    this.handle.once('exit', this.afterDestroy.bind(this));
     this.ipcProxy = new IPCProxy(this.handle);
     // send the first message as handshaking with client
     const ret = await this.ipcProxy.call('handshake', [ this.id ]);
@@ -137,7 +133,6 @@ export class PluginRunnable {
    * @param name the plguin name.
    */
   async start(pkg: PluginPackage, ...args: any[]): Promise<RunnableResponse | null> {
-    console.log('this.state', this.state);
     if (this.state !== 'idle') {
       throw new TypeError(`the runnable "${this.id}" is busy or not ready now`);
     }
@@ -163,13 +158,11 @@ export class PluginRunnable {
     await this.ipcProxy.call('load', [ pkg ], this.pluginLoadNotRespondingTimeout);
     // when the `load` is complete, start the plugin.
     debug(`loaded the plugin(${pkg.name}), start it at ${this.id}.`);
-    const valueId = await this.ipcProxy.call('start', [ pkg, ...args ], 0);
-    console.log('valueId', valueId);
+    const result = await this.ipcProxy.call('start', [ pkg, ...args ], 0);
     // start is end, now set it to idle.
     this.state = 'idle';
 
-    // return if the result id is provided.
-    return valueId ? { id: valueId } : null;
+    return result;
   }
   /**
    * Destroy this runnable, this will kill process, and get notified on `afterDestory()`.
@@ -181,31 +174,10 @@ export class PluginRunnable {
     this.canceled = true;
     // if not exit after `waitForDestroied`, we need to kill it directly.
     try {
-      await this.ipcProxy.call('destory', undefined, waitForDestroyed);
+      await this.ipcProxy.call('destroy', undefined, waitForDestroyed);
     } catch (err) {
       this.state = 'error';
       this.ipcProxy.destory();
-    }
-    return new Promise((resolve) => {
-      this.ondestroyed = resolve;
-    });
-  }
-  /**
-   * Fired when the peer client is exited.
-   */
-  private async afterDestroy(code: number, signal: NodeJS.Signals): Promise<void> {
-    debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
-    if (this.notRespondingTimer) {
-      clearTimeout(this.notRespondingTimer);
-      this.notRespondingTimer = null;
-    }
-    // FIXME(Yorkie): remove component directory?
-    // await remove(path.join(this.rt.options.componentDir, this.id));
-    // if (typeof this.onread === 'function' && typeof this.onreadfail === 'function') {
-    //   this.onreadfail(new TypeError(`costa runtime is destroyed(${signal}).`));
-    // }
-    if (typeof this.ondestroyed === 'function') {
-      this.ondestroyed();
     }
   }
 }
