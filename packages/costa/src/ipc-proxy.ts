@@ -25,16 +25,16 @@ export class IPCProxy {
     this.timeout = timeout;
   }
 
-  onCleanup(listener: any, code: number, signal: string) {
+  onCleanup(listener: any, code: number, signal: string): void {
     debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
-    for(var id in this.callMap) {
+    for (let id in this.callMap) {
       this.callMap[id](new TypeError(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`), null);
     }
     this.callMap = {};
-    this.child.off('message', listener)
+    this.child.off('message', listener);
   }
 
-  msgHandler(msg: IPCOutput) {
+  msgHandler(msg: IPCOutput): void {
     debug('msg from child', msg);
     if (msg && typeof msg === 'object' && this.callMap[msg.id]) {
       let err;
@@ -44,7 +44,7 @@ export class IPCProxy {
       }
       this.callMap[msg.id](err, msg.result);
     }
-  };
+  }
 
   async call(method: string, args: any[] = undefined, timeout: number = undefined): Promise<any> {
     return new Promise((r, j) => {
@@ -64,18 +64,18 @@ export class IPCProxy {
         delete this.callMap[currentId];
         err ? j(err) : r(result);
       };
-      const rst = this.child.send({id: currentId, method, args}, (err: Error) => {
+      const rst = this.child.send({ id: currentId, method, args }, (err: Error) => {
         if (err) {
           j(err);
         }
       });
       if (!rst) {
         j(new TypeError('send ipc message error'));
-      };
+      }
     });
   }
 
-  destory() {
+  destory(): void {
     this.child.kill('SIGKILL');
   }
 }

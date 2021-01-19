@@ -1,4 +1,3 @@
-import { IPCInput, IPCOutput } from '../protocol';
 import './entry';
 
 const emit = process.emit.bind(process) as any;
@@ -11,12 +10,12 @@ describe('test entry', () => {
     const spy = spyOn(process, 'send');
 
     const id = 'foobar';
-    emit('message', {id: 1, method: 'handshake', args: [ id ]});
+    emit('message', { id: 1, method: 'handshake', args: [ id ] });
     process.nextTick(() => {
       const firstCall = spy.calls.first();
-      expect(firstCall.args[0]).toEqual({id: 1, error: null, result: id });
+      expect(firstCall.args[0]).toEqual({ id: 1, error: null, result: id });
       done();
-    })
+    });
   });
 
   it('should test emit with failed result', (done) => {
@@ -24,7 +23,7 @@ describe('test entry', () => {
     spyOn(console, 'error');
 
     const id = 'foobar2';
-    emit('message', {id: 1, method: 'handshake', args: [ id ]});
+    emit('message', { id: 1, method: 'handshake', args: [ id ] });
 
     process.nextTick(() => {
       const firstCall = (console.error as any).calls.first();

@@ -141,7 +141,7 @@ async function destroy(): Promise<void> {
     clientId = null;
     handshaked = false;
     process.exit(0);
-  })
+  });
 }
 
 /**
@@ -152,7 +152,7 @@ function getResponse(arg: Record<string, any>): any {
   return deserializeArg(arg);
 }
 
-const handlers: Record<string, Function> = {
+const handlers: Record<string, any> = {
   'handshake': (id: string): string => {
     handshaked = true;
     clientId = id;
@@ -203,7 +203,7 @@ process.on('message', async (msg: IPCInput): Promise<void> => {
     && typeof msg.id === 'number'
   ) {
     if (!(msg.method in handlers)) {
-      send({id: msg.id, error: new TypeError(`no method found: ${msg.method}`), result: null });
+      send({ id: msg.id, error: new TypeError(`no method found: ${msg.method}`), result: null });
       return;
     }
     try {
@@ -213,9 +213,9 @@ process.on('message', async (msg: IPCInput): Promise<void> => {
       if (rst instanceof Promise) {
         returnValue = await rst;
       }
-      send({id: msg.id, error: null, result: returnValue });
+      send({ id: msg.id, error: null, result: returnValue });
     } catch (err) {
-      send({id: msg.id, error: { messsage: err.message, stack: err.stack }, result: null });
+      send({ id: msg.id, error: { messsage: err.message, stack: err.stack }, result: null });
     }
   }
 });
