@@ -44,7 +44,7 @@ test.serial('bootstrap the runnable but handshake error', async (t) => {
   sinon.stub(IPCProxy, 'setup').returns(stubEntry as any);
   sinon.stub(fs, 'ensureDir').resolves();
   await t.throwsAsync(runnable.bootstrap({ pluginLoadNotRespondingTimeout: 1 }),
-    { instanceOf: TypeError, message: 'created runnable "mockId" failed.'}
+    { instanceOf: TypeError, message: 'created runnable "mockId" failed.' }
   );
   t.is(stubHandShake.callCount, 1, 'should call handshake once');
 });

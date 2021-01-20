@@ -47,7 +47,7 @@ export class PluginRunnable {
 
   /**
    * the job work directroy
-   */ 
+   */
   private pluginDir: string;
 
   // timer for wait the process to exit itself
