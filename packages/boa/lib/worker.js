@@ -9,7 +9,7 @@ const { wrap } = require('./proxy');
 
 const TYPE_ID = 'SHARED_PYTHON_OBJECT_TYPE';
 if (process.moduleLoadList.indexOf('NativeModule worker_threads') > 0) {
-  [isMainThread, workerData] = require('worker_threads');
+  ({ isMainThread, workerData } = require('worker_threads'));
   supportWorkerThreads = true;
 }
 
