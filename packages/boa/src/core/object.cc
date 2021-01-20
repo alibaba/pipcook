@@ -49,14 +49,16 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
       });
 
   /**
-   * See https://github.com/nodejs/node-addon-examples/commit/dc86a662c27c5732e069e1c19d3b7a8e74e86d29
-   * `worker_threads` requires addon to be context-sensistive, otherwise downgrade to static constructor.
+   * See
+   * https://github.com/nodejs/node-addon-examples/commit/dc86a662c27c5732e069e1c19d3b7a8e74e86d29
+   * `worker_threads` requires addon to be context-sensistive, otherwise
+   * downgrade to static constructor.
    */
 #if (NAPI_VERSION < 5)
   constructor = Persistent(func);
   constructor.SuppressDestruct();
 #else
-  FunctionReference* constructor = new FunctionReference();
+  FunctionReference *constructor = new FunctionReference();
   *constructor = Persistent(func);
   env.SetInstanceData(constructor);
 #endif
@@ -80,7 +82,7 @@ Object PythonObject::NewInstance(Napi::Env env, pybind::object src) {
   auto instance = constructor.New({External<pybind::object>::New(env, &src)});
 #else
   auto instance = env.GetInstanceData<FunctionReference>()->New(
-    {External<pybind::object>::New(env, &src)});
+      {External<pybind::object>::New(env, &src)});
 #endif
   return scope.Escape(napi_value(instance)).ToObject();
 }
