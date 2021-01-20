@@ -57,3 +57,59 @@ test('should get value of the PluginResponse', async (t) => {
   (runnable as any).ipcProxy = { valueOf: stubValueOf };
   t.deepEqual(await runnable.valueOf(mockResp), mockResult);
 });
+
+test.serial('should start the plugin', async (t) => {
+  const args = [ { name: '@pipcook/mock-plugin' }, 1, 2, 3 ];
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const stubLoad = sinon.stub().resolves();
+  const stubStart = sinon.stub().resolves(null);
+  const stubEntry = { load: stubLoad, start: stubStart };
+  (runnable as any).ipcProxy = stubEntry;
+  (runnable as any).state = 'idle';
+  sinon.stub(fs, 'ensureDir').resolves();
+  sinon.stub(fs, 'ensureSymlink').resolves();
+  t.is(await runnable.start(args[0] as any, args[1], args[2], args[3]), null, 'start result should be null');
+  t.true(stubStart.calledOnce, 'start should be called once');
+  t.deepEqual(stubStart.args[0], args, 'start args should be [ 1, 2, 3 ]');
+  t.true(stubLoad.calledOnce, 'load should be called once');
+});
+
+test('should start the plugin but runnable not idle', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  (runnable as any).state = 'busy';
+  await t.throwsAsync(runnable.start({} as any), {
+    instanceOf: TypeError, message: 'the runnable "mockId" is busy or not ready now'
+  });
+});
+
+test('should destroy but not connected', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  (runnable as any).handle = { connected: false };
+  const stubDestroy = sinon.stub().resolves(null);
+  const stubEntry = { destroy: stubDestroy };
+  (runnable as any).ipcProxy = stubEntry;
+  await runnable.destroy();
+  t.false(stubDestroy.called, 'ipc destroy should not be called');
+});
+
+test('should destroy', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  (runnable as any).handle = { connected: true };
+  const stubDestroy = sinon.stub().resolves(null);
+  const stubEntry = { destroy: stubDestroy };
+  (runnable as any).ipcProxy = stubEntry;
+  await runnable.destroy();
+  t.true(stubDestroy.calledOnce, 'ipc destroy should be called once');
+});
+
+test('should destroy but ipc error', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const stubKill = sinon.stub().returns(null);
+  (runnable as any).handle = { connected: true, kill: stubKill };
+  const stubDestroy = sinon.stub().rejects(new Error('ipc error'));
+  const stubEntry = { destroy: stubDestroy };
+  (runnable as any).ipcProxy = stubEntry;
+  await runnable.destroy();
+  t.true(stubDestroy.calledOnce, 'ipc destroy should be called once');
+  t.true(stubKill.calledOnce, 'kill should be called once');
+});

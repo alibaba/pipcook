@@ -2,8 +2,8 @@
   "name": "@pipcook/costa",
   "version": "1.2.0",
   "description": "The Pipcook Plugin Runtime",
-  "main": "dist/runtime",
-  "types": "dist/runtime",
+  "main": "dist",
+  "types": "dist",
   "files": [
     "dist"
   ],
@@ -45,5 +45,11 @@
     "access": "public"
   },
   "keywords": [],
-  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
+  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
+  "ava": {
+		"files": [
+			"dist/**/*.test.js",
+			"!tests"
+    ]
+  }
 }
