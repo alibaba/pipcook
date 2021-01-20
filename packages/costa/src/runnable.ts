@@ -13,7 +13,7 @@ const debug = Debug('costa.runnable');
 const waitForDestroyed = 1000;
 
 // default PLNR(Plugin Load Not Responding) timeout.
-const defaultPluginLoadNotRespondingTimeout = 10 * 1000;
+const defaultPluginLoadNotRespondingTimeout = 60 * 1000;
 export interface RunnableResponse {
   id: string;
 }
