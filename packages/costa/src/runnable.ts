@@ -1,7 +1,6 @@
 import * as path from 'path';
 import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
-// import { IPCInput, IPCOutput } from './protocol';
 import { CostaRuntime, PluginPackage } from './runtime';
 import { pipeLog, LogStdio } from './utils';
 import Debug from 'debug';
@@ -13,7 +12,7 @@ const debug = Debug('costa.runnable');
 const waitForDestroyed = 1000;
 
 // default PLNR(Plugin Load Not Responding) timeout.
-const defaultPluginLoadNotRespondingTimeout = 60 * 1000;
+const defaultPluginLoadNotRespondingTimeout = 10 * 1000;
 export interface RunnableResponse {
   id: string;
 }

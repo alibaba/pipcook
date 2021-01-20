@@ -8,6 +8,8 @@ import loadPlugin from './loaders';
 
 const debug = Debug('costa.client');
 
+const previousFlag = '__pipcook_plugin_runnable_result__';
+
 // Set the costa runtime title.
 process.title = 'pipcook.costa';
 
@@ -39,7 +41,7 @@ const plugins: Record<string, (...args : any) => any> = {};
  * @param arg
  */
 function deserializeArg(arg: Record<string, any>): any {
-  if (arg.__flag__ === '__pipcook_plugin_runnable_result__' &&
+  if (arg.__flag__ === previousFlag &&
     previousResults[arg.id]) {
     return previousResults[arg.id];
   }
@@ -127,7 +129,7 @@ async function start(pkg: PluginPackage, pluginArgs: any): Promise<Record<string
     console.info(`create a result "${id}" for plugin "${pkg.name}@${pkg.version}"`);
     return {
       id,
-      __flag__: '__pipcook_plugin_runnable_result__'
+      __flag__: previousFlag
     };
   }
 }
