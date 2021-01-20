@@ -1,7 +1,6 @@
 if (process.moduleLoadList.indexOf('NativeModule worker_threads') === -1) {
   console.log('just skip the module because worker_threads not found');
-  // eslint-disable-next-line no-process-exit
-  return process.exit(0);
+  return;
 }
 
 const test = require('tape');
