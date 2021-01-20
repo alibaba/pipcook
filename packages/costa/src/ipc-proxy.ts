@@ -56,6 +56,7 @@ export class IPCProxy {
         timer = setTimeout(() => {
           delete this.callMap[currentId];
           j(new IPCTimeoutError(`call '${method}' timeout.`));
+          this.destory();
         }, t);
       }
       this.callMap[currentId] = (err, result) => {
