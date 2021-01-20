@@ -57,8 +57,3 @@ test('should get value of the PluginResponse', async (t) => {
   (runnable as any).ipcProxy = { valueOf: stubValueOf };
   t.deepEqual(await runnable.valueOf(mockResp), mockResult);
 });
-
-test('should start the plugin', async (t) => {
-  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
-  t.deepEqual(await runnable.start();
-});
