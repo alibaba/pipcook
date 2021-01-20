@@ -26,7 +26,7 @@ export class IPCProxy {
 
   onCleanup(listener: any, code: number, signal: string): void {
     debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
-    for (let id in this.callMap) {
+    for (const id in this.callMap) {
       this.callMap[id](new TypeError(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`), null);
     }
     this.callMap = {};
