@@ -219,11 +219,13 @@ describe('test downloading utils', () => {
     await expectAsync(
       download('http://unknown-host/nonexists.zip', './nonexistent.zip')
     ).toBeRejected();
+    await fs.remove('./nonexistent.zip');
   });
   it('download a invalid url', async () => {
     await expectAsync(
       download('abcd', './nonexistent.zip')
     ).toBeRejected();
+    await fs.remove('./nonexistent.zip');
   });
 });
 
