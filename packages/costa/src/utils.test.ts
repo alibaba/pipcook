@@ -46,3 +46,28 @@ test.cb('test pipeLog', (t) => {
     t.end();
   });
 });
+
+test.cb('test pipeLog without prefix', (t) => {
+  const mockString = 'this is a mock string: line1\nline2\n';
+  const writeStream = new StringWritable();
+  const readStream = new StringReadable(mockString);
+  pipeLog(readStream, writeStream);
+  readStream.on('end', () => {
+    console.log('writeStream.data:', writeStream.data);
+    t.is(writeStream.data, mockString);
+    t.end();
+  });
+});
+
+test.cb('test pipeLog with error', (t) => {
+  const mockString = 'this is a mock string: line1\nline2\n';
+  const writeStream = new StringWritable();
+  const readStream = new StringReadable(mockString);
+  const error = new TypeError('mock error');
+  writeStream.on('error', (err) => {
+    t.is(err, error, 'should throw error');
+    t.end();
+  });
+  pipeLog(readStream, writeStream);
+  readStream.emit('error', error);
+});
