@@ -7,7 +7,7 @@ import * as utils from './utils';
 import * as IPCProxy from './ipc-proxy';
 import sinon = require('sinon');
 
-test.serial.after(() => sinon.restore());
+test.serial.afterEach(() => sinon.restore());
 
 test('should constrcute the runnable', (t) => {
   const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
@@ -56,4 +56,9 @@ test('should get value of the PluginResponse', async (t) => {
   const stubValueOf = sinon.stub().resolves(mockResult);
   (runnable as any).ipcProxy = { valueOf: stubValueOf };
   t.deepEqual(await runnable.valueOf(mockResp), mockResult);
+});
+
+test('should start the plugin', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  t.deepEqual(await runnable.start();
 });
