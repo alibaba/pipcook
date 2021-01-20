@@ -34,12 +34,15 @@ class StringReadable extends Readable {
   }
 }
 
-test('test pipeLog', async (t) => {
+test.cb('test pipeLog', (t) => {
   const mockString = 'this is a mock string: line1\nline2\n';
   const correctString = 'mockPrefix: this is a mock string: line1\nmockPrefix: line2\n';
   const writeStream = new StringWritable();
   const readStream = new StringReadable(mockString);
-  await pipeLog(readStream, writeStream, 'mockPrefix');
-  console.log(writeStream.data);
-  t.is(writeStream.data, correctString);
+  pipeLog(readStream, writeStream, 'mockPrefix');
+  readStream.on('end', () => {
+    console.log('writeStream.data:', writeStream.data);
+    t.is(writeStream.data, correctString);
+    t.end();
+  });
 });
