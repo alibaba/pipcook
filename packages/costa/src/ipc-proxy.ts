@@ -19,11 +19,9 @@ export class IPCProxy {
     private child: ChildProcess,
     private timeout = 3000
   ) {
-    this.child = child;
     const listener = this.msgHandler.bind(this);
     this.child.on('message', listener);
     this.child.once('exit', this.onCleanup.bind(this, listener));
-    this.timeout = timeout;
   }
 
   onCleanup(listener: any, code: number, signal: string): void {
@@ -48,15 +46,17 @@ export class IPCProxy {
   }
 
   async call(method: string, args: any[] = undefined, timeout: number = undefined): Promise<any> {
-    return new Promise((r, j) => {
+    if (!this.child.connected) {
+      throw new TypeError('the process is disconnected.');
+    }
+    return new Promise((resolve, reject) => {
       const currentId = this.id++;
       const t = timeout || this.timeout;
       let timer: NodeJS.Timeout = undefined;
       if (timeout > 0) {
         timer = setTimeout(() => {
           delete this.callMap[currentId];
-          j(new IPCTimeoutError(`call '${method}' timeout.`));
-          this.destory();
+          reject(new IPCTimeoutError(`call '${method}' timeout.`));
         }, t);
       }
       this.callMap[currentId] = (err, result) => {
@@ -64,21 +64,17 @@ export class IPCProxy {
           clearTimeout(timer);
         }
         delete this.callMap[currentId];
-        err ? j(err) : r(result);
+        err ? reject(err) : resolve(result);
       };
       const rst = this.child.send({ id: currentId, method, args }, (err: Error) => {
         if (err) {
-          j(err);
+          reject(err);
         }
       });
       if (!rst) {
-        j(new TypeError('send ipc message error'));
+        reject(new TypeError('send ipc message error'));
       }
     });
-  }
-
-  destory(): void {
-    this.child.kill('SIGKILL');
   }
 }
 
@@ -90,23 +86,31 @@ export interface Entry {
   valueOf: (obj: RunnableResponse) => Promise<any>;
 }
 
+export const killProcessIfError = (process: ChildProcess, future: Promise<any>): Promise<any> => {
+  return future.catch((err) => {
+    process.kill('SIGKILL');
+    throw err;
+  });
+};
+
 export const setup = (child: ChildProcess): Entry => {
   const ipc = new IPCProxy(child);
+
   return {
     handshake: async (id: string): Promise<string> => {
-      return ipc.call('handshake', [ id ]);
+      return killProcessIfError(child, ipc.call('handshake', [ id ]));
     },
     load: async (pkg: PluginPackage, timeout: number): Promise<void> => {
-      return ipc.call('load', [ pkg ], timeout);
+      return killProcessIfError(child, ipc.call('load', [ pkg ], timeout));
     },
     start: (pkg: PluginPackage, ...pluginArgs: any): Promise<RunnableResponse | undefined> => {
-      return ipc.call('start', [ pkg, ...pluginArgs ], 0);
+      return killProcessIfError(child, ipc.call('start', [ pkg, ...pluginArgs ], 0));
     },
     destroy: (timeout: number): Promise<void> => {
-      return ipc.call('destroy', undefined, timeout);
+      return killProcessIfError(child, ipc.call('destroy', undefined, timeout));
     },
     valueOf: (obj: RunnableResponse): Promise<any> => {
-      return ipc.call('valueOf', [ obj ]);
+      return killProcessIfError(child, ipc.call('valueOf', [ obj ]));
     }
   };
 };

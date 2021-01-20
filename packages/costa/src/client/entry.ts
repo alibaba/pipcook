@@ -145,14 +145,6 @@ async function destroy(): Promise<void> {
   });
 }
 
-/**
- * Gets the response by a result.
- * @param message
- */
-function getResponse(arg: Record<string, any>): any {
-  return deserializeArg(arg);
-}
-
 const handlers: Record<string, any> = {
   'handshake': (id: string): string => {
     handshaked = true;
@@ -181,7 +173,7 @@ const handlers: Record<string, any> = {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
-    return getResponse(obj);
+    return deserializeArg(obj);
   }
 };
 
