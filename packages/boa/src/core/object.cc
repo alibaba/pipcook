@@ -46,10 +46,8 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
           InstanceMethod("__delitem__", &PythonObject::DelItem),
       });
 
-  // Napi::FunctionReference *constructor = new Napi::FunctionReference();
   constructor = Persistent(func);
   constructor.SuppressDestruct();
-  // env.SetInstanceData(constructor);
 
   exports.Set("PythonObject", func);
 #define DEFINE_CONSTANT(macro) exports.Set(#macro, macro)
@@ -66,8 +64,6 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
 
 Object PythonObject::NewInstance(Napi::Env env, pybind::object src) {
   return constructor.New({External<pybind::object>::New(env, &src)});
-  // return env.GetInstanceData<Napi::FunctionReference>()->New(
-  //    {External<pybind::object>::New(env, &src)});
 }
 
 PythonObject::PythonObject(const CallbackInfo &info)
