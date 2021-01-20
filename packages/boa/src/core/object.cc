@@ -5,6 +5,8 @@
 using namespace boa;
 using namespace Napi;
 
+FunctionReference PythonObject::constructor;
+
 #define ACQUIRE_OWNERSHIP_AND_THROW()                                          \
   do {                                                                         \
     if (GetOwnership() == false) {                                             \
@@ -44,9 +46,10 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
           InstanceMethod("__delitem__", &PythonObject::DelItem),
       });
 
-  Napi::FunctionReference *constructor = new Napi::FunctionReference();
-  *constructor = Persistent(func);
-  env.SetInstanceData(constructor);
+  // Napi::FunctionReference *constructor = new Napi::FunctionReference();
+  constructor = Persistent(func);
+  constructor.SuppressDestruct();
+  // env.SetInstanceData(constructor);
 
   exports.Set("PythonObject", func);
 #define DEFINE_CONSTANT(macro) exports.Set(#macro, macro)
@@ -62,8 +65,9 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
 }
 
 Object PythonObject::NewInstance(Napi::Env env, pybind::object src) {
-  return env.GetInstanceData<Napi::FunctionReference>()->New(
-      {External<pybind::object>::New(env, &src)});
+  return constructor.New({External<pybind::object>::New(env, &src)});
+  // return env.GetInstanceData<Napi::FunctionReference>()->New(
+  //    {External<pybind::object>::New(env, &src)});
 }
 
 PythonObject::PythonObject(const CallbackInfo &info)
@@ -205,15 +209,9 @@ Napi::Value PythonObject::ToBigDecimal(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::ToBigInt(const CallbackInfo &info) {
-  ACQUIRE_OWNERSHIP_AND_THROW();
-  PyObject *thisobj = _self.ptr();
-  if (!PyLong_Check(thisobj)) {
-    Error::New(info.Env(), "Must be a number type.")
-        .ThrowAsJavaScriptException();
-    return info.Env().Null();
-  }
-  int64_t v = PyLong_AsLongLong(thisobj);
-  return BigInt::New(info.Env(), v);
+  Error::New(info.Env(), "BigInt is not supported.")
+      .ThrowAsJavaScriptException();
+  return info.Env().Null();
 }
 
 Napi::Value PythonObject::ToPrimitive(const CallbackInfo &info) {

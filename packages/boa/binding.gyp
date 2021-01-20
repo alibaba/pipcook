@@ -35,8 +35,6 @@
       ],
       "defines": [
         "NAPI_CPP_EXCEPTIONS",
-        "NAPI_EXPERIMENTAL",
-        "NAPI_VERSION=6",
         "BOA_LIBPYTHON_NAME=python<!@(node -p \"require('./tools/utils').getPythonVersion()\")"
       ],
       "conditions": [
