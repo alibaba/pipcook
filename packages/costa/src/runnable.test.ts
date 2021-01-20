@@ -75,6 +75,7 @@ describe('start runnable in normal way', () => {
     expect(simple.pipcook.runtime).toBe('python');
     // test passing the variable from js to python.
     const tmp2 = await runnable.start(simple, tmp);
+    console.log('tmp, tmp2', tmp, tmp2);
     const stdout = logger.stdout.data.toString();
     console.log('stdout output is', stdout);
     expect(stdout.indexOf('hello python!') >= 0).toBe(true, 'hello python check failed');
@@ -132,6 +133,6 @@ describe('start runnable in normal way', () => {
     const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
     await costa.install(simple, process);
     await expectAsync(r2.start(simple, { foobar: true }))
-      .toBeRejectedWithError(TypeError, 'read timeout.');
+      .toBeRejectedWithError(TypeError, 'call \'load\' timeout.');
   });
 });

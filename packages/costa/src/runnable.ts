@@ -1,38 +1,21 @@
 import * as path from 'path';
 import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
-import { PluginProtocol, PluginOperator, PluginMessage, PluginResponse } from './protocol';
 import { CostaRuntime, PluginPackage } from './runtime';
 import { pipeLog, LogStdio } from './utils';
 import Debug from 'debug';
 import { generateId } from '@pipcook/pipcook-core';
+import { setup, Entry } from './ipc-proxy';
 const debug = Debug('costa.runnable');
-
-/**
- * Returns when called `start()`
- */
-export class RunnableResponse implements PluginResponse {
-  public id: string;
-  public __flag__ = '__pipcook_plugin_runnable_result__';
-  constructor(id: string) {
-    this.id = id;
-  }
-}
 
 // wait 1000ms for chile process finish.
 const waitForDestroyed = 1000;
 
 // default PLNR(Plugin Load Not Responding) timeout.
 const defaultPluginLoadNotRespondingTimeout = 10 * 1000;
-
-class ReadTimeoutError extends TypeError {
-  code: string;
-  constructor() {
-    super('read timeout.');
-    this.code = 'READ_TIMEOUT';
-  }
+export interface RunnableResponse {
+  id: string;
 }
-
 /**
  * The arguments for calling `bootstrap`.
  */
@@ -61,18 +44,9 @@ export interface BootstrapArg {
 export class PluginRunnable {
   private rt: CostaRuntime;
   private handle: ChildProcess = null;
-
-  // private events
-  private onread: (res: PluginProtocol) => void;
-  private onreadfail: (err: Error) => void;
-  private ondestroyed: () => void;
-
-  // private states
-  private queue: PluginProtocol[] = [];
-  private awaitingMessage = false;
+  private ipcProxy: Entry = null;
 
   // timer for wait the process to exit itself
-  private notRespondingTimer: NodeJS.Timeout;
   private pluginLoadNotRespondingTimeout: number = defaultPluginLoadNotRespondingTimeout;
 
   /**
@@ -137,11 +111,9 @@ export class PluginRunnable {
     });
     pipeLog(this.handle.stdout, this.logger.stdout);
     pipeLog(this.handle.stderr, this.logger.stderr);
-    this.handle.on('message', this.handleMessage.bind(this));
-    this.handle.once('exit', this.afterDestroy.bind(this));
-
+    this.ipcProxy = setup(this.handle);
     // send the first message as handshaking with client
-    const ret = await this.handshake();
+    const ret = await this.ipcProxy.handshake(this.id);
     if (!ret) {
       throw new TypeError(`created runnable "${this.id}" failed.`);
     }
@@ -152,16 +124,7 @@ export class PluginRunnable {
    * @param resp the value to the response.
    */
   async valueOf(resp: RunnableResponse): Promise<any> {
-    const msg = await this.sendAndWait(PluginOperator.READ, {
-      event: 'deserialize response',
-      params: [
-        resp
-      ]
-    });
-    if (!msg.params || msg.params.length !== 1) {
-      throw new TypeError('invalid response because the params is invalid.');
-    }
-    return JSON.parse(msg.params[0]);
+    return await this.ipcProxy.valueOf(resp);
   }
   /**
    * Do start from a specific plugin.
@@ -190,30 +153,14 @@ export class PluginRunnable {
 
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`env is ready, start loading the plugin(${pkg.name}) at ${this.id}.`);
-    await this.sendAndWait(PluginOperator.WRITE, {
-      event: 'load',
-      params: [ pkg ]
-    }, this.pluginLoadNotRespondingTimeout);
-
+    await this.ipcProxy.load(pkg, this.pluginLoadNotRespondingTimeout);
     // when the `load` is complete, start the plugin.
     debug(`loaded the plugin(${pkg.name}), start it at ${this.id}.`);
-    const resp = await this.sendAndWait(PluginOperator.WRITE, {
-      event: 'start',
-      params: [
-        pkg,
-        ...args
-      ]
-    });
-
+    const result = await this.ipcProxy.start(pkg, ...args);
     // start is end, now set it to idle.
     this.state = 'idle';
 
-    // return if the result id is provided.
-    const id = resp.params[0];
-    if (id === 'error') {
-      throw new TypeError(resp.params[1]);
-    }
-    return id ? new RunnableResponse(id) : null;
+    return result;
   }
   /**
    * Destroy this runnable, this will kill process, and get notified on `afterDestory()`.
@@ -224,134 +171,11 @@ export class PluginRunnable {
     }
     this.canceled = true;
     // if not exit after `waitForDestroied`, we need to kill it directly.
-    this.notRespondingTimer = setTimeout(() => {
+    try {
+      await this.ipcProxy.destroy(waitForDestroyed);
+    } catch (err) {
       this.state = 'error';
       this.handle.kill('SIGKILL');
-    }, waitForDestroyed);
-    await this.send(PluginOperator.WRITE, { event: 'destroy' });
-    return new Promise((resolve) => {
-      this.ondestroyed = resolve;
-    });
-  }
-  /**
-   * Send a message with operator.
-   * @param op
-   * @param msg
-   */
-  private send(op: PluginOperator, msg?: PluginMessage): Promise<void> {
-    const data = PluginProtocol.stringify(op, msg);
-    return new Promise<void>((resolve, reject) => {
-      const success = this.handle.send(data, (err) => {
-        err ? reject(err) : resolve();
-      });
-      // if the message queue is full, the result will be false,
-      // and the callback will never been called,
-      // so we need to throw the error here
-      if (!success) {
-        reject(new Error('subprocess send failed'));
-      }
-    });
-  }
-  /**
-   * Reads the message, it's blocking the async context util.
-   * @param timeout
-   */
-  private async read(timeout?: number): Promise<PluginProtocol> {
-    let notRespondingTimer: NodeJS.Timer;
-    return new Promise((resolve, reject) => {
-      if (typeof timeout === 'number' && timeout > 0) {
-        notRespondingTimer = setTimeout(() => {
-          return reject(new ReadTimeoutError());
-        }, timeout);
-      }
-      this.onread = (res: PluginProtocol): void => {
-        clearTimeout(notRespondingTimer);
-        resolve(res);
-      };
-      this.onreadfail = (err: Error): void => {
-        clearTimeout(notRespondingTimer);
-        reject(err);
-      };
-    });
-  }
-  /**
-   * Do send handshake message to runnable client, and wait for response.
-   */
-  private async handshake(): Promise<boolean> {
-    const msg = await this.sendAndWait(PluginOperator.START, {
-      event: 'handshake',
-      params: [ this.id ]
-    });
-    return !!msg;
-  }
-  /**
-   * Wait for the next operator util receiving.
-   * @param op operator to wait.
-   * @param timeout
-   */
-  private async waitOn(op: PluginOperator, timeout?: number): Promise<PluginMessage> {
-    let cur, msg;
-    debug(`wait on the next op is: ${op}`);
-    do {
-      const data = await this.read(timeout);
-      cur = data.op;
-      msg = data.message;
-    } while (cur !== op);
-    return msg;
-  }
-  /**
-   * Send an operator with message, and waits for the response.
-   * @param op
-   * @param msg
-   */
-  private async sendAndWait(op: PluginOperator, msg: PluginMessage, timeout?: number): Promise<PluginMessage> {
-    debug(`start sending ${msg.event} for ${this.id}, and wait for response`);
-    this.send(op, msg);
-
-    try {
-      const data = await this.waitOn(op, timeout);
-      debug(`received an event ${data.event} from ${this.id}.`);
-      if (data.event !== 'pong') {
-        throw new TypeError('invalid response because the event is not "pong".');
-      }
-      return data;
-    } catch (err) {
-      if (err instanceof ReadTimeoutError) {
-        // set the `error` state and send a SIGKILL to child once a read is timeout.
-        this.state = 'error';
-        this.handle.kill('SIGKILL');
-        console.error(`send op(${op}) not responding over ${timeout}ms, then kill the entry process.`);
-      }
-      throw err;
-    }
-  }
-  /**
-   * handle the messages from peer client.
-   * @param msg
-   */
-  private handleMessage(msg: string) {
-    debug('recv a raw message', msg);
-    const proto = PluginProtocol.parse(msg);
-    if (typeof this.onread === 'function') {
-      this.onread(proto);
-    }
-  }
-  /**
-   * Fired when the peer client is exited.
-   */
-  private async afterDestroy(code: number, signal: NodeJS.Signals): Promise<void> {
-    debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
-    if (this.notRespondingTimer) {
-      clearTimeout(this.notRespondingTimer);
-      this.notRespondingTimer = null;
-    }
-    // FIXME(Yorkie): remove component directory?
-    // await remove(path.join(this.rt.options.componentDir, this.id));
-    if (typeof this.onread === 'function' && typeof this.onreadfail === 'function') {
-      this.onreadfail(new TypeError(`costa runtime is destroyed(${signal}).`));
-    }
-    if (typeof this.ondestroyed === 'function') {
-      this.ondestroyed();
     }
   }
 }

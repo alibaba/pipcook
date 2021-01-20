@@ -2,43 +2,16 @@ import * as path from 'path';
 import { UniDataset, DataLoader, generateId } from '@pipcook/pipcook-core';
 import Debug from 'debug';
 
-import { PluginProtocol, PluginOperator, PluginMessage } from '../protocol';
+import { IPCInput } from '../protocol';
 import { PluginPackage } from '../index';
 import loadPlugin from './loaders';
 
-type MessageHandler = Record<PluginOperator, (proto: PluginProtocol) => void>;
 const debug = Debug('costa.client');
+
+const previousFlag = '__pipcook_plugin_runnable_result__';
 
 // Set the costa runtime title.
 process.title = 'pipcook.costa';
-
-function send(msg: any): void {
-  debug(`try to send a message ${msg}`);
-  // FIXME(yorkie): here we just print the error message.
-  const onfailMsg = 'failed to send a message to parent process.';
-  const success = process.send(msg, (err: Error) => {
-    if (err) {
-      console.error(onfailMsg, `The error is ${err}`);
-    } else {
-      debug(`sucessfully sent a message ${msg}`);
-    }
-  });
-  if (!success) {
-    console.error(onfailMsg);
-  }
-}
-
-/**
- * Send a `recv` message back from the client process.
- * @param respOp the operator of response.
- * @param params the parameters of response.
- */
-function recv(respOp: PluginOperator, ...params: string[]): void {
-  return send(PluginProtocol.stringify(respOp, {
-    event: 'pong',
-    params
-  }));
-}
 
 let tfjsCache: any;
 
@@ -68,7 +41,7 @@ const plugins: Record<string, (...args : any) => any> = {};
  * @param arg
  */
 function deserializeArg(arg: Record<string, any>): any {
-  if (arg.__flag__ === '__pipcook_plugin_runnable_result__' &&
+  if (arg.__flag__ === previousFlag &&
     previousResults[arg.id]) {
     return previousResults[arg.id];
   }
@@ -79,42 +52,34 @@ function deserializeArg(arg: Record<string, any>): any {
  * load a plugin.
  * @param message
  */
-async function emitLoad(message: PluginMessage): Promise<void> {
-  const { params } = message;
-  const pkg = params[0] as PluginPackage;
+async function load(pkg: PluginPackage): Promise<void> {
   console.info(`start loading plugin ${pkg.name}`);
-
-  try {
-    const boa = require('@pipcook/boa');
-    if (pkg.pipcook?.target.PYTHONPATH) {
-      boa.setenv(pkg.pipcook.target.PYTHONPATH);
-      debug(`setup boa environment for ${pkg.pipcook.target.PYTHONPATH}`);
-    }
-
-    // FIXME(Yorkie): handle tfjs initialization issue.
-    if (pkg.dependencies['@tensorflow/tfjs-node-gpu']) {
-      // resolve the `@tensorflow/tfjs-node-gpu` by the current plugin package.
-      const tfjsModuleName = require.resolve('@tensorflow/tfjs-node-gpu', {
-        paths: [ path.join(process.cwd(), 'node_modules', pkg.name) ]
-      });
-      if (tfjsCache) {
-        // assign the `require.cache` from cached tfjs object.
-        require.cache[tfjsModuleName] = tfjsCache;
-      } else {
-        // prepare load tfjs module.
-        require(tfjsModuleName);
-        // set tfjsCache from `require.cache`.
-        tfjsCache = require.cache[tfjsModuleName];
-      }
-    }
-
-    const absname = `${pkg.name}@${pkg.version}`;
-    plugins[absname] = loadPlugin(pkg);
-    console.info(`${pkg.name} plugin is loaded`);
-    recv(PluginOperator.WRITE);
-  } catch (err) {
-    recv(PluginOperator.WRITE, 'error', err?.stack);
+  const boa = require('@pipcook/boa');
+  if (pkg.pipcook?.target.PYTHONPATH) {
+    boa.setenv(pkg.pipcook.target.PYTHONPATH);
+    debug(`setup boa environment for ${pkg.pipcook.target.PYTHONPATH}`);
   }
+
+  // FIXME(Yorkie): handle tfjs initialization issue.
+  if (pkg.dependencies['@tensorflow/tfjs-node-gpu']) {
+    // resolve the `@tensorflow/tfjs-node-gpu` by the current plugin package.
+    const tfjsModuleName = require.resolve('@tensorflow/tfjs-node-gpu', {
+      paths: [ path.join(process.cwd(), 'node_modules', pkg.name) ]
+    });
+    if (tfjsCache) {
+      // assign the `require.cache` from cached tfjs object.
+      require.cache[tfjsModuleName] = tfjsCache;
+    } else {
+      // prepare load tfjs module.
+      require(tfjsModuleName);
+      // set tfjsCache from `require.cache`.
+      tfjsCache = require.cache[tfjsModuleName];
+    }
+  }
+
+  const absname = `${pkg.name}@${pkg.version}`;
+  plugins[absname] = loadPlugin(pkg);
+  console.info(`${pkg.name} plugin is loaded`);
 }
 
 /**
@@ -122,131 +87,130 @@ async function emitLoad(message: PluginMessage): Promise<void> {
  * for the plug-in runtime.
  * @param message
  */
-async function emitStart(message: PluginMessage): Promise<void> {
-  const { params } = message;
-  const pkg = params[0] as PluginPackage;
-  const [ , ...pluginArgs ] = params;
+async function start(pkg: PluginPackage, pluginArgs: any): Promise<Record<string, any> | undefined> {
+  const absname = `${pkg.name}@${pkg.version}`;
+  const fn = plugins[absname];
+  if (typeof fn !== 'function') {
+    throw new TypeError(`the plugin(${absname}) not loaded.`);
+  }
 
-  try {
-    const absname = `${pkg.name}@${pkg.version}`;
-    const fn = plugins[absname];
-    if (typeof fn !== 'function') {
-      throw new TypeError(`the plugin(${absname}) not loaded.`);
-    }
-
-    if (pkg.pipcook.category === 'dataProcess') {
-      // in "dataProcess" plugin, we need to do process them in one by one.
-      const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
-      [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
-        .filter((loader: DataLoader) => loader != null)
-        .forEach(async (loader: DataLoader) => {
-          process.nextTick(async () => {
-            const len = await loader.len();
-            loader.processIndex = 0;
-            for (let i = 0; i < len; i++) {
-              let sample = await loader.getItem(i);
-              sample = await fn(sample, dataset.metadata, args);
-              await loader.setItem(i, sample);
-              loader.processIndex = i + 1;
-              loader.notifyProcess();
-            }
-          });
+  if (pkg.pipcook.category === 'dataProcess') {
+    // in "dataProcess" plugin, we need to do process them in one by one.
+    const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
+    [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
+      .filter((loader: DataLoader) => loader != null)
+      .forEach(async (loader: DataLoader) => {
+        process.nextTick(async () => {
+          const len = await loader.len();
+          loader.processIndex = 0;
+          for (let i = 0; i < len; i++) {
+            let sample = await loader.getItem(i);
+            sample = await fn(sample, dataset.metadata, args);
+            await loader.setItem(i, sample);
+            loader.processIndex = i + 1;
+            loader.notifyProcess();
+          }
         });
-      recv(PluginOperator.WRITE);
-      return;
-    }
+      });
+    return;
+  }
 
-    if (pkg.pipcook.category === 'datasetProcess') {
-      const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
-      await fn(dataset, args);
-      recv(PluginOperator.WRITE);
-      return;
-    }
+  if (pkg.pipcook.category === 'datasetProcess') {
+    const [ dataset, args ] = pluginArgs.map(deserializeArg) as [ UniDataset, any ];
+    await fn(dataset, args);
+    return;
+  }
 
-    // default handler for plugins.
-    const resp = await fn(...pluginArgs.map(deserializeArg));
-    if (resp) {
-      const rid = generateId();
-      previousResults[rid] = resp;
-      console.info(`create a result "${rid}" for plugin "${pkg.name}@${pkg.version}"`);
-      recv(PluginOperator.WRITE, rid);
-    } else {
-      recv(PluginOperator.WRITE);
-    }
-  } catch (err) {
-    recv(PluginOperator.WRITE, 'error', err?.stack);
+  // default handler for plugins.
+  const resp = await fn(...pluginArgs.map(deserializeArg));
+  if (resp) {
+    const id = generateId();
+    previousResults[id] = resp;
+    console.info(`create a result "${id}" for plugin "${pkg.name}@${pkg.version}"`);
+    return {
+      id,
+      __flag__: previousFlag
+    };
   }
 }
 
 /**
  * Emits a destroy event, it exits the current client process.
  */
-async function emitDestroy(): Promise<void> {
-  clientId = null;
-  handshaked = false;
-  process.exit(0);
+async function destroy(): Promise<void> {
+  process.nextTick(() => {
+    clientId = null;
+    handshaked = false;
+    process.exit(0);
+  });
 }
 
-/**
- * Gets the response by a result.
- * @param message
- */
-function getResponse(message: PluginMessage): void {
-  const resp = deserializeArg(message.params[0]);
-  recv(PluginOperator.READ, JSON.stringify(resp));
-}
-
-const handlers: MessageHandler = {
-  /**
-   * When each client process is just started, CostaRuntime will send a handshake
-   * command, and the client will reply with a Pong message through START, which
-   * is counted as a complete handshake. The client process will not receive other
-   * messages until the handshake is complete.
-   */
-  [PluginOperator.START]: (proto: PluginProtocol): void => {
-    if (proto.message.event === 'handshake' &&
-      typeof proto.message.params[0] === 'string') {
-      clientId = proto.message.params[0];
-      handshaked = true;
-      recv(PluginOperator.START, clientId);
-    }
+const handlers: Record<string, any> = {
+  'handshake': (id: string): string => {
+    handshaked = true;
+    clientId = id;
+    return clientId;
   },
-  /**
-   * The client process receives events from the runtime by processing the WRITE
-   * message, such as executing the plug-in and ending the process.
-   */
-  [PluginOperator.WRITE]: async (proto: PluginProtocol): Promise<void> => {
+  'load': async (pkg: PluginPackage): Promise<void> => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
-    const { event } = proto.message;
-    debug(`receive an event write.${event}`);
-    if (event === 'load') {
-      emitLoad(proto.message);
-    } else if (event === 'start') {
-      emitStart(proto.message);
-    } else if (event === 'destroy') {
-      emitDestroy();
-    }
+    return load(pkg);
   },
-  /**
-   * Use the READ command to read the value and status of some client processes.
-   */
-  [PluginOperator.READ]: async (proto: PluginProtocol): Promise<void> => {
+  'start': async (pkg: PluginPackage, ...pluginArgs: any): Promise<Record<string, any> | undefined> => {
     if (!handshaked) {
       throw new TypeError('handshake is required.');
     }
-    const { event } = proto.message;
-    debug(`receive an event read.${event}`);
-    if (event === 'deserialize response') {
-      getResponse(proto.message);
+    return start(pkg, pluginArgs);
+  },
+  'destroy': async (): Promise<void> => {
+    if (!handshaked) {
+      throw new TypeError('handshake is required.');
     }
+    return destroy();
+  },
+  'valueOf': (obj: Record<string, any>): any => {
+    if (!handshaked) {
+      throw new TypeError('handshake is required.');
+    }
+    return deserializeArg(obj);
   }
 };
 
-process.on('message', (msg): void => {
-  const proto = PluginProtocol.parse(msg);
-  handlers[proto.op](proto);
+function send(message: Record<string, any>) {
+  if (!process.send(message, (err: Error) => {
+    if (err) {
+      console.error(`failed to send a message to parent process with error: ${err.message}`);
+    }
+  })) {
+    console.error('failed to send a message to parent process.');
+  }
+}
+
+process.on('message', async (msg: IPCInput): Promise<void> => {
+  debug('entry receive message', msg, handlers);
+  if (
+    msg
+    && typeof msg === 'object'
+    && typeof msg.method === 'string'
+    && typeof msg.id === 'number'
+  ) {
+    if (!(msg.method in handlers)) {
+      send({ id: msg.id, error: new TypeError(`no method found: ${msg.method}`), result: null });
+      return;
+    }
+    try {
+      const args = msg.args || [];
+      const rst = handlers[msg.method](...args);
+      let returnValue = rst;
+      if (rst instanceof Promise) {
+        returnValue = await rst;
+      }
+      send({ id: msg.id, error: null, result: returnValue });
+    } catch (err) {
+      send({ id: msg.id, error: { messsage: err.message, stack: err.stack }, result: null });
+    }
+  }
 });
 
 // if any error occurrs by promise chain in `nextTick`,
