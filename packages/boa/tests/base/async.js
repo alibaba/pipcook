@@ -1,4 +1,7 @@
-if (process.moduleLoadList.indexOf('NativeModule worker_threads') === -1) {
+// check if worker_threads is enabled.
+try {
+  require.resolve('worker_threads');
+} catch (e) {
   console.log('just skip the module because worker_threads not found');
   return;
 }
