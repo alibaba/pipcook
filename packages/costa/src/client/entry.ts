@@ -13,8 +13,9 @@ const previousFlag = '__pipcook_plugin_runnable_result__';
 // Set the costa runtime title.
 process.title = 'pipcook.costa';
 
+export const ipcMethods = [ 'handshake', 'load', 'start', 'destroy', 'valueOf' ];
 
-class Entry {
+export class Entry {
   tfjsCache: any;
 
   /**
@@ -41,18 +42,23 @@ class Entry {
   /**
    * Setup the communication between child and parent processes.
    */
-  setup() {
+  setup(): void {
     process.on('message', this.onMessage.bind(this));
 
     // if any error occurrs by promise chain in `nextTick`,
     // the error will be thrown from event `unhandledRejection`,
     // we need to handle and throw it out. Otherwise, this process will not exit.
     // see #523 for details.
-    process.on('unhandledRejection', (reason) => {
-      throw reason;
-    });
+    process.on('unhandledRejection', this.onUnhandledRejection.bind(this));
   }
 
+  /**
+   * handle rejection
+   * @param err error from promise
+   */
+  onUnhandledRejection(err: Error): void {
+    throw err;
+  }
   /**
    * process ipc request from parent
    * @param msg msg from parent
@@ -65,7 +71,7 @@ class Entry {
       && typeof msg.method === 'string'
       && typeof msg.id === 'number'
     ) {
-      if (!(msg.method in this)) {
+      if (!(ipcMethods.indexOf(msg.method) >= 0 ) || !(msg.method in this)) {
         this.send({ id: msg.id, error: new TypeError(`no method found: ${msg.method}`), result: null });
         return;
       }
@@ -81,7 +87,7 @@ class Entry {
         }
         this.send({ id: msg.id, error: null, result: returnValue });
       } catch (err) {
-        this.send({ id: msg.id, error: { messsage: err.message, stack: err.stack }, result: null });
+        this.send({ id: msg.id, error: { message: err.message, stack: err.stack }, result: null });
       }
     }
   }
@@ -90,7 +96,7 @@ class Entry {
    * Send response to parent process.
    * @param message response data
    */
-  send(message: Record<string, any>) {
+  send(message: Record<string, any>): void {
     if (!process.send(message, (err: Error) => {
       if (err) {
         console.error(`failed to send a message to parent process with error: ${err.message}`);
@@ -104,7 +110,7 @@ class Entry {
    * Deserialize an argument.
    * @param arg
    */
-  deserializeArg(arg: Record<string, any>): any {
+  valueOf(arg: Record<string, any>): any {
     if (arg.__flag__ === previousFlag &&
       this.previousResults[arg.id]) {
       return this.previousResults[arg.id];
@@ -161,7 +167,7 @@ class Entry {
    * for the plug-in runtime.
    * @param message
    */
-  async start(pkg: PluginPackage, pluginArgs: any): Promise<Record<string, any> | undefined> {
+  async start(pkg: PluginPackage, pluginArgs: any[]): Promise<Record<string, any> | undefined> {
     const absname = `${pkg.name}@${pkg.version}`;
     const fn = this.plugins[absname];
     if (typeof fn !== 'function') {
@@ -170,7 +176,7 @@ class Entry {
 
     if (pkg.pipcook.category === 'dataProcess') {
       // in "dataProcess" plugin, we need to do process them in one by one.
-      const [ dataset, args ] = pluginArgs.map(this.deserializeArg) as [ UniDataset, any ];
+      const [ dataset, args ] = pluginArgs.map(this.valueOf.bind(this)) as [ UniDataset, any ];
       [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
         .filter((loader: DataLoader) => loader != null)
         .forEach(async (loader: DataLoader) => {
@@ -190,13 +196,13 @@ class Entry {
     }
 
     if (pkg.pipcook.category === 'datasetProcess') {
-      const [ dataset, args ] = pluginArgs.map(this.deserializeArg.bind(this)) as [ UniDataset, any ];
+      const [ dataset, args ] = pluginArgs.map(this.valueOf.bind(this)) as [ UniDataset, any ];
       await fn(dataset, args);
       return;
     }
 
     // default handler for plugins.
-    const resp = await fn(...pluginArgs.map(this.deserializeArg.bind(this)));
+    const resp = await fn(...pluginArgs.map(this.valueOf.bind(this)));
     if (resp) {
       const id = generateId();
       this.previousResults[id] = resp;

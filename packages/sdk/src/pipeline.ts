@@ -39,7 +39,7 @@ export class Pipeline extends BaseApi {
    * @param config pipeline config
    * @param opts name: pipeline name
    */
-  create(config: PipelineConfig, opts?: any): Promise<PipelineResp> {
+  create(config: PipelineConfig, opts?: Record<string, any>): Promise<PipelineResp> {
     return post(`${this.route}`, {
       config,
       name: opts?.name
@@ -51,7 +51,7 @@ export class Pipeline extends BaseApi {
    * @param configUri pipeline config file uri
    * @param opts name: pipeline name
    */
-  createByUri(configUri: string, opts?: any): Promise<PipelineResp> {
+  createByUri(configUri: string, opts?: Record<string, any>): Promise<PipelineResp> {
     return post(`${this.route}`, {
       configUri,
       name: opts?.name
