@@ -5,10 +5,12 @@ import { Entry, ipcMethods, previousFlag } from './entry';
 test.serial.beforeEach(() => sinon.restore());
 
 test('should constrcute Entry an setup it', (t) => {
-  const beforeLengh = process.listeners('message').length;
-  const entry = new Entry({} as NodeJS.Process);
+  const stubOn = sinon.stub();
+  const entry = new Entry({ on: stubOn } as any);
   entry.setup();
-  t.true(process.listeners('message').length > beforeLengh, 'message event should be listen');
+  t.true(stubOn.calledTwice, 'message and unhandledRejection event should be listened');
+  t.is(stubOn.args[0][0], 'message', 'message event should be listen');
+  t.is(stubOn.args[1][0], 'unhandledRejection', 'unhandledRejection event should be listen');
 });
 
 test('should throw rejection', (t) => {
