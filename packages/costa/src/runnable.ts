@@ -5,7 +5,7 @@ import { PluginPackage } from './runtime';
 import { pipeLog, LogStdio } from './utils';
 import Debug from 'debug';
 import { generateId } from '@pipcook/pipcook-core';
-import { setup, Entry } from './ipc-proxy';
+import { setup, Entry } from './ipc/parent';
 const debug = Debug('costa.runnable');
 
 // wait 1000ms for chile process finish.

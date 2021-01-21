@@ -4,7 +4,7 @@ import * as fs from 'fs-extra';
 import { PluginRunnable } from './runnable';
 import * as ChildProcess from 'child_process';
 import * as utils from './utils';
-import * as IPCProxy from './ipc-proxy';
+import * as IPC from './ipc/parent';
 import sinon = require('sinon');
 
 test.serial.afterEach(() => sinon.restore());
@@ -28,7 +28,7 @@ test.serial('should bootstrap the runnable', async (t) => {
   const stubEntry = { handshake: stubHandShake };
   sinon.stub(ChildProcess, 'fork').returns(stubChild as any);
   sinon.stub(utils, 'pipeLog').returns();
-  sinon.stub(IPCProxy, 'setup').returns(stubEntry as any);
+  sinon.stub(IPC, 'setup').returns(stubEntry as any);
   sinon.stub(fs, 'ensureDir').resolves();
   await runnable.bootstrap({ pluginLoadNotRespondingTimeout: 1 });
   t.is(stubHandShake.callCount, 1, 'should call handshake once');
@@ -41,7 +41,7 @@ test.serial('bootstrap the runnable but handshake error', async (t) => {
   const stubEntry = { handshake: stubHandShake };
   sinon.stub(ChildProcess, 'fork').returns(stubChild as any);
   sinon.stub(utils, 'pipeLog').returns();
-  sinon.stub(IPCProxy, 'setup').returns(stubEntry as any);
+  sinon.stub(IPC, 'setup').returns(stubEntry as any);
   sinon.stub(fs, 'ensureDir').resolves();
   await t.throwsAsync(runnable.bootstrap({ pluginLoadNotRespondingTimeout: 1 }),
     { instanceOf: TypeError, message: 'created runnable "mockId" failed.' }
