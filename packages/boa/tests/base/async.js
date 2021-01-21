@@ -1,3 +1,11 @@
+// check if worker_threads is enabled.
+try {
+  require.resolve('worker_threads');
+} catch (e) {
+  console.log('just skip the module because worker_threads not found');
+  return;
+}
+
 const test = require('tape');
 const { Worker, isMainThread, workerData, parentPort } = require('worker_threads');
 const boa = require('../../');
