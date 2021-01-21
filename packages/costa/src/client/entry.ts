@@ -2,13 +2,13 @@ import * as path from 'path';
 import { UniDataset, DataLoader, generateId } from '@pipcook/pipcook-core';
 import Debug from 'debug';
 
-import { IPCInput } from '../protocol';
+import { IPCInput, IPCOutput } from '../protocol';
 import { PluginPackage } from '../index';
 import loadPlugin from './loaders';
 
 const debug = Debug('costa.client');
 
-const previousFlag = '__pipcook_plugin_runnable_result__';
+export const previousFlag = '__pipcook_plugin_runnable_result__';
 
 // Set the costa runtime title.
 process.title = 'pipcook.costa';
@@ -40,16 +40,24 @@ export class Entry {
   plugins: Record<string, (...args : any) => any> = {};
 
   /**
+   * Processor
+   */
+  process: NodeJS.Process;
+
+  constructor(process: NodeJS.Process) {
+    this.process = process;
+  }
+  /**
    * Setup the communication between child and parent processes.
    */
   setup(): void {
-    process.on('message', this.onMessage.bind(this));
+    this.process.on('message', this.onMessage.bind(this));
 
     // if any error occurrs by promise chain in `nextTick`,
     // the error will be thrown from event `unhandledRejection`,
     // we need to handle and throw it out. Otherwise, this process will not exit.
     // see #523 for details.
-    process.on('unhandledRejection', this.onUnhandledRejection.bind(this));
+    this.process.on('unhandledRejection', this.onUnhandledRejection.bind(this));
   }
 
   /**
@@ -72,7 +80,8 @@ export class Entry {
       && typeof msg.id === 'number'
     ) {
       if (!(ipcMethods.indexOf(msg.method) >= 0 ) || !(msg.method in this)) {
-        this.send({ id: msg.id, error: new TypeError(`no method found: ${msg.method}`), result: null });
+        const { message, stack } = new TypeError(`no method found: ${msg.method}`);
+        this.send({ id: msg.id, error: { message, stack }, result: null });
         return;
       }
       try {
@@ -96,8 +105,8 @@ export class Entry {
    * Send response to parent process.
    * @param message response data
    */
-  send(message: Record<string, any>): void {
-    if (!process.send(message, (err: Error) => {
+  send(message: IPCOutput): void {
+    if (!this.process.send(message, (err: Error) => {
       if (err) {
         console.error(`failed to send a message to parent process with error: ${err.message}`);
       }
@@ -167,7 +176,8 @@ export class Entry {
    * for the plug-in runtime.
    * @param message
    */
-  async start(pkg: PluginPackage, pluginArgs: any[]): Promise<Record<string, any> | undefined> {
+  async start(pkg: PluginPackage, pluginArgs: any[] | undefined): Promise<Record<string, any> | undefined> {
+    pluginArgs = pluginArgs || [];
     const absname = `${pkg.name}@${pkg.version}`;
     const fn = this.plugins[absname];
     if (typeof fn !== 'function') {
@@ -226,5 +236,5 @@ export class Entry {
   }
 }
 
-const entry = new Entry();
+const entry = new Entry(process);
 entry.setup();
