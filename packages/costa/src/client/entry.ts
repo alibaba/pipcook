@@ -220,4 +220,5 @@ class Entry {
   }
 }
 
-new Entry();
+const entry = new Entry();
+entry.setup();
