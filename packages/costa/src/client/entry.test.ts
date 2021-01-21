@@ -82,7 +82,7 @@ test.serial('should send ipc response to parent', async (t) => {
   const stubConsoleError = sinon.stub(console, 'error');
   const stubSend = sinon.stub().returns(true);
   const entry = new Entry({ send: stubSend } as any);
-  entry.send({id: 0, error: null, result: '123'});
+  entry.send({ id: 0, error: null, result: '123' });
   t.true(stubSend.calledOnce, 'process.send should be called once');
   t.deepEqual(stubSend.args[0][0], { id: 0, error: null, result: '123' }, 'process.send should be called with args');
   t.is(typeof stubSend.args[0][1], 'function', 'process.send should be called with callback');
@@ -94,7 +94,7 @@ test.serial('should send ipc response to parent but fails with send result', asy
   const stubConsoleError = sinon.stub(console, 'error');
   const stubSend = sinon.stub().returns(false);
   const entry = new Entry({ send: stubSend } as any);
-  entry.send({id: 0, error: null, result: '123'});
+  entry.send({ id: 0, error: null, result: '123' });
   t.true(stubSend.calledOnce, 'process.send should be called once');
   t.deepEqual(stubSend.args[0][0], { id: 0, error: null, result: '123' }, 'process.send should be called with args');
   t.is(typeof stubSend.args[0][1], 'function', 'process.send should be called with callback');
@@ -105,7 +105,7 @@ test.serial('should send ipc response to parent but fails with callback', async 
   const stubConsoleError = sinon.stub(console, 'error');
   const stubSend = sinon.stub().returns(true);
   const entry = new Entry({ send: stubSend } as any);
-  entry.send({id: 0, error: null, result: '123'});
+  entry.send({ id: 0, error: null, result: '123' });
   t.true(stubSend.calledOnce, 'process.send should be called once');
   t.deepEqual(stubSend.args[0][0], { id: 0, error: null, result: '123' }, 'process.send should be called with args');
   t.is(typeof stubSend.args[0][1], 'function', 'process.send should be called with callback');
