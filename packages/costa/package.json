@@ -46,9 +46,9 @@
   "keywords": [],
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "ava": {
-		"files": [
-			"dist/**/*.test.js",
-			"!tests"
+    "files": [
+      "dist/**/*.test.js",
+      "!tests"
     ]
   }
 }
