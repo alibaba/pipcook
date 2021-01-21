@@ -85,7 +85,7 @@ class Entry {
       }
     }
   }
-  
+
   /**
    * Send response to parent process.
    * @param message response data
@@ -99,7 +99,7 @@ class Entry {
       console.error('failed to send a message to parent process.');
     }
   }
-  
+
   /**
    * Deserialize an argument.
    * @param arg
@@ -114,7 +114,7 @@ class Entry {
 
   /**
    * Handshake to parent process.
-   * @param id 
+   * @param id clinet from parent process
    */
   handshake(id: string): string {
     this.handshaked = true;
@@ -124,7 +124,7 @@ class Entry {
 
   /**
    * load a plugin.
-   * @param message
+   * @param pkg plugin package info
    */
   async load(pkg: PluginPackage): Promise<void> {
     console.info(`start loading plugin ${pkg.name}`);
@@ -133,7 +133,7 @@ class Entry {
       boa.setenv(pkg.pipcook.target.PYTHONPATH);
       debug(`setup boa environment for ${pkg.pipcook.target.PYTHONPATH}`);
     }
-  
+
     // FIXME(Yorkie): handle tfjs initialization issue.
     if (pkg.dependencies['@tensorflow/tfjs-node-gpu']) {
       // resolve the `@tensorflow/tfjs-node-gpu` by the current plugin package.
@@ -150,12 +150,12 @@ class Entry {
         this.tfjsCache = require.cache[tfjsModuleName];
       }
     }
-  
+
     const absname = `${pkg.name}@${pkg.version}`;
     this.plugins[absname] = loadPlugin(pkg);
     console.info(`${pkg.name} plugin is loaded`);
   }
-  
+
   /**
    * Run a plugin, before running, a clean sandbox environment will be constructed
    * for the plug-in runtime.
@@ -167,7 +167,7 @@ class Entry {
     if (typeof fn !== 'function') {
       throw new TypeError(`the plugin(${absname}) not loaded.`);
     }
-  
+
     if (pkg.pipcook.category === 'dataProcess') {
       // in "dataProcess" plugin, we need to do process them in one by one.
       const [ dataset, args ] = pluginArgs.map(this.deserializeArg) as [ UniDataset, any ];
@@ -188,13 +188,13 @@ class Entry {
         });
       return;
     }
-  
+
     if (pkg.pipcook.category === 'datasetProcess') {
       const [ dataset, args ] = pluginArgs.map(this.deserializeArg.bind(this)) as [ UniDataset, any ];
       await fn(dataset, args);
       return;
     }
-  
+
     // default handler for plugins.
     const resp = await fn(...pluginArgs.map(this.deserializeArg.bind(this)));
     if (resp) {
@@ -207,7 +207,7 @@ class Entry {
       };
     }
   }
-  
+
   /**
    * Emits a destroy event, it exits the current client process.
    */
@@ -217,7 +217,7 @@ class Entry {
       this.handshaked = false;
       process.exit(0);
     });
-  }    
+  }
 }
 
 new Entry();
