@@ -1,17 +1,15 @@
 {
   "specVersion": "2.0",
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/models@1.0/cv/mobilenet.mjs",
-  "source": "https://cdn.jsdelivr.net/gh/imgcook/dataset@1.0/cv/mnist.mjs",
+  "from": "https://cdn.jsdelivr.net/gh/imgcook/dataset@main/cv/mnist.mjs",
   "dataflow": [{
-    "package": "https://cdn.jsdelivr.net/gh/imgcook/plugins-data-access@1.0/pascalvoc.mjs"
+    "package": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugins@main/formats/pascalvoc.mjs"
   }, {
-    "type": "process",
-    "package": "https://cdn.jsdelivr.net/gh/imgcook/plugins-image-process@1.0/resize.mjs",
+    "package": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugins@main/processors/resize-image.mjs",
     "params": [224, 224]
   }, {
-    "type": "process",
-    "package": "https://cdn.jsdelivr.net/gh/imgcook/plugins-image-process@1.0/normalize.mjs"
+    "package": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugins@1.0/processors/normalize.mjs"
   }],
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-models@main/cv/mobilenet.mjs",
   "artifacts": [{
     "type": "local",
     "path": "./"
