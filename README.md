@@ -163,16 +163,16 @@ Clone this repository:
 $ git clone git@github.com:alibaba/pipcook.git
 ```
 
-Install dependencies, e.g. via [npm][]:
+Install dependencies, e.g. via [yarn][]:
 
 ```sh
-$ npm install
+$ yarn
 ```
 
 After the above, now build the project:
 
 ```sh
-$ npm run build
+$ yarn build && yarn init-dev
 ```
 
 - Developer Documentation [English](./docs/contributing/guide-to-contributor.md) | [中文](./docs/zh-cn/contributing/guide-to-contributor.md)
