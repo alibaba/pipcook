@@ -1,0 +1,25 @@
+{
+  "specVersion": "2.0",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/models@1.0/cv/mobilenet.mjs",
+  "source": "https://cdn.jsdelivr.net/gh/imgcook/dataset@1.0/cv/mnist.mjs",
+  "dataflow": [{
+    "package": "https://cdn.jsdelivr.net/gh/imgcook/plugins-data-access@1.0/pascalvoc.mjs"
+  }, {
+    "type": "process",
+    "package": "https://cdn.jsdelivr.net/gh/imgcook/plugins-image-process@1.0/resize.mjs",
+    "params": [224, 224]
+  }, {
+    "type": "process",
+    "package": "https://cdn.jsdelivr.net/gh/imgcook/plugins-image-process@1.0/normalize.mjs"
+  }],
+  "artifacts": [{
+    "type": "local",
+    "path": "./"
+  }],
+  "options": {
+    "framework": "^tensorflow@2",
+    "train": {
+      "epochs": 20
+    }
+  }
+}
