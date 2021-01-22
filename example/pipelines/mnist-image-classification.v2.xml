@@ -7,7 +7,7 @@
     <script>
       const data = window.getFromData().nextBatch();
       // process data
-      window.setNextData(data);
+      export data;
     </script>
   </dataflow>
   <!-- here is the base model, which could be model define plugin and pre-trained model -->
@@ -16,7 +16,7 @@
       // here we added layers
       const model = context.getModel();
       model.addLayer(tf.keras.layers.Dense(...));
-      context.setModel(model);
+      export model;
     </script>
   </model>
   <train epochs="20">
