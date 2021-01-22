@@ -205,6 +205,7 @@ $ yarn build && yarn init-dev
 [TypeScript]: https://github.com/microsoft/TypeScript
 [Node.js]: https://nodejs.org/
 [npm]: https://npmjs.com/
+[yarn]: https://yarnpkg.com/
 [Python]: https://www.python.org/
 [CPython]: https://github.com/python/cpython
 [machine-learning application APIs]: https://github.com/alibaba/pipcook/issues/33
