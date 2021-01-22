@@ -3,7 +3,6 @@
 import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
-import { execSync as exec } from 'child_process';
 import { join } from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { pathExists, readJson } from 'fs-extra';
@@ -11,8 +10,6 @@ import { pathExists, readJson } from 'fs-extra';
 import { runAndDownload } from '../service/job';
 import init from '../actions/init';
 import serve from '../actions/serve';
-import board from '../actions/board';
-import devPlugin from '../actions/dev-plugin';
 
 (async function(): Promise<void> {
   // check node version
@@ -52,11 +49,6 @@ import devPlugin from '../actions/dev-plugin';
     .action(init);
 
   program
-    .command('board')
-    .description('open the pipboard')
-    .action(board);
-
-  program
     .command('run <filename>')
     .option('--tuna', 'use tuna mirror to install python packages')
     .option('--output <dir>', 'the output directory name', 'output')
@@ -70,22 +62,6 @@ import devPlugin from '../actions/dev-plugin';
     .option('-p, --port <number>', 'port of server', 7682)
     .description('serve the model to predict')
     .action(serve);
-
-  program
-    .command('bip')
-    .description('boa packages installer')
-    .action(() => {
-      exec(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
-        cwd: process.cwd()
-      });
-    });
-
-  program
-    .command('plugin-dev')
-    .option('-t, --type <type>', 'plugin type')
-    .option('-n, --name <name>', 'project name')
-    .description('initialize plugin development environment')
-    .action(devPlugin);
 
   program
     .command('daemon', 'manage pipcook daemon service')
