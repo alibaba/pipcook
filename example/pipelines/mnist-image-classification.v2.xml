@@ -1,9 +1,9 @@
 <pipeline specVersion="2.0"
   pipcook:framework="^tensorflow@2"
   pipcook:from="https://cdn.jsdelivr.net/gh/imgcook/dataset@main/cv/mnist.mjs">
-  <dataflow format="https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugins@main/formats/pascalvoc.mjs">
-    <script src="https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugins@main/processors/resize-image.mjs?size=224" />
-    <script src="https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugins@main/processors/normalize.mjs" />
+  <dataflow format="https://cdn.jsdelivr.net/gh/imgcook/pipcook-scripts@main/formats/pascalvoc.mjs">
+    <script src="https://cdn.jsdelivr.net/gh/imgcook/pipcook-scripts@main/processors/resize-image.mjs?size=224" />
+    <script src="https://cdn.jsdelivr.net/gh/imgcook/pipcook-scripts@main/processors/normalize.mjs" />
     <script>
       const data = window.getFromData().nextBatch();
       // process data
@@ -24,5 +24,6 @@
   </train>
   <artifacts>
     <artifact type="local" path="./file/to/your/model/dir" />
+    <artifact type="aliyun-oss" path="pipcook/pretrained-models/mobilenet/v1" auth="***" />
   </artifacts>
 </pipeline>
