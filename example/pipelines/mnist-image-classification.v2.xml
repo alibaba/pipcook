@@ -1,0 +1,27 @@
+<pipeline specVersion="2.0"
+  pipcook:framework="^tensorflow@2"
+  pipcook:from="https://cdn.jsdelivr.net/gh/imgcook/dataset@main/cv/mnist.mjs">
+  <train epochs="20" validationRequired="true">
+    // optional train script
+  </train>
+  <dataflow>
+    <script src="https://cdn.jsdelivr.net/gh/imgcook/dataset@main/cv/mnist.mjs" />
+    <script src="https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugins@main/formats/pascalvoc.mjs" />
+    <script src="https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugins@main/processors/resize-image.mjs?size=224" />
+    <script>
+      const data = window.getFromData().nextBatch();
+      // process data
+      window.setNextData(data);
+    </script>
+  </dataflow>
+  <model src="https://cdn.jsdelivr.net/gh/imgcook/pipcook-models@main/cv/mobilenet.mjs">
+    <script on="post">
+      const model = context.getModel();
+      model.addLayer(tf.keras.layers.Dense(...));
+      context.setModel(model);
+    </script>
+  </model>
+  <artifacts>
+    <artifact type="local" path="./file/to/your/model/dir" />
+  </artifacts>
+</pipeline>
