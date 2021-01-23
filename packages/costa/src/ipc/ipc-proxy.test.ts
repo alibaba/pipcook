@@ -23,7 +23,7 @@ test('should call ipc method but child not connected', async (t) => {
   };
   const ipc = new IPCProxy('', mockChildProcess as any, 2000);
   await t.throwsAsync(
-    ipc.call('ipcMethod', [ 1, 2, 3 ], 100),
+    ipc.call('ipcMethod'),
     { instanceOf: TypeError, message: 'the process is disconnected.' },
     'should throw error if not connected'
   );
@@ -66,7 +66,10 @@ test.serial('should call ipc method but response timeout', async (t) => {
   const mockChildProcess = {
     on: sinon.stub(),
     once: sinon.stub(),
-    send: sinon.stub().returns(true),
+    send: sinon.stub().callsFake((message: IPCInput, cb: (err: Error) => void) => {
+      process.nextTick(() => cb(null));
+      return true;
+    }),
     connected: true
   };
   const clock = sinon.useFakeTimers();
@@ -130,10 +133,10 @@ test.serial('should call ipc method and get the error response', async (t) => {
   const clock = sinon.useFakeTimers();
   const subClearTimeout = sinon.spy(clock, "clearTimeout");
   const ipc = new IPCProxy('', mockChildProcess as any, 3000);
-  const future = ipc.call('ipcMethod', [ 1, 2, 3 ], 100);
+  const future = ipc.call('ipcMethod', undefined);
   t.is(Object.keys(ipc.callMap).length, 1, 'length of callMap should be 1');
   ipc.callMap[0](new TypeError('mock error'), null);
-  clock.tick(100);
+  clock.tick(3000);
   await t.throwsAsync(future, { instanceOf: TypeError, message: 'mock error' }, 'should get the error response');
   t.true(subClearTimeout.calledOnce, 'should clear timeout');
 });
@@ -171,6 +174,32 @@ test('should handle message from ipc', async (t) => {
   ipc.msgHandler({ id: 0, error: null, result: { data: 'mockData' } });
   t.true(stubHandler.calledOnce, 'handler should be called once');
   t.deepEqual(stubHandler.args[0], [ null, { data: 'mockData' } ], 'handler should be called with result');
+});
+
+test('should handle invalid message from ipc', async (t) => {
+  const mockChildProcess = {
+    on: sinon.stub(),
+    once: sinon.stub(),
+    connected: true
+  };
+  const ipc = new IPCProxy('', mockChildProcess as any, 3000);
+  const stubHandler = sinon.stub();
+  ipc.callMap[0] = stubHandler;
+  ipc.msgHandler('' as any);
+  t.false(stubHandler.called, 'handler should not be called');
+});
+
+test('should handle invalid message id from ipc', async (t) => {
+  const mockChildProcess = {
+    on: sinon.stub(),
+    once: sinon.stub(),
+    connected: true
+  };
+  const ipc = new IPCProxy('', mockChildProcess as any, 3000);
+  const stubHandler = sinon.stub();
+  ipc.callMap[0] = stubHandler;
+  ipc.msgHandler({ id: 1, error: null, result: '' });
+  t.false(stubHandler.called, 'handler should not be called');
 });
 
 test('should handle message from ipc with error', async (t) => {

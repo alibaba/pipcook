@@ -6,7 +6,7 @@ const debug = Debug('costa.runnable');
 export class IPCTimeoutError extends TypeError {
   code: string;
   constructor(msg: string) {
-    super(msg || 'ipc timeout.');
+    super(msg);
     this.code = 'IPC_TIMEOUT';
   }
 }
