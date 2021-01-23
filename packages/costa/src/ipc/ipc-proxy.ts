@@ -15,6 +15,7 @@ export class IPCProxy {
   id = 0;
   callMap: Record<number, (err: Error, result: Record<string, any>) => void> = {};
   constructor(
+    private runnableId: string,
     private child: ChildProcess,
     private timeout = 3000
   ) {
@@ -24,9 +25,9 @@ export class IPCProxy {
   }
 
   onCleanup(listener: (...args: any[]) => void, code: number, signal: string): void {
-    debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
+    debug(`the runnable(${this.runnableId}) has been destroyed with(code=${code}, signal=${signal}).`);
     for (const id in this.callMap) {
-      this.callMap[id](new TypeError(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`), null);
+      this.callMap[id](new TypeError(`the runnable(${this.runnableId}) has been destroyed with(code=${code}, signal=${signal}).`), null);
     }
     this.callMap = {};
     this.child.off('message', listener);
@@ -52,7 +53,7 @@ export class IPCProxy {
       const currentId = this.id++;
       const t = timeout || this.timeout;
       let timer: NodeJS.Timeout = undefined;
-      if (timeout > 0) {
+      if (t > 0) {
         timer = setTimeout(() => {
           delete this.callMap[currentId];
           reject(new IPCTimeoutError(`call '${method}' timeout.`));

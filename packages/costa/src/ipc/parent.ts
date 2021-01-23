@@ -17,8 +17,8 @@ export const killProcessIfError = (process: IPC, future: Promise<any>): Promise<
   });
 };
 
-export const setup = (child: IPC): Entry => {
-  const ipc = new IPCProxy(child);
+export const setup = (id: string, child: IPC): Entry => {
+  const ipc = new IPCProxy(id, child);
   return {
     handshake: async (id: string): Promise<string> => {
       return killProcessIfError(child, ipc.call('handshake', [ id ]));

@@ -114,7 +114,7 @@ export class PluginRunnable {
     });
     pipeLog(this.handle.stdout, this.logger.stdout);
     pipeLog(this.handle.stderr, this.logger.stderr);
-    this.ipcProxy = setup(this.handle);
+    this.ipcProxy = setup(this.id, this.handle);
     // send the first message as handshaking with client
     const ret = await this.ipcProxy.handshake(this.id);
     if (!ret) {
