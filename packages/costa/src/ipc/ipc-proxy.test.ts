@@ -62,7 +62,7 @@ test('should call ipc method but send error from callback', async (t) => {
   );
 });
 
-test('should call ipc method but response timeout', async (t) => {
+test.serial('should call ipc method but response timeout', async (t) => {
   const mockChildProcess = {
     on: sinon.stub(),
     once: sinon.stub(),
@@ -82,7 +82,7 @@ test('should call ipc method but response timeout', async (t) => {
   t.false(subClearTimeout.called, 'should not clear timeout');
 });
 
-test('should call ipc method', async (t) => {
+test.serial('should call ipc method', async (t) => {
   const mockChildProcess = {
     on: sinon.stub(),
     once: sinon.stub(),
@@ -100,7 +100,7 @@ test('should call ipc method', async (t) => {
   t.true(subClearTimeout.calledOnce, 'should clear timeout');
 });
 
-test('should call ipc method without timeout', async (t) => {
+test.serial('should call ipc method without timeout', async (t) => {
   const mockChildProcess = {
     on: sinon.stub(),
     once: sinon.stub(),
@@ -120,7 +120,7 @@ test('should call ipc method without timeout', async (t) => {
   t.false(subSetTimeout.called, 'should not set timeout');
 });
 
-test('should call ipc method and get the error response', async (t) => {
+test.serial('should call ipc method and get the error response', async (t) => {
   const mockChildProcess = {
     on: sinon.stub(),
     once: sinon.stub(),
