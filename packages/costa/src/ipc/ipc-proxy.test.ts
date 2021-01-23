@@ -100,6 +100,26 @@ test('should call ipc method', async (t) => {
   t.true(subClearTimeout.calledOnce, 'should clear timeout');
 });
 
+test('should call ipc method without timeout', async (t) => {
+  const mockChildProcess = {
+    on: sinon.stub(),
+    once: sinon.stub(),
+    send: sinon.stub().returns(true),
+    connected: true
+  };
+  const clock = sinon.useFakeTimers();
+  const subSetTimeout = sinon.spy(clock, "setTimeout");
+  const subClearTimeout = sinon.spy(clock, "clearTimeout");
+  const ipc = new IPCProxy('', mockChildProcess as any, 3000);
+  const future = ipc.call('ipcMethod', [ 1, 2, 3 ], 0);
+  t.is(Object.keys(ipc.callMap).length, 1, 'length of callMap should be 1');
+  clock.tick(60000);
+  ipc.callMap[0](null, { data: 'mockData' });
+  t.deepEqual(await future, { data: 'mockData' }, 'should get the result');
+  t.false(subClearTimeout.called, 'should not clear timeout');
+  t.false(subSetTimeout.called, 'should not set timeout');
+});
+
 test('should call ipc method and get the error response', async (t) => {
   const mockChildProcess = {
     on: sinon.stub(),
