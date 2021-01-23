@@ -89,6 +89,7 @@ export class Entry {
           throw new TypeError('handshake is required.');
         }
         const args = msg.args || [];
+        console.log('args', args);
         const rst = (this as any)[msg.method](...args);
         let returnValue = rst;
         if (rst instanceof Promise) {
@@ -176,7 +177,8 @@ export class Entry {
    * for the plug-in runtime.
    * @param message
    */
-  async start(pkg: PluginPackage, pluginArgs: any[] | undefined): Promise<Record<string, any> | undefined> {
+  async start(pkg: PluginPackage, ...pluginArgs: any[] | undefined): Promise<Record<string, any> | undefined> {
+    console.log('start ', pluginArgs);
     pluginArgs = pluginArgs || [];
     const absname = `${pkg.name}@${pkg.version}`;
     const fn = this.plugins[absname];

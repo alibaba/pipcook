@@ -37,8 +37,8 @@ export async function readConfig(): Promise<{
       env.BOA_CONDA_MIRROR = config.env.BOA_CONDA_MIRROR;
       console.info(`set env BOA_CONDA_MIRROR=${config.env.BOA_CONDA_MIRROR}`);
     }
-    port = config?.port;
-    host = config?.host;
+    port = config?.port || port;
+    host = config?.host || host;
   }
   return {
     appConfig: {
