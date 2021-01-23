@@ -103,7 +103,7 @@ export class LogPassthrough extends Transform {
     }
   }
 
-  _transform(chunk: Buffer, encoding: string, callback: TransformCallback): void {
+  _transform(chunk: any, encoding: string, callback: TransformCallback): void {
     if (this.last === undefined) {
       this.last = '';
     }
@@ -130,7 +130,7 @@ export class LogPassthrough extends Transform {
    * @param chunk data to write
    * @param cb callback when done
    */
-  write(chunk: Buffer, cb?: (error: Error | null | undefined) => void): boolean;
+  write(chunk: any, cb?: (error: Error | null | undefined) => void): boolean;
   /**
    * cover Transform.write, otherwise if no `data` event listener,
    * the callback `_transform` will not be called, but we need to save the log to file.
@@ -138,8 +138,8 @@ export class LogPassthrough extends Transform {
    * @param encoding data encoding
    * @param cb callback when done
    */
-  write(chunk: Buffer, encoding?: string, cb?: (error: Error | null | undefined) => void): boolean;
-  write(chunk: Buffer, ...args: any[]): boolean {
+  write(chunk: any, encoding?: string, cb?: (error: Error | null | undefined) => void): boolean;
+  write(chunk: any, ...args: any[]): boolean {
     if (this.fileStream && this.fileStream.writable) {
       this.fileStream.write(chunk);
     }
@@ -147,7 +147,7 @@ export class LogPassthrough extends Transform {
   }
 
   writeLine(line: string): void {
-    this.write(Buffer.from(`${line}\n`));
+    this.write(`${line}\n`);
   }
 
   /**
