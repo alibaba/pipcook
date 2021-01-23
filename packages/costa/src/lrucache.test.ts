@@ -24,3 +24,9 @@ test('should create an object lrucache', (t) => {
   t.is(cache.get('m1').id, '1');
   t.is(cache.get('unknown'), undefined);
 });
+
+test('should create an lrucache with default', (t) => {
+  interface MO { id: string }
+  const cache = new LRUCache<MO>();
+  t.is((cache as any).maxEntries, 100, 'defualt of maxEntries should be 100');
+});

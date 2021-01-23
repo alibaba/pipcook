@@ -53,7 +53,7 @@ export class IPCProxy {
     }
     return new Promise((resolve, reject) => {
       const currentId = this.id++;
-      const t = timeout || this.timeout;
+      const t = timeout ?? this.timeout;
       let timer: NodeJS.Timeout = undefined;
       if (t > 0) {
         timer = setTimeout(() => {

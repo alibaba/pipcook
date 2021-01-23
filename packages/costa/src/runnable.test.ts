@@ -1,4 +1,4 @@
-import test from 'ava';
+import test, { ExecutionContext } from 'ava';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { PluginRunnable } from './runnable';
@@ -43,7 +43,7 @@ test.serial('bootstrap the runnable but handshake error', async (t) => {
   sinon.stub(utils, 'pipeLog').returns();
   sinon.stub(IPC, 'setup').returns(stubEntry as any);
   sinon.stub(fs, 'ensureDir').resolves();
-  await t.throwsAsync(runnable.bootstrap({ pluginLoadNotRespondingTimeout: 1 }),
+  await t.throwsAsync(runnable.bootstrap({}),
     { instanceOf: TypeError, message: 'created runnable "mockId" failed.' }
   );
   t.is(stubHandShake.callCount, 1, 'should call handshake once');
@@ -58,8 +58,8 @@ test('should get value of the PluginResponse', async (t) => {
   t.deepEqual(await runnable.valueOf(mockResp), mockResult);
 });
 
-test.serial('should start the plugin', async (t) => {
-  const args = [ { name: '@pipcook/mock-plugin' }, 1, 2, 3 ];
+async function start(t: ExecutionContext<unknown>, name: string): Promise<void> {
+  const args = [ { name }, 1, 2, 3 ];
   const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
   const stubLoad = sinon.stub().resolves();
   const stubStart = sinon.stub().resolves(null);
@@ -72,6 +72,13 @@ test.serial('should start the plugin', async (t) => {
   t.true(stubStart.calledOnce, 'start should be called once');
   t.deepEqual(stubStart.args[0], args, 'start args should be [ 1, 2, 3 ]');
   t.true(stubLoad.calledOnce, 'load should be called once');
+}
+test.serial('should start the plugin', async (t) => {
+  await start(t, 'plugin');
+});
+
+test.serial('should start the plugin with dir', async (t) => {
+  await start(t, '/name/with/path/plugin');
 });
 
 test('should start the plugin but runnable not idle', async (t) => {

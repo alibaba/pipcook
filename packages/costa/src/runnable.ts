@@ -141,10 +141,10 @@ export class PluginRunnable {
 
     const nameSchema = path.parse(pkg.name);
 
-    await ensureDir(this.workingDir);
-    await ensureDir(this.workingDir + '/node_modules');
     if (nameSchema.dir) {
       await ensureDir(this.workingDir + `/node_modules/${nameSchema.dir}`);
+    } else {
+      await ensureDir(this.workingDir + '/node_modules');
     }
 
     // prepare boa and miniconda environment

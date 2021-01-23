@@ -4,7 +4,6 @@ import { PipelineStatus } from '@pipcook/pipcook-core';
 import { JobStatusValue, JobResp } from '@pipcook/sdk';
 import { getFile } from '../utils/request';
 import { installPackageFromConfig } from './pipeline';
-import { tunaMirrorURI } from '../config';
 import { logger, initClient, traceLogger, extractToPath, parseConfigFilename, streamToJson } from '../utils/common';
 import { CommonOptions, RunAndDownloadOptions, PluginInstallOptions } from '../types/options';
 
@@ -89,10 +88,7 @@ export async function runByFile(filename: string, opts: PluginInstallOptions): P
     await installPackageFromConfig(config, opts);
     logger.info('start to create pipeline');
     const pipeline = await client.pipeline.create(config);
-    logger.success(`pipeline is created: ${pipeline.id}, installing`);
-
-    const installingResp = await client.pipeline.install(pipeline.id, { pyIndex: opts.tuna ? tunaMirrorURI : undefined });
-    await client.pipeline.traceEvent(installingResp.traceId, traceLogger);
+    logger.info(`pipeline is created: ${pipeline.id}`);
     logger.success('pipeline installed successfully, start to run job');
 
     return runByPipelineId(pipeline.id, opts);
