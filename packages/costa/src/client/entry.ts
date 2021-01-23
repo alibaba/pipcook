@@ -5,6 +5,7 @@ import Debug from 'debug';
 import { IPCInput, IPCOutput } from '../protocol';
 import { PluginPackage } from '../index';
 import loadPlugin from './loaders';
+import { redirectDependency, redirectList } from './utils';
 
 const debug = Debug('costa.client');
 
@@ -16,8 +17,6 @@ process.title = 'pipcook.costa';
 export const ipcMethods = [ 'handshake', 'load', 'start', 'destroy', 'valueOf' ];
 
 export class Entry {
-  tfjsCache: any;
-
   /**
    * The id of client.
    */
@@ -89,7 +88,6 @@ export class Entry {
           throw new TypeError('handshake is required.');
         }
         const args = msg.args || [];
-        console.log('args', args);
         const rst = (this as any)[msg.method](...args);
         let returnValue = rst;
         if (rst instanceof Promise) {
@@ -149,24 +147,15 @@ export class Entry {
       boa.setenv(pkg.pipcook.target.PYTHONPATH);
       debug(`setup boa environment for ${pkg.pipcook.target.PYTHONPATH}`);
     }
-
     // FIXME(Yorkie): handle tfjs initialization issue.
-    if (pkg.dependencies['@tensorflow/tfjs-node-gpu']) {
-      // resolve the `@tensorflow/tfjs-node-gpu` by the current plugin package.
-      const tfjsModuleName = require.resolve('@tensorflow/tfjs-node-gpu', {
-        paths: [ path.join(process.cwd(), 'node_modules', pkg.name) ]
+    if (pkg.dependencies) {
+      const paths = [ path.join(process.cwd(), 'node_modules', pkg.name) ];
+      redirectList.forEach((pkgName) => {
+        if (pkg.dependencies[pkgName]) {
+          redirectDependency(pkgName, paths);
+        }
       });
-      if (this.tfjsCache) {
-        // assign the `require.cache` from cached tfjs object.
-        require.cache[tfjsModuleName] = this.tfjsCache;
-      } else {
-        // prepare load tfjs module.
-        require(tfjsModuleName);
-        // set tfjsCache from `require.cache`.
-        this.tfjsCache = require.cache[tfjsModuleName];
-      }
     }
-
     const absname = `${pkg.name}@${pkg.version}`;
     this.plugins[absname] = loadPlugin(pkg);
     console.info(`${pkg.name} plugin is loaded`);
@@ -178,8 +167,6 @@ export class Entry {
    * @param message
    */
   async start(pkg: PluginPackage, ...pluginArgs: any[] | undefined): Promise<Record<string, any> | undefined> {
-    console.log('start ', pluginArgs);
-    pluginArgs = pluginArgs || [];
     const absname = `${pkg.name}@${pkg.version}`;
     const fn = this.plugins[absname];
     if (typeof fn !== 'function') {
@@ -191,7 +178,7 @@ export class Entry {
       const [ dataset, args ] = pluginArgs.map(this.valueOf.bind(this)) as [ UniDataset, any ];
       [ dataset.trainLoader, dataset.validationLoader, dataset.testLoader ]
         .filter((loader: DataLoader) => loader != null)
-        .forEach(async (loader: DataLoader) => {
+        .forEach((loader: DataLoader) => {
           process.nextTick(async () => {
             const len = await loader.len();
             loader.processIndex = 0;
@@ -233,7 +220,7 @@ export class Entry {
     process.nextTick(() => {
       this.clientId = null;
       this.handshaked = false;
-      process.exit(0);
+      this.process.exit(0);
     });
   }
 }

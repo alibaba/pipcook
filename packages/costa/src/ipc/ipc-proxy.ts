@@ -23,7 +23,7 @@ export class IPCProxy {
     this.child.once('exit', this.onCleanup.bind(this, listener));
   }
 
-  onCleanup(listener: any, code: number, signal: string): void {
+  onCleanup(listener: (...args: any[]) => void, code: number, signal: string): void {
     debug(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`);
     for (const id in this.callMap) {
       this.callMap[id](new TypeError(`the runnable(${this.id}) has been destroyed with(code=${code}, signal=${signal}).`), null);

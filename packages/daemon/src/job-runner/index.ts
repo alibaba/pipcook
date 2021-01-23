@@ -2,7 +2,8 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import {
   PipelineStatus,
-  PluginTypeI
+  PluginTypeI,
+  UniDataset
 } from '@pipcook/pipcook-core';
 import { PluginPackage, RunnableResponse, PluginRunnable } from '@pipcook/costa';
 import { Pipeline, Job, JobParam } from '../models';
@@ -146,7 +147,7 @@ export class JobRunner {
    * run data access plugin
    * @param dataDir data dir
    */
-  async runDataAccess(dataDir: string): Promise<any> {
+  async runDataAccess(dataDir: string): Promise<UniDataset> {
     this.assertPlugin('dataAccess');
 
     const params = this.findParamsByType('dataAccess', this.opts.job.params);
@@ -160,7 +161,7 @@ export class JobRunner {
    * run dataset process plugin
    * @param dataset dataset from data collect plugin
    */
-  async runDatasetProcess(dataset: any): Promise<void> {
+  async runDatasetProcess(dataset: UniDataset): Promise<void> {
     if (this.opts.plugins.datasetProcess) {
       const params = this.findParamsByType('datasetProcess', this.opts.job.params);
 
@@ -172,7 +173,7 @@ export class JobRunner {
    * run data process plugin
    * @param dataset dataset from data collect plugin
    */
-  async runDataProcess(dataset: any): Promise<void> {
+  async runDataProcess(dataset: UniDataset): Promise<void> {
     if (this.opts.plugins.dataProcess) {
       const params = this.findParamsByType('dataProcess', this.opts.job.params);
 
@@ -184,7 +185,7 @@ export class JobRunner {
    * run model define plugin, return plugin and model
    * @param dataset dataset from data collect/dataset process/data process plugin
    */
-  async runModelDefine(dataset: any): Promise<ModelResult> {
+  async runModelDefine(dataset: UniDataset): Promise<ModelResult> {
     const params = this.findParamsByType('modelDefine', this.opts.job.params);
 
     return {
@@ -199,7 +200,7 @@ export class JobRunner {
    * @param model model from model define
    * @param modelPath where the model saves to
    */
-  async runModelTrain(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
+  async runModelTrain(dataset: UniDataset, model: RunnableResponse, modelPath: string): Promise<any> {
     const params = this.findParamsByType('modelTrain', this.opts.job.params);
 
     return this.runPlugin('modelTrain', dataset, model, this.getParams(this.opts.plugins.modelTrain?.params, {
@@ -213,7 +214,7 @@ export class JobRunner {
    * @param model model from model define
    * @param modelPath where the model loads from
    */
-  async runModelEvaluate(dataset: any, model: RunnableResponse, modelPath: string): Promise<any> {
+  async runModelEvaluate(dataset: UniDataset, model: RunnableResponse, modelPath: string): Promise<any> {
     this.assertPlugin('modelEvaluate');
 
     return this.runPlugin('modelEvaluate', dataset, model, this.getParams(this.opts.plugins.modelEvaluate?.params, {

@@ -204,7 +204,7 @@ class DefaultLogger implements Logger {
 const { rows, columns, isTTY } = process.stdout;
 export const logger = isTTY && rows > 0 && columns > 0 ? new TtyLogger() : new DefaultLogger();
 
-export function traceLogger(event: string, data: any): void {
+export function traceLogger(event: string, data: Record<string, any>): void {
   if (event === 'log') {
     if (data.level === 'info') {
       logger.info(data.data);

@@ -1,6 +1,9 @@
 import test from 'ava';
 import * as sinon from 'sinon';
+import * as core from '@pipcook/pipcook-core';
 import { Entry, ipcMethods, previousFlag } from './entry';
+import * as utils from './utils';
+const loadPlugin = require('./loaders');
 
 test.serial.beforeEach(() => sinon.restore());
 
@@ -75,9 +78,21 @@ test('should process ipc request for \'handshake\' but not handshaked', async (t
   entry.handshake = stubMethod;
   entry.send = stubSend;
   await entry.onMessage({ id: 0, method: 'handshake', args: [ 1, 2, 3 ] });
-  t.true(stubSend.calledOnce, `send shoud be called once`);
+  t.true(stubSend.calledOnce, `send should be called once`);
   t.deepEqual(stubSend.args[0], [ { id: 0, error: null, result: '123' } ], 'should send ipc result');
   t.true(stubMethod.calledOnce, `method 'handshake' shoud be called once`);
+});
+
+test('should call a nonexistent method', async (t) => {
+  const entry = new Entry({} as NodeJS.Process);
+  entry.handshaked = false;
+  const stubSend = sinon.stub().returns(undefined);
+  entry.send = stubSend;
+  await entry.onMessage({ id: 0, method: 'someMethod', args: [ 1, 2, 3 ] });
+  t.true(stubSend.calledOnce, `send should be called once`);
+  t.is(stubSend.args[0][0].id, 0, 'id should be 0');
+  t.is(stubSend.args[0][0].error?.message, 'no method found: someMethod', 'error message should mached');
+  t.is(stubSend.args[0][0].result, null, 'result should be null');
 });
 
 test.serial('should send ipc response to parent', async (t) => {
@@ -130,4 +145,107 @@ test('should handshake', (t) => {
   entry.handshake('mockId');
   t.is(entry.clientId, 'mockId', 'should set client id');
   t.true(entry.handshaked, 'should set handshaked to true');
+});
+
+test.serial('should load plugin', async (t) => {
+  const entry = new Entry({} as NodeJS.Process);
+  entry.clientId = '';
+  entry.handshaked = false;
+  const stubLoadPlugin = sinon.stub(loadPlugin, 'default');
+  const mockPkg = { name: 'mockPlugin', pipcook: { target: { PYTHONPATH: '/mock/python/path' } } };
+  await entry.load(mockPkg as any);
+  t.true(stubLoadPlugin.calledOnce, 'loadPlugin should be called once');
+  t.deepEqual(stubLoadPlugin.args[0], [ mockPkg ], 'loadPlugin should be called with args');
+});
+
+test.serial('should load plugin with tfjs', async (t) => {
+  const entry = new Entry({} as NodeJS.Process);
+  const stubLoadPlugin = sinon.stub(loadPlugin, 'default');
+  const stubRedictDependency = sinon.stub(utils, 'redirectDependency');
+  const mockPkg = { name: 'mockPlugin', dependencies: { '@tensorflow/tfjs-node-gpu': '^1.0.0' } };
+  await entry.load(mockPkg as any);
+  t.true(stubLoadPlugin.calledOnce, 'loadPlugin should be called once');
+  t.deepEqual(stubLoadPlugin.args[0], [ mockPkg ], 'loadPlugin should be called with args');
+  t.true(stubRedictDependency.calledOnce, 'stubRedictDependency should be called once');
+  t.is(stubRedictDependency.args[0][0], '@tensorflow/tfjs-node-gpu', 'stubRedictDependency should be called with tfjs');
+});
+
+test.serial.cb('should start dataProcess plugin', (t) => {
+  const entry = new Entry({} as NodeJS.Process);
+  const mockPkg = { name: 'mockPlugin', pipcook: { category: 'dataProcess' }, version: '1.0.0' };
+  const stubPluginEntry = sinon.stub().resolves();
+  entry.plugins[`${mockPkg.name}@${mockPkg.version}`] = stubPluginEntry;
+  const stubLoaderLen = sinon.stub().resolves(2);
+  const stubLoaderGetItem = sinon.stub().resolves({ data: 'mockSample' });
+  const stubLoaderSetItem = sinon.stub().resolves();
+  const stubLoaderNotifyProcess = sinon.stub().callsFake(() => {
+    if (stubLoaderNotifyProcess.callCount === 2) {
+      t.true(stubLoaderLen.calledOnce, 'stubLoaderLen should be called once');
+      t.true(stubLoaderGetItem.calledTwice, 'stubLoaderGetItem should be called twice');
+      t.true(stubLoaderSetItem.calledTwice, 'stubLoaderSetItem should be called twice');
+      t.true(stubLoaderSetItem.calledTwice, 'stubLoaderSetItem should be called twice');
+      t.deepEqual(stubPluginEntry.args[0],
+        [ { data: 'mockSample' }, 'mockMetadata', 'mockArgs' ],
+        'stubPluginEntry should be called twice');
+      t.true(stubPluginEntry.calledTwice, 'stubPluginEntry should be called twice');
+      t.end();
+    }
+  });
+  entry.start(mockPkg as any, {
+    trainLoader: {
+      len: stubLoaderLen,
+      getItem: stubLoaderGetItem,
+      setItem: stubLoaderSetItem,
+      notifyProcess: stubLoaderNotifyProcess
+    },
+    metadata: 'mockMetadata'
+  }, 'mockArgs');
+});
+
+test('should start datasetProcess plugin', async (t) => {
+  const entry = new Entry({} as NodeJS.Process);
+  const mockPkg = { name: 'mockPlugin', pipcook: { category: 'datasetProcess' }, version: '1.0.0' };
+  const stubPluginEntry = sinon.stub().resolves();
+  entry.plugins[`${mockPkg.name}@${mockPkg.version}`] = stubPluginEntry;
+
+  await entry.start(mockPkg as any, 'mockDataset', 'mockArgs');
+  t.true(stubPluginEntry.calledOnce, 'plugin entry should be called once');
+  t.deepEqual(stubPluginEntry.args[0], [ 'mockDataset', 'mockArgs' ], 'plugin entry should be called once');
+});
+
+test('should start other plugins', async (t) => {
+  const entry = new Entry({} as NodeJS.Process);
+  const mockPkg = { name: 'mockPlugin', pipcook: { category: 'modelDefine' }, version: '1.0.0' };
+  const stubPluginEntry = sinon.stub().resolves('mockResp');
+  const stubGenerateId = sinon.stub().returns('mockId');
+  sinon.stub(core, 'generateId').get(sinon.stub().returns(stubGenerateId));
+  entry.plugins[`${mockPkg.name}@${mockPkg.version}`] = stubPluginEntry;
+
+  t.deepEqual(
+    await entry.start(mockPkg as any, 'mockDataset', 'mockArgs'),
+    { id: 'mockId', __flag__: previousFlag },
+    'plugin response should be a previouse data'
+  );
+  t.true(stubPluginEntry.calledOnce, 'plugin entry should be called once');
+  t.deepEqual(stubPluginEntry.args[0], [ 'mockDataset', 'mockArgs' ], 'plugin entry should be called once');
+});
+
+test('start plugin which has not been loaded', async (t) => {
+  const entry = new Entry({} as NodeJS.Process);
+  const mockPkg = { name: 'mockPlugin', pipcook: { category: 'modelDefine' }, version: '1.0.0' };
+
+  await t.throwsAsync(
+    entry.start(mockPkg as any, 'mockDataset', 'mockArgs'),
+    { instanceOf: TypeError, message: 'the plugin(mockPlugin@1.0.0) not loaded.' },
+    'should throw error'
+  );
+});
+
+test.cb('should destroy entry', (t) => {
+  const stubExit = sinon.stub().callsFake((code: number) => {
+    t.is(code, 0);
+    t.end();
+  });
+  const entry = new Entry({ exit: stubExit } as any);
+  entry.destroy();
 });

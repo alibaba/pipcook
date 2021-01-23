@@ -51,7 +51,7 @@ export async function createAnnotationFile(annotationDir: string, filename: stri
  * @param annotationDir : annotation directory
  * @param json : json file that will be filled into xml
  */
-export async function createAnnotationFromJson(annotationDir: string, json: any): Promise<void> {
+export async function createAnnotationFromJson(annotationDir: string, json: Record<string, any>): Promise<void> {
   let filename = json.annotation.filename[0];
   const fileNameSplit = filename.split('.');
   filename = fileNameSplit.slice(0, fileNameSplit.length - 1).join('.');
