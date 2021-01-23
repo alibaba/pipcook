@@ -122,7 +122,6 @@ test('should cleanup ipc', async (t) => {
   const mockChildProcess = {
     on: sinon.stub(),
     once: sinon.stub(),
-    send: sinon.stub().returns(true),
     off: sinon.stub(),
     connected: true
   };
@@ -138,4 +137,34 @@ test('should cleanup ipc', async (t) => {
   t.deepEqual(mockChildProcess.off.args[0], [ 'message', stubLisener ], 'message event should be off');
   t.true(stubCancel.calledOnce, 'stubCancel should be called once');
   t.deepEqual(ipc.callMap, {}, 'callMap should be empty');
+});
+
+test('should handle message from ipc', async (t) => {
+  const mockChildProcess = {
+    on: sinon.stub(),
+    once: sinon.stub(),
+    connected: true
+  };
+  const ipc = new IPCProxy('', mockChildProcess as any, 3000);
+  const stubHandler = sinon.stub();
+  ipc.callMap[0] = stubHandler;
+  ipc.msgHandler({ id: 0, error: null, result: { data: 'mockData' } });
+  t.true(stubHandler.calledOnce, 'handler should be called once');
+  t.deepEqual(stubHandler.args[0], [ null, { data: 'mockData' } ], 'handler should be called with result');
+});
+
+test('should handle message from ipc with error', async (t) => {
+  const mockChildProcess = {
+    on: sinon.stub(),
+    once: sinon.stub(),
+    connected: true
+  };
+  const ipc = new IPCProxy('', mockChildProcess as any, 3000);
+  const stubHandler = sinon.stub();
+  ipc.callMap[0] = stubHandler;
+  ipc.msgHandler({ id: 0, error: { message: 'mock message', stack: 'mock stack' }, result: null });
+  t.true(stubHandler.calledOnce, 'handler should be called once');
+  const { message, stack } = stubHandler.args[0][0];
+  t.deepEqual({ message, stack }, { message: 'mock message', stack: 'mock stack' }, 'handler should be called with error');
+  t.is(stubHandler.args[0][1], null, 'handler should be called with result null');
 });

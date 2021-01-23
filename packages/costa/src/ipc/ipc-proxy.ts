@@ -36,12 +36,14 @@ export class IPCProxy {
   msgHandler(msg: IPCOutput): void {
     debug('msg from child', msg);
     if (msg && typeof msg === 'object' && this.callMap[msg.id]) {
-      let err;
+      let err = null;
       if (msg.error) {
         err = new Error(msg.error.message);
         err.stack = msg.error.stack;
+        this.callMap[msg.id](err, null);
+      } else {
+        this.callMap[msg.id](null, msg.result);
       }
-      this.callMap[msg.id](err, msg.result);
     }
   }
 

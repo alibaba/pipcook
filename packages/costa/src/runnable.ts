@@ -116,7 +116,7 @@ export class PluginRunnable {
     pipeLog(this.handle.stderr, this.logger.stderr);
     this.ipcProxy = setup(this.id, this.handle);
     // send the first message as handshaking with client
-    const ret = await this.ipcProxy.handshake(this.id);
+    const ret = await this.ipcProxy.handshake();
     if (!ret) {
       throw new TypeError(`created runnable "${this.id}" failed.`);
     }
