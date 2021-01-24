@@ -1,9 +1,8 @@
+import test from 'ava';
 import { IMAGE_CLASSIFICATION, OBJECT_DETECTION, TEXT_CLASSIFICATION } from './model';
 
-describe('model constant', () => {
-  it('should own some constants', () => {
-    expect(IMAGE_CLASSIFICATION).toEqual('image classification');
-    expect(OBJECT_DETECTION).toEqual('object detection');
-    expect(TEXT_CLASSIFICATION).toEqual('text classification');
-  });
+test('should own some constants', (t) => {
+  t.is(IMAGE_CLASSIFICATION, 'image classification');
+  t.is(OBJECT_DETECTION, 'object detection');
+  t.is(TEXT_CLASSIFICATION, 'text classification');
 });

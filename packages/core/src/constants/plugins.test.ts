@@ -1,3 +1,4 @@
+import test from 'ava';
 import {
   DATACOLLECT,
   DATAACCESS,
@@ -7,13 +8,11 @@ import {
   MODELEVALUATE
 } from './plugins';
 
-describe('plugins constant', () => {
-  it('should own some constants', () => {
-    expect(DATACOLLECT).toEqual('dataCollect');
-    expect(DATAACCESS).toEqual('dataAccess');
-    expect(DATAPROCESS).toEqual('dataProcess');
-    expect(DATASETPROCESS).toEqual('datasetProcess');
-    expect(MODELTRAIN).toEqual('modelTrain');
-    expect(MODELEVALUATE).toEqual('modelEvaluate');
-  });
+test('should own some constants', (t) => {
+  t.is(DATACOLLECT, 'dataCollect');
+  t.is(DATAACCESS, 'dataAccess');
+  t.is(DATAPROCESS, 'dataProcess');
+  t.is(DATASETPROCESS, 'datasetProcess');
+  t.is(MODELTRAIN, 'modelTrain');
+  t.is(MODELEVALUATE, 'modelEvaluate');
 });
