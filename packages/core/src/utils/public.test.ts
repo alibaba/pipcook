@@ -137,7 +137,7 @@ test.serial('test getMetaData with undefined', async (t) => {
 });
 
 test('test getMetaData with nonexistent file', async (t) => {
-  await t.throwsAsync(getMetadata('nonexistent-id'), { instanceOf: TypeError });
+  await t.throwsAsync(getMetadata('nonexistent-id'), { instanceOf: Error });
 });
 
 test('compress dir to tmp dir', async (t) => {
@@ -177,13 +177,13 @@ test('test if remote file was downloaded', async (t) => {
 test('download a nonexistent file', async (t) => {
   await t.throwsAsync(
     download('http://unknown-host/nonexists.zip', './nonexistent.zip')
-  , { instanceOf: TypeError });
+  , { instanceOf: Error });
   await fs.remove('./nonexistent.zip');
 });
 test('download a invalid url', async (t) => {
   await t.throwsAsync(
     download('abcd', './nonexistent.zip'),
-    { instanceOf: TypeError }
+    { instanceOf: Error }
   );
   await fs.remove('./nonexistent.zip');
 });
