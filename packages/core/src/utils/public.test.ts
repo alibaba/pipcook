@@ -141,6 +141,7 @@ test('test getMetaData with nonexistent file', async (t) => {
 });
 
 test('compress dir to tmp dir', async (t) => {
+  await fs.mkdirp(constants.PIPCOOK_TMPDIR);
   const tarFilename = path.join(constants.PIPCOOK_TMPDIR, generateId() + '.tar');
   await compressTarFile(__filename, tarFilename);
   t.true(await fs.pathExists(tarFilename));
