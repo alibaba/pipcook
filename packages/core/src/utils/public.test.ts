@@ -177,8 +177,9 @@ test('test if remote file was downloaded', async (t) => {
 });
 test('download a nonexistent file', async (t) => {
   await t.throwsAsync(
-    download('http://unknown-host/nonexists.zip', './nonexistent.zip')
-  , { instanceOf: Error });
+    download('http://unknown-host/nonexists.zip', './nonexistent.zip'),
+    { instanceOf: Error }
+  );
   await fs.remove('./nonexistent.zip');
 });
 test('download a invalid url', async (t) => {
