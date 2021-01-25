@@ -1,4 +1,4 @@
-const test = require('tape');
+const test = require('ava');
 const boa = require('../../');
 const np = boa.import('numpy');
 const { tuple, type } = boa.builtins();
@@ -9,31 +9,27 @@ boa.import('numpy.matlib');
 test('numpy.mat: interpret the input as a matrix.', t => {
   const x = np.array([[1, 2], [3, 4]]);
   const m = np.asmatrix(x);
-  t.equal(JSON.stringify(m.tolist()), '[[1,2],[3,4]]');
-  t.equal(type(m).__name__, 'matrix');
-  t.end();
+  t.is(JSON.stringify(m.tolist()), '[[1,2],[3,4]]');
+  t.is(type(m).__name__, 'matrix');
 });
 
 test('numpy.matlib.empty: return a new matrix without initializing entries', t => {
   const m = np.matlib.empty(tuple([2, 2]));
-  t.equal(type(m).__name__, 'matrix');
-  t.end();
+  t.is(type(m).__name__, 'matrix');
 });
 
 test('numpy.matlib.zeros: return a matrix filled with zeros.', t => {
   const m1 = np.matlib.zeros(tuple([2, 3]));
-  t.equal(type(m1).__name__, 'matrix');
+  t.is(type(m1).__name__, 'matrix');
   const m2 = np.matlib.zeros(2);
-  t.equal(type(m2).__name__, 'matrix');
-  t.end();
+  t.is(type(m2).__name__, 'matrix');
 });
 
 test('numpy.matlib.ones: return a matrix filled with ones.', t => {
   const m1 = np.matlib.ones(tuple([2, 3]));
-  t.equal(type(m1).__name__, 'matrix');
+  t.is(type(m1).__name__, 'matrix');
   const m2 = np.matlib.ones(2);
-  t.equal(type(m2).__name__, 'matrix');
-  t.end();
+  t.is(type(m2).__name__, 'matrix');
 });
 
 test('numpy.matlib.eye: return a matrix with ones on the diagonal and zeros elsewhere.', t => {
@@ -41,16 +37,14 @@ test('numpy.matlib.eye: return a matrix with ones on the diagonal and zeros else
     k: 1,
     dtype: np.float,
   }));
-  t.equal(type(m).__name__, 'matrix');
-  t.end();
+  t.is(type(m).__name__, 'matrix');
 });
 
 test('numpy.matlib.identity: return the square identity matrix of given size.', t => {
   const m = np.matlib.identity(3, boa.kwargs({
     dtype: np.int,
   }));
-  t.equal(type(m).__name__, 'matrix');
-  t.end();
+  t.is(type(m).__name__, 'matrix');
 });
 
 test('numpy.matlib.repmat: repeat a 0-D to 2-D array or matrix MxN times.', t => {
@@ -69,7 +63,7 @@ test('numpy.matlib.repmat: repeat a 0-D to 2-D array or matrix MxN times.', t =>
     const m2 = np.matlib.repmat(a2, 2, 3);
     console.log(`${m2}`);
   }
-  t.end();
+  t.pass();
 });
 
 test('numpy.matlib.rand: return a matrix of random values with given shape.', t => {
@@ -81,7 +75,7 @@ test('numpy.matlib.rand: return a matrix of random values with given shape.', t 
     const n1 = np.matlib.rand(tuple([2, 3]));
     console.log(`${n1}`);
   }
-  t.end();
+  t.pass();
 });
 
 test('numpy.matlib.randn: return a random matrix with data from the “standard normal” distribution.', t => {
@@ -94,14 +88,14 @@ test('numpy.matlib.randn: return a random matrix with data from the “standard 
     console.log(`${n1}`);
   }
   // TODO: matrix doesn't support operators like +/-/*.
-  t.end();
+  t.pass();
 });
 
 test('numpy.matrix: operator functions', t => {
   const x = np.array([[1, 2], [3, 4]]);
   const mb = np.asmatrix(x);
   const m1 = mb.add(20);
-  t.equal(`${m1.A1}`, '[21 22 23 24]');
+  t.is(`${m1.A1}`, '[21 22 23 24]');
   // simple test
   console.log(m1.sub(10));
   console.log(m1.mul(10));
@@ -109,7 +103,7 @@ test('numpy.matrix: operator functions', t => {
   console.log(m1.imul(3));
   console.log(m1.pow(2));
   console.log(m1.ipow(3));
-  t.end();
+  t.pass();
 });
 
 

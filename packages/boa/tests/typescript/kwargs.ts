@@ -1,11 +1,10 @@
 import * as boa from '../../';
-import test from 'tape';
+import test from 'ava';
 
-test('test typescript kwargs', (t: test.Test) => {
+test('test typescript kwargs', (t) => {
   const string = boa.import('string');
   const fmt = string.Formatter();
-  t.strictEqual(fmt.format('foobar {0} {1}', 'a', 'b'), 'foobar a b');
-  t.strictEqual(fmt.format('foobar {name}', boa.kwargs({ name: 'test' })),
-                'foobar test');
-  t.end();
+  t.is(fmt.format('foobar {0} {1}', 'a', 'b'), 'foobar a b');
+  t.is(fmt.format('foobar {name}', boa.kwargs({ name: 'test' })),
+                  'foobar test');
 });

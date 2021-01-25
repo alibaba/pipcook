@@ -1,73 +1,64 @@
-const test = require('tape');
+const test = require('ava');
 const boa = require('../../');
 const builtins = boa.builtins();
 
 test('builtins constants', t => {
-  t.strictEqual(builtins.True, true);
-  t.strictEqual(builtins.False, false);
-  t.strictEqual(builtins.None, null);
-  t.ok(builtins.NotImplemented);
-  t.ok(builtins.Ellipsis);
-  t.ok(builtins.__debug__);
-  t.end();
+  t.is(builtins.True, true);
+  t.is(builtins.False, false);
+  t.is(builtins.None, null);
+  t.is(!!builtins.NotImplemented, true);
+  t.is(!!builtins.Ellipsis, true);
+  t.is(!!builtins.__debug__, true);
 });
 
 test('`builtins.abs()` function', t => {
   const { abs } = builtins;
-  t.equal(abs(100), 100);
-  t.equal(abs(-100), 100);
-  t.equal(abs(10.06), 10.06);
-  t.equal(abs(-10.06), 10.06);
-  t.end();
+  t.is(abs(100), 100);
+  t.is(abs(-100), 100);
+  t.is(abs(10.06), 10.06);
+  t.is(abs(-10.06), 10.06);
 });
 
 test('`builtins.bin` function', t => {
   const { bin } = builtins;
-  t.equal(bin(3), '0b11');
-  t.equal(bin(-10), '-0b1010');
-  t.end();
+  t.is(bin(3), '0b11');
+  t.is(bin(-10), '-0b1010');
 });
 
 test('`builtins.bytes` function', t => {
   const { bytes, type } = builtins;
   const bval = bytes.fromhex('2Ef0 F1f2');
-  t.equal(type(bval).__name__, 'bytes');
-  t.equal(bval.hex(), '2ef0f1f2');
-  t.end();
+  t.is(type(bval).__name__, 'bytes');
+  t.is(bval.hex(), '2ef0f1f2');
 });
 
 test('`builtins.hash()` function', t => {
   const { hash } = builtins;
-  t.equal(typeof hash(hash), 'number');
-  t.end();
+  t.is(typeof hash(hash), 'number');
 });
 
 test('`builtins.help()` function', t => {
-  builtins.help(builtins.abs);
-  t.end();
+  t.is(typeof builtins.help(builtins.abs), 'object');
 });
 
 test('`builtins.hex()` function', t => {
   const { hex } = builtins;
-  t.equal(hex(255), '0xff');
-  t.equal(hex(-42), '-0x2a');
-  t.end();
+  t.is(hex(255), '0xff');
+  t.is(hex(-42), '-0x2a');
 });
 
 test('`builtins.int` class', t => {
-  t.equal(builtins.int(16), 16);
-  t.equal(builtins.int(255), 255);
-  t.end();
+  t.is(builtins.int(16), 16);
+  t.is(builtins.int(255), 255);
 });
 
 test('`builtins.list` class', t => {
   const { list, len } = builtins;
   const foo = [100, 200, 300];
   const bar = list(foo);
-  t.equal(len(bar), foo.length);
-  t.equal(len(foo), len(bar));
-  foo.forEach((v, i) => t.equal(bar[i], v));
-  t.end();
+  t.is(len(bar), foo.length);
+  t.is(len(foo), len(bar));
+  foo.forEach((v, i) => t.is(bar[i], v));
 });
 
 test('`builtins.len()` function', t => {
@@ -78,18 +69,16 @@ test('`builtins.len()` function', t => {
     a2: 3,
   };
   const arr = [30, 31, 32, 100];
-  t.equal(len(dict(boa.kwargs(obj))), Object.keys(obj).length);
-  t.equal(len(arr), arr.length);
-  t.end();
+  t.is(len(dict(boa.kwargs(obj))), Object.keys(obj).length);
+  t.is(len(arr), arr.length);
 });
 
 test('`builtins.min()` and `builtins.max()` function', t => {
   const { min, max } = builtins;
-  t.equal(min([1, 2, 3]), 1);
-  t.equal(max([1, 2, 3]), 3);
-  t.equal(min(1, 2, 3), 1);
-  t.equal(max(1, 2, 3), 3);
-  t.end();
+  t.is(min([1, 2, 3]), 1);
+  t.is(max([1, 2, 3]), 3);
+  t.is(min(1, 2, 3), 1);
+  t.is(max(1, 2, 3), 3);
 });
 
 test('`builtins.ord()` function', t => {
@@ -97,73 +86,67 @@ test('`builtins.ord()` function', t => {
   const chars = ['a', 'b', 'c', 'd', 'e'];
   t.plan(chars.length);
   chars.forEach(c => {
-    t.equal(ord(c), c.charCodeAt(0), `ord(${c}) is right`);
+    t.is(ord(c), c.charCodeAt(0), `ord(${c}) is right`);
   });
-  t.end();
 });
 
 test('`builtins.pow()` function', t => {
   const { pow } = builtins;
-  t.equal(pow(10, 2), 100);
-  t.equal(pow(38, 10, 97), 66);
-  t.end();
+  t.is(pow(10, 2), 100);
+  t.is(pow(38, 10, 97), 66);
 });
 
 test('`builtins.range()` function', t => {
   const { range, len } = builtins;
   {
     const r = range(10);
-    t.equal(len(r), 10, 'the len(range(10)) should be 10');
-    t.equal(r[0], 0, 'the first should be 0');
-    t.equal(r[9], 9, 'the last should be 9');
+    t.is(len(r), 10, 'the len(range(10)) should be 10');
+    t.is(r[0], 0, 'the first should be 0');
+    t.is(r[9], 9, 'the last should be 9');
   }
   {
     const r = range(0, 20);
-    t.equal(len(r), 20);
-    t.equal(r[0], 0);
-    t.equal(r[19], 19);
+    t.is(len(r), 20);
+    t.is(r[0], 0);
+    t.is(r[19], 19);
   }
   {
     const r = range(0, 21, 5);
-    t.equal(len(r), 5);
-    t.equal(r[0], 0);
-    t.equal(r[1], 5);
-    t.equal(r[2], 10);
-    t.equal(r[3], 15);
-    t.equal(r[4], 20);
+    t.is(len(r), 5);
+    t.is(r[0], 0);
+    t.is(r[1], 5);
+    t.is(r[2], 10);
+    t.is(r[3], 15);
+    t.is(r[4], 20);
   }
   {
     const r = range(0, 5);
     const s = r.slice(1, 5, 1);
-    t.equal(len(s), len(r) - 1);
-    t.equal(s[0], r[1]);
+    t.is(len(s), len(r) - 1);
+    t.is(s[0], r[1]);
   }
-  t.end();
 });
 
 test('`builtins.round()` function', t => {
   const { round } = builtins;
   const n = 10.123;
-  t.equal(round(n), 10);
-  t.equal(round(n, 1), 10.1);
-  t.equal(round(n, 2), 10.12);
-  t.equal(round(n, 3), 10.123);
-  t.end();
+  t.is(round(n), 10);
+  t.is(round(n, 1), 10.1);
+  t.is(round(n, 2), 10.12);
+  t.is(round(n, 3), 10.123);
 });
 
 test('`builtins.tuple()` function', t => {
   const { tuple, range, len } = builtins;
   const aEmptyTuple = tuple();
-  t.equal(len(aEmptyTuple), 0);
+  t.is(len(aEmptyTuple), 0);
   const aTupleFromRange = tuple(range(0, 20));
-  t.equal(len(aTupleFromRange), 20);
-  t.end();
+  t.is(len(aTupleFromRange), 20);
 });
 
 test('`builtins.type()` function', t => {
   const { tuple, type } = builtins;
   const aTuple = tuple();
-  t.equal(type(aTuple).__name__, 'tuple');
-  t.equal(type(tuple).__name__, 'type');
-  t.end();
+  t.is(type(aTuple).__name__, 'tuple');
+  t.is(type(tuple).__name__, 'type');
 });

@@ -1,4 +1,4 @@
-const test = require('tape');
+const test = require('ava');
 const path = require('path');
 const boa = require('../../');
 const os = boa.import('os');
@@ -14,7 +14,7 @@ test('os/process parameters', t => {
   console.log(`os.geteuid() is ${os.geteuid()}`);
   console.log(`os.getgroups() is ${os.getgroups()}`);
   console.log(`os.getpid() is ${os.getpid()}`);
-  t.end();
+  t.pass();
 });
 
 test('os/files and directories', t => {
@@ -30,5 +30,5 @@ test('os/files and directories', t => {
     os.makedirs(dirPath, boa.kwargs({ mode: 0x777, exist_ok: false }));
     os.rmdir(dirPath);
   }
-  t.end();
+  t.pass();
 });

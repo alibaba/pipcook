@@ -1,4 +1,4 @@
-const test = require('tape');
+const test = require('ava');
 const boa = require('../../');
 
 test('the `syscolor` module', t => {
@@ -7,9 +7,8 @@ test('the `syscolor` module', t => {
   {
     const v = colorsys.rgb_to_hsv(0.2, 0.8, 0.4);
     console.log(v);
-    t.ok(len(v) === 3);
-    t.ok(min(v) === 0.3888888888888889);
-    t.ok(max(v) === 0.8);
+    t.is(len(v), 3);
+    t.is(min(v), 0.3888888888888889);
+    t.is(max(v), 0.8);
   }
-  t.end();
 });
