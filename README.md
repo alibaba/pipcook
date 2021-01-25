@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://alibaba.github.io/pipcook/">
-    <img alt="pipcook" src="./docs/doc-resource/logo.png" width="160">
+    <img alt="pipcook" src="./docs/images/logo.png" width="160">
   </a>
 </p>
 
@@ -182,7 +182,7 @@ $ yarn build && yarn init-dev
 
 #### DingTalk
 
-<img width="200" src="./docs/doc-resource/community_qrcode.png">
+<img width="200" src="./docs/images/community_qrcode.png">
 
 > Download DingTalk (an all-in-one free communication and collaboration platform) here: [English](https://www.dingtalk.com/static/en/download) | [中文](https://page.dingtalk.com/wow/dingtalk/act/download)
 
