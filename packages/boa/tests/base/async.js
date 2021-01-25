@@ -6,7 +6,6 @@ try {
   return;
 }
 
-const assert = require('assert');
 const { Worker, isMainThread, workerData, parentPort } = require('worker_threads');
 const boa = require('../../');
 const pybasic = boa.import('tests.base.basic');
