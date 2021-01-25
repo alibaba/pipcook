@@ -66,7 +66,7 @@ $ ./node_modules/.bin/lerna run --scope <package_name>
 ### Pipeline
 
 ```bash
-$ sh run_pipeline.sh <pipeline_name>
+$ sh tools/run_pipeline.sh <pipeline_name>
 ```
 
 The `pipeline_name` is the name of the pipeline file under "test/pipelines", such as:
