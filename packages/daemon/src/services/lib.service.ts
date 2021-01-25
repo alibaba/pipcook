@@ -9,7 +9,7 @@ export class LibService {
   PIPCOOK_BIP: string = join(constants.PIPCOOK_DAEMON, 'node_modules/@pipcook/boa/tools/bip.js');
 
   async installByName(name: string): Promise<boolean> {
-    if (pathExists(this.PIPCOOK_BIP)) {
+    if (await pathExists(this.PIPCOOK_BIP)) {
       if (name === 'tvm') {
         await execAsync(`${this.PIPCOOK_BIP} install tlcpack -f https://tlcpack.ai/wheels`, {});
       } else {

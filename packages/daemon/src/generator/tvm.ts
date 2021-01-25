@@ -2,7 +2,7 @@ import { fork } from 'child_process';
 import { GenerateOptions } from '../services/interface';
 import * as path from 'path';
 
-export function generateTVM(dist: string, projPackage: any, opts: GenerateOptions) {
+export function generateTVM(dist: string, projPackage: any, opts: GenerateOptions): Promise<void> {
   return new Promise((resolve, reject) => {
     const client = fork(`${path.resolve(__dirname, 'tvm.cli')}`, [ JSON.stringify({
       dist,
@@ -10,7 +10,13 @@ export function generateTVM(dist: string, projPackage: any, opts: GenerateOption
       opts
     }), 'keras' ]);
 
-    client.on('message', () => resolve({}));
-    client.on('error', (e) => reject(e));
+    client.on('message', (msg) => {
+      if (msg === 1) {
+        resolve();
+      } else {
+        reject(new Error('Internal Error'));
+      }
+    });
+    client.on('error', reject);
   });
 }

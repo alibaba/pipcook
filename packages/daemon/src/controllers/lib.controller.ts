@@ -16,7 +16,7 @@ export class LibController {
   @post('/{name}', {
     responses: {
       '204': {
-        description: 'lib install successfully'
+        description: 'lib installed successfully'
       }
     }
   })

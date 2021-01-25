@@ -99,7 +99,7 @@ export class JobService {
       });
       fileQueue.push(tvmGeneratePromise);
     }
-    fileQueue.push(generateNode(job, projPackage, dist, opts));
+    fileQueue.concat(generateNode(job, projPackage, dist, opts));
     fileQueue.push(fs.copy(opts.workingDir + '/logs', `${dist}/logs`));
 
     await Promise.all(fileQueue);

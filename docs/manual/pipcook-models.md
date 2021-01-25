@@ -23,7 +23,7 @@ But the trade-off is a heavy runtime and long installation time.
 
 ### How to use
 
-To use the nodejs model, the following steps are needed:
+To use the Node.js model, the following steps are needed:
 
 ```bash
 $ cd output/nodejs
@@ -40,7 +40,7 @@ const result = await model.predict([1, 2, 3, 4]);
 
 ### Background
 
-To give a more portable and user-friendly model solution, Pipcook uses TVM to compile a given model to wasm format. In this way, the model can run in both browser and Nodejs natively. However, since the standard for webGPU is not stable yet, Pipcook does not target the compiled model to GPU yet. In another word, **WASM format only works for CPU right now**.
+To give a more portable and user-friendly model solution, Pipcook uses [TVM](https://tvm.apache.org/docs) to compile a given model to wasm format. In this way, the model can run in both browser and Nodejs natively. However, since the standard for webGPU is not stable yet, Pipcook does not target the compiled model to GPU yet. In another word, **WASM format only works for CPU right now**.
 
 THe generated folder structure looks like:
 
@@ -73,4 +73,3 @@ const model = require('./browser.js');
 const data = [0, 1, 2, 3]; // Mock data, the real data layout depends on model's define
 const res = model.predict(data); // return type is Float32Array
 ```
-## How to 

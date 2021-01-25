@@ -1,5 +1,5 @@
-import { BaseApi } from "./base";
-import { post } from "./request";
+import { BaseApi } from './base';
+import { post } from './request';
 /**
  * API for lib management
  */

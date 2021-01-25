@@ -72,7 +72,7 @@ import serve from '../actions/serve';
 
   program
     .command('lib')
-    .description("add essential libs and deps for pipcook");
+    .description("add libraries: tvm, tensorflow, pytorch...");
 
   program.parse(process.argv);
 })();
