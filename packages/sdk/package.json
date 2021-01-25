@@ -14,7 +14,7 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "dev-compile": "esbuild ./src/*.ts --format=cjs --tsconfig=tsconfig.json --outdir=dist",
     "compile": "tsc -b tsconfig.json",
-    "test": "ts-node ../../run_tests.ts"
+    "test": "ava"
   },
   "dependencies": {
     "@pipcook/pipcook-core": "^1.2.0",
@@ -30,6 +30,7 @@
     "@types/form-data": "^2.5.0",
     "@types/fs-extra": "^9.0.1",
     "@types/sinon": "^9.0.5",
+    "ava": "^3.13.0",
     "sinon": "^9.0.3",
     "typescript": "^4.1.2"
   }
