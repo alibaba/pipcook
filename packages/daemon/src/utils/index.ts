@@ -4,7 +4,7 @@ import { pipeline } from 'stream';
 import { exec, ExecOptions, ExecException } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as request from 'request-promise';
+import axios from 'axios';
 import * as url from 'url';
 import {
   PluginTypeI,
@@ -25,7 +25,12 @@ export async function loadConfig(configPath: string | RunConfigI): Promise<RunCo
       throw new TypeError('config URI is not supported');
     }
     if ([ 'http:', 'https:' ].indexOf(urlObj.protocol as string) >= 0) {
-      configJson = JSON.parse(await request.get(configPath));
+      const configResp = await axios.get(configPath);
+      if (typeof configResp.data === 'string') {
+        configJson = JSON.parse(configResp.data);
+      } else {
+        configJson = configResp.data;
+      }
       for (const key in configJson.plugins) {
         const plugin = configJson.plugins[key as PluginTypeI];
         if (path.isAbsolute(plugin.package) || plugin.package.startsWith('.')) {
