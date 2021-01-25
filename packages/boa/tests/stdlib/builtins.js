@@ -6,9 +6,9 @@ test('builtins constants', t => {
   t.is(builtins.True, true);
   t.is(builtins.False, false);
   t.is(builtins.None, null);
-  t.is(!!builtins.NotImplemented, true);
-  t.is(!!builtins.Ellipsis, true);
-  t.is(!!builtins.__debug__, true);
+  t.is(Boolean(builtins.NotImplemented), true);
+  t.is(Boolean(builtins.Ellipsis), true);
+  t.is(Boolean(builtins.__debug__), true);
 });
 
 test('`builtins.abs()` function', t => {

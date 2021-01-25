@@ -11,7 +11,7 @@ test('keyword arguments throws', t => {
 });
 
 test('hash function', t => {
-  t.is(!!builtins.__hash__(), true);
+  t.is(Boolean(builtins.__hash__()), true);
   t.is(builtins['__notexists__'], undefined);
 
   const mlist = builtins.list([1, 3, 5]);
