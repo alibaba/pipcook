@@ -30,7 +30,7 @@
     "lint": "eslint . --ext .ts --ext .js && lerna run --scope @pipcook/daemon lint",
     "pretest": "npm run lint",
     "test": "sh run_tests.sh",
-    "test:pipeline": "sh ./run_pipeline.sh",
+    "test:pipeline": "sh ./tools/run_pipeline.sh",
     "typedoc": "sh tools/mkdoc.sh",
     "clean": "lerna run clean --parallel --concurrency 10",
     "release": "lerna publish from-package --yes --no-verify-access",
@@ -39,8 +39,5 @@
     "init-dev": "node ./tools/init_dev.js -f",
     "cov": "./tools/coverage.sh",
     "cov:report": "nyc report -r=lcov"
-  },
-  "resolutions": {
-    "**/nyc": "^15.1.0"
   }
 }
