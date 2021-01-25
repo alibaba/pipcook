@@ -8,8 +8,8 @@
     "build": "npm run clean && npm run compile",
     "dev-build": "npm run clean && npm run dev-compiles",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -rf ./assets/server",
-    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts --format=cjs --outdir=dist --tsconfig=tsconfig.json && sh setup.sh",
-    "compile": "tsc -b tsconfig.json && sh setup.sh"
+    "dev-compile": "esbuild ./src/*.ts ./src/**/*.ts --format=cjs --outdir=dist --tsconfig=tsconfig.json && sh ./tools/setup.sh",
+    "compile": "tsc -b tsconfig.json && sh ./tools/setup.sh"
   },
   "bin": {
     "pipcook": "./dist/bin/pipcook.js",
@@ -31,29 +31,22 @@
     "commander": "^4.0.1",
     "eventsource": "^1.0.7",
     "fastify": "^2.13.1",
-    "find-process": "^1.4.3",
     "form-data": "^3.0.0",
     "fs-extra": "^8.1.0",
-    "glob": "^7.1.6",
-    "glob-promise": "^3.4.0",
     "inquirer": "^6.5.2",
-    "minimist": "^1.2.0",
-    "npid": "0.4.0",
     "ora": "^3.4.0",
     "request": "^2.88.2",
     "semver": "^6.3.0",
-    "tar-stream": "^2.1.2",
-    "ts-node": "^8.9.1",
-    "yaml": "^1.7.2"
+    "tar-stream": "^2.1.2"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
     "@types/command-exists": "^1.2.0",
     "@types/eventsource": "^1.1.2",
     "@types/inquirer": "^6.5.0",
-    "@types/jasmine": "^3.5.7",
     "@types/semver": "^7.3.4",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "ts-node": "^8.9.1"
   },
   "publishConfig": {
     "access": "public"
