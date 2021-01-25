@@ -4,7 +4,7 @@ import * as utils from '../../../utils';
 import { sinon } from '@loopback/testlab';
 import * as fs from 'fs-extra';
 import { join } from 'path';
-import * as request from 'request-promise';
+import axios from 'axios';
 import * as ChildProcess from 'child_process';
 import { mockFunctionFromGetter } from '../../__helpers__';
 
@@ -71,10 +71,10 @@ test('parse config from invalid path', async (t) => {
 test.serial('load config from http', async (t) => {
   const mockUrl = 'http://a.b.c';
   let called = false;
-  sinon.stub(request, 'get').callsFake((params: string) => {
+  sinon.stub(axios, 'get').callsFake((params: string) => {
     t.is(params, mockUrl as any);
     called = true;
-    return Promise.resolve(JSON.stringify(mockPipelineConfig)) as any;
+    return Promise.resolve({ data: mockPipelineConfig }) as any;
   });
   const configObj = await utils.loadConfig(mockUrl);
   t.deepEqual(configObj, JSON.parse(JSON.stringify(mockPipelineConfig)), 'config object check');
@@ -85,9 +85,9 @@ test.serial('load config from http but absolute path found', async (t) => {
   const mockUrl = 'http://a.b.c';
   const mockConfig = { ...mockPipelineConfig };
   mockConfig.plugins.dataCollect.package = '/root/plugin';
-  const mockGet = sinon.stub(request, 'get').callsFake((params: string) => {
+  const mockGet = sinon.stub(axios, 'get').callsFake((params: string) => {
     t.is(params, mockUrl as any);
-    return Promise.resolve(JSON.stringify(mockConfig)) as any;
+    return Promise.resolve({ data: JSON.stringify(mockConfig) }) as any;
   });
   await t.throwsAsync(utils.loadConfig(mockUrl), {
     instanceOf: TypeError,
@@ -100,9 +100,9 @@ test.serial('load config from http but relative path found', async (t) => {
   const mockUrl = 'http://a.b.c';
   const mockConfig = { ...mockPipelineConfig };
   mockConfig.plugins.dataCollect.package = './plugin';
-  const mockGet = sinon.stub(request, 'get').callsFake((params: string) => {
+  const mockGet = sinon.stub(axios, 'get').callsFake((params: string) => {
     t.is(params, mockUrl as any);
-    return Promise.resolve(JSON.stringify(mockConfig)) as any;
+    return Promise.resolve({ data: mockConfig }) as any;
   });
   await t.throwsAsync(() => utils.loadConfig(mockUrl), {
     instanceOf: TypeError,
