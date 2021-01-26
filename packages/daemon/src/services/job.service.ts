@@ -93,11 +93,7 @@ export class JobService {
     console.info('Start generating');
 
     if (os.platform() === 'darwin' || os.platform() === 'win32') {
-      const tvmGeneratePromise = generateTVM(dist, projPackage, opts);
-      tvmGeneratePromise.catch((e) => {
-        console.error(e);
-      });
-      fileQueue.push(tvmGeneratePromise);
+      fileQueue.push(generateTVM(dist, projPackage, opts));
     }
     fileQueue.concat(generateNode(job, projPackage, dist, opts));
     fileQueue.push(fs.copy(opts.workingDir + '/logs', `${dist}/logs`));

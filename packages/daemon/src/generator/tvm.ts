@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 
 export async function generateTVM(dist: string, projPackage: any, opts: GenerateOptions): Promise<void> {
-  const files  = await fs.readdir(opts.modelPath);
+  const files = await fs.readdir(opts.modelPath);
   // exit if no h5 file in the folder
   if (files.filter((it) => it.endsWith('h5')).length) return;
   return new Promise((resolve, reject) => {
