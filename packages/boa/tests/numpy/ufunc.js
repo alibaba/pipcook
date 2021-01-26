@@ -6,3 +6,4 @@ test('the ndarry constructor', t => {
   console.log(`${np.typecodes['All']}`);
   t.pass();
 });
+
