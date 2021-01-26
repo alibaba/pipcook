@@ -1,4 +1,4 @@
-const test = require('tape');
+const test = require('ava');
 const boa = require('../../');
 
 test('the `hashlib` module', t => {
@@ -6,6 +6,5 @@ test('the `hashlib` module', t => {
   let m = hashlib.sha256();
   let s = boa.bytes('nobody');
   m.update(s);
-  console.log(`${m.digest()}`);
-  t.end();
+  t.is(typeof m.digest(), 'object');
 });

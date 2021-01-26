@@ -11,9 +11,7 @@
     "postinstall": "npm run build",
     "pretest": "npm run lint",
     "pretest:js": "bip install numpy",
-    "test": "npm run test:js && npm run test:ts",
-    "test:js": "tape ./tests/**/*.js",
-    "test:ts": "ts-node ./node_modules/.bin/tape ./tests/**/*.ts",
+    "test": "ava",
     "cov": "nyc --reporter=text-summary npm run test",
     "cov:report": "nyc report -r=lcov",
     "lint": "npm run lint:js && npm run lint:clang",
@@ -42,17 +40,20 @@
     "url": "https://github.com/alibaba/pipcook/issues"
   },
   "homepage": "https://github.com/alibaba/pipcook#readme",
+  "ava": {
+    "extensions": [ "js", "ts" ],
+    "require": [ "ts-node/register" ]
+  },
   "dependencies": {
     "bindings": "^1.5.0",
     "debug": "^4.1.1",
     "node-addon-api": "^3.0.0"
   },
   "devDependencies": {
-    "@types/tape": "^4.13.0",
+    "ava": "^3.13.0",
     "codecov": "^3.6.5",
     "eslint": "^7.15.0",
     "nyc": "^15.1.0",
-    "tape": "^5.0.1",
     "ts-node": "^8.6.2"
   },
   "publishConfig": {

@@ -1,7 +1,7 @@
 import * as boa from '../../';
-import test from 'tape';
+import test from 'ava';
 
-test('test typescript with-statement', (t: test.Test) => {
+test.cb('test typescript with-statement', (t) => {
   t.plan(1);
   const { open } = boa.builtins();
   boa.with(open(__filename, 'r'), (f) => {

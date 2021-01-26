@@ -1,4 +1,4 @@
-const test = require('tape');
+const test = require('ava');
 const boa = require('../../');
 
 // test('HTTP protocol client', t => {
@@ -22,9 +22,8 @@ test('UUID objects according to RFC 4122', t => {
     NAMESPACE_DNS,
   } = boa.import('uuid');
 
-  t.ok(uuid1());
-  t.ok(uuid3(NAMESPACE_DNS, 'nodejs.org'));
-  t.ok(uuid4());
-  t.ok(uuid5(NAMESPACE_DNS, 'nodejs.org'));
-  t.end();
+  t.is(typeof uuid1(), 'object');
+  t.is(typeof uuid3(NAMESPACE_DNS, 'nodejs.org'), 'object');
+  t.is(typeof uuid4(), 'object');
+  t.is(typeof uuid5(NAMESPACE_DNS, 'nodejs.org'), 'object');
 });
