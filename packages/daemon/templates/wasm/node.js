@@ -32,7 +32,6 @@ const predict = async (input) => {
   model.setInput(modelSpec.inputName, inputData);
   model.run();
   await ctx.sync();
-  console.log(output.toArray());
   return output.toArray();
 };
 

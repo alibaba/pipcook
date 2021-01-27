@@ -23,7 +23,7 @@ export function generateNode(job: Job, projPackage: any, dist: string, opts: Gen
   return [
     // copy base components
     fs.copy(opts.modelPath, dist + '/nodejs/model'),
-    fs.copy(path.join(__dirname, `../../templates/node/predict.js`), `${dist}/nodejs/index.js`),
+    fs.copy(path.join(__dirname, '../../templates/node/predict.js'), `${dist}/nodejs/index.js`),
     fs.copy(path.join(__dirname, '../../templates/boapkg.js'), `${dist}/nodejs/boapkg.js`),
     // write package.json
     fs.outputJSON(dist + '/nodejs/package.json', projPackage, jsonWriteOpts),

@@ -22,7 +22,7 @@ export class LibController {
   })
   async install(
     @param.path.string('name') name: string
-  ): Promise<boolean> {
+  ): Promise<void> {
     return await this.libService.installByName(name);
   }
 }

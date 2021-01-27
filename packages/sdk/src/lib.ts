@@ -9,9 +9,6 @@ export class Lib extends BaseApi {
   }
 
   /**
-   * install lib by name
-   */
-  /**
    * install libs by name
    * @param name lib's name
    */

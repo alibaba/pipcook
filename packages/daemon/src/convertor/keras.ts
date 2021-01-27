@@ -67,14 +67,12 @@ export async function keras2wasm(dist: string, projPackage: any, opts: GenerateO
     })
   );
   fileQueue.concat([
-    fs.copy(path.join(__dirname, `../../templates/wasm/`), `${dist}/wasm/`),
+    fs.copy(path.join(__dirname, '../../templates/wasm/'), `${dist}/wasm/`),
     // write package.json
     fs.outputJSON(dist + '/wasm/package.json', projPackage, { spaces: 2 })
   ]);
 
   await Promise.all(fileQueue);
 
-  if (process.send) {
-    process.send(1);
-  }
+  process.exit(1);
 }

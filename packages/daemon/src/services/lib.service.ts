@@ -8,17 +8,15 @@ import { execAsync } from "../utils";
 export class LibService {
   PIPCOOK_BIP: string = join(constants.PIPCOOK_DAEMON, 'node_modules/@pipcook/boa/tools/bip.js');
 
-  async installByName(name: string): Promise<boolean> {
+  async installByName(name: string): Promise<void> {
     if (await pathExists(this.PIPCOOK_BIP)) {
       if (name === 'tvm') {
         await execAsync(`${this.PIPCOOK_BIP} install tlcpack -f https://tlcpack.ai/wheels`, {});
       } else {
         await execAsync(`${this.PIPCOOK_BIP} install ${name}`, {});
       }
-      return true;
     } else {
-      console.error(`Can not find bip in ${this.PIPCOOK_BIP}`);
-      return false;
+      throw new Error(`Install ${name} failed`);
     }
   }
 }

@@ -4,16 +4,18 @@ import * as EmccWASI from './model.wasi';
 const loadModel = async () => {
   const reqList = [ fetch('./modelSpec.json'), fetch('./modelDesc.json'), fetch('./model.wasi.wasm'), fetch('./modelParams.parmas') ];
   const [ spec, desc, wasmSource, params ] = await Promise.all(reqList);
-  const wasm = await wasmSource.arrayBuffer();
-  let param = await params.arrayBuffer();
-  const graph = await desc.json();
-  const modelSpec = await spec.json();
+  const [ wasm, param, graph, modelSpec ] = await Promise.all([
+    wasmSource.arrayBuffer(),
+    params.arrayBuffer(),
+    desc.json(),
+    spec.json()
+  ]);
   const tvm = await tvmjs.instantiate(wasm, new EmccWASI());
-  param = new Uint8Array(param);
+  const uInt8param = new Uint8Array(param);
   const ctx = tvm.cpu(0);
   const sysLib = tvm.systemLib();
   model = tvm.createGraphRuntime(JSON.stringify(graph), sysLib, ctx);
-  model.loadParams(param);
+  model.loadParams(uInt8param);
   return { model, tvm, ctx, modelSpec };
 }
 
@@ -34,7 +36,6 @@ const predict = async (input) => {
   model.setInput(modelSpec.inputName, inputData);
   model.run();
   await ctx.sync();
-  console.log(output.toArray());
   return output.toArray();
 }
 
