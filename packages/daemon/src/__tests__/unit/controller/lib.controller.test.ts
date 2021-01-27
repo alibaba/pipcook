@@ -18,6 +18,6 @@ function initLibController(): {
 test('install lib', async (t) => {
   const { libService, libController } = initLibController();
   libService.stubs.installByName.resolves(true);
-  const ret = await libController.install('tvm');
-  t.deepEqual(ret, true, 'lib installed successfully');
+  
+  await t.notThrowsAsync(libController.install('tvm'));
 });

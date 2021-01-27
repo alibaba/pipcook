@@ -31,9 +31,8 @@ test.serial('install tvm lib', async (t) => {
       cb(null, '', '');
     }
   });
-  const ret = await libService.installByName('tvm');
+  await t.notThrowsAsync(libService.installByName('tvm'));
 
-  t.true(ret, 'return should be true');
   t.true(mockFsPathExists.called, 'check pathExists');
   mockFsPathExists.restore();
 });
@@ -47,9 +46,8 @@ test.serial('install tensorflow', async (t) => {
       cb(null, '', '');
     }
   });
-  const ret = await libService.installByName('tensorflow');
+  await t.notThrowsAsync(libService.installByName('tensorflow'));
 
-  t.true(ret, 'return should be true');
   t.true(mockFsPathExists.called, 'check pathExists');
   mockFsPathExists.restore();
 });
@@ -63,9 +61,8 @@ test.serial('install when BIP is not installed', async (t) => {
       cb(null, '', '');
     }
   });
-  const ret = await libService.installByName('tensorflow');
+  await t.throwsAsync(libService.installByName('tensorflow'));
 
-  t.false(ret, 'return should be false');
   t.true(mockFsPathExists.called, 'check pathExists');
   mockFsPathExists.restore();
 });
