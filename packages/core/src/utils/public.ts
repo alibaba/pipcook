@@ -3,19 +3,20 @@ import { promisify } from 'util';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { customAlphabet } from 'nanoid';
-import * as _cliProgress from 'cli-progress';
 import { PIPCOOK_LOGS, PIPCOOK_TMPDIR } from '../constants/other';
 
 const xml2js = require('xml2js');
 const request = require('request');
 const targz = require('targz');
 const extract = require('extract-zip');
+
 const { pipeline } = require('stream');
-import { platform } from 'os';
 
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 8);
 const compressAsync = promisify(targz.compress);
 const extractAsync = promisify(extract);
+
+export const pipelineAsync = promisify(pipeline);
 
 /**
  * This function is used to create annotation file for image claasifiaction.  PASCOL VOC format.
@@ -76,31 +77,7 @@ export async function parseAnnotation(filename: string): Promise<any> {
  */
 export async function download(url: string, fileName: string): Promise<void> {
   await fs.ensureFile(fileName);
-  return new Promise((resolve, reject) => {
-    const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic);
-    const file = fs.createWriteStream(fileName);
-    let receivedBytes = 0;
-    const downloadStream = request.get(url)
-      .on('response', (response: any) => {
-        const totalBytes = response.headers['content-length'];
-        bar1.start(totalBytes, 0);
-      })
-      .on('data', (chunk: any) => {
-        receivedBytes += chunk.length;
-        bar1.update(receivedBytes);
-      });
-    return pipeline(downloadStream, file, (err?: Error) => {
-      if (err) {
-        fs.unlink(fileName);
-        bar1.stop();
-        reject(err);
-      } else {
-        bar1.stop();
-        resolve();
-      }
-    });
-
-  });
+  return pipelineAsync(request.get(url), fs.createWriteStream(fileName));
 }
 
 /**
@@ -113,7 +90,6 @@ export async function downloadAndExtractTo(resUrl: string): Promise<string> {
     throw new TypeError('invalid url');
   }
   const filename = path.basename(pathname);
-  console.log(filename);
   const extname = path.extname(filename);
 
   const destPath = path.join(PIPCOOK_TMPDIR, generateId());
@@ -123,7 +99,7 @@ export async function downloadAndExtractTo(resUrl: string): Promise<string> {
     await fs.copy(pathname, destPath);
     return destPath;
   }
-  if (protocol === 'http:' || protocol === 'https:') {
+  if (protocol === 'http:' || protocol === 'https:' && extname !== '.zip') {
     await download(resUrl, pkgName);
   } else if (protocol === 'file:') {
     await fs.copyFile(pathname, pkgName);
@@ -162,7 +138,7 @@ export function getModelDir(jobId: string): string {
  * get pipcook log's sample data's metadata according to modelId
  * @param jobId: job id
  */
-export async function getMetadata(jobId: string): Promise<any> {
+export async function getMetadata(jobId: string): Promise<Record<string, any>> {
   const json = await fs.readJSON(path.join(PIPCOOK_LOGS, jobId, 'log.json'));
   return json?.metadata;
 }
@@ -278,26 +254,6 @@ export async function convertPascal2CocoFileOutput(files: string[], targetPath: 
     });
   }
   await fs.outputJSON(targetPath, cocoJson);
-}
-
-/**
- * @deprecated use os.platform instead
- * return that current system is:
- * mac / linux / windows / other
- */
-export function getOsInfo(): Promise<string> {
-  return new Promise((resolve) => {
-    switch (platform()) {
-    case 'linux':
-      return resolve('linux');
-    case 'win32':
-      return resolve('windows');
-    case 'darwin':
-      return resolve('mac');
-    default:
-      return resolve('other');
-    }
-  });
 }
 
 /**

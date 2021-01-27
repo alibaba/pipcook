@@ -1,12 +1,11 @@
+import test from 'ava';
 import { OutputType } from './other';
 
-describe('other constants', () => {
-  it('should own some constants', () => {
-    expect(OutputType.Data).toEqual('data');
-    expect(OutputType.Model).toEqual('model');
-    expect(OutputType.Evaluate).toEqual('evaluate');
-    expect(OutputType.Merge).toEqual('merge');
-    expect(OutputType.ModelToSave).toEqual('modeltosave');
-    expect(OutputType.OriginData).toEqual('origindata');
-  });
+test('should own some constants', (t) => {
+  t.is(OutputType.Data, 'data');
+  t.is(OutputType.Model, 'model');
+  t.is(OutputType.Evaluate, 'evaluate');
+  t.is(OutputType.Merge, 'merge');
+  t.is(OutputType.ModelToSave, 'modeltosave');
+  t.is(OutputType.OriginData, 'origindata');
 });

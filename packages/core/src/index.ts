@@ -52,7 +52,6 @@ export {
   unZipData,
   download,
   downloadAndExtractTo,
-  getOsInfo,
   transformCsv,
   createAnnotationFromJson,
   getMetadata,
