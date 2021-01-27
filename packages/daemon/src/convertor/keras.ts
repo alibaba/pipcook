@@ -74,5 +74,5 @@ export async function keras2wasm(dist: string, projPackage: any, opts: GenerateO
 
   await Promise.all(fileQueue);
 
-  process.exit(1);
+  process.exit(0);
 }

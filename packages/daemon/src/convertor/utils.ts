@@ -18,21 +18,21 @@ export function initTVM(): InitReturnType {
   try {
     relay = boa.import('tvm.relay');
   } catch {
-    console.error('Does not detect tvm environment here; Please try to use \n pipcook lib tvm \n To fix it');
+    console.log('Does not detect tvm environment here; Please try to use \n pipcook lib tvm \n To fix it');
     throw new Error('tvm does not install');
   }
 
   try {
     emcc = boa.import('tvm.contrib.emcc');
   } catch {
-    console.error('Does not detect emscripten environment here; Please try to install emscripten');
+    console.log('Does not detect emscripten environment here; Please try to install emscripten');
     throw new Error('emscripten does not install');
   }
 
   try {
     keras = boa.import('tensorflow.keras');
   } catch {
-    console.error('Does not detect TensorFlow environment here; Please try to use \n pipcook lib tensorflow \n To fix it');
+    console.log('Does not detect TensorFlow environment here; Please try to use \n pipcook lib tensorflow \n To fix it');
     throw new Error('Tensorflow does not install');
   }
 

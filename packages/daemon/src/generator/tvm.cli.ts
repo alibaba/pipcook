@@ -9,6 +9,6 @@ if (validModel.includes(inputModel)) {
     keras2wasm(dist, projPackage, opts, inputLayers);
   }
 } else {
-  console.error(`The convert type is ${inputModel} but only ${validModel.join(', ')} are available`);
-  process.exit(1);
+  console.log(`The convert type is ${inputModel} but only ${validModel.join(', ')} are available`);
+  process.exit(0);
 }
