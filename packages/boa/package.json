@@ -10,7 +10,7 @@
     "preinstall": "npm run deps",
     "postinstall": "npm run build",
     "pretest": "npm run lint",
-    "pretest:js": "bip install numpy",
+    "pretest:js": "echo 'pretesting' && bip install numpy",
     "test": "ava",
     "cov": "nyc --reporter=text-summary npm run test",
     "cov:report": "nyc report -r=lcov",
