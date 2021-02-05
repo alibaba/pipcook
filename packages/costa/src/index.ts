@@ -133,7 +133,7 @@ export interface NpmPackageMetadata {
   _rev: string;
   name: string;
   'dist-tags': {
-    beta: string;
+    beta?: string;
     latest: string;
   };
   versions: Record<string, NpmPackage>;
