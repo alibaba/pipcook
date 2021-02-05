@@ -5,3 +5,4 @@ export * from './job.controller';
 export * from './index.controller';
 export * from './log.controller';
 export * from './playground.controller';
+export * from './lib.controller';

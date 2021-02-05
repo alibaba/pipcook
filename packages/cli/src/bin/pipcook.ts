@@ -70,5 +70,9 @@ import serve from '../actions/serve';
     .command('job', 'operate the job bound to specific pipeline')
     .command('pipeline', 'operate on pipeline');
 
+  program
+    .command('lib')
+    .description("add libraries: tvm, tensorflow, pytorch...");
+
   program.parse(process.argv);
 })();

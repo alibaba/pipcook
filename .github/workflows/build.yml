@@ -65,7 +65,7 @@ jobs:
         node-version: ${{ matrix.node_version }}
     - name: Building Pipcook
       run: |
-        yarn
+        yarn --verbose
         yarn build
         yarn init-dev
         mkdir -p ~/.pipcook/db && yarn workspace @pipcook/daemon run migrate 
