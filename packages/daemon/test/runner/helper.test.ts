@@ -124,7 +124,7 @@ describe('test the app service', () => {
   it('#should copy the file successfully', async () => {
     const src = join(__dirname, 'helper.test.ts');
     const dest = join(__dirname, 'dest.ts');
-    const copyStub = sinon.stub(fs, 'copyFile');
+    const copyStub = sinon.stub(helper, 'copyFileAsync');
     const chmodStub = sinon.stub(fs, 'chmod');
     await assertNode.doesNotReject(async () => {
       await helper.copyDir(src, dest);
