@@ -1,11 +1,11 @@
 import * as path from 'path';
 import { ensureDir, ensureSymlink } from 'fs-extra';
 import { fork, ChildProcess } from 'child_process';
-import { CostaRuntime, PluginPackage } from './runtime';
+import { PluginPackage } from './runtime';
 import { pipeLog, LogStdio } from './utils';
 import Debug from 'debug';
 import { generateId } from '@pipcook/pipcook-core';
-import { setup, Entry } from './ipc-proxy';
+import { setup, Entry } from './ipc/parent';
 const debug = Debug('costa.runnable');
 
 // wait 1000ms for chile process finish.
@@ -42,9 +42,13 @@ export interface BootstrapArg {
  * The runnable is to represent a container to run plugins.
  */
 export class PluginRunnable {
-  private rt: CostaRuntime;
   private handle: ChildProcess = null;
   private ipcProxy: Entry = null;
+
+  /**
+   * the job work directroy
+   */
+  private pluginDir: string;
 
   // timer for wait the process to exit itself
   private pluginLoadNotRespondingTimeout: number = defaultPluginLoadNotRespondingTimeout;
@@ -82,10 +86,10 @@ export class PluginRunnable {
    * Create a runnable by the given runtime.
    * @param rt the costa runtime.
    */
-  constructor(rt: CostaRuntime, logger?: LogStdio, id?: string) {
+  constructor(componentDir: string, pluginDir: string, logger?: LogStdio, id?: string) {
     this.id = id || generateId();
-    this.rt = rt;
-    this.workingDir = path.join(this.rt.options.componentDir, this.id);
+    this.workingDir = path.join(componentDir, this.id);
+    this.pluginDir = pluginDir;
     this.dataDir = path.join(this.workingDir, 'data');
     this.state = 'init';
     this.logger = logger || process;
@@ -94,26 +98,25 @@ export class PluginRunnable {
    * Do bootstrap the runnable client.
    */
   async bootstrap(arg: BootstrapArg): Promise<void> {
-    const compPath = this.workingDir;
     if (arg.pluginLoadNotRespondingTimeout) {
       this.pluginLoadNotRespondingTimeout = arg.pluginLoadNotRespondingTimeout;
     }
 
     debug(`make sure the component dir is existed.`);
-    await Promise.all([ ensureDir(compPath + '/node_modules'), ensureDir(this.dataDir) ]);
+    await Promise.all([ ensureDir(this.workingDir + '/node_modules'), ensureDir(this.dataDir) ]);
 
     debug(`bootstrap a new process for ${this.id}.`);
     this.handle = fork(__dirname + '/client/entry', [], {
       stdio: [ process.stdin, 'pipe', 'pipe', 'ipc' ],
-      cwd: compPath,
+      cwd: this.workingDir,
       silent: true,
       env: Object.assign({}, process.env, arg.customEnv)
     });
     pipeLog(this.handle.stdout, this.logger.stdout);
     pipeLog(this.handle.stderr, this.logger.stderr);
-    this.ipcProxy = setup(this.handle);
+    this.ipcProxy = setup(this.id, this.handle);
     // send the first message as handshaking with client
-    const ret = await this.ipcProxy.handshake(this.id);
+    const ret = await this.ipcProxy.handshake();
     if (!ret) {
       throw new TypeError(`created runnable "${this.id}" failed.`);
     }
@@ -136,20 +139,18 @@ export class PluginRunnable {
     }
     this.state = 'busy';
 
-    const { installDir, componentDir } = this.rt.options;
-    const compPath = path.join(componentDir, this.id);
     const nameSchema = path.parse(pkg.name);
 
-    await ensureDir(compPath);
-    await ensureDir(compPath + '/node_modules');
     if (nameSchema.dir) {
-      await ensureDir(compPath + `/node_modules/${nameSchema.dir}`);
+      await ensureDir(this.workingDir + `/node_modules/${nameSchema.dir}`);
+    } else {
+      await ensureDir(this.workingDir + '/node_modules');
     }
 
     // prepare boa and miniconda environment
     await ensureSymlink(
-      path.join(installDir, 'node_modules', pkg.name),
-      compPath + `/node_modules/${pkg.name}`);
+      path.join(this.pluginDir, 'node_modules', pkg.name),
+      this.workingDir + `/node_modules/${pkg.name}`);
 
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`env is ready, start loading the plugin(${pkg.name}) at ${this.id}.`);

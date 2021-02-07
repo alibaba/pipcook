@@ -9,6 +9,6 @@ export interface IPCInput {
 }
 export interface IPCOutput {
   id: number,
-  error: Error | null,
+  error: { message: string, stack: string } | null,
   result: any | null
 }

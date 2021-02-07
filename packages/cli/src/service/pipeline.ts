@@ -79,7 +79,7 @@ export async function remove(id: string, jobs: JobResp[], opts: CommonOptions): 
   }
 }
 
-export async function installPackageFromConfig(config: any, opts: PluginInstallOptions): Promise<void> {
+export async function installPackageFromConfig(config: Record<string, any>, opts: PluginInstallOptions): Promise<void> {
   for (const plugin of constants.PLUGINS) {
     const packageName = config.plugins[plugin]?.package;
     if (typeof packageName === 'string') {

@@ -1,138 +1,122 @@
+import test, { ExecutionContext } from 'ava';
 import * as path from 'path';
-import { readdir, ensureSymlink, mkdirp, remove } from 'fs-extra';
-import { Writable } from 'stream';
-import { CostaRuntime } from '../src/runtime';
-import { PluginRunnable } from '../src/runnable';
+import * as fs from 'fs-extra';
+import { PluginRunnable } from './runnable';
+import * as ChildProcess from 'child_process';
+import * as utils from './utils';
+import * as IPC from './ipc/parent';
+import sinon = require('sinon');
 
-class StringWritable extends Writable {
-  data = '';
-  constructor() {
-    super();
-  }
+test.serial.afterEach(() => sinon.restore());
 
-  _write(chunk: any, encoding: string, callback: (error?: Error | null) => void): void {
-    this.data += chunk;
-    console.log(`<StringWritable> ${chunk.toString()}`);
-    callback();
-  }
+test('should constrcute the runnable', (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  t.is(runnable.workingDir, path.join('componentDir', 'mockId'), 'working directory is not correct');
+  t.is((runnable as any).logger, process, 'logger not equal');
+});
+
+test('should constrcute the runnable with default logger and id', (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir');
+  t.true(runnable.workingDir.startsWith('componentDir'), 'working directory is not correct');
+  t.is((runnable as any).logger, process, 'logger not equal');
+});
+
+test.serial('should bootstrap the runnable', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const stubChild = { stdout: 'mock stdout', stderr: 'mock stderr' };
+  const stubHandShake = sinon.stub().resolves('mockId');
+  const stubEntry = { handshake: stubHandShake };
+  sinon.stub(ChildProcess, 'fork').returns(stubChild as any);
+  sinon.stub(utils, 'pipeLog').returns();
+  sinon.stub(IPC, 'setup').returns(stubEntry as any);
+  sinon.stub(fs, 'ensureDir').resolves();
+  await runnable.bootstrap({ pluginLoadNotRespondingTimeout: 1 });
+  t.is(stubHandShake.callCount, 1, 'should call handshake once');
+});
+
+test.serial('bootstrap the runnable but handshake error', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const stubChild = { stdout: 'mock stdout', stderr: 'mock stderr' };
+  const stubHandShake = sinon.stub().resolves(undefined);
+  const stubEntry = { handshake: stubHandShake };
+  sinon.stub(ChildProcess, 'fork').returns(stubChild as any);
+  sinon.stub(utils, 'pipeLog').returns();
+  sinon.stub(IPC, 'setup').returns(stubEntry as any);
+  sinon.stub(fs, 'ensureDir').resolves();
+  await t.throwsAsync(runnable.bootstrap({}),
+    { instanceOf: TypeError, message: 'created runnable "mockId" failed.' }
+  );
+  t.is(stubHandShake.callCount, 1, 'should call handshake once');
+});
+
+test('should get value of the PluginResponse', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const mockResp = { id: 'mockRespId' };
+  const mockResult = { id: 'mockResult' };
+  const stubValueOf = sinon.stub().resolves(mockResult);
+  (runnable as any).ipcProxy = { valueOf: stubValueOf };
+  t.deepEqual(await runnable.valueOf(mockResp), mockResult);
+});
+
+async function start(t: ExecutionContext<unknown>, name: string): Promise<void> {
+  const args = [ { name }, 1, 2, 3 ];
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const stubLoad = sinon.stub().resolves();
+  const stubStart = sinon.stub().resolves(null);
+  const stubEntry = { load: stubLoad, start: stubStart };
+  (runnable as any).ipcProxy = stubEntry;
+  (runnable as any).state = 'idle';
+  sinon.stub(fs, 'ensureDir').resolves();
+  sinon.stub(fs, 'ensureSymlink').resolves();
+  t.is(await runnable.start(args[0] as any, args[1], args[2], args[3]), null, 'start result should be null');
+  t.true(stubStart.calledOnce, 'start should be called once');
+  t.deepEqual(stubStart.args[0], args, 'start args should be [ 1, 2, 3 ]');
+  t.true(stubLoad.calledOnce, 'load should be called once');
 }
+test.serial('should start the plugin', async (t) => {
+  await start(t, 'plugin');
+});
 
-describe('start runnable in normal way', () => {
-  const opts = {
-    installDir: path.join(__dirname, '../.tests/plugins'),
-    datasetDir: path.join(__dirname, '../.tests/datasets'),
-    componentDir: path.join(__dirname, '../.tests/components'),
-    npmRegistryPrefix: 'https://registry.npmjs.com/'
-  };
-  const costa = new CostaRuntime(opts);
-  let runnable: PluginRunnable;
-  let logger = {
-    stdout: new StringWritable(),
-    stderr: new StringWritable()
-  };
-  it('perpare', async () => {
-    await Promise.all([
-      remove(opts.installDir),
-      remove(opts.datasetDir),
-      remove(opts.componentDir)
-    ]);
-    await Promise.all([
-      mkdirp(opts.installDir),
-      mkdirp(opts.datasetDir),
-      mkdirp(opts.componentDir)
-    ]);
+test.serial('should start the plugin with dir', async (t) => {
+  await start(t, '/name/with/path/plugin');
+});
+
+test('should start the plugin but runnable not idle', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  (runnable as any).state = 'busy';
+  await t.throwsAsync(runnable.start({} as any), {
+    instanceOf: TypeError, message: 'the runnable "mockId" is busy or not ready now'
   });
+});
 
-  it('should create a new runnable', () => {
-    runnable = new PluginRunnable(costa, logger);
-    expect(runnable.workingDir).toBeInstanceOf(String);
-    expect(runnable.state).toBe('init');
-  });
+test('should destroy but not connected', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  (runnable as any).handle = { connected: false };
+  const stubDestroy = sinon.stub().resolves(null);
+  const stubEntry = { destroy: stubDestroy };
+  (runnable as any).ipcProxy = stubEntry;
+  await runnable.destroy();
+  t.false(stubDestroy.called, 'ipc destroy should not be called');
+});
 
-  it('should bootstrap the runnable', async () => {
-    await runnable.bootstrap({
-      pluginLoadNotRespondingTimeout: 2000
-    });
-    expect(runnable.state).toBe('idle');
-  });
+test('should destroy', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  (runnable as any).handle = { connected: true };
+  const stubDestroy = sinon.stub().resolves(null);
+  const stubEntry = { destroy: stubDestroy };
+  (runnable as any).ipcProxy = stubEntry;
+  await runnable.destroy();
+  t.true(stubDestroy.calledOnce, 'ipc destroy should be called once');
+});
 
-  let tmp: any;
-  it('should start a nodejs plugin', async () => {
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-simple'));
-    await costa.install(simple, process);
-    tmp = await runnable.start(simple, { foobar: true });
-    const stdoutString = logger.stdout.data.toString();
-    expect(stdoutString.indexOf('{ foobar: true }') >= 0).toBe(true);
-  });
-
-  it('should start a python plugin', async () => {
-    await ensureSymlink(
-      path.join(__dirname, '../../boa'),
-      path.join(__dirname, '../tests/plugins/python-simple/node_modules/@pipcook/boa')
-    );
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/python-simple'));
-    await costa.install(simple, process);
-    expect(simple.pipcook.runtime).toBe('python');
-    // test passing the variable from js to python.
-    const tmp2 = await runnable.start(simple, tmp);
-    console.log('tmp, tmp2', tmp, tmp2);
-    const stdout = logger.stdout.data.toString();
-    console.log('stdout output is', stdout);
-    expect(stdout.indexOf('hello python!') >= 0).toBe(true, 'hello python check failed');
-    expect(stdout.indexOf('fn1([0. 0.])') >= 0).toBe(true, 'fn1 check failed');
-    expect(stdout.indexOf('fn2()') >= 0).toBe(true, 'fn2 check failed');
-
-    // test passing the variable from python to python.
-    await runnable.start(simple, tmp2);
-    const stdout2 = logger.stdout.data;
-    expect(stdout2.indexOf('hello python! [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]') >= 0).toBe(true, 'stdout2 check failed');
-  });
-
-  it('should start a python plugin with scope package name', async () => {
-    await ensureSymlink(
-      path.join(__dirname, '../../boa'),
-      path.join(__dirname, '../tests/plugins/python-scope/node_modules/@pipcook/boa'),
-      'dir'
-    );
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/python-scope'));
-    await costa.install(simple, process);
-    // test if the plugin is executed successfully
-    await runnable.start(simple, tmp);
-    const stdout = logger.stdout.data;
-    expect(stdout.indexOf('hello python!') >= 0).toBe(true);
-  });
-
-  it('should destroy the runnable', async () => {
-    await runnable.destroy();
-    const list = await readdir(costa.options.componentDir);
-    expect(list.length).toBe(1);
-  });
-
-  it('should destroy the runnable when it loops', async () => {
-    const logger = process;
-    const costa = new CostaRuntime(opts);
-    runnable = new PluginRunnable(costa, logger);
-    await runnable.bootstrap({ logger });
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-simple'));
-    await costa.install(simple, logger);
-    setTimeout(() => {
-      runnable.destroy();
-    }, 1000);
-    const start = Date.now();
-    await expectAsync(runnable.start(simple, { foobar: true, exitAfter: 5 })).toBeRejected();
-    const cost = Date.now() - start;
-    expect(cost < 5000);
-    console.log(`child process exited after ${cost}ms`);
-  });
-
-  it('should destroy the runnable when it blocks on loading plugin', async () => {
-    const logger = process;
-    const costa = new CostaRuntime(opts);
-    const r2 = new PluginRunnable(costa, logger);
-    await r2.bootstrap({ logger, pluginLoadNotRespondingTimeout: 500 });
-    const simple = await costa.fetch(path.join(__dirname, '../tests/plugins/nodejs-not-responding'));
-    await costa.install(simple, process);
-    await expectAsync(r2.start(simple, { foobar: true }))
-      .toBeRejectedWithError(TypeError, 'call \'load\' timeout.');
-  });
+test('should destroy but ipc error', async (t) => {
+  const runnable = new PluginRunnable('componentDir', 'pluginDir', process, 'mockId');
+  const stubKill = sinon.stub().returns(null);
+  (runnable as any).handle = { connected: true, kill: stubKill };
+  const stubDestroy = sinon.stub().rejects(new Error('ipc error'));
+  const stubEntry = { destroy: stubDestroy };
+  (runnable as any).ipcProxy = stubEntry;
+  await runnable.destroy();
+  t.true(stubDestroy.calledOnce, 'ipc destroy should be called once');
+  t.true(stubKill.calledOnce, 'kill should be called once');
 });
