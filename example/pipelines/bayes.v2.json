@@ -1,0 +1,17 @@
+{
+  "specVersion": "2.0",
+  "dataSource": "http://localhost:5000/script.js",
+  "model": "http://localhost:51651/script.js",
+  "artifacts": [{
+    "type": "local",
+    "path": "./file/to/your/model/dir"
+  }],
+  "options": {
+    "framework": "http://30.10.77.60:5000/pkgs/pkg.zip",
+    "train": {
+      "epochs": 20,
+      "validationRequired": true
+    },
+    "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip"
+  }
+}

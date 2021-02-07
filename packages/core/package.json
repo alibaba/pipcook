@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-core",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -34,6 +34,7 @@
     "@types/fs-extra": "^8.0.1",
     "@types/nanoid": "^2.1.0",
     "@types/sinon": "^9.0.5",
+    "@types/xml2js": "^0.4.8",
     "@types/request": "^2.48.4",
     "@types/request-promise": "^4.1.46",
     "ava": "^3.13.0",

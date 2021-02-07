@@ -7,8 +7,3 @@ enable_cmd() {
 }
 
 enable_cmd pipcook
-enable_cmd pipcook-app
-enable_cmd pipcook-daemon
-enable_cmd pipcook-job
-enable_cmd pipcook-pipeline
-enable_cmd pipcook-plugin

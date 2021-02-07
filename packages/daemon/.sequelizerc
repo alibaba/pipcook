@@ -1,8 +1,0 @@
-#!/usr/bin/env node
-
-const path = require('path');
-
-module.exports = {
-  'config': path.resolve('dist', 'config', 'config.js'),
-  'migrations-path': path.resolve('dist', 'migrations')
-};

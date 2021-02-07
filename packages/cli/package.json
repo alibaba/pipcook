@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "",
   "main": "dist/bin/index.js",
   "scripts": {
@@ -12,30 +12,23 @@
     "compile": "tsc -b tsconfig.json && sh ./tools/setup.sh"
   },
   "bin": {
-    "pipcook": "./dist/bin/pipcook.js",
-    "pipcook-app": "./dist/bin/pipcook-app.js",
-    "pipcook-daemon": "./dist/bin/pipcook-daemon.js",
-    "pipcook-job": "./dist/bin/pipcook-job.js",
-    "pipcook-pipeline": "./dist/bin/pipcook-pipeline.js",
-    "pipcook-plugin": "./dist/bin/pipcook-plugin.js"
+    "pipcook": "./dist/bin/pipcook.js"
   },
   "keywords": [],
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/pipcook-core": "^1.2.0",
-    "@pipcook/sdk": "^1.2.0",
-    "axios": "^0.21.1",
+    "@pipcook/boa": "^2.0.0",
+    "@pipcook/costa": "^2.0.0",
+    "@pipcook/pipcook-core": "^2.0.0",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
     "eventsource": "^1.0.7",
     "fastify": "^2.13.1",
-    "form-data": "^3.0.0",
     "fs-extra": "^8.1.0",
     "inquirer": "^6.5.2",
     "ora": "^3.4.0",
-    "request": "^2.88.2",
     "semver": "^6.3.0",
     "tar-stream": "^2.1.2"
   },

@@ -4,12 +4,25 @@ import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
 import { join } from 'path';
-import { constants } from '@pipcook/pipcook-core';
-import { pathExists, readJson } from 'fs-extra';
+import { readJson, mkdirp } from 'fs-extra';
+import { StandaloneRuntime } from '../runtime';
+import { logger } from '../utils';
+export interface RunOptions {
+  output: string;
+}
 
-import { runAndDownload } from '../service/job';
-import init from '../actions/init';
-import serve from '../actions/serve';
+function dateToString(date: Date): string {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDay();
+  const hour = date.getHours();
+  const min = date.getMinutes();
+  const sec = date.getSeconds();
+  function fillZero(i: number): string {
+    return i < 10 ? '0' + i : i.toString();
+  }
+  return `${year}${fillZero(month)}${fillZero(day)}${fillZero(hour)}${fillZero(min)}${fillZero(sec)}`;
+}
 
 (async function(): Promise<void> {
   // check node version
@@ -23,55 +36,36 @@ import serve from '../actions/serve';
     return;
   }
 
-  const pkg = require('../../package.json');
-
-  const versionStr = [
-    `Pipcook Tools   v${pkg.version} ${join(__dirname, '../../')}`
-  ];
-  const daemonPath = join(constants.PIPCOOK_DAEMON_SRC, 'package.json');
-  const boardPath = join(constants.PIPCOOK_BOARD_SRC, 'package.json');
-  if (await pathExists(daemonPath)) {
-    const daemonPkg = await readJson(daemonPath);
-    versionStr.push(`Pipcook Daemon  v${daemonPkg.version} ${constants.PIPCOOK_DAEMON_SRC}`);
-  }
-  if (await pathExists(boardPath)) {
-    const boardPkg = await readJson(boardPath);
-    versionStr.push(`Pipboard        v${boardPkg.version} ${constants.PIPCOOK_BOARD_SRC}`);
-  }
-
-  program.version(versionStr.join('\n'), '-v, --version');
-  program
-    .command('init [version]')
-    .option('-c, --client <string>', 'specify your npm client.')
-    .option('-b, --beta', 'use or update the beta version, if set, the option version will be ignored.')
-    .option('--tuna', 'use tuna mirror to download miniconda at China.')
-    .description('initialize the daemon and pipboard.')
-    .action(init);
+  const pkg = await readJson(join(__filename, '../../package.json'));
+  program.version(pkg.version, '-v, --version');
 
   program
     .command('run <filename>')
-    .option('--tuna', 'use tuna mirror to install python packages')
-    .option('--output <dir>', 'the output directory name', 'output')
-    .option('-h|--host-ip <ip>', 'the host ip of daemon')
-    .option('-p|--port <port>', 'the port of daemon')
+    .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
     .description('run pipeline with a json file.')
-    .action(runAndDownload);
+    .action(async (filename: string, opts: RunOptions): Promise<void> => {
+      let pipelineConfig;
+      try {
+        pipelineConfig = await readJson(filename);
+        // TODO(feely): check pipeline file
+      } catch (err) {
+        logger.fail(`read pipeline file error: ${err.message}`);
+      }
+      try {
+        await mkdirp(opts.output);
+      } catch (err) {
+        logger.fail(`create output directory error: ${err.message}`);
+      }
+      const runtime = new StandaloneRuntime(opts.output, pipelineConfig);
+      try {
+        await runtime.run();
+      } catch (err) {
+        logger.fail(`run pipeline error: ${err.message}`);
+      }
+    });
 
   program
-    .command('serve <dir>')
-    .option('-p, --port <number>', 'port of server', 7682)
-    .description('serve the model to predict')
-    .action(serve);
-
-  program
-    .command('daemon', 'manage pipcook daemon service')
-    .command('plugin', 'install one or more packages')
-    .command('app', 'experimental PipApp Script')
-    .command('job', 'operate the job bound to specific pipeline')
-    .command('pipeline', 'operate on pipeline');
-
-  program
-    .command('lib')
+    .command('install')
     .description("add libraries: tvm, tensorflow, pytorch...");
 
   program.parse(process.argv);

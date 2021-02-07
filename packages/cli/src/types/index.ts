@@ -3,16 +3,6 @@ import {
 } from './config';
 
 import {
-  CommandHandler,
-  DatasetCommandHandler,
-  DevPluginCommandHandler,
-  InitCommandHandler,
-  ServeHandler,
-  PredictHandler,
-  StartHandler
-} from './handler';
-
-import {
   DatasetImage,
   DatasetAnnotation,
   DatasetCategory,
@@ -21,13 +11,6 @@ import {
 
 export {
   Config,
-  CommandHandler,
-  DatasetCommandHandler,
-  DevPluginCommandHandler,
-  InitCommandHandler,
-  ServeHandler,
-  PredictHandler,
-  StartHandler,
   DatasetImage,
   DatasetAnnotation,
   DatasetCategory,
