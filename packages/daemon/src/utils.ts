@@ -3,6 +3,8 @@ import { Context } from 'midway';
 import SseStream from 'ssestream';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import { copyFile } from 'fs';
+import * as util from 'util';
 import * as request from 'request-promise';
 import * as url from 'url';
 import {
@@ -10,6 +12,8 @@ import {
   generateId
 } from '@pipcook/pipcook-core';
 import { PipelineEntity } from './model/pipeline';
+
+export const copyFileAsync = util.promisify(copyFile);
 
 export class ServerSentEmitter {
   private handle: SseStream;
@@ -106,7 +110,7 @@ export async function copyDir(src: string, dest: string): Promise<void> {
   };
 
   const onFile = async (src: string, dest: string, mode: number) => {
-    await fs.copyFile(src, dest, fs.constants.COPYFILE_FICLONE);
+    await copyFileAsync(src, dest, fs.constants.COPYFILE_FICLONE);
     await fs.chmod(dest, mode);
   };
 
