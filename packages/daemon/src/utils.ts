@@ -105,8 +105,11 @@ export async function copyDir(src: string, dest: string): Promise<void> {
   const onDir = async (src: string, dest: string) => {
     await fs.ensureDir(dest);
     const items = await fs.readdir(src);
-    const copyPromises = items.map(item => copyDir(path.join(src, item), path.join(dest, item)));
-    return Promise.all(copyPromises);
+    // TODO(Feely): use fs-extra.copyFile to make it parallel after node-graceful-fs #202 merged,
+    // otherwise, if copy too much files at same time, `EMFILE` or `ENFILE` will be thrown
+    for (let item in items) {
+      await copyDir(path.join(src, item), path.join(dest, item));
+    }
   };
 
   const onFile = async (src: string, dest: string, mode: number) => {
