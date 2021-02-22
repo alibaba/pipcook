@@ -5,12 +5,12 @@ import * as fs from 'fs-extra';
 import { customAlphabet } from 'nanoid';
 import { PIPCOOK_LOGS, PIPCOOK_TMPDIR } from '../constants/other';
 
-const xml2js = require('xml2js');
-const request = require('request');
-const targz = require('targz');
-const extract = require('extract-zip');
+import * as xml2js from 'xml2js';
+import * as request from 'request';
+import * as targz from 'targz';
+import * as extract from 'extract-zip';
 
-const { pipeline } = require('stream');
+import { pipeline } from 'stream';
 
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 8);
 const compressAsync = promisify(targz.compress);
@@ -77,7 +77,7 @@ export async function parseAnnotation(filename: string): Promise<any> {
  */
 export async function download(url: string, fileName: string): Promise<void> {
   await fs.ensureFile(fileName);
-  return pipelineAsync(request.get(url), fs.createWriteStream(fileName));
+  return pipelineAsync(request.get(url) as any, fs.createWriteStream(fileName));
 }
 
 /**
