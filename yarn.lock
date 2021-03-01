@@ -1531,6 +1531,11 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
+"@types/extract-zip@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@types/extract-zip/-/extract-zip-1.6.2.tgz#5c7eb441c41136167a42b88b64051e6260c29e86"
+  integrity sha1-XH60QcQRNhZ6QriLZAUeYmDCnoY=
+
 "@types/form-data@^2.5.0":
   version "2.5.0"
   resolved "https://registry.npmjs.org/@types/form-data/-/form-data-2.5.0.tgz#5025f7433016f923348434c40006d9a797c1b0e8"
@@ -1738,12 +1743,34 @@
   dependencies:
     "@types/superagent" "*"
 
+"@types/tar-fs@*":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/tar-fs/-/tar-fs-2.0.0.tgz#db94cb4ea1cccecafe3d1a53812807efb4bbdbc1"
+  integrity sha512-3H2HmxuT1OCZYXi1KG5xIjbpv97JjdLSRByH13YhHK8lr+GaJndJ91IuQfHxn23BQRaWHf2LTnlHPQcQDzt8vw==
+  dependencies:
+    "@types/node" "*"
+    "@types/tar-stream" "*"
+
+"@types/tar-stream@*":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@types/tar-stream/-/tar-stream-2.2.0.tgz#2778ef8e328a520959a39681c15c83c53553426f"
+  integrity sha512-sRTpT180sVigzD4SiCWJQQrqcdkWnmscWvx+cXvAoPtXbLFC5+QmKi2xwRcPe4iRu0GcVl1qTeJKUTS5hULfrw==
+  dependencies:
+    "@types/node" "*"
+
 "@types/tar-stream@^2.1.0":
   version "2.1.0"
   resolved "https://registry.npmjs.org/@types/tar-stream/-/tar-stream-2.1.0.tgz#884b1cbe6c35ff459c05a5eba86b406805943ef6"
   integrity sha512-s1UQxQUVMHbSkCC0X4qdoiWgHF8DoyY1JjQouFsnk/8ysoTdBaiCHud/exoAZzKDbzAXVc+ah6sczxGVMAohFw==
   dependencies:
     "@types/node" "*"
+
+"@types/targz@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/targz/-/targz-1.0.0.tgz#cca3b2c87548d98f961b57306dc36d06f9fd15b2"
+  integrity sha512-kNFPOpsmdtT+DMXHuu5H7gXD5LlMHtS/kSQjuVY3QqxHQqGFV854o+EimC1GZ5/+iYZWzk9dNRiAUFbI/mvUsQ==
+  dependencies:
+    "@types/tar-fs" "*"
 
 "@types/through@*":
   version "0.0.30"
@@ -1761,6 +1788,13 @@
   version "1.6.3"
   resolved "https://registry.npmjs.org/@types/type-is/-/type-is-1.6.3.tgz#45285b3be846a4afc9d488910a8e4b7bc2e8a169"
   integrity sha512-PNs5wHaNcBgCQG5nAeeZ7OvosrEsI9O4W2jAOO9BCCg4ux9ZZvH2+0iSCOIDBiKuQsiNS8CBlmfX9f5YBQ22cA==
+  dependencies:
+    "@types/node" "*"
+
+"@types/xml2js@^0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@types/xml2js/-/xml2js-0.4.8.tgz#84c120c864a5976d0b5cf2f930a75d850fc2b03a"
+  integrity sha512-EyvT83ezOdec7BhDaEcsklWy7RSIdi6CNe95tmOAK0yx/Lm30C9K75snT3fYayK59ApC2oyW+rcHErdG05FHJA==
   dependencies:
     "@types/node" "*"
 
@@ -2970,7 +3004,7 @@ cli-width@^2.0.0:
 
 clipboard@^2.0.0:
   version "2.0.6"
-  resolved "https://registry.npmjs.org/clipboard/-/clipboard-2.0.6.tgz#52921296eec0fdf77ead1749421b21c968647376"
+  resolved "https://registry.yarnpkg.com/clipboard/-/clipboard-2.0.6.tgz#52921296eec0fdf77ead1749421b21c968647376"
   integrity sha512-g5zbiixBRk/wyKakSwCKd7vQXDjFnAMGHoEyBogG/bw9kTD9GvdAvaoRR1ALcEzt3pVKxZR0pViekPMIS0QyGg==
   dependencies:
     good-listener "^1.2.2"
@@ -3671,7 +3705,7 @@ delayed-stream@~1.0.0:
 
 delegate@^3.1.2:
   version "3.2.0"
-  resolved "https://registry.npmjs.org/delegate/-/delegate-3.2.0.tgz#b66b71c3158522e8ab5744f720d8ca0c2af59166"
+  resolved "https://registry.yarnpkg.com/delegate/-/delegate-3.2.0.tgz#b66b71c3158522e8ab5744f720d8ca0c2af59166"
   integrity sha512-IofjkYBZaZivn0V8nnsMJGBr4jVLxHDheKSW88PyxS5QC4Vo9ZbZVvhzlSxY87fVq3STR6r+4cGepyHkcWOQSw==
 
 delegates@^1.0.0:
@@ -4998,7 +5032,7 @@ globby@^9.2.0:
 
 good-listener@^1.2.2:
   version "1.2.2"
-  resolved "https://registry.npmjs.org/good-listener/-/good-listener-1.2.2.tgz#d53b30cdf9313dffb7dc9a0d477096aa6d145c50"
+  resolved "https://registry.yarnpkg.com/good-listener/-/good-listener-1.2.2.tgz#d53b30cdf9313dffb7dc9a0d477096aa6d145c50"
   integrity sha1-1TswzfkxPf+33JoNR3CWqm0UXFA=
   dependencies:
     delegate "^3.1.2"
@@ -8012,9 +8046,9 @@ pretty-ms@^7.0.1:
     parse-ms "^2.1.0"
 
 prismjs@^1.19.0:
-  version "1.22.0"
-  resolved "https://registry.npmjs.org/prismjs/-/prismjs-1.22.0.tgz#73c3400afc58a823dd7eed023f8e1ce9fd8977fa"
-  integrity sha512-lLJ/Wt9yy0AiSYBf212kK3mM5L8ycwlyTlSxHBAneXLR0nzFMlZ5y7riFPF3E33zXOF2IH95xdY5jIyZbM9z/w==
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.23.0.tgz#d3b3967f7d72440690497652a9d40ff046067f33"
+  integrity sha512-c29LVsqOaLbBHuIbsTxaKENh1N2EQBOHaWv7gkHN4dgRbxSREqDnDbtFJYdpPauS4YCplMSNCABQ6Eeor69bAA==
   optionalDependencies:
     clipboard "^2.0.0"
 
@@ -8695,7 +8729,7 @@ secure-json-parse@^2.1.0:
 
 select@^1.1.2:
   version "1.1.2"
-  resolved "https://registry.npmjs.org/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
+  resolved "https://registry.yarnpkg.com/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
   integrity sha1-DnNQrN7ICxEIUoeG7B1EGNEbOW0=
 
 semver-diff@^2.0.0:
@@ -9701,7 +9735,7 @@ time-zone@^1.0.0:
 
 tiny-emitter@^2.0.0:
   version "2.1.0"
-  resolved "https://registry.npmjs.org/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
   integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
 
 tiny-lru@^7.0.2:
