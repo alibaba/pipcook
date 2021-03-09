@@ -1,10 +1,10 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "2.0.0-appha.2",
+  "version": "2.0.0-alpha.3",
   "description": "",
   "main": "dist/bin/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ava",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -rf ./assets/server",
     "compile": "tsc -b tsconfig.json && sh ./tools/setup.sh"
@@ -16,9 +16,9 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/boa": "^2.0.0",
-    "@pipcook/costa": "^2.0.0",
-    "@pipcook/pipcook-core": "^2.0.0",
+    "@pipcook/boa": "^2.0.0-alpha.3",
+    "@pipcook/costa": "^2.0.0-alpha.3",
+    "@pipcook/pipcook-core": "^2.0.0-alpha.3",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
@@ -30,6 +30,7 @@
   "devDependencies": {
     "@types/command-exists": "^1.2.0",
     "@types/semver": "^7.3.4",
+    "ava": "^3.13.0",
     "nyc": "^15.1.0",
     "ts-node": "^8.9.1"
   },
