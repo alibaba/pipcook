@@ -1,4 +1,4 @@
-import { DataAccessor, PipelineMeta, ImageDataSourceMeta, TableDataSourceMeta, DataSourceApi, Sample, Runtime, TaskType } from '@pipcook/pipcook-core';
+import { DataAccessor, PipelineMeta, ImageDataSourceMeta, TableDataSourceMeta, DataSourceApi, Sample, Runtime, TaskType, DefaultType } from '@pipcook/pipcook-core';
 
 class DataAccessorImpl<T> implements DataAccessor<T> {
   constructor(
@@ -31,7 +31,7 @@ class DataSourceProxy<T> implements DataSourceApi<T> {
   }
 }
 
-export class StandaloneImpl<T extends Record<string, any>> implements Runtime<T> {
+export class StandaloneImpl<T extends Record<string, any> = DefaultType> implements Runtime<T> {
   public dataSource: DataSourceProxy<T>;
 
   constructor(
@@ -59,4 +59,4 @@ export class StandaloneImpl<T extends Record<string, any>> implements Runtime<T>
   }
 }
 
-export default (pipelineConfig: PipelineMeta, dataSourceApi: DataSourceApi<any>) => new StandaloneImpl<any>(pipelineConfig, dataSourceApi);
+export default (pipelineConfig: PipelineMeta, dataSourceApi: DataSourceApi): StandaloneImpl => new StandaloneImpl(pipelineConfig, dataSourceApi);

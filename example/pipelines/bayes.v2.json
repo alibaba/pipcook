@@ -1,13 +1,13 @@
 {
   "specVersion": "2.0",
-  "dataSource": "http://localhost:5000/script.js",
-  "model": "http://localhost:51651/script.js",
+  "dataSource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-csv-data-collector@pipeline2.0/build/script.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-bayesian-model@pipeline2.0/build/script.js",
   "artifacts": [{
     "type": "local",
     "path": "./file/to/your/model/dir"
   }],
   "options": {
-    "framework": "http://30.10.77.60:5000/pkgs/pkg.zip",
+    "framework": "https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/framework/bayes.zip",
     "train": {
       "epochs": 20,
       "validationRequired": true

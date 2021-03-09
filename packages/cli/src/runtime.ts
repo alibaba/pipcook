@@ -13,6 +13,7 @@ import { PipelineRunner } from '@pipcook/costa';
 import * as path from 'path';
 import { URL } from 'url';
 import createAdapter from './standalone-impl';
+import { logger } from './utils';
 
 /**
  * runtime for local
@@ -27,6 +28,8 @@ export class StandaloneRuntime {
 
   private tmpDir: string;
 
+  private frameworkDir: string;
+
   constructor(
     workspaceDir: string,
     private pipelineConfig: PipelineMeta
@@ -35,6 +38,7 @@ export class StandaloneRuntime {
     this.cacheDir = path.join(workspaceDir, 'cache');
     this.modelDir = path.join(workspaceDir, 'model');
     this.tmpDir = path.join(workspaceDir, 'tmp');
+    this.frameworkDir = path.join(workspaceDir, 'framework');
   }
 
   async downloadScript(scriptOrder: number, url: string, type: ScriptType): Promise<PipcookScript> {
@@ -74,38 +78,52 @@ export class StandaloneRuntime {
       fs.mkdirp(this.scriptDir),
       fs.mkdirp(this.tmpDir),
       fs.mkdirp(this.modelDir),
-      fs.mkdirp(this.cacheDir)
+      fs.mkdirp(this.cacheDir),
+      fs.mkdirp(this.frameworkDir)
     ]);
     return;
   }
 
   async run(): Promise<void> {
-    const framework = await this.prepareFramework();
     await this.prepareWorkSpace();
+    logger.info('preparing framework');
+    const framework = await this.prepareFramework();
+    logger.info('prepare framework successfully, prepare scripts');
     const scripts = await this.prepareScript();
-    const runnable = new PipelineRunner(this.tmpDir, this.tmpDir, this.modelDir, framework);
-    let dataAPI = await runnable.runDataSource(scripts.dataSource, this.pipelineConfig.options);
+    logger.info('prepare scripts successfully, ready to run pipeline');
+    const runner = new PipelineRunner({
+      workingDir: this.tmpDir,
+      dataDir: this.cacheDir,
+      modelDir: this.modelDir,
+      frameworkDir: this.frameworkDir,
+      framework
+    });
+    logger.info('initalizing framework');
+    await runner.initFramework();
+    logger.info('framework initalized, running data source script');
+    let dataAPI = await runner.runDataSource(scripts.dataSource, this.pipelineConfig.options);
+    logger.info('running data flow script');
     if (scripts.dataflow) {
-      dataAPI = await runnable.runDataflow(scripts.dataflow, this.pipelineConfig.options, dataAPI);
+      dataAPI = await runner.runDataflow(scripts.dataflow, this.pipelineConfig.options, dataAPI);
     }
+    logger.info('running model script');
     const adapter = createAdapter(this.pipelineConfig, dataAPI);
-    runnable.runModel(scripts.model, this.pipelineConfig.options, adapter);
+    runner.runModel(scripts.model, this.pipelineConfig.options, adapter);
+    logger.info('pipeline finished');
   }
 
   async prepareFramework(): Promise<PipcookFramework> {
     if (this.pipelineConfig.options.framework) {
-      const urlObj = new URL(this.pipelineConfig.options.framework);
-      const dirName = path.parse(urlObj.pathname).name;
-      const localPath = path.join(this.scriptDir, dirName);
-      await downloadAndExtractTo(this.pipelineConfig.options.framework, localPath);
-      const framework = await fs.readJson(path.join(localPath, FrameworkDescFileName));
-      const requirePath = framework.requirePath ? framework.requirePath : `node_modules/${framework.name}`;
+      await downloadAndExtractTo(this.pipelineConfig.options.framework, this.frameworkDir);
+      const framework = await fs.readJson(path.join(this.frameworkDir, FrameworkDescFileName));
       // todo: validate framework
       return {
-        type: framework.type,
+        pythonPackagePath: framework.pythonPackagePath,
         name: framework.name,
         version: framework.version,
-        path: path.join(localPath, requirePath)
+        desc: framework.desc,
+        path: this.frameworkDir,
+        packages: framework.packages
       };
     }
   }

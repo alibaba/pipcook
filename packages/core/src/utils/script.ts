@@ -23,7 +23,7 @@ export const generateDataFlow = function (sampleProcessor: SampleProcessor, meta
       nextBatch: (numOfBatch: number) => dataAccessor.nextBatch(numOfBatch).then((samples) => sampleBatchProcessor(samples, options, context)),
       seek: dataAccessor.seek
     };
-  }
+  };
   return async (dataSource: DataSourceApi, options: Record<string, any>, context: ScriptContext): Promise<DataSourceApi> => {
     return {
       train: createDataAccessor(dataSource.train, options, context),
@@ -34,4 +34,4 @@ export const generateDataFlow = function (sampleProcessor: SampleProcessor, meta
       }
     };
   };
-}
+};

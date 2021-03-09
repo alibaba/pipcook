@@ -41,17 +41,30 @@ export interface PipcookScript {
 }
 
 /**
- * enum type of framework:
+ * enum type of framework package:
  *   Python: python package which can be used through `boa.import`
  *   JS: js module which can be used through `require`
  */
-export enum FrameworkType { Python = 'python', JS = 'js' }
+export enum PackageType { Python = 'python', JS = 'js' }
 
 /**
  * framework description file name, which is located in the root directory of the framework package
  */
 export const FrameworkDescFileName = 'framework.json';
 
+/**
+ * package structure in pipcook freamwork
+ */
+export interface FrameworkPackage {
+  // package name
+  name: string;
+  // package version
+  version: string;
+  // package type
+  type: PackageType;
+  // import path: boa.import(`${importPath}`) or require(`${importPath}`)
+  importPath: string;
+}
 /**
  * pipcook framework description struct
  */
@@ -60,10 +73,14 @@ export interface PipcookFramework {
   path: string;
   // framework name
   name: string;
+  // description of the framework
+  desc: string | null;
   // framework version
   version: string;
-  // framework type
-  type: FrameworkType;
+  // python site-packages path in the directory
+  pythonPackagePath: string | null;
+  // package list
+  packages: Array<FrameworkPackage> | null;
 }
 
 /**

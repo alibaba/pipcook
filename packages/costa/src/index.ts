@@ -3,7 +3,7 @@ import {
   PipcookScript,
   DataSourceApi,
   PipcookFramework,
-  FrameworkType,
+  PackageType,
   DataSourceEntry,
   ModelEntry,
   DataFlowEntry,
@@ -12,29 +12,21 @@ import {
 } from '@pipcook/pipcook-core';
 import Debug from 'debug';
 import * as boa from '@pipcook/boa';
+import * as path from 'path';
 const debug = Debug('costa.runnable');
-/**
- * This represents requirements for Python and its packages.
- */
-export interface CondaConfig {
-  /**
-   * The Python dependency, but it's solid to 3.7 for now.
-   */
-  python?: string;
-  /**
-   * The Python third-party dependencies.
-   */
-  dependencies?: Record<string, string>;
-}
 
-/**
- * The arguments for calling `bootstrap`.
- */
-export interface BootstrapArg {
+export interface PipelineRunnerOption {
   /**
-   * Add extra environment variables.
+   * the current working directory for this runnable.
    */
-  customEnv?: Record<string, string>;
+  workingDir: string;
+  /**
+   * the current data directory for this runnable
+   */
+  dataDir: string;
+  modelDir: string;
+  frameworkDir: string;
+  framework: PipcookFramework;
 }
 
 /**
@@ -46,33 +38,25 @@ export class PipelineRunner {
    */
   private context: ScriptContext;
   /**
-   * the current working directory for this runnable.
-   */
-  public workingDir: string;
-
-  /**
-   * the current data directory for this runnable
-   */
-  public dataDir: string;
-
-  public modelDir: string;
-
-  /**
    * Create a runnable by the given runtime.
    */
-  constructor(workingDir: string, dataDir: string, modelDir: string, framework: PipcookFramework) {
-    this.workingDir = workingDir;
-    this.dataDir = dataDir;
-    // todo: save model through runtime api
-    this.modelDir = modelDir;
+  constructor(
+    public options: PipelineRunnerOption
+  ) {}
+
+  initFramework(): void {
     const python: Record<string, FrameworkModule> = {};
     const js: Record<string, FrameworkModule> = {};
-    if (framework.type === FrameworkType.Python) {
-      process.env.PYTHONPATH = framework.path;
-      python[framework.name] = boa.import(framework.path);
-    } else {
-      js[framework.name] = require(framework.path);
+    if (this.options.framework.pythonPackagePath) {
+      boa.setenv(path.join(this.options.frameworkDir, this.options.framework.pythonPackagePath));
     }
+    this.options.framework.packages?.forEach((pkg) => {
+      if (pkg.type === PackageType.Python) {
+        python[pkg.name] = boa.import(pkg.name);
+      } else {
+        js[pkg.name] = require(pkg.importPath);
+      }
+    });
     this.context = {
       boa,
       // or put dataCook into js framework modules?
@@ -83,7 +67,6 @@ export class PipelineRunner {
       }
     };
   }
-
   /**
    * start datasource script.
    * @param script the metadata of script
@@ -98,7 +81,7 @@ export class PipelineRunner {
       throw new TypeError(`no export function found in ${script.name}(${script.path})`);
     }
     debug(`loaded the plugin(${script.name}), start it.`);
-    const opts = { ...options, dataDir: this.dataDir };
+    const opts = { ...options, dataDir: this.options.dataDir };
     return await fn(opts, this.context);
   }
 
@@ -140,7 +123,7 @@ export class PipelineRunner {
     debug(`loaded the plugin(${script.name}), start it.`);
     const opts = {
       ...options,
-      modelPath: this.modelDir
+      modelPath: this.options.modelDir
     };
     return await fn(api, opts, this.context);
   }

@@ -1,6 +1,6 @@
 import { PipelineMeta } from './pipeline';
 
-type DefaultType = any;
+export type DefaultType = any;
 // sample
 export interface Sample<T = DefaultType> {
   label: number;
