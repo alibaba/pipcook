@@ -117,57 +117,57 @@ test('test if remote file was downloaded', async (t) => {
   await fs.remove(jsonFile);
 });
 
-// test('download a nonexistent file', async (t) => {
-//   await t.throwsAsync(
-//     utils.download('http://unknown-host/nonexists.zip', './nonexistent.zip'),
-//     { instanceOf: Error }
-//   );
-//   await fs.remove('./nonexistent.zip');
-// });
+test('download a nonexistent file', async (t) => {
+  await t.throwsAsync(
+    utils.download('http://unknown-host/nonexists.zip', './nonexistent.zip'),
+    { instanceOf: Error }
+  );
+  await fs.remove('./nonexistent.zip');
+});
 
-// test('download a invalid url', async (t) => {
-//   await t.throwsAsync(
-//     utils.download('abcd', './nonexistent.zip'),
-//     { instanceOf: Error }
-//   );
-//   await fs.remove('./nonexistent.zip');
-// });
+test('download a invalid url', async (t) => {
+  await t.throwsAsync(
+    utils.download('abcd', './nonexistent.zip'),
+    { instanceOf: Error }
+  );
+  await fs.remove('./nonexistent.zip');
+});
 
-// test('downloadAndExtractTo a invalid url', async (t) => {
-//   await t.throwsAsync(
-//     utils.downloadAndExtractTo('abcd', 'whatever'),
-//     { instanceOf: TypeError }
-//   );
-// });
+test('downloadAndExtractTo a invalid url', async (t) => {
+  await t.throwsAsync(
+    utils.downloadAndExtractTo('abcd', 'whatever'),
+    { instanceOf: TypeError }
+  );
+});
 
-// test('downloadAndExtractTo a ftp url', async (t) => {
-//   await t.throwsAsync(
-//     utils.downloadAndExtractTo('ftp://a.com/abcd.zip', 'whatever'),
-//     { instanceOf: TypeError }
-//   );
-// });
+test('downloadAndExtractTo a ftp url', async (t) => {
+  await t.throwsAsync(
+    utils.downloadAndExtractTo('ftp://a.com/abcd.zip', 'whatever'),
+    { instanceOf: TypeError }
+  );
+});
 
-// test.serial('downloadAndExtractTo local zip file', async (t) => {
-//   const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
-//   await utils.downloadAndExtractTo('file:///abcd.zip', 'tmp');
-//   t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
-//   t.deepEqual(stubUnzipData.args[0], [ '/abcd.zip', 'tmp' ], 'should unzip the curruct file');
-// });
+test.serial('downloadAndExtractTo local zip file', async (t) => {
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
+  await utils.downloadAndExtractTo('file:///abcd.zip', 'tmp');
+  t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
+  t.deepEqual(stubUnzipData.args[0], [ '/abcd.zip', 'tmp' ], 'should unzip the curruct file');
+});
 
-// test.serial('downloadAndExtractTo local jpg file', async (t) => {
-//   const stubCopy = sinon.stub(fs, 'copy').resolves();
-//   await utils.downloadAndExtractTo('file:///abcd.jpg', 'tmp');
-//   t.true(stubCopy.calledOnce, 'fs.copy should be called once');
-//   t.deepEqual(stubCopy.args[0], [ '/abcd.jpg', 'tmp' ] as any, 'should copy the curruct file');
-// });
+test.serial('downloadAndExtractTo local jpg file', async (t) => {
+  const stubCopy = sinon.stub(fs, 'copy').resolves();
+  await utils.downloadAndExtractTo('file:///abcd.jpg', 'tmp');
+  t.true(stubCopy.calledOnce, 'fs.copy should be called once');
+  t.deepEqual(stubCopy.args[0], [ '/abcd.jpg', 'tmp' ] as any, 'should copy the curruct file');
+});
 
-// test('id generator', async (t) => {
-//   const id = utils.generateId();
-//   t.is(typeof id, 'string');
-//   t.is(id.length, 8);
-//   for (let i = 0; i < id.length; ++i) {
-//     const c = id.charCodeAt(i);
-//     t.true(c >= 'a'.charCodeAt(0) && c <= 'z'.charCodeAt(0)
-//       || c >= '0'.charCodeAt(0) && c <= '9'.charCodeAt(0));
-//   }
-// });
+test('id generator', async (t) => {
+  const id = utils.generateId();
+  t.is(typeof id, 'string');
+  t.is(id.length, 8);
+  for (let i = 0; i < id.length; ++i) {
+    const c = id.charCodeAt(i);
+    t.true(c >= 'a'.charCodeAt(0) && c <= 'z'.charCodeAt(0)
+      || c >= '0'.charCodeAt(0) && c <= '9'.charCodeAt(0));
+  }
+});

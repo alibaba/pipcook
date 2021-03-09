@@ -1,5 +1,8 @@
+import { PipelineMeta } from './pipeline';
+
+type DefaultType = any;
 // sample
-export interface Sample<T> {
+export interface Sample<T = DefaultType> {
   label: number;
   data: T;
 }
@@ -31,6 +34,7 @@ export enum DataSourceType { Table, Image }
 export interface DataSourceSize {
   train: number;
   test: number;
+  evaluate?: number;
 }
 
 export interface ImageDimension {
@@ -53,65 +57,52 @@ export type TableDataSourceMeta = {
   labelMap: Map<number, string>;
 };
 
-
-interface BaseArtifact {
-  type: string;
-}
-
-export interface LocalArtfact extends BaseArtifact {
-  path: string;
-}
-
-export interface PipelineMeta {
-  specVersion: string;
-  dataSource: string;
-  dataflow: Array<string> | null;
-  model: string;
-  artifacts: Array<LocalArtfact>;
-  options: Record<string, any>;
-}
-
-export enum ScriptType { DataSource, Dataflow, Model }
-
-export interface PipcookScript {
-  name: string;
-  path: string;
-  type: ScriptType;
-}
-
-export enum FrameworkType { 'python', 'js' }
-
-export const FrameworkDescFileName = 'framework.json';
-export interface PipcookFramework {
-  path: string;
-  name: string;
-  version: string;
-  type: FrameworkType;
-}
-
-export interface ScriptConfig {
-  dataSource: PipcookScript | null;
-  dataflow: Array<PipcookScript> | null;
-  model: PipcookScript;
-}
-
-export interface DataAccessor<T> {
+export type DataSourceMeta = TableDataSourceMeta | ImageDataSourceMeta;
+export interface DataAccessor<T = DefaultType> {
   next: () => Promise<Sample<T> | null>;
   nextBatch: (batchSize: number) => Promise<Array<Sample<T>> | null>;
   seek: (pos: number) => Promise<void>;
 }
 
-export interface DataSourceApi<T> {
-  getDataSourceMeta: () => Promise<TableDataSourceMeta | ImageDataSourceMeta>;
+export interface DataSourceApi<T = DefaultType> {
+  getDataSourceMeta: () => Promise<DataSourceMeta>;
   test: DataAccessor<T>;
   train: DataAccessor<T>;
   evaluate?: DataAccessor<T>;
 }
 
-export interface Runtime<T> {
+export interface Runtime<T = DefaultType> {
   getPipelineMeta: () => Promise<PipelineMeta>;
   getTaskType: () => TaskType | undefined;
   saveModel: (localPath: string) => Promise<void>;
   readModel: () => Promise<string>;
   dataSource: DataSourceApi<T>;
 }
+
+export type FrameworkModule = any;
+export interface ScriptContext {
+  // todo: type of boa
+  boa: FrameworkModule;
+  // todo: type of dataCook
+  dataCook: FrameworkModule;
+  framework: {
+    python: Record<string, FrameworkModule>;
+    js: Record<string, FrameworkModule>;
+  }
+  // todo: define function to get tensorflow/tfjs
+}
+
+/**
+ * type of data source script entry
+ */
+export type DataSourceEntry = (options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi>;
+
+/**
+ * type of data flow script entry
+ */
+export type DataFlowEntry = (api: DataSourceApi, options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi>;
+
+/**
+ * type of model script entry
+ */
+export type ModelEntry = (api: Runtime, options: Record<string, any>, context: ScriptContext) => Promise<void>;

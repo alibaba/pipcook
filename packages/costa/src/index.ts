@@ -1,8 +1,18 @@
-import { Runtime, PipcookScript, DataSourceApi, PipcookFramework } from '@pipcook/pipcook-core';
+import {
+  Runtime,
+  PipcookScript,
+  DataSourceApi,
+  PipcookFramework,
+  FrameworkType,
+  DataSourceEntry,
+  ModelEntry,
+  DataFlowEntry,
+  ScriptContext,
+  FrameworkModule
+} from '@pipcook/pipcook-core';
 import Debug from 'debug';
 import * as boa from '@pipcook/boa';
 const debug = Debug('costa.runnable');
-
 /**
  * This represents requirements for Python and its packages.
  */
@@ -34,8 +44,7 @@ export class PipelineRunner {
   /**
    * the framework directroy
    */
-  private framework: PipcookFramework;
-  private context: Record<string, any>;
+  private context: ScriptContext;
   /**
    * the current working directory for this runnable.
    */
@@ -53,14 +62,24 @@ export class PipelineRunner {
    */
   constructor(workingDir: string, dataDir: string, modelDir: string, framework: PipcookFramework) {
     this.workingDir = workingDir;
-    this.framework = framework;
     this.dataDir = dataDir;
     // todo: save model through runtime api
     this.modelDir = modelDir;
+    const python: Record<string, FrameworkModule> = {};
+    const js: Record<string, FrameworkModule> = {};
+    if (framework.type === FrameworkType.Python) {
+      process.env.PYTHONPATH = framework.path;
+      python[framework.name] = boa.import(framework.path);
+    } else {
+      js[framework.name] = require(framework.path);
+    }
     this.context = {
       boa,
+      // or put dataCook into js framework modules?
+      dataCook: null,
       framework: {
-        [framework.name]: require(framework.path)
+        python,
+        js
       }
     };
   }
@@ -74,7 +93,7 @@ export class PipelineRunner {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the plugin(${script})`);
     const scriptMoudle = require(script.path);
-    const fn = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+    const fn: DataSourceEntry = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
     if (typeof fn !== 'function') {
       throw new TypeError(`no export function found in ${script.name}(${script.path})`);
     }
@@ -93,7 +112,7 @@ export class PipelineRunner {
     for (let script of scripts) {
       debug(`start loading the plugin(${script})`);
       const scriptMoudle = require(script.path);
-      const fn = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+      const fn: DataFlowEntry = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
       if (typeof fn !== 'function') {
         throw new TypeError(`no export function found in ${script.name}(${script.path})`);
       }
@@ -113,7 +132,7 @@ export class PipelineRunner {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the plugin(${script})`);
     const scriptMoudle = require(script.path);
-    const fn = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+    const fn: ModelEntry = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
     if (typeof fn !== 'function') {
       throw new TypeError(`no export function found in ${script.name}(${script.path})`);
     }

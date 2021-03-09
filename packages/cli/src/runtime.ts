@@ -80,7 +80,7 @@ export class StandaloneRuntime {
   }
 
   async run(): Promise<void> {
-    const framework = await this.installFramework();
+    const framework = await this.prepareFramework();
     await this.prepareWorkSpace();
     const scripts = await this.prepareScript();
     const runnable = new PipelineRunner(this.tmpDir, this.tmpDir, this.modelDir, framework);
@@ -92,7 +92,7 @@ export class StandaloneRuntime {
     runnable.runModel(scripts.model, this.pipelineConfig.options, adapter);
   }
 
-  async installFramework(): Promise<PipcookFramework> {
+  async prepareFramework(): Promise<PipcookFramework> {
     if (this.pipelineConfig.options.framework) {
       const urlObj = new URL(this.pipelineConfig.options.framework);
       const dirName = path.parse(urlObj.pathname).name;

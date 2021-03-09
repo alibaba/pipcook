@@ -5,6 +5,8 @@ import * as fs from 'fs-extra';
 import { customAlphabet } from 'nanoid';
 import { PIPCOOK_TMPDIR } from '../constants';
 
+export * as Script from './script';
+
 const xml2js = require('xml2js');
 const request = require('request');
 const targz = require('targz');
