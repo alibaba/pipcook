@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/costa",
-  "version": "2.0.0",
+  "version": "2.0.0-appha.2",
   "description": "The Pipcook Script Runner",
   "main": "dist/index",
   "types": "dist/index",

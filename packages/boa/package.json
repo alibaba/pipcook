@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/boa",
-  "version": "2.0.0",
+  "version": "2.0.0-appha.2",
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {

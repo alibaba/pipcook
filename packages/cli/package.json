@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "2.0.0",
+  "version": "2.0.0-appha.2",
   "description": "",
   "main": "dist/bin/index.js",
   "scripts": {
