@@ -1,5 +1,6 @@
-import { DataAccessor, PipelineMeta, ImageDataSourceMeta, TableDataSourceMeta, DataSourceApi, Sample, Runtime, TaskType, DefaultType } from '@pipcook/pipcook-core';
-
+import { DataAccessor, PipelineMeta, ImageDataSourceMeta, TableDataSourceMeta, DataSourceApi, Sample, Runtime, TaskType, DefaultType, pipelineAsync } from '@pipcook/pipcook-core';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 class DataAccessorImpl<T> implements DataAccessor<T> {
   constructor(
     private dataAccessor: DataAccessor<T>
@@ -35,8 +36,9 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
   public dataSource: DataSourceProxy<T>;
 
   constructor(
+    dataSourceApi: DataSourceApi<T>,
     private pipelineConfig: PipelineMeta,
-    dataSourceApi: DataSourceApi<T>
+    private modelDir: string
   ) {
     this.dataSource = new DataSourceProxy<T>(dataSourceApi);
   }
@@ -50,13 +52,20 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
     return undefined;
   }
 
-  async saveModel(localPath: string): Promise<void> {
-    // TODO(feely) implement saveModel
-    console.log('save model to ', localPath);
+  async saveModel(localPathOrStream: string | NodeJS.ReadableStream, filename: 'model'): Promise<void> {
+    if (typeof localPathOrStream === 'string') {
+      if (path.parse(localPathOrStream).dir === this.modelDir) {
+        return;
+      }
+      return fs.copy(localPathOrStream, this.modelDir);
+    } else {
+      const modelStream = fs.createWriteStream(path.join(this.modelDir, filename));
+      return pipelineAsync(localPathOrStream, modelStream);
+    }
   }
   async readModel(): Promise<string> {
-    return '';
+    return this.modelDir;
   }
 }
 
-export default (pipelineConfig: PipelineMeta, dataSourceApi: DataSourceApi): StandaloneImpl => new StandaloneImpl(pipelineConfig, dataSourceApi);
+export default (dataSourceApi: DataSourceApi, pipelineConfig: PipelineMeta, modelDir: string): StandaloneImpl => new StandaloneImpl(dataSourceApi, pipelineConfig, modelDir);

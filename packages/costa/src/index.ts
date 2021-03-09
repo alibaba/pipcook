@@ -10,9 +10,9 @@ import {
   ScriptContext,
   FrameworkModule
 } from '@pipcook/pipcook-core';
-import Debug from 'debug';
 import * as boa from '@pipcook/boa';
 import * as path from 'path';
+import Debug from 'debug';
 const debug = Debug('costa.runnable');
 
 export interface PipelineRunnerOption {

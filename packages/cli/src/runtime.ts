@@ -4,16 +4,16 @@ import {
   ScriptConfig,
   ScriptType,
   PipcookScript,
-  download,
-  downloadAndExtractTo,
   PipcookFramework,
-  FrameworkDescFileName
+  FrameworkDescFileName,
+  constants
 } from '@pipcook/pipcook-core';
 import { PipelineRunner } from '@pipcook/costa';
 import * as path from 'path';
 import { URL } from 'url';
 import createAdapter from './standalone-impl';
 import { logger } from './utils';
+import { fetchWithCache } from './utils/cache';
 
 /**
  * runtime for local
@@ -32,7 +32,8 @@ export class StandaloneRuntime {
 
   constructor(
     workspaceDir: string,
-    private pipelineConfig: PipelineMeta
+    private pipelineConfig: PipelineMeta,
+    private enableCache = true
   ) {
     this.scriptDir = path.join(workspaceDir, 'scripts');
     this.cacheDir = path.join(workspaceDir, 'cache');
@@ -45,7 +46,8 @@ export class StandaloneRuntime {
     const urlObj = new URL(url);
     const baseName = path.parse(urlObj.pathname).base;
     const localPath = path.join(this.scriptDir, `${scriptOrder}-${baseName}`);
-    await download(url, localPath);
+    // maybe should copy the script with COW
+    await fetchWithCache(constants.PIPCOOK_SCRIPT_PATH, url, localPath, this.enableCache);
     return {
       name: baseName,
       path: localPath,
@@ -78,8 +80,7 @@ export class StandaloneRuntime {
       fs.mkdirp(this.scriptDir),
       fs.mkdirp(this.tmpDir),
       fs.mkdirp(this.modelDir),
-      fs.mkdirp(this.cacheDir),
-      fs.mkdirp(this.frameworkDir)
+      fs.mkdirp(this.cacheDir)
     ]);
     return;
   }
@@ -88,9 +89,8 @@ export class StandaloneRuntime {
     await this.prepareWorkSpace();
     logger.info('preparing framework');
     const framework = await this.prepareFramework();
-    logger.info('prepare framework successfully, prepare scripts');
+    logger.info('preparing scripts');
     const scripts = await this.prepareScript();
-    logger.info('prepare scripts successfully, ready to run pipeline');
     const runner = new PipelineRunner({
       workingDir: this.tmpDir,
       dataDir: this.cacheDir,
@@ -98,23 +98,23 @@ export class StandaloneRuntime {
       frameworkDir: this.frameworkDir,
       framework
     });
-    logger.info('initalizing framework');
+    logger.info('initalizing framework packages');
     await runner.initFramework();
-    logger.info('framework initalized, running data source script');
-    let dataAPI = await runner.runDataSource(scripts.dataSource, this.pipelineConfig.options);
+    logger.info('running data source script');
+    let dataSource = await runner.runDataSource(scripts.dataSource, this.pipelineConfig.options);
     logger.info('running data flow script');
     if (scripts.dataflow) {
-      dataAPI = await runner.runDataflow(scripts.dataflow, this.pipelineConfig.options, dataAPI);
+      dataSource = await runner.runDataflow(scripts.dataflow, this.pipelineConfig.options, dataSource);
     }
     logger.info('running model script');
-    const adapter = createAdapter(this.pipelineConfig, dataAPI);
-    runner.runModel(scripts.model, this.pipelineConfig.options, adapter);
+    const adapter = createAdapter(dataSource, this.pipelineConfig, this.modelDir);
+    await runner.runModel(scripts.model, this.pipelineConfig.options, adapter);
     logger.info('pipeline finished');
   }
 
   async prepareFramework(): Promise<PipcookFramework> {
     if (this.pipelineConfig.options.framework) {
-      await downloadAndExtractTo(this.pipelineConfig.options.framework, this.frameworkDir);
+      await fetchWithCache(constants.PIPCOOK_FRAMEWORK_PATH, this.pipelineConfig.options.framework, this.frameworkDir, this.enableCache);
       const framework = await fs.readJson(path.join(this.frameworkDir, FrameworkDescFileName));
       // todo: validate framework
       return {

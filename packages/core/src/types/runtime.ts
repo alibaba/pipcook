@@ -74,7 +74,7 @@ export interface DataSourceApi<T = DefaultType> {
 export interface Runtime<T = DefaultType> {
   getPipelineMeta: () => Promise<PipelineMeta>;
   getTaskType: () => TaskType | undefined;
-  saveModel: (localPath: string) => Promise<void>;
+  saveModel: (localPathOrStream: string | NodeJS.ReadableStream, filename: string) => Promise<void>;
   readModel: () => Promise<string>;
   dataSource: DataSourceApi<T>;
 }

@@ -9,6 +9,8 @@ import { StandaloneRuntime } from '../runtime';
 import { logger } from '../utils';
 export interface RunOptions {
   output: string;
+  nocache: boolean;
+  debug: boolean;
 }
 
 function dateToString(date: Date): string {
@@ -42,6 +44,8 @@ function dateToString(date: Date): string {
   program
     .command('run <filename>')
     .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
+    .option('--nocache', 'disabel cache for framework and scripts', false)
+    .option('-d --debug', 'debug mode', false)
     .description('run pipeline with a json file.')
     .action(async (filename: string, opts: RunOptions): Promise<void> => {
       let pipelineConfig;
@@ -56,11 +60,15 @@ function dateToString(date: Date): string {
       } catch (err) {
         logger.fail(`create output directory error: ${err.message}`);
       }
-      const runtime = new StandaloneRuntime(opts.output, pipelineConfig);
+      const runtime = new StandaloneRuntime(opts.output, pipelineConfig, !opts.nocache);
       try {
         await runtime.run();
       } catch (err) {
-        logger.fail(`run pipeline error: ${err.message}`);
+        if (!opts.debug) {
+          logger.fail(`run pipeline error: ${err.message}`);
+        } else {
+          throw err;
+        }
       }
     });
 
