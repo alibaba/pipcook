@@ -6,6 +6,8 @@ import {
   PipcookScript,
   PipcookFramework,
   FrameworkDescFileName,
+  ArtifactExports,
+  ArtifactMeta,
   constants
 } from '@pipcook/pipcook-core';
 import { PipelineRunner } from '@pipcook/costa';
@@ -14,6 +16,7 @@ import { URL } from 'url';
 import createAdapter from './standalone-impl';
 import { logger } from './utils';
 import { fetchWithCache } from './utils/cache';
+import { install } from './utils/plugin';
 
 /**
  * runtime for local
@@ -62,7 +65,8 @@ export class StandaloneRuntime {
       model: null
     };
     let scriptOrder = 0;
-    scripts.dataSource = await this.downloadScript(scriptOrder, this.pipelineConfig.dataSource, ScriptType.DataSource);
+    scripts.dataSource
+      = await this.downloadScript(scriptOrder, this.pipelineConfig.dataSource, ScriptType.DataSource);
     scriptOrder++;
     if (this.pipelineConfig.dataflow) {
       scripts.dataflow = [];
@@ -85,12 +89,37 @@ export class StandaloneRuntime {
     return;
   }
 
+  async prepareArtifactPlugin(): Promise<Array<ArtifactMeta>> {
+    if (!this.pipelineConfig.artifacts) {
+      return;
+    }
+    const allPlugins: Array<ArtifactMeta> = [];
+    for (let plugin of this.pipelineConfig.artifacts) {
+      const requirePath = await install(plugin.processor, constants.PIPCOOK_PLUGIN_ARTIFACT_PATH);
+      let pluginExport: ArtifactExports = await import(requirePath);
+      if ((pluginExport as any).default
+        && typeof (pluginExport as any).default.initialize === 'function'
+        && typeof (pluginExport as any).default.build === 'function'
+      ) {
+        pluginExport = (pluginExport as any).default;
+      }
+      await pluginExport.initialize(plugin);
+      allPlugins.push({
+        artifactExports: pluginExport,
+        options: plugin
+      });
+    }
+    return allPlugins;
+  }
+
   async run(): Promise<void> {
     await this.prepareWorkSpace();
     logger.info('preparing framework');
     const framework = await this.prepareFramework();
     logger.info('preparing scripts');
     const scripts = await this.prepareScript();
+    logger.info('preparing artifact plugins');
+    const artifactPlugins = await this.prepareArtifactPlugin();
     const runner = new PipelineRunner({
       workingDir: this.tmpDir,
       dataDir: this.cacheDir,
@@ -109,7 +138,12 @@ export class StandaloneRuntime {
     logger.info('running model script');
     const adapter = createAdapter(dataSource, this.pipelineConfig, this.modelDir);
     await runner.runModel(scripts.model, this.pipelineConfig.options, adapter);
-    logger.info('pipeline finished');
+    logger.info(`pipeline finished, the model has been saved at ${this.modelDir}`);
+    for (let artifact of artifactPlugins) {
+      logger.info(`running artifact ${artifact.options.processor}`);
+      await artifact.artifactExports.build(this.modelDir, artifact.options);
+      logger.info('done');
+    }
   }
 
   async prepareFramework(): Promise<PipcookFramework> {
@@ -122,6 +156,9 @@ export class StandaloneRuntime {
         name: framework.name,
         version: framework.version,
         desc: framework.desc,
+        arch: framework.arch,
+        platform: framework.platform,
+        nodeVersion: framework.nodeVersion,
         path: this.frameworkDir,
         packages: framework.packages
       };

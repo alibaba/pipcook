@@ -1,4 +1,16 @@
-import { DataAccessor, PipelineMeta, ImageDataSourceMeta, TableDataSourceMeta, DataSourceApi, Sample, Runtime, TaskType, DefaultType, pipelineAsync } from '@pipcook/pipcook-core';
+import {
+  DataAccessor,
+  PipelineMeta,
+  ImageDataSourceMeta,
+  TableDataSourceMeta,
+  DataSourceApi,
+  Sample,
+  Runtime,
+  TaskType,
+  DefaultType,
+  ProgressInfo,
+  pipelineAsync
+} from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 class DataAccessorImpl<T> implements DataAccessor<T> {
@@ -51,7 +63,9 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
   getTaskType(): TaskType | undefined {
     return undefined;
   }
-
+  async notifyProgress(progress: ProgressInfo): Promise<void> {
+    console.log(`progress: ${progress.progressValue}%`);
+  }
   async saveModel(localPathOrStream: string | NodeJS.ReadableStream, filename: 'model'): Promise<void> {
     if (typeof localPathOrStream === 'string') {
       if (path.parse(localPathOrStream).dir === this.modelDir) {

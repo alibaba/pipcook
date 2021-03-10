@@ -1,6 +1,7 @@
 import { PipelineMeta } from './pipeline';
 
 export type DefaultType = any;
+
 // sample
 export interface Sample<T = DefaultType> {
   label: number;
@@ -25,7 +26,7 @@ export enum TableColumnType {
   Unknown
 }
 
-export type TableColumn = { name: string, type: TableColumnType };
+export interface TableColumn { name: string, type: TableColumnType }
 
 // table schema for all columns
 export type TableSchema = Array<TableColumn>;
@@ -43,19 +44,19 @@ export interface ImageDimension {
   z: number
 }
 
-export type ImageDataSourceMeta = {
+export interface ImageDataSourceMeta {
   type: DataSourceType;
   size: DataSourceSize;
   dimension: ImageDimension;
-};
+}
 
-export type TableDataSourceMeta = {
+export interface TableDataSourceMeta {
   type: DataSourceType;
   size: DataSourceSize;
   tableSchema: TableSchema;
   dataKeys: Array<string> | null;
   labelMap: Map<number, string>;
-};
+}
 
 export type DataSourceMeta = TableDataSourceMeta | ImageDataSourceMeta;
 export interface DataAccessor<T = DefaultType> {
@@ -71,9 +72,14 @@ export interface DataSourceApi<T = DefaultType> {
   evaluate?: DataAccessor<T>;
 }
 
+export interface ProgressInfo {
+  progressValue: number;
+}
+
 export interface Runtime<T = DefaultType> {
   getPipelineMeta: () => Promise<PipelineMeta>;
   getTaskType: () => TaskType | undefined;
+  notifyProgress: (progress: ProgressInfo) => void;
   saveModel: (localPathOrStream: string | NodeJS.ReadableStream, filename: string) => Promise<void>;
   readModel: () => Promise<string>;
   dataSource: DataSourceApi<T>;

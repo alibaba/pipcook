@@ -4,13 +4,19 @@ import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
 import { join } from 'path';
-import { readJson, mkdirp } from 'fs-extra';
+import { constants } from '@pipcook/pipcook-core';
+import { readJson, mkdirp, remove } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
 import { logger } from '../utils';
 export interface RunOptions {
   output: string;
   nocache: boolean;
   debug: boolean;
+}
+
+export interface CacheCleanOptions {
+  framework: boolean;
+  script: boolean;
 }
 
 function dateToString(date: Date): string {
@@ -25,6 +31,43 @@ function dateToString(date: Date): string {
   }
   return `${year}${fillZero(month)}${fillZero(day)}${fillZero(hour)}${fillZero(min)}${fillZero(sec)}`;
 }
+
+export const run = async (filename: string, opts: RunOptions): Promise<void> => {
+  let pipelineConfig;
+  try {
+    pipelineConfig = await readJson(filename);
+    // TODO(feely): check pipeline file
+  } catch (err) {
+    logger.fail(`read pipeline file error: ${err.message}`);
+  }
+  try {
+    await mkdirp(opts.output);
+  } catch (err) {
+    logger.fail(`create output directory error: ${err.message}`);
+  }
+  const runtime = new StandaloneRuntime(opts.output, pipelineConfig, !opts.nocache);
+  try {
+    await runtime.run();
+  } catch (err) {
+    if (!opts.debug) {
+      logger.fail(`run pipeline error: ${err.message}`);
+    } else {
+      throw err;
+    }
+  }
+};
+
+export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
+  console.log('clean', constants.PIPCOOK_FRAMEWORK_PATH, constants.PIPCOOK_SCRIPT_PATH, opts.framework, opts.script);
+  const futures = [];
+  if (opts.framework) {
+    futures.push(remove(constants.PIPCOOK_FRAMEWORK_PATH));
+  }
+  if (opts.script) {
+    futures.push(remove(constants.PIPCOOK_SCRIPT_PATH));
+  }
+  await Promise.all(futures);
+};
 
 (async function(): Promise<void> {
   // check node version
@@ -47,30 +90,14 @@ function dateToString(date: Date): string {
     .option('--nocache', 'disabel cache for framework and scripts', false)
     .option('-d --debug', 'debug mode', false)
     .description('run pipeline with a json file.')
-    .action(async (filename: string, opts: RunOptions): Promise<void> => {
-      let pipelineConfig;
-      try {
-        pipelineConfig = await readJson(filename);
-        // TODO(feely): check pipeline file
-      } catch (err) {
-        logger.fail(`read pipeline file error: ${err.message}`);
-      }
-      try {
-        await mkdirp(opts.output);
-      } catch (err) {
-        logger.fail(`create output directory error: ${err.message}`);
-      }
-      const runtime = new StandaloneRuntime(opts.output, pipelineConfig, !opts.nocache);
-      try {
-        await runtime.run();
-      } catch (err) {
-        if (!opts.debug) {
-          logger.fail(`run pipeline error: ${err.message}`);
-        } else {
-          throw err;
-        }
-      }
-    });
+    .action(run);
+
+  program
+    .command('clean')
+    .option('-fm --framework', 'clean cache for framework', true)
+    .option('-s --script', 'clean cache for scripts', true)
+    .action(cacheClean)
+    .description("clean pipcook cache, include framework, script");
 
   program
     .command('install')

@@ -1,9 +1,7 @@
-interface BaseArtifact {
-  type: string;
-}
 
-export interface LocalArtfact extends BaseArtifact {
-  path: string;
+export interface Artifact {
+  processor: string;
+  [k: string]: any;
 }
 
 /**
@@ -18,7 +16,8 @@ export interface PipelineMeta {
   dataflow: Array<string> | null;
   // model script url
   model: string;
-  artifacts: Array<LocalArtfact>;
+  // artifact plugins and options
+  artifacts: Array<Artifact>;
   // pipeline options
   options: Record<string, any>;
 }
@@ -65,6 +64,7 @@ export interface FrameworkPackage {
   // import path: boa.import(`${importPath}`) or require(`${importPath}`)
   importPath: string;
 }
+
 /**
  * pipcook framework description struct
  */
@@ -77,6 +77,12 @@ export interface PipcookFramework {
   desc: string | null;
   // framework version
   version: string;
+  // arch of current machine: x86 x64 etc. Ignore check if null
+  arch: string | null;
+  // os: darwin, win32, linux etc. Ignore check if null
+  platform: string | null;
+  // node version: see https://www.npmjs.com/package/semver Ignore check if null
+  nodeVersion: string | null;
   // python site-packages path in the directory
   pythonPackagePath: string | null;
   // package list

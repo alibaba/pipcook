@@ -3,8 +3,8 @@
   "dataSource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-csv-data-collector@pipeline2.0/build/script.js",
   "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-bayesian-model@pipeline2.0/build/script.js",
   "artifacts": [{
-    "type": "local",
-    "path": "./file/to/your/model/dir"
+    "processor": "pipcook-ali-oss-uploader",
+    "target": "oss://pipcook-cloud/model/bayes2.0"
   }],
   "options": {
     "framework": "https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/framework/bayes.zip",
