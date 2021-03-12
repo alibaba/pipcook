@@ -6,22 +6,22 @@ import {
   constants
 } from '@pipcook/pipcook-core';
 import * as path from 'path';
-import { URL } from 'url';
+import { parse } from 'url';
 import { fetchWithCache } from './cache';
 import * as queryString from 'query-string';
 
 export const downloadScript = async (scriptDir: string, scriptOrder: number, url: string, type: ScriptType, enableCache = true): Promise<PipcookScript> => {
-  const urlObj = new URL(url);
+  const urlObj = parse(url);
   const baseName = path.parse(urlObj.pathname).base;
   const localPath = path.join(scriptDir, `${scriptOrder}-${baseName}`);
-  const { query } = queryString.parseUrl(url);
+  const { query } = queryString.parse(urlObj.query);
   // maybe should copy the script with COW
   await fetchWithCache(constants.PIPCOOK_SCRIPT_PATH, url, localPath, enableCache);
   return {
     name: baseName,
     path: localPath,
     type,
-    query,
+    query
   };
 };
 

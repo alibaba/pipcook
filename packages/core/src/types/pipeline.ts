@@ -1,3 +1,5 @@
+import { ParsedQuery as ScriptQuery } from 'query-string';
+
 
 export interface Artifact {
   processor: string;
@@ -26,13 +28,6 @@ export interface PipelineMeta {
  * enum of script type
  */
 export enum ScriptType { DataSource, Dataflow, Model }
-
-/**
- * script query stucture
- */
-export interface ScriptQuery<T = string> {
-  [key: string]: T | T[] | null;
-}
 
 /**
  * pipcook script stucture
