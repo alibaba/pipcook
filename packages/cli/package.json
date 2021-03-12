@@ -25,6 +25,7 @@
     "fs-extra": "^8.1.0",
     "ora": "^3.4.0",
     "pnpm": "^5.18.6",
+    "query-string": "^6.14.1",
     "semver": "^6.3.0"
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",

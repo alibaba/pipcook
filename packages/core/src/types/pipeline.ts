@@ -1,3 +1,4 @@
+import { ParsedQuery as ScriptQuery } from 'query-string';
 
 export interface Artifact {
   processor: string;
@@ -37,6 +38,8 @@ export interface PipcookScript {
   path: string;
   // script type
   type: ScriptType;
+  // script query
+  query: ScriptQuery;
 }
 
 /**
