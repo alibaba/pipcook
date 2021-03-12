@@ -28,6 +28,13 @@ export interface PipelineMeta {
 export enum ScriptType { DataSource, Dataflow, Model }
 
 /**
+ * script query stucture
+ */
+export interface ScriptQuery<T = string> {
+  [key: string]: T | T[] | null;
+}
+
+/**
  * pipcook script stucture
  */
 export interface PipcookScript {
@@ -37,6 +44,8 @@ export interface PipcookScript {
   path: string;
   // script type
   type: ScriptType;
+  // script query
+  query: ScriptQuery;
 }
 
 /**
