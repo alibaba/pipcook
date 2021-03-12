@@ -3,16 +3,71 @@
 import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
-import { execSync as exec } from 'child_process';
 import { join } from 'path';
 import { constants } from '@pipcook/pipcook-core';
-import { pathExists, readJson } from 'fs-extra';
+import { readJson, mkdirp, remove } from 'fs-extra';
+import { StandaloneRuntime } from '../runtime';
+import { logger } from '../utils';
+export interface RunOptions {
+  output: string;
+  nocache: boolean;
+  debug: boolean;
+}
 
-import { runAndDownload } from '../service/job';
-import init from '../actions/init';
-import serve from '../actions/serve';
-import board from '../actions/board';
-import devPlugin from '../actions/dev-plugin';
+export interface CacheCleanOptions {
+  framework: boolean;
+  script: boolean;
+}
+
+function dateToString(date: Date): string {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDay();
+  const hour = date.getHours();
+  const min = date.getMinutes();
+  const sec = date.getSeconds();
+  function fillZero(i: number): string {
+    return i < 10 ? '0' + i : i.toString();
+  }
+  return `${year}${fillZero(month)}${fillZero(day)}${fillZero(hour)}${fillZero(min)}${fillZero(sec)}`;
+}
+
+export const run = async (filename: string, opts: RunOptions): Promise<void> => {
+  let pipelineConfig;
+  try {
+    pipelineConfig = await readJson(filename);
+    // TODO(feely): check pipeline file
+  } catch (err) {
+    logger.fail(`read pipeline file error: ${err.message}`);
+  }
+  try {
+    await mkdirp(opts.output);
+  } catch (err) {
+    logger.fail(`create output directory error: ${err.message}`);
+  }
+  const runtime = new StandaloneRuntime(opts.output, pipelineConfig, !opts.nocache);
+  try {
+    await runtime.run();
+  } catch (err) {
+    if (!opts.debug) {
+      logger.fail(`run pipeline error: ${err.message}`);
+    } else {
+      throw err;
+    }
+  }
+};
+
+export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
+  console.log('clean', constants.PIPCOOK_FRAMEWORK_PATH, constants.PIPCOOK_SCRIPT_PATH, opts.framework, opts.script);
+  const futures = [];
+  if (opts.framework) {
+    futures.push(remove(constants.PIPCOOK_FRAMEWORK_PATH));
+  }
+  if (opts.script) {
+    futures.push(remove(constants.PIPCOOK_SCRIPT_PATH));
+  }
+  await Promise.all(futures);
+};
 
 (async function(): Promise<void> {
   // check node version
@@ -26,73 +81,27 @@ import devPlugin from '../actions/dev-plugin';
     return;
   }
 
-  const pkg = require('../../package.json');
-
-  const versionStr = [
-    `Pipcook Tools   v${pkg.version} ${join(__dirname, '../../')}`
-  ];
-  const daemonPath = join(constants.PIPCOOK_DAEMON_SRC, 'package.json');
-  const boardPath = join(constants.PIPCOOK_BOARD_SRC, 'package.json');
-  if (await pathExists(daemonPath)) {
-    const daemonPkg = await readJson(daemonPath);
-    versionStr.push(`Pipcook Daemon  v${daemonPkg.version} ${constants.PIPCOOK_DAEMON_SRC}`);
-  }
-  if (await pathExists(boardPath)) {
-    const boardPkg = await readJson(boardPath);
-    versionStr.push(`Pipboard        v${boardPkg.version} ${constants.PIPCOOK_BOARD_SRC}`);
-  }
-
-  program.version(versionStr.join('\n'), '-v, --version');
-  program
-    .command('init [version]')
-    .option('-c, --client <string>', 'specify your npm client.')
-    .option('-b, --beta', 'use or update the beta version, if set, the option version will be ignored.')
-    .option('--tuna', 'use tuna mirror to download miniconda at China.')
-    .description('initialize the daemon and pipboard.')
-    .action(init);
-
-  program
-    .command('board')
-    .description('open the pipboard')
-    .action(board);
+  const pkg = await readJson(join(__filename, '../../package.json'));
+  program.version(pkg.version, '-v, --version');
 
   program
     .command('run <filename>')
-    .option('--tuna', 'use tuna mirror to install python packages')
-    .option('--output <dir>', 'the output directory name', 'output')
-    .option('-h|--host-ip <ip>', 'the host ip of daemon')
-    .option('-p|--port <port>', 'the port of daemon')
+    .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
+    .option('--nocache', 'disabel cache for framework and scripts', false)
+    .option('-d --debug', 'debug mode', false)
     .description('run pipeline with a json file.')
-    .action(runAndDownload);
+    .action(run);
 
   program
-    .command('serve <dir>')
-    .option('-p, --port <number>', 'port of server', 7682)
-    .description('serve the model to predict')
-    .action(serve);
+    .command('clean')
+    .option('-fm --framework', 'clean cache for framework', true)
+    .option('-s --script', 'clean cache for scripts', true)
+    .action(cacheClean)
+    .description("clean pipcook cache, include framework, script");
 
   program
-    .command('bip')
-    .description('boa packages installer')
-    .action(() => {
-      exec(`./node_modules/.bin/bip ${process.argv.slice(3).join(' ')}`, {
-        cwd: process.cwd()
-      });
-    });
-
-  program
-    .command('plugin-dev')
-    .option('-t, --type <type>', 'plugin type')
-    .option('-n, --name <name>', 'project name')
-    .description('initialize plugin development environment')
-    .action(devPlugin);
-
-  program
-    .command('daemon', 'manage pipcook daemon service')
-    .command('plugin', 'install one or more packages')
-    .command('app', 'experimental PipApp Script')
-    .command('job', 'operate the job bound to specific pipeline')
-    .command('pipeline', 'operate on pipeline');
+    .command('install')
+    .description("add libraries: tvm, tensorflow, pytorch...");
 
   program.parse(process.argv);
 })();

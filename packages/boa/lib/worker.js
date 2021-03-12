@@ -1,10 +1,23 @@
 'use strict';
 
-const { isMainThread, workerData } = require('worker_threads');
+let isMainThread = false;
+let workerData = null;
+let supportWorkerThreads = false;
+
 const { PythonObject, NODE_PYTHON_HANDLE_NAME } = require('bindings')('boa');
 const { wrap } = require('./proxy');
 
 const TYPE_ID = 'SHARED_PYTHON_OBJECT_TYPE';
+try {
+  require.resolve('worker_threads');
+  supportWorkerThreads = true;
+} catch (err) {
+  supportWorkerThreads = false;
+}
+
+if (supportWorkerThreads === true) {
+  ({ isMainThread, workerData } = require('worker_threads'));
+}
 
 /**
  * This is a wrapper for shared Python object, just like
@@ -12,8 +25,11 @@ const TYPE_ID = 'SHARED_PYTHON_OBJECT_TYPE';
  */
 class SharedPythonObject {
   constructor(o) {
+    if (!supportWorkerThreads) {
+      throw new TypeError('worker_threads is not supported, please upgrade your Node.js');
+    }
     if (!isMainThread) {
-      throw TypeError('SharedPythonObject must be used in main thread.');
+      throw new TypeError('SharedPythonObject must be used in main thread.');
     }
     this.ownershipId = o[NODE_PYTHON_HANDLE_NAME].requestOwnership();
     this.__type__ = TYPE_ID;

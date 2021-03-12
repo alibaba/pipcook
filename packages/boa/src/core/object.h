@@ -67,6 +67,11 @@ private:
   ObjectOwnership<PyObject> *_ownership = nullptr;
   uintptr_t _borrowedOwnershipId = 0x0;
   std::vector<PythonFunction *> _funcs;
+
+#if (NAPI_VERSION < 5)
+private:
+  static FunctionReference constructor;
+#endif
 };
 
 } // namespace boa

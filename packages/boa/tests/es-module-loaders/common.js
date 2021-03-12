@@ -3,7 +3,7 @@
 'use strict';
 
 const path = require('path');
-const test = require('tape');
+const test = require('ava');
 const { spawnSync } = require('child_process');
 
 function getAbsolutePath(relativePath) {
@@ -35,19 +35,19 @@ function check(t, appPath) {
   // The nyc 14 conflicts with the node `--experimental-loader` design,
   // which currently uses nyc 15 and tap 14 in combination with a skip error.
   const result = spawnSync(process.execPath, args, options);
-  t.strictEqual(result.signal, null);
-  t.strictEqual(result.status, 0);
+  t.is(result.signal, null);
+  t.is(result.status, 0);
   t.end();
 }
 
-test('python stdlib', t => check(t, './py/test-esm-loader-stdlib.mjs'));
+test.cb('python stdlib', t => check(t, './py/test-esm-loader-stdlib.mjs'));
 
-test('python thirdparty', t => check(t, './py/test-esm-loader-thirdparty.mjs'));
+test.cb('python thirdparty', t => check(t, './py/test-esm-loader-thirdparty.mjs'));
 
-test('python custom', t => check(t, './py/test-esm-loader-custom.mjs'));
+test.cb('python custom', t => check(t, './py/test-esm-loader-custom.mjs'));
 
-test('javascript thirdparty', t => check(t, './js/test-esm-loader-thirdparty.mjs'));
+test.cb('javascript thirdparty', t => check(t, './js/test-esm-loader-thirdparty.mjs'));
 
-test('javascript custom', t => check(t, './js/test-esm-loader-custom.mjs'));
+test.cb('javascript custom', t => check(t, './js/test-esm-loader-custom.mjs'));
 
-test('dynamic imports', t => check(t, './py/test-esm-loader-dynamic-imports.mjs'));
+test.cb('dynamic imports', t => check(t, './py/test-esm-loader-dynamic-imports.mjs'));

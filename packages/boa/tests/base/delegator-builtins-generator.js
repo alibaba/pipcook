@@ -1,4 +1,4 @@
-const test = require('tape');
+const test = require('ava');
 const boa = require('../../');
 const pybasic = boa.import('tests.base.basic');
 
@@ -8,10 +8,9 @@ test('builtins.generator', t => {
 
   const generator = obj.testGen(count);
   for (const ele of generator) {
-    t.equal(ele, count);
+    t.is(ele, count);
     count -= 1;
   }
-  t.end();
 });
 
 test('builtins.generator with next', t => {
@@ -22,11 +21,10 @@ test('builtins.generator with next', t => {
 
   let val = generator.next();
 
-  t.equal(val.value, count);
-  t.equal(val.done, false);
+  t.is(val.value, count);
+  t.is(val.done, false);
 
   val = generator.next();
-  t.equal(val.value, undefined);
-  t.equal(val.done, true);
-  t.end();
+  t.is(val.value, undefined);
+  t.is(val.done, true);
 });

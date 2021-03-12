@@ -36,7 +36,7 @@ $ docker run -it -p 6927:6927 registry.cn-beijing.aliyuncs.com/pipcook/pipcook:l
 
 ## 疑难排查
 
-如果你有任何安装方面的问题，清反馈到我们的 [issue tracker](https://github.com/alibaba/pipcook/issues/new)。
+如果你有任何安装方面的问题，请反馈到我们的 [issue tracker](https://github.com/alibaba/pipcook/issues/new)。
 
 [通过 NPM 安装]: #通过-NPM-安装
 [通过源码安装]: contributing/guide-to-contributor#download-source

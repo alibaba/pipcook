@@ -1,4 +1,4 @@
 import assert from 'assert';
-import tape from 'tape';
+import debug from 'debug';
 
-assert.equal(typeof tape, 'function');
+assert.strictEqual(typeof debug, 'function');

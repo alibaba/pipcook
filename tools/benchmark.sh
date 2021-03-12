@@ -17,11 +17,6 @@ t2=$(date +%s)
 install_time=$((t2-t1))
 
 t1=$(date +%s)
-npm run dev-build
-t2=$(date +%s)
-esbuild_time=$((t2-t1))
-
-t1=$(date +%s)
 npm run build
 t2=$(date +%s)
 build_time=$((t2-t1))

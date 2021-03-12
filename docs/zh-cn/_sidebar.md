@@ -2,7 +2,6 @@
 - [安装](/zh-cn/INSTALL.md)
 - 用户手册
   - [Pipeline](/zh-cn/manual/intro-to-pipeline.md)
-  - [PipApp](/zh-cn/manual/intro-to-pipapp.md)
   - [插件](/zh-cn/manual/intro-to-plugin.md)
   - [Boa 使用指南](/zh-cn/manual/intro-to-boa.md)
   - [命令行工具](/zh-cn/manual/pipcook-tools.md)
@@ -18,4 +17,7 @@
 - 规范
   - [插件](/zh-cn/spec/plugin.md)
   - [数据集](/zh-cn/spec/dataset.md)
+- [FAQ](/zh-cn/faq/index.md)
+  - [pipcook 框架](/zh-cn/faq/pipcook-framework.md)
+  - [插件](/zh-cn/faq/plugins.md)
 - [术语表](/zh-cn/GLOSSORY.md)

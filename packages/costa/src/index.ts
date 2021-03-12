@@ -1,158 +1,134 @@
-import * as url from 'url';
-import { PluginTypeI, PluginProtocol } from '@pipcook/pipcook-core';
+import {
+  Runtime,
+  PipcookScript,
+  DataSourceApi,
+  PipcookFramework,
+  PackageType,
+  DataSourceEntry,
+  ModelEntry,
+  DataFlowEntry,
+  ScriptContext,
+  FrameworkModule
+} from '@pipcook/pipcook-core';
+import * as boa from '@pipcook/boa';
+import * as path from 'path';
+import Debug from 'debug';
+const debug = Debug('costa.runnable');
 
-/**
- * The options to configure Costa runtime.
- */
-export interface RuntimeOptions {
-  /**
-   * The directory to install plugins.
-   */
-  installDir: string;
-  /**
-   * The directory for dataset storage.
-   */
-  datasetDir: string;
-  /**
-   * The directory for component instance.
-   */
-  componentDir: string;
-  /**
-   * The npm registry host, like: https://registry.npmjs.com
-   */
-  npmRegistryPrefix: string;
-}
-
-/**
- * This represents a source of a plugin.
- */
-export interface PluginSource {
-  from: PluginProtocol;
-  uri?: string;
-  urlObject?: url.UrlWithStringQuery;
-  name: string;
-  schema?: NpmPackageNameSchema;
-}
-
-/**
- * This represents requirements for Python and its packages.
- */
-export interface CondaConfig {
-  /**
-   * The Python dependency, but it's solid to 3.7 for now.
-   */
-  python?: string;
-  /**
-   * The Python third-party dependencies.
-   */
-  dependencies?: Record<string, string>;
-}
-
-/**
- * Usually, it is used to represent some fields of package.json,
- * and some pipcook fields are also added, see below for details.
- */
-export interface PluginPackage {
-  /**
-   * the package name.
-   */
-  name: string;
-  /**
-   * the package version.
-   */
-  version: string;
-  /**
-   * the main script.
-   */
-  main: string;
-  /**
-   * the package description.
-   */
-  description?: string;
-  /**
-   * the package dependencies.
-   */
-  dependencies?: Record<string, string>;
-  /**
-   * The following objects are used to declare some information
-   * needed by the plugin at runtime.
-   */
-  pipcook: {
+export interface PipelineRunnerOption {
+  workspace: {
     /**
-     * The plugin category.
+     * the current working directory for this runnable.
      */
-    category: PluginTypeI;
+    workingDir: string;
     /**
-     * The data type of this plugin.
+     * the current data directory for this runnable
      */
-    datatype: 'text' | 'image' | 'all';
-    /**
-     * The method to map for corresponding datatype.
-     */
-    method?: string;
-    /**
-     * The source of the plugin.
-     */
-    source: PluginSource;
-    /**
-     * The target information.
-     */
-    target?: {
-      PYTHONPATH: string;
-      DESTPATH: string;
-    };
-    /**
-     * The plugin runtime
-     */
-    runtime?: 'nodejs' | 'python';
+    dataDir: string;
+    modelDir: string;
+    frameworkDir: string;
   };
+  framework: PipcookFramework;
+}
+
+/**
+ * The pipeline runner executes the scripts in pipeline
+ */
+export class PipelineRunner {
   /**
-   * The below is some information related to Python.
+   * the framework directroy
    */
-  conda?: CondaConfig;
-}
+  private context: ScriptContext;
+  /**
+   * Create a runnable by the given runtime.
+   */
+  constructor(
+    public options: PipelineRunnerOption
+  ) {}
 
-/**
- * It represents an object which extends `PluginPackage` with more
- * fields more about NPM.
- */
-export interface NpmPackage extends PluginPackage {
-  dist: {
-    integrity: string;
-    shasum: string;
-    tarball: string;
-  };
-}
-
-/**
- * It represents the metadata of a npm package, which fetchs from
- * npm registry.
- */
-export interface NpmPackageMetadata {
-  _id: string;
-  _rev: string;
-  name: string;
-  'dist-tags': {
-    beta: string;
-    latest: string;
-  };
-  versions: Record<string, NpmPackage>;
-}
-
-/**
- * It represents the name schema for a package name string for npm. For example,
- * `@pipcook/test@1.x` outputs an object with scope(@pipcook), name(test) and
- * version(1.x).
- */
-export class NpmPackageNameSchema {
-  scope: string | null;
-  version: string | null;
-  name: string;
-  get packageName(): string {
-    if (this.scope) {
-      return `${this.scope}/${this.name}`;
-    } else {
-      return this.name;
+  async initFramework(): Promise<void> {
+    const python: Record<string, FrameworkModule> = {};
+    const js: Record<string, FrameworkModule> = {};
+    if (this.options.framework.pythonPackagePath) {
+      boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath));
     }
+    if (Array.isArray(this.options.framework.packages)) {
+      for (let pkg of this.options.framework.packages) {
+        if (pkg.type === PackageType.Python) {
+          python[pkg.name] = boa.import(pkg.name);
+        } else {
+          js[pkg.name] = await import(pkg.importPath);
+        }
+      }
+    }
+    this.context = {
+      boa,
+      // or put dataCook into js framework modules?
+      dataCook: null,
+      framework: {
+        python,
+        js
+      }
+    };
+  }
+  /**
+   * start datasource script.
+   * @param script the metadata of script
+   * @param options options of the pipeline
+   */
+  async runDataSource(script: PipcookScript, options: Record<string, any>): Promise<DataSourceApi<any>> {
+    // log all the requirements are ready to tell the debugger it's going to run.
+    debug(`start loading the plugin(${script})`);
+    const scriptMoudle = await import(script.path);
+    const fn: DataSourceEntry = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+    if (typeof fn !== 'function') {
+      throw new TypeError(`no export function found in ${script.name}(${script.path})`);
+    }
+    debug(`loaded the plugin(${script.name}), start it.`);
+    const opts = { ...options, dataDir: this.options.workspace.dataDir };
+    return await fn(opts, this.context);
+  }
+
+  /**
+   * start datasource script.
+   * @param script the metadata of script
+   * @param options options of the pipeline
+   * @param api api from data source script or another dataflow script
+   */
+  async runDataflow(scripts: Array<PipcookScript>, options: Record<string, any>, api: DataSourceApi<any>): Promise<DataSourceApi<any>> {
+    for (let script of scripts) {
+      debug(`start loading the plugin(${script})`);
+      const scriptMoudle = await import(script.path);
+      const fn: DataFlowEntry = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+      if (typeof fn !== 'function') {
+        throw new TypeError(`no export function found in ${script.name}(${script.path})`);
+      }
+      debug(`loaded the plugin(${script.name}), start it.`);
+      api = await fn(api, options, this.context);
+    }
+    return api;
+  }
+
+  /**
+   * start datasource script.
+   * @param script the metadata of script
+   * @param options options of the pipeline
+   * @param api api from data source script or dataflow script
+   */
+  async runModel(script: PipcookScript, options: Record<string, any>, api: Runtime<any>): Promise<void> {
+    // log all the requirements are ready to tell the debugger it's going to run.
+    debug(`start loading the plugin(${script})`);
+    const scriptMoudle = await import(script.path);
+    const fn: ModelEntry = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+    if (typeof fn !== 'function') {
+      throw new TypeError(`no export function found in ${script.name}(${script.path})`);
+    }
+    // when the `load` is complete, start the plugin.
+    debug(`loaded the plugin(${script.name}), start it.`);
+    const opts = {
+      ...options,
+      modelPath: this.options.workspace.modelDir
+    };
+    return await fn(api, opts, this.context);
   }
 }

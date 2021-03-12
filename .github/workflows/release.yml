@@ -24,7 +24,7 @@ jobs:
 
       - name: Get release version
         id: get_version
-        run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:11})
+        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:11})" >> $GITHUB_ENV
 
       - name: Publish check
         run: |
@@ -41,11 +41,11 @@ jobs:
             [ $(check_pkg pipcook-cli $ver) == $ver ] &&
             [ $(check_pkg daemon $ver) == $ver ]
           then
-            echo ::set-env name=NPM_PUBLISHED::true
+            echo "NPM_PUBLISHED=true" >> $GITHUB_ENV
           fi
 
           if [ $(check_image $ver) == $ver ]; then
-            echo ::set-env name=DOCKER_PUBLISHED::true
+            echo "DOCKER_PUBLISHED=true" >> $GITHUB_ENV
           fi
 
       - name: Publish npm packages

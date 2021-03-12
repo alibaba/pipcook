@@ -27,16 +27,14 @@
         "<!@(node -p \"require('./tools/utils').getPythonHeaderPath()\")",
       ],
       "library_dirs": [
-        "<!@(node -p \"require('./tools/utils').getCondaPath()\")/lib",
+        "<!@(node -p \"require('./tools/utils').getPythonLibraryAbsPath()\")",
       ],
       "libraries": [
         "-lpython<!@(node -p \"require('./tools/utils').getPythonVersion()\")",
-        "-Wl,-rpath,'<!@(node -p \"require('./tools/utils').getCondaPath()\")/lib'",
+        "-Wl,-rpath,'<!@(node -p \"require('./tools/utils').getPythonLibraryRunPath()\")'"
       ],
       "defines": [
         "NAPI_CPP_EXCEPTIONS",
-        "NAPI_EXPERIMENTAL",
-        "NAPI_VERSION=6",
         "BOA_LIBPYTHON_NAME=python<!@(node -p \"require('./tools/utils').getPythonVersion()\")"
       ],
       "conditions": [

@@ -1,52 +1,48 @@
-const test = require('tape');
+const test = require('ava');
 const boa = require('../../');
 const builtins = boa.builtins();
 const { PyGetAttrSymbol, PySetAttrSymbol, PyGetItemSymbol, PySetItemSymbol } = boa.symbols;
 
 test('keyword arguments throws', t => {
-  t.throws(() => boa.kwargs(false), TypeError);
-  t.throws(() => boa.kwargs(true), TypeError);
-  t.throws(() => boa.kwargs('foobar'), TypeError);
-  t.throws(() => boa.kwargs(123), TypeError);
-  t.end();
+  t.throws(() => boa.kwargs(false), { instanceOf: TypeError });
+  t.throws(() => boa.kwargs(true), { instanceOf: TypeError });
+  t.throws(() => boa.kwargs('foobar'), { instanceOf: TypeError });
+  t.throws(() => boa.kwargs(123), { instanceOf: TypeError });
 });
 
 test('hash function', t => {
-  t.ok(builtins.__hash__());
-  t.equal(builtins['__notexists__'], undefined);
+  t.is(Boolean(builtins.__hash__()), true);
+  t.is(builtins['__notexists__'], undefined);
 
   const mlist = builtins.list([1, 3, 5]);
-  t.strictEqual(JSON.stringify({ foobar: mlist }),
+  t.is(JSON.stringify({ foobar: mlist }),
                 '{"foobar":[1,3,5]}');
 
   mlist[0] = 2;
   mlist[1] = 4;
-  t.strictEqual(mlist[0], 2);
-  t.strictEqual(mlist[1], 4);
-  t.strictEqual(JSON.stringify({ foofoo: mlist }),
+  t.is(mlist[0], 2);
+  t.is(mlist[1], 4);
+  t.is(JSON.stringify({ foofoo: mlist }),
                 '{"foofoo":[2,4,5]}');
-  t.end();
 });
 
 test('getattr and setattr with symbols', t => {
   // test for getattr and setattr
   const pybasic = boa.import('tests.base.basic');
   const f = new pybasic.Foobar();
-  t.strictEqual(f[PyGetAttrSymbol]('test'), 'pythonworld', 'getattr is ok');
+  t.is(f[PyGetAttrSymbol]('test'), 'pythonworld', 'getattr is ok');
   f[PySetAttrSymbol]('test', 'updated');
-  t.strictEqual(f[PyGetAttrSymbol]('test'), 'updated', 'setattr is ok');
-  t.end();
+  t.is(f[PyGetAttrSymbol]('test'), 'updated', 'setattr is ok');
 });
 
 test('getitem and setitem with symbols', t => {
   const mlist = builtins.list([1, 3]);
   // test for getitemm and setitem
-  t.strictEqual(mlist[PyGetItemSymbol](0), 1, 'mlist[0] = 1');
-  t.strictEqual(mlist[PyGetItemSymbol](1), 3, 'mlist[1] = 3');
+  t.is(mlist[PyGetItemSymbol](0), 1, 'mlist[0] = 1');
+  t.is(mlist[PyGetItemSymbol](1), 3, 'mlist[1] = 3');
   mlist[PySetItemSymbol](0, 100);
-  t.strictEqual(mlist[PyGetItemSymbol](0), 100, 'setitem is ok');
-  t.strictEqual(mlist[PyGetAttrSymbol]('__len__')(), 2, 'use getattr to check mlist length');
-  t.end();
+  t.is(mlist[PyGetItemSymbol](0), 100, 'setitem is ok');
+  t.is(mlist[PyGetAttrSymbol]('__len__')(), 2, 'use getattr to check mlist length');
 });
 
 test('define a class extending python class', t => {
@@ -57,10 +53,9 @@ test('define a class extending python class', t => {
     }
   }
   const d = new EmptyDict();
-  t.equal(JSON.stringify(d), '{"foobar":10}');
-  t.equal(builtins.type(d).__name__, 'EmptyDict');
-  t.equal(d.foobar, 10);
-  t.end();
+  t.is(JSON.stringify(d), '{"foobar":10}');
+  t.is(builtins.type(d).__name__, 'EmptyDict');
+  t.is(d.foobar, 10);
 });
 
 test('define a extended class with basic functions', t => {
@@ -71,9 +66,9 @@ test('define a extended class with basic functions', t => {
     }
   }
   const f = new Foobar();
-  t.equal(f.test, 'pythonworld');
-  t.equal(f.ping('yorkie'), 'hello <yorkie> on pythonworld');
-  t.equal(f.callfunc(x => x * 2), 233 * 2);
+  t.is(f.test, 'pythonworld');
+  t.is(f.ping('yorkie'), 'hello <yorkie> on pythonworld');
+  t.is(f.callfunc(x => x * 2), 233 * 2);
 
   const v = f.testObjPass({
     input: 10,
@@ -83,8 +78,7 @@ test('define a extended class with basic functions', t => {
     },
   });
   // fn2(fn1(input));
-  t.equal(v, 400);
-  t.end();
+  t.is(v, 400);
 });
 
 test('define a class which overloads magic methods', t => {
@@ -104,14 +98,13 @@ test('define a class which overloads magic methods', t => {
     }
   }
   const f = new FoobarList();
-  t.equal(f[0], 1);
-  t.equal(f[1], 3);
-  t.equal(f[2], 7);
-  t.equal(len(f), 3);
-  t.end();
+  t.is(f[0], 1);
+  t.is(f[1], 3);
+  t.is(f[2], 7);
+  t.is(len(f), 3);
 });
 
-test('with-statement normal flow', t => {
+test.cb('with-statement normal flow', t => {
   const { open } = builtins;
   boa.with(open(__filename, 'r'), f => {
     console.log(f);
@@ -124,20 +117,19 @@ test('with-statement normal flow', t => {
 
 test('with-statement js exceptions', t => {
   const { open } = builtins;
-  t.throws(() => boa.with({}), TypeError);
-  t.throws(() => boa.with(open(__filename, 'r')), TypeError);
-  t.end();
+  t.throws(() => boa.with({}), { instanceOf: TypeError });
+  t.throws(() => boa.with(open(__filename, 'r')), { instanceOf: TypeError });
 });
 
-test('with-statement python exceptions', t => {
+test.cb('with-statement python exceptions', t => {
   const { Foobar } = boa.import('tests.base.basic');
   const mfoobar = new Foobar();
   boa.with(mfoobar, () => {
-    t.equal(mfoobar.entered, true, 'foobar entered');
+    t.is(mfoobar.entered, true, 'foobar entered');
     // throw error
     mfoobar.hellomsg(233);
   });
-  t.equal(mfoobar.exited, true, 'foobar exited');
+  t.is(mfoobar.exited, true, 'foobar exited');
 
   mfoobar.__exitcode__ = 1;
   boa.with(mfoobar, () => mfoobar.hellomsg(233))
@@ -149,25 +141,23 @@ test('with-statement python exceptions', t => {
 test('iteration protocols', t => {
   const { range } = builtins;
   const [r0, r1,, r3] = range(0, 10);
-  t.equal(r0[0], r0[1]);
-  t.equal(r1[0], r1[1]);
-  t.equal(r3[0], r3[1]);
+  t.is(r0[0], r0[1]);
+  t.is(r1[0], r1[1]);
+  t.is(r3[0], r3[1]);
 
   const [...iter] = range(0, 10);
-  t.equal(iter.length, 10);
+  t.is(iter.length, 10);
 
   const [i0, ...iter2] = range(0, 10);
-  t.equal(i0[0], i0[1]);
-  t.equal(iter2.length, 9);
+  t.is(i0[0], i0[1]);
+  t.is(iter2.length, 9);
   t.throws(() => {
     // eslint-disable-next-line no-unused-vars
     const [_] = builtins;
     // Should throw the error
-  }, TypeError);
-  t.end();
+  }, { instanceOf: TypeError });
 });
 
 test('import a nonexistent module', t => {
   t.throws(() => boa.import('noneexistent-module'));
-  t.end();
 });

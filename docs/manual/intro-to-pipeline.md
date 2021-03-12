@@ -51,15 +51,17 @@ $ pipcook run /path/to/your/pipeline-config.json
 The trained model will generate an `output` directory under [`cwd(3)`](https://linux.die.net/man/3/cwd):
 
 ```
-📂output
-   ┣ 📂logs
-   ┣ 📂model
-   ┣ 📜package.json
-   ┣ 📜metadata.json
-   ┗ 📜index.js
+output
+├─ logs
+├─ nodejs
+└─ wasm
 ```
 
-To get started with your trained model, follow the below steps:
+There are two entry-points here, one for Node.js powered by boa; another one is used for wasm (WebAssembly), a universial virtual machine, powered by [TVM](https://tvm.apache.org/docs/).
+
+**Note:** [TVM](https://tvm.apache.org/docs/) does not have linux wheel at this time, therefore, we will only export WASM format for mac platform at this time. We will provide a detailed guide for linux users to build TVM from source, if you want to try it out under linux.
+
+To get started with your trained model, follow the below steps under `nodejs` and `wasm` seperately:
 
 ```sh
 $ npm install
@@ -77,3 +79,5 @@ Once the output is initialized, just `import` it as the following:
 import * as predict from './output';
 predict('your input data');
 ```
+
+**Note:** The wasm format is under experiment, in theory, the generated model should be possible to run with GPU via WebGPU. However, the standard for WebGPU is not finalized. We only enable CPU mode by default at this time.

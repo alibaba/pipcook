@@ -1,4 +1,11 @@
-const test = require('tape');
+// check if worker_threads is enabled.
+try {
+  require.resolve('worker_threads');
+} catch (e) {
+  console.log('just skip the module because worker_threads not found');
+  return;
+}
+
 const { Worker, isMainThread, workerData, parentPort } = require('worker_threads');
 const boa = require('../../');
 const pybasic = boa.import('tests.base.basic');
@@ -11,30 +18,29 @@ class Foobar extends pybasic.Foobar {
 }
 
 if (isMainThread) {
-  test('run functions with worker_threads', t => {
-    t.plan(6);
-
+  const test = require('ava');
+  test.cb('run functions with worker_threads', t => {
     const foo = new Foobar();
     const descriptor = foo.toString();
     const owned = foo[symbols.GetOwnershipSymbol]();
-    t.equal(owned, true, 'the main thread owns the object before creating shared objects');
+    t.is(owned, true, 'the main thread owns the object before creating shared objects');
     console.log(`create a foo object with ownership(${owned})`);
-  
+
     const worker = new Worker(__filename, {
       workerData: {
         foo: new SharedPythonObject(foo),
       },
     });
     console.log('main: worker is started and send an object', descriptor);
-    t.throws(() => foo.toString(), 'Object is owned by another thread.');
-    t.throws(() => new SharedPythonObject(foo), 'Object is owned by another thread.');
+    t.throws(() => foo.toString(), { message: 'Object is owned by another thread.' });
+    t.throws(() => new SharedPythonObject(foo), { message: 'Object is owned by another thread.' });
 
     let expectedOwnership = false;
     let alive = setInterval(() => {
       const ownership = foo[symbols.GetOwnershipSymbol]();
-      t.equal(ownership, expectedOwnership, `ownership should be ${expectedOwnership}.`);
+      t.is(ownership, expectedOwnership, `ownership should be ${expectedOwnership}.`);
     }, 1000);
-  
+
     worker.on('message', state => {
       if (state === 'done') {
         expectedOwnership = true;

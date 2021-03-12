@@ -1,20 +1,22 @@
 {
   "name": "@pipcook/boa",
-  "version": "1.2.0",
+  "version": "2.0.0-alpha.3",
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {
     "clean": "sh tools/clean-python.sh && make -C ./pybind11/ clean",
-    "preinstall": "node tools/check-dependence.js && make -C ./pybind11/ && node tools/install-python.js && node tools/install-requirements.js",
+    "predeps": "tools/check-dependence.js",
+    "deps": "make -C ./pybind11/ && tools/install-python.js",
+    "preinstall": "npm run deps",
     "postinstall": "npm run build",
-    "test": "npm run test:js && npm run test:ts",
-    "test:js": "tape ./tests/**/*.js",
-    "test:ts": "ts-node ./node_modules/.bin/tape ./tests/**/*.ts",
+    "pretest": "npm run lint && bip install numpy==1.17.4",
+    "test": "ava",
     "cov": "nyc --reporter=text-summary npm run test",
     "cov:report": "nyc report -r=lcov",
-    "lint": "eslint . -c .eslintrc.js --no-eslintrc && ./clang-format.py",
+    "lint": "npm run lint:js && npm run lint:clang",
+    "lint:js": "eslint . -c .eslintrc.js --no-eslintrc",
+    "lint:clang": "./clang-format.py",
     "build": "npm run compile",
-    "pretest": "npm run lint",
     "codecov": "nyc report --reporter=lcovonly && codecov",
     "htmlcov": "nyc report --reporter=html",
     "compile": "node-gyp configure && node-gyp build"
@@ -37,17 +39,20 @@
     "url": "https://github.com/alibaba/pipcook/issues"
   },
   "homepage": "https://github.com/alibaba/pipcook#readme",
+  "ava": {
+    "extensions": [ "js", "ts" ],
+    "require": [ "ts-node/register" ]
+  },
   "dependencies": {
     "bindings": "^1.5.0",
     "debug": "^4.1.1",
     "node-addon-api": "^3.0.0"
   },
   "devDependencies": {
-    "@types/tape": "^4.13.0",
+    "ava": "^3.13.0",
     "codecov": "^3.6.5",
-    "eslint": "^6.7.2",
+    "eslint": "^7.15.0",
     "nyc": "^15.1.0",
-    "tape": "^5.0.1",
     "ts-node": "^8.6.2"
   },
   "publishConfig": {

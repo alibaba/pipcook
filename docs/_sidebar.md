@@ -2,7 +2,6 @@
 - [Install](/INSTALL.md)
 - User Manual
   - [Introduction to Pipeline](/manual/intro-to-pipeline.md)
-  - [Introduction to PipApp](/manual/intro-to-pipapp.md)
   - [Introduction to Plugin](/manual/intro-to-plugin.md)
   - [Introduction to Boa](/manual/intro-to-boa.md)
   - [Pipcook Tools](/manual/pipcook-tools.md)
@@ -20,4 +19,7 @@
 - Specification
   - [Plugin Specification](/spec/plugin.md)
   - [Dataset Specification](/spec/dataset.md)
+- [FAQ](/faq/index.md)
+  - [Pipcook Framework](/faq/pipcook-framework.md)
+  - [Plugins](/faq/plugins.md)
 - [Glossory](/GLOSSORY.md)

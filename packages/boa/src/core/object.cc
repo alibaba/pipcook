@@ -5,6 +5,10 @@
 using namespace boa;
 using namespace Napi;
 
+#if (NAPI_VERSION < 5)
+FunctionReference PythonObject::constructor;
+#endif
+
 #define ACQUIRE_OWNERSHIP_AND_THROW()                                          \
   do {                                                                         \
     if (GetOwnership() == false) {                                             \
@@ -44,9 +48,20 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
           InstanceMethod("__delitem__", &PythonObject::DelItem),
       });
 
-  Napi::FunctionReference *constructor = new Napi::FunctionReference();
+  /**
+   * See
+   * https://github.com/nodejs/node-addon-examples/commit/dc86a662c27c5732e069e1c19d3b7a8e74e86d29
+   * `worker_threads` requires addon to be context-sensistive, otherwise
+   * downgrade to static constructor.
+   */
+#if (NAPI_VERSION < 5)
+  constructor = Persistent(func);
+  constructor.SuppressDestruct();
+#else
+  FunctionReference *constructor = new FunctionReference();
   *constructor = Persistent(func);
   env.SetInstanceData(constructor);
+#endif
 
   exports.Set("PythonObject", func);
 #define DEFINE_CONSTANT(macro) exports.Set(#macro, macro)
@@ -62,8 +77,14 @@ Object PythonObject::Init(Napi::Env env, Object exports) {
 }
 
 Object PythonObject::NewInstance(Napi::Env env, pybind::object src) {
-  return env.GetInstanceData<Napi::FunctionReference>()->New(
+  EscapableHandleScope scope(env);
+#if (NAPI_VERSION < 5)
+  auto instance = constructor.New({External<pybind::object>::New(env, &src)});
+#else
+  auto instance = env.GetInstanceData<FunctionReference>()->New(
       {External<pybind::object>::New(env, &src)});
+#endif
+  return scope.Escape(napi_value(instance)).ToObject();
 }
 
 PythonObject::PythonObject(const CallbackInfo &info)
@@ -205,15 +226,9 @@ Napi::Value PythonObject::ToBigDecimal(const CallbackInfo &info) {
 }
 
 Napi::Value PythonObject::ToBigInt(const CallbackInfo &info) {
-  ACQUIRE_OWNERSHIP_AND_THROW();
-  PyObject *thisobj = _self.ptr();
-  if (!PyLong_Check(thisobj)) {
-    Error::New(info.Env(), "Must be a number type.")
-        .ThrowAsJavaScriptException();
-    return info.Env().Null();
-  }
-  int64_t v = PyLong_AsLongLong(thisobj);
-  return BigInt::New(info.Env(), v);
+  Error::New(info.Env(), "BigInt is not supported.")
+      .ThrowAsJavaScriptException();
+  return info.Env().Null();
 }
 
 Napi::Value PythonObject::ToPrimitive(const CallbackInfo &info) {

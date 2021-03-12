@@ -1,4 +1,4 @@
-const test = require('tape');
+const test = require('ava');
 const boa = require('../../');
 const np = boa.import('numpy');
 
@@ -11,5 +11,5 @@ test('numpy.empty: return a new array of given shape and type, without initializ
     const r = np.empty([2, 2], boa.kwargs({ dtype: np.int }));
     console.log(`${r}`);
   }
-  t.end();
+  t.pass();
 });
