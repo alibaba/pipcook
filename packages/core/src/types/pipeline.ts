@@ -1,6 +1,5 @@
 import { ParsedQuery as ScriptQuery } from 'query-string';
 
-
 export interface Artifact {
   processor: string;
   [k: string]: any;
