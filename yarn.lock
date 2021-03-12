@@ -6324,6 +6324,11 @@ plur@^4.0.0:
   dependencies:
     irregular-plurals "^3.2.0"
 
+pnpm@^5.18.6:
+  version "5.18.6"
+  resolved "https://registry.npmjs.org/pnpm/-/pnpm-5.18.6.tgz#3cc63c1579589cb407ce0c95ef9835ae5d00f392"
+  integrity sha512-ONlW1I5CdnyNs2XIMl53h9E8TcOms6QqmKzzIaehagCvrWbz/lqD5UF6DqF14I6JD13MZplB+P5gTkY18BmkUw==
+
 portfinder@^1.0.25:
   version "1.0.28"
   resolved "https://registry.npmjs.org/portfinder/-/portfinder-1.0.28.tgz#67c4622852bd5374dd1dd900f779f53462fac778"

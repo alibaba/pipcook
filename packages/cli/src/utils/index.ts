@@ -4,6 +4,10 @@ import {
   ExecException
 } from 'child_process';
 import realOra = require('ora');
+export * as Script from './script';
+export * as Plugin from './plugin';
+export * as Cache from './cache';
+export * as Framework from './framework';
 
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
@@ -12,7 +16,6 @@ export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
     });
   });
 }
-
 
 interface Logger {
   success(message: string): void;
@@ -80,3 +83,10 @@ class DefaultLogger implements Logger {
 const { rows, columns, isTTY } = process.stdout;
 export const logger = isTTY && rows > 0 && columns > 0 ? new TtyLogger() : new DefaultLogger();
 
+/**
+ * import from path
+ * @param path the path where import from
+ */
+export const importFrom = (path: string): Promise<any> => {
+  return import(path);
+};
