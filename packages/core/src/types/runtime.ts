@@ -77,8 +77,8 @@ export interface ProgressInfo {
 }
 
 export interface Runtime<T = DefaultType> {
-  getPipelineMeta: () => Promise<PipelineMeta>;
-  getTaskType: () => TaskType | undefined;
+  pipelineMeta: () => Promise<PipelineMeta>;
+  taskType: () => TaskType | undefined;
   notifyProgress: (progress: ProgressInfo) => void;
   saveModel: (localPathOrStream: string | NodeJS.ReadableStream, filename: string) => Promise<void>;
   readModel: () => Promise<string>;

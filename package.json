@@ -23,7 +23,7 @@
     "docsify": "npm run typedoc && http-server -c-1 ./docs",
     "lint": "eslint . --ext .ts --ext .js",
     "pretest": "npm run lint",
-    "test": "sh run_tests.sh",
+    "test": "lerna run test",
     "test:pipeline": "sh ./tools/run_pipeline.sh",
     "typedoc": "sh tools/mkdoc.sh",
     "clean": "lerna run clean --parallel --concurrency 10",

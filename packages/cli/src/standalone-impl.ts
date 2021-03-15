@@ -13,7 +13,7 @@ import {
 } from '@pipcook/pipcook-core';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-class DataAccessorImpl<T> implements DataAccessor<T> {
+export class DataAccessorImpl<T> implements DataAccessor<T> {
   constructor(
     private dataAccessor: DataAccessor<T>
   ) {}
@@ -56,16 +56,18 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
   }
 
   // initialize metadata
-  async getPipelineMeta(): Promise<PipelineMeta> {
+  async pipelineMeta(): Promise<PipelineMeta> {
     return this.pipelineConfig;
   }
 
-  getTaskType(): TaskType | undefined {
+  taskType(): TaskType | undefined {
     return undefined;
   }
+
   async notifyProgress(progress: ProgressInfo): Promise<void> {
     console.log(`progress: ${progress.progressValue}%`);
   }
+
   async saveModel(localPathOrStream: string | NodeJS.ReadableStream, filename: 'model'): Promise<void> {
     if (typeof localPathOrStream === 'string') {
       if (path.parse(localPathOrStream).dir === this.modelDir) {
@@ -77,9 +79,16 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
       return pipelineAsync(localPathOrStream, modelStream);
     }
   }
+
   async readModel(): Promise<string> {
     return this.modelDir;
   }
 }
 
-export default (dataSourceApi: DataSourceApi, pipelineConfig: PipelineMeta, modelDir: string): StandaloneImpl => new StandaloneImpl(dataSourceApi, pipelineConfig, modelDir);
+export const createStandaloneRT = (
+  dataSourceApi: DataSourceApi,
+  pipelineConfig: PipelineMeta,
+  modelDir: string
+): StandaloneImpl => {
+  return new StandaloneImpl(dataSourceApi, pipelineConfig, modelDir);
+};
