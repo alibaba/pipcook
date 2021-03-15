@@ -60,34 +60,14 @@ export class Costa {
 
   async initFramework(): Promise<void> {
     if (this.options.framework.pythonPackagePath) {
-<<<<<<< HEAD
-      boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath));
-    }
-    if (Array.isArray(this.options.framework.packages)) {
-      for (let pkg of this.options.framework.packages) {
-        if (pkg.type === PackageType.Python) {
-          python[pkg.name] = boa.import(pkg.name);
-        } else {
-          const importPath = path.join(this.options.workspace.frameworkDir, pkg.importPath);
-          js[pkg.name] = await import(importPath);
-        }
-      }
-=======
       boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
->>>>>>> c39f3af9b5c3568379efc27765ef0ae0f1211e51
     }
     const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
     const paths = [ nodeModules, ...require.resolve.paths(process.cwd()) ];
     this.context = {
       boa,
       // or put dataCook into js framework modules?
-<<<<<<< HEAD
       dataCook,
-      framework: {
-        python,
-        js
-=======
-      dataCook: null,
       importJS: (jsModuleName: string): Promise<FrameworkModule>  =>{
         const module = require.resolve(jsModuleName, { paths });
         return import(module);
@@ -97,7 +77,6 @@ export class Costa {
       },
       workspace: {
         ...this.options.workspace
->>>>>>> c39f3af9b5c3568379efc27765ef0ae0f1211e51
       }
     };
   }
