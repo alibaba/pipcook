@@ -8,33 +8,44 @@ import {
   ModelEntry,
   DataFlowEntry,
   ScriptContext,
-  FrameworkModule
+  FrameworkModule,
+  DefaultType
 } from '@pipcook/pipcook-core';
 import * as boa from '@pipcook/boa';
 import * as path from 'path';
 import Debug from 'debug';
 const debug = Debug('costa.runnable');
 
+export interface PipelineWorkSpace {
+  /**
+   * the current working directory for this runnable.
+   */
+  workingDir: string;
+  /**
+   * the current data directory for this runnable
+   */
+  dataDir: string;
+  /**
+   * the temporary directory for model
+   */
+  modelDir: string;
+  /**
+   * the cache directory
+   */
+  cacheDir: string;
+  // framework directory
+  frameworkDir: string;
+}
+
 export interface PipelineRunnerOption {
-  workspace: {
-    /**
-     * the current working directory for this runnable.
-     */
-    workingDir: string;
-    /**
-     * the current data directory for this runnable
-     */
-    dataDir: string;
-    modelDir: string;
-    frameworkDir: string;
-  };
+  workspace: PipelineWorkSpace;
   framework: PipcookFramework;
 }
 
 /**
  * The pipeline runner executes the scripts in pipeline
  */
-export class PipelineRunner {
+export class Costa {
   /**
    * the framework directroy
    */
@@ -47,27 +58,24 @@ export class PipelineRunner {
   ) {}
 
   async initFramework(): Promise<void> {
-    const python: Record<string, FrameworkModule> = {};
-    const js: Record<string, FrameworkModule> = {};
     if (this.options.framework.pythonPackagePath) {
-      boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath));
+      boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
     }
-    if (Array.isArray(this.options.framework.packages)) {
-      for (let pkg of this.options.framework.packages) {
-        if (pkg.type === PackageType.Python) {
-          python[pkg.name] = boa.import(pkg.name);
-        } else {
-          js[pkg.name] = await import(pkg.importPath);
-        }
-      }
-    }
+    const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
+    const paths = [ nodeModules, ...require.resolve.paths(process.cwd()) ];
     this.context = {
       boa,
       // or put dataCook into js framework modules?
       dataCook: null,
-      framework: {
-        python,
-        js
+      importJS: (jsModuleName: string): Promise<FrameworkModule>  =>{
+        const module = require.resolve(jsModuleName, { paths });
+        return import(module);
+      },
+      importPY: async (pythonPackageName: string): Promise<FrameworkModule> => {
+        return boa.import(pythonPackageName);
+      },
+      workspace: {
+        ...this.options.workspace
       }
     };
   }
@@ -80,7 +88,7 @@ export class PipelineRunner {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the plugin(${script})`);
     const scriptMoudle = await import(script.path);
-    const fn: DataSourceEntry = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+    const fn: DataSourceEntry<DefaultType> = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
     if (typeof fn !== 'function') {
       throw new TypeError(`no export function found in ${script.name}(${script.path})`);
     }
@@ -97,7 +105,7 @@ export class PipelineRunner {
     for (let script of scripts) {
       debug(`start loading the plugin(${script})`);
       const scriptMoudle = await import(script.path);
-      const fn: DataFlowEntry = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+      const fn: DataFlowEntry<DefaultType> = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
       if (typeof fn !== 'function') {
         throw new TypeError(`no export function found in ${script.name}(${script.path})`);
       }
@@ -117,7 +125,7 @@ export class PipelineRunner {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the plugin(${script})`);
     const scriptMoudle = await import(script.path);
-    const fn: ModelEntry = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+    const fn: ModelEntry<DefaultType> = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
     if (typeof fn !== 'function') {
       throw new TypeError(`no export function found in ${script.name}(${script.path})`);
     }
