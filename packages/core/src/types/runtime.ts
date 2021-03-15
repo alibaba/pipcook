@@ -93,24 +93,32 @@ export interface ScriptContext {
   boa: FrameworkModule;
   // todo: type of dataCook
   dataCook: DataCookModule;
-  framework: {
-    python: Record<string, FrameworkModule>;
-    js: Record<string, FrameworkModule>;
+  // import javascript module
+  importJS: (jsModuleName: string) => Promise<FrameworkModule>;
+  // import python package
+  importPY: (pyModuleName: string) => Promise<FrameworkModule>;
+  // volume workspace
+  workspace: {
+    // dataset directory
+    dataDir: string;
+    // cache directory
+    cacheDir: string;
+    // model directory
+    modelDir: string;
   }
-  // todo: define function to get tensorflow/tfjs
 }
 
 /**
  * type of data source script entry
  */
-export type DataSourceEntry = (options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi>;
+export type DataSourceEntry<T> = (options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi<T>>;
 
 /**
  * type of data flow script entry
  */
-export type DataFlowEntry = (api: DataSourceApi, options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi>;
+export type DataFlowEntry<T> = (api: DataSourceApi<T>, options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi<T>>;
 
 /**
  * type of model script entry
  */
-export type ModelEntry = (api: Runtime, options: Record<string, any>, context: ScriptContext) => Promise<void>;
+export type ModelEntry<T> = (api: Runtime<T>, options: Record<string, any>, context: ScriptContext) => Promise<void>;
