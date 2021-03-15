@@ -86,9 +86,10 @@ export class Costa {
    * @param options options of the pipeline
    */
   async runDataSource(script: PipcookScript, options: Record<string, any>): Promise<DataSourceApi<any>> {
-    options = Object.assign({
-      dataDir: this.options.workspace.dataDir
-    }, options);
+    options = Object.assign(options, {
+      workspace: this.options.workspace
+    });
+    console.log(this.context.importJS('@tensorflow/tfjs-node'))
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the plugin(${script})`);
     const scriptMoudle = await import(script.path);

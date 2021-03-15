@@ -5,6 +5,10 @@
   "dataflow": [
     "http://localhost:5000/pipcook-plugin-process-tfjs-image-classification/build/script.js?size=224&size=224"
   ],
+  "artifacts": [{
+    "processor": "pipcook-ali-oss-uploader@0.0.3",
+    "target": "oss://pipcook-cloud/model/mobile2.0"
+  }],
   "options": {
     "framework": "http://localhost:5000/pkgs/pkg.zip",
     "train": {
