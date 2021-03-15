@@ -1,5 +1,5 @@
 import { PipelineMeta } from './pipeline';
-
+import * as DataCook from '@pipcook/datacook';
 export type DefaultType = any;
 
 // sample
@@ -86,11 +86,13 @@ export interface Runtime<T = DefaultType> {
 }
 
 export type FrameworkModule = any;
+export type DataCookModule = typeof DataCook;
+export type DataCookImage = DataCook.Image;
 export interface ScriptContext {
   // todo: type of boa
   boa: FrameworkModule;
   // todo: type of dataCook
-  dataCook: FrameworkModule;
+  dataCook: DataCookModule;
   framework: {
     python: Record<string, FrameworkModule>;
     js: Record<string, FrameworkModule>;

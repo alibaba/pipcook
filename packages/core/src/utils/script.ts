@@ -3,7 +3,7 @@ import { DataSourceApi, ScriptContext, Sample, DataFlowEntry, DataSourceMeta, Da
 /**
  * function which process a sample
  */
-export type SampleProcessor = (sample: Sample | null, options: Record<string, any>, context: ScriptContext) => Promise<Sample>;
+export type SampleProcessor<P=any, T=P> = (sample: Sample<P> | null, options: Record<string, any>, context: ScriptContext) => Promise<Sample<T>>;
 /**
  * function which process metadata
  */

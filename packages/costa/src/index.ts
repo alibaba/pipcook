@@ -11,6 +11,7 @@ import {
   FrameworkModule
 } from '@pipcook/pipcook-core';
 import * as boa from '@pipcook/boa';
+import * as dataCook from '@pipcook/datacook';
 import * as path from 'path';
 import Debug from 'debug';
 const debug = Debug('costa.runnable');
@@ -60,7 +61,7 @@ export class PipelineRunner {
     this.context = {
       boa,
       // or put dataCook into js framework modules?
-      dataCook: null,
+      dataCook,
       framework: {
         python,
         js

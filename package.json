@@ -32,5 +32,8 @@
     "alpha-release": "lerna publish from-package --no-verify-access --dist-tag alpha",
     "cov": "./tools/coverage.sh",
     "cov:report": "nyc report -r=lcov"
+  },
+  "dependencies": {
+    "@pipcook/datacook": "0.0.2"
   }
 }
