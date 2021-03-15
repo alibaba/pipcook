@@ -58,7 +58,8 @@ export class PipelineRunner {
         if (pkg.type === PackageType.Python) {
           python[pkg.name] = boa.import(pkg.name);
         } else {
-          js[pkg.name] = await import(pkg.importPath);
+          const importPath = path.join(this.options.workspace.frameworkDir, pkg.importPath);
+          js[pkg.name] = await import(importPath);
         }
       }
     }
@@ -78,6 +79,9 @@ export class PipelineRunner {
    * @param options options of the pipeline
    */
   async runDataSource(script: PipcookScript, options: Record<string, any>): Promise<DataSourceApi<any>> {
+    options = Object.assign({
+      dataDir: this.options.workspace.dataDir
+    }, options);
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the plugin(${script})`);
     const scriptMoudle = await import(script.path);

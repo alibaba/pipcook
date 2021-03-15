@@ -3,15 +3,10 @@
   "dataSource": "http://localhost:5000/pipcook-plugin-image-classification-collector/build/script.js",
   "model": "http://localhost:5000/pipcook-plugin-tfjs-mobilenet-model/build/script.js",
   "dataflow": [
-    "http://localhost:5000/pipcook-plugin-process-tensorflow-image-classification/build/script.js"
+    "http://localhost:5000/pipcook-plugin-process-tfjs-image-classification/build/script.js?size=224&size=224"
   ],
-  "artifacts": [{
-    "type": "local",
-    "path": "./file/to/your/model/dir"
-  }],
   "options": {
-    "framework": "http://30.10.77.60:5000/pkgs/pkg.zip",
-    "size": [224, 224],
+    "framework": "http://localhost:5000/pkgs/pkg.zip",
     "train": {
       "epochs": 1,
       "validationRequired": true
