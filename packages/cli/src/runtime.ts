@@ -65,11 +65,11 @@ export class StandaloneRuntime {
     let dataSource = await runner.runDataSource(scripts.dataSource, this.pipelineMeta.options);
     logger.info('running data flow script');
     if (scripts.dataflow) {
-      dataSource = await runner.runDataflow(scripts.dataflow, this.pipelineMeta.options, dataSource);
+      dataSource = await runner.runDataflow(dataSource, scripts.dataflow);
     }
     logger.info('running model script');
     const standaloneRT = createStandaloneRT(dataSource, this.pipelineMeta, this.modelDir);
-    await runner.runModel(scripts.model, this.pipelineMeta.options, standaloneRT);
+    await runner.runModel(standaloneRT, scripts.model, this.pipelineMeta.options);
     logger.info(`pipeline finished, the model has been saved at ${this.modelDir}`);
     for (let artifact of artifactPlugins) {
       logger.info(`running artifact ${artifact.options.processor}`);

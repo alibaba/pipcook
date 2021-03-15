@@ -58,7 +58,6 @@ export const run = async (filename: string, opts: RunOptions): Promise<void> => 
 };
 
 export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
-  console.log('clean', constants.PIPCOOK_FRAMEWORK_PATH, constants.PIPCOOK_SCRIPT_PATH, opts.framework, opts.script);
   const futures = [];
   if (opts.framework) {
     futures.push(remove(constants.PIPCOOK_FRAMEWORK_PATH));

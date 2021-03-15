@@ -67,6 +67,7 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
   async notifyProgress(progress: ProgressInfo): Promise<void> {
     console.log(`progress: ${progress.progressValue}%`);
   }
+
   async saveModel(localPathOrStream: string | NodeJS.ReadableStream, filename: 'model'): Promise<void> {
     if (typeof localPathOrStream === 'string') {
       if (path.parse(localPathOrStream).dir === this.modelDir) {
@@ -78,6 +79,7 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
       return pipelineAsync(localPathOrStream, modelStream);
     }
   }
+
   async readModel(): Promise<string> {
     return this.modelDir;
   }
