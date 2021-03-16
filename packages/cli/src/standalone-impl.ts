@@ -70,7 +70,7 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
 
   async saveModel(localPathOrStream: string | NodeJS.ReadableStream, filename: 'model'): Promise<void> {
     if (typeof localPathOrStream === 'string') {
-      if (path.parse(localPathOrStream).dir === this.modelDir) {
+      if (path.parse(localPathOrStream).dir === this.modelDir || this.modelDir === path.resolve(localPathOrStream)) {
         return;
       }
       return fs.copy(localPathOrStream, this.modelDir);
