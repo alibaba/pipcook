@@ -18,10 +18,6 @@ const debug = Debug('costa.runnable');
 
 export interface PipelineWorkSpace {
   /**
-   * the current working directory for this runnable.
-   */
-  workingDir: string;
-  /**
    * the current data directory for this runnable
    */
   dataDir: string;
@@ -49,7 +45,7 @@ export class Costa {
   /**
    * the framework directroy
    */
-  private context: ScriptContext;
+  public context: ScriptContext;
   /**
    * Create a runnable by the given runtime.
    */
@@ -65,7 +61,6 @@ export class Costa {
     const paths = [ nodeModules, ...require.resolve.paths(process.cwd()) ];
     this.context = {
       boa,
-      // or put dataCook into js framework modules?
       dataCook,
       importJS: (jsModuleName: string): Promise<FrameworkModule> => {
         const module = require.resolve(jsModuleName, { paths });
