@@ -14,7 +14,7 @@ export const downloadScript = async (scriptDir: string, scriptOrder: number, url
   const urlObj = parse(url);
   const baseName = path.parse(urlObj.pathname).base;
   const localPath = path.join(scriptDir, `${scriptOrder}-${baseName}`);
-  const { query } = queryString.parse(urlObj.query);
+  const query = queryString.parse(urlObj.query);
   // maybe should copy the script with COW
   await fetchWithCache(constants.PIPCOOK_SCRIPT_PATH, url, localPath, enableCache);
   return {

@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/boa",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "Use Python modules seamlessly in Node.js",
   "main": "lib/index.js",
   "scripts": {
@@ -40,8 +40,13 @@
   },
   "homepage": "https://github.com/alibaba/pipcook#readme",
   "ava": {
-    "extensions": [ "js", "ts" ],
-    "require": [ "ts-node/register" ]
+    "extensions": [
+      "js",
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
   },
   "dependencies": {
     "bindings": "^1.5.0",

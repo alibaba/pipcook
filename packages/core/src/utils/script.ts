@@ -3,7 +3,7 @@ import { DataSourceApi, ScriptContext, Sample, DataFlowEntry, DataSourceMeta, Da
 /**
  * function which process a sample
  */
-export type SampleProcessor = (sample: Sample | null, options: Record<string, any>, context: ScriptContext) => Promise<Sample>;
+export type SampleProcessor<P=any, T=P> = (sample: Sample<P> | null, options: Record<string, any>, context: ScriptContext) => Promise<Sample<T>>;
 /**
  * function which process metadata
  */
@@ -13,7 +13,7 @@ export type MetaProcessor = (api: DataSourceApi, options: Record<string, any>, c
  * generate the data flow entry, handle most of the general logic
  * @param sampleProcessor sample processor
  */
-export const generateDataFlow = function (sampleProcessor: SampleProcessor, metaProcessor: MetaProcessor): DataFlowEntry {
+export const generateDataFlow = function<T> (sampleProcessor: SampleProcessor, metaProcessor: MetaProcessor): DataFlowEntry<T> {
   const sampleBatchProcessor = async (samples: Array<Sample> | null, options: Record<string, any>, context: ScriptContext): Promise<Array<Sample> | null> => {
     return samples ? Promise.all(samples.map((sample) => sampleProcessor(sample, options, context))) : null;
   };
