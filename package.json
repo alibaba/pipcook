@@ -28,8 +28,8 @@
     "typedoc": "sh tools/mkdoc.sh",
     "clean": "lerna run clean --parallel --concurrency 10",
     "release": "lerna publish from-package --yes --no-verify-access",
-    "alpha-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
-    "alpha-release": "lerna publish from-package --no-verify-access --dist-tag alpha",
+    "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
+    "beta-release": "lerna publish from-package --no-verify-access --dist-tag beta",
     "cov": "./tools/coverage.sh",
     "cov:report": "nyc report -r=lcov"
   },
