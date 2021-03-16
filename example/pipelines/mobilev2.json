@@ -1,16 +1,16 @@
 {
   "specVersion": "2.0",
-  "dataSource": "https://github.com/imgcook/pipcook-plugin-image-classification-collector/raw/2.0/build/script.js",
-  "model": "https://raw.githubusercontent.com/imgcook/pipcook-plugin-tfjs-mobilenet-model/v2.0/build/script.js",
+  "dataSource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-image-classification-collector@2.0/build/script.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-tfjs-mobilenet-model@2.0/build/script.js",
   "dataflow": [
-    "https://github.com/imgcook/pipcook-plugin-process-tfjs-image-classification/raw/v2.0/build/script.js"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-process-tfjs-image-classification@2.0/build/script.js?size=224&size=224"
   ],
   "artifacts": [{
     "processor": "pipcook-ali-oss-uploader@0.0.3",
     "target": "oss://pipcook-cloud/model/mobile2.0"
   }],
   "options": {
-    "framework": "http://pipcook.oss-cn-hangzhou.aliyuncs.com/mirrors/pkg.zip",
+    "framework": "http://pipcook.oss-cn-hangzhou.aliyuncs.com/mirrors/tf-node-gpu-linux.zip",
     "train": {
       "epochs": 1,
       "validationRequired": true

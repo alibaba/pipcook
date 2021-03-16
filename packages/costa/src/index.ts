@@ -89,7 +89,6 @@ export class Costa {
     options = Object.assign(options, {
       workspace: this.options.workspace
     });
-    console.log(this.context.importJS('@tensorflow/tfjs-node'))
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the plugin(${script})`);
     const scriptMoudle = await import(script.path);

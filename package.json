@@ -34,6 +34,7 @@
     "cov:report": "nyc report -r=lcov"
   },
   "dependencies": {
-    "@pipcook/datacook": "0.0.2"
+    "@pipcook/datacook": "0.0.2",
+    "pipcook-ali-oss-uploader": "^0.0.3"
   }
 }
