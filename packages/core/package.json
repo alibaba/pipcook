@@ -23,8 +23,7 @@
     "nanoid": "^3.1.12",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
-    "targz": "^1.0.1",
-    "xml2js": "^0.4.22"
+    "targz": "^1.0.1"
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
@@ -33,7 +32,6 @@
     "@types/request": "^2.48.4",
     "@types/request-promise": "^4.1.46",
     "@types/sinon": "^9.0.5",
-    "@types/xml2js": "^0.4.8",
     "ava": "^3.13.0",
     "nyc": "^15.1.0",
     "sinon": "^9.0.3",

@@ -4,100 +4,14 @@ import * as fs from 'fs-extra';
 import * as utils from '.';
 import * as path from 'path';
 import { constants } from '..';
-import * as xml2js from 'xml2js';
 
 test.serial.afterEach(() => sinon.restore());
-
-test('should generate correct coco json from pascal voc format', async (t) => {
-  const dir = process.cwd();
-  const file = utils.generateId();
-  await utils.createAnnotationFromJson(dir, {
-    annotation: {
-      folder: [
-        dir
-      ],
-      filename: [
-        file + '.jpg'
-      ],
-      size: [
-        {
-          width: [
-            '750'
-          ],
-          height: [
-            '310'
-          ]
-        }
-      ],
-      object: [
-        {
-          name: [
-            'test'
-          ],
-          bndbox: [
-            {
-              xmin: [
-                '134'
-              ],
-              ymin: [
-                '0'
-              ],
-              xmax: [
-                '325'
-              ],
-              ymax: [
-                '310'
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  });
-
-  await utils.convertPascal2CocoFileOutput([ path.join(dir, file + '.xml') ], path.join(dir, file + '.json'));
-  const json = await fs.readJSON(path.join(dir, file + '.json'));
-  t.is(json.annotations[0].image_id, 1);
-  await fs.remove(file + '.json');
-  await fs.remove(file + '.xml');
-});
 
 test('test if the array is shuffled', (t) => {
   const array = [ 1, 2, 3, 4, 5 ];
   utils.shuffle(array);
   array.sort();
   t.deepEqual(array, [ 1, 2, 3, 4, 5 ]);
-});
-
-test('test if annotation file was generated correctly', async (t) => {
-  const annotationDir = path.join(constants.PIPCOOK_TMPDIR, 'testAnnotation');
-  await fs.mkdirp(annotationDir);
-  await utils.createAnnotationFile(annotationDir, 'test.jpg', annotationDir, 'for-test');
-  const xmlFilename = path.join(annotationDir, 'test.xml');
-  const jsonData = await (new xml2js.Parser()).parseStringPromise(await fs.readFile(xmlFilename));
-  t.is(jsonData.annotation.filename[0], 'test.jpg');
-  t.is(jsonData.annotation.folder[0], annotationDir);
-  t.is(jsonData.annotation.object[0].name[0], 'for-test');
-  const parsedData = await utils.parseAnnotation(xmlFilename);
-  t.is(parsedData.annotation.filename[0], 'test.jpg');
-  t.is(parsedData.annotation.folder[0], annotationDir);
-  t.is(parsedData.annotation.object[0].name[0], 'for-test');
-  fs.remove(annotationDir);
-});
-
-test('test transformCsv', (t) => {
-  const strFromCsv = utils.transformCsv('1, 2, "a", "b", 3.14, "2020-07-18 13:51:00", "img.jpg"');
-  t.is(strFromCsv, '"1, 2, ""a"", ""b"", 3.14, ""2020-07-18 13:51:00"", ""img.jpg"""');
-});
-
-test('test transformCsv with one element', (t) => {
-  const strFromCsv = utils.transformCsv('1');
-  t.is(strFromCsv, '1');
-});
-
-test('test transformCsv without string', (t) => {
-  const strFromCsv = utils.transformCsv('1, 2');
-  t.is(strFromCsv, '"1, 2"');
 });
 
 test('compress dir to tmp dir', async (t) => {
@@ -110,10 +24,15 @@ test('compress dir to tmp dir', async (t) => {
 
 test('test if remote file was downloaded', async (t) => {
   const jsonFile = path.join(constants.PIPCOOK_TMPDIR, utils.generateId() + '.json');
-  await utils.download('https://raw.githubusercontent.com/DavidCai1993/chinese-poem-generator.js/master/test/data/poet.song.91000.json', jsonFile);
-  t.true(await fs.pathExists(jsonFile));
+  await t.notThrowsAsync(
+    utils.download(
+      'https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/poet.song.91000.json',
+      jsonFile
+    ), 'should download successfully');
+  console.log('download', jsonFile);
+  t.true(await fs.pathExists(jsonFile), 'file should exist');
   const stats = await fs.stat(jsonFile);
-  t.true(stats.size > 0);
+  t.true(stats.size > 0, 'size should not be zero');
   await fs.remove(jsonFile);
 });
 
@@ -154,11 +73,41 @@ test.serial('downloadAndExtractTo local zip file', async (t) => {
   t.deepEqual(stubUnzipData.args[0], [ '/abcd.zip', 'tmp' ], 'should unzip the curruct file');
 });
 
+test.serial('downloadAndExtractTo https zip file', async (t) => {
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
+  sinon.stub(utils, 'generateId').returns('id');
+  await utils.downloadAndExtractTo('https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/res.zip', constants.PIPCOOK_TMPDIR);
+  t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
+  t.deepEqual(stubUnzipData.args[0], [ path.join(constants.PIPCOOK_TMPDIR, 'id'), constants.PIPCOOK_TMPDIR ], 'should unzip the curruct file');
+});
+
+test.serial('downloadAndExtractTo https non-zip file', async (t) => {
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
+  sinon.stub(utils, 'generateId').returns('id');
+  const stubDownload = sinon.stub(utils, 'download').resolves();
+  const urlStr = 'https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/res.jpg';
+  const target = 'tmp';
+  await utils.downloadAndExtractTo(urlStr, target);
+  t.false(stubUnzipData.called, 'unzipData should not be called');
+  t.true(stubDownload.calledOnce, 'download should be called once');
+  t.deepEqual(stubDownload.args[0], [ urlStr, target ], 'should download the curruct file');
+});
+
 test.serial('downloadAndExtractTo local jpg file', async (t) => {
   const stubCopy = sinon.stub(fs, 'copy').resolves();
   await utils.downloadAndExtractTo('file:///abcd.jpg', 'tmp');
   t.true(stubCopy.calledOnce, 'fs.copy should be called once');
   t.deepEqual(stubCopy.args[0], [ '/abcd.jpg', 'tmp' ] as any, 'should copy the curruct file');
+});
+
+test.serial('download and unzip', async (t) => {
+  const urlStr = 'https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/res.zip';
+  const targetPath = path.join(constants.PIPCOOK_TMPDIR, 'res.zip');
+  const unzipDir = path.join(constants.PIPCOOK_TMPDIR, 'resDir');
+  await utils.download(urlStr, targetPath);
+  t.true(await fs.pathExists(targetPath), 'file should exist');
+  await utils.unZipData(targetPath, unzipDir);
+  t.true((await fs.readdir(unzipDir)).length > 0, 'should unzip files');
 });
 
 test('id generator', async (t) => {
