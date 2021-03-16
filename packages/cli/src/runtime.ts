@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import { PipelineMeta } from '@pipcook/pipcook-core';
-import { PipelineRunner } from '@pipcook/costa';
+import { Costa } from '@pipcook/costa';
 import * as path from 'path';
 import { createStandaloneRT } from './standalone-impl';
 import { logger, Framework, Plugin, Script } from './utils';
@@ -50,26 +50,27 @@ export class StandaloneRuntime {
     const scripts = await Script.prepareScript(this.pipelineMeta, this.scriptDir, this.enableCache);
     logger.info('preparing artifact plugins');
     const artifactPlugins = await Plugin.prepareArtifactPlugin(this.pipelineMeta);
-    const runner = new PipelineRunner({
+    const costa = new Costa({
       workspace: {
         workingDir: this.tmpDir,
         dataDir: this.cacheDir,
         modelDir: this.modelDir,
+        cacheDir: this.cacheDir,
         frameworkDir: this.frameworkDir
       },
       framework
     });
     logger.info('initalizing framework packages');
-    await runner.initFramework();
+    await costa.initFramework();
     logger.info('running data source script');
-    let dataSource = await runner.runDataSource(scripts.dataSource, this.pipelineMeta.options);
+    let dataSource = await costa.runDataSource(scripts.dataSource, this.pipelineMeta.options);
     logger.info('running data flow script');
     if (scripts.dataflow) {
-      dataSource = await runner.runDataflow(scripts.dataflow, this.pipelineMeta.options, dataSource);
+      dataSource = await costa.runDataflow(dataSource, scripts.dataflow);
     }
     logger.info('running model script');
     const standaloneRT = createStandaloneRT(dataSource, this.pipelineMeta, this.modelDir);
-    await runner.runModel(scripts.model, this.pipelineMeta.options, standaloneRT);
+    await costa.runModel(standaloneRT, scripts.model, this.pipelineMeta.options);
     logger.info(`pipeline finished, the model has been saved at ${this.modelDir}`);
     for (let artifact of artifactPlugins) {
       logger.info(`running artifact ${artifact.options.processor}`);

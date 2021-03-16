@@ -41,21 +41,17 @@ export const install = async (name: string, pluginHomeDir: string): Promise<stri
   if (!await fs.pathExists(pluginHomeDir)) {
     await fs.mkdirp(pluginHomeDir);
   }
-  // const pluginVersion = extractVersion(name);
-  // if ([ 'beta', 'alpha', 'latest'].includes(pluginVersion.version)) {
-  // }
-  const pkgPath = path.join(pluginHomeDir, 'package.json');
-  const requirePath = path.join(pluginHomeDir, 'node_modules', name);
+  const pluginVersion = extractVersion(name);
+  const alias = `${pluginVersion.name}-${pluginVersion.version}`;
   const cacheDir = path.join(pluginHomeDir, 'cache');
-  if (!await fs.pathExists(pkgPath)) {
-    await execAsync(`pnpm install ${name} --store-dir ${cacheDir} `, { cwd: pluginHomeDir });
-  } else {
-    const pkg = await fs.readJson(pkgPath);
-    if (pkg?.dependencies[name]) {
-      return requirePath;
-    }
+  const requirePath = path.join(pluginHomeDir, 'node_modules', alias);
+  // always update plugin if version is 'beta', 'alpha' or 'latest'
+  if ([ 'beta', 'alpha', 'latest'].includes(pluginVersion.version) || !(await fs.pathExists(requirePath))) {
+    await execAsync(
+      `pnpm install ${alias}@npm:${name} -P --store-dir ${cacheDir}`,
+      { cwd: pluginHomeDir }
+    );
   }
-  await execAsync(`npm install ${name} --only=prod`, { cwd: pluginHomeDir });
   return requirePath;
 };
 

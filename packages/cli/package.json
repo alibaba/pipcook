@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/pipcook-cli",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "",
   "main": "dist/bin/index.js",
   "scripts": {
@@ -16,9 +16,9 @@
   "author": "",
   "license": "Apache 2.0",
   "dependencies": {
-    "@pipcook/boa": "^2.0.0-alpha.3",
-    "@pipcook/costa": "^2.0.0-alpha.3",
-    "@pipcook/pipcook-core": "^2.0.0-alpha.3",
+    "@pipcook/boa": "^2.0.0-alpha.4",
+    "@pipcook/costa": "^2.0.0-alpha.4",
+    "@pipcook/pipcook-core": "^2.0.0-alpha.4",
     "chalk": "^3.0.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",

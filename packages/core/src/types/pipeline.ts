@@ -57,17 +57,6 @@ export const FrameworkDescFileName = 'framework.json';
 /**
  * package structure in pipcook freamwork
  */
-export interface FrameworkPackage {
-  // package name
-  name: string;
-  // package version
-  version: string;
-  // package type
-  type: PackageType;
-  // import path: boa.import(`${importPath}`) or require(`${importPath}`)
-  importPath: string;
-}
-
 /**
  * pipcook framework description struct
  */
@@ -84,12 +73,12 @@ export interface PipcookFramework {
   arch: string | null;
   // os: darwin, win32, linux etc. Ignore check if null
   platform: string | null;
-  // node version: see https://www.npmjs.com/package/semver Ignore check if null
+  // node version: see https://www.npmjs.com/package/semver. Ignore check if null
   nodeVersion: string | null;
-  // python site-packages path in the directory
+  // python site-packages path in the directory, 'site-packages' by default.
   pythonPackagePath: string | null;
-  // package list
-  packages: Array<FrameworkPackage> | null;
+  // js node modules path in the directory, 'node_modules' by default.
+  jsPackagePath: string | null;
 }
 
 /**
