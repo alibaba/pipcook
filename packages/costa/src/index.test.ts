@@ -101,7 +101,7 @@ test.serial('run data flow scripts', async (t) => {
   const script = {
     name: 'test script',
     path: 'mockpath',
-    type: ScriptType.DataSource,
+    type: ScriptType.Dataflow,
     query: {
       mockOpts: 'opts'
     }
@@ -120,23 +120,79 @@ test.serial('run data flow scripts', async (t) => {
   t.is(api, mockDataSourceApi, 'should return api');
 });
 
-// test.serial('run invalid data source script', async (t) => {
-//   const costa = new Costa(mockOpts);
-//   await costa.initFramework();
-//   const script = {
-//     name: 'test script',
-//     path: 'mockpath',
-//     type: ScriptType.DataSource,
-//     query: {
-//       mockOpts: 'opts'
-//     }
-//   };
-//   const mockPipelineOpts = { mock: 'value' };
-//   const mockModule = {};
-//   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(mockModule);
-//   await t.throwsAsync(costa.runDataSource(script, mockPipelineOpts), {
-//     instanceOf: TypeError,
-//     message: `no export function found in ${script.name}(${script.path})`
-//   });
-//   t.true(stubImportFrom.calledOnce, 'import should be called once');
-// });
+test.serial('run model script', async (t) => {
+  const costa = new Costa(mockOpts);
+  await costa.initFramework();
+  const script = {
+    name: 'test script',
+    path: 'mockpath',
+    type: ScriptType.Model,
+    query: {
+      mockOpts: 'opts'
+    }
+  };
+  const mockRuntime: any = {};
+  const mockModule = sinon.stub().callsFake(async (api: DataSourceApi<any>, opts: Record<string, any>, ctx: ScriptContext) => {
+    t.is(api, mockRuntime, 'api should be equal');
+    t.is(ctx, costa.context, 'context should be equal');
+    t.deepEqual(opts, Object.assign({ mockTrainOpt: 'value' }, script.query), 'options should be equal');
+  });
+  const modelOpts = { mock: 'value', train: { mockTrainOpt: 'value' } };
+  const stubImportScript = sinon.stub(costa, 'importScript').resolves(mockModule);
+  await t.notThrowsAsync(costa.runModel(mockRuntime, script, modelOpts), 'model script should end successfully');
+  t.true(stubImportScript.calledOnce, 'import should be called once');
+  t.true(mockModule.calledOnce, 'module should be called once');
+});
+
+test.serial('import from script', async (t) => {
+  const costa = new Costa(mockOpts);
+  const script = {
+    name: 'test script',
+    path: 'mockpath',
+    type: ScriptType.Model,
+    query: {
+      mockOpts: 'opts'
+    }
+  };
+  const stubFn = sinon.stub();
+  const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(stubFn);
+  const fn = await costa.importScript<any>(script);
+  t.is(fn, stubFn, 'fn should be equal');
+  t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
+});
+
+test.serial('import from script.default', async (t) => {
+  const costa = new Costa(mockOpts);
+  const script = {
+    name: 'test script',
+    path: 'mockpath',
+    type: ScriptType.Model,
+    query: {
+      mockOpts: 'opts'
+    }
+  };
+  const stubFn = sinon.stub();
+  const stubImportFrom = sinon.stub(utils, 'importFrom').resolves({ default: stubFn });
+  const fn = await costa.importScript<any>(script);
+  t.is(fn, stubFn, 'fn should be equal');
+  t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
+});
+
+test.serial('import from script but not function', async (t) => {
+  const costa = new Costa(mockOpts);
+  const script = {
+    name: 'test script',
+    path: 'mockpath',
+    type: ScriptType.Model,
+    query: {
+      mockOpts: 'opts'
+    }
+  };
+  const invalidFn = {};
+  const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(invalidFn);
+  await t.throwsAsync(costa.importScript<any>(script), {
+    instanceOf: TypeError,
+    message: `no export function found in ${script.name}(${script.path})`
+  });
+  t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
+});

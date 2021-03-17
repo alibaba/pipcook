@@ -10,7 +10,7 @@ import { parse } from 'url';
 import { fetchWithCache } from './cache';
 import * as queryString from 'query-string';
 
-export const downloadScript = async (scriptDir: string, scriptOrder: number, url: string, type: ScriptType, enableCache = true): Promise<PipcookScript> => {
+export const downloadScript = async (scriptDir: string, scriptOrder: number, url: string, type: ScriptType, enableCache: boolean): Promise<PipcookScript> => {
   const urlObj = parse(url);
   const baseName = path.parse(urlObj.pathname).base;
   const localPath = path.join(scriptDir, `${scriptOrder}-${baseName}`);
@@ -35,7 +35,7 @@ export const prepareScript = async (pipelineMeta: PipelineMeta, scriptDir: strin
   scripts.dataSource
     = await downloadScript(scriptDir, scriptOrder, pipelineMeta.dataSource, ScriptType.DataSource, enableCache);
   scriptOrder++;
-  if (pipelineMeta.dataflow) {
+  if (Array.isArray(pipelineMeta.dataflow) && pipelineMeta.dataflow.length > 0) {
     scripts.dataflow = [];
     for (let dataflowUri of pipelineMeta.dataflow) {
       scripts.dataflow.push(await downloadScript(scriptDir, scriptOrder, dataflowUri, ScriptType.Dataflow, enableCache));

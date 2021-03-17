@@ -61,7 +61,7 @@ export class Costa {
   async initFramework(): Promise<void> {
     boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
     const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
-    const paths = [ nodeModules, ...(require.resolve.paths(process.cwd()) || []) ];
+    const paths = [ nodeModules, ...(require.resolve.paths(__dirname) || []) ];
     this.context = {
       boa,
       dataCook,
@@ -101,9 +101,9 @@ export class Costa {
       workspace: this.options.workspace
     });
     // log all the requirements are ready to tell the debugger it's going to run.
-    debug(`start loading the plugin(${script})`);
+    debug(`start loading the script(${script.name})`);
     const fn = await this.importScript<DataSourceEntry<DefaultType>>(script);
-    debug(`loaded the plugin(${script.name}), start it.`);
+    debug(`loaded the script(${script.name}), start it.`);
     return await fn(options, this.context);
   }
 
@@ -114,9 +114,9 @@ export class Costa {
    */
   async runDataflow(api: DataSourceApi, scripts: Array<PipcookScript>): Promise<DataSourceApi> {
     for (let script of scripts) {
-      debug(`start loading the plugin(${script})`);
+      debug(`start loading the script(${script.name})`);
       const fn = await this.importScript<DataFlowEntry<DefaultType>>(script);
-      debug(`loaded the plugin(${script.name}), start it.`);
+      debug(`loaded the script(${script.name}), start it.`);
       api = await fn(api, script.query, this.context);
     }
     return api;
@@ -130,12 +130,12 @@ export class Costa {
    */
   async runModel(api: Runtime, script: PipcookScript, options: Record<string, any>): Promise<void> {
     // log all the requirements are ready to tell the debugger it's going to run.
-    debug(`start loading the plugin(${script})`);
+    debug(`start loading the script(${script.name})`);
     const fn = await this.importScript<ModelEntry<DefaultType>>(script);
     // when the `load` is complete, start the plugin.
-    debug(`loaded the plugin(${script.name}), start it.`);
+    debug(`loaded the script(${script.name}), start it.`);
     const opts = {
-      ...options?.train,
+      ...options.train,
       ...script.query
     };
     return await fn(api, opts, this.context);
