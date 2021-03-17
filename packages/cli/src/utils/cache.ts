@@ -4,8 +4,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import Debug from 'debug';
 const debug = Debug('cache');
-// @ts-ignore
-core['test'] = "test";
+
 /**
  * if the file or directory exists in cache, link to target, or fetch and cache it
  * @param cacheDir cache directory
