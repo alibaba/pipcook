@@ -11,13 +11,12 @@ test.serial('prepare with invalid options', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
-    dataflow: ['test'],
+    dataflow: [ 'test' ],
     model: 'test',
     artifacts: [],
     options: {}
   };
   const frameworkDir = 'test';
-
 
   const stubFetchWithCache = sinon.stub(cache, 'fetchWithCache').resolves();
   const stubReadJson = sinon.stub(fs, 'readJSON').resolves({});
@@ -33,15 +32,15 @@ test.serial('prepare with valid options', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
-    dataflow: ['test'],
+    dataflow: [ 'test' ],
     model: 'test',
     artifacts: [],
     options: {
-      framework: "test"
+      framework: 'test'
     }
   };
 
-  const framework: PipcookFramework = { 
+  const framework: PipcookFramework = {
     path : 'test',
     name: 'test',
     desc: 'test',
@@ -59,11 +58,11 @@ test.serial('prepare with valid options', async (t) => {
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(framework);
 
   const ret = await prepareFramework(pipelineMeta, frameworkDir);
-  
+
   const expectedRet = {
     ...framework,
     path: frameworkDir
-  }
+  };
 
   t.true(stubFetchWithCache.calledOnce);
   t.true(stubReadJson.calledOnce);

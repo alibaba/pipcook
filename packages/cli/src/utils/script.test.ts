@@ -28,10 +28,12 @@ async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
     "dataflow": [
       "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-process-tfjs-image-classification@2.0/build/script.js?size=224&size=224"
     ],
-    "artifacts": [{
-      "processor": "pipcook-ali-oss-uploader@0.0.3",
-      "target": "oss://pipcook-cloud/model/mobile2.0"
-    }],
+    "artifacts": [
+      {
+        "processor": "pipcook-ali-oss-uploader@0.0.3",
+        "target": "oss://pipcook-cloud/model/mobile2.0"
+      }
+    ],
     "options": {
       "framework": "http://pipcook.oss-cn-hangzhou.aliyuncs.com/mirrors/tf-node-gpu-linux.zip",
       "train": {
@@ -51,7 +53,7 @@ async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
   if (!withDataflow) {
     t.true(stubDownloadScript.calledTwice, 'downloadScript should be called twice');
     t.deepEqual(stubDownloadScript.args[0], [ dir, 0, pipelineMeta.dataSource, ScriptType.DataSource, enableCache ], 'downloadScript should be called with datasource');
-      t.deepEqual(stubDownloadScript.args[1], [ dir, 1, pipelineMeta.model, ScriptType.Model, enableCache ], 'downloadScript should be called with model');
+    t.deepEqual(stubDownloadScript.args[1], [ dir, 1, pipelineMeta.model, ScriptType.Model, enableCache ], 'downloadScript should be called with model');
     t.deepEqual(scriptConfig, {
       dataSource: mockScript,
       dataflow: null,
@@ -71,9 +73,9 @@ async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
 }
 
 test.serial('prepare script', async (t) => {
-  await runPrepare(t, true, true);  
+  await runPrepare(t, true, true);
 });
 
 test.serial('prepare script without dataflow', async (t) => {
-  await runPrepare(t, false, false);  
+  await runPrepare(t, false, false);
 });
