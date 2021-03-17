@@ -2,17 +2,17 @@
   "name": "@pipcook/pipcook-cli",
   "version": "2.0.0-beta.1",
   "description": "",
-  "main": "dist/bin/index.js",
+  "main": "dist/bin/pipcook.js",
   "scripts": {
     "test": "ava",
     "build": "npm run clean && npm run compile",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -rf ./assets/server",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json && sh ./tools/setup.sh",
     "cov": "nyc -r text-summary npm run test",
     "cov:report": "nyc report -r lcov"
   },
   "bin": {
-    "pipcook": "./dist/bin/pipcook.js"
+    "pipcook": "dist/bin/pipcook.js"
   },
   "keywords": [],
   "author": "",
@@ -41,5 +41,12 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "ava": {
+    "files": [
+      "dist/**/*.test.js",
+      "dist/bin/pipcook.test.js",
+      "!tests"
+    ]
   }
 }

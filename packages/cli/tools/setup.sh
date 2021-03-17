@@ -1,4 +1,4 @@
-cp -r ./assets ./dist/
+cp -r ./dist/
 cp ./package.json ./dist/
 
 enable_cmd() {

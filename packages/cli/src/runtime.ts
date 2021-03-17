@@ -39,7 +39,6 @@ export class StandaloneRuntime {
       fs.mkdirp(this.modelDir),
       fs.mkdirp(this.cacheDir)
     ]);
-    return;
   }
 
   async run(): Promise<void> {
@@ -59,7 +58,7 @@ export class StandaloneRuntime {
       },
       framework
     });
-    logger.info('initalizing framework packages');
+    logger.info('initializing framework packages');
     await costa.initFramework();
     logger.info('running data source script');
     let dataSource = await costa.runDataSource(scripts.dataSource, this.pipelineMeta.options);
