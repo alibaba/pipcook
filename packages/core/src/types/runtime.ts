@@ -8,15 +8,22 @@ export interface Sample<T = DefaultType> {
   data: T;
 }
 
-// task type
+/**
+ * current task type
+ *   All: run all scripts
+ *   Data: run data source and data flow script
+ *   Model: run model script
+ */
 export enum TaskType {
-  ModelDefine,
-  ModelTrain,
-  ModelEvaluate,
+  All,
+  Data,
+  Model,
   Unknown
 }
 
-// table column type
+/**
+ * table column type
+ */
 export enum TableColumnType {
   Number,
   String,
@@ -26,12 +33,29 @@ export enum TableColumnType {
   Unknown
 }
 
-export interface TableColumn { name: string, type: TableColumnType }
+/**
+ * structure of colume description
+ */
+export interface TableColumn {
+  name: string,
+  type: TableColumnType
+}
 
-// table schema for all columns
+/**
+ * table schema for all columns
+ */
 export type TableSchema = Array<TableColumn>;
 
+/**
+ * data source type
+ *   Table: data from db, csv
+ *   Image: image data
+ */
 export enum DataSourceType { Table, Image }
+
+/**
+ * size of data source
+ */
 export interface DataSourceSize {
   train: number;
   test: number;
@@ -44,18 +68,25 @@ export interface ImageDimension {
   z: number
 }
 
+/**
+ * image data source metadata
+ */
 export interface ImageDataSourceMeta {
   type: DataSourceType;
   size: DataSourceSize;
   dimension: ImageDimension;
+  labelMap: Record<number, string>;
 }
 
+/**
+ * table data source metadata
+ */
 export interface TableDataSourceMeta {
   type: DataSourceType;
   size: DataSourceSize;
   tableSchema: TableSchema;
   dataKeys: Array<string> | null;
-  labelMap: Map<number, string>;
+  labelMap: Record<number, string>;
 }
 
 export type DataSourceMeta = TableDataSourceMeta | ImageDataSourceMeta;
@@ -65,23 +96,45 @@ export interface DataAccessor<T = DefaultType> {
   seek: (pos: number) => Promise<void>;
 }
 
+/**
+ * data source api
+ */
 export interface DataSourceApi<T = DefaultType> {
+  // fetch data source metadata
   getDataSourceMeta: () => Promise<DataSourceMeta>;
+  // test dataset accessor
   test: DataAccessor<T>;
+  // train dataset accessor
   train: DataAccessor<T>;
+  // evaluate dataset accessor, qoptional
   evaluate?: DataAccessor<T>;
 }
 
+/**
+ * progress infomation
+ */
 export interface ProgressInfo {
+  // progress percentage, 0 - 100
   progressValue: number;
+  // custom data
+  extendData: Record<string, any>;
 }
 
+/**
+ * runtime api
+ */
 export interface Runtime<T = DefaultType> {
+  // get pipeline metadata
   pipelineMeta: () => Promise<PipelineMeta>;
+  // get current task type
   taskType: () => TaskType | undefined;
+  // report progress of pipeline
   notifyProgress: (progress: ProgressInfo) => void;
+  // save the model file
   saveModel: (localPathOrStream: string | NodeJS.ReadableStream, filename: string) => Promise<void>;
+  // read model file
   readModel: () => Promise<string>;
+  // datasource
   dataSource: DataSourceApi<T>;
 }
 
@@ -89,9 +142,9 @@ export type FrameworkModule = any;
 export type DataCookModule = typeof DataCook;
 export type DataCookImage = DataCook.Image;
 export interface ScriptContext {
-  // todo: type of boa
+  // boa module
   boa: FrameworkModule;
-  // todo: type of dataCook
+  // DataCook module
   dataCook: DataCookModule;
   // import javascript module
   importJS: (jsModuleName: string) => Promise<FrameworkModule>;
@@ -116,7 +169,7 @@ export type DataSourceEntry<T> = (options: Record<string, any>, context: ScriptC
 /**
  * type of data flow script entry
  */
-export type DataFlowEntry<T> = (api: DataSourceApi<T>, options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi<T>>;
+export type DataFlowEntry<IN, OUT = IN> = (api: DataSourceApi<IN>, options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi<OUT>>;
 
 /**
  * type of model script entry

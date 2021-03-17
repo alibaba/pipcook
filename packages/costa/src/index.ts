@@ -14,6 +14,7 @@ import * as boa from '@pipcook/boa';
 import * as dataCook from '@pipcook/datacook';
 import * as path from 'path';
 import Debug from 'debug';
+import { importFrom } from './utils';
 const debug = Debug('costa.runnable');
 
 export interface PipelineWorkSpace {
@@ -55,12 +56,13 @@ export class Costa {
     public options: PipelineRunnerOption
   ) {}
 
+  /**
+   * initialize framework, set python package path, node modules path and construct script context
+   */
   async initFramework(): Promise<void> {
-    if (this.options.framework.pythonPackagePath) {
-      boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
-    }
+    boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
     const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
-    const paths = [ nodeModules, ...require.resolve.paths(process.cwd()) ];
+    const paths = [ nodeModules, ...(require.resolve.paths(process.cwd()) || []) ];
     this.context = {
       boa,
       dataCook,
@@ -77,21 +79,31 @@ export class Costa {
     };
   }
   /**
+   * make sure the module export is a function
+   * @param script script infomation
+   * @param moduleExport module export
+   */
+  async importScript<T>(script: PipcookScript): Promise<T> {
+    const scriptMoudle = await importFrom(script.path);
+    const fn: T = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
+    if (typeof fn !== 'function') {
+      throw new TypeError(`no export function found in ${script.name}(${script.path})`);
+    }
+    return fn;
+  }
+
+  /**
    * start datasource script.
    * @param script the metadata of script
    * @param options options of the pipeline
    */
-  async runDataSource(script: PipcookScript, options: Record<string, any>): Promise<DataSourceApi<any>> {
+  async runDataSource(script: PipcookScript, options: Record<string, any>): Promise<DataSourceApi> {
     options = Object.assign(options, {
       workspace: this.options.workspace
     });
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the plugin(${script})`);
-    const scriptMoudle = await import(script.path);
-    const fn: DataSourceEntry<DefaultType> = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
-    if (typeof fn !== 'function') {
-      throw new TypeError(`no export function found in ${script.name}(${script.path})`);
-    }
+    const fn = await this.importScript<DataSourceEntry<DefaultType>>(script);
     debug(`loaded the plugin(${script.name}), start it.`);
     return await fn(options, this.context);
   }
@@ -101,14 +113,10 @@ export class Costa {
    * @param api api from data source script or another dataflow script
    * @param script the metadata of script
    */
-  async runDataflow(api: DataSourceApi, scripts: Array<PipcookScript>): Promise<DataSourceApi<any>> {
+  async runDataflow(api: DataSourceApi, scripts: Array<PipcookScript>): Promise<DataSourceApi> {
     for (let script of scripts) {
       debug(`start loading the plugin(${script})`);
-      const scriptMoudle = await import(script.path);
-      const fn: DataFlowEntry<DefaultType> = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
-      if (typeof fn !== 'function') {
-        throw new TypeError(`no export function found in ${script.name}(${script.path})`);
-      }
+      const fn = await this.importScript<DataFlowEntry<DefaultType>>(script);
       debug(`loaded the plugin(${script.name}), start it.`);
       api = await fn(api, script.query, this.context);
     }
@@ -124,11 +132,7 @@ export class Costa {
   async runModel(api: Runtime, script: PipcookScript, options: Record<string, any>): Promise<void> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the plugin(${script})`);
-    const scriptMoudle = await import(script.path);
-    const fn: ModelEntry<DefaultType> = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
-    if (typeof fn !== 'function') {
-      throw new TypeError(`no export function found in ${script.name}(${script.path})`);
-    }
+    const fn = await this.importScript<ModelEntry<DefaultType>>(script);
     // when the `load` is complete, start the plugin.
     debug(`loaded the plugin(${script.name}), start it.`);
     const opts = {

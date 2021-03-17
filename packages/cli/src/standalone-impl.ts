@@ -61,7 +61,7 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
   }
 
   taskType(): TaskType | undefined {
-    return undefined;
+    return TaskType.All;
   }
 
   async notifyProgress(progress: ProgressInfo): Promise<void> {

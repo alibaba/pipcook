@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-
+  
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,
@@ -13,7 +13,7 @@
 
     "incremental": true,
 
-    "lib": ["es2018", "esnext.asynciterable"],
+    "lib": [ "es2018", "esnext.asynciterable" ],
     "module": "commonjs",
     "esModuleInterop": false,
     "moduleResolution": "node",

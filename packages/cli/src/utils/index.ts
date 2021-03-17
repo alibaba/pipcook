@@ -82,11 +82,3 @@ class DefaultLogger implements Logger {
 
 const { rows, columns, isTTY } = process.stdout;
 export const logger = isTTY && rows > 0 && columns > 0 ? new TtyLogger() : new DefaultLogger();
-
-/**
- * import from path
- * @param path the path where import from
- */
-export const importFrom = (path: string): Promise<any> => {
-  return import(path);
-};

@@ -1,4 +1,12 @@
-export * from './utils';
+export {
+  unZipData,
+  download,
+  downloadAndExtractTo,
+  compressTarFile,
+  shuffle,
+  generateId,
+  pipelineAsync
+} from './utils';
 
 export * from './types/runtime';
 export * from './types/pipeline';

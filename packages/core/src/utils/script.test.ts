@@ -1,11 +1,11 @@
 import test from 'ava';
 import * as sinon from 'sinon';
 import { Script } from '.';
-import { DataSourceType, Sample, ScriptContext } from '../types/runtime';
+import { DataSourceType, ImageDataSourceMeta, Sample, ScriptContext } from '../types/runtime';
 import { DataSourceApi } from '../types/runtime';
 
 test('generate dataflow entry', async (t) => {
-  const meta = {
+  const meta: ImageDataSourceMeta = {
     type: DataSourceType.Image,
     size: {
       train: 10,
@@ -15,6 +15,9 @@ test('generate dataflow entry', async (t) => {
       x: 128,
       y: 128,
       z: 3
+    },
+    labelMap: {
+      1: ''
     }
   };
   const sample = {
@@ -70,7 +73,8 @@ test('generate dataflow entry with sample null', async (t) => {
       x: 128,
       y: 128,
       z: 3
-    }
+    },
+    labelMap: {}
   };
   const sample = null;
   const batchSample = null;
