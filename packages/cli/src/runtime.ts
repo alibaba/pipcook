@@ -52,7 +52,6 @@ export class StandaloneRuntime {
     const artifactPlugins = await Plugin.prepareArtifactPlugin(this.pipelineMeta);
     const costa = new Costa({
       workspace: {
-        workingDir: this.tmpDir,
         dataDir: this.cacheDir,
         modelDir: this.modelDir,
         cacheDir: this.cacheDir,

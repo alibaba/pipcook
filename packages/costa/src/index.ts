@@ -30,8 +30,7 @@ export interface PipelineWorkSpace {
    * the cache directory
    */
   cacheDir: string;
-  
-  workingDir: string;
+
   // framework directory
   frameworkDir: string;
 }
