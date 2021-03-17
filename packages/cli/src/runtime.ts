@@ -16,6 +16,8 @@ export class StandaloneRuntime {
 
   private cacheDir: string;
 
+  private tmpDir: string;
+
   private frameworkDir: string;
 
   constructor(
@@ -26,12 +28,14 @@ export class StandaloneRuntime {
     this.scriptDir = path.join(workspaceDir, 'scripts');
     this.cacheDir = path.join(workspaceDir, 'cache');
     this.modelDir = path.join(workspaceDir, 'model');
+    this.tmpDir = path.join(workspaceDir, 'tmp');
     this.frameworkDir = path.join(workspaceDir, 'framework');
   }
 
   async prepareWorkspace(): Promise<void> {
     await Promise.all([
       fs.mkdirp(this.scriptDir),
+      fs.mkdirp(this.tmpDir),
       fs.mkdirp(this.modelDir),
       fs.mkdirp(this.cacheDir)
     ]);
@@ -48,6 +52,7 @@ export class StandaloneRuntime {
     const artifactPlugins = await Plugin.prepareArtifactPlugin(this.pipelineMeta);
     const costa = new Costa({
       workspace: {
+        workingDir: this.tmpDir,
         dataDir: this.cacheDir,
         modelDir: this.modelDir,
         cacheDir: this.cacheDir,

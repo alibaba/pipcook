@@ -7,7 +7,9 @@
     "test": "ava",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo && rm -rf ./assets/server",
-    "compile": "tsc -b tsconfig.json && sh ./tools/setup.sh"
+    "compile": "tsc -b tsconfig.json && sh ./tools/setup.sh",
+    "cov": "nyc -r text-summary npm run test",
+    "cov:report": "nyc report -r lcov"
   },
   "bin": {
     "pipcook": "./dist/bin/pipcook.js"
