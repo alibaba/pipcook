@@ -3,7 +3,6 @@ import {
   PipcookScript,
   DataSourceApi,
   PipcookFramework,
-  PackageType,
   DataSourceEntry,
   ModelEntry,
   DataFlowEntry,
@@ -68,7 +67,7 @@ export class Costa {
       boa,
       // or put dataCook into js framework modules?
       dataCook,
-      importJS: (jsModuleName: string): Promise<FrameworkModule>  =>{
+      importJS: (jsModuleName: string): Promise<FrameworkModule> => {
         const module = require.resolve(jsModuleName, { paths });
         return import(module);
       },

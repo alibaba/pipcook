@@ -46,7 +46,7 @@ export const install = async (name: string, pluginHomeDir: string): Promise<stri
   const cacheDir = path.join(pluginHomeDir, 'cache');
   const requirePath = path.join(pluginHomeDir, 'node_modules', alias);
   // always update plugin if version is 'beta', 'alpha' or 'latest'
-  if ([ 'beta', 'alpha', 'latest'].includes(pluginVersion.version) || !(await fs.pathExists(requirePath))) {
+  if ([ 'beta', 'alpha', 'latest' ].includes(pluginVersion.version) || !(await fs.pathExists(requirePath))) {
     await execAsync(
       `pnpm install ${alias}@npm:${name} -P --store-dir ${cacheDir}`,
       { cwd: pluginHomeDir }
