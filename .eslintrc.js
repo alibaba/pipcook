@@ -9,8 +9,9 @@ module.exports = {
     'plugin:@typescript-eslint/recommended'
   ],
   'rules': {
+    'quotes': [ 'error', 'single' ],
     'no-trailing-spaces': 'error',
-    'prefer-const': 'off',
+    'prefer-const': 'warn',
     'no-useless-escape': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/camelcase': 'off',
@@ -22,7 +23,7 @@ module.exports = {
         'functions': false
       }
     ],
-    "@typescript-eslint/no-unused-vars": [ "error" ],
+    '@typescript-eslint/no-unused-vars': [ 'error' ],
     'comma-spacing': [
       'error',
       {

@@ -1,11 +1,9 @@
 {
   "packages": [
     "packages/boa",
-    "packages/cli",
     "packages/core",
     "packages/costa",
-    "packages/daemon",
-    "packages/sdk"
+    "packages/cli"
   ],
   "version": "independent",
   "loglevel": "verbose",

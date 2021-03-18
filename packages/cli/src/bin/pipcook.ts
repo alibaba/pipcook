@@ -4,12 +4,49 @@ import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
 import { join } from 'path';
-import { constants } from '@pipcook/pipcook-core';
-import { pathExists, readJson } from 'fs-extra';
+import { constants } from '@pipcook/core';
+import { readJson, mkdirp, remove } from 'fs-extra';
+import { StandaloneRuntime } from '../runtime';
+import { logger, dateToString } from '../utils';
 
-import { runAndDownload } from '../service/job';
-import init from '../actions/init';
-import serve from '../actions/serve';
+export interface RunOptions {
+  output: string;
+  nocache: boolean;
+  debug: boolean;
+}
+
+export interface CacheCleanOptions {
+  framework: boolean;
+  script: boolean;
+}
+
+export const run = async (filename: string, opts: RunOptions): Promise<void> => {
+  let pipelineConfig;
+  try {
+    pipelineConfig = await readJson(filename);
+    // TODO(feely): check pipeline file
+    await mkdirp(opts.output);
+    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, !opts.nocache);
+    await runtime.run();
+  } catch (err) {
+    if (!opts.debug) {
+      logger.fail(`run pipeline error: ${err.message}`);
+    } else {
+      throw err;
+    }
+  }
+};
+
+export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
+  const futures = [];
+  if (opts.framework) {
+    futures.push(remove(constants.PIPCOOK_FRAMEWORK_PATH));
+  }
+  if (opts.script) {
+    futures.push(remove(constants.PIPCOOK_SCRIPT_PATH));
+  }
+  await Promise.all(futures);
+};
 
 (async function(): Promise<void> {
   // check node version
@@ -23,56 +60,27 @@ import serve from '../actions/serve';
     return;
   }
 
-  const pkg = require('../../package.json');
-
-  const versionStr = [
-    `Pipcook Tools   v${pkg.version} ${join(__dirname, '../../')}`
-  ];
-  const daemonPath = join(constants.PIPCOOK_DAEMON_SRC, 'package.json');
-  const boardPath = join(constants.PIPCOOK_BOARD_SRC, 'package.json');
-  if (await pathExists(daemonPath)) {
-    const daemonPkg = await readJson(daemonPath);
-    versionStr.push(`Pipcook Daemon  v${daemonPkg.version} ${constants.PIPCOOK_DAEMON_SRC}`);
-  }
-  if (await pathExists(boardPath)) {
-    const boardPkg = await readJson(boardPath);
-    versionStr.push(`Pipboard        v${boardPkg.version} ${constants.PIPCOOK_BOARD_SRC}`);
-  }
-
-  program.version(versionStr.join('\n'), '-v, --version');
-  program
-    .command('init [version]')
-    .option('-c, --client <string>', 'specify your npm client.')
-    .option('-b, --beta', 'use or update the beta version, if set, the option version will be ignored.')
-    .option('--tuna', 'use tuna mirror to download miniconda at China.')
-    .description('initialize the daemon and pipboard.')
-    .action(init);
+  const pkg = await readJson(join(__filename, '../../package.json'));
+  program.version(pkg.version, '-v, --version');
 
   program
     .command('run <filename>')
-    .option('--tuna', 'use tuna mirror to install python packages')
-    .option('--output <dir>', 'the output directory name', 'output')
-    .option('-h|--host-ip <ip>', 'the host ip of daemon')
-    .option('-p|--port <port>', 'the port of daemon')
+    .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
+    .option('--nocache', 'disabel cache for framework and scripts', false)
+    .option('-d --debug', 'debug mode', false)
     .description('run pipeline with a json file.')
-    .action(runAndDownload);
+    .action(run);
 
   program
-    .command('serve <dir>')
-    .option('-p, --port <number>', 'port of server', 7682)
-    .description('serve the model to predict')
-    .action(serve);
+    .command('clean')
+    .option('-f --framework', 'clean cache for framework', true)
+    .option('-s --script', 'clean cache for scripts', true)
+    .action(cacheClean)
+    .description('clean pipcook cache, include framework and script');
 
   program
-    .command('daemon', 'manage pipcook daemon service')
-    .command('plugin', 'install one or more packages')
-    .command('app', 'experimental PipApp Script')
-    .command('job', 'operate the job bound to specific pipeline')
-    .command('pipeline', 'operate on pipeline');
-
-  program
-    .command('lib')
-    .description("add libraries: tvm, tensorflow, pytorch...");
+    .command('install')
+    .description('install dependencies non-essential: tvm, emscripten, and ...');
 
   program.parse(process.argv);
 })();
