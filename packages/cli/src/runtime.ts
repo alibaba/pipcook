@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import { PipelineMeta } from '@pipcook/pipcook-core';
+import { PipelineMeta } from '@pipcook/core';
 import { Costa } from '@pipcook/costa';
 import * as path from 'path';
 import { createStandaloneRT } from './standalone-impl';

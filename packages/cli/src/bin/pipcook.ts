@@ -4,7 +4,7 @@ import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
 import { join } from 'path';
-import { constants } from '@pipcook/pipcook-core';
+import { constants } from '@pipcook/core';
 import { readJson, mkdirp, remove } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
 import { logger, dateToString } from '../utils';

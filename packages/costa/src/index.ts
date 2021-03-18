@@ -9,7 +9,7 @@ import {
   ScriptContext,
   FrameworkModule,
   DefaultType
-} from '@pipcook/pipcook-core';
+} from '@pipcook/core';
 import * as boa from '@pipcook/boa';
 import * as dataCook from '@pipcook/datacook';
 import * as path from 'path';

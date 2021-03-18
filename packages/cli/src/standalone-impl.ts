@@ -10,7 +10,7 @@ import {
   DefaultType,
   ProgressInfo,
   pipelineAsync
-} from '@pipcook/pipcook-core';
+} from '@pipcook/core';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 export class DataAccessorImpl<T> implements DataAccessor<T> {

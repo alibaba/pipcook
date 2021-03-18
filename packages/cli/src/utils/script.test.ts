@@ -1,5 +1,5 @@
 import test from 'ava';
-import { constants, PipelineMeta, ScriptType } from '@pipcook/pipcook-core';
+import { constants, PipelineMeta, ScriptType } from '@pipcook/core';
 import * as script from './script';
 import * as cache from './cache';
 import * as sinon from 'sinon';

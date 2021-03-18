@@ -1,7 +1,7 @@
 import { fetchWithCache } from './cache';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { PipelineMeta, PipcookFramework, constants, FrameworkDescFileName } from '@pipcook/pipcook-core';
+import { PipelineMeta, PipcookFramework, constants, FrameworkDescFileName } from '@pipcook/core';
 
 export const prepareFramework = async (
   pipelineMeta: PipelineMeta,

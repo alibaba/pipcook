@@ -4,7 +4,7 @@ import {
   ScriptType,
   PipcookScript,
   constants
-} from '@pipcook/pipcook-core';
+} from '@pipcook/core';
 import * as path from 'path';
 import { parse } from 'url';
 import { fetchWithCache } from './cache';

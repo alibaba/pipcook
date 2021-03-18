@@ -5,7 +5,7 @@ import * as boa from '@pipcook/boa';
 import * as dataCook from '@pipcook/datacook';
 import { Costa, PipelineRunnerOption } from '.';
 import * as utils from './utils';
-import { constants, DataSourceApi, ScriptContext, ScriptType } from '@pipcook/pipcook-core';
+import { constants, DataSourceApi, ScriptContext, ScriptType } from '@pipcook/core';
 
 const workspaceDir = constants.PIPCOOK_TMPDIR;
 

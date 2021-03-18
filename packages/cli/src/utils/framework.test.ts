@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import * as cache from './cache';
 import { prepareFramework } from './framework';
-import { PipcookFramework, PipelineMeta } from '@pipcook/pipcook-core';
+import { PipcookFramework, PipelineMeta } from '@pipcook/core';
 
 test.serial.afterEach(() => sinon.restore());
 

@@ -5,7 +5,7 @@ import {
   ArtifactExports,
   ArtifactMeta,
   constants
-} from '@pipcook/pipcook-core';
+} from '@pipcook/core';
 import { execAsync } from './';
 
 export interface PluginVersion {

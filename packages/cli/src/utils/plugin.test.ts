@@ -1,4 +1,4 @@
-import { PipelineMeta } from '@pipcook/pipcook-core';
+import { PipelineMeta } from '@pipcook/core';
 import test from 'ava';
 import sinon = require('sinon');
 import { extractVersion, prepareArtifactPlugin, install } from './plugin';

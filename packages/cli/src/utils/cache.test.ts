@@ -2,7 +2,7 @@ import test from 'ava';
 import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import { fetchWithCache } from './cache';
-import * as core from '@pipcook/pipcook-core';
+import * as core from '@pipcook/core';
 
 export function mockFunctionFromGetter(obj: any, funcName: string): sinon.SinonStub {
   const mockFunc = sinon.stub();
