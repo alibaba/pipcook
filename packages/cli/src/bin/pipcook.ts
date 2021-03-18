@@ -80,7 +80,7 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
 
   program
     .command('install')
-    .description('add libraries: tvm, tensorflow, pytorch...');
+    .description('install dependencies non-essential: tvm, emscripten, and ...');
 
   program.parse(process.argv);
 })();
