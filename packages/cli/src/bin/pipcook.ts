@@ -73,10 +73,10 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
 
   program
     .command('clean')
-    .option('-fm --framework', 'clean cache for framework', true)
+    .option('-f --framework', 'clean cache for framework', true)
     .option('-s --script', 'clean cache for scripts', true)
     .action(cacheClean)
-    .description('clean pipcook cache, include framework, script');
+    .description('clean pipcook cache, include framework and script');
 
   program
     .command('install')
