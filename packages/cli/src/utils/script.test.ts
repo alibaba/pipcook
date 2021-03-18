@@ -22,25 +22,25 @@ test('download script', async (t) => {
 
 async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
   const pipelineMeta: PipelineMeta = {
-    "specVersion": "2.0",
-    "dataSource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-image-classification-collector@2.0/build/script.js",
-    "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-tfjs-mobilenet-model@2.0/build/script.js",
-    "dataflow": [
-      "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-process-tfjs-image-classification@2.0/build/script.js?size=224&size=224"
+    'specVersion': '2.0',
+    'dataSource': 'https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-image-classification-collector@2.0/build/script.js',
+    'model': 'https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-tfjs-mobilenet-model@2.0/build/script.js',
+    'dataflow': [
+      'https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-process-tfjs-image-classification@2.0/build/script.js?size=224&size=224'
     ],
-    "artifacts": [
+    'artifacts': [
       {
-        "processor": "pipcook-ali-oss-uploader@0.0.3",
-        "target": "oss://pipcook-cloud/model/mobile2.0"
+        'processor': 'pipcook-ali-oss-uploader@0.0.3',
+        'target': 'oss://pipcook-cloud/model/mobile2.0'
       }
     ],
-    "options": {
-      "framework": "http://pipcook.oss-cn-hangzhou.aliyuncs.com/mirrors/tf-node-gpu-linux.zip",
-      "train": {
-        "epochs": 1,
-        "validationRequired": true
+    'options': {
+      'framework': 'http://pipcook.oss-cn-hangzhou.aliyuncs.com/mirrors/tf-node-gpu-linux.zip',
+      'train': {
+        'epochs': 1,
+        'validationRequired': true
       },
-      "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip"
+      'url': 'http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip'
     }
   };
   if (!withDataflow) {

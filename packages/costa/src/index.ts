@@ -113,7 +113,7 @@ export class Costa {
    * @param script the metadata of script
    */
   async runDataflow(api: DataSourceApi, scripts: Array<PipcookScript>): Promise<DataSourceApi> {
-    for (let script of scripts) {
+    for (const script of scripts) {
       debug(`start loading the script(${script.name})`);
       const fn = await this.importScript<DataFlowEntry<DefaultType>>(script);
       debug(`loaded the script(${script.name}), start it.`);

@@ -76,11 +76,11 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
     .option('-fm --framework', 'clean cache for framework', true)
     .option('-s --script', 'clean cache for scripts', true)
     .action(cacheClean)
-    .description("clean pipcook cache, include framework, script");
+    .description('clean pipcook cache, include framework, script');
 
   program
     .command('install')
-    .description("add libraries: tvm, tensorflow, pytorch...");
+    .description('add libraries: tvm, tensorflow, pytorch...');
 
   program.parse(process.argv);
 })();

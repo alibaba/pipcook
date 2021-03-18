@@ -14,9 +14,9 @@ export function mockFunctionFromGetter(obj: any, funcName: string): sinon.SinonS
 test.serial.afterEach(() => sinon.restore());
 
 test.serial('fetch with cache', async (t) => {
-  const cacheDir = ".cache";
-  const url = "url";
-  const target = "target";
+  const cacheDir = '.cache';
+  const url = 'url';
+  const target = 'target';
 
   const stubDownloadAndExtractTo = mockFunctionFromGetter(core, 'downloadAndExtractTo').resolves(() => { return 'done'; });
   const stubRemove = sinon.stub(fs, 'remove').resolves();
@@ -32,9 +32,9 @@ test.serial('fetch with cache', async (t) => {
 });
 
 test.serial('fetch with missed cache', async (t) => {
-  const cacheDir = ".cache";
-  const url = "url";
-  const target = "target";
+  const cacheDir = '.cache';
+  const url = 'url';
+  const target = 'target';
 
   const stubDownloadAndExtractTo = mockFunctionFromGetter(core, 'downloadAndExtractTo').resolves(() => { return 'done'; });
   const stubRemove = sinon.stub(fs, 'remove').resolves();
@@ -50,9 +50,9 @@ test.serial('fetch with missed cache', async (t) => {
 });
 
 test.serial('fetch with disabled cache', async (t) => {
-  const cacheDir = ".cache";
-  const url = "url";
-  const target = "target";
+  const cacheDir = '.cache';
+  const url = 'url';
+  const target = 'target';
 
   const stubDownloadAndExtractTo = mockFunctionFromGetter(core, 'downloadAndExtractTo').resolves(() => { return 'done'; });
   const stubRemove = sinon.stub(fs, 'remove').resolves();

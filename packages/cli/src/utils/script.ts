@@ -37,7 +37,7 @@ export const prepareScript = async (pipelineMeta: PipelineMeta, scriptDir: strin
   scriptOrder++;
   if (Array.isArray(pipelineMeta.dataflow) && pipelineMeta.dataflow.length > 0) {
     scripts.dataflow = [];
-    for (let dataflowUri of pipelineMeta.dataflow) {
+    for (const dataflowUri of pipelineMeta.dataflow) {
       scripts.dataflow.push(await downloadScript(scriptDir, scriptOrder, dataflowUri, ScriptType.Dataflow, enableCache));
       scriptOrder++;
     }

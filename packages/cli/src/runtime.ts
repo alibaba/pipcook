@@ -70,7 +70,7 @@ export class StandaloneRuntime {
     const standaloneRT = createStandaloneRT(dataSource, this.pipelineMeta, this.modelDir);
     await costa.runModel(standaloneRT, scripts.model, this.pipelineMeta.options);
     logger.info(`pipeline finished, the model has been saved at ${this.modelDir}`);
-    for (let artifact of artifactPlugins) {
+    for (const artifact of artifactPlugins) {
       logger.info(`running artifact ${artifact.options.processor}`);
       await artifact.artifactExports.build(this.modelDir, artifact.options);
       logger.info('done');

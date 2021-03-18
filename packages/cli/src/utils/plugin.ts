@@ -60,7 +60,7 @@ export const prepareArtifactPlugin = async (pipelineMeta: PipelineMeta): Promise
     return;
   }
   const allPlugins: Array<ArtifactMeta> = [];
-  for (let plugin of pipelineMeta.artifacts) {
+  for (const plugin of pipelineMeta.artifacts) {
     const requirePath = await install(plugin.processor, constants.PIPCOOK_PLUGIN_ARTIFACT_PATH);
     let pluginExport: ArtifactExports = await import(requirePath);
     if (

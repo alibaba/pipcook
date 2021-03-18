@@ -48,51 +48,51 @@ export class TtyLogger implements Logger {
     this.spinner = realOra({ stream: process.stdout });
   }
 
-  success(message: string) {
+  success(message: string): void {
     this.spinner.succeed(message);
   }
 
-  fail(message: string, exit = true, code = 1) {
+  fail(message: string, exit = true, code = 1): void {
     this.spinner.fail(message);
     if (exit) {
       process.exit(code);
     }
   }
 
-  info(message: string) {
+  info(message: string): void {
     this.spinner.info(message);
   }
 
-  warn(message: string) {
+  warn(message: string): void {
     this.spinner.warn(message);
   }
 
-  start(message: string) {
+  start(message: string): void {
     this.spinner.start(message);
   }
 }
 
 export class DefaultLogger implements Logger {
-  success(message: string) {
+  success(message: string): void {
     console.log('[success]: ' + message);
   }
 
-  fail(message: string, exit = true, code = 1) {
+  fail(message: string, exit = true, code = 1): void {
     console.error('[fail]: ' + message);
     if (exit) {
       process.exit(code);
     }
   }
 
-  info(message: string) {
+  info(message: string): void {
     console.log('[info]: ' + message);
   }
 
-  warn(message: string) {
+  warn(message: string): void {
     console.warn('[warn]: ' + message);
   }
 
-  start(message: string) {
+  start(message: string): void {
     console.log('[start]: ' + message);
   }
 }
