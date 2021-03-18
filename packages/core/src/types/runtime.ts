@@ -2,17 +2,20 @@ import { PipelineMeta } from './pipeline';
 import * as DataCook from '@pipcook/datacook';
 export type DefaultType = any;
 
-// sample
+/**
+ * A sample is a labeled data, which could be used to be trained
+ * into machine learning models.
+ */
 export interface Sample<T = DefaultType> {
   label: number;
   data: T;
 }
 
 /**
- * current task type
- *   All: run all scripts
- *   Data: run data source and data flow script
- *   Model: run model script
+ * Pipcook task types:
+ *   All: run all scripts;
+ *   Data: run data source and dataflow script;
+ *   Model: run model script;
  */
 export enum TaskType {
   All,
@@ -22,7 +25,15 @@ export enum TaskType {
 }
 
 /**
- * table column type
+ * Data source types contain `Table` and `Image`.
+ */
+export enum DataSourceType { Table, Image }
+
+/**
+ * Table-based data structure.
+ */
+/**
+ * The column types
  */
 export enum TableColumnType {
   Number,
@@ -34,7 +45,7 @@ export enum TableColumnType {
 }
 
 /**
- * structure of colume description
+ * The column description.
  */
 export interface TableColumn {
   name: string,
@@ -42,26 +53,31 @@ export interface TableColumn {
 }
 
 /**
- * table schema for all columns
+ * The table schema for columns.
  */
 export type TableSchema = Array<TableColumn>;
 
 /**
- * data source type
- *   Table: data from db, csv
- *   Image: image data
- */
-export enum DataSourceType { Table, Image }
-
-/**
- * size of data source
+ * The size of data source
  */
 export interface DataSourceSize {
+  /**
+   * The size of dataset for training.
+   */
   train: number;
+  /**
+   * The size of dataset for testing model.
+   */
   test: number;
-  evaluate?: number;
+  /**
+   * The size of dataset for validating.
+   */
+  valid?: number;
 }
 
+/**
+ * The 3-dimension(x,y,z) of an image.
+ */
 export interface ImageDimension {
   x: number,
   y: number,
@@ -106,8 +122,8 @@ export interface DataSourceApi<T = DefaultType> {
   test: DataAccessor<T>;
   // train dataset accessor
   train: DataAccessor<T>;
-  // evaluate dataset accessor, qoptional
-  evaluate?: DataAccessor<T>;
+  // valid dataset accessor, optional
+  valid?: DataAccessor<T>;
 }
 
 /**
@@ -121,7 +137,8 @@ export interface ProgressInfo {
 }
 
 /**
- * runtime api
+ * A Runtime is used to run pipelines on a specific platform. The interface `Runtime<T>`
+ * declares APIs which the runtime implementation must or shall achieve.
  */
 export interface Runtime<T = DefaultType> {
   // get pipeline metadata
@@ -175,3 +192,4 @@ export type DataFlowEntry<IN, OUT = IN> = (api: DataSourceApi<IN>, options: Reco
  * type of model script entry
  */
 export type ModelEntry<T> = (api: Runtime<T>, options: Record<string, any>, context: ScriptContext) => Promise<void>;
+
