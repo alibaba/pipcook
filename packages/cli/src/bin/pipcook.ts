@@ -7,7 +7,8 @@ import { join } from 'path';
 import { constants } from '@pipcook/pipcook-core';
 import { readJson, mkdirp, remove } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
-import { logger } from '../utils';
+import { logger, dateToString } from '../utils';
+
 export interface RunOptions {
   output: string;
   nocache: boolean;
@@ -19,34 +20,13 @@ export interface CacheCleanOptions {
   script: boolean;
 }
 
-function dateToString(date: Date): string {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDay();
-  const hour = date.getHours();
-  const min = date.getMinutes();
-  const sec = date.getSeconds();
-  function fillZero(i: number): string {
-    return i < 10 ? '0' + i : i.toString();
-  }
-  return `${year}${fillZero(month)}${fillZero(day)}${fillZero(hour)}${fillZero(min)}${fillZero(sec)}`;
-}
-
 export const run = async (filename: string, opts: RunOptions): Promise<void> => {
   let pipelineConfig;
   try {
     pipelineConfig = await readJson(filename);
     // TODO(feely): check pipeline file
-  } catch (err) {
-    logger.fail(`read pipeline file error: ${err.message}`);
-  }
-  try {
     await mkdirp(opts.output);
-  } catch (err) {
-    logger.fail(`create output directory error: ${err.message}`);
-  }
-  const runtime = new StandaloneRuntime(opts.output, pipelineConfig, !opts.nocache);
-  try {
+    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, !opts.nocache);
     await runtime.run();
   } catch (err) {
     if (!opts.debug) {

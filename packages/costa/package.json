@@ -40,9 +40,12 @@
   },
   "keywords": [],
   "ava": {
-    "files": [
-      "dist/**/*.test.js",
-      "!tests"
+    "extensions": [
+      "js",
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
     ]
   }
 }

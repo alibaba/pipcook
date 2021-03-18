@@ -21,6 +21,19 @@ export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   });
 }
 
+export function dateToString(date: Date): string {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDay();
+  const hour = date.getHours();
+  const min = date.getMinutes();
+  const sec = date.getSeconds();
+  function fillZero(i: number): string {
+    return i < 10 ? '0' + i : i.toString();
+  }
+  return `${year}${fillZero(month)}${fillZero(day)}${fillZero(hour)}${fillZero(min)}${fillZero(sec)}`;
+}
+
 interface Logger {
   success(message: string): void;
   fail(message: string, exit: boolean, code: number): void;
@@ -28,7 +41,7 @@ interface Logger {
   warn(message: string): void;
 }
 
-class TtyLogger implements Logger {
+export class TtyLogger implements Logger {
   spinner: realOra.Ora;
 
   constructor() {
@@ -59,7 +72,7 @@ class TtyLogger implements Logger {
   }
 }
 
-class DefaultLogger implements Logger {
+export class DefaultLogger implements Logger {
   success(message: string) {
     console.log('[success]: ' + message);
   }
