@@ -1,24 +1,19 @@
 import * as fs from 'fs-extra';
 import { PipelineMeta } from '@pipcook/core';
-import { Costa } from '@pipcook/costa';
+import { Costa, PipelineWorkSpace } from '@pipcook/costa';
 import * as path from 'path';
 import { createStandaloneRT } from './standalone-impl';
 import { logger, Framework, Plugin, Script } from './utils';
 
 /**
- * runtime for local
+ * runtime for standalone environment,
+ * input pipeline configuration file, run the pipeline
  */
 export class StandaloneRuntime {
-
+  // workspace for pipeline
+  private workspace: PipelineWorkSpace;
+  // script directory
   private scriptDir: string;
-
-  private modelDir: string;
-
-  private cacheDir: string;
-
-  private tmpDir: string;
-
-  private frameworkDir: string;
 
   constructor(
     workspaceDir: string,
@@ -26,36 +21,30 @@ export class StandaloneRuntime {
     private enableCache = true
   ) {
     this.scriptDir = path.join(workspaceDir, 'scripts');
-    this.cacheDir = path.join(workspaceDir, 'cache');
-    this.modelDir = path.join(workspaceDir, 'model');
-    this.tmpDir = path.join(workspaceDir, 'tmp');
-    this.frameworkDir = path.join(workspaceDir, 'framework');
+    this.workspace = {
+      dataDir: path.join(workspaceDir, 'data'),
+      modelDir: path.join(workspaceDir, 'model'),
+      cacheDir: path.join(workspaceDir, 'cache'),
+      frameworkDir: path.join(workspaceDir, 'framework')
+    };
   }
 
   async prepareWorkspace(): Promise<void> {
-    await Promise.all([
-      fs.mkdirp(this.scriptDir),
-      fs.mkdirp(this.tmpDir),
-      fs.mkdirp(this.modelDir),
-      fs.mkdirp(this.cacheDir)
-    ]);
+    const futures = Object.values(this.workspace).map((dir: string) => fs.mkdirp(dir));
+    futures.push(fs.mkdirp(this.scriptDir));
+    await Promise.all(futures);
   }
 
   async run(): Promise<void> {
     await this.prepareWorkspace();
     logger.info('preparing framework');
-    const framework = await Framework.prepareFramework(this.pipelineMeta, this.frameworkDir, this.enableCache);
+    const framework = await Framework.prepareFramework(this.pipelineMeta, this.workspace.frameworkDir, this.enableCache);
     logger.info('preparing scripts');
     const scripts = await Script.prepareScript(this.pipelineMeta, this.scriptDir, this.enableCache);
     logger.info('preparing artifact plugins');
     const artifactPlugins = await Plugin.prepareArtifactPlugin(this.pipelineMeta);
     const costa = new Costa({
-      workspace: {
-        dataDir: this.cacheDir,
-        modelDir: this.modelDir,
-        cacheDir: this.cacheDir,
-        frameworkDir: this.frameworkDir
-      },
+      workspace: this.workspace,
       framework
     });
     logger.info('initializing framework packages');
@@ -67,12 +56,12 @@ export class StandaloneRuntime {
       dataSource = await costa.runDataflow(dataSource, scripts.dataflow);
     }
     logger.info('running model script');
-    const standaloneRT = createStandaloneRT(dataSource, this.pipelineMeta, this.modelDir);
+    const standaloneRT = createStandaloneRT(dataSource, this.pipelineMeta, this.workspace.modelDir);
     await costa.runModel(standaloneRT, scripts.model, this.pipelineMeta.options);
-    logger.info(`pipeline finished, the model has been saved at ${this.modelDir}`);
+    logger.info(`pipeline finished, the model has been saved at ${this.workspace.modelDir}`);
     for (const artifact of artifactPlugins) {
       logger.info(`running artifact ${artifact.options.processor}`);
-      await artifact.artifactExports.build(this.modelDir, artifact.options);
+      await artifact.artifactExports.build(this.workspace.modelDir, artifact.options);
       logger.info('done');
     }
   }
