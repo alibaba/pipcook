@@ -3,7 +3,13 @@ import {
   ExecOptions,
   ExecException
 } from 'child_process';
+import * as fs from 'fs-extra';
+import * as CliProgress from 'cli-progress';
+import * as url from 'url';
+import * as path from 'path';
+import * as request from 'request';
 import realOra = require('ora');
+import { constants, generateId, pipelineAsync, unZipData } from '@pipcook/core';
 export * as Script from './script';
 export * as Plugin from './plugin';
 export * as Cache from './cache';
@@ -19,6 +25,69 @@ export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
       }
     });
   });
+}
+
+/**
+ * download the file and stored in specified directory
+ * @param url: url of the file
+ * @param fileName: full path of file that will be stored
+ */
+export async function downloadWithProgress(url: string, fileName: string): Promise<void> {
+  await fs.ensureFile(fileName);
+  const bar = new CliProgress.SingleBar({
+    format: '{bar} {percentage}% {value}MB/{total}MB'
+  }, CliProgress.Presets.shades_classic);
+  const file = fs.createWriteStream(fileName);
+  let receivedBytes = 0;
+  const downloadStream = request.get(url)
+    .on('response', (response: any) => {
+      const totalBytes = response.headers['content-length'];
+      bar.start(Number((totalBytes / 1024 / 1024).toFixed(1)), 0);
+    })
+    .on('data', (chunk: any) => {
+      receivedBytes += chunk.length;
+      bar.update(Number((receivedBytes / 1024 / 1024).toFixed(1)));
+    });
+  try {
+    await pipelineAsync(downloadStream, file);
+    bar.stop();
+  } catch (err) {
+    fs.unlink(fileName);
+    bar.stop();
+    throw err;
+  }
+}
+
+/**
+ * Download the dataset from specific URL and extract to a generated path as the returned value.
+ * @param resUrl the resource url, support http://, https://, file://.
+ * @param targetDir the directory to save the files
+ */
+export async function downloadAndExtractTo(resUrl: string, targetDir: string): Promise<void> {
+  const { protocol, pathname } = url.parse(resUrl);
+  if (!protocol || !pathname) {
+    throw new TypeError('invalid url');
+  }
+  const filename = path.basename(pathname);
+  const extname = path.extname(filename);
+  if (protocol === 'file:') {
+    if (extname === '.zip') {
+      await unZipData(pathname, targetDir);
+    } else {
+      await fs.copy(pathname, targetDir);
+    }
+  } else if (protocol === 'http:' || protocol === 'https:') {
+    if (extname === '.zip') {
+      const tmpPath = path.join(constants.PIPCOOK_TMPDIR, generateId());
+      await this.downloadWithProgress(resUrl, tmpPath);
+      await unZipData(tmpPath, targetDir);
+      await fs.remove(tmpPath);
+    } else {
+      await this.downloadWithProgress(resUrl, targetDir);
+    }
+  } else {
+    throw new TypeError(`[${extname}] file format is not supported.`);
+  }
 }
 
 export function dateToString(date: Date): string {

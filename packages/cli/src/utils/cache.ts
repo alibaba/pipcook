@@ -1,8 +1,8 @@
-import * as core from '@pipcook/core';
 import * as crypto from 'crypto';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import Debug from 'debug';
+import { downloadAndExtractTo } from '.';
 const debug = Debug('cache');
 
 /**
@@ -25,7 +25,7 @@ export const fetchWithCache = async (cacheDir: string, url: string, target: stri
   }
   await fs.remove(cachePath);
   debug('download from url', url);
-  await core.downloadAndExtractTo(url, cachePath);
+  await downloadAndExtractTo(url, cachePath);
   debug(`link ${cachePath} to ${target}`);
   await fs.symlink(cachePath, target);
 };
