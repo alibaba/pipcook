@@ -3,10 +3,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "experimentalDecorators": true,
-    "esModuleInterop": false,
-    
+  
     "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "resolveJsonModule": true,
@@ -14,18 +13,18 @@
 
     "incremental": true,
 
-    "lib": ["es2018", "esnext.asynciterable"],
+    "lib": [ "es2018", "esnext.asynciterable" ],
     "module": "commonjs",
+    "esModuleInterop": false,
     "moduleResolution": "node",
     "target": "es2017",
     "sourceMap": true,
     "declaration": true
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
   "exclude": [
-    "node_modules",
-    "dist"
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/*.d.ts"
   ]
 }

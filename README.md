@@ -126,7 +126,7 @@ $ pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/p
 If you are wondering what you can do in [Pipcook][] and where you can check your training logs and models, you could start from [Pipboard](https://alibaba.github.io/pipcook/#/GLOSSORY?id=pipboard):
 
 ```sh
-open https://pipboard.imgcook.com/#/tutorial
+open https://pipboard.imgcook.com
 ```
 
 You will see a web page prompt in your browser, and there is a MNIST showcase on the home page and play around there. 

@@ -32,7 +32,7 @@ jobs:
         os: [ubuntu-latest, macOS-latest]
     steps:
     - name: Cancel previous runs
-      uses: imgcook/cancel-workflow-action@81524cf
+      uses: imgcook/cancel-workflow-action@81524cf38ed0e3a5865a550dde6118d26b7a5ede
       with:
         access_token: ${{ github.token }}
         exception: main
@@ -67,8 +67,6 @@ jobs:
       run: |
         yarn --verbose
         yarn build
-        yarn init-dev
-        mkdir -p ~/.pipcook/db && yarn workspace @pipcook/daemon run migrate 
         du -h -d 1
     - name: Running unit tests
       if: ${{ runner.os != 'Linux' || matrix.node_version != 12 }}
@@ -83,62 +81,3 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Migration
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        mkdir -p ~/.pipcook/db && cp ./packages/daemon/src/__tests__/__res__/baseline-v1.db ~/.pipcook/db/pipcook.db
-    - name: Daemon start
-      run: |
-        ./packages/cli/dist/bin/pipcook daemon start
-    - name: Testing help commands
-      run: |
-        ./packages/cli/dist/bin/pipcook -v
-        ./packages/cli/dist/bin/pipcook -h
-        ./packages/cli/dist/bin/pipcook init --help
-        ./packages/cli/dist/bin/pipcook run --help
-        ./packages/cli/dist/bin/pipcook plugin-dev --help
-        ./packages/cli/dist/bin/pipcook serve --help
-    - name: Pipcook sdk test
-      run: |
-        npx ts-node ./run_tests.ts
-    - name: install plugins from specific pipeline
-      run: |
-        ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/chinese-poem-creation.json
-        ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/main/example/pipelines/text-bayes-classification.json
-    - name: Running an example pipeline
-      run: |
-        yarn test:pipeline -- text-bayes-classification
-    - name: Install a new plugin and install a installed plugin
-      run: |
-        ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
-        ./packages/cli/dist/bin/pipcook plugin install @pipcook/plugins-chinese-poem-data-collect
-    - name: Install plugin from local project
-      run: |
-        ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/tests/plugins/nodejs-simple
-        cd ./packages/costa/tests/plugins/nodejs-simple && yarn pack && cd -
-        ./packages/cli/dist/bin/pipcook plugin install ./packages/costa/tests/plugins/nodejs-simple/nodejs-simple-v1.0.0.tgz
-    - name: Pipcook run from local filename
-      run: |
-        ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json
-        ls ./output && rm -rf ./output
-        ./packages/cli/dist/bin/pipcook run ./example/pipelines/text-bayes-classification.json --output mydir
-        ls ./mydir && rm -rf ./mydir
-    - name: Pipcook run from url
-      run: |
-        ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/main/example/pipelines/text-bayes-classification.json
-        ls ./output && rm -rf ./output
-    - name: Remove pipelines
-      run: |
-        ./packages/cli/dist/bin/pipcook pipeline remove all -y
-    - name: Pipcook plugin development
-      run: |
-        ./packages/cli/dist/bin/pipcook plugin-dev -t dataCollect
-        ./packages/cli/dist/bin/pipcook plugin create foobar
-        ./packages/cli/dist/bin/pipcook plugin create foobar2 --category data-collect
-        ./packages/cli/dist/bin/pipcook plugin create foobar3 --python
-    - name: Daemon start on customized port
-      run: |
-        ./packages/cli/dist/bin/pipcook daemon stop
-        echo "{ \"host\": \"127.0.0.1\", \"port\": 7000 }" > ~/.pipcook/daemon.config.json
-        ./packages/cli/dist/bin/pipcook daemon start
-        ./packages/cli/dist/bin/pipcook pipeline list -h 127.0.0.1 -p 7000

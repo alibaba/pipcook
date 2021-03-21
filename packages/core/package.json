@@ -1,6 +1,6 @@
 {
-  "name": "@pipcook/pipcook-core",
-  "version": "1.2.0",
+  "name": "@pipcook/core",
+  "version": "2.0.0-beta.1",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -9,9 +9,7 @@
   "scripts": {
     "test": "ava",
     "build": "npm run clean && npm run compile",
-    "dev-build": "npm run clean && npm run dev-compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "dev-compile": "tsc -b tsconfig.json",
     "compile": "tsc -b tsconfig.json",
     "cov": "nyc -r text-summary npm run test",
     "cov:report": "nyc report -r lcov"
@@ -25,17 +23,15 @@
     "nanoid": "^3.1.12",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
-    "targz": "^1.0.1",
-    "xml2js": "^0.4.22"
+    "targz": "^1.0.1"
   },
   "devDependencies": {
-    "@types/cli-progress": "^3.4.2",
     "@types/debug": "^4.1.5",
     "@types/fs-extra": "^8.0.1",
     "@types/nanoid": "^2.1.0",
-    "@types/sinon": "^9.0.5",
     "@types/request": "^2.48.4",
     "@types/request-promise": "^4.1.46",
+    "@types/sinon": "^9.0.5",
     "ava": "^3.13.0",
     "nyc": "^15.1.0",
     "sinon": "^9.0.3",
@@ -46,6 +42,5 @@
     "access": "public"
   },
   "keywords": [],
-  "description": "",
-  "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e"
+  "description": ""
 }
