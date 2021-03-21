@@ -95,6 +95,12 @@ export interface DataAccessor<T = DefaultType> {
   nextBatch: (batchSize: number) => Promise<Array<Sample<T>> | null>;
   seek: (pos: number) => Promise<void>;
 }
+export interface RandomDataAccessor<T = DefaultType> extends DataAccessor {
+  init: (size: number) => void;
+  nextRandom: () => Promise<Sample<T> | null>;
+  nextBatchRandom: (batchSize: number) => Promise<Array<Sample<T>> | null>;
+  resetRandom: (randomSeed?: string) => Promise<Array<number>>;
+}
 
 /**
  * data source api
@@ -108,6 +114,13 @@ export interface DataSourceApi<T = DefaultType> {
   train: DataAccessor<T>;
   // evaluate dataset accessor, qoptional
   evaluate?: DataAccessor<T>;
+}
+
+export interface RandomDataSourceApi<T = DefaultType> {
+  getDataSourceMeta: () => Promise<DataSourceMeta>;
+  test: RandomDataAccessor<T>;
+  train: RandomDataAccessor<T>;
+  evaluate?: RandomDataAccessor<T>;
 }
 
 /**

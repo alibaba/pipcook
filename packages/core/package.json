@@ -23,7 +23,9 @@
     "nanoid": "^3.1.12",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
-    "targz": "^1.0.1"
+    "seedrandom": "^3.0.5",
+    "targz": "^1.0.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
@@ -32,6 +34,7 @@
     "@types/request": "^2.48.4",
     "@types/request-promise": "^4.1.46",
     "@types/sinon": "^9.0.5",
+    "@types/uuid": "^8.3.0",
     "ava": "^3.13.0",
     "nyc": "^15.1.0",
     "sinon": "^9.0.3",
