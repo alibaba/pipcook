@@ -10,7 +10,7 @@
     "target": "oss://pipcook-cloud/model/mobile2.0"
   }],
   "options": {
-    "framework": "http://pipcook.oss-cn-hangzhou.aliyuncs.com/mirrors/tf-node-gpu-linux.zip",
+    "framework": "http://pipcook.oss-cn-hangzhou.aliyuncs.com/mirrors/tf-node-mac.zip",
     "train": {
       "epochs": 1,
       "validationRequired": true

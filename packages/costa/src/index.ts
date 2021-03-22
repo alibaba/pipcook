@@ -98,7 +98,8 @@ export class Costa {
    */
   async runDataSource(script: PipcookScript, options: Record<string, any>): Promise<DataSourceApi> {
     options = Object.assign(options, {
-      workspace: this.options.workspace
+      workspace: this.options.workspace,
+      ...script.query
     });
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
