@@ -7,7 +7,7 @@
     "target": "oss://pipcook-cloud/model/bayes2.0"
   }],
   "options": {
-    "framework": "https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/framework/bayes.zip",
+    "framework": "https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/framework/bayes-linux.zip",
     "train": {
       "epochs": 20,
       "validationRequired": true
