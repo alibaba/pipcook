@@ -86,4 +86,4 @@ jobs:
         accessKeyId: ${{ secrets.OSS_ACCESS_ID }}
         accessKeySecret: ${{ secrets.OSS_ACCESS_SECRET }}
       run: |
-        ./packages/cli/dist/bin/pipcook run ./example/pipelines/bayes.v2.json
+        ./packages/cli/dist/bin/pipcook run ./example/pipelines/bayes.v2.json -d
