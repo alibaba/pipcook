@@ -96,10 +96,9 @@ export interface SequentialDataAccessor<T = DefaultType> {
   seek: (pos: number) => Promise<void>;
 }
 export interface DataAccessor<T = DefaultType> extends SequentialDataAccessor {
-  init: (size: number) => void;
   nextRandom: () => Promise<Sample<T> | null>;
   nextBatchRandom: (batchSize: number) => Promise<Array<Sample<T>> | null>;
-  resetRandom: (randomSeed?: string) => Promise<Array<number>>;
+  resetRandom: (randomSeed?: string) => Promise<void>;
 }
 
 /**

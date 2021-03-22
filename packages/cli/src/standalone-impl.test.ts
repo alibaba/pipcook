@@ -54,14 +54,18 @@ test.serial('run dataAccessorImpl nextRandom', async (t) => {
 });
 
 test.serial('run dataAccessorImpl nextBatchRandom', async (t) => {
-  const mockNextRandom = sinon.stub().resolves({ label: 3, data: 'nextRandom' });
+  let callCount = 2;
+  const mockNextRandom = sinon.stub().callsFake(async () => {
+    if (callCount)
+      return { label: callCount--, data: 'nextRandom' };
+    return null;
+  });
   const dataAccessor = new DataAccessorImpl(mockDataAccess);
   await dataAccessor.init(20, 'hello');
   sinon.replace(dataAccessor, 'nextRandom', mockNextRandom);
   t.deepEqual(await dataAccessor.nextBatchRandom(3), [
-    { label: 3, data: 'nextRandom' },
-    { label: 3, data: 'nextRandom' },
-    { label: 3, data: 'nextRandom' }
+    { label: 2, data: 'nextRandom' },
+    { label: 1, data: 'nextRandom' }
   ]);
   t.true(mockNextRandom.calledThrice, 'nextRandom shuold be called thrice');
 });
@@ -102,6 +106,7 @@ test.serial('run dataAccessorImpl resetRandom', async (t) => {
   const mockCreateRandom = sinon.stub().callsFake((size: number, seed?: string) => { return seed ? [ 3 ] : [ 1 ]; });
   const dataAccessor = new DataAccessorImpl(mockDataAccess);
   sinon.replace(dataAccessor, 'createRandom', mockCreateRandom);
-  t.deepEqual(await dataAccessor.resetRandom(), [ 1 ], 'resetRandom should return correctly');
+  await dataAccessor.resetRandom();
+  t.deepEqual(dataAccessor.randomArray, [ 1 ], 'resetRandom should correctly');
   t.is(dataAccessor.randomIndex, 0, 'randomIndex should be 0');
 });

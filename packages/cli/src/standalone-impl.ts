@@ -44,13 +44,16 @@ export class DataAccessorImpl<T> implements DataAccessor<T> {
       return this.dataAccessor.next();
     }
   }
-  nextBatchRandom(batchSize: number): Promise<Array<Sample<T>> | null> {
+  async nextBatchRandom(batchSize: number): Promise<Array<Sample<T>> | null> {
     const buffer = [];
     while (batchSize) {
-      buffer.push(this.nextRandom());
+      const nextData = await this.nextRandom();
+      if ( !nextData )
+        break;
+      buffer.push(nextData);
       batchSize--;
     }
-    return Promise.all(buffer);
+    return buffer;
   }
   seek(pos: number): Promise<void> {
     return this.dataAccessor.seek(pos);
@@ -73,16 +76,17 @@ export class DataAccessorImpl<T> implements DataAccessor<T> {
     }
     return arr;
   }
-  async resetRandom(randomSeed?: string): Promise<Array<number>> {
+  async resetRandom(randomSeed?: string): Promise<void> {
     this.randomIndex = 0;
-    return this.createRandom(this.size, randomSeed);
+    this.randomArray = this.createRandom(this.size, randomSeed);
+    return;
   }
 }
 
 class DataSourceProxy<T> implements DataSourceApi<T> {
-  public test: DataAccessor<T>;
-  public train: DataAccessor<T>;
-  public evaluate: DataAccessor<T>;
+  public test: DataAccessorImpl<T>;
+  public train: DataAccessorImpl<T>;
+  public evaluate: DataAccessorImpl<T>;
   constructor(
     private datasource: SequentialDataSourceApi<T>
   ) {
