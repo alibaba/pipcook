@@ -1,11 +1,11 @@
 import {
+  SequentialDataAccessor,
   DataAccessor,
-  RandomDataAccessor,
   PipelineMeta,
   ImageDataSourceMeta,
   TableDataSourceMeta,
+  SequentialDataSourceApi,
   DataSourceApi,
-  RandomDataSourceApi,
   Sample,
   Runtime,
   TaskType,
@@ -18,12 +18,12 @@ import {
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-export class DataAccessorImpl<T> implements RandomDataAccessor<T> {
+export class DataAccessorImpl<T> implements DataAccessor<T> {
   size: number;
   randomIndex: number;
   randomArray: Array<number>;
   constructor(
-    private dataAccessor: DataAccessor<T>
+    private dataAccessor: SequentialDataAccessor<T>
   ) {}
   init(size: number, seed?: string): void {
     this.size = size;
@@ -79,12 +79,12 @@ export class DataAccessorImpl<T> implements RandomDataAccessor<T> {
   }
 }
 
-class DataSourceProxy<T> implements RandomDataSourceApi<T> {
-  public test: RandomDataAccessor<T>;
-  public train: RandomDataAccessor<T>;
-  public evaluate: RandomDataAccessor<T>;
+class DataSourceProxy<T> implements DataSourceApi<T> {
+  public test: DataAccessor<T>;
+  public train: DataAccessor<T>;
+  public evaluate: DataAccessor<T>;
   constructor(
-    private datasource: DataSourceApi<T>
+    private datasource: SequentialDataSourceApi<T>
   ) {
     this.test = new DataAccessorImpl(datasource.test);
     this.train = new DataAccessorImpl(datasource.train);
@@ -105,7 +105,7 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
   public dataSource: DataSourceProxy<T>;
 
   constructor(
-    dataSourceApi: DataSourceApi<T>,
+    dataSourceApi: SequentialDataSourceApi<T>,
     private pipelineConfig: PipelineMeta,
     private modelDir: string
   ) {
@@ -147,7 +147,7 @@ export class StandaloneImpl<T extends Record<string, any> = DefaultType> impleme
 }
 
 export const createStandaloneRT = async (
-  dataSourceApi: DataSourceApi,
+  dataSourceApi: SequentialDataSourceApi,
   pipelineConfig: PipelineMeta,
   modelDir: string
 ): Promise<Runtime> => {

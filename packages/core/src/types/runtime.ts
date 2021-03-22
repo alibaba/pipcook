@@ -90,12 +90,12 @@ export interface TableDataSourceMeta {
 }
 
 export type DataSourceMeta = TableDataSourceMeta | ImageDataSourceMeta;
-export interface DataAccessor<T = DefaultType> {
+export interface SequentialDataAccessor<T = DefaultType> {
   next: () => Promise<Sample<T> | null>;
   nextBatch: (batchSize: number) => Promise<Array<Sample<T>> | null>;
   seek: (pos: number) => Promise<void>;
 }
-export interface RandomDataAccessor<T = DefaultType> extends DataAccessor {
+export interface DataAccessor<T = DefaultType> extends SequentialDataAccessor {
   init: (size: number) => void;
   nextRandom: () => Promise<Sample<T> | null>;
   nextBatchRandom: (batchSize: number) => Promise<Array<Sample<T>> | null>;
@@ -105,22 +105,22 @@ export interface RandomDataAccessor<T = DefaultType> extends DataAccessor {
 /**
  * data source api
  */
-export interface DataSourceApi<T = DefaultType> {
+export interface SequentialDataSourceApi<T = DefaultType> {
   // fetch data source metadata
   getDataSourceMeta: () => Promise<DataSourceMeta>;
   // test dataset accessor
-  test: DataAccessor<T>;
+  test: SequentialDataAccessor<T>;
   // train dataset accessor
-  train: DataAccessor<T>;
+  train: SequentialDataAccessor<T>;
   // evaluate dataset accessor, qoptional
-  evaluate?: DataAccessor<T>;
+  evaluate?: SequentialDataAccessor<T>;
 }
 
-export interface RandomDataSourceApi<T = DefaultType> {
+export interface DataSourceApi<T = DefaultType> {
   getDataSourceMeta: () => Promise<DataSourceMeta>;
-  test: RandomDataAccessor<T>;
-  train: RandomDataAccessor<T>;
-  evaluate?: RandomDataAccessor<T>;
+  test: DataAccessor<T>;
+  train: DataAccessor<T>;
+  evaluate?: DataAccessor<T>;
 }
 
 /**
@@ -148,7 +148,7 @@ export interface Runtime<T = DefaultType> {
   // read model file
   readModel: () => Promise<string>;
   // datasource
-  dataSource: DataSourceApi<T>;
+  dataSource: SequentialDataSourceApi<T>;
 }
 
 export type FrameworkModule = any;
@@ -177,12 +177,12 @@ export interface ScriptContext {
 /**
  * type of data source script entry
  */
-export type DataSourceEntry<T> = (options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi<T>>;
+export type DataSourceEntry<T> = (options: Record<string, any>, context: ScriptContext) => Promise<SequentialDataSourceApi<T>>;
 
 /**
  * type of data flow script entry
  */
-export type DataFlowEntry<IN, OUT = IN> = (api: DataSourceApi<IN>, options: Record<string, any>, context: ScriptContext) => Promise<DataSourceApi<OUT>>;
+export type DataFlowEntry<IN, OUT = IN> = (api: SequentialDataSourceApi<IN>, options: Record<string, any>, context: ScriptContext) => Promise<SequentialDataSourceApi<OUT>>;
 
 /**
  * type of model script entry
