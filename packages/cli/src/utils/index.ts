@@ -39,12 +39,13 @@ export function dateToString(date: Date): string {
 }
 
 export const mirrorUrl = (framework: string): string => {
-  let pyVersion = boa.import('platform').python_version();
-  pyVersion = `python${pyVersion.substr(0, pyVersion.lastIndexOf('.'))}`;
+  let pyVersion: string = boa.import('platform').python_version();
+  const semver = pyVersion.split('.');
+  pyVersion = `py${semver[0]}${semver[1]}`;
   const nodeVersion = `node${process.versions.node.substr(0, process.versions.node.indexOf('.'))}`;
   return url.resolve(
     constants.PIPCOOK_FRAMEWORK_MIRROR_BASE,
-    `${pyVersion}/${nodeVersion}/${encodeURIComponent(framework)}-${os.platform()}-${os.arch()}-v${process.versions.napi}.zip`
+    `${nodeVersion}-${pyVersion}/${encodeURIComponent(framework)}-${os.platform()}-${os.arch()}-v${process.versions.napi}.zip`
   );
 };
 
