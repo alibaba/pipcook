@@ -81,3 +81,9 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run bayes
+      env:
+        accessKeyId: ${{ secrets.OSS_ACCESS_KEY }}
+        accessKeySecret: ${{ secrets.OSS_ACCESS_SECRET }}
+      run: |
+        ./packages/cli/dist/bin/pipcook run ./example/pipelines/bayes.v2.json
