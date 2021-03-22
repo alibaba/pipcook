@@ -10,7 +10,7 @@
     "target": "oss://pipcook-cloud/model/mobile2.0"
   }],
   "options": {
-    "framework": "http://pipcook.oss-cn-hangzhou.aliyuncs.com/mirrors/tf-node-mac.zip",
+    "framework": "mobilenet@1.0.0",
     "train": {
       "epochs": 1,
       "validationRequired": true
