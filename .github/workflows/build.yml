@@ -86,5 +86,5 @@ jobs:
         accessKeyId: ${{ secrets.OSS_ACCESS_ID }}
         accessKeySecret: ${{ secrets.OSS_ACCESS_SECRET }}
       run: |
-        wget https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/framework/python3.7/node14/bayes%401.0.0-darwin-x64-v6.zip
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/bayes.v2.json -d
+        ./packages/cli/dist/bin/pipcook run ./example/pipelines/mobilenet.v2.json -d
