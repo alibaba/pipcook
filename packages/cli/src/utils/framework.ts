@@ -18,6 +18,7 @@ export const prepareFramework = async (
     } else {
       realUrl = mirrorUrl(pipelineMeta.options.framework);
     }
+    console.log('realUrl', realUrl);
     await fetchWithCache(
       constants.PIPCOOK_FRAMEWORK_PATH,
       realUrl,
