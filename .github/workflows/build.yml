@@ -83,7 +83,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Run bayes
       env:
-        accessKeyId: ${{ secrets.OSS_ACCESS_KEY }}
+        accessKeyId: ${{ secrets.OSS_ACCESS_ID }}
         accessKeySecret: ${{ secrets.OSS_ACCESS_SECRET }}
       run: |
         ./packages/cli/dist/bin/pipcook run ./example/pipelines/bayes.v2.json
