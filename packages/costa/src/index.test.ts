@@ -81,15 +81,14 @@ test.serial('run data source script', async (t) => {
       mockOpts: 'opts'
     }
   };
-  const mockPipelineOpts = { mock: 'value' };
   const mockResult: any = { mockResult: 'value' };
   const mockModule = sinon.stub().callsFake(async (options: Record<string, any>, ctx: ScriptContext) => {
     t.is(ctx, costa.context, 'context should be equal');
-    t.is(mockPipelineOpts, options, 'options should be equal');
+    t.deepEqual({ workspace: mockOpts.workspace, ...script.query }, options, 'options should be equal');
     return mockResult;
   });
   const stubImportScript = sinon.stub(costa, 'importScript').resolves(mockModule);
-  const api = await costa.runDataSource(script, mockPipelineOpts);
+  const api = await costa.runDataSource(script);
   t.true(stubImportScript.calledOnce, 'import should be called once');
   t.true(mockModule.calledOnce, 'module should be called once');
   t.is(api, mockResult, 'should return api');
@@ -110,7 +109,7 @@ test.serial('run data flow scripts', async (t) => {
   const mockModule = sinon.stub().callsFake(async (api: DataSourceApi<any>, opts: Record<string, any>, ctx: ScriptContext) => {
     t.is(api, mockDataSourceApi, 'api should be equal');
     t.is(ctx, costa.context, 'context should be equal');
-    t.is(script.query, opts, 'options should be equal');
+    t.deepEqual({ workspace: mockOpts.workspace, ...script.query }, opts, 'options should be equal');
     return mockDataSourceApi;
   });
   const stubImportScript = sinon.stub(costa, 'importScript').resolves(mockModule);
