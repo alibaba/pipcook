@@ -13,7 +13,7 @@ import {
   ProgressInfo,
   pipelineAsync,
   seedrandom,
-  uuid
+  generateId
 } from '@pipcook/core';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -56,7 +56,7 @@ export class DataAccessorImpl<T> implements RandomDataAccessor<T> {
     return this.dataAccessor.seek(pos);
   }
   createRandom(size: number, seed?: string): Array<number> {
-    const rng = seedrandom( seed || uuid() );
+    const rng = seedrandom( seed || generateId() );
     if (size === 0)
       return [];
     let i = 0;
@@ -75,11 +75,7 @@ export class DataAccessorImpl<T> implements RandomDataAccessor<T> {
   }
   async resetRandom(randomSeed?: string): Promise<Array<number>> {
     this.randomIndex = 0;
-    if ( randomSeed ) {
-      return this.createRandom(this.size, randomSeed);
-    } else {
-      return this.createRandom(this.size);
-    }
+    return this.createRandom(this.size, randomSeed);
   }
 }
 

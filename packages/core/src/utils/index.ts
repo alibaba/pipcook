@@ -5,7 +5,6 @@ import * as fs from 'fs-extra';
 import { customAlphabet } from 'nanoid';
 import { PIPCOOK_TMPDIR } from '../constants';
 import * as seed from 'seedrandom';
-import { v4 as uuidv4, v4 } from 'uuid';
 
 export * as Script from './script';
 
@@ -99,7 +98,3 @@ export function generateId(): string {
  */
 export const seedrandom = seed;
 
-/**
- * uuid
- */
-export const uuid: typeof v4 = uuidv4;

@@ -6,8 +6,7 @@ export {
   shuffle,
   generateId,
   pipelineAsync,
-  seedrandom,
-  uuid
+  seedrandom
 } from './utils';
 
 export * from './types/runtime';

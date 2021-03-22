@@ -5,9 +5,9 @@ import { DataAccessorImpl } from './standalone-impl';
 test.serial.afterEach(() => sinon.restore());
 
 const mockDataAccess: any = {
-  next: () => { return; },
-  nextBatch: () => { return; },
-  seek: () => { return; }
+  next: () => sinon.stub().returns(null),
+  nextBatch: () => sinon.stub().returns(null),
+  seek: () => () => sinon.stub().returns(null)
 };
 
 test.serial('initialize DataAccessorImpl', async (t) => {
@@ -20,9 +20,7 @@ test.serial('initialize DataAccessorImpl', async (t) => {
 });
 
 test.serial('run dataAccessorImpl next', async (t) => {
-  const mockNext = sinon.stub().callsFake(async () => {
-    return { label: 1, data: 'next' };
-  });
+  const mockNext = sinon.stub().resolves({ label: 1, data: 'next' });
   sinon.replace(mockDataAccess, 'next', mockNext);
   const dataAccessor = new DataAccessorImpl(mockDataAccess);
   t.deepEqual(await dataAccessor.next(), { label: 1, data: 'next' }, 'should return sample');
@@ -40,9 +38,7 @@ test.serial('run dataAccessorImpl nextBatch', async (t) => {
 });
 
 test.serial('run dataAccessorImpl nextRandom', async (t) => {
-  const mockNext = sinon.stub().callsFake(async () => {
-    return { label: 1, data: 'next' };
-  });
+  const mockNext = sinon.stub().resolves({ label: 1, data: 'next' });
   sinon.replace(mockDataAccess, 'next', mockNext);
   const mockSeek = sinon.stub().callsFake(async () => { return; });
   sinon.replace(mockDataAccess, 'seek', mockSeek);
@@ -58,9 +54,7 @@ test.serial('run dataAccessorImpl nextRandom', async (t) => {
 });
 
 test.serial('run dataAccessorImpl nextBatchRandom', async (t) => {
-  const mockNextRandom = sinon.stub().callsFake(async () => {
-    return { label: 3, data: 'nextRandom' };
-  });
+  const mockNextRandom = sinon.stub().resolves({ label: 3, data: 'nextRandom' });
   const dataAccessor = new DataAccessorImpl(mockDataAccess);
   await dataAccessor.init(20, 'hello');
   sinon.replace(dataAccessor, 'nextRandom', mockNextRandom);
@@ -73,12 +67,12 @@ test.serial('run dataAccessorImpl nextBatchRandom', async (t) => {
 });
 
 test.serial('run dataAccessorImpl seek', async (t) => {
-  const mockSeek = sinon.stub().callsFake(async () => { return; });
+  const mockSeek = sinon.stub().resolves(null);
   sinon.replace(mockDataAccess, 'seek', mockSeek);
   const dataAccessor = new DataAccessorImpl(mockDataAccess);
   await dataAccessor.seek(0);
   t.true(mockSeek.calledOnce, 'seek should be called once');
-  t.is(await dataAccessor.seek(0), undefined, 'should return void');
+  t.is(await dataAccessor.seek(0), null, 'should return void');
 });
 
 interface mockArgs {
@@ -109,5 +103,5 @@ test.serial('run dataAccessorImpl resetRandom', async (t) => {
   const dataAccessor = new DataAccessorImpl(mockDataAccess);
   sinon.replace(dataAccessor, 'createRandom', mockCreateRandom);
   t.deepEqual(await dataAccessor.resetRandom(), [ 1 ], 'resetRandom should return correctly');
-  t.deepEqual(await dataAccessor.resetRandom('string'), [ 3 ], 'resetRandom should return correctly while string exist');
+  t.is(dataAccessor.randomIndex, 0, 'randomIndex should be 0');
 });

@@ -6,10 +6,6 @@
   ],
   "devDependencies": {
     "@lerna/bootstrap": "^3.18.4",
-    "@types/extract-zip": "^1.6.2",
-    "@types/jasmine": "^3.5.10",
-    "@types/targz": "^1.0.0",
-    "@types/xml2js": "^0.4.8",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
     "docsify-cli": "^4.4.0",
