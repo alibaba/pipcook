@@ -72,7 +72,7 @@ export interface DataSourceSize {
   /**
    * The size of dataset for validating.
    */
-  valid?: number;
+  validation?: number;
 }
 
 /**
@@ -123,7 +123,7 @@ export interface DataSourceApi<T = DefaultType> {
   // train dataset accessor
   train: DataAccessor<T>;
   // valid dataset accessor, optional
-  valid?: DataAccessor<T>;
+  validation?: DataAccessor<T>;
 }
 
 /**
