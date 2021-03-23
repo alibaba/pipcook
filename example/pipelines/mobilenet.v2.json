@@ -1,6 +1,6 @@
 {
   "specVersion": "2.0",
-  "dataSource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-image-classification-collector@71b79d6/build/script.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
+  "dataSource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-image-classification-collector@d00337c/build/script.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
   "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-tfjs-mobilenet-model@2.0/build/script.js",
   "dataflow": [
     "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-process-tfjs-image-classification@2.0/build/script.js?size=224&size=224"
