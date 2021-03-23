@@ -89,12 +89,12 @@ test('generate dataflow entry with sample null', async (t) => {
   const options = { mock: 'mock value' };
   const context = { ctx: 'mock value' };
   const test = train;
-  const valid = train;
+  const validation = train;
   const mockDataSourceApi: DataSourceApi<any> = {
     getDataSourceMeta: async () => meta,
     train,
     test,
-    valid
+    validation
   };
   const stubNext = sinon.stub().callsFake(async (sample: Sample<any> | null, opts: Record<string, any>, ctx: ScriptContext) => {
     t.deepEqual(options, opts, 'options is not correct for next');
