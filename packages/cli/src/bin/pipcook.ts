@@ -59,8 +59,8 @@ export const createScriptRepo = async (scriptType: string, name: string): Promis
     if (await fs.pathExists(destDir)) {
       throw new TypeError(`${name} already exists`);
     }
-    const [ type, branch ] = scriptType.split('@');
-    const template = branch ? templateMap[type] : `${templateMap[type]}#${branch}`;
+    const [ type, branch = 'main' ] = scriptType.split('@');
+    const template = `${templateMap[type]}#${branch}`;
     if (!template) {
       throw new TypeError(`no template found for ${scriptType}, it should be one of 'datasource', 'dataflow', 'model'`);
     }
@@ -73,10 +73,12 @@ export const createScriptRepo = async (scriptType: string, name: string): Promis
         }
       });
     });
-    const pkg = await fs.readJson(pkgFile);
-    pkg.name = name;
-    await fs.writeJson(pkgFile, pkg, {spaces: 2 });
-    await execAsync('npm i', { cwd: destDir });
+    if (await fs.pathExists(pkgFile)) {
+      const pkg = await fs.readJson(pkgFile);
+      pkg.name = name;
+      await fs.writeJson(pkgFile, pkg, {spaces: 2 });
+      await execAsync('npm i', { cwd: destDir });  
+    }
     logger.info('initialize script project successfully');
   } catch (err) {
     logger.fail(`create from template failed: ${err.message}`);
