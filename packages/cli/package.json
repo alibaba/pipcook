@@ -21,7 +21,6 @@
     "@pipcook/boa": "^2.0.0-beta.1",
     "@pipcook/core": "^2.0.0-beta.1",
     "@pipcook/costa": "^2.0.0-beta.1",
-    "@types/cli-progress": "^3.9.1",
     "chalk": "^3.0.0",
     "cli-progress": "^3.9.0",
     "command-exists": "^1.2.8",
@@ -35,6 +34,7 @@
   },
   "gitHead": "53e131a069b3112a74ae5d99aa1ab08bec768c7e",
   "devDependencies": {
+    "@types/cli-progress": "^3.9.1",
     "@types/command-exists": "^1.2.0",
     "@types/semver": "^7.3.4",
     "ava": "^3.13.0",
