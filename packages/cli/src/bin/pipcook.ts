@@ -14,7 +14,7 @@ const download = require('download-git-repo');
 const templateMap: Record<string, any>= {
   'datasource': 'imgcook/pipcook-datasource-template',
   'dataflow': 'imgcook/pipcook-dataflow-template',
-  'model': 'imgcook/pipcook-model-template#init'
+  'model': 'imgcook/pipcook-model-template'
 };
 export interface RunOptions {
   output: string;
