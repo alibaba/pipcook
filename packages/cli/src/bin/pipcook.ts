@@ -12,8 +12,8 @@ import { logger, dateToString, execAsync } from '../utils';
 const download = require('download-git-repo');
 
 const templateMap: Record<string, any>= {
-  'datasource': 'imgcook/pipcook-datasource-template#init',
-  'dataflow': 'imgcook/pipcook-dataflow-template#init',
+  'datasource': 'imgcook/pipcook-datasource-template',
+  'dataflow': 'imgcook/pipcook-dataflow-template',
   'model': 'imgcook/pipcook-model-template#init'
 };
 export interface RunOptions {
@@ -59,7 +59,8 @@ export const createScriptRepo = async (scriptType: string, name: string): Promis
     if (await fs.pathExists(destDir)) {
       throw new TypeError(`${name} already exists`);
     }
-    const template = templateMap[scriptType];
+    const [ type, branch ] = scriptType.split('@');
+    const template = branch ? templateMap[type] : `${templateMap[type]}#${branch}`;
     if (!template) {
       throw new TypeError(`no template found for ${scriptType}, it should be one of 'datasource', 'dataflow', 'model'`);
     }
