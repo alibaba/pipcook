@@ -50,7 +50,7 @@ export class StandaloneRuntime {
     logger.info('initializing framework packages');
     await costa.initFramework();
     logger.info('running data source script');
-    let dataSource = await costa.runDataSource(scripts.dataSource, this.pipelineMeta.options);
+    let dataSource = await costa.runDataSource(scripts.dataSource);
     logger.info('running data flow script');
     if (scripts.dataflow) {
       dataSource = await costa.runDataflow(dataSource, scripts.dataflow);
