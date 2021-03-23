@@ -3,12 +3,19 @@
 import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
+import * as fs from 'fs-extra';
 import { join } from 'path';
 import { constants } from '@pipcook/core';
 import { readJson, mkdirp, remove } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
-import { logger, dateToString } from '../utils';
+import { logger, dateToString, execAsync } from '../utils';
+const download = require('download-git-repo');
 
+const templateMap: Record<string, any>= {
+  'datasource': 'imgcook/pipcook-datasource-template#init',
+  'dataflow': 'imgcook/pipcook-dataflow-template#init',
+  'model': 'imgcook/pipcook-model-template#init'
+};
 export interface RunOptions {
   output: string;
   nocache: boolean;
@@ -45,6 +52,36 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
   await Promise.all(futures);
 };
 
+export const createScriptRepo = async (scriptType: string, name: string): Promise<void> => {
+  try {
+    const destDir = join(process.cwd(), name);
+    const pkgFile = join(destDir, 'package.json');
+    if (await fs.pathExists(destDir)) {
+      throw new TypeError(`${name} already exists`);
+    }
+    const template = templateMap[scriptType];
+    if (!template) {
+      throw new TypeError(`no template found for ${scriptType}, it should be one of 'datasource', 'dataflow', 'model'`);
+    }
+    await new Promise<void>((resolve, reject) => {
+      download(template, destDir, { clone: true }, function (err: Error) {
+        if (err) {
+          reject(new TypeError(`initialize script project error: ${err.message}`));
+        } else {
+          resolve();
+        }
+      });
+    });
+    const pkg = await fs.readJson(pkgFile);
+    pkg.name = name;
+    await fs.writeJson(pkgFile, pkg, {spaces: 2 });
+    await execAsync('npm i', { cwd: destDir });
+    logger.info('initialize script project successfully');
+  } catch (err) {
+    logger.fail(`create from template failed: ${err.message}`);
+  }
+};
+
 (async function(): Promise<void> {
   // check node version
   if (!semver.gte(process.version, '10.0.0')) {
@@ -79,6 +116,11 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
   program
     .command('install')
     .description('install dependencies non-essential: tvm, emscripten, and ...');
+
+  program
+    .command('script <scriptType> <name>')
+    .description('create script repo from template, scriptType should be one of \'datasource\', \'dataflow\', \'model\'.')
+    .action(createScriptRepo);
 
   program.parse(process.argv);
 })();

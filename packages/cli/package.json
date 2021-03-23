@@ -25,6 +25,7 @@
     "cli-progress": "^3.9.0",
     "command-exists": "^1.2.8",
     "commander": "^4.0.1",
+    "download-git-repo": "^3.0.2",
     "fs-extra": "^8.1.0",
     "import-fresh": "^3.3.0",
     "ora": "^3.4.0",
