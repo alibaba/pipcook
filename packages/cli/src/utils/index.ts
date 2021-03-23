@@ -8,6 +8,10 @@ export * as Script from './script';
 export * as Plugin from './plugin';
 export * as Cache from './cache';
 export * as Framework from './framework';
+import * as os from 'os';
+import * as url from 'url';
+import { constants } from '@pipcook/core';
+import * as boa from '@pipcook/boa';
 
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
@@ -33,6 +37,17 @@ export function dateToString(date: Date): string {
   }
   return `${year}${fillZero(month)}${fillZero(day)}${fillZero(hour)}${fillZero(min)}${fillZero(sec)}`;
 }
+
+export const mirrorUrl = (framework: string): string => {
+  let pyVersion: string = boa.import('platform').python_version();
+  const semver = pyVersion.split('.');
+  pyVersion = `py${semver[0]}${semver[1]}`;
+  const nodeVersion = `node${process.versions.node.substr(0, process.versions.node.indexOf('.'))}`;
+  return url.resolve(
+    constants.PIPCOOK_FRAMEWORK_MIRROR_BASE,
+    `${nodeVersion}-${pyVersion}/${encodeURIComponent(framework)}-${os.platform()}-${os.arch()}-v${process.versions.napi}.zip`
+  );
+};
 
 interface Logger {
   success(message: string): void;

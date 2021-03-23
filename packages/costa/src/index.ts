@@ -96,15 +96,12 @@ export class Costa {
    * @param script the metadata of script
    * @param options options of the pipeline
    */
-  async runDataSource(script: PipcookScript, options: Record<string, any>): Promise<SequentialDataSourceApi> {
-    options = Object.assign(options, {
-      workspace: this.options.workspace
-    });
+  async runDataSource(script: PipcookScript): Promise<SequentialDataSourceApi> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
     const fn = await this.importScript<DataSourceEntry<DefaultType>>(script);
     debug(`loaded the script(${script.name}), start it.`);
-    return await fn(options, this.context);
+    return await fn(script.query, this.context);
   }
 
   /**

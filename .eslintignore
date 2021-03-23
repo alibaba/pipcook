@@ -6,10 +6,4 @@ pipcook_venv
 output
 example
 
-packages/pipcook-core/src/assets
-packages/pipcook-cli/assets
-packages/daemon
-packages/pipboard
 packages/boa
-packages/cli/assets
-pipcook-output
