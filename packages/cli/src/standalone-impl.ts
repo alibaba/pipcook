@@ -32,13 +32,13 @@ export class DataAccessorImpl<T> implements DataAccessor<T> {
 class DataSourceProxy<T> implements DataSourceApi<T> {
   public test: DataAccessor<T>;
   public train: DataAccessor<T>;
-  public valid: DataAccessor<T>;
+  public validation: DataAccessor<T>;
   constructor(
     private datasource: DataSourceApi<T>
   ) {
     this.test = new DataAccessorImpl(datasource.test);
     this.train = new DataAccessorImpl(datasource.train);
-    this.valid = new DataAccessorImpl(datasource.valid);
+    this.validation = new DataAccessorImpl(datasource.validation);
   }
   getDataSourceMeta(): Promise<TableDataSourceMeta | ImageDataSourceMeta> {
     return this.datasource.getDataSourceMeta();
