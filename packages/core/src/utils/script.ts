@@ -28,7 +28,7 @@ export const generateDataFlow = function<T> (sampleProcessor: SampleProcessor, m
     return {
       train: createDataAccessor(dataSource.train, options, context),
       test: createDataAccessor(dataSource.test, options, context),
-      valid: dataSource.valid ? createDataAccessor(dataSource.valid, options, context) : undefined,
+      validation: dataSource.validation ? createDataAccessor(dataSource.validation, options, context) : undefined,
       getDataSourceMeta: () => {
         return metaProcessor(dataSource, options, context);
       }
