@@ -11,7 +11,7 @@ import { StandaloneRuntime } from '../runtime';
 import { logger, dateToString, execAsync } from '../utils';
 const download = require('download-git-repo');
 
-const templateMap: Record<string, any>= {
+const templateMap: Record<string, any> = {
   'datasource': 'imgcook/pipcook-datasource-template',
   'dataflow': 'imgcook/pipcook-dataflow-template',
   'model': 'imgcook/pipcook-model-template'
@@ -76,8 +76,8 @@ export const createScriptRepo = async (scriptType: string, name: string): Promis
     if (await fs.pathExists(pkgFile)) {
       const pkg = await fs.readJson(pkgFile);
       pkg.name = name;
-      await fs.writeJson(pkgFile, pkg, {spaces: 2 });
-      await execAsync('npm i', { cwd: destDir });  
+      await fs.writeJson(pkgFile, pkg, { spaces: 2 });
+      await execAsync('npm i', { cwd: destDir });
     }
     logger.info('initialize script project successfully');
   } catch (err) {
