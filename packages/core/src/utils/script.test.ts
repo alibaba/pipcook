@@ -2,7 +2,7 @@ import test from 'ava';
 import * as sinon from 'sinon';
 import { Script } from '.';
 import { DataSourceType, ImageDataSourceMeta, Sample, ScriptContext } from '../types/runtime';
-import { DataSourceApi } from '../types/runtime';
+import { SequentialDataSourceApi } from '../types/runtime';
 
 test('generate dataflow entry', async (t) => {
   const meta: ImageDataSourceMeta = {
@@ -36,7 +36,7 @@ test('generate dataflow entry', async (t) => {
   const options = { mock: 'mock value' };
   const context = { ctx: 'mock value' };
   const test = train;
-  const mockDataSourceApi: DataSourceApi<any> = {
+  const mockDataSourceApi: SequentialDataSourceApi<any> = {
     getDataSourceMeta: async () => meta,
     train,
     test
@@ -46,7 +46,7 @@ test('generate dataflow entry', async (t) => {
     t.deepEqual(context as any, ctx, 'context is not correct for next');
     return sample;
   });
-  const stubGetDataSourceMeta = sinon.stub().callsFake(async (api: DataSourceApi, opts: Record<string, any>, ctx: ScriptContext) => {
+  const stubGetDataSourceMeta = sinon.stub().callsFake(async (api: SequentialDataSourceApi, opts: Record<string, any>, ctx: ScriptContext) => {
     t.deepEqual(options, opts, 'options is not correct');
     t.deepEqual(context as any, ctx, 'context is not correct');
     return api.getDataSourceMeta();
@@ -90,7 +90,7 @@ test('generate dataflow entry with sample null', async (t) => {
   const context = { ctx: 'mock value' };
   const test = train;
   const evaluate = train;
-  const mockDataSourceApi: DataSourceApi<any> = {
+  const mockDataSourceApi: SequentialDataSourceApi<any> = {
     getDataSourceMeta: async () => meta,
     train,
     test,
@@ -101,7 +101,7 @@ test('generate dataflow entry with sample null', async (t) => {
     t.deepEqual(context as any, ctx, 'context is not correct for next');
     return sample;
   });
-  const stubGetDataSourceMeta = sinon.stub().callsFake(async (api: DataSourceApi, opts: Record<string, any>, ctx: ScriptContext) => {
+  const stubGetDataSourceMeta = sinon.stub().callsFake(async (api: SequentialDataSourceApi, opts: Record<string, any>, ctx: ScriptContext) => {
     t.deepEqual(options, opts, 'options is not correct');
     t.deepEqual(context as any, ctx, 'context is not correct');
     return api.getDataSourceMeta();

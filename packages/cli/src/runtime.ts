@@ -50,13 +50,13 @@ export class StandaloneRuntime {
     logger.info('initializing framework packages');
     await costa.initFramework();
     logger.info('running data source script');
-    let dataSource = await costa.runDataSource(scripts.dataSource, this.pipelineMeta.options);
+    let dataSource = await costa.runDataSource(scripts.dataSource);
     logger.info('running data flow script');
     if (scripts.dataflow) {
       dataSource = await costa.runDataflow(dataSource, scripts.dataflow);
     }
     logger.info('running model script');
-    const standaloneRT = createStandaloneRT(dataSource, this.pipelineMeta, this.workspace.modelDir);
+    const standaloneRT = await createStandaloneRT(dataSource, this.pipelineMeta, this.workspace.modelDir);
     await costa.runModel(standaloneRT, scripts.model, this.pipelineMeta.options);
     logger.info(`pipeline finished, the model has been saved at ${this.workspace.modelDir}`);
     for (const artifact of artifactPlugins) {

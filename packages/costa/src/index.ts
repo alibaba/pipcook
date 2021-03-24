@@ -1,7 +1,7 @@
 import {
   Runtime,
   PipcookScript,
-  DataSourceApi,
+  SequentialDataSourceApi,
   PipcookFramework,
   DataSourceEntry,
   ModelEntry,
@@ -96,16 +96,12 @@ export class Costa {
    * @param script the metadata of script
    * @param options options of the pipeline
    */
-  async runDataSource(script: PipcookScript, options: Record<string, any>): Promise<DataSourceApi> {
-    options = Object.assign(options, {
-      workspace: this.options.workspace,
-      ...script.query
-    });
+  async runDataSource(script: PipcookScript): Promise<SequentialDataSourceApi> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
     const fn = await this.importScript<DataSourceEntry<DefaultType>>(script);
     debug(`loaded the script(${script.name}), start it.`);
-    return await fn(options, this.context);
+    return await fn(script.query, this.context);
   }
 
   /**
@@ -113,7 +109,7 @@ export class Costa {
    * @param api api from data source script or another dataflow script
    * @param script the metadata of script
    */
-  async runDataflow(api: DataSourceApi, scripts: Array<PipcookScript>): Promise<DataSourceApi> {
+  async runDataflow(api: SequentialDataSourceApi, scripts: Array<PipcookScript>): Promise<SequentialDataSourceApi> {
     for (const script of scripts) {
       debug(`start loading the script(${script.name})`);
       const fn = await this.importScript<DataFlowEntry<DefaultType>>(script);
