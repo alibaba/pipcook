@@ -5,7 +5,6 @@ import {
 } from 'child_process';
 import * as fs from 'fs-extra';
 import * as CliProgress from 'cli-progress';
-import * as url from 'url';
 import * as path from 'path';
 import * as request from 'request';
 import realOra = require('ora');
@@ -16,7 +15,6 @@ export * as Cache from './cache';
 export * as Framework from './framework';
 import * as os from 'os';
 import * as url from 'url';
-import { constants } from '@pipcook/core';
 import * as boa from '@pipcook/boa';
 
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
