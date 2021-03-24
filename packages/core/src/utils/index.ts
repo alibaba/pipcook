@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { customAlphabet } from 'nanoid';
 import { PIPCOOK_TMPDIR } from '../constants';
+import * as seed from 'seedrandom';
 
 export * as Script from './script';
 
@@ -91,3 +92,9 @@ export function shuffle(array: any[]): void {
 export function generateId(): string {
   return nanoid();
 }
+
+/**
+ * seedrandom
+ */
+export const seedrandom = seed;
+

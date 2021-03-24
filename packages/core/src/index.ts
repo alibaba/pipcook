@@ -5,7 +5,8 @@ export {
   compressTarFile,
   shuffle,
   generateId,
-  pipelineAsync
+  pipelineAsync,
+  seedrandom
 } from './utils';
 
 export * from './types/runtime';
