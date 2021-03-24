@@ -25,3 +25,8 @@ export const PIPCOOK_SCRIPT_PATH = join(PIPCOOK_HOME_PATH, 'script');
  * pipcook artifact plugin path
  */
 export const PIPCOOK_PLUGIN_ARTIFACT_PATH = join(PIPCOOK_HOME_PATH, 'artifact');
+
+/**
+ * pipcook framework mirror url
+ */
+export const PIPCOOK_FRAMEWORK_MIRROR_BASE = 'https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/framework/';

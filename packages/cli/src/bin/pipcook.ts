@@ -29,11 +29,7 @@ export const run = async (filename: string, opts: RunOptions): Promise<void> => 
     const runtime = new StandaloneRuntime(opts.output, pipelineConfig, !opts.nocache);
     await runtime.run();
   } catch (err) {
-    if (!opts.debug) {
-      logger.fail(`run pipeline error: ${err.message}`);
-    } else {
-      throw err;
-    }
+    logger.fail(`run pipeline error: ${ opts.debug ? err.stack : err.message }`);
   }
 };
 
