@@ -2725,13 +2725,22 @@ img {
 		<li class="current tsd-kind-interface tsd-has-type-parameter">
 			<a href="dataaccessor.html" class="tsd-kind-icon">Data<wbr>Accessor</a>
 			<ul>
-				<li class=" tsd-kind-property tsd-parent-kind-interface">
+				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a href="dataaccessor.html#next" class="tsd-kind-icon">next</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-interface">
+				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a href="dataaccessor.html#nextbatch" class="tsd-kind-icon">next<wbr>Batch</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="dataaccessor.html#nextbatchrandom" class="tsd-kind-icon">next<wbr>Batch<wbr>Random</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="dataaccessor.html#nextrandom" class="tsd-kind-icon">next<wbr>Random</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="dataaccessor.html#resetrandom" class="tsd-kind-icon">reset<wbr>Random</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a href="dataaccessor.html#seek" class="tsd-kind-icon">seek</a>
 				</li>
 			</ul>
@@ -2746,13 +2755,21 @@ img {
 				<li>
 					<h4>T</h4>
 				</li>
+				<li>
+					<h4>T</h4>
+				</li>
 			</ul>
 		</section>
 		<section class="tsd-panel tsd-hierarchy">
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
 				<li>
-					<span class="target">DataAccessor</span>
+					<a href="sequentialdataaccessor.html" class="tsd-signature-type">SequentialDataAccessor</a>
+					<ul class="tsd-hierarchy">
+						<li>
+							<span class="target">DataAccessor</span>
+						</li>
+					</ul>
 				</li>
 			</ul>
 		</section>
@@ -2763,9 +2780,12 @@ img {
 					<section class="tsd-index-section ">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="dataaccessor.html#next" class="tsd-kind-icon">next</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="dataaccessor.html#nextbatch" class="tsd-kind-icon">next<wbr>Batch</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="dataaccessor.html#seek" class="tsd-kind-icon">seek</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="dataaccessor.html#next" class="tsd-kind-icon">next</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="dataaccessor.html#nextbatch" class="tsd-kind-icon">next<wbr>Batch</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="dataaccessor.html#nextbatchrandom" class="tsd-kind-icon">next<wbr>Batch<wbr>Random</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="dataaccessor.html#nextrandom" class="tsd-kind-icon">next<wbr>Random</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="dataaccessor.html#resetrandom" class="tsd-kind-icon">reset<wbr>Random</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="dataaccessor.html#seek" class="tsd-kind-icon">seek</a></li>
 						</ul>
 					</section>
 				</div>
@@ -2773,13 +2793,14 @@ img {
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Properties</h2>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 				<a name="next" class="tsd-anchor"></a>
 				<h3>next</h3>
 				<div class="tsd-signature tsd-kind-icon">next<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="sample.html" class="tsd-signature-type">Sample</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
+					<p>Inherited from <a href="sequentialdataaccessor.html">SequentialDataAccessor</a>.<a href="sequentialdataaccessor.html#next">next</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/82ae362/packages/core/src/types/runtime.ts#L94">packages/core/src/types/runtime.ts:94</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/852e1b1/packages/core/src/types/runtime.ts#L94">packages/core/src/types/runtime.ts:94</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -2798,13 +2819,14 @@ img {
 					</ul>
 				</div>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 				<a name="nextbatch" class="tsd-anchor"></a>
 				<h3>next<wbr>Batch</h3>
 				<div class="tsd-signature tsd-kind-icon">next<wbr>Batch<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>batchSize<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="sample.html" class="tsd-signature-type">Sample</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
+					<p>Inherited from <a href="sequentialdataaccessor.html">SequentialDataAccessor</a>.<a href="sequentialdataaccessor.html#nextbatch">nextBatch</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/82ae362/packages/core/src/types/runtime.ts#L95">packages/core/src/types/runtime.ts:95</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/852e1b1/packages/core/src/types/runtime.ts#L95">packages/core/src/types/runtime.ts:95</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -2830,12 +2852,100 @@ img {
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="nextbatchrandom" class="tsd-anchor"></a>
+				<h3>next<wbr>Batch<wbr>Random</h3>
+				<div class="tsd-signature tsd-kind-icon">next<wbr>Batch<wbr>Random<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>batchSize<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="sample.html" class="tsd-signature-type">Sample</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/852e1b1/packages/core/src/types/runtime.ts#L100">packages/core/src/types/runtime.ts:100</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-type-declaration">
+					<h4>Type declaration</h4>
+					<ul class="tsd-parameters">
+						<li class="tsd-parameter-signature">
+							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
+								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>batchSize<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="sample.html" class="tsd-signature-type">Sample</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></li>
+							</ul>
+							<ul class="tsd-descriptions">
+								<li class="tsd-description">
+									<h4 class="tsd-parameters-title">Parameters</h4>
+									<ul class="tsd-parameters">
+										<li>
+											<h5>batchSize: <span class="tsd-signature-type">number</span></h5>
+										</li>
+									</ul>
+									<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="sample.html" class="tsd-signature-type">Sample</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></h4>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="nextrandom" class="tsd-anchor"></a>
+				<h3>next<wbr>Random</h3>
+				<div class="tsd-signature tsd-kind-icon">next<wbr>Random<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="sample.html" class="tsd-signature-type">Sample</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/852e1b1/packages/core/src/types/runtime.ts#L99">packages/core/src/types/runtime.ts:99</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-type-declaration">
+					<h4>Type declaration</h4>
+					<ul class="tsd-parameters">
+						<li class="tsd-parameter-signature">
+							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
+								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="sample.html" class="tsd-signature-type">Sample</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></li>
+							</ul>
+							<ul class="tsd-descriptions">
+								<li class="tsd-description">
+									<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="sample.html" class="tsd-signature-type">Sample</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></h4>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="resetrandom" class="tsd-anchor"></a>
+				<h3>reset<wbr>Random</h3>
+				<div class="tsd-signature tsd-kind-icon">reset<wbr>Random<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>randomSeed<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/852e1b1/packages/core/src/types/runtime.ts#L101">packages/core/src/types/runtime.ts:101</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-type-declaration">
+					<h4>Type declaration</h4>
+					<ul class="tsd-parameters">
+						<li class="tsd-parameter-signature">
+							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
+								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>randomSeed<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+							</ul>
+							<ul class="tsd-descriptions">
+								<li class="tsd-description">
+									<h4 class="tsd-parameters-title">Parameters</h4>
+									<ul class="tsd-parameters">
+										<li>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> randomSeed: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+									<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 				<a name="seek" class="tsd-anchor"></a>
 				<h3>seek</h3>
 				<div class="tsd-signature tsd-kind-icon">seek<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>pos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
+					<p>Inherited from <a href="sequentialdataaccessor.html">SequentialDataAccessor</a>.<a href="sequentialdataaccessor.html#seek">seek</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/82ae362/packages/core/src/types/runtime.ts#L96">packages/core/src/types/runtime.ts:96</a></li>
+						<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/852e1b1/packages/core/src/types/runtime.ts#L96">packages/core/src/types/runtime.ts:96</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
