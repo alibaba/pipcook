@@ -7,6 +7,7 @@ import {
 } from '@pipcook/core';
 import * as path from 'path';
 import { parse } from 'url';
+import * as fs from 'fs-extra';
 import { fetchWithCache } from './cache';
 import * as queryString from 'query-string';
 
@@ -15,8 +16,17 @@ export const downloadScript = async (scriptDir: string, scriptOrder: number, url
   const baseName = path.parse(urlObj.pathname).base;
   const localPath = path.join(scriptDir, `${scriptOrder}-${baseName}`);
   const query = queryString.parse(urlObj.query);
-  // maybe should copy the script with COW
-  await fetchWithCache(constants.PIPCOOK_SCRIPT_PATH, url, localPath, enableCache);
+  // if the url is is file protocol, copy without cache
+  if (urlObj.protocol === 'file:') {
+    await fs.copy(urlObj.path, localPath);
+  } else {
+    if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+      // maybe should copy the script with COW
+      await fetchWithCache(constants.PIPCOOK_SCRIPT_PATH, url, localPath, enableCache);
+    } else {
+      throw new TypeError(`unsupported protocol ${urlObj.protocol}`);
+    }
+  }
   return {
     name: baseName,
     path: localPath,
