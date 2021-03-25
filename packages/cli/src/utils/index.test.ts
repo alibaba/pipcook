@@ -121,7 +121,7 @@ test.serial('downloadAndExtractTo local zip file', async (t) => {
 test.serial('downloadAndExtractTo https zip file', async (t) => {
   const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
   mockFunctionFromGetter(core, 'generateId').returns('id');
-  await utils.downloadAndExtractTo('https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/res.zip', core.constants.PIPCOOK_TMPDIR);
+  await utils.downloadAndExtractTo('http://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip', core.constants.PIPCOOK_TMPDIR);
   t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
   t.deepEqual(stubUnzipData.args[0], [
     path.join(core.constants.PIPCOOK_TMPDIR, 'id'),
