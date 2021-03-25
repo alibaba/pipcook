@@ -105,13 +105,13 @@ export function dateToString(date: Date): string {
   return `${year}${fillZero(month)}${fillZero(day)}${fillZero(hour)}${fillZero(min)}${fillZero(sec)}`;
 }
 
-export const mirrorUrl = (framework: string): string => {
+export const mirrorUrl = (mirror: string, framework: string): string => {
   let pyVersion: string = boa.import('platform').python_version();
   const semver = pyVersion.split('.');
   pyVersion = `py${semver[0]}${semver[1]}`;
   const nodeVersion = `node${process.versions.node.substr(0, process.versions.node.indexOf('.'))}`;
   return url.resolve(
-    constants.PIPCOOK_FRAMEWORK_MIRROR_BASE,
+    mirror || constants.PIPCOOK_FRAMEWORK_MIRROR_BASE,
     `${nodeVersion}-${pyVersion}/${encodeURIComponent(framework)}-${os.platform()}-${os.arch()}-v${process.versions.napi}.zip`
   );
 };

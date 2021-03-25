@@ -18,6 +18,7 @@ export class StandaloneRuntime {
   constructor(
     workspaceDir: string,
     private pipelineMeta: PipelineMeta,
+    private mirror: string,
     private enableCache = true
   ) {
     this.scriptDir = path.join(workspaceDir, 'scripts');
@@ -38,7 +39,7 @@ export class StandaloneRuntime {
   async run(): Promise<void> {
     await this.prepareWorkspace();
     logger.info('preparing framework');
-    const framework = await Framework.prepareFramework(this.pipelineMeta, this.workspace.frameworkDir, this.enableCache);
+    const framework = await Framework.prepareFramework(this.pipelineMeta, this.workspace.frameworkDir, this.mirror, this.enableCache);
     logger.info('preparing scripts');
     const scripts = await Script.prepareScript(this.pipelineMeta, this.scriptDir, this.enableCache);
     logger.info('preparing artifact plugins');

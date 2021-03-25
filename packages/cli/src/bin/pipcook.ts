@@ -13,6 +13,7 @@ export interface RunOptions {
   output: string;
   nocache: boolean;
   debug: boolean;
+  mirror: string;
 }
 
 export interface CacheCleanOptions {
@@ -26,7 +27,7 @@ export const run = async (filename: string, opts: RunOptions): Promise<void> => 
     pipelineConfig = await readJson(filename);
     // TODO(feely): check pipeline file
     await mkdirp(opts.output);
-    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, !opts.nocache);
+    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache);
     await runtime.run();
   } catch (err) {
     logger.fail(`run pipeline error: ${ opts.debug ? err.stack : err.message }`);
@@ -64,6 +65,7 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
     .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
     .option('--nocache', 'disabel cache for framework and scripts', false)
     .option('-d --debug', 'debug mode', false)
+    .option('-m --mirror <mirro>', 'framework mirror', '')
     .description('run pipeline with a json file.')
     .action(run);
 

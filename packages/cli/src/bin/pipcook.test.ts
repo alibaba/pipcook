@@ -11,6 +11,7 @@ test.serial('fetch with cache', async (t) => {
   const opts = {
     output: '/tmp',
     nocache: true,
+    mirror: '',
     debug: false
   };
   const mockPipelineConfig = { mock: 'value' };
