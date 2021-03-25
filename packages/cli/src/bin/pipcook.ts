@@ -65,7 +65,7 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
     .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
     .option('--nocache', 'disabel cache for framework and scripts', false)
     .option('-d --debug', 'debug mode', false)
-    .option('-m --mirror <mirro>', 'framework mirror', '')
+    .option('-m --mirror <mirror>', 'framework mirror', '')
     .description('run pipeline with a json file.')
     .action(run);
 

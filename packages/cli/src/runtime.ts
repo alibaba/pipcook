@@ -19,7 +19,7 @@ export class StandaloneRuntime {
     workspaceDir: string,
     private pipelineMeta: PipelineMeta,
     private mirror: string,
-    private enableCache = true
+    private enableCache: boolean
   ) {
     this.scriptDir = path.join(workspaceDir, 'scripts');
     this.workspace = {
