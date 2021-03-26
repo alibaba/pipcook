@@ -51,7 +51,7 @@ test.serial('prepare with file protocol and zip extname', async (t) => {
   const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
   const stubReadJson = sinon.stub(fs, 'readJson').resolves({ mock: 'value' });
 
-  const ret = await prepareFramework(pipelineMeta, frameworkDir);
+  const ret = await prepareFramework(pipelineMeta, frameworkDir, '');
 
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
   t.true(stubUnzipData.calledOnce, 'unzip should be called once');
@@ -74,7 +74,7 @@ test.serial('prepare with file protocol and no-zip extname', async (t) => {
   const stubCopy = sinon.stub(fs, 'copy').resolves();
   const stubReadJson = sinon.stub(fs, 'readJson').resolves({ mock: 'value' });
 
-  const ret = await prepareFramework(pipelineMeta, frameworkDir);
+  const ret = await prepareFramework(pipelineMeta, frameworkDir, 'http://a.b.c/');
 
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
   t.true(stubCopy.calledOnce, 'unzip should be called once');
