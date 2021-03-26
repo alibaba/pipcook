@@ -26,7 +26,7 @@ test('test if remote file was downloaded', async (t) => {
   const jsonFile = path.join(constants.PIPCOOK_TMPDIR, utils.generateId() + '.json');
   await t.notThrowsAsync(
     utils.download(
-      'https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/poet.song.91000.json',
+      'https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/package.json',
       jsonFile
     ), 'should download successfully');
   console.log('download', jsonFile);

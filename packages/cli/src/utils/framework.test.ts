@@ -21,7 +21,7 @@ test.serial('prepare with invalid options', async (t) => {
   const stubFetchWithCache = sinon.stub(cache, 'fetchWithCache').resolves();
   const stubReadJson = sinon.stub(fs, 'readJSON').resolves({});
 
-  const ret = await prepareFramework(pipelineMeta, frameworkDir);
+  const ret = await prepareFramework(pipelineMeta, frameworkDir, '');
 
   t.false(stubFetchWithCache.called);
   t.false(stubReadJson.called);
@@ -57,7 +57,7 @@ test.serial('prepare with valid options', async (t) => {
   const stubFetchWithCache = sinon.stub(cache, 'fetchWithCache').resolves();
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(framework);
 
-  const ret = await prepareFramework(pipelineMeta, frameworkDir);
+  const ret = await prepareFramework(pipelineMeta, frameworkDir, '');
 
   const expectedRet = {
     ...framework,

@@ -1,7 +1,11 @@
 import test from 'ava';
 import * as sinon from 'sinon';
 import * as ChildProcess from 'child_process';
+import * as path from 'path';
+import * as fs from 'fs-extra';
 import * as utils from './';
+import { mockFunctionFromGetter } from '../test.helper';
+import * as core from '@pipcook/core';
 const importRefresh = require('import-fresh');
 
 test.serial.afterEach(() => sinon.restore());
@@ -92,3 +96,55 @@ test.serial('default logger', (t) => {
   t.true(stubError.calledThrice, 'spinner.fail should be called thrice');
   t.true(subExit.calledTwice, 'process.exit should be called twice');
 });
+
+test('downloadAndExtractTo a invalid url', async (t) => {
+  await t.throwsAsync(
+    utils.downloadAndExtractTo('abcd', 'whatever'),
+    { instanceOf: TypeError }
+  );
+});
+
+test('downloadAndExtractTo a ftp url', async (t) => {
+  await t.throwsAsync(
+    utils.downloadAndExtractTo('ftp://a.com/abcd.zip', 'whatever'),
+    { instanceOf: TypeError }
+  );
+});
+
+test.serial('downloadAndExtractTo local zip file', async (t) => {
+  const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
+  await utils.downloadAndExtractTo('file:///abcd.zip', 'tmp');
+  t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
+  t.deepEqual(stubUnzipData.args[0], [ '/abcd.zip', 'tmp' ], 'should unzip the curruct file');
+});
+
+test.serial('downloadAndExtractTo https zip file', async (t) => {
+  const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
+  mockFunctionFromGetter(core, 'generateId').returns('id');
+  await utils.downloadAndExtractTo('http://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip', core.constants.PIPCOOK_TMPDIR);
+  t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
+  t.deepEqual(stubUnzipData.args[0], [
+    path.join(core.constants.PIPCOOK_TMPDIR, 'id'),
+    core.constants.PIPCOOK_TMPDIR
+  ], 'should unzip the curruct file');
+});
+
+test.serial('downloadAndExtractTo https non-zip file', async (t) => {
+  const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
+  mockFunctionFromGetter(core, 'generateId').returns('id');
+  const stubDownload = sinon.stub(utils, 'downloadWithProgress').resolves();
+  const urlStr = 'https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/res.jpg';
+  const target = 'tmp';
+  await utils.downloadAndExtractTo(urlStr, target);
+  t.false(stubUnzipData.called, 'unzipData should not be called');
+  t.true(stubDownload.calledOnce, 'download should be called once');
+  t.deepEqual(stubDownload.args[0], [ urlStr, target ], 'should download the curruct file');
+});
+
+test.serial('downloadAndExtractTo local jpg file', async (t) => {
+  const stubCopy = sinon.stub(fs, 'copy').resolves();
+  await utils.downloadAndExtractTo('file:///abcd.jpg', 'tmp');
+  t.true(stubCopy.calledOnce, 'fs.copy should be called once');
+  t.deepEqual(stubCopy.args[0], [ '/abcd.jpg', 'tmp' ] as any, 'should copy the curruct file');
+});
+

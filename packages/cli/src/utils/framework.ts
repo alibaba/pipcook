@@ -8,6 +8,7 @@ import { mirrorUrl } from './';
 export const prepareFramework = async (
   pipelineMeta: PipelineMeta,
   frameworkDir: string,
+  mirror: string,
   enableCache = true
 ): Promise<PipcookFramework> => {
   if (pipelineMeta.options.framework) {
@@ -16,7 +17,7 @@ export const prepareFramework = async (
     if ([ 'http:/', 'https:/', 'file:/' ].indexOf(urlObj.protocol) >= 0) {
       realUrl = pipelineMeta.options.framework;
     } else {
-      realUrl = mirrorUrl(pipelineMeta.options.framework);
+      realUrl = mirrorUrl(mirror, pipelineMeta.options.framework);
     }
     await fetchWithCache(
       constants.PIPCOOK_FRAMEWORK_PATH,
