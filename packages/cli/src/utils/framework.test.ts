@@ -3,14 +3,8 @@ import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import * as cache from './cache';
 import { prepareFramework } from './framework';
+import { mockFunctionFromGetter } from '../test.helper';
 import * as core from '@pipcook/core';
-
-function mockFunctionFromGetter(obj: any, funcName: string): sinon.SinonStub {
-  const mockFunc = sinon.stub();
-  const getter = sinon.stub().returns(mockFunc);
-  sinon.stub(obj, funcName).get(getter);
-  return mockFunc;
-}
 
 test.serial.afterEach(() => sinon.restore());
 
