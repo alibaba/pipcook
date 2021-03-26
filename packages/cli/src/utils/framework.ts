@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as url from 'url';
 import { PipelineMeta, PipcookFramework, constants, FrameworkDescFileName, unZipData } from '@pipcook/core';
-import { mirrorUrl } from './';
+import { mirrorUrl, DownloadProtocol } from './';
 
 export const prepareFramework = async (
   pipelineMeta: PipelineMeta,
@@ -13,7 +13,7 @@ export const prepareFramework = async (
 ): Promise<PipcookFramework> => {
   if (pipelineMeta.options.framework) {
     const urlObj = url.parse(pipelineMeta.options.framework);
-    if (urlObj.protocol === 'file:') {
+    if (urlObj.protocol === DownloadProtocol.FILE) {
       if (path.extname(urlObj.path) === '.zip') {
         await unZipData(urlObj.path, frameworkDir);
       } else {
@@ -21,7 +21,7 @@ export const prepareFramework = async (
       }
     } else {
       let realUrl = '';
-      if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+      if (urlObj.protocol === DownloadProtocol.HTTP || urlObj.protocol === DownloadProtocol.HTTPS) {
         realUrl = pipelineMeta.options.framework;
       } else {
         realUrl = mirrorUrl(mirror, pipelineMeta.options.framework);
