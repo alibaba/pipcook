@@ -67,7 +67,7 @@ export const createScriptRepo = async (scriptType: string, name: string): Promis
     }
     const [ type, branch = 'main' ] = scriptType.split('@');
     if (!templateMap[type]) {
-      throw new TypeError(`no template found for ${scriptType}, it should be one of 'datasource', 'dataflow', 'model'`);
+      throw new TypeError(`no template found for ${scriptType}, it should be one of 'datasource', 'dataflow', 'model'. Execute 'pipcook script --help' for more information.`);
     }
     const template = `${templateMap[type]}#${branch}`;
     logger.start('downloading template');
