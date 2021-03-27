@@ -16,6 +16,13 @@ export * as Framework from './framework';
 import * as os from 'os';
 import * as url from 'url';
 import * as boa from '@pipcook/boa';
+import { promisify } from 'util';
+const download = require('download-git-repo');
+
+/**
+ * promisify download from git
+ */
+export const downloadFromGit = promisify(download);
 
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
@@ -92,6 +99,10 @@ export async function downloadAndExtractTo(resUrl: string, targetDir: string): P
   }
 }
 
+/**
+ * Format datetime to string `yyyyMMddhhmmss`.
+ * @param date datetime
+ */
 export function dateToString(date: Date): string {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -105,6 +116,11 @@ export function dateToString(date: Date): string {
   return `${year}${fillZero(month)}${fillZero(day)}${fillZero(hour)}${fillZero(min)}${fillZero(sec)}`;
 }
 
+/**
+ * Construct mirror url by mirror and framework name.
+ * @param mirror The url which includes node<nodeVersion>_py<pythonVersion>
+ * @param framework The framework name witch version, like `tfjs-mobilenet@v1`
+ */
 export const mirrorUrl = (mirror: string, framework: string): string => {
   let pyVersion: string = boa.import('platform').python_version();
   const semver = pyVersion.split('.');

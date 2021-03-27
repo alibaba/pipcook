@@ -8,10 +8,9 @@ import { join } from 'path';
 import { constants } from '@pipcook/core';
 import { readJson, mkdirp, remove } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
-import { logger, dateToString, execAsync } from '../utils';
-const download = require('download-git-repo');
+import { logger, dateToString, execAsync, downloadFromGit } from '../utils';
 
-const templateMap: Record<string, any> = {
+const templateMap: Record<string, string> = {
   'datasource': 'imgcook/pipcook-datasource-template',
   'dataflow': 'imgcook/pipcook-dataflow-template',
   'model': 'imgcook/pipcook-model-template'
@@ -57,26 +56,20 @@ export const createScriptRepo = async (scriptType: string, name: string): Promis
     const destDir = join(process.cwd(), name);
     const pkgFile = join(destDir, 'package.json');
     if (await fs.pathExists(destDir)) {
-      throw new TypeError(`${name} already exists`);
+      throw new TypeError(`The directory ${name} already exists`);
     }
     const [ type, branch = 'main' ] = scriptType.split('@');
-    const template = `${templateMap[type]}#${branch}`;
-    if (!template) {
+    if (!templateMap[type]) {
       throw new TypeError(`no template found for ${scriptType}, it should be one of 'datasource', 'dataflow', 'model'`);
     }
-    await new Promise<void>((resolve, reject) => {
-      download(template, destDir, { clone: true }, function (err: Error) {
-        if (err) {
-          reject(new TypeError(`initialize script project error: ${err.message}`));
-        } else {
-          resolve();
-        }
-      });
-    });
+    const template = `${templateMap[type]}#${branch}`;
+    logger.start('downloading template');
+    await downloadFromGit(template, destDir, { clone: true });
     if (await fs.pathExists(pkgFile)) {
       const pkg = await fs.readJson(pkgFile);
       pkg.name = name;
       await fs.writeJson(pkgFile, pkg, { spaces: 2 });
+      logger.start('initializing project');
       await execAsync('npm i', { cwd: destDir });
     }
     logger.info('initialize script project successfully');
