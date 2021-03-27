@@ -15,6 +15,13 @@ const templateMap: Record<string, string> = {
   'dataflow': 'imgcook/pipcook-dataflow-template',
   'model': 'imgcook/pipcook-model-template'
 };
+
+const scriptTypeDescription = 'scriptType should be one of \'datasource<@branch>\', \'dataflow<@branch>\', \'model<@branch>\'.\n\
+The templates locate at:\n\
+  datasource: https://github.com/imgcook/pipcook-datasource-template\n\
+  dataflow: https://github.com/imgcook/pipcook-dataflow-template\n\
+  model: https://github.com/imgcook/pipcook-model-template';
+
 export interface RunOptions {
   output: string;
   nocache: boolean;
@@ -115,7 +122,10 @@ export const createScriptRepo = async (scriptType: string, name: string): Promis
 
   program
     .command('script <scriptType> <name>')
-    .description('create script repo from template, scriptType should be one of \'datasource\', \'dataflow\', \'model\'.')
+    .description('create script repo from template at current working directory', {
+      scriptType: scriptTypeDescription,
+      name: 'your project name, it\'s also the directory name'
+    })
     .action(createScriptRepo);
 
   program.parse(process.argv);
