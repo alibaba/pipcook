@@ -11,7 +11,6 @@ import * as os from 'os';
 import * as url from 'url';
 import { promisify } from 'util';
 import { customAlphabet } from 'nanoid';
-import * as seed from 'seedrandom';
 import * as boa from '@pipcook/boa';
 import * as constants from '../constants';
 import * as extract from 'extract-zip';

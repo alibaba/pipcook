@@ -1,5 +1,6 @@
 import test from 'ava';
-import { PipelineMeta, ScriptType } from '@pipcook/core';
+import { PipelineMeta } from '@pipcook/core';
+import { ScriptType } from '@pipcook/costa';
 import * as constants from '../constants';
 import * as script from './script';
 import * as cache from './cache';

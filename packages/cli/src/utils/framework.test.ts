@@ -3,7 +3,8 @@ import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import * as cache from './cache';
 import { prepareFramework } from './framework';
-import { PipcookFramework, PipelineMeta } from '@pipcook/core';
+import { PipelineMeta } from '@pipcook/core';
+import { PipcookFramework } from '@pipcook/costa';
 
 test.serial.afterEach(() => sinon.restore());
 
@@ -47,6 +48,7 @@ test.serial('prepare with valid options', async (t) => {
     version: 'test',
     arch: 'test',
     platform: 'test',
+    pythonVersion: 'test',
     nodeVersion: 'test',
     napiVersion: 7,
     pythonPackagePath: 'test',

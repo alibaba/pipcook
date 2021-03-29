@@ -1446,10 +1446,10 @@
   dependencies:
     "@octokit/openapi-types" "^5.3.2"
 
-"@pipcook/datacook@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.npmjs.org/@pipcook/datacook/-/datacook-0.0.3.tgz#a58e3597104430e7ef68e8f3b0830326c5a28a59"
-  integrity sha512-wf9sl6dy+tckWRdkE2/52tj1QdFM1jj8FuCDzI1dQmuaeWGZa8/mjf0dSR9ajeaVP2ngP46GcENcAuKr144jxQ==
+"@pipcook/datacook@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/@pipcook/datacook/-/datacook-0.0.5.tgz#a0ef21fe401dc53f314a87f57e93a93cbde42332"
+  integrity sha512-zDGVE6tqhee6mwA/r7Pm9c96St7CLsjV+39TwHLd08Q+jFUOycxEFlHlvcIw87GMaChEeJBVYvdtH1xY9YCRgg==
   dependencies:
     "@tensorflow/tfjs-backend-cpu" "^2.7.0"
     "@tensorflow/tfjs-backend-wasm" "^2.7.0"
@@ -1574,10 +1574,10 @@
   resolved "https://registry.npmjs.org/@types/extract-zip/-/extract-zip-1.6.2.tgz#5c7eb441c41136167a42b88b64051e6260c29e86"
   integrity sha1-XH60QcQRNhZ6QriLZAUeYmDCnoY=
 
-"@types/fs-extra@^8.0.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@types/fs-extra/-/fs-extra-8.1.1.tgz#1e49f22d09aa46e19b51c0b013cb63d0d923a068"
-  integrity sha512-TcUlBem321DFQzBNuz8p0CLLKp0VvF/XH9E4KHNmgwyp4E3AfgI5cjiIVZWlbfThBop2qxFIh4+LeY6hVWWZ2w==
+"@types/fs-extra@^9.0.9":
+  version "9.0.9"
+  resolved "https://registry.npmjs.org/@types/fs-extra/-/fs-extra-9.0.9.tgz#11ed43b3f3c6b3490f1ef9bd17f58da896e2d861"
+  integrity sha512-5TqDycCl0oMzwzd1cIjSJWMKMvLCDVErle4ZTjU4EmHDURR/+yZghe6GDHMCpHtcVfq0x0gMoOM546/5TbYHrg==
   dependencies:
     "@types/node" "*"
 
@@ -7322,7 +7322,7 @@ request-promise-core@1.1.4:
   dependencies:
     lodash "^4.17.19"
 
-request-promise@^4.2.5:
+request-promise@^4.2.5, request-promise@^4.2.6:
   version "4.2.6"
   resolved "https://registry.npmjs.org/request-promise/-/request-promise-4.2.6.tgz#7e7e5b9578630e6f598e3813c0f8eb342a27f0a2"
   integrity sha512-HCHI3DJJUakkOr8fNoCc73E5nU5bqITjOYFMDrKHYOXWXrgD/SBaC7LjwuPymUprRyuF06UK7hd/lMHkmUXglQ==
