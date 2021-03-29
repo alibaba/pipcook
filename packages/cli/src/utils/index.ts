@@ -53,11 +53,6 @@ export function generateId(): string {
   return nanoid();
 }
 
-/**
- * seedrandom
- */
-export const seedrandom = seed;
-
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
     exec(cmd, opts, (err: ExecException | null, stdout: string) => {
