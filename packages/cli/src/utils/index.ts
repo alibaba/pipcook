@@ -15,6 +15,7 @@ import * as boa from '@pipcook/boa';
 import * as constants from '../constants';
 import * as extract from 'extract-zip';
 import realOra = require('ora');
+import * as prettyBytes from 'pretty-bytes';
 
 export * as Script from './script';
 export * as Plugin from './plugin';
@@ -73,18 +74,25 @@ export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
 export async function downloadWithProgress(url: string, fileName: string): Promise<void> {
   await fs.ensureFile(fileName);
   const bar = new CliProgress.SingleBar({
-    format: '{bar} {percentage}% {value}MB/{total}MB'
+    format: '{bar} {percentage}% {value}/{total}',
+    formatValue: (v, _, type): string => {
+      if (type === 'value' || type === 'total') {
+        return prettyBytes(v);
+      } else {
+        return v.toString();
+      }
+    }
   }, CliProgress.Presets.shades_classic);
   const file = fs.createWriteStream(fileName);
   let receivedBytes = 0;
   const downloadStream = request.get(url)
     .on('response', (response: any) => {
       const totalBytes = response.headers['content-length'];
-      bar.start(Number((totalBytes / 1024 / 1024).toFixed(1)), 0);
+      bar.start(Number(totalBytes), 0);
     })
     .on('data', (chunk: any) => {
       receivedBytes += chunk.length;
-      bar.update(Number((receivedBytes / 1024 / 1024).toFixed(1)));
+      bar.update(receivedBytes);
     });
   try {
     await pipelineAsync(downloadStream, file);
