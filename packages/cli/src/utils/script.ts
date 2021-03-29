@@ -2,9 +2,9 @@ import {
   PipelineMeta,
   ScriptConfig,
   ScriptType,
-  PipcookScript,
-  constants
+  PipcookScript
 } from '@pipcook/core';
+import * as constants from '../constants';
 import * as path from 'path';
 import { parse } from 'url';
 import { fetchWithCache } from './cache';

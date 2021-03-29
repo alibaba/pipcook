@@ -30,3 +30,8 @@ export const PIPCOOK_PLUGIN_ARTIFACT_PATH = join(PIPCOOK_HOME_PATH, 'artifact');
  * pipcook framework mirror url
  */
 export const PIPCOOK_FRAMEWORK_MIRROR_BASE = 'https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/framework/';
+
+/**
+ * framework description file name, which is located in the root directory of the framework package
+ */
+export const FrameworkDescFileName = 'framework.json';

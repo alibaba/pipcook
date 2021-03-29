@@ -1,5 +1,10 @@
-import { ParsedQuery as ScriptQuery } from 'query-string';
+import { ParsedUrlQuery } from 'querystring';
 
+/**
+ * Artifact configuration, `processor` is the name and version of the artifact plugin,
+ * like `pipcook-ali-oss-uploader@0.0.1`. The others are the options which will be
+ * passed into the plugin.
+ */
 export interface Artifact {
   processor: string;
   [k: string]: any;
@@ -39,23 +44,18 @@ export interface PipcookScript {
   // script type
   type: ScriptType;
   // script query
-  query: ScriptQuery;
+  query: ParsedUrlQuery;
 }
 
 /**
  * enum type of framework package:
  *   Python: python package which can be used through `boa.import`
- *   JS: js module which can be used through `require`
+ *   JS: js module which can be used through `import`
  */
 export enum PackageType { Python = 'python', JS = 'js' }
 
 /**
- * framework description file name, which is located in the root directory of the framework package
- */
-export const FrameworkDescFileName = 'framework.json';
-
-/**
- * package structure in pipcook freamwork
+ * package structure in pipcook framework
  */
 /**
  * pipcook framework description struct
@@ -75,6 +75,8 @@ export interface PipcookFramework {
   platform: string | null;
   // node version: see https://www.npmjs.com/package/semver. Ignore check if null
   nodeVersion: string | null;
+  // n-api version
+  napiVersion: number | null;
   // python site-packages path in the directory, 'site-packages' by default.
   pythonPackagePath: string | null;
   // js node modules path in the directory, 'node_modules' by default.

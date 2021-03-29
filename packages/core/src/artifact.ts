@@ -25,8 +25,3 @@ export interface ArtifactExports {
    */
   build(modelDir: string, options: Record<string, any>): Promise<void>;
 }
-
-export interface ArtifactMeta {
-  artifactExports: ArtifactExports;
-  options: Record<string, any>;
-}

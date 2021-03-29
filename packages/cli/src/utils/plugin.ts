@@ -2,11 +2,15 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import {
   PipelineMeta,
-  ArtifactExports,
-  ArtifactMeta,
-  constants
+  ArtifactExports
 } from '@pipcook/core';
+import * as constants from '../constants';
 import { execAsync } from './';
+
+export interface ArtifactMeta {
+  artifactExports: ArtifactExports;
+  options: Record<string, any>;
+}
 
 export interface PluginVersion {
   name: string,

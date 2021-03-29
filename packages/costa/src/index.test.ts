@@ -1,13 +1,14 @@
 import test from 'ava';
 import * as sinon from 'sinon';
+import * as os from 'os';
 import * as path from 'path';
 import * as boa from '@pipcook/boa';
 import * as dataCook from '@pipcook/datacook';
 import { Costa, PipelineRunnerOption } from '.';
 import * as utils from './utils';
-import { constants, SequentialDataSourceApi, ScriptContext, ScriptType } from '@pipcook/core';
+import { SequentialDataSourceApi, ScriptContext, ScriptType } from '@pipcook/core';
 
-const workspaceDir = constants.PIPCOOK_TMPDIR;
+const workspaceDir = os.tmpdir();
 
 const mockOpts: PipelineRunnerOption = {
   workspace: {
@@ -24,6 +25,7 @@ const mockOpts: PipelineRunnerOption = {
     arch: null,
     platform: null,
     nodeVersion: null,
+    napiVersion: null,
     pythonPackagePath: 'site-packages',
     jsPackagePath: 'node_modules'
   }
@@ -57,6 +59,7 @@ test('initialize framework with default path', async (t) => {
       arch: null,
       platform: null,
       nodeVersion: null,
+      napiVersion: null,
       pythonPackagePath: null,
       jsPackagePath: null
     }

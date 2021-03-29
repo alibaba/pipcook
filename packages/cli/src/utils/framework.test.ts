@@ -48,6 +48,7 @@ test.serial('prepare with valid options', async (t) => {
     arch: 'test',
     platform: 'test',
     nodeVersion: 'test',
+    napiVersion: 7,
     pythonPackagePath: 'test',
     jsPackagePath: 'test'
   };

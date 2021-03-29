@@ -10,11 +10,13 @@ import {
   Runtime,
   TaskType,
   DefaultType,
-  ProgressInfo,
-  pipelineAsync,
-  seedrandom,
-  generateId
+  ProgressInfo
 } from '@pipcook/core';
+import {
+  seedrandom,
+  generateId,
+  pipelineAsync
+} from './utils';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
