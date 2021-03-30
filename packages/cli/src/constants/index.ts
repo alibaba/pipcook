@@ -34,4 +34,4 @@ export const PIPCOOK_FRAMEWORK_MIRROR_BASE = 'https://pipcook-cloud.oss-cn-hangz
 /**
  * framework description file name, which is located in the root directory of the framework package
  */
-export const FrameworkDescFileName = 'framework.json';
+export const FrameworkDescFilename = 'framework.json';

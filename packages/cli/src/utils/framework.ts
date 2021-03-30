@@ -35,7 +35,7 @@ export const prepareFramework = async (
         enableCache
       );
     }
-    const framework = await fs.readJson(path.join(frameworkDir, constants.FrameworkDescFileName));
+    const framework = await fs.readJson(path.join(frameworkDir, constants.FrameworkDescFilename));
     // todo: validate framework
     return {
       ...framework,
