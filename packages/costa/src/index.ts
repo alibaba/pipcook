@@ -22,15 +22,15 @@ const debug = Debug('costa.runnable');
 
 export * from './types';
 
-export type DefaultRuntime = Runtime<Sample, DatasetMeta>;
+export type DefaultRuntime = Runtime<Sample<any>, DatasetMeta>;
 
-export type DefaultDataSource = Dataset<Sample, DatasetMeta>;
+export type DefaultDataSource = Dataset<Sample<any>, DatasetMeta>;
 
-export type DefaultDataflowEntry = DataFlowEntry<Sample, DatasetMeta>;
+export type DefaultDataflowEntry = DataFlowEntry<Sample<any>, DatasetMeta>;
 
-export type DefaultDataSourceEntry = DataSourceEntry<Sample, DatasetMeta>;
+export type DefaultDataSourceEntry = DataSourceEntry<Sample<any>, DatasetMeta>;
 
-export type DefaultModelEntry = DataSourceEntry<Sample, DatasetMeta>;
+export type DefaultModelEntry = ModelEntry<Sample<any>, DatasetMeta>;
 
 export interface PipelineWorkSpace {
   /**
@@ -143,7 +143,7 @@ export class Costa {
   async runModel(api: DefaultRuntime, script: PipcookScript, options: Record<string, any>): Promise<void> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
-    const fn = await this.importScript<ModelEntry<Sample, DatasetMeta>>(script);
+    const fn = await this.importScript<DefaultModelEntry>(script);
     // when the `load` is complete, start the plugin.
     debug(`loaded the script(${script.name}), start it.`);
     const opts = {

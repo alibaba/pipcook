@@ -2,8 +2,7 @@ import { fetchWithCache } from './cache';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as url from 'url';
-import { PipelineMeta } from '@pipcook/core';
-import { PipcookFramework } from '@pipcook/costa';
+import { PipelineMeta, PipcookFramework } from '@pipcook/costa';
 import * as constants from '../constants';
 import { mirrorUrl, DownloadProtocol, unZipData } from './';
 

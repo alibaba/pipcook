@@ -3,14 +3,13 @@ import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import * as cache from './cache';
 import { prepareFramework } from './framework';
-import * as core from '@pipcook/core';
-import { PipcookFramework } from '@pipcook/costa';
+import { PipcookFramework, PipelineMeta } from '@pipcook/costa';
 import * as utils from './';
 
 test.serial.afterEach(() => sinon.restore());
 
 test.serial('prepare with invalid options', async (t) => {
-  const pipelineMeta: core.PipelineMeta = {
+  const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
     dataflow: [ 'test' ],
@@ -31,7 +30,7 @@ test.serial('prepare with invalid options', async (t) => {
 });
 
 test.serial('prepare with file protocol and zip extname', async (t) => {
-  const pipelineMeta: core.PipelineMeta = {
+  const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
     dataflow: [ 'test' ],
@@ -54,7 +53,7 @@ test.serial('prepare with file protocol and zip extname', async (t) => {
 });
 
 test.serial('prepare with file protocol and no-zip extname', async (t) => {
-  const pipelineMeta: core.PipelineMeta = {
+  const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
     dataflow: [ 'test' ],
@@ -77,7 +76,7 @@ test.serial('prepare with file protocol and no-zip extname', async (t) => {
 });
 
 test.serial('prepare with valid options', async (t) => {
-  const pipelineMeta: core.PipelineMeta = {
+  const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
     dataflow: [ 'test' ],

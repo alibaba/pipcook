@@ -1,7 +1,5 @@
 import {
-  PipelineMeta
-} from '@pipcook/core';
-import {
+  PipelineMeta,
   ScriptConfig,
   ScriptType,
   PipcookScript

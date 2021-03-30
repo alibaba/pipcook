@@ -1,27 +1,29 @@
-import { PipelineMeta } from './pipeline';
 import * as DataCook from '@pipcook/datacook';
 import Types = DataCook.Dataset.Types;
 
-export type DefaultType = Types.DefaultType;
-
-export type Sample<T = DefaultType> = Types.Sample<T>;
+/**
+ * A sample is the data includes `label` and `data`.
+ */
+export type Sample<T> = Types.Sample<T>;
 
 /**
  * table column type
  */
 export type TableColumnType = Types.TableColumnType;
+
 /**
  * structure of colume description
  */
 export type TableColumn = Types.TableColumn;
+
 /**
  * table schema for all columns
  */
 export type TableSchema = Types.TableSchema;
 /**
  * data source type
- *   Table: data from db, csv
- *   Image: image data
+ *   * Table: data from db, csv
+ *   * Image: image data
  */
 export type DatasetType = Types.DatasetType;
 
@@ -47,20 +49,7 @@ export type DataAccessor<T> = Types.DataAccessor<T>;
 /**
  * data source api
  */
-export type Dataset<T extends Sample, D extends DatasetMeta> = Types.Dataset<T, D>;
-
-/**
- * current task type
- *   All: run all scripts
- *   Data: run data source and data flow script
- *   Model: run model script
- */
-export enum TaskType {
-  All,
-  Data,
-  Model,
-  Unknown
-}
+export type Dataset<T extends Sample<any>, D extends DatasetMeta> = Types.Dataset<T, D>;
 
 /**
  * progress infomation
@@ -75,11 +64,7 @@ export interface ProgressInfo {
 /**
  * runtime api
  */
-export interface Runtime<T extends Sample, M extends DatasetMeta> {
-  // get pipeline metadata
-  pipelineMeta: () => Promise<PipelineMeta>;
-  // get current task type
-  taskType: () => TaskType | undefined;
+export interface Runtime<T extends Sample<any>, M extends DatasetMeta> {
   // report progress of pipeline
   notifyProgress: (progress: ProgressInfo) => void;
   // save the model file
@@ -93,22 +78,44 @@ export interface Runtime<T extends Sample, M extends DatasetMeta> {
 export type FrameworkModule = any;
 export type DataCookModule = typeof DataCook;
 
+/**
+ * The context of script running, includes `boa` and `DataCook`.
+ */
 export interface ScriptContext {
-  // boa module
+  /**
+   * The boa module, the bridge between node and python.
+   */
   boa: FrameworkModule;
-  // DataCook module
+  /**
+   * DataCook module
+   */
   dataCook: DataCookModule;
-  // import javascript module
+  /**
+   * This function can import a node module from framework. if the module not exists,
+   * an error will be thrown.
+   */
   importJS: (jsModuleName: string) => Promise<FrameworkModule>;
-  // import python package
+  /**
+   * This function can import a python package from framework. if the module not exists,
+   * an error will be thrown.
+   */
   importPY: (pyModuleName: string) => Promise<FrameworkModule>;
-  // volume workspace
+  /**
+   * The workspace for the pipeline. There are some directories to save temporary files.
+   */
   workspace: {
-    // dataset directory
+    /**
+     * Dataset directory, should save the dataset files here.
+     */
     dataDir: string;
-    // cache directory
+    /**
+     * Cache directory, every sample passed to the model script will be cached into the cache directory,
+     * so, the dataflow scripts will not be executed again after the fisrt epoch.
+     */
     cacheDir: string;
-    // model directory
+    /**
+     * The model file should be saved here.
+     */
     modelDir: string;
   }
 }
@@ -116,17 +123,17 @@ export interface ScriptContext {
 /**
  * type of data source script entry
  */
-export type DataSourceEntry<SAMPLE extends Sample, META extends DatasetMeta> =
+export type DataSourceEntry<SAMPLE extends Sample<any>, META extends DatasetMeta> =
   (options: Record<string, any>, context: ScriptContext) => Promise<Dataset<SAMPLE, META>>;
 
 /**
  * type of data flow script entry
  */
-export type DataFlowEntry<IN extends Sample, META extends DatasetMeta, OUT extends Sample = IN> =
+export type DataFlowEntry<IN extends Sample<any>, META extends DatasetMeta, OUT extends Sample<any> = IN> =
   (api: Dataset<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<Dataset<OUT, META>>;
 
 /**
  * type of model script entry
  */
-export type ModelEntry<SAMPLE extends Sample, META extends DatasetMeta> =
+export type ModelEntry<SAMPLE extends Sample<any>, META extends DatasetMeta> =
   (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>;

@@ -1,9 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import {
-  PipelineMeta,
-  ArtifactExports
-} from '@pipcook/core';
+import { ArtifactExports } from '@pipcook/core';
+import { PipelineMeta } from '@pipcook/costa';
 import * as constants from '../constants';
 import { execAsync } from './';
 
