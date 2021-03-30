@@ -3,7 +3,6 @@ import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import * as cache from './cache';
 import { prepareFramework } from './framework';
-import { mockFunctionFromGetter } from '../test.helper';
 import * as core from '@pipcook/core';
 import { PipcookFramework } from '@pipcook/costa';
 import * as utils from './';
