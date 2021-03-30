@@ -51,8 +51,7 @@
   },
   "ava": {
     "files": [
-      "dist/**/*.test.js",
-      "!dist/test.helper.js"
+      "dist/**/*.test.js"
     ]
   }
 }

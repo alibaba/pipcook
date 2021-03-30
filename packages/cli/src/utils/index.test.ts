@@ -4,7 +4,6 @@ import * as ChildProcess from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as utils from './';
-import { mockFunctionFromGetter } from '../test.helper';
 import * as constants from '../constants';
 const importRefresh = require('import-fresh');
 
@@ -112,15 +111,15 @@ test('downloadAndExtractTo a ftp url', async (t) => {
 });
 
 test.serial('downloadAndExtractTo local zip file', async (t) => {
-  const stubUnzipData = mockFunctionFromGetter(utils, 'unZipData').resolves();
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
   await utils.downloadAndExtractTo('file:///abcd.zip', 'tmp');
   t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
   t.deepEqual(stubUnzipData.args[0], [ '/abcd.zip', 'tmp' ], 'should unzip the curruct file');
 });
 
 test.serial('downloadAndExtractTo https zip file', async (t) => {
-  const stubUnzipData = mockFunctionFromGetter(utils, 'unZipData').resolves();
-  mockFunctionFromGetter(utils, 'generateId').returns('id');
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
+  sinon.stub(utils, 'generateId').returns('id');
   await utils.downloadAndExtractTo('http://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip', constants.PIPCOOK_TMPDIR);
   t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
   t.deepEqual(stubUnzipData.args[0], [
@@ -130,8 +129,8 @@ test.serial('downloadAndExtractTo https zip file', async (t) => {
 });
 
 test.serial('downloadAndExtractTo https non-zip file', async (t) => {
-  const stubUnzipData = mockFunctionFromGetter(utils, 'unZipData').resolves();
-  mockFunctionFromGetter(utils, 'generateId').returns('id');
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
+  sinon.stub(utils, 'generateId').returns('id');
   const stubDownload = sinon.stub(utils, 'downloadWithProgress').resolves();
   const urlStr = 'https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/res.jpg';
   const target = 'tmp';
