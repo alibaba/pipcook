@@ -17,7 +17,6 @@
     "@pipcook/datacook": "0.0.5"
   },
   "devDependencies": {
-    "ts-node": "^8.6.2",
     "typescript": "^4.1.2"
   },
   "publishConfig": {

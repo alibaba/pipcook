@@ -21,7 +21,6 @@
     "@pipcook/boa": "^2.0.0-beta.1",
     "@pipcook/core": "^2.0.0-beta.1",
     "@pipcook/costa": "^2.0.0-beta.1",
-    "@types/fs-extra": "^9.0.9",
     "chalk": "^3.0.0",
     "cli-progress": "^3.9.0",
     "commander": "^4.0.1",
@@ -38,14 +37,14 @@
   "devDependencies": {
     "@types/cli-progress": "^3.9.1",
     "@types/extract-zip": "^1.6.2",
+    "@types/fs-extra": "^9.0.9",
     "@types/request": "^2.48.5",
     "@types/semver": "^7.3.4",
     "@types/sinon": "^9.0.11",
     "ava": "^3.13.0",
     "import-fresh": "^3.3.0",
     "nyc": "^15.1.0",
-    "sinon": "^10.0.0",
-    "ts-node": "^8.9.1"
+    "sinon": "^10.0.0"
   },
   "publishConfig": {
     "access": "public"
