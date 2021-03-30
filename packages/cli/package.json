@@ -24,7 +24,6 @@
     "@types/fs-extra": "^9.0.9",
     "chalk": "^3.0.0",
     "cli-progress": "^3.9.0",
-    "command-exists": "^1.2.8",
     "commander": "^4.0.1",
     "debug": "^4.3.1",
     "extract-zip": "^2.0.1",
@@ -34,13 +33,12 @@
     "pretty-bytes": "^5.6.0",
     "query-string": "^6.14.1",
     "request": "^2.88.2",
-    "request-promise": "^4.2.6",
     "semver": "^6.3.0"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.9.1",
-    "@types/command-exists": "^1.2.0",
     "@types/extract-zip": "^1.6.2",
+    "@types/request": "^2.48.5",
     "@types/semver": "^7.3.4",
     "@types/sinon": "^9.0.11",
     "ava": "^3.13.0",

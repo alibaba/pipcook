@@ -2,13 +2,14 @@ import test from 'ava';
 import { PipelineMeta } from '@pipcook/core';
 import { ScriptType } from '@pipcook/costa';
 import * as constants from '../constants';
+import * as fs from 'fs-extra';
 import * as script from './script';
 import * as cache from './cache';
 import * as sinon from 'sinon';
 
 test.serial.afterEach(() => sinon.restore());
 
-test('download script', async (t) => {
+test('download script with http protocol', async (t) => {
   const localPath = process.cwd();
   const url = 'http://mockUrl.com/a.js';
   const enableCache = true;
@@ -19,6 +20,34 @@ test('download script', async (t) => {
     stubFetch.args[0],
     [ constants.PIPCOOK_SCRIPT_PATH, url, `${localPath}/1-a.js`, enableCache ],
     'fetchWithCache should called with currect args'
+  );
+});
+
+test.serial('download script with https protocol', async (t) => {
+  const localPath = process.cwd();
+  const url = 'https://mockUrl.com/a.js';
+  const enableCache = true;
+  const stubFetch = sinon.stub(cache, 'fetchWithCache').resolves();
+  await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  t.true(stubFetch.calledOnce, 'fetchWithCache should be called once');
+  t.deepEqual(
+    stubFetch.args[0],
+    [ constants.PIPCOOK_SCRIPT_PATH, url, `${localPath}/1-a.js`, enableCache ],
+    'fetchWithCache should called with currect args'
+  );
+});
+
+test.serial('download script with file protocol', async (t) => {
+  const localPath = process.cwd();
+  const url = 'file:///data/a.js';
+  const enableCache = true;
+  const stubCopy = sinon.stub(fs, 'copy').resolves();
+  await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  t.true(stubCopy.calledOnce, 'fs.copy should be called once');
+  t.deepEqual(
+    stubCopy.args[0],
+    [ '/data/a.js', `${localPath}/1-a.js` ] as any,
+    'fs.copy should called with currect args'
   );
 });
 

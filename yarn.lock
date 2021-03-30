@@ -1537,11 +1537,6 @@
   resolved "https://registry.npmjs.org/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@types/bluebird@*":
-  version "3.5.33"
-  resolved "https://registry.npmjs.org/@types/bluebird/-/bluebird-3.5.33.tgz#d79c020f283bd50bd76101d7d300313c107325fc"
-  integrity sha512-ndEo1xvnYeHxm7I/5sF6tBvnsA4Tdi3zj1keRKRs12SP+2ye2A27NDJ1B6PqkfMbGAcT+mqQVqbZRIrhfOp5PQ==
-
 "@types/caseless@*":
   version "0.12.2"
   resolved "https://registry.npmjs.org/@types/caseless/-/caseless-0.12.2.tgz#f65d3d6389e01eeb458bd54dc8f52b95a9463bc8"
@@ -1553,11 +1548,6 @@
   integrity sha512-X/tKJv/GoYlCBS9wwJTLrVSxzIOI/Cj1cCatYOAAoQne3aT1QbHBptBS5+zLe2ToSljAijHU1N/ouBNFvZ2H/g==
   dependencies:
     "@types/node" "*"
-
-"@types/command-exists@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/@types/command-exists/-/command-exists-1.2.0.tgz#d97e0ed10097090e4ab0367ed425b0312fad86f3"
-  integrity sha512-ugsxEJfsCuqMLSuCD4PIJkp5Uk2z6TCMRCgYVuhRo5cYQY3+1xXTQkSlPtkpGHuvWMjS2KTeVQXxkXRACMbM6A==
 
 "@types/debug@^4.1.5":
   version "4.1.5"
@@ -1573,6 +1563,13 @@
   version "1.6.2"
   resolved "https://registry.npmjs.org/@types/extract-zip/-/extract-zip-1.6.2.tgz#5c7eb441c41136167a42b88b64051e6260c29e86"
   integrity sha1-XH60QcQRNhZ6QriLZAUeYmDCnoY=
+
+"@types/fs-extra@^8.0.1":
+  version "8.1.1"
+  resolved "https://registry.npmjs.org/@types/fs-extra/-/fs-extra-8.1.1.tgz#1e49f22d09aa46e19b51c0b013cb63d0d923a068"
+  integrity sha512-TcUlBem321DFQzBNuz8p0CLLKp0VvF/XH9E4KHNmgwyp4E3AfgI5cjiIVZWlbfThBop2qxFIh4+LeY6hVWWZ2w==
+  dependencies:
+    "@types/node" "*"
 
 "@types/fs-extra@^9.0.9":
   version "9.0.9"
@@ -1619,15 +1616,7 @@
   resolved "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.3.0.tgz#3336428ec7e9180cf4566dfea5da04eb586a6553"
   integrity sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==
 
-"@types/request-promise@^4.1.46":
-  version "4.1.47"
-  resolved "https://registry.npmjs.org/@types/request-promise/-/request-promise-4.1.47.tgz#62f58a52476ef6cfe4f38d689cb826959a33a268"
-  integrity sha512-eRSZhAS8SMsrWOM8vbhxFGVZhTbWSJvaRKyufJTdIf4gscUouQvOBlfotPSPHbMR3S7kfkyKbhb1SWPmQdy3KQ==
-  dependencies:
-    "@types/bluebird" "*"
-    "@types/request" "*"
-
-"@types/request@*", "@types/request@^2.48.4":
+"@types/request@^2.48.5":
   version "2.48.5"
   resolved "https://registry.npmjs.org/@types/request/-/request-2.48.5.tgz#019b8536b402069f6d11bee1b2c03e7f232937a0"
   integrity sha512-/LO7xRVnL3DxJ1WkPGDQrp4VTV1reX9RkC85mJ+Qzykj2Bdw+mG15aAfDahc76HtknjzE16SX/Yddn6MxVbmGQ==
@@ -2789,11 +2778,6 @@ combined-stream@^1.0.6, combined-stream@~1.0.6:
   integrity sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
   dependencies:
     delayed-stream "~1.0.0"
-
-command-exists@^1.2.8:
-  version "1.2.9"
-  resolved "https://registry.npmjs.org/command-exists/-/command-exists-1.2.9.tgz#c50725af3808c8ab0260fd60b01fbfa25b954f69"
-  integrity sha512-LTQ/SGc+s0Xc0Fu5WaKnR0YiygZkm9eKFvyS+fRsU7/ZWFF8ykFM6Pc9aCVf1+xasOOZpO3BAVgVrKvsqKHV7w==
 
 commander@^4.0.1:
   version "4.1.1"
@@ -7327,7 +7311,7 @@ request-promise-core@1.1.4:
   dependencies:
     lodash "^4.17.19"
 
-request-promise@^4.2.5, request-promise@^4.2.6:
+request-promise@^4.2.6:
   version "4.2.6"
   resolved "https://registry.npmjs.org/request-promise/-/request-promise-4.2.6.tgz#7e7e5b9578630e6f598e3813c0f8eb342a27f0a2"
   integrity sha512-HCHI3DJJUakkOr8fNoCc73E5nU5bqITjOYFMDrKHYOXWXrgD/SBaC7LjwuPymUprRyuF06UK7hd/lMHkmUXglQ==

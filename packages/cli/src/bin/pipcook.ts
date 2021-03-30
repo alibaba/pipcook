@@ -10,14 +10,19 @@ import { StandaloneRuntime } from '../runtime';
 import { logger, dateToString } from '../utils';
 
 export interface RunOptions {
+  // Workspace for running
   output: string;
+  // Fetch the framework and script without cache
   nocache: boolean;
+  // Debug model
   debug: boolean;
   mirror: string;
 }
 
 export interface CacheCleanOptions {
+  // clean framework cache only
   framework: boolean;
+  // clean script cache only
   script: boolean;
 }
 

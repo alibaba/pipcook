@@ -54,6 +54,8 @@ export function generateId(): string {
   return nanoid();
 }
 
+export enum DownloadProtocol { HTTP = 'http:', HTTPS = 'https:', FILE = 'file:' }
+
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
     exec(cmd, opts, (err: ExecException | null, stdout: string) => {
