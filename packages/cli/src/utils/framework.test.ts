@@ -6,6 +6,7 @@ import { prepareFramework } from './framework';
 import { mockFunctionFromGetter } from '../test.helper';
 import * as core from '@pipcook/core';
 import { PipcookFramework } from '@pipcook/costa';
+import * as utils from './';
 
 test.serial.afterEach(() => sinon.restore());
 
@@ -43,7 +44,7 @@ test.serial('prepare with file protocol and zip extname', async (t) => {
   };
   const frameworkDir = 'test';
 
-  const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
   const stubReadJson = sinon.stub(fs, 'readJson').resolves({ mock: 'value' });
 
   const ret = await prepareFramework(pipelineMeta, frameworkDir, '');
