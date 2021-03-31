@@ -2,9 +2,9 @@ import {
   PipelineMeta,
   ScriptConfig,
   ScriptType,
-  PipcookScript,
-  constants
-} from '@pipcook/core';
+  PipcookScript
+} from '@pipcook/costa';
+import * as constants from '../constants';
 import * as path from 'path';
 import { parse } from 'url';
 import * as fs from 'fs-extra';

@@ -1,9 +1,10 @@
 import test from 'ava';
-import { constants, PipelineMeta, ScriptType } from '@pipcook/core';
+import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
+import { ScriptType, PipelineMeta } from '@pipcook/costa';
+import * as constants from '../constants';
 import * as script from './script';
 import * as cache from './cache';
-import * as sinon from 'sinon';
 
 test.serial.afterEach(() => sinon.restore());
 

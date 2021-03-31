@@ -4,8 +4,7 @@ import * as ChildProcess from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as utils from './';
-import { mockFunctionFromGetter } from '../test.helper';
-import * as core from '@pipcook/core';
+import * as constants from '../constants';
 const importRefresh = require('import-fresh');
 
 test.serial.afterEach(() => sinon.restore());
@@ -112,26 +111,26 @@ test('downloadAndExtractTo a ftp url', async (t) => {
 });
 
 test.serial('downloadAndExtractTo local zip file', async (t) => {
-  const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
   await utils.downloadAndExtractTo('file:///abcd.zip', 'tmp');
   t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
   t.deepEqual(stubUnzipData.args[0], [ '/abcd.zip', 'tmp' ], 'should unzip the curruct file');
 });
 
 test.serial('downloadAndExtractTo https zip file', async (t) => {
-  const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
-  mockFunctionFromGetter(core, 'generateId').returns('id');
-  await utils.downloadAndExtractTo('http://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip', core.constants.PIPCOOK_TMPDIR);
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
+  sinon.stub(utils, 'generateId').returns('id');
+  await utils.downloadAndExtractTo('http://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip', constants.PIPCOOK_TMPDIR);
   t.true(stubUnzipData.calledOnce, 'unzipData should be called once');
   t.deepEqual(stubUnzipData.args[0], [
-    path.join(core.constants.PIPCOOK_TMPDIR, 'id'),
-    core.constants.PIPCOOK_TMPDIR
+    path.join(constants.PIPCOOK_TMPDIR, 'id'),
+    constants.PIPCOOK_TMPDIR
   ], 'should unzip the curruct file');
 });
 
 test.serial('downloadAndExtractTo https non-zip file', async (t) => {
-  const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
-  mockFunctionFromGetter(core, 'generateId').returns('id');
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
+  sinon.stub(utils, 'generateId').returns('id');
   const stubDownload = sinon.stub(utils, 'downloadWithProgress').resolves();
   const urlStr = 'https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/res.jpg';
   const target = 'tmp';
@@ -148,3 +147,53 @@ test.serial('downloadAndExtractTo local jpg file', async (t) => {
   t.deepEqual(stubCopy.args[0], [ '/abcd.jpg', 'tmp' ] as any, 'should copy the curruct file');
 });
 
+test('test if remote file was downloaded', async (t) => {
+  const jsonFile = path.join(constants.PIPCOOK_TMPDIR, utils.generateId() + '.json');
+  await t.notThrowsAsync(
+    utils.download(
+      'https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/package.json',
+      jsonFile
+    ), 'should download successfully');
+  console.log('download', jsonFile);
+  t.true(await fs.pathExists(jsonFile), 'file should exist');
+  const stats = await fs.stat(jsonFile);
+  t.true(stats.size > 0, 'size should not be zero');
+  await fs.remove(jsonFile);
+});
+
+test('download a nonexistent file', async (t) => {
+  await t.throwsAsync(
+    utils.download('http://unknown-host/nonexists.zip', './nonexistent.zip'),
+    { instanceOf: Error }
+  );
+  await fs.remove('./nonexistent.zip');
+});
+
+test('download a invalid url', async (t) => {
+  await t.throwsAsync(
+    utils.download('abcd', './nonexistent.zip'),
+    { instanceOf: Error }
+  );
+  await fs.remove('./nonexistent.zip');
+});
+
+test.serial('download and unzip', async (t) => {
+  const urlStr = 'https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/res.zip';
+  const targetPath = path.join(constants.PIPCOOK_TMPDIR, 'res.zip');
+  const unzipDir = path.join(constants.PIPCOOK_TMPDIR, 'resDir');
+  await utils.download(urlStr, targetPath);
+  t.true(await fs.pathExists(targetPath), 'file should exist');
+  await utils.unZipData(targetPath, unzipDir);
+  t.true((await fs.readdir(unzipDir)).length > 0, 'should unzip files');
+});
+
+test('id generator', async (t) => {
+  const id = utils.generateId();
+  t.is(typeof id, 'string');
+  t.is(id.length, 8);
+  for (let i = 0; i < id.length; ++i) {
+    const c = id.charCodeAt(i);
+    t.true(c >= 'a'.charCodeAt(0) && c <= 'z'.charCodeAt(0)
+      || c >= '0'.charCodeAt(0) && c <= '9'.charCodeAt(0));
+  }
+});

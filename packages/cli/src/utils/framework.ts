@@ -2,8 +2,9 @@ import { fetchWithCache } from './cache';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as url from 'url';
-import { PipelineMeta, PipcookFramework, constants, FrameworkDescFileName, unZipData } from '@pipcook/core';
-import { mirrorUrl, DownloadProtocol } from './';
+import { PipelineMeta, PipcookFramework } from '@pipcook/costa';
+import * as constants from '../constants';
+import { mirrorUrl, DownloadProtocol, unZipData } from './';
 
 export const prepareFramework = async (
   pipelineMeta: PipelineMeta,
@@ -33,7 +34,7 @@ export const prepareFramework = async (
         enableCache
       );
     }
-    const framework = await fs.readJson(path.join(frameworkDir, FrameworkDescFileName));
+    const framework = await fs.readJson(path.join(frameworkDir, constants.FrameworkDescFilename));
     // todo: validate framework
     return {
       ...framework,

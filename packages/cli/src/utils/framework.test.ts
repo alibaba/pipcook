@@ -3,13 +3,13 @@ import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import * as cache from './cache';
 import { prepareFramework } from './framework';
-import { mockFunctionFromGetter } from '../test.helper';
-import * as core from '@pipcook/core';
+import { PipcookFramework, PipelineMeta } from '@pipcook/costa';
+import * as utils from './';
 
 test.serial.afterEach(() => sinon.restore());
 
 test.serial('prepare with invalid options', async (t) => {
-  const pipelineMeta: core.PipelineMeta = {
+  const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
     dataflow: [ 'test' ],
@@ -30,7 +30,7 @@ test.serial('prepare with invalid options', async (t) => {
 });
 
 test.serial('prepare with file protocol and zip extname', async (t) => {
-  const pipelineMeta: core.PipelineMeta = {
+  const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
     dataflow: [ 'test' ],
@@ -42,7 +42,7 @@ test.serial('prepare with file protocol and zip extname', async (t) => {
   };
   const frameworkDir = 'test';
 
-  const stubUnzipData = mockFunctionFromGetter(core, 'unZipData').resolves();
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
   const stubReadJson = sinon.stub(fs, 'readJson').resolves({ mock: 'value' });
 
   const ret = await prepareFramework(pipelineMeta, frameworkDir, '');
@@ -53,7 +53,7 @@ test.serial('prepare with file protocol and zip extname', async (t) => {
 });
 
 test.serial('prepare with file protocol and no-zip extname', async (t) => {
-  const pipelineMeta: core.PipelineMeta = {
+  const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
     dataflow: [ 'test' ],
@@ -76,7 +76,7 @@ test.serial('prepare with file protocol and no-zip extname', async (t) => {
 });
 
 test.serial('prepare with valid options', async (t) => {
-  const pipelineMeta: core.PipelineMeta = {
+  const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
     dataSource: 'test',
     dataflow: [ 'test' ],
@@ -87,14 +87,16 @@ test.serial('prepare with valid options', async (t) => {
     }
   };
 
-  const framework: core.PipcookFramework = {
+  const framework: PipcookFramework = {
     path : 'test',
     name: 'test',
     desc: 'test',
     version: 'test',
     arch: 'test',
     platform: 'test',
+    pythonVersion: 'test',
     nodeVersion: 'test',
+    napiVersion: 7,
     pythonPackagePath: 'test',
     jsPackagePath: 'test'
   };

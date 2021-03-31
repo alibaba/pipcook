@@ -1,13 +1,15 @@
 import test from 'ava';
 import * as sinon from 'sinon';
+import * as os from 'os';
 import * as path from 'path';
 import * as boa from '@pipcook/boa';
 import * as dataCook from '@pipcook/datacook';
-import { Costa, PipelineRunnerOption } from '.';
+import { Costa, DefaultDataSourceEntry, PipelineRunnerOption } from '.';
 import * as utils from './utils';
-import { constants, SequentialDataSourceApi, ScriptContext, ScriptType } from '@pipcook/core';
+import { ScriptContext } from '@pipcook/core';
+import { ScriptType } from './types';
 
-const workspaceDir = constants.PIPCOOK_TMPDIR;
+const workspaceDir = os.tmpdir();
 
 const mockOpts: PipelineRunnerOption = {
   workspace: {
@@ -23,7 +25,9 @@ const mockOpts: PipelineRunnerOption = {
     version: '0.0.1',
     arch: null,
     platform: null,
+    pythonVersion: null,
     nodeVersion: null,
+    napiVersion: null,
     pythonPackagePath: 'site-packages',
     jsPackagePath: 'node_modules'
   }
@@ -56,7 +60,9 @@ test('initialize framework with default path', async (t) => {
       version: '0.0.1',
       arch: null,
       platform: null,
+      pythonVersion: null,
       nodeVersion: null,
+      napiVersion: null,
       pythonPackagePath: null,
       jsPackagePath: null
     }
@@ -106,7 +112,7 @@ test.serial('run data flow scripts', async (t) => {
     }
   };
   const mockDataSourceApi: any = {};
-  const mockModule = sinon.stub().callsFake(async (api: SequentialDataSourceApi<any>, opts: Record<string, any>, ctx: ScriptContext) => {
+  const mockModule = sinon.stub().callsFake(async (api: DefaultDataSourceEntry, opts: Record<string, any>, ctx: ScriptContext) => {
     t.is(api, mockDataSourceApi, 'api should be equal');
     t.is(ctx, costa.context, 'context should be equal');
     t.deepEqual(script.query, opts, 'options should be equal');
@@ -131,7 +137,7 @@ test.serial('run model script', async (t) => {
     }
   };
   const mockRuntime: any = {};
-  const mockModule = sinon.stub().callsFake(async (api: SequentialDataSourceApi<any>, opts: Record<string, any>, ctx: ScriptContext) => {
+  const mockModule = sinon.stub().callsFake(async (api: DefaultDataSourceEntry, opts: Record<string, any>, ctx: ScriptContext) => {
     t.is(api, mockRuntime, 'api should be equal');
     t.is(ctx, costa.context, 'context should be equal');
     t.deepEqual(opts, Object.assign({ mockTrainOpt: 'value' }, script.query), 'options should be equal');
