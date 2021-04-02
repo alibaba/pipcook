@@ -109,7 +109,7 @@ export class Costa {
     const scriptMoudle = await importFrom(script.path);
     const fn: T = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
     if (typeof fn !== 'function') {
-      throw new TypeError(`no export function found in ${script.name}(${script.path})`);
+      throw new TypeError(`no exported function found in ${script.name}(${script.path})`);
     }
     return fn;
   }
