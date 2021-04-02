@@ -76,7 +76,7 @@ test.serial('should not prepare artifact plugin', async (t) => {
 
   const plugins = await prepareArtifactPlugin(pipelineMeta);
 
-  t.is(plugins, undefined);
+  t.deepEqual(plugins, []);
 });
 
 test.serial('should prepare artifact plugin', async (t) => {

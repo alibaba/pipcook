@@ -57,8 +57,11 @@ export const install = async (name: string, pluginHomeDir: string): Promise<stri
 };
 
 export const prepareArtifactPlugin = async (pipelineMeta: PipelineMeta): Promise<Array<ArtifactMeta>> => {
-  if (!pipelineMeta.artifacts) {
-    return;
+  if (
+    !pipelineMeta.artifacts ||
+    (Array.isArray(pipelineMeta.artifacts) && pipelineMeta.artifacts.length === 0)
+  ) {
+    return [];
   }
   const allPlugins: Array<ArtifactMeta> = [];
   for (const plugin of pipelineMeta.artifacts) {
