@@ -3,11 +3,12 @@
 import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
-import { join } from 'path';
+import { join, basename, extname } from 'path';
+import { parse } from 'url';
 import * as constants from '../constants';
-import { readJson, mkdirp, remove } from 'fs-extra';
+import { readJson, mkdirp, remove, copy } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
-import { logger, dateToString } from '../utils';
+import { logger, dateToString, downloadWithProgress, DownloadProtocol } from '../utils';
 
 export interface RunOptions {
   // Workspace for running
@@ -29,9 +30,27 @@ export interface CacheCleanOptions {
 export const run = async (filename: string, opts: RunOptions): Promise<void> => {
   let pipelineConfig;
   try {
-    pipelineConfig = await readJson(filename);
-    // TODO(feely): check pipeline file
     await mkdirp(opts.output);
+    const urlObj = parse(filename);
+    const name = basename(urlObj.path);
+    const pipelinePath = join(opts.output, name);
+    if (extname(name) !== '.json') {
+      console.warn('pipeline configuration file should be a json file');
+    }
+    switch (urlObj.protocol) {
+    case null:
+    case DownloadProtocol.FILE:
+      await copy(urlObj.path, pipelinePath);
+      break;
+    case DownloadProtocol.HTTPS:
+    case DownloadProtocol.HTTP:
+      await downloadWithProgress(filename, pipelinePath);
+      break;
+    default:
+      throw new TypeError(`protocol '${urlObj.protocol}' not supported`);
+    }
+    pipelineConfig = await readJson(pipelinePath);
+    // TODO(feely): check pipeline file
     const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache);
     await runtime.run();
   } catch (err) {
