@@ -2,6 +2,10 @@
   "specVersion": "2.0",
   "dataSource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-csv-data-collector@29c9bda/build/script.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/textClassification.zip",
   "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-bayesian-model@079e7cb/build/script.js",
+  "artifacts": [{
+    "processor": "pipcook-artifact-zip@0.0.2",
+    "target": "/tmp/bayes-model.zip"
+  }],
   "options": {
     "framework": "bayes@1.0.0",
     "train": {
