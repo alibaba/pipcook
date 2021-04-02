@@ -197,7 +197,7 @@ test.serial('import from script but not function', async (t) => {
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(invalidFn);
   await t.throwsAsync(costa.importScript<any>(script), {
     instanceOf: TypeError,
-    message: `no export function found in ${script.name}(${script.path})`
+    message: `no entry found in ${script.name}(${script.path})`
   });
   t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
 });

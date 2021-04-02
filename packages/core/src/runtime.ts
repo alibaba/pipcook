@@ -15,7 +15,8 @@ export interface ProgressInfo {
 }
 
 /**
- * runtime api
+ * A Runtime is used to run pipelines on a specific platform. The interface `Runtime<T, M>`
+ * declares APIs which the runtime implementation must or shall achieve.
  */
 export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends Datacook.Dataset.Types.DatasetMeta> {
   // report progress of pipeline

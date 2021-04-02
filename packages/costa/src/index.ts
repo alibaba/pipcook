@@ -11,7 +11,7 @@ import {
   PipcookFramework
 } from './types';
 import * as boa from '@pipcook/boa';
-import type * as dataCook from '@pipcook/datacook';
+import * as dataCook from '@pipcook/datacook';
 import * as path from 'path';
 import Debug from 'debug';
 import { importFrom } from './utils';
@@ -44,7 +44,9 @@ export interface PipelineWorkSpace {
    */
   cacheDir: string;
 
-  // framework directory
+  /**
+   * framework directory
+   */
   frameworkDir: string;
 }
 
@@ -101,7 +103,7 @@ export class Costa {
   }
 
   /**
-   * make sure the module export is a function
+   * import script and make sure the module export is a function
    * @param script script infomation
    * @param moduleExport module export
    */
@@ -109,7 +111,7 @@ export class Costa {
     const scriptMoudle = await importFrom(script.path);
     const fn: T = typeof scriptMoudle === 'function' ? scriptMoudle : scriptMoudle.default;
     if (typeof fn !== 'function') {
-      throw new TypeError(`no exported function found in ${script.name}(${script.path})`);
+      throw new TypeError(`no entry found in ${script.name}(${script.path})`);
     }
     return fn;
   }
