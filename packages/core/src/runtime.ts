@@ -1,70 +1,23 @@
-import * as DataCook from '@pipcook/datacook';
-import Types = DataCook.Dataset.Types;
+import type * as Datacook from '@pipcook/datacook';
 
 /**
- * A sample is the data includes `label` and `data`.
- */
-export type Sample<T> = Types.Sample<T>;
-
-/**
- * table column type
- */
-export type TableColumnType = Types.TableColumnType;
-
-/**
- * structure of colume description
- */
-export type TableColumn = Types.TableColumn;
-
-/**
- * table schema for all columns
- */
-export type TableSchema = Types.TableSchema;
-/**
- * data source type
- *   * Table: data from db, csv
- *   * Image: image data
- */
-export type DatasetType = Types.DatasetType;
-
-/**
- * size of data source
- */
-export type DatasetSize = Types.DatasetSize;
-
-export type ImageDimension = Types.ImageDimension;
-
-export type DatasetMeta = Types.DatasetMeta;
-
-/**
- * image data source metadata
- */
-export type ImageDatasetMeta = Types.ImageDatasetMeta;
-/**
- * table data source metadata
- */
-export type TableDatasetMeta = Types.TableDatasetMeta;
-export type DataAccessor<T> = Types.DataAccessor<T>;
-
-/**
- * data source api
- */
-export type Dataset<T extends Sample<any>, D extends DatasetMeta> = Types.Dataset<T, D>;
-
-/**
- * progress infomation
+ * The model script can emit the training progress through the API `Runtime.notifyProgress`.
  */
 export interface ProgressInfo {
-  // progress percentage, 0 - 100
+  /**
+   * The training progress percentage, it should be [0, 100].
+   */
   progressValue: number;
-  // custom data
+  /**
+   * Custom data.
+   */
   extendData: Record<string, any>;
 }
 
 /**
  * runtime api
  */
-export interface Runtime<T extends Sample<any>, M extends DatasetMeta> {
+export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends Datacook.Dataset.Types.DatasetMeta> {
   // report progress of pipeline
   notifyProgress: (progress: ProgressInfo) => void;
   // save the model file
@@ -72,11 +25,17 @@ export interface Runtime<T extends Sample<any>, M extends DatasetMeta> {
   // read model file
   readModel: () => Promise<string>;
   // datasource
-  dataSource: Dataset<T, M>;
+  dataSource: Datacook.Dataset.Types.Dataset<T, M>;
 }
 
 export type FrameworkModule = any;
-export type DataCookModule = typeof DataCook;
+
+/**
+ * A JavaScript library for feature engineering on datasets,
+ * it helps you to cook trainable datus out as its name, datacook.
+ * see [here][https://github.com/imgcook/datacook] for more details.
+ */
+export type DataCookModule = typeof Datacook;
 
 /**
  * The context of script running, includes `boa` and `DataCook`.
@@ -123,17 +82,17 @@ export interface ScriptContext {
 /**
  * type of data source script entry
  */
-export type DataSourceEntry<SAMPLE extends Sample<any>, META extends DatasetMeta> =
-  (options: Record<string, any>, context: ScriptContext) => Promise<Dataset<SAMPLE, META>>;
+export type DataSourceEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta> =
+  (options: Record<string, any>, context: ScriptContext) => Promise<Datacook.Dataset.Types.Dataset<SAMPLE, META>>;
 
 /**
  * type of data flow script entry
  */
-export type DataFlowEntry<IN extends Sample<any>, META extends DatasetMeta, OUT extends Sample<any> = IN> =
-  (api: Dataset<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<Dataset<OUT, META>>;
+export type DataFlowEntry<IN extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta, OUT extends Datacook.Dataset.Types.Sample<any> = IN> =
+  (api: Datacook.Dataset.Types.Dataset<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<Datacook.Dataset.Types.Dataset<OUT, META>>;
 
 /**
  * type of model script entry
  */
-export type ModelEntry<SAMPLE extends Sample<any>, META extends DatasetMeta> =
+export type ModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta> =
   (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>;

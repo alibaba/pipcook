@@ -4,14 +4,14 @@ import * as os from 'os';
 import * as path from 'path';
 import * as boa from '@pipcook/boa';
 import * as dataCook from '@pipcook/datacook';
-import { Costa, DefaultDataSourceEntry, PipelineRunnerOption } from '.';
+import { Costa, DefaultDataSourceEntry, CostaOption } from '.';
 import * as utils from './utils';
 import { ScriptContext } from '@pipcook/core';
 import { ScriptType } from './types';
 
 const workspaceDir = os.tmpdir();
 
-const mockOpts: PipelineRunnerOption = {
+const mockOpts: CostaOption = {
   workspace: {
     dataDir: path.join(workspaceDir, 'data'),
     cacheDir: path.join(workspaceDir, 'cache'),
@@ -46,7 +46,7 @@ test('initialize framework', async (t) => {
 });
 
 test('initialize framework with default path', async (t) => {
-  const mockOpts: PipelineRunnerOption = {
+  const mockOpts: CostaOption = {
     workspace: {
       dataDir: path.join(workspaceDir, 'data'),
       cacheDir: path.join(workspaceDir, 'cache'),

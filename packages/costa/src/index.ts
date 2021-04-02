@@ -4,33 +4,31 @@ import {
   ModelEntry,
   DataFlowEntry,
   ScriptContext,
-  FrameworkModule,
-  Sample,
-  DatasetMeta,
-  Dataset
+  FrameworkModule
 } from '@pipcook/core';
 import {
   PipcookScript,
   PipcookFramework
 } from './types';
 import * as boa from '@pipcook/boa';
-import * as dataCook from '@pipcook/datacook';
+import type * as dataCook from '@pipcook/datacook';
 import * as path from 'path';
 import Debug from 'debug';
 import { importFrom } from './utils';
+
 const debug = Debug('costa.runnable');
 
 export * from './types';
 
-export type DefaultRuntime = Runtime<Sample<any>, DatasetMeta>;
+export type DefaultRuntime = Runtime<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataSource = Dataset<Sample<any>, DatasetMeta>;
+export type DefaultDataSource = dataCook.Dataset.Types.Dataset<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataflowEntry = DataFlowEntry<Sample<any>, DatasetMeta>;
+export type DefaultDataflowEntry = DataFlowEntry<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataSourceEntry = DataSourceEntry<Sample<any>, DatasetMeta>;
+export type DefaultDataSourceEntry = DataSourceEntry<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
 
-export type DefaultModelEntry = ModelEntry<Sample<any>, DatasetMeta>;
+export type DefaultModelEntry = ModelEntry<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
 
 export interface PipelineWorkSpace {
   /**
@@ -50,24 +48,32 @@ export interface PipelineWorkSpace {
   frameworkDir: string;
 }
 
-export interface PipelineRunnerOption {
+/**
+ * `Costa` constructor options. For `Costa` creatation,
+ * the runtime should pass 
+ */
+export interface CostaOption {
   workspace: PipelineWorkSpace;
   framework: PipcookFramework;
 }
 
 /**
- * The pipeline runner executes the scripts in pipeline
+ * The pipeline runner who executes the scripts in the pipeline.
  */
 export class Costa {
   /**
-   * the framework directroy
+   * The context of the pipeline instance.
    */
   public context: ScriptContext;
+
   /**
-   * Create a runnable by the given runtime.
+   * The consturctor of Costa.
    */
   constructor(
-    public options: PipelineRunnerOption
+    /**
+     * The options for the costa, includes the framework info and the workspace directory paths.
+     */
+    public options: CostaOption
   ) {}
 
   /**
@@ -92,6 +98,7 @@ export class Costa {
       }
     };
   }
+  
   /**
    * make sure the module export is a function
    * @param script script infomation
@@ -107,9 +114,10 @@ export class Costa {
   }
 
   /**
-   * start datasource script.
-   * @param script the metadata of script
-   * @param options options of the pipeline
+   * Start datasource script.
+   * @param script The metadata of script.
+   * @param options Options of the pipeline.
+   * @returns The dataSource API object
    */
   async runDataSource(script: PipcookScript): Promise<DefaultDataSource> {
     // log all the requirements are ready to tell the debugger it's going to run.

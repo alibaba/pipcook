@@ -10,4 +10,5 @@ function mkdoc() {
     --mode file
 }
 
-mkdoc docs/typedoc core "Pipcook Interfaces"
+mkdoc docs/typedoc/script core "Pipcook Interfaces"
+mkdoc docs/typedoc/runtime costa "Pipcook Runtime Interfaces"
