@@ -50,7 +50,8 @@ export interface PipelineWorkSpace {
 
 /**
  * `Costa` constructor options. For `Costa` creatation,
- * the runtime should pass 
+ * the runtime should pass the framework information and specific
+ * the workspace directory paths.
  */
 export interface CostaOption {
   workspace: PipelineWorkSpace;
@@ -98,7 +99,7 @@ export class Costa {
       }
     };
   }
-  
+
   /**
    * make sure the module export is a function
    * @param script script infomation
