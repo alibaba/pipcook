@@ -50,6 +50,20 @@ test.serial('download script with file protocol', async (t) => {
   );
 });
 
+test.serial('download script with file protocol and query', async (t) => {
+  const localPath = process.cwd();
+  const url = 'file:///data/a.js?a=1&b=http://a.b.c';
+  const enableCache = true;
+  const stubCopy = sinon.stub(fs, 'copy').resolves();
+  await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  t.true(stubCopy.calledOnce, 'fs.copy should be called once');
+  t.deepEqual(
+    stubCopy.args[0],
+    [ '/data/a.js', `${localPath}/1-a.js` ] as any,
+    'fs.copy should called with currect args'
+  );
+});
+
 async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
   const pipelineMeta: PipelineMeta = {
     'specVersion': '2.0',

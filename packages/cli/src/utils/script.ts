@@ -19,8 +19,7 @@ export const downloadScript = async (scriptDir: string, scriptOrder: number, url
   const query = queryString.parse(urlObj.query);
   // if the url is is file protocol, copy without cache
   if (urlObj.protocol === DownloadProtocol.FILE) {
-    const p = urlObj.path.split('?')[0];
-    await fs.copy(p, localPath);
+    await fs.copy(urlObj.pathname, localPath);
   } else {
     if (urlObj.protocol === DownloadProtocol.HTTP || urlObj.protocol === DownloadProtocol.HTTPS) {
       // maybe should copy the script with COW
