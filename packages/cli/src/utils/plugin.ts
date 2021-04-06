@@ -49,7 +49,7 @@ export const install = async (name: string, pluginHomeDir: string): Promise<stri
   // always update plugin if version is 'beta', 'alpha' or 'latest'
   if ([ 'beta', 'alpha', 'latest' ].includes(pluginVersion.version) || !(await fs.pathExists(requirePath))) {
     await execAsync(
-      `npm install ${alias}@npm:${name} -P`,
+      `npm install ${alias}@npm:${name} -P --save`,
       { cwd: pluginHomeDir }
     );
   }
