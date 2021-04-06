@@ -53,7 +53,7 @@ test.serial('should install and has version number and module exists', async (t)
 
   const expected = path.join(homeDir, 'node_modules', `${extractRes.name}-${extractRes.version}`);
 
-  const stubPathExists = sinon.stub(åfs, 'pathExists').resolves(true);
+  const stubPathExists = sinon.stub(fs, 'pathExists').resolves(true);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubExecAsync = sinon.stub(utils, 'execAsync').resolves();
   const requirePath = await install(name, homeDir);
