@@ -62,11 +62,14 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
   const futures = [];
   if (opts.framework) {
     futures.push(remove(constants.PIPCOOK_FRAMEWORK_PATH));
+    logger.info('cleaning frameworks...');
   }
   if (opts.script) {
     futures.push(remove(constants.PIPCOOK_SCRIPT_PATH));
+    logger.info('cleaning scripts...');
   }
   await Promise.all(futures);
+  logger.success('done');
 };
 
 (async function(): Promise<void> {
@@ -99,10 +102,6 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
     .option('-s --script', 'clean cache for scripts', true)
     .action(cacheClean)
     .description('clean pipcook cache, include framework and script');
-
-  program
-    .command('install')
-    .description('install dependencies non-essential: tvm, emscripten, and ...');
 
   program.parse(process.argv);
 })();
