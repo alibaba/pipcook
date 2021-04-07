@@ -1,30 +1,60 @@
 import { ParsedUrlQuery } from 'querystring';
 
 /**
- * enum of script type
+ * There are three types of Pipcook script: `DataSource`, `Dataflow`, `Model`.
  */
-export enum ScriptType { DataSource, Dataflow, Model }
+export enum ScriptType {
+  /**
+   * The `DataSource` script is to collect the original data,
+   * and offers an API object for the following flow.
+   */
+  DataSource,
+  /**
+   * The `Dataflow` script processes the original data from `DataSource` script.
+   */
+  Dataflow,
+  /**
+   * The `Model` script is to access the data from `DataSource` and `Dataflow` scripts,
+   * and to train the model optionally.
+   */
+  Model
+}
 
 /**
- * pipcook script stucture
+ * The Pipcook script structure. It describes a script and tells `Costa` how to run.
  */
 export interface PipcookScript {
-  // script name
+  /**
+   * The script name.
+   */
   name: string;
-  // script path in the file system
+  /**
+   * The script path in the file system.
+   */
   path: string;
-  // script type
+  /**
+   * Script type.
+   */
   type: ScriptType;
-  // script query
+  /**
+   * The script query data.
+   */
   query: ParsedUrlQuery;
 }
 
 /**
- * enum type of framework package:
- *   Python: python package which can be used through `boa.import`
- *   JS: js module which can be used through `import`
+ * Type of package in the framework.
  */
-export enum PackageType { Python = 'python', JS = 'js' }
+export enum PackageType {
+  /**
+   * Python package which can be used through `boa.import`.
+   */
+  Python = 'python',
+  /**
+   * JS module which can be used through `import`.
+   */
+  JS = 'js'
+}
 
 /**
  * package structure in pipcook framework
@@ -33,27 +63,49 @@ export enum PackageType { Python = 'python', JS = 'js' }
  * pipcook framework description struct
  */
 export interface PipcookFramework {
-  // the location of the framework
+  /**
+   * The location of the framework.
+   */
   path: string;
-  // framework name
+  /**
+   * The framework name.
+   */
   name: string;
-  // description of the framework
+  /**
+   * Description of the framework.
+   */
   desc: string | null;
-  // framework version
+  /**
+   * Framework version.
+   */
   version: string;
-  // arch of current machine: x86 x64 etc. Ignore check if null
+  /**
+   * Arch of current machine, should be one of 'x86', 'x64'.
+   */
   arch: string | null;
-  // os: darwin, win32, linux etc. Ignore check if null
+  /**
+   * OS types, it should be one of 'darwin', 'win32', 'linux'.
+   */
   platform: string | null;
-  // node version: see https://www.npmjs.com/package/semver. Ignore check if null
+  /**
+   * Node version, it should be a semver string: see https://www.npmjs.com/package/semver.
+   */
   nodeVersion: string | null;
-  // n-api version
+  /**
+   * The n-api version that the framework depends.
+   */
   napiVersion: number | null;
-  // python runtime version, the python packages run on boa.
+  /**
+   * Python runtime version, the python packages run on boa.
+   */
   pythonVersion: string | null;
-  // python site-packages path in the directory, 'site-packages' by default.
+  /**
+   * Python site-packages relative path in the directory, 'site-packages' by default.
+   */
   pythonPackagePath: string | null;
-  // js node modules path in the directory, 'node_modules' by default.
+  /**
+   * The node modules relative path in the directory, 'node_modules' by default.
+   */
   jsPackagePath: string | null;
 }
 
@@ -83,16 +135,28 @@ export interface Artifact {
  * pipeline configuration stucture
  */
 export interface PipelineMeta {
-  // pipeline version, '2.0' by default
+  /**
+   * pipeline version, '2.0' by default
+   */
   specVersion: string;
-  // data source script url or sql
+  /**
+   * data source script url or sql
+   */
   dataSource: string;
-  // data process script, set to null if not used
+  /**
+   * data process script, set to null if not used
+   */
   dataflow: Array<string> | null;
-  // model script url
+  /**
+   * model script url
+   */
   model: string;
-  // artifact plugins and options
+  /**
+   * artifact plugins and options
+   */
   artifacts: Array<Artifact>;
-  // pipeline options
+  /**
+   * pipeline options
+   */
   options: Record<string, any>;
 }
