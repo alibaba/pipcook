@@ -84,7 +84,7 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
     return;
   }
 
-  const pkg = await readJson(join(__filename, '../../package.json'));
+  const pkg = await readJson(join(__filename, '../../../package.json'));
   program.version(pkg.version, '-v, --version');
 
   program
