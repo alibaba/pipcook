@@ -161,7 +161,7 @@ test.serial('import from script', async (t) => {
   };
   const stubFn = sinon.stub();
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(stubFn);
-  const fn = await costa.importScript<any>(script);
+  const fn = await costa.importScript<any>(script, ScriptType.Model);
   t.is(fn, stubFn, 'fn should be equal');
   t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
 });
@@ -178,7 +178,7 @@ test.serial('import from script.default', async (t) => {
   };
   const stubFn = sinon.stub();
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves({ default: stubFn });
-  const fn = await costa.importScript<any>(script);
+  const fn = await costa.importScript<any>(script, ScriptType.Model);
   t.is(fn, stubFn, 'fn should be equal');
   t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
 });
@@ -195,7 +195,7 @@ test.serial('import from script but not function', async (t) => {
   };
   const invalidFn = {};
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(invalidFn);
-  await t.throwsAsync(costa.importScript<any>(script), {
+  await t.throwsAsync(costa.importScript<any>(script, ScriptType.Model), {
     instanceOf: TypeError,
     message: `no export function found in ${script.name}(${script.path})`
   });
