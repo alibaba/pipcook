@@ -7,7 +7,7 @@ export interface ProgressInfo {
   /**
    * The training progress percentage, it should be [0, 100].
    */
-  progressValue: number;
+  value: number;
   /**
    * Custom data.
    */

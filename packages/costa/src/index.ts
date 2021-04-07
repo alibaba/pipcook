@@ -11,7 +11,7 @@ import {
   PipcookFramework
 } from './types';
 import * as boa from '@pipcook/boa';
-import * as dataCook from '@pipcook/datacook';
+import * as Datacook from '@pipcook/datacook';
 import * as path from 'path';
 import Debug from 'debug';
 import { importFrom } from './utils';
@@ -20,15 +20,15 @@ const debug = Debug('costa.runnable');
 
 export * from './types';
 
-export type DefaultRuntime = Runtime<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
+export type DefaultRuntime = Runtime<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataSource = dataCook.Dataset.Types.Dataset<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
+export type DefaultDataSource = Datacook.Dataset.Types.Dataset<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataflowEntry = DataFlowEntry<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
+export type DefaultDataflowEntry = DataFlowEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataSourceEntry = DataSourceEntry<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
+export type DefaultDataSourceEntry = DataSourceEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
-export type DefaultModelEntry = ModelEntry<dataCook.Dataset.Types.Sample<any>, dataCook.Dataset.Types.DatasetMeta>;
+export type DefaultModelEntry = ModelEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
 export interface PipelineWorkSpace {
   /**
@@ -51,9 +51,9 @@ export interface PipelineWorkSpace {
 }
 
 /**
- * `Costa` constructor options. For `Costa` creatation,
- * the runtime should pass the framework information and specific
- * the workspace directory paths.
+ * `Costa` constructor options. For `Costa` creation,
+ * the runtime should pass the framework information and
+ * the specific workspace directory paths.
  */
 export interface CostaOption {
   workspace: PipelineWorkSpace;
@@ -65,16 +65,16 @@ export interface CostaOption {
  */
 export class Costa {
   /**
-   * The context of the pipeline instance.
+   * The context of the pipeline script.
    */
   public context: ScriptContext;
 
   /**
-   * The consturctor of Costa.
+   * The consturctor of `Costa`.
    */
   constructor(
     /**
-     * The options for the costa, includes the framework info and the workspace directory paths.
+     * The options for the `Costa`, includes the framework info and the workspace directory paths.
      */
     public options: CostaOption
   ) {}
@@ -88,7 +88,7 @@ export class Costa {
     const paths = [ nodeModules, ...(require.resolve.paths(__dirname) || []) ];
     this.context = {
       boa,
-      dataCook,
+      dataCook: Datacook,
       importJS: (jsModuleName: string): Promise<FrameworkModule> => {
         const module = require.resolve(jsModuleName, { paths });
         return import(module);
@@ -117,7 +117,7 @@ export class Costa {
   }
 
   /**
-   * Start datasource script.
+   * Run a datasource script.
    * @param script The metadata of script.
    * @param options Options of the pipeline.
    * @returns The dataSource API object
@@ -131,7 +131,7 @@ export class Costa {
   }
 
   /**
-   * start datasource script.
+   * Run a datasource script.
    * @param api api from data source script or another dataflow script
    * @param script the metadata of script
    */
@@ -146,7 +146,7 @@ export class Costa {
   }
 
   /**
-   * start datasource script.
+   * Run a datasource script.
    * @param api api from data source script or dataflow script
    * @param script the metadata of script
    * @param options options of the pipeline

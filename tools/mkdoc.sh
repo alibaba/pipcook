@@ -11,4 +11,4 @@ function mkdoc() {
 }
 
 mkdoc docs/typedoc/script core "Pipcook Interfaces"
-mkdoc docs/typedoc/runtime costa "Pipcook Runtime Interfaces"
+mkdoc docs/typedoc/runtime costa "Costa Interfaces"

@@ -5,23 +5,23 @@ import { ParsedUrlQuery } from 'querystring';
  */
 export enum ScriptType {
   /**
-   * The `DataSource` script needs to collect all the origin data,
-   * and offers an API object for data access.
+   * The `DataSource` script is to collect the original data,
+   * and offers an API object for the following flow.
    */
   DataSource,
   /**
-   * The `Dataflow` script processes the origin data form `DataSource` script.
+   * The `Dataflow` script processes the original data from `DataSource` script.
    */
   Dataflow,
   /**
-   * The `Model` script accesses the data from `DataSource` and `Dataflow` sciprts,
-   * and trains the model.
+   * The `Model` script is to access the data from `DataSource` and `Dataflow` scripts,
+   * and to train the model optionally.
    */
   Model
 }
 
 /**
- * The pipcook script stucture. It describes a scrpt and tell `Costa` how to run this script.
+ * The Pipcook script structure. It describes a script and tells `Costa` how to run.
  */
 export interface PipcookScript {
   /**
@@ -68,7 +68,7 @@ export interface PipcookFramework {
    */
   path: string;
   /**
-   * Framework name.
+   * The framework name.
    */
   name: string;
   /**
@@ -104,7 +104,7 @@ export interface PipcookFramework {
    */
   pythonPackagePath: string | null;
   /**
-   * Node modules relative path in the directory, 'node_modules' by default.
+   * The node modules relative path in the directory, 'node_modules' by default.
    */
   jsPackagePath: string | null;
 }
