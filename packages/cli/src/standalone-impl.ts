@@ -17,7 +17,7 @@ export class StandaloneImpl implements DefaultRuntime {
   }
 
   async notifyProgress(progress: ProgressInfo): Promise<void> {
-    console.log(`progress: ${progress.progressValue}%`);
+    console.log(`progress: ${progress.value}%`);
   }
 
   async saveModel(localPathOrStream: string | NodeJS.ReadableStream, filename: 'model'): Promise<void> {
