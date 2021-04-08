@@ -1,9 +1,9 @@
-import { PipelineMeta } from '@pipcook/core';
 import test from 'ava';
-import sinon = require('sinon');
-import { extractVersion, prepareArtifactPlugin, install } from './plugin';
+import * as sinon from 'sinon';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import { PipelineMeta } from '@pipcook/costa';
+import { extractVersion, prepareArtifactPlugin, install } from './plugin';
 import * as utils from './index';
 
 test('extract version', (t) => {
@@ -120,7 +120,7 @@ test.serial('should not prepare artifact plugin', async (t) => {
 
   const plugins = await prepareArtifactPlugin(pipelineMeta);
 
-  t.is(plugins, undefined);
+  t.deepEqual(plugins, []);
 });
 
 test.serial('should prepare artifact plugin', async (t) => {

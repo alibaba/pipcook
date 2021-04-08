@@ -3,7 +3,8 @@ import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
 import * as cache from './cache';
 import { prepareFramework } from './framework';
-import { PipcookFramework, PipelineMeta } from '@pipcook/core';
+import { PipcookFramework, PipelineMeta } from '@pipcook/costa';
+import * as utils from './';
 
 test.serial.afterEach(() => sinon.restore());
 
@@ -19,13 +20,59 @@ test.serial('prepare with invalid options', async (t) => {
   const frameworkDir = 'test';
 
   const stubFetchWithCache = sinon.stub(cache, 'fetchWithCache').resolves();
-  const stubReadJson = sinon.stub(fs, 'readJSON').resolves({});
+  const stubReadJson = sinon.stub(fs, 'readJson').resolves();
 
   const ret = await prepareFramework(pipelineMeta, frameworkDir, '');
 
   t.false(stubFetchWithCache.called);
   t.false(stubReadJson.called);
   t.is(ret, undefined);
+});
+
+test.serial('prepare with file protocol and zip extname', async (t) => {
+  const pipelineMeta: PipelineMeta = {
+    specVersion: 'test',
+    dataSource: 'test',
+    dataflow: [ 'test' ],
+    model: 'test',
+    artifacts: [],
+    options: {
+      framework: 'file:///data/a.zip'
+    }
+  };
+  const frameworkDir = 'test';
+
+  const stubUnzipData = sinon.stub(utils, 'unZipData').resolves();
+  const stubReadJson = sinon.stub(fs, 'readJson').resolves({ mock: 'value' });
+
+  const ret = await prepareFramework(pipelineMeta, frameworkDir, '');
+
+  t.true(stubReadJson.calledOnce, 'readJson should be called once');
+  t.true(stubUnzipData.calledOnce, 'unzip should be called once');
+  t.deepEqual(ret, { mock: 'value', path: frameworkDir } as any);
+});
+
+test.serial('prepare with file protocol and no-zip extname', async (t) => {
+  const pipelineMeta: PipelineMeta = {
+    specVersion: 'test',
+    dataSource: 'test',
+    dataflow: [ 'test' ],
+    model: 'test',
+    artifacts: [],
+    options: {
+      framework: 'file:///data/a'
+    }
+  };
+  const frameworkDir = 'test';
+
+  const stubCopy = sinon.stub(fs, 'copy').resolves();
+  const stubReadJson = sinon.stub(fs, 'readJson').resolves({ mock: 'value' });
+
+  const ret = await prepareFramework(pipelineMeta, frameworkDir, 'http://a.b.c/');
+
+  t.true(stubReadJson.calledOnce, 'readJson should be called once');
+  t.true(stubCopy.calledOnce, 'unzip should be called once');
+  t.deepEqual(ret, { mock: 'value', path: frameworkDir } as any);
 });
 
 test.serial('prepare with valid options', async (t) => {
@@ -47,7 +94,9 @@ test.serial('prepare with valid options', async (t) => {
     version: 'test',
     arch: 'test',
     platform: 'test',
+    pythonVersion: 'test',
     nodeVersion: 'test',
+    napiVersion: 7,
     pythonPackagePath: 'test',
     jsPackagePath: 'test'
   };

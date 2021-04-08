@@ -7,15 +7,54 @@ import * as fs from 'fs-extra';
 import * as CliProgress from 'cli-progress';
 import * as path from 'path';
 import * as request from 'request';
+import * as os from 'os';
+import * as url from 'url';
+import { promisify } from 'util';
+import { customAlphabet } from 'nanoid';
+import * as boa from '@pipcook/boa';
+import * as constants from '../constants';
+import * as extract from 'extract-zip';
 import realOra = require('ora');
-import { constants, generateId, pipelineAsync, unZipData } from '@pipcook/core';
+import * as prettyBytes from 'pretty-bytes';
+
 export * as Script from './script';
 export * as Plugin from './plugin';
 export * as Cache from './cache';
 export * as Framework from './framework';
-import * as os from 'os';
-import * as url from 'url';
-import * as boa from '@pipcook/boa';
+
+const { pipeline } = require('stream');
+
+const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 8);
+
+export const pipelineAsync = promisify(pipeline);
+
+/**
+ * download the file and stored in specified directory
+ * @param url: url of the file
+ * @param fileName: full path of file that will be stored
+ */
+export async function download(url: string, fileName: string): Promise<void> {
+  await fs.ensureFile(fileName);
+  return pipelineAsync(request.get(url), fs.createWriteStream(fileName));
+}
+
+/**
+ * unzip compressed data
+ * @param filePath: path of zip
+ * @param targetPath: target full path
+ */
+export function unZipData(filePath: string, targetPath: string): Promise<void> {
+  return extract(filePath, { dir: targetPath });
+}
+
+/**
+ * generate id
+ */
+export function generateId(): string {
+  return nanoid();
+}
+
+export enum DownloadProtocol { HTTP = 'http:', HTTPS = 'https:', FILE = 'file:' }
 
 export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
   return new Promise((resolve, reject): void => {
@@ -37,18 +76,25 @@ export function execAsync(cmd: string, opts?: ExecOptions): Promise<string> {
 export async function downloadWithProgress(url: string, fileName: string): Promise<void> {
   await fs.ensureFile(fileName);
   const bar = new CliProgress.SingleBar({
-    format: '{bar} {percentage}% {value}MB/{total}MB'
+    format: '{bar} {percentage}% {value}/{total}',
+    formatValue: (v, _, type): string => {
+      if (type === 'value' || type === 'total') {
+        return prettyBytes(v);
+      } else {
+        return v.toString();
+      }
+    }
   }, CliProgress.Presets.shades_classic);
   const file = fs.createWriteStream(fileName);
   let receivedBytes = 0;
   const downloadStream = request.get(url)
     .on('response', (response: any) => {
       const totalBytes = response.headers['content-length'];
-      bar.start(Number((totalBytes / 1024 / 1024).toFixed(1)), 0);
+      bar.start(Number(totalBytes), 0);
     })
     .on('data', (chunk: any) => {
       receivedBytes += chunk.length;
-      bar.update(Number((receivedBytes / 1024 / 1024).toFixed(1)));
+      bar.update(receivedBytes);
     });
   try {
     await pipelineAsync(downloadStream, file);
@@ -74,15 +120,15 @@ export async function downloadAndExtractTo(resUrl: string, targetDir: string): P
   const extname = path.extname(filename);
   if (protocol === 'file:') {
     if (extname === '.zip') {
-      await unZipData(pathname, targetDir);
+      await this.unZipData(pathname, targetDir);
     } else {
       await fs.copy(pathname, targetDir);
     }
   } else if (protocol === 'http:' || protocol === 'https:') {
     if (extname === '.zip') {
-      const tmpPath = path.join(constants.PIPCOOK_TMPDIR, generateId());
+      const tmpPath = path.join(constants.PIPCOOK_TMPDIR, this.generateId());
       await this.downloadWithProgress(resUrl, tmpPath);
-      await unZipData(tmpPath, targetDir);
+      await this.unZipData(tmpPath, targetDir);
       await fs.remove(tmpPath);
     } else {
       await this.downloadWithProgress(resUrl, targetDir);

@@ -1,6 +1,5 @@
 import * as fs from 'fs-extra';
-import { PipelineMeta } from '@pipcook/core';
-import { Costa, PipelineWorkSpace } from '@pipcook/costa';
+import { PipelineMeta, Costa, PipelineWorkSpace } from '@pipcook/costa';
 import * as path from 'path';
 import { createStandaloneRT } from './standalone-impl';
 import { logger, Framework, Plugin, Script } from './utils';
@@ -57,7 +56,7 @@ export class StandaloneRuntime {
       dataSource = await costa.runDataflow(dataSource, scripts.dataflow);
     }
     logger.info('running model script');
-    const standaloneRT = await createStandaloneRT(dataSource, this.pipelineMeta, this.workspace.modelDir);
+    const standaloneRT = createStandaloneRT(dataSource, this.pipelineMeta, this.workspace.modelDir);
     await costa.runModel(standaloneRT, scripts.model, this.pipelineMeta.options);
     logger.info(`pipeline finished, the model has been saved at ${this.workspace.modelDir}`);
     for (const artifact of artifactPlugins) {

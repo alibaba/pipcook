@@ -4,11 +4,11 @@ function mkdoc() {
     --name "$3" \
     --inputFiles "packages/$2/src" \
     --out $1 \
-    --theme minimal \
+    --theme default \
     --tsconfig "packages/$2/tsconfig.json" \
     --readme none \
     --mode file
 }
 
-mkdoc docs/typedoc core "Pipcook Core APIs"
-mkdoc docs/typedoc/sdk sdk "Pipcook SDK"
+mkdoc docs/typedoc/script core "Pipcook Interfaces"
+mkdoc docs/typedoc/runtime costa "Costa Interfaces"

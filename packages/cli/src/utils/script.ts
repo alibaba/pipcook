@@ -2,21 +2,32 @@ import {
   PipelineMeta,
   ScriptConfig,
   ScriptType,
-  PipcookScript,
-  constants
-} from '@pipcook/core';
+  PipcookScript
+} from '@pipcook/costa';
+import * as constants from '../constants';
 import * as path from 'path';
 import { parse } from 'url';
+import * as fs from 'fs-extra';
 import { fetchWithCache } from './cache';
 import * as queryString from 'query-string';
+import { DownloadProtocol } from './';
 
 export const downloadScript = async (scriptDir: string, scriptOrder: number, url: string, type: ScriptType, enableCache: boolean): Promise<PipcookScript> => {
   const urlObj = parse(url);
   const baseName = path.parse(urlObj.pathname).base;
   const localPath = path.join(scriptDir, `${scriptOrder}-${baseName}`);
   const query = queryString.parse(urlObj.query);
-  // maybe should copy the script with COW
-  await fetchWithCache(constants.PIPCOOK_SCRIPT_PATH, url, localPath, enableCache);
+  // if the url is is file protocol, copy without cache
+  if (urlObj.protocol === DownloadProtocol.FILE) {
+    await fs.copy(urlObj.pathname, localPath);
+  } else {
+    if (urlObj.protocol === DownloadProtocol.HTTP || urlObj.protocol === DownloadProtocol.HTTPS) {
+      // maybe should copy the script with COW
+      await fetchWithCache(constants.PIPCOOK_SCRIPT_PATH, url, localPath, enableCache);
+    } else {
+      throw new TypeError(`unsupported protocol ${urlObj.protocol}`);
+    }
+  }
   return {
     name: baseName,
     path: localPath,

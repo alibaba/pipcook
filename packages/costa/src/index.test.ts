@@ -1,15 +1,17 @@
 import test from 'ava';
 import * as sinon from 'sinon';
+import * as os from 'os';
 import * as path from 'path';
 import * as boa from '@pipcook/boa';
 import * as dataCook from '@pipcook/datacook';
-import { Costa, PipelineRunnerOption } from '.';
+import { Costa, DefaultDataSourceEntry, CostaOption } from '.';
 import * as utils from './utils';
-import { constants, SequentialDataSourceApi, ScriptContext, ScriptType } from '@pipcook/core';
+import { ScriptContext } from '@pipcook/core';
+import { ScriptType } from './types';
 
-const workspaceDir = constants.PIPCOOK_TMPDIR;
+const workspaceDir = os.tmpdir();
 
-const mockOpts: PipelineRunnerOption = {
+const mockOpts: CostaOption = {
   workspace: {
     dataDir: path.join(workspaceDir, 'data'),
     cacheDir: path.join(workspaceDir, 'cache'),
@@ -23,7 +25,9 @@ const mockOpts: PipelineRunnerOption = {
     version: '0.0.1',
     arch: null,
     platform: null,
+    pythonVersion: null,
     nodeVersion: null,
+    napiVersion: null,
     pythonPackagePath: 'site-packages',
     jsPackagePath: 'node_modules'
   }
@@ -42,7 +46,7 @@ test('initialize framework', async (t) => {
 });
 
 test('initialize framework with default path', async (t) => {
-  const mockOpts: PipelineRunnerOption = {
+  const mockOpts: CostaOption = {
     workspace: {
       dataDir: path.join(workspaceDir, 'data'),
       cacheDir: path.join(workspaceDir, 'cache'),
@@ -56,7 +60,9 @@ test('initialize framework with default path', async (t) => {
       version: '0.0.1',
       arch: null,
       platform: null,
+      pythonVersion: null,
       nodeVersion: null,
+      napiVersion: null,
       pythonPackagePath: null,
       jsPackagePath: null
     }
@@ -106,7 +112,7 @@ test.serial('run data flow scripts', async (t) => {
     }
   };
   const mockDataSourceApi: any = {};
-  const mockModule = sinon.stub().callsFake(async (api: SequentialDataSourceApi<any>, opts: Record<string, any>, ctx: ScriptContext) => {
+  const mockModule = sinon.stub().callsFake(async (api: DefaultDataSourceEntry, opts: Record<string, any>, ctx: ScriptContext) => {
     t.is(api, mockDataSourceApi, 'api should be equal');
     t.is(ctx, costa.context, 'context should be equal');
     t.deepEqual(script.query, opts, 'options should be equal');
@@ -131,7 +137,7 @@ test.serial('run model script', async (t) => {
     }
   };
   const mockRuntime: any = {};
-  const mockModule = sinon.stub().callsFake(async (api: SequentialDataSourceApi<any>, opts: Record<string, any>, ctx: ScriptContext) => {
+  const mockModule = sinon.stub().callsFake(async (api: DefaultDataSourceEntry, opts: Record<string, any>, ctx: ScriptContext) => {
     t.is(api, mockRuntime, 'api should be equal');
     t.is(ctx, costa.context, 'context should be equal');
     t.deepEqual(opts, Object.assign({ mockTrainOpt: 'value' }, script.query), 'options should be equal');
@@ -155,7 +161,7 @@ test.serial('import from script', async (t) => {
   };
   const stubFn = sinon.stub();
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(stubFn);
-  const fn = await costa.importScript<any>(script);
+  const fn = await costa.importScript<any>(script, ScriptType.Model);
   t.is(fn, stubFn, 'fn should be equal');
   t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
 });
@@ -172,7 +178,7 @@ test.serial('import from script.default', async (t) => {
   };
   const stubFn = sinon.stub();
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves({ default: stubFn });
-  const fn = await costa.importScript<any>(script);
+  const fn = await costa.importScript<any>(script, ScriptType.Model);
   t.is(fn, stubFn, 'fn should be equal');
   t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
 });
@@ -189,9 +195,9 @@ test.serial('import from script but not function', async (t) => {
   };
   const invalidFn = {};
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(invalidFn);
-  await t.throwsAsync(costa.importScript<any>(script), {
+  await t.throwsAsync(costa.importScript<any>(script, ScriptType.Model), {
     instanceOf: TypeError,
-    message: `no export function found in ${script.name}(${script.path})`
+    message: `no entry found in ${script.name}(${script.path})`
   });
   t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
 });

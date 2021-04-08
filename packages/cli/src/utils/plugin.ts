@@ -1,12 +1,14 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import {
-  PipelineMeta,
-  ArtifactExports,
-  ArtifactMeta,
-  constants
-} from '@pipcook/core';
+import { ArtifactExports } from '@pipcook/core';
+import { PipelineMeta } from '@pipcook/costa';
+import * as constants from '../constants';
 import { execAsync } from './';
+
+export interface ArtifactMeta {
+  artifactExports: ArtifactExports;
+  options: Record<string, any>;
+}
 
 export interface PluginVersion {
   name: string,
@@ -46,8 +48,8 @@ export const install = async (name: string, pluginHomeDir: string): Promise<stri
   const requirePath = path.join(pluginHomeDir, 'node_modules', alias);
   // always update plugin if version is 'beta', 'alpha' or 'latest'
   if ([ 'beta', 'alpha', 'latest' ].includes(pluginVersion.version) || !(await fs.pathExists(requirePath))) {
-    await execAsync(　
-      `npm install ${alias}@npm:${name} -P`,
+    await execAsync(
+      `npm install ${alias}@npm:${name} -P --save`,
       { cwd: pluginHomeDir }
     );
   }
@@ -55,8 +57,11 @@ export const install = async (name: string, pluginHomeDir: string): Promise<stri
 };
 
 export const prepareArtifactPlugin = async (pipelineMeta: PipelineMeta): Promise<Array<ArtifactMeta>> => {
-  if (!pipelineMeta.artifacts) {
-    return;
+  if (
+    !pipelineMeta.artifacts ||
+    (Array.isArray(pipelineMeta.artifacts) && pipelineMeta.artifacts.length === 0)
+  ) {
+    return [];
   }
   const allPlugins: Array<ArtifactMeta> = [];
   for (const plugin of pipelineMeta.artifacts) {
