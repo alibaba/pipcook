@@ -55,6 +55,7 @@ export class StandaloneRuntime {
     if (scripts.dataflow) {
       dataSource = await costa.runDataflow(dataSource, scripts.dataflow);
     }
+
     logger.info('running model script');
     const standaloneRT = createStandaloneRT(dataSource, this.pipelineMeta, this.workspace.modelDir);
     await costa.runModel(standaloneRT, scripts.model, this.pipelineMeta.options);
