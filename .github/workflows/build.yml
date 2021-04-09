@@ -83,7 +83,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Run bayes
       run: |
-        ./packages/cli/dist/bin/pipcook run ./test/pipelines/bayes.v2.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
+        ./packages/cli/dist/bin/pipcook.js run ./test/pipelines/bayes.v2.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
     - name: Run mobilenet
       run: |
-        ./packages/cli/dist/bin/pipcook run ./test/pipelines/mobilenet.v2.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
+        ./packages/cli/dist/bin/pipcook.js run ./test/pipelines/mobilenet.v2.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
