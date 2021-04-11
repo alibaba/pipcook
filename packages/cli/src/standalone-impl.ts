@@ -11,18 +11,13 @@ export class StandaloneImpl implements DefaultRuntime {
     private modelDir: string
   ) {}
 
-  // initialize metadata
-  async pipelineMeta(): Promise<PipelineMeta> {
-    return this.pipelineConfig;
-  }
-
   async notifyProgress(progress: ProgressInfo): Promise<void> {
     console.log(`progress: ${progress.value}%`);
   }
 
   async saveModel(localPathOrStream: string | NodeJS.ReadableStream, filename: 'model'): Promise<void> {
     if (typeof localPathOrStream === 'string') {
-      if (path.parse(localPathOrStream).dir === this.modelDir || this.modelDir === path.resolve(localPathOrStream)) {
+      if (path.parse(localPathOrStream).dir === this.modelDir) {
         return;
       }
       return fs.copy(localPathOrStream, this.modelDir);

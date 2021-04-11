@@ -22,7 +22,7 @@ export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends
   // report progress of pipeline
   notifyProgress: (progress: ProgressInfo) => void;
   // save the model file
-  saveModel: (localPathOrStream: string | NodeJS.ReadableStream, filename: string) => Promise<void>;
+  saveModel: (localPathOrStream: string | NodeJS.ReadableStream, filename?: string) => Promise<void>;
   // read model file
   readModel: () => Promise<string>;
   // datasource
