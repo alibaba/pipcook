@@ -88,7 +88,7 @@ test.serial('fetch with invalid poptocol', async (t) => {
     debug: false
   };
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
-  const mockFail =  sinon.stub(utils.logger, 'fail').resolves();
+  const mockFail = sinon.stub(utils.logger, 'fail').resolves();
   await pipcook.run(mockUrl, opts),
   t.true(mockFail.calledOnce, 'fail should be called once');
   t.deepEqual(mockFail.args[0], [ 'run pipeline error: protocol \'ftp:\' not supported' ], 'should fail with correct message');
@@ -105,7 +105,7 @@ test.serial('fetch with invalid poptocol debug', async (t) => {
     debug: true
   };
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
-  const mockFail =  sinon.stub(utils.logger, 'fail').resolves();
+  const mockFail = sinon.stub(utils.logger, 'fail').resolves();
   await pipcook.run(mockUrl, opts);
   t.true(mockFail.calledOnce, 'fail should be called once');
   t.true(
