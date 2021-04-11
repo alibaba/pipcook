@@ -58,17 +58,11 @@ export const run = async (filename: string, opts: RunOptions): Promise<void> => 
   }
 };
 
-export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
-  const futures = [];
-  if (opts.framework) {
-    futures.push(remove(constants.PIPCOOK_FRAMEWORK_PATH));
-    logger.info('cleaning frameworks...');
-  }
-  if (opts.script) {
-    futures.push(remove(constants.PIPCOOK_SCRIPT_PATH));
-    logger.info('cleaning scripts...');
-  }
-  await Promise.all(futures);
+export const cacheClean = async (): Promise<void> => {
+  await Promise.all([
+    remove(constants.PIPCOOK_FRAMEWORK_PATH),
+    remove(constants.PIPCOOK_SCRIPT_PATH)
+  ]);
   logger.success('done');
 };
 
@@ -98,8 +92,6 @@ export const cacheClean = async (opts: CacheCleanOptions): Promise<void> => {
 
   program
     .command('clean')
-    .option('-f --framework', 'clean cache for framework', true)
-    .option('-s --script', 'clean cache for scripts', true)
     .action(cacheClean)
     .description('clean pipcook cache, include framework and script');
 
