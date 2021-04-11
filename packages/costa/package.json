@@ -9,13 +9,13 @@
   ],
   "scripts": {
     "test": "DEBUG=costa* ava",
-    "cov": "nyc --reporter=text-summary npm run test",
+    "cov": "nyc --reporter=text-summary yarn test",
     "cov:report": "nyc report -r=lcov",
-    "build": "npm run clean && npm run compile",
+    "build": "yarn clean && yarn compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json"
   },
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "dependencies": {
     "@pipcook/boa": "^2.0.0-beta.1",
     "@pipcook/core": "^2.0.0-beta.1",
