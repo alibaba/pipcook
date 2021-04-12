@@ -13,7 +13,9 @@ const debug = Debug('cache');
  * @param enableCache is cache enabled
  */
 export const fetchWithCache = async (cacheDir: string, url: string, target: string, enableCache = true): Promise<void> => {
-  const cachePath = path.join(cacheDir, crypto.createHash('md5').update(url).digest('hex'));
+  const md5 = crypto.createHash('md5').update(url).digest('hex');
+  const cachePath = path.join(cacheDir, md5);
+  const cacheTmpPath = path.join(cacheDir, 'tmp', md5);
   debug('search cache from', cachePath);
   await fs.remove(target);
   if (enableCache) {
@@ -24,8 +26,11 @@ export const fetchWithCache = async (cacheDir: string, url: string, target: stri
     debug('cache missed');
   }
   await fs.remove(cachePath);
+  await fs.remove(cacheTmpPath);
   debug('download from url', url);
-  await downloadAndExtractTo(url, cachePath);
+  await downloadAndExtractTo(url, cacheTmpPath);
+  debug('move tmp file to cache');
+  await fs.move(cacheTmpPath, cachePath);
   debug(`link ${cachePath} to ${target}`);
   await fs.symlink(cachePath, target);
 };
