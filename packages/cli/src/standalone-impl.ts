@@ -1,6 +1,6 @@
 import { ProgressInfo } from '@pipcook/core';
 import { pipelineAsync } from './utils';
-import { DefaultDataSource, DefaultRuntime, PipelineMeta } from '@pipcook/costa';
+import { DefaultDataSource, DefaultRuntime } from '@pipcook/costa';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
