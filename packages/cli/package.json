@@ -45,7 +45,8 @@
     "ava": "^3.13.0",
     "import-fresh": "^3.3.0",
     "nyc": "^15.1.0",
-    "sinon": "^10.0.0"
+    "sinon": "^10.0.0",
+    "yarn": "^1.22.10"
   },
   "publishConfig": {
     "access": "public"
