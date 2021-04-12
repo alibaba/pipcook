@@ -7,7 +7,6 @@ import * as path from 'path';
 export class StandaloneImpl implements DefaultRuntime {
   constructor(
     public dataSource: DefaultDataSource,
-    private pipelineConfig: PipelineMeta,
     private modelDir: string
   ) {}
 
@@ -34,8 +33,7 @@ export class StandaloneImpl implements DefaultRuntime {
 
 export const createStandaloneRT = (
   dataSourceApi: DefaultDataSource,
-  pipelineConfig: PipelineMeta,
   modelDir: string
 ): DefaultRuntime => {
-  return new StandaloneImpl(dataSourceApi, pipelineConfig, modelDir);
+  return new StandaloneImpl(dataSourceApi, modelDir);
 };
