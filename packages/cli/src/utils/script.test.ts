@@ -41,13 +41,14 @@ test.serial('download script with file protocol', async (t) => {
   const url = 'file:///data/a.js';
   const enableCache = true;
   const stubCopy = sinon.stub(fs, 'copy').resolves();
-  await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
-  t.true(stubCopy.calledOnce, 'fs.copy should be called once');
-  t.deepEqual(
-    stubCopy.args[0],
-    [ '/data/a.js', `${localPath}/1-a.js` ] as any,
-    'fs.copy should called with currect args'
-  );
+  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  t.deepEqual(scriptDesc, {
+    name: 'a.js',
+    path: '/data/a.js',
+    type: ScriptType.Model,
+    query: {}
+  }, 'should return correct script');
+  t.false(stubCopy.called, 'fs.copy should not be called');
 });
 
 test.serial('download script with file protocol and query', async (t) => {
@@ -55,13 +56,17 @@ test.serial('download script with file protocol and query', async (t) => {
   const url = 'file:///data/a.js?a=1&b=http://a.b.c';
   const enableCache = true;
   const stubCopy = sinon.stub(fs, 'copy').resolves();
-  await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
-  t.true(stubCopy.calledOnce, 'fs.copy should be called once');
-  t.deepEqual(
-    stubCopy.args[0],
-    [ '/data/a.js', `${localPath}/1-a.js` ] as any,
-    'fs.copy should called with currect args'
-  );
+  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  t.deepEqual(scriptDesc, {
+    name: 'a.js',
+    path: '/data/a.js',
+    type: ScriptType.Model,
+    query: {
+      a: '1',
+      b: 'http://a.b.c'
+    }
+  }, 'should return correct script');
+  t.false(stubCopy.called, 'fs.copy should not be called');
 });
 
 async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
