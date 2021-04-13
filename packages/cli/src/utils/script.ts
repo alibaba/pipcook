@@ -7,7 +7,6 @@ import {
 import * as constants from '../constants';
 import * as path from 'path';
 import { parse } from 'url';
-import * as fs from 'fs-extra';
 import { fetchWithCache } from './cache';
 import * as queryString from 'query-string';
 import { DownloadProtocol } from './';
