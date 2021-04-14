@@ -1,6 +1,6 @@
 - API Reference
-  - [Core APIs](typedoc/index.html)
-  - [SDK](typedoc/sdk/index.html)
+  - [Script APIs](typedoc/script/index.html)
+  - [Runtime APIs](typedoc/runtime/index.html)
 - Translations
   - [English](/)
   - [中文](/zh-cn/)
