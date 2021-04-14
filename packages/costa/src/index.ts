@@ -112,13 +112,22 @@ export class Costa {
     const scriptMoudle = await importFrom(script.path);
     let fn: T = scriptMoudle;
     if (typeof fn !== 'function' && type === ScriptType.DataSource) {
-      fn = (fn as any).datasoure;
+      const { datasource } = fn as any;
+      if (typeof datasource === 'function') {
+        fn = datasource;
+      }
     }
     if (typeof fn !== 'function' && type === ScriptType.Dataflow) {
-      fn = (fn as any).dataflow;
+      const { dataflow } = fn as any;
+      if (typeof dataflow === 'function') {
+        fn = dataflow;
+      }
     }
     if (typeof fn !== 'function' && type === ScriptType.Model) {
-      fn = (fn as any).model;
+      const { model } = fn as any;
+      if (typeof model === 'function') {
+        fn = model;
+      }
     }
     fn = typeof fn === 'function' ? fn : scriptMoudle.default;
     if (typeof fn !== 'function') {

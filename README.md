@@ -73,7 +73,7 @@ A Pipcook Pipeline is generally composed of lots of plugins. Through different p
 
 __Pipcook Bridge to Python__
 
-For JavaScript engineers, the most difficult part is the lack of a mature machine learning toolset in the ecosystem. In Pipcook, a module called **Boa**, which provides access to Python packages by bridging the interface of [CPython][] using N-API.
+For JavaScript engineers, the most difficult part is the lack of a mature machine learning toolset in the ecosystem. In Pipcook, a module called [Boa][https://github.com/imgcook/boa], which provides access to Python packages by bridging the interface of [CPython][] using N-API.
 
 With it, developers can use packages such as `numpy`, `scikit-learn`, `jieba`, `tensorflow`, or any other Python ecology in the Node.js runtime through JavaScript.
 
@@ -85,40 +85,19 @@ Prepare the following on your machine:
 
 | Installer   | Version Range |
 |-------------|---------------|
-| [Node.js][] | >= 12.19      |
-| [npm][]     | >= 6.1        |
+| [Node.js][] | >= 12.17      |
+| [yarn][]    | >= 1.22       |
 
 Install the command-line tool for managing [Pipcook][] projects:
 
 ```shell
-$ npm install -g @pipcook/pipcook-cli
-$ pipcook init
-$ pipcook daemon start
+$ npm install -g @pipcook/cli
 ```
-
-Occuring the download problems? We use [tuna](https://mirror.tuna.tsinghua.edu.cn/help/pypi/) mirror to address this issue:
-
-```sh
-$ pipcook init --tuna
-```
-
-If want to specify the version of daemon and pipboard, we can use:
-
-```sh
-$ pipcook init 1.1.0
-```
-
-Or directly use option `--beta` to specify the beta version:
-
-```sh
-$ pipcook init --beta
-```
-
 
 Then run a pipeline:
 
 ```shell
-$ pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
+$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@master/example/pipelines/bayes.v2.json
 ```
 
 ### Playground
@@ -142,14 +121,14 @@ If you want to train a model to recognize MNIST handwritten digits by yourself, 
 | object-detection | pipeline example to train object detection task which is for component recognition <br/>used by imgcook. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_object_detection.ipynb) |
 | text-bayes-classification | pipeline example to train text classification task with bayes | N/A |
 
-See [here](./example) for complete list, and it's easy and quick to run these examples. For example, to do a MNIST 
+See [here](./example/pipelines) for complete list, and it's easy and quick to run these examples. For example, to do a MNIST 
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/mnist-image-classification.json
+$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@master/example/pipelines/mobilenet.v2.json -o output
 ```
 
-After the above pipeline is completed, you have already trained a model at the current `output` directory, it's an independent NPM package and can be easily integrated in your existing system.
+After the above pipeline is completed, you have already trained a model at the current `output/model` directory, it's a tensorflow.js model.
 
 ## Documentation
 
@@ -172,7 +151,7 @@ $ yarn
 After the above, now build the project:
 
 ```sh
-$ yarn build && yarn init-dev
+$ yarn build
 ```
 
 - Developer Documentation [English](./docs/contributing/guide-to-contributor.md) | [中文](./docs/zh-cn/contributing/guide-to-contributor.md)

@@ -18,7 +18,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/boa": "^2.0.0-beta.1",
+    "@pipcook/boa": "^2.1.0",
     "@pipcook/core": "^2.0.0-beta.1",
     "@pipcook/costa": "^2.0.0-beta.1",
     "chalk": "^3.0.0",
@@ -46,14 +46,18 @@
     "import-fresh": "^3.3.0",
     "nyc": "^15.1.0",
     "sinon": "^10.0.0",
-    "yarn": "^1.22.10"
+    "yarn": "^1.22.10",
+    "ts-node": "^9.1.1"
   },
   "publishConfig": {
     "access": "public"
   },
   "ava": {
-    "files": [
-      "dist/**/*.test.js"
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
     ]
   }
 }

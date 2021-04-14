@@ -14,7 +14,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/datacook": "0.0.5"
+    "@pipcook/datacook": "^0.0.7"
   },
   "devDependencies": {
     "typescript": "^4.1.2",

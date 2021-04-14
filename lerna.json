@@ -1,6 +1,5 @@
 {
   "packages": [
-    "packages/boa",
     "packages/core",
     "packages/costa",
     "packages/cli"

@@ -1,20 +1,14 @@
 import { ProgressInfo } from '@pipcook/core';
 import { pipelineAsync } from './utils';
-import { DefaultDataSource, DefaultRuntime, PipelineMeta } from '@pipcook/costa';
+import { DefaultDataSource, DefaultRuntime } from '@pipcook/costa';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
 export class StandaloneImpl implements DefaultRuntime {
   constructor(
     public dataSource: DefaultDataSource,
-    private pipelineConfig: PipelineMeta,
     private modelDir: string
   ) {}
-
-  // initialize metadata
-  async pipelineMeta(): Promise<PipelineMeta> {
-    return this.pipelineConfig;
-  }
 
   async notifyProgress(progress: ProgressInfo): Promise<void> {
     console.log(`progress: ${progress.value}%`);
@@ -39,8 +33,7 @@ export class StandaloneImpl implements DefaultRuntime {
 
 export const createStandaloneRT = (
   dataSourceApi: DefaultDataSource,
-  pipelineConfig: PipelineMeta,
   modelDir: string
 ): DefaultRuntime => {
-  return new StandaloneImpl(dataSourceApi, pipelineConfig, modelDir);
+  return new StandaloneImpl(dataSourceApi, modelDir);
 };
