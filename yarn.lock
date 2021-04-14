@@ -1468,10 +1468,10 @@
     debug "^4.1.1"
     node-addon-api "^3.0.0"
 
-"@pipcook/datacook@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.npmjs.org/@pipcook/datacook/-/datacook-0.0.5.tgz#a0ef21fe401dc53f314a87f57e93a93cbde42332"
-  integrity sha512-zDGVE6tqhee6mwA/r7Pm9c96St7CLsjV+39TwHLd08Q+jFUOycxEFlHlvcIw87GMaChEeJBVYvdtH1xY9YCRgg==
+"@pipcook/datacook@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.npmjs.org/@pipcook/datacook/-/datacook-0.0.7.tgz#a5316a82d1b1c3bfeacf56f852ceecc4da95e63c"
+  integrity sha512-eT+bSNGiCj/j2y1fiCNAoP5ajpJ0m3jfqkdYjCysyQDAmCOqtouInDHgfjpDHN8FQ9FMEUANizX0IyqrNxnutw==
   dependencies:
     "@tensorflow/tfjs-backend-cpu" "^2.7.0"
     "@tensorflow/tfjs-backend-wasm" "^2.7.0"
