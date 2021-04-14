@@ -19,7 +19,7 @@
   "dependencies": {
     "@pipcook/boa": "^2.1.0",
     "@pipcook/core": "^2.0.0-beta.1",
-    "@pipcook/datacook": "0.0.5",
+    "@pipcook/datacook": "^0.0.7",
     "@types/sinon": "^9.0.11",
     "debug": "^4.1.1",
     "sinon": "^10.0.0",
