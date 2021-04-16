@@ -161,7 +161,9 @@ $ yarn build
 
 #### DingTalk
 
-<img width="200" src="./docs/images/community_qrcode.png">
+<img width="200" src="./docs/images/community_qrcode.jpg">
+
+Or searched via the group number: 30624012.
 
 > Download DingTalk (an all-in-one free communication and collaboration platform) here: [English](https://www.dingtalk.com/static/en/download) | [中文](https://page.dingtalk.com/wow/dingtalk/act/download)
 
