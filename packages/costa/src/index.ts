@@ -20,13 +20,15 @@ import { importFrom } from './utils';
 const debug = Debug('costa.runnable');
 
 declare global {
+  // eslint-disable-next-line no-var
   var boa: typeof BOA;
+  // eslint-disable-next-line no-var
   var datacook: typeof Datacook;
 }
 
 // set boa and datacook to global for script
-global.boa = BOA;
-global.datacook = Datacook;
+Object.defineProperty(global, 'boa', { configurable: false, value: BOA });
+Object.defineProperty(global, 'datacook', { configurable: false, value: Datacook });
 
 export * from './types';
 
