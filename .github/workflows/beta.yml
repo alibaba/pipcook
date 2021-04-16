@@ -45,8 +45,8 @@ jobs:
       - name: Install Dependencies
         if: env.UPDATED == 'true'
         run: |
-          yarn
-          yarn build
+          npm install
+          npm run build
           
       - name: Publish npm beta packages
         if: env.UPDATED == 'true'
@@ -57,8 +57,8 @@ jobs:
           git config --global user.email 'queyue.crk@alibaba-inc.com'
           git add .
           git commit -m "bump beta version" --allow-empty
-          yarn beta-release-tag -- --preid "${sha_short}-beta"
-          yarn beta-release
+          npm run beta-release-tag -- --preid "${sha_short}-beta"
+          npm run beta-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

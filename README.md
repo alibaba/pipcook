@@ -86,7 +86,7 @@ Prepare the following on your machine:
 | Installer   | Version Range |
 |-------------|---------------|
 | [Node.js][] | >= 12.17      |
-| [yarn][]    | >= 1.22       |
+| [npm][]    | >= 6.14.4       |
 
 Install the command-line tool for managing [Pipcook][] projects:
 
@@ -142,16 +142,16 @@ Clone this repository:
 $ git clone git@github.com:alibaba/pipcook.git
 ```
 
-Install dependencies, e.g. via [yarn][]:
+Install dependencies, e.g. via [npm][]:
 
 ```sh
-$ yarn
+$ npm install
 ```
 
 After the above, now build the project:
 
 ```sh
-$ yarn build
+$ npm run build
 ```
 
 - Developer Documentation [English](./docs/contributing/guide-to-contributor.md) | [中文](./docs/zh-cn/contributing/guide-to-contributor.md)
@@ -186,7 +186,6 @@ Or searched via the group number: 30624012.
 [TypeScript]: https://github.com/microsoft/TypeScript
 [Node.js]: https://nodejs.org/
 [npm]: https://npmjs.com/
-[yarn]: https://yarnpkg.com/
 [Python]: https://www.python.org/
 [CPython]: https://github.com/python/cpython
 [machine-learning application APIs]: https://github.com/alibaba/pipcook/issues/33
