@@ -39,8 +39,8 @@ test('initialize framework', async (t) => {
   const costa = new Costa(mockOpts);
   await costa.initFramework();
   const ctx = (costa as any).context as ScriptContext;
-  t.is(ctx.boa, boa, 'boa should be equal');
-  t.is(ctx.dataCook, dataCook, 'dataCook should be equal');
+  t.is(global.boa, boa, 'boa should be equal');
+  t.is(global.datacook, dataCook, 'dataCook should be equal');
   t.is(await ctx.importJS('path'), path, 'path should be equal');
   await t.notThrowsAsync(ctx.importPY('sys'), 'should not throw error');
 });
@@ -70,8 +70,8 @@ test('initialize framework with default path', async (t) => {
   const costa = new Costa(mockOpts);
   await costa.initFramework();
   const ctx = (costa as any).context as ScriptContext;
-  t.is(ctx.boa, boa, 'boa should be equal');
-  t.is(ctx.dataCook, dataCook, 'dataCook should be equal');
+  t.is(global.boa, boa, 'boa should be equal');
+  t.is(global.datacook, dataCook, 'dataCook should be equal');
   t.is(await ctx.importJS('path'), path, 'path should be equal');
   await t.notThrowsAsync(ctx.importPY('sys'), 'should not throw error');
 });

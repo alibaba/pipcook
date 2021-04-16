@@ -11,13 +11,22 @@ import {
   PipcookFramework,
   ScriptType
 } from './types';
-import * as boa from '@pipcook/boa';
+import * as BOA from '@pipcook/boa';
 import * as Datacook from '@pipcook/datacook';
 import * as path from 'path';
 import Debug from 'debug';
 import { importFrom } from './utils';
 
 const debug = Debug('costa.runnable');
+
+declare global {
+  var boa: typeof BOA;
+  var datacook: typeof Datacook;
+}
+
+// set boa and datacook to global for script
+global.boa = BOA;
+global.datacook = Datacook;
 
 export * from './types';
 
@@ -84,12 +93,10 @@ export class Costa {
    * initialize framework, set python package path, node modules path and construct script context
    */
   async initFramework(): Promise<void> {
-    boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
+    global.boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
     const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
     const paths = [ nodeModules, ...(require.resolve.paths(__dirname) || []) ];
     this.context = {
-      boa,
-      dataCook: Datacook,
       importJS: (jsModuleName: string): Promise<FrameworkModule> => {
         const module = require.resolve(jsModuleName, { paths });
         return import(module);
