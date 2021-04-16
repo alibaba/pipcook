@@ -18,7 +18,11 @@ export const downloadScript = async (scriptDir: string, scriptOrder: number, url
   const query = queryString.parse(urlObj.query);
   // if the url is is file protocol, import it directly.
   if (urlObj.protocol === DownloadProtocol.FILE) {
-    localPath = urlObj.pathname;
+    if (path.isAbsolute(urlObj.pathname)) {
+      localPath = urlObj.pathname;
+    } else {
+      localPath = path.join(process.cwd(), urlObj.pathname);
+    }
   } else {
     if (urlObj.protocol === DownloadProtocol.HTTP || urlObj.protocol === DownloadProtocol.HTTPS) {
       // maybe should copy the script with COW
