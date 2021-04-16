@@ -6,7 +6,7 @@
   ],
   "version": "independent",
   "loglevel": "verbose",
-  "npmClient": "yarn",
+  "npmClient": "npm",
   "command": {
     "publish": {
       "npmClient": "npm",

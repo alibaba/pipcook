@@ -5,10 +5,10 @@
   "main": "dist/bin/pipcook.js",
   "scripts": {
     "test": "ava",
-    "build": "yarn clean && yarn compile",
+    "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "compile": "tsc -b tsconfig.json && chmod +x ./dist/bin/pipcook.js",
-    "cov": "nyc -r text-summary yarn test",
+    "cov": "nyc -r text-summary npm run test",
     "cov:report": "nyc report -r lcov"
   },
   "bin": {
@@ -46,7 +46,6 @@
     "import-fresh": "^3.3.0",
     "nyc": "^15.1.0",
     "sinon": "^10.0.0",
-    "yarn": "^1.22.10",
     "ts-node": "^9.1.1"
   },
   "publishConfig": {
