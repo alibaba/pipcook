@@ -1,6 +1,7 @@
 import test from 'ava';
 import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
+import * as path from 'path';
 import { ScriptType, PipelineMeta } from '@pipcook/costa';
 import * as constants from '../constants';
 import * as script from './script';
@@ -45,6 +46,21 @@ test.serial('download script with file protocol', async (t) => {
   t.deepEqual(scriptDesc, {
     name: 'a.js',
     path: '/data/a.js',
+    type: ScriptType.Model,
+    query: {}
+  }, 'should return correct script');
+  t.false(stubCopy.called, 'fs.copy should not be called');
+});
+
+test.serial('download script with relative path file protocol', async (t) => {
+  const localPath = process.cwd();
+  const url = 'file:data/a.js';
+  const enableCache = true;
+  const stubCopy = sinon.stub(fs, 'copy').resolves();
+  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  t.deepEqual(scriptDesc, {
+    name: 'a.js',
+    path: path.join(process.cwd(), 'data/a.js'),
     type: ScriptType.Model,
     query: {}
   }, 'should return correct script');
