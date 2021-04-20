@@ -127,6 +127,7 @@ export async function downloadAndExtractTo(resUrl: string, targetDir: string): P
     if (extname === '.zip') {
       const tmpPath = path.join(constants.PIPCOOK_TMPDIR, this.generateId());
       await this.downloadWithProgress(resUrl, tmpPath);
+      this.logger.start('extracting');
       await this.unZipData(tmpPath, targetDir);
       await fs.remove(tmpPath);
     } else {
