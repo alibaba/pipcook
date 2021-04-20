@@ -6,7 +6,7 @@ import {
 import * as fs from 'fs-extra';
 import * as CliProgress from 'cli-progress';
 import * as path from 'path';
-import * as request from 'request';
+import * as bent from 'bent';
 import * as os from 'os';
 import * as url from 'url';
 import { promisify } from 'util';
@@ -35,7 +35,8 @@ export const pipelineAsync = promisify(pipeline);
  */
 export async function download(url: string, fileName: string): Promise<void> {
   await fs.ensureFile(fileName);
-  return pipelineAsync(request.get(url), fs.createWriteStream(fileName));
+  const stream = await bent(url)('') as NodeJS.ReadableStream;
+  return pipelineAsync(stream, fs.createWriteStream(fileName));
 }
 
 /**
@@ -87,15 +88,13 @@ export async function downloadWithProgress(url: string, fileName: string): Promi
   }, CliProgress.Presets.shades_classic);
   const file = fs.createWriteStream(fileName);
   let receivedBytes = 0;
-  const downloadStream = request.get(url)
-    .on('response', (response: any) => {
-      const totalBytes = response.headers['content-length'];
-      bar.start(Number(totalBytes), 0);
-    })
-    .on('data', (chunk: any) => {
-      receivedBytes += chunk.length;
-      bar.update(receivedBytes);
-    });
+  const downloadStream = (await bent(url)('')) as bent.NodeResponse;
+  const totalBytes = downloadStream.headers['content-length'];
+  bar.start(Number(totalBytes), 0);
+  downloadStream.on('data', (chunk: any) => {
+    receivedBytes += chunk.length;
+    bar.update(receivedBytes);
+  });
   try {
     await pipelineAsync(downloadStream, file);
     bar.stop();
