@@ -26,7 +26,7 @@ export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends
   // read model file
   readModel: () => Promise<string>;
   // datasource
-  dataSource: Datacook.Dataset.Types.Dataset<T, M>;
+  dataset: Datacook.Dataset.Types.Dataset<T, M>;
 }
 
 export type FrameworkModule = any;

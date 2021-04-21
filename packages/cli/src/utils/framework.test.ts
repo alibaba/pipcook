@@ -11,10 +11,10 @@ test.serial.afterEach(() => sinon.restore());
 test.serial('prepare with invalid options', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
-    dataSource: 'test',
+    datasource: 'test',
     dataflow: [ 'test' ],
     model: 'test',
-    artifacts: [],
+    artifact: [],
     options: {}
   };
   const frameworkDir = 'test';
@@ -32,10 +32,10 @@ test.serial('prepare with invalid options', async (t) => {
 test.serial('prepare with file protocol and zip extname', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
-    dataSource: 'test',
+    datasource: 'test',
     dataflow: [ 'test' ],
     model: 'test',
-    artifacts: [],
+    artifact: [],
     options: {
       framework: 'file:///data/a.zip'
     }
@@ -55,10 +55,10 @@ test.serial('prepare with file protocol and zip extname', async (t) => {
 test.serial('prepare with file protocol and no-zip extname', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
-    dataSource: 'test',
+    datasource: 'test',
     dataflow: [ 'test' ],
     model: 'test',
-    artifacts: [],
+    artifact: [],
     options: {
       framework: 'file:///data/a'
     }
@@ -78,10 +78,10 @@ test.serial('prepare with file protocol and no-zip extname', async (t) => {
 test.serial('prepare with valid options', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
-    dataSource: 'test',
+    datasource: 'test',
     dataflow: [ 'test' ],
     model: 'test',
-    artifacts: [],
+    artifact: [],
     options: {
       framework: 'test'
     }

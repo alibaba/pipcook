@@ -1,12 +1,12 @@
 import { ProgressInfo } from '@pipcook/core';
 import { pipelineAsync } from './utils';
-import { DefaultDataSource, DefaultRuntime } from '@pipcook/costa';
+import { DefaultDataSet, DefaultRuntime } from '@pipcook/costa';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
 export class StandaloneImpl implements DefaultRuntime {
   constructor(
-    public dataSource: DefaultDataSource,
+    public dataset: DefaultDataSet,
     private modelDir: string
   ) {}
 
@@ -32,8 +32,8 @@ export class StandaloneImpl implements DefaultRuntime {
 }
 
 export const createStandaloneRT = (
-  dataSourceApi: DefaultDataSource,
+  datasource: DefaultDataSet,
   modelDir: string
 ): DefaultRuntime => {
-  return new StandaloneImpl(dataSourceApi, modelDir);
+  return new StandaloneImpl(datasource, modelDir);
 };

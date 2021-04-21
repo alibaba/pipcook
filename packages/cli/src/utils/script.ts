@@ -41,13 +41,13 @@ export const downloadScript = async (scriptDir: string, scriptOrder: number, url
 
 export const prepareScript = async (pipelineMeta: PipelineMeta, scriptDir: string, enableCache = true): Promise<ScriptConfig> => {
   const scripts: ScriptConfig = {
-    dataSource: null,
+    datasource: null,
     dataflow: null,
     model: null
   };
   let scriptOrder = 0;
-  scripts.dataSource
-    = await downloadScript(scriptDir, scriptOrder, pipelineMeta.dataSource, ScriptType.DataSource, enableCache);
+  scripts.datasource
+    = await downloadScript(scriptDir, scriptOrder, pipelineMeta.datasource, ScriptType.DataSource, enableCache);
   scriptOrder++;
   if (Array.isArray(pipelineMeta.dataflow) && pipelineMeta.dataflow.length > 0) {
     scripts.dataflow = [];

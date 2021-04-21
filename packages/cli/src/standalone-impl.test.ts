@@ -8,8 +8,8 @@ test.serial.afterEach(() => sinon.restore());
 test('create standalone runtime', (t) => {
   const mockDataSourceApi: any = {};
   const rt = createStandaloneRT(mockDataSourceApi, '/tmp');
-  t.is((rt as any).dataSource, mockDataSourceApi, 'dataSource should equal');
-  t.is((rt as any).modelDir, '/tmp', 'dataSource should equal');
+  t.is((rt as any).dataset, mockDataSourceApi, 'datasource should equal');
+  t.is((rt as any).modelDir, '/tmp', 'datasource should equal');
 });
 
 test.serial('runtime interface', async (t) => {
