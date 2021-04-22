@@ -1,8 +1,8 @@
 import {
   Runtime,
-  DataSourceEntry,
+  DatasourceEntry,
   ModelEntry,
-  DataFlowEntry,
+  DataflowEntry,
   ScriptContext,
   FrameworkModule
 } from '@pipcook/core';
@@ -25,9 +25,9 @@ export type DefaultRuntime = Runtime<Datacook.Dataset.Types.Sample<any>, Datacoo
 
 export type DefaultDataSet = Datacook.Dataset.Types.Dataset<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataflowEntry = DataFlowEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataflowEntry = DataflowEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataSourceEntry = DataSourceEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataSourceEntry = DatasourceEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
 export type DefaultModelEntry = ModelEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
