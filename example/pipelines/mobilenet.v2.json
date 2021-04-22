@@ -4,7 +4,7 @@
   "dataflow": [
     "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-process-tfjs-image-classification@db14a1a/build/script.js?size=224&size=224"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-tfjs-mobilenet-model@a95d0de/build/script.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-tfjs-mobilenet-model@1d36a5e/build/script.js",
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "/tmp/mobilenet-model.zip"
