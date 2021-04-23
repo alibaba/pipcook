@@ -49,16 +49,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nodepkg-${{ matrix.node_version }}
           ${{ runner.os }}-nodepkg
-    - name: Restore miniconda
-      uses: actions/cache@v2
-      with:
-        path: |
-          packages/boa/.miniconda
-          packages/boa/Miniconda3-*.sh
-          packages/boa/.CONDA_INSTALL_DIR
-        key: ${{ runner.os }}-miniconda-${{ hashFiles('packages/boa/Miniconda3-*.sh') }}
-        restore-keys: |
-          ${{ runner.os }}-miniconda
     - name: Using Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
