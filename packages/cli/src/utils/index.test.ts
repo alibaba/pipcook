@@ -178,7 +178,7 @@ test('download a invalid url', async (t) => {
 });
 
 test.serial('download and unzip', async (t) => {
-  const urlStr = 'https://pipcook.oss-cn-hangzhou.aliyuncs.com/test/res.zip';
+  const urlStr = 'https://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip';
   const targetPath = path.join(constants.PIPCOOK_TMPDIR, 'res.zip');
   const unzipDir = path.join(constants.PIPCOOK_TMPDIR, 'resDir');
   await utils.download(urlStr, targetPath);
