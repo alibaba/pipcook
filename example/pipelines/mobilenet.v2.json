@@ -1,6 +1,6 @@
 {
   "specVersion": "2.0",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@7e2994d/scripts/image-classification-mobilenet/build/datasource.js?url=http://pc-github.oss-us-west-1.aliyuncs.com/dataset/imageclass-test.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@7e2994d/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
   "dataflow": [
     "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@7e2994d/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
   ],
