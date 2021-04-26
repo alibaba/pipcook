@@ -88,9 +88,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="pipelinemeta.html#artifacts" class="tsd-kind-icon">artifacts</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="pipelinemeta.html#datasource" class="tsd-kind-icon">data<wbr>Source</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="pipelinemeta.html#artifact" class="tsd-kind-icon">artifact</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="pipelinemeta.html#dataflow" class="tsd-kind-icon">dataflow</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="pipelinemeta.html#datasource" class="tsd-kind-icon">datasource</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="pipelinemeta.html#model" class="tsd-kind-icon">model</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="pipelinemeta.html#options" class="tsd-kind-icon">options</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="pipelinemeta.html#specversion" class="tsd-kind-icon">spec<wbr>Version</a></li>
@@ -102,32 +102,17 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="artifacts" class="tsd-anchor"></a>
-					<h3>artifacts</h3>
-					<div class="tsd-signature tsd-kind-icon">artifacts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="artifact.html" class="tsd-signature-type">Artifact</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="artifact" class="tsd-anchor"></a>
+					<h3>artifact</h3>
+					<div class="tsd-signature tsd-kind-icon">artifact<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="artifact.html" class="tsd-signature-type">Artifact</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a033dc5/packages/costa/src/types.ts#L157">types.ts:157</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c7c0307/packages/costa/src/types.ts#L157">types.ts:157</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>artifact plugins and options</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="datasource" class="tsd-anchor"></a>
-					<h3>data<wbr>Source</h3>
-					<div class="tsd-signature tsd-kind-icon">data<wbr>Source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a033dc5/packages/costa/src/types.ts#L145">types.ts:145</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>data source script url or sql</p>
+							<p>artifact plugins and their options</p>
 						</div>
 					</div>
 				</section>
@@ -137,7 +122,7 @@
 					<div class="tsd-signature tsd-kind-icon">dataflow<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a033dc5/packages/costa/src/types.ts#L149">types.ts:149</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c7c0307/packages/costa/src/types.ts#L149">types.ts:149</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -147,12 +132,27 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="datasource" class="tsd-anchor"></a>
+					<h3>datasource</h3>
+					<div class="tsd-signature tsd-kind-icon">datasource<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c7c0307/packages/costa/src/types.ts#L145">types.ts:145</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>data source script url or sql</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="model" class="tsd-anchor"></a>
 					<h3>model</h3>
 					<div class="tsd-signature tsd-kind-icon">model<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a033dc5/packages/costa/src/types.ts#L153">types.ts:153</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c7c0307/packages/costa/src/types.ts#L153">types.ts:153</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -167,7 +167,7 @@
 					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a033dc5/packages/costa/src/types.ts#L161">types.ts:161</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c7c0307/packages/costa/src/types.ts#L161">types.ts:161</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -182,7 +182,7 @@
 					<div class="tsd-signature tsd-kind-icon">spec<wbr>Version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/a033dc5/packages/costa/src/types.ts#L141">types.ts:141</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/c7c0307/packages/costa/src/types.ts#L141">types.ts:141</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -230,13 +230,13 @@
 						<a href="pipelinemeta.html" class="tsd-kind-icon">Pipeline<wbr>Meta</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="pipelinemeta.html#artifacts" class="tsd-kind-icon">artifacts</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="pipelinemeta.html#datasource" class="tsd-kind-icon">data<wbr>Source</a>
+								<a href="pipelinemeta.html#artifact" class="tsd-kind-icon">artifact</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="pipelinemeta.html#dataflow" class="tsd-kind-icon">dataflow</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="pipelinemeta.html#datasource" class="tsd-kind-icon">datasource</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="pipelinemeta.html#model" class="tsd-kind-icon">model</a>
@@ -258,7 +258,7 @@
 						<a href="scriptconfig.html" class="tsd-kind-icon">Script<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="../index.html#defaultdatasource" class="tsd-kind-icon">Default<wbr>Data<wbr>Source</a>
+						<a href="../index.html#defaultdataset" class="tsd-kind-icon">Default<wbr>Data<wbr>Set</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../index.html#defaultdatasourceentry" class="tsd-kind-icon">Default<wbr>Data<wbr>Source<wbr>Entry</a>
