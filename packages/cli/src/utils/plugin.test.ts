@@ -111,10 +111,10 @@ test.serial('should install and create folder', async (t) => {
 test.serial('should not prepare artifact plugin', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
-    dataSource: 'test',
+    datasource: 'test',
     dataflow: [ 'test' ],
     model: 'test',
-    artifacts: undefined,
+    artifact: undefined,
     options: {}
   };
 
@@ -126,10 +126,10 @@ test.serial('should not prepare artifact plugin', async (t) => {
 test.serial('should prepare artifact plugin', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'test',
-    dataSource: 'test',
+    datasource: 'test',
     dataflow: [ 'test' ],
     model: 'test',
-    artifacts: [],
+    artifact: [],
     options: {}
   };
 

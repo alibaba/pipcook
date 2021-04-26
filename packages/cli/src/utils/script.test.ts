@@ -88,12 +88,12 @@ test.serial('download script with file protocol and query', async (t) => {
 async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
   const pipelineMeta: PipelineMeta = {
     'specVersion': '2.0',
-    'dataSource': 'https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-image-classification-collector@2.0/build/script.js',
+    'datasource': 'https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-image-classification-collector@2.0/build/script.js',
     'model': 'https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-tfjs-mobilenet-model@2.0/build/script.js',
     'dataflow': [
       'https://cdn.jsdelivr.net/gh/imgcook/pipcook-plugin-process-tfjs-image-classification@2.0/build/script.js?size=224&size=224'
     ],
-    'artifacts': [
+    'artifact': [
       {
         'processor': 'pipcook-ali-oss-uploader@0.0.3',
         'target': 'oss://pipcook-cloud/model/mobile2.0'
@@ -117,20 +117,20 @@ async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
   const scriptConfig = await script.prepareScript(pipelineMeta, dir, enableCache);
   if (!withDataflow) {
     t.true(stubDownloadScript.calledTwice, 'downloadScript should be called twice');
-    t.deepEqual(stubDownloadScript.args[0], [ dir, 0, pipelineMeta.dataSource, ScriptType.DataSource, enableCache ], 'downloadScript should be called with datasource');
+    t.deepEqual(stubDownloadScript.args[0], [ dir, 0, pipelineMeta.datasource, ScriptType.DataSource, enableCache ], 'downloadScript should be called with datasource');
     t.deepEqual(stubDownloadScript.args[1], [ dir, 1, pipelineMeta.model, ScriptType.Model, enableCache ], 'downloadScript should be called with model');
     t.deepEqual(scriptConfig, {
-      dataSource: mockScript,
+      datasource: mockScript,
       dataflow: null,
       model: mockScript
     }, 'script config should be equal');
   } else {
     t.true(stubDownloadScript.calledThrice, 'downloadScript should be called thrice');
-    t.deepEqual(stubDownloadScript.args[0], [ dir, 0, pipelineMeta.dataSource, ScriptType.DataSource, enableCache ], 'downloadScript should be called with datasource');
+    t.deepEqual(stubDownloadScript.args[0], [ dir, 0, pipelineMeta.datasource, ScriptType.DataSource, enableCache ], 'downloadScript should be called with datasource');
     t.deepEqual(stubDownloadScript.args[1], [ dir, 1, pipelineMeta.dataflow[0], ScriptType.Dataflow, enableCache ], 'downloadScript should be called with dataflow');
     t.deepEqual(stubDownloadScript.args[2], [ dir, 2, pipelineMeta.model, ScriptType.Model, enableCache ], 'downloadScript should be called with model');
     t.deepEqual(scriptConfig, {
-      dataSource: mockScript,
+      datasource: mockScript,
       dataflow: [ mockScript ],
       model: mockScript
     }, 'script config should be equal');

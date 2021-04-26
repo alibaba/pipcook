@@ -116,7 +116,7 @@ export interface PipcookFramework {
  *   model: define, train and evaluate model
  */
 export interface ScriptConfig {
-  dataSource: PipcookScript | null;
+  datasource: PipcookScript | null;
   dataflow: Array<PipcookScript> | null;
   model: PipcookScript;
 }
@@ -142,7 +142,7 @@ export interface PipelineMeta {
   /**
    * data source script url or sql
    */
-  dataSource: string;
+  datasource: string;
   /**
    * data process script, set to null if not used
    */
@@ -152,9 +152,9 @@ export interface PipelineMeta {
    */
   model: string;
   /**
-   * artifact plugins and options
+   * artifact plugins and their options
    */
-  artifacts: Array<Artifact>;
+  artifact: Array<Artifact>;
   /**
    * pipeline options
    */

@@ -1,8 +1,8 @@
 import {
   Runtime,
-  DataSourceEntry,
+  DatasourceEntry,
   ModelEntry,
-  DataFlowEntry,
+  DataflowEntry,
   ScriptContext,
   FrameworkModule
 } from '@pipcook/core';
@@ -23,11 +23,11 @@ export * from './types';
 
 export type DefaultRuntime = Runtime<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataSource = Datacook.Dataset.Types.Dataset<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataSet = Datacook.Dataset.Types.Dataset<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataflowEntry = DataFlowEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataflowEntry = DataflowEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
-export type DefaultDataSourceEntry = DataSourceEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataSourceEntry = DatasourceEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
 export type DefaultModelEntry = ModelEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
 
@@ -140,9 +140,9 @@ export class Costa {
    * Run a datasource script.
    * @param script The metadata of script.
    * @param options Options of the pipeline.
-   * @returns The dataSource API object
+   * @returns The datasource API object
    */
-  async runDataSource(script: PipcookScript): Promise<DefaultDataSource> {
+  async runDataSource(script: PipcookScript): Promise<DefaultDataSet> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
     const fn = await this.importScript<DefaultDataSourceEntry>(script, ScriptType.DataSource);
@@ -152,26 +152,26 @@ export class Costa {
 
   /**
    * Run a datasource script.
-   * @param api api from data source script or another dataflow script
+   * @param dataset api from data source script or another dataflow script
    * @param script the metadata of script
    */
-  async runDataflow(api: DefaultDataSource, scripts: Array<PipcookScript>): Promise<DefaultDataSource> {
+  async runDataflow(dataset: DefaultDataSet, scripts: Array<PipcookScript>): Promise<DefaultDataSet> {
     for (const script of scripts) {
       debug(`start loading the script(${script.name})`);
       const fn = await this.importScript<DefaultDataflowEntry>(script, ScriptType.Dataflow);
       debug(`loaded the script(${script.name}), start it.`);
-      api = await fn(api, script.query, this.context);
+      dataset = await fn(dataset, script.query, this.context);
     }
-    return api;
+    return dataset;
   }
 
   /**
    * Run a datasource script.
-   * @param api api from data source script or dataflow script
+   * @param runtime api from data source script or dataflow script
    * @param script the metadata of script
    * @param options options of the pipeline
    */
-  async runModel(api: DefaultRuntime, script: PipcookScript, options: Record<string, any>): Promise<void> {
+  async runModel(runtime: DefaultRuntime, script: PipcookScript, options: Record<string, any>): Promise<void> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
     const fn = await this.importScript<DefaultModelEntry>(script, ScriptType.Model);
@@ -181,6 +181,6 @@ export class Costa {
       ...options.train,
       ...script.query
     };
-    return await fn(api, opts, this.context);
+    return await fn(runtime, opts, this.context);
   }
 }

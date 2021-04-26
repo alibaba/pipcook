@@ -32,10 +32,10 @@ test('constructor', (t) => {
 test('prepare workspace', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'v2.0',
-    dataSource: 'file:///tmp/datasource.js',
+    datasource: 'file:///tmp/datasource.js',
     dataflow: [ 'file:///tmp/dataflow.js' ],
     model: 'file:///tmp/model.js',
-    artifacts: [
+    artifact: [
       {
         processor: 'my-artifact-plugin',
         option: '123'
@@ -68,10 +68,10 @@ test('prepare workspace', async (t) => {
 async function run(t: any, runDataflow: boolean) {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'v2.0',
-    dataSource: 'file:///tmp/datasource.js',
+    datasource: 'file:///tmp/datasource.js',
     dataflow: [ 'file:///tmp/dataflow.js' ],
     model: 'file:///tmp/model.js',
-    artifacts: [
+    artifact: [
       {
         processor: 'my-artifact-plugin',
         option: '123'
@@ -89,7 +89,7 @@ async function run(t: any, runDataflow: boolean) {
   const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, enableCache);
   const stubPrepareFramework = sinon.stub(utils.Framework, 'prepareFramework').resolves();
   const mockScript = {
-    dataSource: {
+    datasource: {
       name: 'datasource',
       path: '/path/to/datasource',
       type: ScriptType.DataSource,
@@ -158,7 +158,7 @@ async function run(t: any, runDataflow: boolean) {
   t.true(stubRunDataSource.calledOnce, 'runDataSource should be called once');
   t.deepEqual(
     stubRunDataSource.args[0],
-    [ mockScript.dataSource ],
+    [ mockScript.datasource ],
     'should call runDataSource with correct arguments'
   );
   if (runDataflow) {

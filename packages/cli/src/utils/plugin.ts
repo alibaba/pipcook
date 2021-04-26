@@ -58,13 +58,13 @@ export const install = async (name: string, pluginHomeDir: string): Promise<stri
 
 export const prepareArtifactPlugin = async (pipelineMeta: PipelineMeta): Promise<Array<ArtifactMeta>> => {
   if (
-    !pipelineMeta.artifacts ||
-    (Array.isArray(pipelineMeta.artifacts) && pipelineMeta.artifacts.length === 0)
+    !pipelineMeta.artifact ||
+    (Array.isArray(pipelineMeta.artifact) && pipelineMeta.artifact.length === 0)
   ) {
     return [];
   }
   const allPlugins: Array<ArtifactMeta> = [];
-  for (const plugin of pipelineMeta.artifacts) {
+  for (const plugin of pipelineMeta.artifact) {
     const requirePath = await install(plugin.processor, constants.PIPCOOK_PLUGIN_ARTIFACT_PATH);
     let pluginExport: ArtifactExports = await import(requirePath);
     if (
