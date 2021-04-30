@@ -32,7 +32,7 @@ jobs:
         os: [ubuntu-latest, macOS-latest]
     steps:
     - name: Cancel previous runs
-      uses: imgcook/cancel-workflow-action@81524cf
+      uses: imgcook/cancel-workflow-action@81524cf38ed0e3a5865a550dde6118d26b7a5ede
       with:
         access_token: ${{ github.token }}
         exception: master
