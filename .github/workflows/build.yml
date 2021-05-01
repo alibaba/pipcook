@@ -35,7 +35,7 @@ jobs:
       uses: imgcook/cancel-workflow-action@81524cf38ed0e3a5865a550dde6118d26b7a5ede
       with:
         access_token: ${{ github.token }}
-        exception: master
+        exception: v1.x
     - uses: actions/checkout@v2
     - name: Restore node_modules and boa dependencies
       uses: actions/cache@v2
@@ -102,7 +102,7 @@ jobs:
     - name: install plugins from specific pipeline
       run: |
         ./packages/cli/dist/bin/pipcook pipeline install ./example/pipelines/chinese-poem-creation.json
-        ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
+        ./packages/cli/dist/bin/pipcook pipeline install https://raw.githubusercontent.com/alibaba/pipcook/v1.x/example/pipelines/text-bayes-classification.json
     - name: Running an example pipeline
       run: |
         yarn test:pipeline -- text-bayes-classification
@@ -123,7 +123,7 @@ jobs:
         ls ./mydir && rm -rf ./mydir
     - name: Pipcook run from url
       run: |
-        ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/master/example/pipelines/text-bayes-classification.json
+        ./packages/cli/dist/bin/pipcook run https://raw.githubusercontent.com/alibaba/pipcook/v1.x/example/pipelines/text-bayes-classification.json
         ls ./output && rm -rf ./output
     - name: Remove pipelines
       run: |
