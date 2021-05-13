@@ -3,7 +3,7 @@
 import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
-import { join, basename, extname } from 'path';
+import { join, basename, extname,resolve } from 'path';
 import { parse } from 'url';
 import * as constants from '../constants';
 import { readJson, mkdirp, remove, copy } from 'fs-extra';
@@ -29,6 +29,7 @@ export interface CacheCleanOptions {
 
 export const run = async (filename: string, opts: RunOptions): Promise<void> => {
   let pipelineConfig;
+  opts.output=resolve(opts.output)
   try {
     await mkdirp(opts.output);
     const urlObj = parse(filename);
