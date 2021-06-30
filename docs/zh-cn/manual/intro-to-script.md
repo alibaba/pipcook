@@ -41,7 +41,7 @@ Script 的类型被简化为 DataSource，Dataflow 和 Model，与 plugin 的对
 字段说明：
 
 * specVersion: pipeline 版本号，目前为 `2.0` 。
-* dataSource: DataSource script 地址，这个 script 实现了对数据源的访问，支持 url、local path。我们可以通过 query 定义 script 参数，如: `file://home/pipcook/datasource.js?url=http://oss.host.com/dataset.zip`，将会运行本地磁盘上位于`/home/pipcook/datasource.js` 的脚本，脚本参数为 { url: 'http://oss.host.com/dataset.zip' }。
+* dataSource: DataSource script 地址，这个 script 实现了对数据源的访问，支持 url、local path。我们可以通过 query 定义 script 参数，如: `file://home/pipcook/datasource.js?url=http://oss.host.com/dataset.zip`，将会运行本地磁盘上位于`/home/pipcook/datasource.js` 的脚本，脚本参数为 `{ url: 'http://oss.host.com/dataset.zip' }`。
 * dataflow：dataflow script 地址的数组，这个 script 实现了对数据的转换，比如 resize，normalize，rotate，crop，salt 等，并提供了访问转换后数据的 api，Pipcook 会按定义顺序执行 dataflow 中的 script。
 
 * model：model script 地址，实现了模型的 define，train，evaluate，产出模型。
@@ -50,7 +50,7 @@ Script 的类型被简化为 DataSource，Dataflow 和 Model，与 plugin 的对
 
 ## 实现 Script
 
-接下来，让我们以 [addition-rnn][https://yuque.antfin-inc.com/docs/share/63b3adb4-e970-4dbb-ad45-da0538c85897?#] 为例，来看看如何实现 DataSource，Dataflow，Model scripts 从而构建出一条 pipeline。
+接下来，让我们以 [addition-rnn](https://github.com/tensorflow/tfjs-examples/tree/master/addition-rnn) 为例，来看看如何实现 DataSource，Dataflow，Model scripts 从而构建出一条 pipeline。
 我们可以通过脚手架从模板生成一个模板工程：
 
 ```sh
@@ -86,7 +86,7 @@ $ tree ./src
 
 ### DataSource
 
-DataSource Script 是 pipeline 运行的第一个脚本，它对接数据源，提供其他脚本 [Dataset][#] API 用于读取样本数据，它需要导出一个[入口函数][https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry]，Dataset 是访问数据的接口，不同的数据源会包含不同类型的样本，我们可以按照接口定义创建一个 Dataset 实例，但这在大部分场景下是不必要的，`datacook` 提供了一个工具方法 [makeDataset][#] 让我们可以方便地创建 Dataset 实例。
+DataSource Script 是 pipeline 运行的第一个脚本，它对接数据源，提供其他脚本 [Dataset](#) API 用于读取样本数据，它需要导出一个[入口函数](https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry)，Dataset 是访问数据的接口，不同的数据源会包含不同类型的样本，我们可以按照接口定义创建一个 Dataset 实例，但这在大部分场景下是不必要的，`datacook` 提供了一个工具方法 [makeDataset](#) 让我们可以方便地创建 Dataset 实例。
 
 打开 `src/datasource.js`：
 
@@ -208,14 +208,14 @@ module.exports = async (options, context) => {
 
 1. 我们需要从 options 中读取参数，`digits` 是参与计算的数字字符宽度，`numExamples` 是随机生成的样本数量。因为这几个参数是从 script uri 的 query 中获取的，所以我们将得到字符串参数转换为 `number` 类型。
 2. 从 `context` 中获取 `dataCook` 组件。
-3. 接下来调用 `generateData` 方法生成算式和结果字符串，按照 9：1的比例分割训练数据和测试数据。`makeDataset` 方法需要输入为两个 [Sample][] 类型的数组，所以我们构造需要将生成的算式和结果字符串 map 成 Sample 格式。
-4. 构造数据集元数据 [DatasetMeta][]，用于后续处理。
+3. 接下来调用 `generateData` 方法生成算式和结果字符串，按照 9：1的比例分割训练数据和测试数据。`makeDataset` 方法需要输入为两个 [Sample]() 类型的数组，所以我们构造需要将生成的算式和结果字符串 map 成 Sample 格式。
+4. 构造数据集元数据 [DatasetMeta]()，用于后续处理。
 5. 调用 `makeDataset` 构造 `Dataset` 对象并返回。
 
 
 ### Dataflow
 
-在 pipeline 中，Dataflow 是一个数组，在 DataSource 之后按定义顺序执行，它需要导出一个[入口函数][https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry]，接受 Dataset 对象，script options 和 context，并返回一个新的 Dataset 对象。我们可以在 Dataflow 脚本中对 Sample 对象进行处理，比如图片的 `resize`、`normalize`，文本的 `encode`等。每一个 Dataflow 的输入是上一个 Script 的输出。在这个例子中，我们需要把算式和结果字符串进行编码并转换成 Tensor，那么 DataSource Script 中输出的 Dataset 会被传入到这个 Dataflow 脚本中，然后输出一个编码转换后的 Dataset 对象：
+在 pipeline 中，Dataflow 是一个数组，在 DataSource 之后按定义顺序执行，它需要导出一个[入口函数](https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry)，接受 Dataset 对象，script options 和 context，并返回一个新的 Dataset 对象。我们可以在 Dataflow 脚本中对 Sample 对象进行处理，比如图片的 `resize`、`normalize`，文本的 `encode`等。每一个 Dataflow 的输入是上一个 Script 的输出。在这个例子中，我们需要把算式和结果字符串进行编码并转换成 Tensor，那么 DataSource Script 中输出的 Dataset 会被传入到这个 Dataflow 脚本中，然后输出一个编码转换后的 Dataset 对象：
 
 ```js
 let tf = null;
@@ -282,11 +282,11 @@ async (dataset, options, context) => {
 
 1. 读取从 Script URI 中获取的参数，`digits` 是参与计算的数字字符宽度。
 2. 获取 `dataCook` 和 `@tensorflow/tfjs`，`dataCook` 是 Pipcook 内建的组件，可以直接从 `context` 获取，`@tensorflow/tfjs` 是从 Framework 中引用的 JS 组件，可以通过 `context.importJS` 导入，如果是导入 Python 组件可以使用 `context.importPY`。
-3. 创建编码器对象，对 Sample 中的 label 和 data 进行编码，然后调用 [transformSampleInDataset][] 创建 Dataset 接口，需要传入转换函数和传入的 Dataset对象。
+3. 创建编码器对象，对 Sample 中的 label 和 data 进行编码，然后调用 [transformSampleInDataset]() 创建 Dataset 接口，需要传入转换函数和传入的 Dataset对象。
 
 ### Model
 
-到目前为止，我们实现了一个 DataSource 脚本，一个 Dataflow 脚本，并且可以从 Dataset 中读取到 包含两个 Tensor 的 Sample 对象，接下来就是最后一个环节：实现一个 Model 脚本，定义模型和训练逻辑。Model 脚本同样需要导出一个[入口函数][https://alibaba.github.io/pipcook/typedoc/script/index.html#modelentry]，
+到目前为止，我们实现了一个 DataSource 脚本，一个 Dataflow 脚本，并且可以从 Dataset 中读取到 包含两个 Tensor 的 Sample 对象，接下来就是最后一个环节：实现一个 Model 脚本，定义模型和训练逻辑。Model 脚本同样需要导出一个[入口函数](https://alibaba.github.io/pipcook/typedoc/script/index.html#modelentry)，
 
 ```js
 let tf = null;
@@ -514,4 +514,3 @@ $ touch .vscode/launch.json
 ```
 
 现在，我们可以在 vs code 中按下 F5 开始调试脚本了。
-

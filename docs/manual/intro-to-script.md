@@ -8,7 +8,7 @@ To solve these problems, we use Pipcook script instead of plugin to compose the 
 
 The types of Script are reduced to DataSource, Dataflow and Model, which correspond to the plugin as follows.
 
-!![plugin-script-map](.../.../images/plugin-script-map.png)
+![plugin-script-map](../images/plugin-script-map.png)
 
 Next, let's take a look at how to implement an ML pipeline with the Pipcook script, using addition-rnn as an example.
 
@@ -47,7 +47,7 @@ In order to write the script, we need to understand the Pipeline 2.0 data struct
 
 ## Implementing Script
 
-Next, let's take [addition-rnn][https://yuque.antfin-inc.com/docs/share/63b3adb4-e970-4dbb-ad45-da0538c85897?#] as an example to see how to implement the DataSource Dataflow, and Model scripts to build a pipeline.
+Next, let's take [addition-rnn](https://github.com/tensorflow/tfjs-examples/tree/master/addition-rnn) as an example to see how to implement the DataSource Dataflow, and Model scripts to build a pipeline.
 We can generate a template project from a template by scaffolding.
 
 ```sh
@@ -84,12 +84,12 @@ The project directory contains the basic configuration needed to implement the s
 
 ### DataSource
 
-DataSource Script is the first script the pipeline runs, it fetches the data and provides other scripts [Dataset][#] API for reading sample data, it needs to export an [entry function][https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry], Dataset is the interface to access data, different datasources will contain different types of samples, we can create a Dataset instance as defined by the interface, but this is not necessary in most scenarios, `datacook` provides a tool method [makeDataset][#] that allows us to create Dataset instances easily.
+DataSource Script is the first script the pipeline runs, it fetches the data and provides other scripts [Dataset](#) API for reading sample data, it needs to export an [entry function](https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry), Dataset is the interface to access data, different datasources will contain different types of samples, we can create a Dataset instance as defined by the interface, but this is not necessary in most scenarios, `datacook` provides a tool method [makeDataset](#) that allows us to create Dataset instances easily.
 
 Let's look at `src/datasource.js`.
 
-``js
-/**
+```js
+/*
  * This is the entry of datasource script
  */
 module.exports = async (options, context) => {
@@ -130,8 +130,8 @@ In this example, we need to randomly generate a given number of equations and an
  * @returns The generated examples and digit array.
  */
 function generateData(digits, numExamples, invert = false) {
-  const digitArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  const arraySize = digitArray.length;
+    const digitArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const arraySize = digitArray.length;
 
   const output = [];
   const maxLen = digits + 1 + digits;
@@ -175,42 +175,42 @@ function generateData(digits, numExamples, invert = false) {
  * This is the entry of datasource script
  */
 module.exports = async (options, context) => {
-  // 1
-  let {
+    // 1
+    let {
     digits = '2',
     numExamples = '100'
-  } = options;
-  digits = parseInt(digits);
-  numExamples = parseInt(numExamples);
-  // 2
-  const dataCook = context.dataCook;
-  // 3
-  const data = generateData(digits, numExamples);
-  const split = Math.floor(numExamples * 0.9);
-  const trainData = data.slice(0, split).map(item => ({ label: item[1], data: item[0] }));
-  const testData = data.slice(split).map(item => ({ label: item[1], data: item[0] }));
-  // 4
-  const meta = {
+    } = options;
+    digits = parseInt(digits);
+    numExamples = parseInt(numExamples);
+    // 2
+    const dataCook = context.dataCook;
+    // 3
+    const data = generateData(digits, numExamples);
+    const split = Math.floor(numExamples * 0.9);
+    const trainData = data.slice(0, split).map(item => ({ label: item[1], data: item[0] }));
+    const testData = data.slice(split).map(item => ({ label: item[1], data: item[0] }));
+    // 4
+    const meta = {
     type: dataCook.Dataset.Types.DatasetType.General,
     size: {
       test: testData.length,
       train: trainData.length
     }
-  };
-  // 5
-  return dataCook.Dataset.makeDataset({ trainData, testData }, meta);
+    };
+    // 5
+    return dataCook.Dataset.makeDataset({ trainData, testData }, meta);
 };
 ```
 
 1. We need to read the parameters from options, `digits` is the width of the numeric characters involved in the calculation, and `numExamples` is the number of randomly generated samples. Since these parameters are retrieved from the query of the script uri, we convert the string parameters to `number` type.
 2. Get the `dataCook` component from the `context`.
-3. Next, call the `generateData` method to generate the arithmetic and result strings, splitting the training data and test data in a 9:1 ratio. The `makeDataset` method requires two arrays of type [Sample][] as input, so we construct a map of the generated equations and result strings into Sample format.
-4. Construct the dataset metadata [DatasetMeta][] for subsequent processing.
+3. Next, call the `generateData` method to generate the arithmetic and result strings, splitting the training data and test data in a 9:1 ratio. The `makeDataset` method requires two arrays of type [Sample]() as input, so we construct a map of the generated equations and result strings into Sample format.
+4. Construct the dataset metadata [DatasetMeta]() for subsequent processing.
 5. Call `makeDataset` to construct the `Dataset` object and return it.
 
 ### Dataflow
 
-In pipeline, Dataflow is an array that is executed in defined order after the DataSource, and it needs to export an [entry function][https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry], which accepts the Dataset object, script options and context, and returns a new Dataset object. We can process sample objects in the Dataflow script, such as `resize` and `normalize` for images, `encode` for text, etc. The input of each Dataflow is the output of the previous script. In this example, we need to encode and convert the arithmetic and result string into a Tensor, so the Dataset output from the DataSource Script is passed into this Dataflow script, which then outputs an encoded and converted Dataset object as follows.
+In pipeline, Dataflow is an array that is executed in defined order after the DataSource, and it needs to export an [entry function](https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry), which accepts the Dataset object, script options and context, and returns a new Dataset object. We can process sample objects in the Dataflow script, such as `resize` and `normalize` for images, `encode` for text, etc. The input of each Dataflow is the output of the previous script. In this example, we need to encode and convert the arithmetic and result string into a Tensor, so the Dataset output from the DataSource Script is passed into this Dataflow script, which then outputs an encoded and converted Dataset object as follows.
 
 ```js
 let tf = null;
@@ -220,8 +220,9 @@ class CharacterTable {
    * Constructor of CharacterTable.
    * @param chars A string that contains the characters that can appear
    * in the input.
-   */
-  constructor(chars) {
+      */
+    constructor(chars) {
+
     this.chars = chars;
     this.chars = chars; this.charIndices = {};
     this.size = this.chars.length;
@@ -236,14 +237,15 @@ class CharacterTable {
 
   /**
    * Convert a string into a one-hot encoded tensor.
-   *
+      *
    * @param str The input string.
    * @param numRows Number of rows of the output tensor.
    * @returns The one-hot encoded 2D tensor.
    * @throws If `str` contains any characters outside the `CharacterTable`'s
    * vocabulary.
-   */
-  encode(str, numRows) {
+      */
+    encode(str, numRows) {
+
     const buf = tf.buffer([numRows, this.size]);
     for (let i = 0; i < str.length; ++i) {
       const char = str[i];
@@ -277,10 +279,10 @@ async (dataset, options, context) => {
 
 1. Read the parameter obtained from Script URI, `digits` is the width of the numeric characters involved in the calculation.
 2. Get `dataCook` and `@tensorflow/tfjs`, `dataCook` is a Pipcook built-in component that can be fetched directly from `context`, `@tensorflow/tfjs` is a JS component referenced from the Framework and can be import by `context.importJS` or `context.importPY` if you are importing Python components.
-3. Create the encoder object, encode the label and data in Sample, and then call [transformSampleInDataset][] to create the Dataset interface, you need to pass in the transform function and the incoming Dataset object.
+3. Create the encoder object, encode the label and data in Sample, and then call [transformSampleInDataset]() to create the Dataset interface, you need to pass in the transform function and the incoming Dataset object.
 
 ### Model
-So far, we have implemented a DataSource script, a Dataflow script, and can read the sample object containing the two Tensors from the Dataset, and then the last part: implementing a Model script that defines the ML model object and the training logic. It's also required to export an [entry function][https://alibaba.github.io/pipcook/typedoc/script/index.html#modelentry].
+So far, we have implemented a DataSource script, a Dataflow script, and can read the sample object containing the two Tensors from the Dataset, and then the last part: implementing a Model script that defines the ML model object and the training logic. It's also required to export an [entry function](https://alibaba.github.io/pipcook/typedoc/script/index.html#modelentry).
 
 ```js
 let tf = null;
