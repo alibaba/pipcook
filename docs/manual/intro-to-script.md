@@ -1,35 +1,35 @@
-# 如何编写 Pipcook Script
+# How to Write Pipcook Script
 
-## 背景
+## Background
 
-Pipcook 2.0 做了大量功能和性能优化，让开发者和用户可以以更简单的方式开发和使用。这其中常用的部分就是 Pipcook script，我们知道，在 1.0，Pipeline 是由多个 npm 包组成的，包含 dataCollect，dataProcess/datasetProcess，dataAccess，modelDefine，modelTrain，modelEvaluate 这 5 类，我们称之为 Pipecook plugin。由于 plugin 的实现基于 npm 包，在使用中就不可避免会存在 npm 包的分发，依赖安装等流程，这就给开发者和用户带来了一些麻烦和困扰。对开发者来说，调试 plugin 需要经过编译，打包，发布（npm publish 或 npm link），安装，运行等步骤，特别是安装，如果插件通过 boa 依赖了 python 生态内的一些包，那么下载和安装将会耗费比较长的时间。对用户来说，使用 plugin 时经常会出现多个 plugin 依赖相同的包，npm 会对重复的 node 依赖进行检查，而 python 依赖则不会，所以存在 python 依赖重复安装的问题，特别是中国的 python 源本身不稳定，所以在中国网络下安装 plugin 的过程也会比较痛苦。
+Pipcook 2.0 has made a lot of features and performance optimizations to make it easier for users to use in a simpler way. The closest part to users is the Pipcook script. As we know, in 1.0, Pipeline was made up of several npm packages, including dataCollect, dataProcess/datasetProcess, dataAccess, modelDefine, modelTrain, modelEvaluate. Since the implementation of the plugin is based on npm packages, there will inevitably be a process of npm package distribution and dependency installation, which brings some troubles to users. For developers, debugging a plugin requires compiling, packaging, publishing (npm publish or npm link), installing, and running, especially for installation. For users, there are often multiple plugins that rely on the same package when using the plugin. npm checks for duplicate node dependencies, but python dependencies do not, so there is the problem of duplicate python dependencies being installed, and the process of installing plugins can be painful.
 
-为了解决这些问题，我们使用了 Pipcook script 代替了 plugin 来构建 pipeline。两者最大的不同是 Script 不需要 npm 这样的包管理器，它的分发将会通过像 `http://github.com/my/pipcook-script.js` 这样的 URI 实现。它本身就是一个经过 bundle 的脚本，所以也不存在额外的依赖。这样一来，Script 的开发调试，安装使用将变得非常轻量：就是通过 URI 下载/拷贝一个 bundle 后的脚本而已。但这样会带来另外的问题：python 依赖和二进制的 node 依赖无法 bundle，所以我们引入了 Framework 的概念来把这些依赖项通过预编译、打包后维护在 mirror 上，使用时下载即可。关于 Framework 我们将会在后续的文章中详细介绍。
+To solve these problems, we use Pipcook script instead of plugin to compose the pipeline. The biggest difference is that Pipcook script does not require a package manager like npm, it will be distributed through a URI like `http://github.com/my/pipcook-script.js`, and it is a bundled script, so there are no additional dependencies. In this way, Script development, debugging, and installation will become very lightweight: it is just downloading/copying a bundle script through a URI. However, this brings another problem: python dependencies and binary node dependencies cannot be bundled, so we introduced the concept of Framework to maintain these dependencies on the mirror by pre-compiling and packaging, and then downloading them when using them. We will cover the Framework in more detail in a subsequent article.
 
-Script 的类型被简化为 DataSource，Dataflow 和 Model，与 plugin 的对应关系如下图：
+The types of Script are reduced to DataSource, Dataflow and Model, which correspond to the plugin as follows.
 
-![plugin-script-map](../../images/plugin-script-map.png)
+!![plugin-script-map](.../.../images/plugin-script-map.png)
 
-接下来让我们以 mobilenet 为例，来看看如何通过 Pipcook script 实现一个 ML pipeline。
+Next, let's take a look at how to implement an ML pipeline with the Pipcook script, using addition-rnn as an example.
 
 ## Pipeline 2.0
 
-为了编写 Script，我们需要先了解 Pipeline 2.0 数据结构：
+In order to write the script, we need to understand the Pipeline 2.0 data structure first.
 
 ```json
 {
   "specVersion": "2.0",
   "dataSource": "http://host/data-source-script.js?url=http://host/dataset.zip",
   "dataflow": [
-    "http://host/dataflow-resize-script.js?size=224&size=224"
+    "http://host/dataflow-script.js?&param=addition"
   ],
-  "model": "http://host/model-script.js",
+  "model": "http://host/addition-script.js",
   "artifacts": [{
     "processor": "pipcook-artifact-zip@0.0.2",
-    "target": "/home/pipcook/mobilenet-model.zip"
+    "target": "/home/pipcook/addition-rnn-model.zip"
   }],
   "options": {
-    "framework": "mobilenet@1.0.0",
+    "framework": "tfjs@2.8.3",
     "train": {
       "epochs": 10,
       "validationRequired": true
@@ -38,20 +38,17 @@ Script 的类型被简化为 DataSource，Dataflow 和 Model，与 plugin 的对
 }
 ```
 
-字段说明：
+* specVersion: pipeline version number, currently `2.0`.
+* dataSource: DataSource script address, this script implements access to the data source, supports url, local path. we can define script parameters by query, e.g.: `file://home/pipcook/datasource.js?url=http://oss.host.com/dataset.zip`, which will run the script located at `/home/pipcook/datasource.js` on the local disk, with the script parameter `{ url: 'http://oss.host.com/dataset.zip' }`.
+* dataflow: array of dataflow script URI, this script implements transformations of data, such as resize, normalize, rotate, crop, salt, etc., and provides api to access the transformed data, Pipcook will execute the scripts in dataflow in the defined order.
+* model: model script address, which implements define, train, evaluate, and output models.
+* artifacts: an array of processing plugins for the model output, the plugins in the array will also be called by Pipcook in order. The plugins in the example implement compression of the model files.
+* options: contains the definition of framework and the definition of train parameters. framework definition supports url, local path, or framework name, Pipcook will look for the corresponding framework resource file on the default framework mirror.
 
-* specVersion: pipeline 版本号，目前为 `2.0` 。
-* dataSource: DataSource script 地址，这个 script 实现了对数据源的访问，支持 url、local path。我们可以通过 query 定义 script 参数，如: `file://home/pipcook/datasource.js?url=http://oss.host.com/dataset.zip`，将会运行本地磁盘上位于`/home/pipcook/datasource.js` 的脚本，脚本参数为 { url: 'http://oss.host.com/dataset.zip' }。
-* dataflow：dataflow script 地址的数组，这个 script 实现了对数据的转换，比如 resize，normalize，rotate，crop，salt 等，并提供了访问转换后数据的 api，Pipcook 会按定义顺序执行 dataflow 中的 script。
+## Implementing Script
 
-* model：model script 地址，实现了模型的 define，train，evaluate，产出模型。
-* artifacts：模型产出后的处理插件数组，数组内的插件也会按顺序被 Pipcook 调用。示例中的插件实现了对模型文件的压缩。
-* options：包含 framework 的定义和 train 参数的定义，framework 的定义支持 url，local path，或 framework 名称，Pipcook 会在默认的 framework mirror 上寻找对应的 framework 资源文件。
-
-## 实现 Script
-
-接下来，让我们以 [addition-rnn][https://yuque.antfin-inc.com/docs/share/63b3adb4-e970-4dbb-ad45-da0538c85897?#] 为例，来看看如何实现 DataSource，Dataflow，Model scripts 从而构建出一条 pipeline。
-我们可以通过脚手架从模板生成一个模板工程：
+Next, let's take [addition-rnn][https://yuque.antfin-inc.com/docs/share/63b3adb4-e970-4dbb-ad45-da0538c85897?#] as an example to see how to implement the DataSource Dataflow, and Model scripts to build a pipeline.
+We can generate a template project from a template by scaffolding.
 
 ```sh
 $ npm init pipcook-script all my-scripts js && cd my-scripts
@@ -60,11 +57,11 @@ $ tree -L 1
 ├── LICENSE
 ├── README.md
 ├── debug
-├── node_modules
+├─ node_modules
 ├── package-lock.json
 ├── package.json
 ├── src
-└── webpack.config.js
+└─ webpack.config.js
 $ tree ./src
 ./src
 ├── dataflow.js
@@ -72,25 +69,26 @@ $ tree ./src
 ├── index.js
 └── model.js
 ```
-工程目录内包含了实现 script 所需的基本配置：
-1. webpack配置：我们使用 webpack 将脚本 bundle 为单个 js 文件。
-2. 基础依赖项：`@pipcook/core` 用于引入脚本入口函数类型等, `@pipcook/datacook` 实现数据处理的功能包。
-3. debug 配置：调试 script 所需的配置。
 
-`src`为源码目录，包含:
+The project directory contains the basic configuration needed to implement the script:
+1. Webpack configuration: we use webpack to bundle the script into a single js file.
+2. Basic dependencies: `@pipcook/core` to introduce script entry function types, etc., `@pipcook/datacook` to implement the data processing.
+3. Debug configuration: the configuration required to debug the script.
 
-* index.js: 入口文件，统一导出 DataSource, Dataflow, Model 入口。
-* datasource.js: DataSource Script 实现。
-* dataflow.js: Dataflow Script 实现。
-* model.js: Model Script 实现。
+`src` is the source code directory, includes:
+
+* index.js: Entry file, unified export DataSource, Dataflow, Model entry.
+* datasource.js: DataSource Script implementation.
+* dataflow.js: Dataflow Script implementation.
+* model.js: Model Script implementation.
 
 ### DataSource
 
-DataSource Script 是 pipeline 运行的第一个脚本，它对接数据源，提供其他脚本 [Dataset][#] API 用于读取样本数据，它需要导出一个[入口函数][https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry]，Dataset 是访问数据的接口，不同的数据源会包含不同类型的样本，我们可以按照接口定义创建一个 Dataset 实例，但这在大部分场景下是不必要的，`datacook` 提供了一个工具方法 [makeDataset][#] 让我们可以方便地创建 Dataset 实例。
+DataSource Script is the first script the pipeline runs, it fetches the data and provides other scripts [Dataset][#] API for reading sample data, it needs to export an [entry function][https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry], Dataset is the interface to access data, different datasources will contain different types of samples, we can create a Dataset instance as defined by the interface, but this is not necessary in most scenarios, `datacook` provides a tool method [makeDataset][#] that allows us to create Dataset instances easily.
 
-打开 `src/datasource.js`：
+Let's look at `src/datasource.js`.
 
-```js
+``js
 /**
  * This is the entry of datasource script
  */
@@ -100,7 +98,7 @@ module.exports = async (options, context) => {
   } = options;
   // should get the instance of datacook from context
   const dataCook = context.dataCook;
-  /**
+  dataCook = context.dataCook; /**
    * create dataset here
    */
   const trainData = [ { label: 'label-1', data: 'data-1' }, { label: 'label-2', data: 'data-2' } ];
@@ -117,9 +115,7 @@ module.exports = async (options, context) => {
 
 ```
 
-
-
-在这个例子中，我们需要按照给定的字符长度随机生成给定数量的算式和答案，完整实现如下：
+In this example, we need to randomly generate a given number of equations and answers according to a given character length, and the complete implementation is as follows.
 
 ```js
 /**
@@ -206,16 +202,15 @@ module.exports = async (options, context) => {
 };
 ```
 
-1. 我们需要从 options 中读取参数，`digits` 是参与计算的数字字符宽度，`numExamples` 是随机生成的样本数量。因为这几个参数是从 script uri 的 query 中获取的，所以我们将得到字符串参数转换为 `number` 类型。
-2. 从 `context` 中获取 `dataCook` 组件。
-3. 接下来调用 `generateData` 方法生成算式和结果字符串，按照 9：1的比例分割训练数据和测试数据。`makeDataset` 方法需要输入为两个 [Sample][] 类型的数组，所以我们构造需要将生成的算式和结果字符串 map 成 Sample 格式。
-4. 构造数据集元数据 [DatasetMeta][]，用于后续处理。
-5. 调用 `makeDataset` 构造 `Dataset` 对象并返回。
-
+1. We need to read the parameters from options, `digits` is the width of the numeric characters involved in the calculation, and `numExamples` is the number of randomly generated samples. Since these parameters are retrieved from the query of the script uri, we convert the string parameters to `number` type.
+2. Get the `dataCook` component from the `context`.
+3. Next, call the `generateData` method to generate the arithmetic and result strings, splitting the training data and test data in a 9:1 ratio. The `makeDataset` method requires two arrays of type [Sample][] as input, so we construct a map of the generated equations and result strings into Sample format.
+4. Construct the dataset metadata [DatasetMeta][] for subsequent processing.
+5. Call `makeDataset` to construct the `Dataset` object and return it.
 
 ### Dataflow
 
-在 pipeline 中，Dataflow 是一个数组，在 DataSource 之后按定义顺序执行，它需要导出一个[入口函数][https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry]，接受 Dataset 对象，script options 和 context，并返回一个新的 Dataset 对象。我们可以在 Dataflow 脚本中对 Sample 对象进行处理，比如图片的 `resize`、`normalize`，文本的 `encode`等。每一个 Dataflow 的输入是上一个 Script 的输出。在这个例子中，我们需要把算式和结果字符串进行编码并转换成 Tensor，那么 DataSource Script 中输出的 Dataset 会被传入到这个 Dataflow 脚本中，然后输出一个编码转换后的 Dataset 对象：
+In pipeline, Dataflow is an array that is executed in defined order after the DataSource, and it needs to export an [entry function][https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry], which accepts the Dataset object, script options and context, and returns a new Dataset object. We can process sample objects in the Dataflow script, such as `resize` and `normalize` for images, `encode` for text, etc. The input of each Dataflow is the output of the previous script. In this example, we need to encode and convert the arithmetic and result string into a Tensor, so the Dataset output from the DataSource Script is passed into this Dataflow script, which then outputs an encoded and converted Dataset object as follows.
 
 ```js
 let tf = null;
@@ -224,15 +219,15 @@ class CharacterTable {
   /**
    * Constructor of CharacterTable.
    * @param chars A string that contains the characters that can appear
-   *   in the input.
+   * in the input.
    */
   constructor(chars) {
     this.chars = chars;
-    this.charIndices = {};
+    this.chars = chars; this.charIndices = {};
     this.size = this.chars.length;
     for (let i = 0; i < this.size; ++i) {
       const char = this.chars[i];
-      if (this.charIndices[char] != null) {
+      if (this.charIndices[char] ! = null) {
         throw new Error(`Duplicate character '${char}'`);
       }
       this.charIndices[this.chars[i]] = i;
@@ -246,7 +241,7 @@ class CharacterTable {
    * @param numRows Number of rows of the output tensor.
    * @returns The one-hot encoded 2D tensor.
    * @throws If `str` contains any characters outside the `CharacterTable`'s
-   *   vocabulary.
+   * vocabulary.
    */
   encode(str, numRows) {
     const buf = tf.buffer([numRows, this.size]);
@@ -280,13 +275,12 @@ async (dataset, options, context) => {
 };
 ```
 
-1. 读取从 Script URI 中获取的参数，`digits` 是参与计算的数字字符宽度。
-2. 获取 `dataCook` 和 `@tensorflow/tfjs`，`dataCook` 是 Pipcook 内建的组件，可以直接从 `context` 获取，`@tensorflow/tfjs` 是从 Framework 中引用的 JS 组件，可以通过 `context.importJS` 导入，如果是导入 Python 组件可以使用 `context.importPY`。
-3. 创建编码器对象，对 Sample 中的 label 和 data 进行编码，然后调用 [transformSampleInDataset][] 创建 Dataset 接口，需要传入转换函数和传入的 Dataset对象。
+1. Read the parameter obtained from Script URI, `digits` is the width of the numeric characters involved in the calculation.
+2. Get `dataCook` and `@tensorflow/tfjs`, `dataCook` is a Pipcook built-in component that can be fetched directly from `context`, `@tensorflow/tfjs` is a JS component referenced from the Framework and can be import by `context.importJS` or `context.importPY` if you are importing Python components.
+3. Create the encoder object, encode the label and data in Sample, and then call [transformSampleInDataset][] to create the Dataset interface, you need to pass in the transform function and the incoming Dataset object.
 
 ### Model
-
-到目前为止，我们实现了一个 DataSource 脚本，一个 Dataflow 脚本，并且可以从 Dataset 中读取到 包含两个 Tensor 的 Sample 对象，接下来就是最后一个环节：实现一个 Model 脚本，定义模型和训练逻辑。Model 脚本同样需要导出一个[入口函数][https://alibaba.github.io/pipcook/typedoc/script/index.html#modelentry]，
+So far, we have implemented a DataSource script, a Dataflow script, and can read the sample object containing the two Tensors from the Dataset, and then the last part: implementing a Model script that defines the ML model object and the training logic. It's also required to export an [entry function][https://alibaba.github.io/pipcook/typedoc/script/index.html#modelentry].
 
 ```js
 let tf = null;
@@ -445,15 +439,15 @@ module.exports = async (rt, options, context) => {
 };
 ```
 
-1. 与其他脚本一样，我们先从 URI 中获取参数，并进行类型转换。
-2. 从 Framework 中导入 `@tensorflow/tfjs`。
-3. 根据传入的超参数创建并编译 model 对象。
-4. 传入包含 Dataset 的 runtime 对象，训练模型。
-5. 保存模型文件，训练结束。
+1. As with other scripts, we first take the parameters from the URI and perform the type conversion.
+2. import `@tensorflow/tfjs` from Framework.
+3. Create and compile the model object based on the hyperparameters passed in.
+4. Pass in the runtime object containing the Dataset and train the model.
+5. Save the model file and finish training.
 
-## 调试
+## Debugging
 
-我们可以通过以下命令安装 pipcook client:
+We can install pipcook client with the following command:
 
 ```sh
 $ npm install @pipcook/cli -g
@@ -461,7 +455,7 @@ $ pipcook -v
 2.0.0
 ```
 
-然后我们就可以构建一个 pipeline 配置文件在脚本工程目录的 debug 文件夹下 `addition-rnn.json`:
+Then we can build a pipeline configuration file in the debug folder of the script project directory `addition-rnn.json`:
 
 ```json
 {
@@ -483,19 +477,18 @@ $ pipcook -v
     }
   }
 }
-
 ```
 
-在脚本工程根目录新建一个调试配置文件:
+Create a new debug configuration file in the root of the script project:
 
 ```sh
 $ mkdir .vscode
 $ touch .vscode/launch.json
 ```
 
-配置文件写入:
+The configuration file is written to:
 
-```
+```json
 {
   "version": "0.2.0",
   "configurations": [
@@ -513,5 +506,4 @@ $ touch .vscode/launch.json
 }
 ```
 
-现在，我们可以在 vs code 中按下 F5 开始调试脚本了。
-
+Now we can press F5 in vs code to start debugging the scripts.
