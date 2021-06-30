@@ -4,27 +4,21 @@
 
 ```js
 {
-  "plugins": {
-    "dataCollect": {
-      "package": "@pipcook/plugins-csv-data-collect",
-      "params": {
-        "url": "http://foobar"
-      }
-    },
-    "dataAccess": {
-      "package": "@pipcook/plugins-csv-data-access",
-      "params": {
-        "labelColumn": "output"
-      }
-    },
-    "modelDefine": {
-      "package": "@pipcook/plugins-bayesian-model-define"
-    },
-    "modelTrain": {
-      "package": "@pipcook/plugins-bayesian-model-train"
-    },
-    "modelEvaluate": {
-      "package": "@pipcook/plugins-bayesian-model-evaluate"
+  "specVersion": "2.0",
+  "dataSource": "http://host/data-source-script.js?url=http://host/dataset.zip",
+  "dataflow": [
+    "http://host/dataflow-resize-script.js?size=224&size=224"
+  ],
+  "model": "http://host/model-script.js",
+  "artifacts": [{
+    "processor": "pipcook-artifact-zip@0.0.2",
+    "target": "/home/pipcook/mobilenet-model.zip"
+  }],
+  "options": {
+    "framework": "mobilenet@1.0.0",
+    "train": {
+      "epochs": 10,
+      "validationRequired": true
     }
   }
 }

@@ -32,13 +32,13 @@ In Pipcook, we use Pipeline to represent the training process of a model, so in 
 
 As shown above, a pipeline is composed of different plugins, and we add the field `params` to each plugin to pass given parameters. Then the pipeline interpreter will perform the corresponding operation(s) by its plugin type and parameters.
 
-> See [Introduction to Plugin](./intro-to-plugin.md) for more details about plugin.
+> See [Introduction to Script](./intro-to-script.md) for more details about Pipcook script.
 
 Next, when we have defined such a pipeline, we can run it through Pipcook.
 
 ## Preparation
 
-Follow the [Pipcook Tools Initlization](./pipcook-tools.md#environment-setup) to get the Pipcook ready.
+Follow the [Pipcook Tools Installation](./pipcook-tools.md) to get the Pipcook ready.
 
 ## Run Pipeline
 

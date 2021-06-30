@@ -33,11 +33,9 @@
 
 __Pipcook Pipeline__
 
-它用于表达机器学习的工作流，其中包含了 Pipcook 插件，在这一层，我们需要保证整个系统的稳定性和拓展性，同时使用插件机制来支持丰富的数据集、训练、验证和部署。
+它用于表达机器学习的工作流，其中包含了 Pipcook Script，在这一层，我们需要保证整个系统的稳定性和拓展性，同时使用[Script](manual/intro-to-script.md)机制来支持丰富的数据源、数据流、训练和验证。
 
-一条 Pipcook Pipeline 由多个插件组成，通过配置不同的插件以及参数，最终会输出一个 NPM 包，其中包含了训练好的模型和 JavaScript 函数，你就可以像使用普通 NPM 包一样使用你训练好的模型了。
-
-> 注意：在 Pipcook 中，每一个 Pipeline 仅拥有一个角色，那就是训练一个用户需要的模型，也就是说每一个 Pipeline 的最后一个节点都必须输出一个训练好的模型，否则这个 Pipeline 就是非法的。
+一条 Pipcook Pipeline 由多个 script 组成，通过配置不同的插件以及参数，最终会输出一个目录，其中包含了训练好的模型。
 
 __Pipcook Bridge to Python__
 
