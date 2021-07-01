@@ -15,7 +15,7 @@ Before starting the installation, please make sure the following environments ar
 Installing [Pipcook][] via NPM is easy, just run:
 
 ```sh
-$ npm install -g @pipcook/pipcook-cli
+$ npm install -g @pipcook/cli
 ```
 
 Then check if installed via `pipcook --help`.
@@ -31,7 +31,7 @@ $ docker pull pipcook/pipcook:latest
 After pulling successfully, run command below to start:
 
 ```sh
-$ docker run -it -p 6927:6927 pipcook/pipcook:latest /bin/bash
+$ docker run -it pipcook/pipcook:latest /bin/bash
 ```
 
 ## Troubleshooting

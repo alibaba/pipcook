@@ -4,76 +4,63 @@
 
 ```js
 {
-  "plugins": {
-    "dataCollect": {
-      "package": "@pipcook/plugins-csv-data-collect",
-      "params": {
-        "url": "http://foobar"
-      }
-    },
-    "dataAccess": {
-      "package": "@pipcook/plugins-csv-data-access",
-      "params": {
-        "labelColumn": "output"
-      }
-    },
-    "modelDefine": {
-      "package": "@pipcook/plugins-bayesian-model-define"
-    },
-    "modelTrain": {
-      "package": "@pipcook/plugins-bayesian-model-train"
-    },
-    "modelEvaluate": {
-      "package": "@pipcook/plugins-bayesian-model-evaluate"
+  "specVersion": "2.0",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
+  "dataflow": [
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+  ],
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/model.js",
+  "artifact": [{
+    "processor": "pipcook-artifact-zip@0.0.2",
+    "target": "/tmp/mobilenet-model.zip"
+  }],
+  "options": {
+    "framework": "mobilenet@1.0.0",
+    "train": {
+      "epochs": 100,
+      "validationRequired": true
     }
   }
 }
 ```
 
-如上面文件所示，一个 Pipeline 由不同的插件组成，然后我们为每个插件添加了 `params` 字段来传递不同的参数。接着，Pipeline 解释器就会根据这个 JSON 文件中定义的插件和参数，来执行不同的操作。
+如上面 JSON 所示，一个 Pipeline 由 `dataSource`, `dataflow` 和 `model` 这三类 Script 以及 构建插件 `artifacts`, Pipeline 选项 `options` 组成。
+每个 Script 通过 URI query 传递参数，model script 的参数也可以通过 `options.train` 定义。
+`artifacts` 定义了一组构建插件，每个构建插件会在训练结束后被依次调用，从而可以对输出的模型进行转换、打包、部署等。
+`options` 包含框架定义和训练参数的定义。
+接着，Pipcook 就会根据这个 JSON 文件中定义的 URI 和参数，来准备环境，运行 Script，最后输出和处理模型。
 
-> 如果想获取更多插件相关的知识，可以阅读[插件使用手册](./intro-to-plugin.md)。
+> 如果想获取更多 Script 相关的知识，可以阅读[如何编写 Pipcook Script](./intro-to-script.md)。
 
 下一步，我们在定义好一个 Pipeline 文件后，就能通过 Pipcook 来运行它了。
 
 ## 准备工作
 
-通过[命令行工具配置指南](./pipcook-tools.md#环境设置)来做运行 Pipeline 前的准备。
+通过[命令行工具安装指南](./pipcook-tools.md#环境设置)来做运行 Pipeline 前的准备。
 
 ## 运行
 
-将上面的 Pipeline 保存在任何地方，然后执行：
+将上面的 Pipeline 保存在磁盘上，然后执行：
 
 ```sh
-$ pipcook run /path/to/your/pipeline-config.json --tuna
+$ pipcook run /path/to/your/pipeline-config.json
 ```
 
-执行完成后，训练好的模型会生成在当前[工作目录](https://linux.die.net/man/3/cwd)下的 `output` 中。
-
-```
-📂output
-   ┣ 📂logs
-   ┣ 📂model
-   ┣ 📜package.json
-   ┣ 📜metadata.json
-   ┗ 📜index.js
-```
-
-为了使用训练好的模型，还需要完成以下步骤：
+或者 serve 在静态资源服务器上：
 
 ```sh
-$ npm install
+$ pipcook run https://host/path/to/your/pipeline-config.json
 ```
 
-上述的命令会帮助你安装依赖，它们包括插件以及插件所依赖的 Python 包。Pipcook 也提供了一条命令，来使用 [tuna](https://mirrors.tuna.tsinghua.edu.cn/) 镜像来下载 Python 包：
+执行完成后，训练好的模型会生成在当前[工作目录](https://linux.die.net/man/3/cwd)下，以当前时间戳命名的文件夹中，同时模型文件会被构建插件 `pipcook-artifact-zip` 压缩成 zip 文件并保存在 tmp 目录下。
 
-```sh
-$ BOA_TUNA=1 npm install
+```
+  ├── pipeline-config.json
+  ├── cache
+  ├── data
+  ├── framework
+  ├── model
+  └── scripts
 ```
 
-当 `output` 初始化完成，就可以使用 `import` 来导入你的模型了：
-
-```js
-import * as predict from './output';
-predict('your input data');
-```
+model 目录下保存了模型文件，在后续的版本迭代中，会增加模型使用的能力。

@@ -15,7 +15,7 @@
 安装 [Pipcook][] 只需运行下面的命令即可：
 
 ```sh
-$ npm install -g @pipcook/pipcook-cli
+$ npm install -g @pipcook/cli
 ```
 
 然后通过 `pipcook --help` 来检查安装是否成功。
@@ -31,7 +31,7 @@ $ docker pull registry.cn-beijing.aliyuncs.com/pipcook/pipcook:latest
 安装完成之后，可以运行如下命令启动 docker
 
 ```sh
-$ docker run -it -p 6927:6927 registry.cn-beijing.aliyuncs.com/pipcook/pipcook:latest /bin/bash
+$ docker run -it registry.cn-beijing.aliyuncs.com/pipcook/pipcook:latest /bin/bash
 ```
 
 ## 疑难排查
