@@ -33,11 +33,9 @@ The project provides subprojects include machine learning pipeline framework, ma
 
 __Pipcook Pipeline__
 
-It's used to represent ML pipelines consisting of Pipcook plugins. This layer ensures the stability and scalability of the whole system and uses a plug-in mechanism to support rich functions including dataset, training, validations, and deployment.
+It's used to represent ML pipelines consisting of Pipcook scripts. This layer ensures the stability and scalability of the whole system and uses a [Script](manual/intro-to-script.md) mechanism to support rich functions including datasource, dataflow, training, validations.
 
-A Pipcook Pipeline is generally composed of lots of plugins. Through different plugins and configurations, the final output to us is an NPM package, which contains the trained model and JavaScript functions that can be used directly.
-
-> Note: In Pipcook, each pipeline has only one role, which is to output the above-trained model you need. That is to say, the last stage of each pipeline must be the output of the trained model, otherwise, this Pipeline is invalid.
+A Pipcook Pipeline is generally composed of lots of scripts. Through different scripts and configurations, the final output to us is a directory, which contains the trained model.
 
 __Pipcook Bridge to Python__
 
