@@ -175,30 +175,30 @@ function generateData(digits, numExamples, invert = false) {
  * This is the entry of datasource script
  */
 module.exports = async (options, context) => {
-    // 1
-    let {
+  // 1
+  let {
     digits = '2',
     numExamples = '100'
-    } = options;
-    digits = parseInt(digits);
-    numExamples = parseInt(numExamples);
-    // 2
-    const dataCook = context.dataCook;
-    // 3
-    const data = generateData(digits, numExamples);
-    const split = Math.floor(numExamples * 0.9);
-    const trainData = data.slice(0, split).map(item => ({ label: item[1], data: item[0] }));
-    const testData = data.slice(split).map(item => ({ label: item[1], data: item[0] }));
-    // 4
-    const meta = {
+  } = options;
+  digits = parseInt(digits);
+  numExamples = parseInt(numExamples);
+  // 2
+  const dataCook = context.dataCook;
+  // 3
+  const data = generateData(digits, numExamples);
+  const split = Math.floor(numExamples * 0.9);
+  const trainData = data.slice(0, split).map(item => ({ label: item[1], data: item[0] }));
+  const testData = data.slice(split).map(item => ({ label: item[1], data: item[0] }));
+  // 4
+  const meta = {
     type: dataCook.Dataset.Types.DatasetType.General,
     size: {
       test: testData.length,
       train: trainData.length
     }
-    };
-    // 5
-    return dataCook.Dataset.makeDataset({ trainData, testData }, meta);
+  };
+  // 5
+  return dataCook.Dataset.makeDataset({ trainData, testData }, meta);
 };
 ```
 
@@ -220,9 +220,8 @@ class CharacterTable {
    * Constructor of CharacterTable.
    * @param chars A string that contains the characters that can appear
    * in the input.
-      */
-    constructor(chars) {
-
+   */
+  constructor(chars) {
     this.chars = chars;
     this.chars = chars; this.charIndices = {};
     this.size = this.chars.length;
@@ -237,15 +236,14 @@ class CharacterTable {
 
   /**
    * Convert a string into a one-hot encoded tensor.
-      *
+   *
    * @param str The input string.
    * @param numRows Number of rows of the output tensor.
    * @returns The one-hot encoded 2D tensor.
    * @throws If `str` contains any characters outside the `CharacterTable`'s
    * vocabulary.
-      */
-    encode(str, numRows) {
-
+   */
+  encode(str, numRows) {
     const buf = tf.buffer([numRows, this.size]);
     for (let i = 0; i < str.length; ++i) {
       const char = str[i];
@@ -258,8 +256,7 @@ class CharacterTable {
   }
 }
 
-module.exports =
-async (dataset, options, context) => {
+module.exports = async (dataset, options, context) => {
   // 1
   let { digits } = options;
   digits = parseInt(digits);
