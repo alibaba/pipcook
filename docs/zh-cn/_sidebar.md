@@ -2,7 +2,7 @@
 - [安装](/zh-cn/INSTALL.md)
 - 用户手册
   - [Pipeline](/zh-cn/manual/intro-to-pipeline.md)
-  - [Script](/zh-cn/manual/intro-to-script.md)
+  - [脚本](/zh-cn/manual/intro-to-script.md)
   - [Boa 使用指南](/zh-cn/manual/intro-to-boa.md)
   - [命令行工具](/zh-cn/manual/pipcook-tools.md)
 - 教程
