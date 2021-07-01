@@ -227,7 +227,7 @@ class CharacterTable {
     this.size = this.chars.length;
     for (let i = 0; i < this.size; ++i) {
       const char = this.chars[i];
-      if (this.charIndices[char] ! = null) {
+      if (this.charIndices[char] !== null) {
         throw new Error(`Duplicate character '${char}'`);
       }
       this.charIndices[this.chars[i]] = i;
@@ -247,7 +247,7 @@ class CharacterTable {
     const buf = tf.buffer([numRows, this.size]);
     for (let i = 0; i < str.length; ++i) {
       const char = str[i];
-      if (this.charIndices[char] == null) {
+      if (this.charIndices[char] === null) {
         throw new Error(`Unknown character: '${char}'`);
       }
       buf.set(1, i, this.charIndices[char]);
