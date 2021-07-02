@@ -47,99 +47,67 @@ We need to divide our dataset into a training set (train), a validation set (val
 
 In the training/validation/test set, we will organize the data according to the classification category. For example, we now have two categories, line and ring, then we can create two folders for these two category names, in the corresponding Place pictures under the folder. The overall directory structure is:
 
+```
 - train
-   - ring
-      - xx.jpg
-      - ...
-   - line
-      - xxjpg
-      - ...
-   - column
-      - ...
-   - pie
-      - ...
+  - avator
+    - xx.jpg
+    - ...
+  - blurBackground
+    - xx.jpg
+    - ...
 - validation
-   - ring
-      - xx.jpg
-      - ...
-   - line
-      - xx.jpg
-      - ...
-   - column
-      - ...
-   - pie
-      - ...
+  - avator
+    - xx.jpg
+    - ...
+  - blurBackground
+    - xx.jpg
+    - ...
 - test
-   - ring
-      - xx.jpg
-      - ...
-   - line
-      - xx.jpg
-      - ...
-   - column
-      - ...
-   - pie
-      - ...
+  - avator
+    - xx.jpg
+    - ...
+  - blurBackground
+    - xx.jpg
+    - ...
+```
 
-We have prepared such a dataset, you can download it and check it out：[Download here](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip).
+We have prepared such a dataset, you can download it and check it out：[Download here](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip).
 
 ## Start Training
 
 After the dataset is ready, we can start training. Using Pipcook can be very convenient for the training of image classification. You only need to build the following pipeline:
 ```json
 {
-  "plugins": {
-    "dataCollect": {
-      "package": "@pipcook/plugins-image-classification-data-collect",
-      "params": {
-        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip"
-      }
-    },
-    "dataAccess": {
-      "package": "@pipcook/plugins-pascalvoc-data-access"
-    },
-    "dataProcess": {
-      "package": "@pipcook/plugins-tensorflow-image-classification-process",
-      "params": {
-        "resize": [224, 224]
-      }
-    },
-    "modelDefine": {
-      "package": "@pipcook/plugins-tensorflow-mobilenet-model-define",
-      "params": {
-        "batchSize": 8,
-        "freeze": false
-      }
-    },
-    "modelTrain": {
-      "package": "@pipcook/plugins-image-classification-tensorflow-model-train",
-      "params": {
-        "epochs": 15
-      }
-    },
-    "modelEvaluate": {
-      "package": "@pipcook/plugins-image-classification-tensorflow-model-evaluate"
+  "specVersion": "2.0",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
+  "dataflow": [
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+  ],
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/model.js",
+  "artifact": [],
+  "options": {
+    "framework": "mobilenet@1.0.0",
+    "train": {
+      "epochs": 100,
+      "validationRequired": true
     }
   }
 }
 ```
 Through the above plugins, we can see that they are used separately:
 
-1. **@pipcook/plugins-image-classification-data-collect** This plug-in is used to download the dataset that meets the image classification described above. Mainly, we need to provide the url parameter, and we provide the dataset address that we prepared above
-1. **@pipcook/plugins-pascalvoc-data-access** Now that we have downloaded the dataset, we need to convert the dataset to pipcook format so that we can use the model later
-1. **@pipcook/plugins-tensorflow-image-classification-process** When performing image classification, we need to have some necessary operations on the original data. For example, image classification requires that all pictures are of the same size, so we use this plugin to resize the pictures to a uniform size
-1. **@pipcook/plugins-tensorflow-mobilenet-model-define**  We use this plugin to choose the model. The models are genrally defined in model-define plugins.
-1. **@pipcook/plugins-image-classification-tensorflow-model-train**  We use this plugin for training. This is a general plugin for image classification based on TensorFlow, which has nothing to do with the model selected in the previous stage.
-1. **@pipcook/plugins-image-classification-tensorflow-model-train** We use this plugin for evaluating. This step is to give out the performance of the model we have trained on previous step
+1. **datasource** This script is used to download a dataset that matches the image classification described above, and we need to provide the dataset address via the `url` parameter. The script will download and decompress the dataset and provide the data access interface to the next script.
+2. **dataflow** For image classification, we need to enter some necessary operations on the original data, for example, it requires all images to be the same size, so we use this script to resize the images to a uniform size.
+3. **model** We choose here the mobilenet model for training, which is generally used for training moderately complex data.
 
-[mobilenet](https://arxiv.org/abs/1704.04861) is a lightweight model which can be trained on CPU. If you are using [resnet](https://arxiv.org/abs/1512.03385)，since the model is quite large, we recommend use to train on GPU. 
+[mobilenet](https://arxiv.org/abs/1704.04861) is a lightweight model that can be trained on a cpu, but of course, running it on a GPU machine with a cuda environment gives a faster training speed.
 
 > CUDA, short for Compute Unified Device Architecture, is a parallel computing platform and programming model founded by NVIDIA based on the GPUs (Graphics Processing Units, which can be popularly understood as graphics cards).
 
 > With CUDA, GPUs can be conveniently used for general purpose calculations (a bit like numerical calculations performed in the CPU, etc.). Before CUDA, GPUs were generally only used for graphics rendering (such as through OpenGL, DirectX).
 
 ```shell
-$ pipcook run image-classification.json
+$ pipcook run image-classification.json --output ./classification
 ```
 
 Often the model will converge at 10-20 epochs. Of course, it depends on the complexity of your dataset. Model convergence means that the loss (loss value) is low enough and the accuracy is high enough.
@@ -159,24 +127,7 @@ Epoch 14/15
 Epoch 15/15
 187/187 [==============================] - 11s 61ms/step - loss: 5.1657e-05 - accuracy: 1.0000 - val_loss: 1.9073e-08 - val_accuracy: 1.0000
 ```
-After the training is completed, output will be generated in the current directory, which is a brand-new npm package, then we first install dependencies:
-
-```shell
-$ cd output
-$ npm install
-```
-After installing the environment , we can start to predict:
-
-```js
-const predict = require('./output');
-(async () => {
-  const v1 = await predict('./test.jpg');
-  console.log(v1); 
-  // [[0.1, 0.9, 0.05, 0.05]]
-})();
-```
-Note that the prediction result we give is the probability of each category. You can process this probability to the result you want.
-
+After the training is completed, model will be generated in the `classification` directory.
 ## Conclusion
 
 In this way, the component recognition task based on the image classification model is completed. After completing the pipeline in our example, if you are interested in such tasks, you can also start preparing your own dataset for training. We have already introduced the format of the dataset in detail in the data preparation chapter. You only need to follow the file directory to easily prepare the data that matches our image classification pipeline.

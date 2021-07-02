@@ -46,41 +46,31 @@
 
 当做类似于这样的图片分类任务时，我们需要按照一定格式组织我们的数据集，我们需要按照一定比例把我们的数据集分成训练集 (train)，验证集 (validation) 和测试集 (test)，其中，训练集主要用来训练模型，验证集和测试集用来评估模型。验证集主要用来在训练过程中评估模型，以方便查看模型过拟合和收敛情况，测试集是在全部训练结束之后用来对模型进行一个总体的评估的。
 
-在训练/验证/测试集里面，我们会按照分类的类别组织数据，例如，我们现在有两个分类，line 和 ring, 那么，我们可以创建两个文件夹分别为这两个分类名，在相应的文件夹下面放置图片。总体目录结构为：
+在训练/验证/测试集里面，我们会按照分类的类别组织数据，例如，我们现在有两个分类，avator 和 blurBackground, 那么，我们可以创建两个文件夹分别为这两个分类名，在相应的文件夹下面放置图片。总体目录结构为：
 
+```
 - train
-   - ring
-      - xx.jpg
-      - ...
-   - line
-      - xxjpg
-      - ...
-   - column
-      - ...
-   - pie
-      - ...
+  - avator
+    - xx.jpg
+    - ...
+  - blurBackground
+    - xx.jpg
+    - ...
 - validation
-   - ring
-      - xx.jpg
-      - ...
-   - line
-      - xx.jpg
-      - ...
-   - column
-      - ...
-   - pie
-      - ...
+  - avator
+    - xx.jpg
+    - ...
+  - blurBackground
+    - xx.jpg
+    - ...
 - test
-   - ring
-      - xx.jpg
-      - ...
-   - line
-      - xx.jpg
-      - ...
-   - column
-      - ...
-   - pie
-      - ...
+  - avator
+    - xx.jpg
+    - ...
+  - blurBackground
+    - xx.jpg
+    - ...
+```
 
 我们已经准备好了一个这样的数据集，您可以下载下来查看一下：[下载地址](http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip)。
 
@@ -90,58 +80,36 @@
 
 ```json
 {
-  "plugins": {
-    "dataCollect": {
-      "package": "@pipcook/plugins-image-classification-data-collect",
-      "params": {
-        "url": "http://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-image-classification/component-recognition-classification.zip"
-      }
-    },
-    "dataAccess": {
-      "package": "@pipcook/plugins-pascalvoc-data-access"
-    },
-    "dataProcess": {
-      "package": "@pipcook/plugins-tensorflow-image-classification-process",
-      "params": {
-        "resize": [224, 224]
-      }
-    },
-    "modelDefine": {
-      "package": "@pipcook/plugins-tensorflow-mobilenet-model-define",
-      "params": {
-        "batchSize": 8,
-        "freeze": false
-      }
-    },
-    "modelTrain": {
-      "package": "@pipcook/plugins-image-classification-tensorflow-model-train",
-      "params": {
-        "epochs": 15
-      }
-    },
-    "modelEvaluate": {
-      "package": "@pipcook/plugins-image-classification-tensorflow-model-evaluate"
+  "specVersion": "2.0",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
+  "dataflow": [
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+  ],
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/model.js",
+  "artifact": [],
+  "options": {
+    "framework": "mobilenet@1.0.0",
+    "train": {
+      "epochs": 100,
+      "validationRequired": true
     }
   }
 }
-
 ```
-通过上面的插件，我们可以看到分别使用了：
 
-1. **@pipcook/plugins-image-classification-data-collect** 这个插件用于下载符合上面描述的图片分类的数据集，主要，我们需要提供 url 参数，我们提供了上面我们准备好的数据集地址。
-1. **@pipcook/plugins-pascalvoc-data-access **我们现在已经下载好了数据集，我们需要将数据集接入成 pipcook 的格式，以便后续进入模型。
-1. **@pipcook/plugins-tensorflow-image-classification-process** 在进行图片分类时，我们需要对原始的数据进入一些必要的操作，比如，图片分类要求所有的图片是一样大小的，所以我们使用这个插件把图片 resize 成统一大小。
-1. **@pipcook/plugins-tensorflow-mobilenet-model-define** 我们这里选用 mobilenet 模型来进行训练，这个模型一般用于训练中等复杂的数据，对于更复杂的数据集，推荐您选用 @pipcook/plugins-tensorflow-resnet-model-define 插件。
-1. **@pipcook/plugins-image-classification-tensorflow-model-train **我们使用此插件来进行训练，这是一个图片分类基于 TensorFlow 的通用插件，和上一阶段具体选择的模型无关。
-1. **@pipcook/plugins-image-classification-tensorflow-model-train **我们使用此插件来进行模型的评估，模型的评估是指在测试集上模型的表现效果，这是一个图片分类基于 TensorFlow 的通用插件，和上一阶段具体选择的模型无关。
+通过上面的脚本，我们可以看到分别使用了：
 
-[mobilenet](https://zhuanlan.zhihu.com/p/31551004) 是轻量级模型，可以在 cpu 上进行训练，如果使用的是 [resnet](https://zhuanlan.zhihu.com/p/31852747)，由于模型本身比较大，因此在执行这个 Pipeline 之前推荐在有 cuda 环境的 GPU 机器上运行。
+1. **datasource** 这个脚本用于下载符合上面描述的图片分类的数据集，我们需要通过 url 参数提供数据集地址。脚本会下载解压数据集并给下一个脚本提供数据访问接口。
+2. **dataflow** 在进行图片分类时，我们需要对原始的数据进入一些必要的操作，比如，图片分类要求所有的图片是一样大小的，所以我们使用这个脚本把图片 resize 成统一大小。
+3. **model** 我们这里选用 mobilenet 模型来进行训练，这个模型一般用于训练中等复杂的数据。
+
+[mobilenet](https://zhuanlan.zhihu.com/p/31551004) 是轻量级模型，可以在 cpu 上进行训练，当然，在有 cuda 环境的 GPU 机器上运行能够获得更快的训练速度。
 
 > CUDA，Compute Unified Device Architecture的简称，是由NVIDIA公司创立的基于他们公司生产的图形处理器GPUs（Graphics Processing Units,可以通俗的理解为显卡）的一个并行计算平台和编程模型。
 > 通过CUDA，GPUs可以很方便地被用来进行通用计算（有点像在CPU中进行的数值计算等等）。在没有CUDA之前，GPUs一般只用来进行图形渲染（如通过OpenGL，DirectX）。
 
 ```
-$ pipcook run image-classification.json --tuna
+$ pipcook run image-classification.json --output ./classifaction
 ```
 
 往往模型在 10-20 个 epoch 时就会收敛，当然，这取决于您的数据集复杂度。模型收敛是指 loss (损失值) 已经足够低并且准确度已经足够高了，在这种情况，每一个 epoch 对于模型的表现得改变已经不明显了。
@@ -149,39 +117,35 @@ $ pipcook run image-classification.json --tuna
 具体日志如下：
 
 ```
-Epoch 1/15
-187/187 [==============================] - 12s 65ms/step - loss: 0.0604 - accuracy: 0.9823 - val_loss: 8.8755 - val_accuracy: 0.4112
-Epoch 2/15
-187/187 [==============================] - 11s 61ms/step - loss: 0.0056 - accuracy: 0.9993 - val_loss: 5.5883 - val_accuracy: 0.4925
-Epoch 3/15
-187/187 [==============================] - 11s 59ms/step - loss: 0.0107 - accuracy: 0.9980 - val_loss: 0.3830 - val_accuracy: 0.8388
-...
-187/187 [==============================] - 11s 61ms/step - loss: 3.0090e-05 - accuracy: 1.0000 - val_loss: 1.5646e-08 - val_accuracy: 1.0000
-Epoch 14/15
-187/187 [==============================] - 11s 61ms/step - loss: 5.1657e-05 - accuracy: 1.0000 - val_loss: 1.9073e-08 - val_accuracy: 1.0000
-Epoch 15/15
-187/187 [==============================] - 11s 61ms/step - loss: 5.1657e-05 - accuracy: 1.0000 - val_loss: 1.9073e-08 - val_accuracy: 1.0000
+ℹ preparing framework
+ℹ preparing scripts
+ℹ preparing artifact plugins
+ℹ initializing framework packages
+ℹ running data source script
+downloading dataset ...
+unzip and collecting data...
+ℹ running data flow script
+ℹ running model script
+Platform node has already been set. Overwriting the platform with [object Object].
+2021-07-02 14:06:22.255944: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2021-07-02 14:06:22.280182: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x108232fc0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2021-07-02 14:06:22.280215: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+Epoch 0/1 start
+Iteration 0/20 result --- loss: 1.9687058925628662 accuracy: 0.125
+Iteration 2/20 result --- loss: 1.1920928955078125e-7 accuracy: 1
+Iteration 4/20 result --- loss: 1.1920928955078125e-7 accuracy: 1
+Iteration 6/20 result --- loss: 1.1920928955078125e-7 accuracy: 1
+Iteration 8/20 result --- loss: 1.1920928955078125e-7 accuracy: 1
+Iteration 10/20 result --- loss: 1.1920928955078125e-7 accuracy: 1
+Iteration 12/20 result --- loss: 12.088571548461914 accuracy: 0.25
+Iteration 14/20 result --- loss: 16.11809539794922 accuracy: 0
+Iteration 16/20 result --- loss: 16.11809539794922 accuracy: 0
+Iteration 18/20 result --- loss: 16.11809539794922 accuracy: 0
+ℹ pipeline finished, the model has been saved at /path/classifaction/model
+ℹ done
 ```
 
-训练完成后，会在当前目录生成 output，这是一个全新的 npm 包，那么我们首先安装依赖：
-
-```shell
-$ cd output
-$ BOA_TUNA=1 npm install
-```
-
-安装好环境之后（设置 BOA_TUNA 使用清华镜像源来下载 Python 相关的依赖），我们就可以开始预测啦：
-
-```js
-const predict = require('./output');
-(async () => {
-  const v1 = await predict('./test.jpg');
-  console.log(v1); 
-  // [[0.1, 0.9, 0.05, 0.05]]
-})();
-```
-
-注意，我们给出的预测结果是每个类别的概率, 您可以对这个概率进行处理到您想要的结果。
+训练完成后，会在 `classifaction` 目录生成 model.
 
 ## 总结
 
