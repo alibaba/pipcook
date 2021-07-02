@@ -14,9 +14,9 @@ Pipcook Board 的缩写，在 Pipboard 上，您可以通过 Web 来管理你的
 
 用于管道 Pipeline 和执行，它通过 HTTP 提供对 [Pipcook Tools][] 和 [Pipboard][] 的远程访问，同时也支持其他客户端通过 HTTP 集成Pipcook Daemon。
 
-### Pipcook Plugin
+### Pipcook script
 
-在 Pipeline 中，插件就像乐高积木，用户选择不同的插件，就可以快速完成不同的 Pipeline 的搭建，并训练出不同的模型。
+在 Pipeline 中，脚本就像乐高积木，用户选择不同的脚本，就可以快速完成不同的 Pipeline 的搭建，并训练出不同的模型。
 
 ### Pipcook Tools
 

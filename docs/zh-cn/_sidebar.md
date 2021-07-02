@@ -9,15 +9,14 @@
   - [开始机器学习](/zh-cn/tutorials/machine-learning-overview.md)
   - [在 Node.js 中使用 Python](/zh-cn/tutorials/using-python-functions-in-nodejs.md)
   - [分类图片中的前端组件](/zh-cn/tutorials/component-image-classification.md)
-  - [识别图片中的前端组件](/zh-cn/tutorials/component-object-detection.md)
 - 如何贡献
   - [贡献者指南](/zh-cn/contributing/guide-to-contributor.md)
   - [维护者指南](/zh-cn/contributing/guide-to-collaborator.md)
   - [贡献插件](/zh-cn/contributing/contribute-a-plugin.md)
 - 规范
-  - [插件](/zh-cn/spec/plugin.md)
+  - [脚本](/zh-cn/spec/script.md)
   - [数据集](/zh-cn/spec/dataset.md)
 - [FAQ](/zh-cn/faq/index.md)
   - [pipcook 框架](/zh-cn/faq/pipcook-framework.md)
-  - [插件](/zh-cn/faq/plugins.md)
+  - [脚本](/zh-cn/faq/scripts.md)
 - [术语表](/zh-cn/GLOSSORY.md)
