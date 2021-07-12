@@ -20,7 +20,7 @@ Pipcook Board 的缩写，在 Pipboard 上，您可以通过 Web 来管理你的
 
 ### Pipcook Tools
 
-Pipcook 命令行工具的简称，通过 `npm install @pipcook/pipcook-cli` 安装。
+Pipcook 命令行工具的简称，通过 `npm install -g @pipcook/cli` 安装。
 
 ### Pipeline
 

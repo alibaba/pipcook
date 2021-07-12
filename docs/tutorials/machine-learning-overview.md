@@ -72,19 +72,13 @@ So how do we achieve the above prediction in our life? Let's take a look at the 
 
 Next, we will use handwritten digit recognition as an example to introduce how to complete an image classification task completely through [Pipcook][].
 
-In [Pipcook][], we use the pipeline to completely describe a machine learning task. We use different plugins in Pipeline to provide different nodes, and then connect the different plugins through Pipeline as a whole.
+In [Pipcook][], we use the pipeline to completely describe a machine learning task. We use different scripts in Pipeline to provide different nodes, and then connect the different scripts through Pipeline as a whole.
 
 In the following, we start writing a Pipeline from loading the [MNIST][] datasets:
 
 ```js
 {
-  "plugins": {
-    "package": "@pipcook/plugins-mnist-data-collect",
-    "params": {
-      "trainCount": 8000,
-      "testCount": 2000
-    }
-  }
+  "dataSource": "http://host/data-source-script.js?url=http://host/dataset.zip"
 }
 ```
 

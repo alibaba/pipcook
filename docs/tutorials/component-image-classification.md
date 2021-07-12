@@ -94,7 +94,7 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
   }
 }
 ```
-Through the above plugins, we can see that they are used separately:
+Through the above scripts, we can see that they are used separately:
 
 1. **datasource** This script is used to download a dataset that matches the image classification described above, and we need to provide the dataset address via the `url` parameter. The script will download and decompress the dataset and provide the data access interface to the next script.
 2. **dataflow** For image classification, we need to enter some necessary operations on the original data, for example, it requires all images to be the same size, so we use this script to resize the images to a uniform size.

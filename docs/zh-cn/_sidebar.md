@@ -12,7 +12,7 @@
 - 如何贡献
   - [贡献者指南](/zh-cn/contributing/guide-to-contributor.md)
   - [维护者指南](/zh-cn/contributing/guide-to-collaborator.md)
-  - [贡献插件](/zh-cn/contributing/contribute-a-plugin.md)
+  - [贡献脚本](/zh-cn/contributing/contribute-a-script.md)
 - 规范
   - [脚本](/zh-cn/spec/script.md)
   - [数据集](/zh-cn/spec/dataset.md)

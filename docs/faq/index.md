@@ -10,7 +10,7 @@
 
 - [Does Pipcook support Windows platform?](./pipcook-framework.md#q4)
 
-## Questions about Pipcook plugins
+## Questions about Pipcook plugins(v1.x)
 
 - [How can I specify which GPU card to use for yolov5 training?](./plugins.md#q1)
 

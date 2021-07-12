@@ -18,7 +18,7 @@
 查看[贡献者文档](../contributing/contribute-a-script.md)来学习如何开发一个新的脚本。
 
 [Pipcook]: https://github.com/alibaba/pipcook
-[Pipcook Plugin]: ../GLOSSORY.md#pipcook-script
+[Pipcook Script]: ../GLOSSORY.md#pipcook-script
 [PyPI]: https://pypi.org
 
 [`dataCollect(args: ArgsType): Promise<void>`]: https://alibaba.github.io/pipcook/typedoc/interfaces/datacollecttype.html

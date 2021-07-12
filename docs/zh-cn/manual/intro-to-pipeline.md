@@ -30,6 +30,8 @@
 `options` 包含框架定义和训练参数的定义。
 接着，Pipcook 就会根据这个 JSON 文件中定义的 URI 和参数，来准备环境，运行 Script，最后输出和处理模型。
 
+> Pipeline 中的脚本支持 `http`，`https` 和 `file` 协议。
+
 > 如果想获取更多 Script 相关的知识，可以阅读[如何编写 Pipcook Script](./intro-to-script.md)。
 
 下一步，我们在定义好一个 Pipeline 文件后，就能通过 Pipcook 来运行它了。
