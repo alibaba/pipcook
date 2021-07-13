@@ -5,11 +5,11 @@
 ```js
 {
   "specVersion": "2.0",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@788d369/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@788d369/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@788d369/scripts/image-classification-mobilenet/build/model.js",
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "/tmp/mobilenet-model.zip"
@@ -29,6 +29,8 @@
 `artifacts` 定义了一组构建插件，每个构建插件会在训练结束后被依次调用，从而可以对输出的模型进行转换、打包、部署等。
 `options` 包含框架定义和训练参数的定义。
 接着，Pipcook 就会根据这个 JSON 文件中定义的 URI 和参数，来准备环境，运行 Script，最后输出和处理模型。
+
+> Pipeline 中的脚本支持 `http`，`https` 和 `file` 协议。
 
 > 如果想获取更多 Script 相关的知识，可以阅读[如何编写 Pipcook Script](./intro-to-script.md)。
 

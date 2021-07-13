@@ -72,88 +72,47 @@ So how do we achieve the above prediction in our life? Let's take a look at the 
 
 Next, we will use handwritten digit recognition as an example to introduce how to complete an image classification task completely through [Pipcook][].
 
-In [Pipcook][], we use the pipeline to completely describe a machine learning task. We use different plugins in Pipeline to provide different nodes, and then connect the different plugins through Pipeline as a whole.
+In [Pipcook][], we use the pipeline to completely describe a machine learning task. We use different scripts in Pipeline to provide different nodes, and then connect the different scripts through Pipeline as a whole.
 
-In the following, we start writing a Pipeline from loading the [MNIST][] datasets:
+In the following, we start writing a Pipeline from loading the [MNIST][] datasets which define a [datasource script](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/datasource.ts):
 
 ```js
 {
-  "plugins": {
-    "package": "@pipcook/plugins-mnist-data-collect",
-    "params": {
-      "trainCount": 8000,
-      "testCount": 2000
-    }
-  }
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c2c4341/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/mnist.zip"
 }
 ```
 
-The "@pipcook/plugins-mnist-data-collect" plugin will download data from the standard [MNIST][] dataset, and distribute the training set and the testing set according to the ratio of `8000:2000`.
-
-> **Where to save the pipeline file?**
->
-> Run `pipcook init` to create a new project, it will download plugins and their dependencies, and you will use them later.
-> See [Introduction to Pipeline][] for more details.
+This script will download data from the standard [MNIST][] dataset, and return the data access API.
 
 ## Learning
 
 In the case of the digits dataset, the task is to predict, given an image, which digit it represents. We are given samples of each of the 10 possible classes (the digits zero through nine) on which we fit a model to be able to predict the classes to which unseen samples belong.
 
-In [Pipcook][], building a model for classification is also `plugins` configuration.
+In [Pipcook][], building a model for classification is also `script` configuration.
 
+we use [image classification dataflow](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/dataflow.ts) to resize the image to 224x224 in our dataset represented by an array `[224, 224]`, which is required for the next step.
 ```js
 {
-  "plugins": {
-    "dataAccess": {
-      "package": "@pipcook/plugins-pascalvoc-data-access"
+  "dataflow": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c2c4341/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+}
+```
+
+
+Then define the [model script](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/model.ts) and paremeters for train:
+```js
+{
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c2c4341/scripts/image-classification-mobilenet/build/model.js",
+  "options": {
+    "framework": "mobilenet@1.0.0",
+    "train": {
+      "epochs": 100,
+      "validationRequired": true
     }
   }
 }
 ```
 
-We use [PASCAL VOC][] as the dataset format in our pipeline, the "@pipcook/plugins-pascalvoc-data-access" plugin does transfer the minist dataset in [PASCAL VOC][] format.
-
-> [PASCAL VOC][] is to provide standardized image data sets for object class recognition.
-
-```js
-{
-  "plugins": {
-    "dataProcess": {
-      "package": "@pipcook/plugins-tensorflow-image-classification-process",
-      "params": {
-        "resize": [28, 28]
-      }
-    }
-  }
-}
-```
-
-Next, we use the plugin "@pipcook/plugins-tensorflow-image-classification-process" to resize the image to 28x28 in our dataset, which is required for the next step.
-
-```js
-{
-  "plugins": {
-    "modelDefine": {
-      "package": "@pipcook/plugins-tfjs-simplecnn-model-define"
-    },
-    "modelTrain": {
-      "package": "@pipcook/plugins-image-classification-tfjs-model-train",
-      "params": {
-        "epochs": 15
-      }
-    },
-    "modelEvaluate": {
-      "package": "@pipcook/plugins-image-classification-tfjs-model-evaluate"
-    }
-  }
-}
-```
-
-We choose a [CNN][] for this task of Image Classification as using the following plugins:
-
-- "@pipcook/plugins-tfjs-simplecnn-model-define" is to define the model.
-- "@pipcook/plugins-image-classification-tfjs-model-train" is to train the defined model from given training set.
-- "@pipcook/plugins-image-classification-tfjs-model-evaluate" is to test the trained model with the testing set.
+This script will use [mobilenet][] to do image classification tasks, training and evaluating tfjs-based models.
 
 So far, our pipeline is defined completely, and then we can train.
 
@@ -163,46 +122,16 @@ $ pipcook run pipeline.json
 
 ## Predicting
 
-After the training is completed, we can find an `output` directory under the current project directory, which is our trained model and a JavaScript file `index.js` to predict.
+After the training is completed, we can find an `model` directory under the current project directory, which is our trained model.
 
 ```
-📂output
-   ┣ 📂logs
-   ┣ 📂model
-   ┣ 📜package.json
-   ┣ 📜metadata.json
-   ┗ 📜index.js
+📂 model
+   ┣ 📜 model.json
+   ┗ 📜 weights.bin
 ```
 
-As you can see, the deploy folder is an npm package. You can integrate it into any Node.js project and use the `predict()` method provided by it.
-
-```js
-const predict = require('/path/to/output');
-const app = express();
-app.post('/predict', async (req, res) => {
-  const r = await predict(req.body.image);
-  res.json(r);
-});
-app.listen(8080);
-```
-
-Then start your service:
-
-```sh
-$ node app.js
-```
-
-And send a request for prediction:
-
-```sh
-$ curl -XPOST http://localhost:8080/predict -f"/path/to/your/img.png"
-{
-  "result": 7
-}
-```
 
 [Pipcook]: https://github.com/alibaba/pipcook
 [MNIST]: https://en.wikipedia.org/wiki/MNIST_database
 [Introduction to Pipeline]: ../manual/intro-to-pipeline.md
-[PASCAL VOC]: http://host.robots.ox.ac.uk/pascal/VOC/
-[CNN]: https://github.com/alibaba/pipcook/blob/master/packages/plugins/model-define/tfjs-simplecnn-model-define/src/index.ts
+[mobilenet]: https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet

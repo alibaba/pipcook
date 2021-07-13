@@ -5,11 +5,11 @@ In Pipcook, we use Pipeline to represent the training process of a model, so in 
 ```js
 {
   "specVersion": "2.0",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@788d369/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@788d369/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c6d5ff7/scripts/image-classification-mobilenet/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@788d369/scripts/image-classification-mobilenet/build/model.js",
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "/tmp/mobilenet-model.zip"
@@ -26,11 +26,13 @@ In Pipcook, we use Pipeline to represent the training process of a model, so in 
 
 As shown above, a Pipeline consists of three types of Script, `dataSource`, `dataflow` and `model`, as well as the build plugin `artifacts`, and the Pipeline options `options`.
 Each Pipcook script passes parameters via a URI query, and the parameters of the model script can also be defined via `options.train`.
-`artifacts` defines a set of build plugins, each of which will be called in turn after the training is completed, allowing the output model to be transformed, packaged, deployed, etc.
+`artifacts` defines a set of build scripts, each of which will be called in turn after the training is completed, allowing the output model to be transformed, packaged, deployed, etc.
 `options` contains the framework definition and the definition of training parameters.
 Then, Pipcook prepares the environment, runs the Script, and finally outputs and processes the model based on the URIs and parameters defined in this JSON file.
 
 > See [Introduction to Script](./intro-to-script.md) for more details about Pipcook script.
+
+> The script of a pipeline supports `http`, `https` and `file` protocol.
 
 Next, when we have defined such a pipeline, we can run it through Pipcook.
 
