@@ -13,8 +13,8 @@ We are excited that you are interested in contributing to Pipcook. Before submit
 - If your issue is resolved but still open, don’t hesitate to close it. In case you found a solution by yourself, it could be helpful to explain how you fixed it.
 
 ## Pull Request Guidelines
-- Only code that's ready for release should be committed to the master branch. All development should be done in dedicated branches.
-- Checkout a **new** topic branch from master branch, and merge back against master branch.
+- Only code that's ready for release should be committed to the main branch. All development should be done in dedicated branches.
+- Checkout a **new** topic branch from main branch, and merge back against main branch.
 - If adding new feature:
   - Add accompanying test case.
   - Provide convincing reason to add this feature. Ideally you should open a suggestion issue first and have it greenlighted before working on it.
