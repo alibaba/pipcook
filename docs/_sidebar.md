@@ -11,15 +11,14 @@
   <!-- - [Working with Image Data](/tutorials/working-with-image-data.md) -->
   - [Using Python functions in Node.js](/tutorials/using-python-functions-in-nodejs.md)
   - [Classify images of UI components](/tutorials/component-image-classification.md)
-  - [Detect the UI components from a design draft](/tutorials/component-object-detection.md)
 - Contributing
   - [Contributor guide](/contributing/guide-to-contributor.md)
   - [Collaborator guide](/contributing/guide-to-collaborator.md)
-  - [Contribute a plugin](/contributing/contribute-a-plugin.md)
+  - [Contribute a script](/contributing/contribute-a-script.md)
 - Specification
-  - [Plugin Specification](/spec/plugin.md)
+  - [Script Specification](/spec/script.md)
   - [Dataset Specification](/spec/dataset.md)
 - [FAQ](/faq/index.md)
   - [Pipcook Framework](/faq/pipcook-framework.md)
-  - [Plugins](/faq/plugins.md)
+  - [Scripts](/faq/scripts.md)
 - [Glossory](/GLOSSORY.md)

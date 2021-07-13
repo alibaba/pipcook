@@ -14,9 +14,9 @@ The Pipcook project, generally https://github.com/alibaba/pipcook.
 
 It is actually responsible for the management and execution of Pipeline's components. It provides remote access to [Pipcook Tools][] and [Pipboard][] through HTTP, and also supports the ability of other clients to integrate Pipcook Daemon through HTTP.
 
-### Pipcook Plugin
+### Pipcook Script
 
-Plugins are Lego blocks in pipeline. By selecting different plugins, you can quickly complete different pipelines to train different models.
+Scripts are Lego blocks in pipeline. By selecting different scripts, you can quickly complete different pipelines to train different models.
 
 ### Pipcook Tools
 

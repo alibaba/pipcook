@@ -1,4 +1,4 @@
-# Frequently Asked Questions
+# Frequently Asked Questions(v1.x)
 
 ### How can I specify which GPU card to use for yolov5 training?
 <a id="q1"></a>

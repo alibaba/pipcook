@@ -10,7 +10,7 @@
 
 - [Pipcook 支持 Windows 系统吗？](./pipcook-framework.md#q4)
 
-## Pipcook 插件相关
+## Pipcook 插件相关（v1.x）
 
 - [在 yolov5 的链路中我怎样指定用哪张显卡进行训练?](./plugins.md#q1)
 

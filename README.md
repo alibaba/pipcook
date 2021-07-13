@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
-    <img alt="npm" src="https://img.shields.io/npm/v/@pipcook/pipcook-core"></a>
-  <a href="https://www.npmjs.com/package/@pipcook/pipcook-core">
-    <img alt="npm" src="https://img.shields.io/npm/dm/@pipcook/pipcook-core"></a>
+  <a href="https://www.npmjs.com/package/@pipcook/core">
+    <img alt="npm" src="https://img.shields.io/npm/v/@pipcook/core"></a>
+  <a href="https://www.npmjs.com/package/@pipcook/core">
+    <img alt="npm" src="https://img.shields.io/npm/dm/@pipcook/core"></a>
   <a href="https://github.com/alibaba/pipcook">
     <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/alibaba/pipcook"></a>
   <a href="https://opensource.org/licenses/Apache-2.0">
@@ -23,8 +23,8 @@
 
 | Build Types | Status |
 |---------------|--------|
-| tests         | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Abuild"><img src="https://github.com/alibaba/pipcook/workflows/build/badge.svg?branch=master&event=push"></a> |
-| pipeline      | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Apipeline"><img src="https://github.com/alibaba/pipcook/workflows/pipeline/badge.svg?branch=master"></a> |
+| tests         | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Abuild"><img src="https://github.com/alibaba/pipcook/workflows/build/badge.svg?branch=main&event=push"></a> |
+| pipeline      | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Apipeline"><img src="https://github.com/alibaba/pipcook/workflows/pipeline/badge.svg?branch=main"></a> |
 | release       | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3A%22Publish+Packages%22"><img src="https://github.com/alibaba/pipcook/workflows/Publish%20Packages/badge.svg"></a> |
 | documentation | <a href="https://github.com/alibaba/pipcook/actions?query=workflow%3Agh-pages"><img src="https://github.com/alibaba/pipcook/workflows/gh-pages/badge.svg"></a> |
 | docker        | <a href="https://hub.docker.com/r/pipcook/pipcook"><img src="https://img.shields.io/docker/cloud/build/pipcook/pipcook"></a> |
@@ -65,9 +65,9 @@ The project provides subprojects including machine learning pipeline framework, 
 
 __Pipcook Pipeline__
 
-It's used to represent ML pipelines consisting of Pipcook plugins. This layer ensures the stability and scalability of the whole system and uses a plug-in mechanism to support rich functions including dataset, training, validations, and deployment.
+It's used to represent ML pipelines consisting of Pipcook scripts. This layer ensures the stability and scalability of the whole system and uses a plug-in mechanism to support rich functions including dataset, training, validations, and deployment.
 
-A Pipcook Pipeline is generally composed of lots of plugins. Through different plugins and configurations, the final output to us is an NPM package, which contains the trained model and JavaScript functions that can be used directly.
+A Pipcook Pipeline is generally composed of lots of scripts. Through different scripts and configurations, the final output to us is an NPM package, which contains the trained model and JavaScript functions that can be used directly.
 
 > Note: In Pipcook, each pipeline has only one role, which is to output the above-trained model you need. That is to say, the last stage of each pipeline must be the output of the trained model, otherwise, this Pipeline is invalid.
 
@@ -97,7 +97,7 @@ $ npm install -g @pipcook/cli
 Then run a pipeline:
 
 ```shell
-$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@master/example/pipelines/bayes.v2.json
+$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/bayes.v2.json
 ```
 
 ### Playground
@@ -117,15 +117,15 @@ If you want to train a model to recognize MNIST handwritten digits by yourself, 
 | Name | Description | Open in Colab |
 | ---- | ----------- | ----- |
 | mnist-image-classification | pipeline for classific MNIST image classification problem. | N/A |
-| databinding-image-classification | pipeline example to train the image classification task which is <br/>to classify [imgcook](https://www.imgcook.com/) databinding pictures. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_image_classification.ipynb) |
-| object-detection | pipeline example to train object detection task which is for component recognition <br/>used by imgcook. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alibaba/pipcook/blob/master/notebooks/pipcook_object_detection.ipynb) |
+| databinding-image-classification | pipeline example to train the image classification task which is <br/>to classify [imgcook](https://www.imgcook.com/) databinding pictures. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alibaba/pipcook/blob/main/notebooks/pipcook_image_classification.ipynb) |
+| object-detection | pipeline example to train object detection task which is for component recognition <br/>used by imgcook. | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alibaba/pipcook/blob/main/notebooks/pipcook_object_detection.ipynb) |
 | text-bayes-classification | pipeline example to train text classification task with bayes | N/A |
 
 See [here](./example/pipelines) for complete list, and it's easy and quick to run these examples. For example, to do a MNIST 
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@master/example/pipelines/mobilenet.v2.json -o output
+$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/mobilenet.v2.json -o output
 ```
 
 After the above pipeline is completed, you have already trained a model at the current `output/model` directory, it's a tensorflow.js model.

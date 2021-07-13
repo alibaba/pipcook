@@ -1,4 +1,4 @@
-# 开始机器学习
+ # 开始机器学习
 
 从这篇文章，我们将介绍什么是机器学习，以及如果使用 [Pipcook][] 来完成机器学习任务。
 
@@ -74,85 +74,43 @@ predictBookPrice('Dive into Pipcook'); // 199.0
 
 我们使用 Pipeline 来完整地描述机器学习任务，不同的插件表示这个 Pipeline 中不同的阶段，然后再通过 Pipeline 将不同的阶段连接起来形成一个完整的机器学习工作流。
 
-接着，我们将从加载 [MNIST][] 数据集开始创建 Pipeline：
+在 [Pipcook][]，构建一个分类任务的模型就是配置 Pipeline 的脚本，我们从通过 [datasource 脚本](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/datasource.ts)加载 [MNIST][] 数据集开始创建 Pipeline：
 
 ```js
 {
-  "plugins": {
-    "dataCollect": {
-      "package": "@pipcook/plugins-mnist-data-collect",
-      "params": {
-        "trainCount": 8000,
-        "testCount": 2000
-      }
-    }
-  }
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c2c4341/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/mnist.zip"
 }
 ```
 
-"@pipcook/plugins-mnist-data-collect" 插件会下载 [MNIST][] 数据集，然后按照 `8000:2000` 的比率来分布训练集和测试集。
+这个脚本会下载 [MNIST][] 数据集并提供访问接口。
 
 ## 学习
 
 在这个数字识别数据集的例子中，我们的目的是预测一张图片所代表的数字，那么我们给出的样本中，每张图片就拥有10个分类（0-9），这也就是说，我们要让模型做到的是预测一张未知图片的类型，即从0到9的分类。
-
-在 [Pipcook][]，构建一个分类任务的模型就是配置 Pipeline 的 `plugins`。
-
+我们使用 [image classification dataflow](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/dataflow.ts) 脚本来调整每张图片的尺寸为 224x224，用一个数组 `[224, 224]` 表示：
 ```js
 {
-  "plugins": {
-    "dataAccess": {
-      "package": "@pipcook/plugins-pascalvoc-data-access"
+  "dataflow": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c2c4341/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+}
+```
+
+然后定义[模型脚本](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/model.ts)和参数：
+```js
+{
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c2c4341/scripts/image-classification-mobilenet/build/model.js",
+  "options": {
+    "framework": "mobilenet@1.0.0",
+    "train": {
+      "epochs": 100,
+      "validationRequired": true
     }
   }
 }
 ```
 
-我们使用 [PASCAL VOC][] 作为我们的魔术输入格式，插件 "@pipcook/plugins-pascalvoc-data-access" 会帮我们将 mnist 数据集转换为 [PASCAL VOC][] 格式。
+这个脚本会使用 [mobilenet][] 来做图片分类任务，训练和评估基于 tfjs 的模型。
 
-> [PASCAL VOC][] is to provide standardized image data sets for object class recognition.
-
-```js
-{
-  "plugins": {
-    "dataProcess": {
-      "package": "@pipcook/plugins-tensorflow-image-classification-process",
-      "params": {
-        "resize": [28, 28]
-      }
-    }
-  }
-}
-```
-
-接下来，我们使用插件 "@pipcook/plugins-tensorflow-image-classification-process" 来调整每张图片的尺寸为 28x28：
-
-```js
-{
-  "plugins": {
-    "modelDefine": {
-      "package": "@pipcook/plugins-tfjs-simplecnn-model-define"
-    },
-    "modelTrain": {
-      "package": "@pipcook/plugins-image-classification-tfjs-model-train",
-      "params": {
-        "epochs": 15
-      }
-    },
-    "modelEvaluate": {
-      "package": "@pipcook/plugins-image-classification-tfjs-model-evaluate"
-    }
-  }
-}
-```
-
-我们使用 [CNN][] 来做图片分类任务，它包含以下插件：
-
-- "@pipcook/plugins-tfjs-simplecnn-model-define" 用于定义模型。
-- "@pipcook/plugins-image-classification-tfjs-model-train" 用于训练基于 tfjs 的模型。
-- "@pipcook/plugins-image-classification-tfjs-model-evaluate" 用于评估基于 tfjs 的模型。
-
-目前为止，Pipeline 就定义完成了，接下来就可以开始训练了。
+目前为止，Pipeline 就定义完成了，接下来就可以开始模型训练了。
 
 ```sh
 $ pipcook run pipeline.json
@@ -160,46 +118,15 @@ $ pipcook run pipeline.json
 
 ## 预测
 
-训练完成后，我们就能发现 output 目录，它里面包含了训练的模型以及用于预测的 JavaScript 文件 `index.js`。
+训练完成后，我们就能发现 model 目录，它里面包含了训练的模型。
 
 ```
-📂output
-   ┣ 📂logs
-   ┣ 📂model
-   ┣ 📜package.json
-   ┣ 📜metadata.json
-   ┗ 📜index.js
-```
-
-正如你所见，生成的目录就是一个 NPM 包，你可以把它集成到任何 Node.js 的项目中去，然后使用 `predict()` 方法：
-
-```js
-const predict = require('/path/to/output');
-const app = express();
-app.post('/predict', async (req, res) => {
-  const r = await predict(req.body.image);
-  res.json(r);
-});
-app.listen(8080);
-```
-
-启动服务：
-
-```sh
-$ node app.js
-```
-
-使用 CURL 发送请求：
-
-```sh
-$ curl -XPOST http://localhost:8080/predict -f"/path/to/your/img.png"
-{
-  "result": 7
-}
+📂 model
+   ┣ 📜 model.json
+   ┗ 📜 weights.bin
 ```
 
 [Pipcook]: https://github.com/alibaba/pipcook
 [MNIST]: https://en.wikipedia.org/wiki/MNIST_database
 [Introduction to Pipeline]: ../manual/intro-to-pipeline.md
-[PASCAL VOC]: http://host.robots.ox.ac.uk/pascal/VOC/
-[CNN]: https://github.com/alibaba/pipcook/blob/master/packages/plugins/model-define/tfjs-simplecnn-model-define/src/index.ts
+[mobilenet]: https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet
