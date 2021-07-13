@@ -52,6 +52,21 @@ test.serial('download script with file protocol', async (t) => {
   t.false(stubCopy.called, 'fs.copy should not be called');
 });
 
+test.serial('download script with default file protocol', async (t) => {
+  const localPath = process.cwd();
+  const url = '/data/a.js';
+  const enableCache = true;
+  const stubCopy = sinon.stub(fs, 'copy').resolves();
+  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  t.deepEqual(scriptDesc, {
+    name: 'a.js',
+    path: '/data/a.js',
+    type: ScriptType.Model,
+    query: {}
+  }, 'should return correct script');
+  t.false(stubCopy.called, 'fs.copy should not be called');
+});
+
 test.serial('download script with relative path file protocol', async (t) => {
   const localPath = process.cwd();
   const url = 'file:data/a.js';

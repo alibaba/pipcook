@@ -17,7 +17,7 @@ export const downloadScript = async (scriptDir: string, scriptOrder: number, url
   let localPath = path.join(scriptDir, `${scriptOrder}-${baseName}`);
   const query = queryString.parse(urlObj.query);
   // if the url is is file protocol, import it directly.
-  if (urlObj.protocol === DownloadProtocol.FILE) {
+  if (urlObj.protocol === DownloadProtocol.FILE || urlObj.protocol === null) {
     if (path.isAbsolute(urlObj.pathname)) {
       localPath = urlObj.pathname;
     } else {
