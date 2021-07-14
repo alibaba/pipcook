@@ -189,8 +189,6 @@ Or searched via the group number: 30624012.
 [Python]: https://www.python.org/
 [CPython]: https://github.com/python/cpython
 [machine-learning application APIs]: https://github.com/alibaba/pipcook/issues/33
-[pipeline-mnist-image-classification]: example/pipelines/mnist-image-classification.json
-[pipeline-databinding-image-classification]: example/pipelines/databinding-image-classification.json
+[pipeline-image-classification-mobilenet]: example/pipelines/mobilenet.v2.json
 [pipeline-object-detection]: example/pipelines/object-detection.json
-[pipeline-text-bayes-classification]: example/pipelines/text-bayes-classification.json
-[detectron2 installation reference]: https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md
+[pipeline-text-classification-bayes]: example/pipelines/bayes.v2.json
