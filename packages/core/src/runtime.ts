@@ -43,14 +43,6 @@ export type DataCookModule = typeof Datacook;
  */
 export interface ScriptContext {
   /**
-   * The boa module, the bridge between node and python.
-   */
-  boa: FrameworkModule;
-  /**
-   * DataCook module
-   */
-  dataCook: DataCookModule;
-  /**
    * This function can import a node module from framework. if the module not exists,
    * an error will be thrown.
    */
