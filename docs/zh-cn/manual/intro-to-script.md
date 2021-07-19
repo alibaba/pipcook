@@ -6,7 +6,7 @@
 - `dataflow` 将下载的数据集格式转换为后面模型能够接受的格式（在此例中不需要）。
 - `model` 定义文本分类的模型，[朴素贝叶斯分类器](https://en.wikipedia.org/wiki/Naive_Bayes_classifier)，通过样本数据接口获取样本进行模型训练，并评估准确度。
 
-> 上述 Pipeline 的源码定义在[这里](https://github.com/alibaba/pipcook/blob/main/example/pipelines/bayes.v2.json)。
+> 上述 Pipeline 的源码定义在[这里](https://github.com/alibaba/pipcook/blob/main/example/pipelines/text-classification-bayes.json)。
 
 通过上面的例子，对于一个文本分类器的任务，我们遵循机器学习工作流，它按照不同类型的子任务顺序执行，而每个子任务就对应一个用户定义的插件，同时用户也可以以较低成本，快速地调整整个任务的 Pipeline。
 
