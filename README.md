@@ -97,7 +97,7 @@ $ npm install -g @pipcook/cli
 Then run a pipeline:
 
 ```shell
-$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/bayes.v2.json
+$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/text-classification-bayes.json
 ```
 
 ### Playground
@@ -125,7 +125,7 @@ See [here](./example/pipelines) for complete list, and it's easy and quick to ru
 image classification, just run the following to start the pipeline:
 
 ```sh
-$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/mobilenet.v2.json -o output
+$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o output
 ```
 
 After the above pipeline is completed, you have already trained a model at the current `output/model` directory, it's a tensorflow.js model.
@@ -190,7 +190,7 @@ Or searched via the group number: 30624012.
 [CPython]: https://github.com/python/cpython
 [machine-learning application APIs]: https://github.com/alibaba/pipcook/issues/33
 [pipeline-mnist-image-classification]: example/pipelines/mnist-image-classification.json
-[pipeline-databinding-image-classification]: example/pipelines/databinding-image-classification.json
-[pipeline-object-detection]: example/pipelines/object-detection.json
-[pipeline-text-bayes-classification]: example/pipelines/text-bayes-classification.json
+[pipeline-databinding-image-classification]: example/pipelines/databinding-image-classification-mobilenet.json
+[pipeline-object-detection]: example/pipelines/object-detection-yolo.json
+[pipeline-text-bayes-classification]: example/pipelines/text-classification-bayes.json
 [detectron2 installation reference]: https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md
