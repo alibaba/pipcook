@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/core",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-rc.5",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -14,7 +14,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/datacook": "^0.0.7"
+    "@pipcook/datacook": "^0.0.8"
   },
   "devDependencies": {
     "typescript": "^4.1.2"
