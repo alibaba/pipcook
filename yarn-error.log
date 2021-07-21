@@ -1,0 +1,62 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn
+
+PATH: 
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/Users/caoruikun/Documents/self-bin:/Users/caoruikun/Documents/self-bin
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  14.17.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: read ECONNRESET
+      at TLSWrap.onStreamRead (internal/stream_base_commons.js:209:20)
+
+npm manifest: 
+  {
+    "name": "pipcook",
+    "private": true,
+    "workspaces": [
+      "packages/*"
+    ],
+    "devDependencies": {
+      "@lerna/bootstrap": "^3.18.4",
+      "@typescript-eslint/eslint-plugin": "^4.1.1",
+      "@typescript-eslint/parser": "^4.1.1",
+      "docsify-cli": "^4.4.0",
+      "eslint": "^7.15.0",
+      "http-server": "^0.12.3",
+      "lerna": "^3.18.4",
+      "nyc": "^15.1.0",
+      "ts-node": "^8.6.2",
+      "typedoc": "^0.17.8",
+      "typescript": "^4.1.2"
+    },
+    "scripts": {
+      "build": "lerna run compile",
+      "postinstall": "lerna clean --yes && lerna bootstrap",
+      "docsify": "npm run typedoc && http-server -c-1 ./docs",
+      "lint": "eslint . --ext .ts --ext .js",
+      "pretest": "npm run lint",
+      "test": "lerna run test",
+      "test:pipeline": "sh ./tools/run_pipeline.sh",
+      "typedoc": "sh tools/mkdoc.sh",
+      "clean": "lerna run clean --parallel --concurrency 10",
+      "release": "lerna publish from-package --yes --no-verify-access",
+      "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
+      "beta-release": "lerna publish from-package --no-verify-access --dist-tag beta",
+      "cov": "./tools/coverage.sh",
+      "cov:report": "nyc report -r=lcov"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
