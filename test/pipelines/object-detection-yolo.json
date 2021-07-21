@@ -1,6 +1,6 @@
 {
   "specVersion": "2.0",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@3cabbd6/scripts/tfjs-yolo/build/datasource.js?url=https://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/object-detection-yolo.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@3cabbd6/scripts/tfjs-yolo/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/object-detection-yolo.zip",
   "dataflow": [
     "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@3cabbd6/scripts/tfjs-yolo/build/dataflow.js?size=416&size=416"
   ],
