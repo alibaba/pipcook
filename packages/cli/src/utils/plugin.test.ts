@@ -35,7 +35,7 @@ test.serial('should install', async (t) => {
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubExecAsync = sinon.stub(utils, 'execAsync').resolves();
 
-  const requirePath = await install(name, homeDir);
+  const requirePath = await install(name, homeDir, 'npm');
 
   t.true(stubPathExists.calledOnce);
   t.false(stubMkdirp.called);
@@ -56,7 +56,7 @@ test.serial('should install and has version number and module exists', async (t)
   const stubPathExists = sinon.stub(fs, 'pathExists').resolves(true);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubExecAsync = sinon.stub(utils, 'execAsync').resolves();
-  const requirePath = await install(name, homeDir);
+  const requirePath = await install(name, homeDir, 'npm', 'my-registry');
 
   t.true(stubPathExists.calledTwice, 'stubPathExists should be called twice');
   t.false(stubMkdirp.called);
@@ -79,7 +79,7 @@ test.serial('should install and has version number and module not exists', async
   stubPathExists.onSecondCall().resolves(false);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubExecAsync = sinon.stub(utils, 'execAsync').resolves();
-  const requirePath = await install(name, homeDir);
+  const requirePath = await install(name, homeDir, 'npm');
 
   t.true(stubPathExists.calledTwice, 'stubPathExists should be called twice');
   t.false(stubMkdirp.called, 'stubMkdirp should not be called');
@@ -100,7 +100,7 @@ test.serial('should install and create folder', async (t) => {
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubExecAsync = sinon.stub(utils, 'execAsync').resolves();
 
-  const requirePath = await install(name, homeDir);
+  const requirePath = await install(name, homeDir, 'npm');
 
   t.true(stubPathExists.calledOnce);
   t.true(stubMkdirp.calledOnce);
@@ -118,7 +118,7 @@ test.serial('should not prepare artifact plugin', async (t) => {
     options: {}
   };
 
-  const plugins = await prepareArtifactPlugin(pipelineMeta);
+  const plugins = await prepareArtifactPlugin(pipelineMeta, 'npm');
 
   t.deepEqual(plugins, []);
 });
@@ -133,7 +133,7 @@ test.serial('should prepare artifact plugin', async (t) => {
     options: {}
   };
 
-  const plugins = await prepareArtifactPlugin(pipelineMeta);
+  const plugins = await prepareArtifactPlugin(pipelineMeta, 'npm');
 
   t.deepEqual(plugins, []);
 });

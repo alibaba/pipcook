@@ -39,7 +39,7 @@ export const extractVersion = (name: string): PluginVersion => {
  * @param name package name: pipcook-ali-oss-uploader or pipcook-ali-oss-uploader@0.0.1
  * @param pluginHomeDir plugin home directory
  */
-export const install = async (name: string, pluginHomeDir: string): Promise<string> => {
+export const install = async (name: string, pluginHomeDir: string, npmClient: string, registry?: string): Promise<string> => {
   if (!await fs.pathExists(pluginHomeDir)) {
     await fs.mkdirp(pluginHomeDir);
   }
@@ -49,14 +49,14 @@ export const install = async (name: string, pluginHomeDir: string): Promise<stri
   // always update plugin if version is 'beta', 'alpha' or 'latest'
   if ([ 'beta', 'alpha', 'latest' ].includes(pluginVersion.version) || !(await fs.pathExists(requirePath))) {
     await execAsync(
-      `npm install ${alias}@npm:${name} -P --save`,
+      `${npmClient} install ${alias}@npm:${name} -P --save${ registry ? ' --registry=' + registry : '' }`,
       { cwd: pluginHomeDir }
     );
   }
   return requirePath;
 };
 
-export const prepareArtifactPlugin = async (pipelineMeta: PipelineMeta): Promise<Array<ArtifactMeta>> => {
+export const prepareArtifactPlugin = async (pipelineMeta: PipelineMeta, npmClient: string, registry?: string): Promise<Array<ArtifactMeta>> => {
   if (
     !pipelineMeta.artifact ||
     (Array.isArray(pipelineMeta.artifact) && pipelineMeta.artifact.length === 0)
@@ -65,7 +65,7 @@ export const prepareArtifactPlugin = async (pipelineMeta: PipelineMeta): Promise
   }
   const allPlugins: Array<ArtifactMeta> = [];
   for (const plugin of pipelineMeta.artifact) {
-    const requirePath = await install(plugin.processor, constants.PIPCOOK_PLUGIN_ARTIFACT_PATH);
+    const requirePath = await install(plugin.processor, constants.PIPCOOK_PLUGIN_ARTIFACT_PATH, npmClient, registry);
     let pluginExport: ArtifactExports = await import(requirePath);
     if (
       typeof pluginExport.initialize !== 'function'

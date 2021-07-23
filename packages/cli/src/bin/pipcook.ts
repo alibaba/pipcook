@@ -18,6 +18,10 @@ export interface RunOptions {
   // Debug model
   debug: boolean;
   mirror: string;
+  // NPM client name
+  npmClient: string;
+  // NPM registry
+  registry?: string;
 }
 
 export interface CacheCleanOptions {
@@ -52,7 +56,7 @@ export const run = async (filename: string, opts: RunOptions): Promise<void> => 
     }
     pipelineConfig = await readJson(pipelinePath);
     // TODO(feely): check pipeline file
-    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache);
+    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache, opts.npmClient);
     await runtime.run();
   } catch (err) {
     logger.fail(`run pipeline error: ${ opts.debug ? err.stack : err.message }`);
@@ -88,6 +92,8 @@ export const cacheClean = async (): Promise<void> => {
     .option('--nocache', 'disabel cache for framework and scripts', false)
     .option('-d --debug', 'debug mode', false)
     .option('-m --mirror <mirror>', 'framework mirror', '')
+    .option('-c --npmClient <npm>', 'npm client binary for artifact installing', 'npm')
+    .option('--registry <registry>', 'npm registry for artifact installing')
     .description('run pipeline with a json file.')
     .action(run);
 

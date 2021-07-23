@@ -16,7 +16,9 @@ test.serial('fetch with cache', async (t) => {
     output: '/tmp',
     nocache: true,
     mirror: '',
-    debug: false
+    debug: false,
+    npmClient: 'npm',
+    registry: 'my-registry'
   };
   const mockPipelineConfig = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
@@ -39,7 +41,8 @@ test.serial('fetch with http', async (t) => {
     output: '/tmp',
     nocache: true,
     mirror: '',
-    debug: false
+    debug: false,
+    npmClient: 'npm'
   };
   const mockPipelineConfig = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
@@ -62,7 +65,8 @@ test.serial('fetch with https', async (t) => {
     output: '/tmp',
     nocache: true,
     mirror: '',
-    debug: false
+    debug: false,
+    npmClient: 'npm'
   };
   const mockPipelineConfig = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
@@ -85,7 +89,8 @@ test.serial('fetch with invalid poptocol', async (t) => {
     output: '/tmp',
     nocache: true,
     mirror: '',
-    debug: false
+    debug: false,
+    npmClient: 'npm'
   };
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const mockFail = sinon.stub(utils.logger, 'fail').resolves();
@@ -102,7 +107,8 @@ test.serial('fetch with invalid poptocol debug', async (t) => {
     output: '/tmp',
     nocache: true,
     mirror: '',
-    debug: true
+    debug: true,
+    npmClient: 'npm'
   };
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const mockFail = sinon.stub(utils.logger, 'fail').resolves();
@@ -122,7 +128,8 @@ test.serial('fetch with url invalid extname', async (t) => {
     output: '/tmp',
     nocache: true,
     mirror: '',
-    debug: false
+    debug: false,
+    npmClient: 'npm'
   };
   const mockPipelineConfig = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
