@@ -56,7 +56,7 @@ export const run = async (filename: string, opts: RunOptions): Promise<void> => 
     }
     pipelineConfig = await readJson(pipelinePath);
     // TODO(feely): check pipeline file
-    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache, opts.npmClient);
+    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache, opts.npmClient, opts.registry);
     await runtime.run();
   } catch (err) {
     logger.fail(`run pipeline error: ${ opts.debug ? err.stack : err.message }`);
