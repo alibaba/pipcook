@@ -49,7 +49,7 @@ test('prepare workspace', async (t) => {
   const mirror = 'http://a.b.c';
   const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, false, 'npm', 'my-registry');
   const stubMkdir = sinon.stub(fs, 'mkdirp').resolves();
-  await rt.prepareWorkspace();
+  await (rt as any).prepareWorkspace();
   t.is(stubMkdir.callCount, 5, 'should create 4 directories');
   const d = {
     dataDir: path.join(workspace, 'data'),
@@ -133,8 +133,8 @@ async function run(t: any, runDataflow: boolean) {
   const stubRunModel = sinon.stub(Costa.prototype, 'runModel').resolves();
   const stubRT = sinon.createStubInstance(RT.StandaloneImpl);
   const stubCreateStandaloneRT = sinon.stub(RT, 'createStandaloneRT').returns(stubRT);
-  const stubPrepareWorkspace = sinon.stub(rt, 'prepareWorkspace').resolves();
-  await rt.run();
+  const stubPrepareWorkspace = sinon.stub(rt as any, 'prepareWorkspace').resolves();
+  await rt.train();
   t.true(stubPrepareWorkspace.calledOnce, 'should call prepareWorkspace once');
   t.true(stubPrepareFramework.calledOnce, 'should call prepareFramework once');
   t.deepEqual(

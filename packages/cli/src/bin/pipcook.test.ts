@@ -24,7 +24,7 @@ test.serial('fetch with cache', async (t) => {
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubCopy = sinon.stub(fs, 'copy').resolves();
-  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'run').resolves();
+  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'train').resolves();
   await pipcook.run(mockFile, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
   t.deepEqual(stubReadJson.args[0], [ '/tmp/filename.json' ] as any, 'should read the correct file');
@@ -48,7 +48,7 @@ test.serial('fetch with http', async (t) => {
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubDownload = sinon.stub(utils, 'downloadWithProgress').resolves();
-  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'run').resolves();
+  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'train').resolves();
   await pipcook.run(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
   t.deepEqual(stubReadJson.args[0], [ '/tmp/filename.json' ] as any, 'should read the correct file');
@@ -72,7 +72,7 @@ test.serial('fetch with https', async (t) => {
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubDownload = sinon.stub(utils, 'downloadWithProgress').resolves();
-  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'run').resolves();
+  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'train').resolves();
   await pipcook.run(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
   t.deepEqual(stubReadJson.args[0], [ '/tmp/filename.json' ] as any, 'should read the correct file');
@@ -135,7 +135,7 @@ test.serial('fetch with url invalid extname', async (t) => {
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubDownload = sinon.stub(utils, 'downloadWithProgress').resolves();
-  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'run').resolves();
+  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'train').resolves();
   const stubWarn = sinon.stub(console, 'warn').returns();
   await pipcook.run(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');

@@ -57,7 +57,8 @@ export const run = async (filename: string, opts: RunOptions): Promise<void> => 
     pipelineConfig = await readJson(pipelinePath);
     // TODO(feely): check pipeline file
     const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache, opts.npmClient, opts.registry);
-    await runtime.run();
+    await runtime.prepare();
+    await runtime.train();
   } catch (err) {
     logger.fail(`run pipeline error: ${ opts.debug ? err.stack : err.message }`);
   }
@@ -95,6 +96,15 @@ export const cacheClean = async (): Promise<void> => {
     .option('-c --npmClient <npm>', 'npm client binary for artifact installing', 'npm')
     .option('--registry <registry>', 'npm registry for artifact installing')
     .description('run pipeline with a json file.')
+    .action(run);
+
+  program
+    .command('predict')
+    .option('-t --text <text>', 'predict text')
+    .option('-u --uri <uri>', 'predict uri')
+    .option('-d --debug', 'debug mode', false)
+    .option('-p --path', 'model directory path')
+    .description('predict with text or uri.')
     .action(run);
 
   program

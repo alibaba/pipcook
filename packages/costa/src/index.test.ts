@@ -89,7 +89,7 @@ test.serial('run data source script', async (t) => {
   };
   const mockResult: any = { mockResult: 'value' };
   const mockModule = sinon.stub().callsFake(async (options: Record<string, any>, ctx: ScriptContext) => {
-    t.is(ctx, costa.context, 'context should be equal');
+    t.deepEqual(ctx, costa.context, 'context should be equal');
     t.deepEqual(script.query, options, 'options should be equal');
     return mockResult;
   });
@@ -114,7 +114,7 @@ test.serial('run data flow scripts', async (t) => {
   const mockDataSourceApi: any = {};
   const mockModule = sinon.stub().callsFake(async (api: DefaultDataSourceEntry, opts: Record<string, any>, ctx: ScriptContext) => {
     t.is(api, mockDataSourceApi, 'api should be equal');
-    t.is(ctx, costa.context, 'context should be equal');
+    t.deepEqual(ctx, costa.context, 'context should be equal');
     t.deepEqual(script.query, opts, 'options should be equal');
     return mockDataSourceApi;
   });
@@ -130,23 +130,26 @@ test.serial('run model script', async (t) => {
   await costa.initFramework();
   const script = {
     name: 'test script',
-    path: 'mockpath',
+    path: 'model/mockpath',
     type: ScriptType.Model,
     query: {
       mockOpts: 'opts'
     }
   };
   const mockRuntime: any = {};
-  const mockModule = sinon.stub().callsFake(async (api: DefaultDataSourceEntry, opts: Record<string, any>, ctx: ScriptContext) => {
-    t.is(api, mockRuntime, 'api should be equal');
-    t.is(ctx, costa.context, 'context should be equal');
-    t.deepEqual(opts, Object.assign({ mockTrainOpt: 'value' }, script.query), 'options should be equal');
-  });
+  const mockModule = {
+    train: sinon.stub().callsFake(async (api: DefaultDataSourceEntry, opts: Record<string, any>, ctx: ScriptContext) => {
+      t.is(api, mockRuntime, 'api should be equal');
+      t.deepEqual(ctx, costa.context, 'context should be equal');
+      t.deepEqual(opts, Object.assign({ mockTrainOpt: 'value' }, script.query), 'options should be equal');
+    }),
+    predict: sinon.stub()
+  };
   const modelOpts = { mock: 'value', train: { mockTrainOpt: 'value' } };
   const stubImportScript = sinon.stub(costa, 'importScript').resolves(mockModule);
   await t.notThrowsAsync(costa.runModel(mockRuntime, script, modelOpts), 'model script should end successfully');
   t.true(stubImportScript.calledOnce, 'import should be called once');
-  t.true(mockModule.calledOnce, 'module should be called once');
+  t.true(mockModule.train.calledOnce, 'module should be called once');
 });
 
 test.serial('import from script', async (t) => {
@@ -159,7 +162,10 @@ test.serial('import from script', async (t) => {
       mockOpts: 'opts'
     }
   };
-  const stubFn = sinon.stub();
+  const stubFn = {
+    train: sinon.stub(),
+    predict: sinon.stub()
+  }
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(stubFn);
   const fn = await costa.importScript<any>(script, ScriptType.Model);
   t.is(fn, stubFn, 'fn should be equal');
@@ -171,14 +177,14 @@ test.serial('import from script.default', async (t) => {
   const script = {
     name: 'test script',
     path: 'mockpath',
-    type: ScriptType.Model,
+    type: ScriptType.Dataflow,
     query: {
       mockOpts: 'opts'
     }
   };
   const stubFn = sinon.stub();
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves({ default: stubFn });
-  const fn = await costa.importScript<any>(script, ScriptType.Model);
+  const fn = await costa.importScript<any>(script, ScriptType.Dataflow);
   t.is(fn, stubFn, 'fn should be equal');
   t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
 });

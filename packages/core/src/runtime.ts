@@ -39,6 +39,12 @@ export type FrameworkModule = any;
 export type DataCookModule = typeof Datacook;
 
 /**
+ * There ara 2 kinds of pipeline task type, `TaskType.TRAIN` means running for model training,
+ * `TaskType.PREDICT` means running for predicting.  
+ */
+export enum TaskType { TRAIN = 1, PREDICT = 2 };
+
+/**
  * The context of script running, includes `boa` and `DataCook`.
  */
 export interface ScriptContext {
@@ -77,8 +83,11 @@ export interface ScriptContext {
      * The model file should be saved here.
      */
     modelDir: string;
-  }
+  },
+  taskType: TaskType;
 }
+
+export type PredictResult = any;
 
 /**
  * type of data source script entry
@@ -93,7 +102,15 @@ export type DataflowEntry<IN extends Datacook.Dataset.Types.Sample<any>, META ex
   (api: Datacook.Dataset.Types.Dataset<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<Datacook.Dataset.Types.Dataset<OUT, META>>;
 
 /**
- * type of model script entry
+ * type of model script entry for train
  */
 export type ModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta> =
   (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>;
+
+/**
+ * type of model script entry for train and predict
+ */
+export interface ExtModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta> {
+  train: (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>;
+  predict: (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<PredictResult>;
+}
