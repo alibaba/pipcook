@@ -1,29 +1,15 @@
-import * as DataCook from "@pipcook/datacook";
+import * as DataCook from '@pipcook/datacook';
+import * as Types from './types';
+
+import Dataset = DataCook.Dataset.Types.Dataset;
 import Sample = DataCook.Dataset.Types.Sample;
 import ArrayDatasetImpl = DataCook.Dataset.ArrayDatasetImpl;
-import Dataset = DataCook.Dataset.Types.Dataset;
-import DatasetMeta = DataCook.Dataset.Types.DatasetMeta;
 
-export interface DatasetData<T extends Sample> {
-  trainData?: Array<T>,
-  testData?: Array<T>,
-  validData?: Array<T>,
-  predictedData?: Array<T>
-}
+export * from './pipeline-type';
+export * from './format';
+export * as Types from './types';
 
-/**
- * data source api
- */
-export interface DatasetPool<T extends Sample, D extends DatasetMeta> {
-  getDatasetMeta: () => Promise<D | undefined>;
-  test?: Dataset<T>;
-  train?: Dataset<T>;
-  valid?: Dataset<T>;
-  predicted?: Dataset<T>;
-  shuffle: (seed?: string) => void;
-}
-
-class DatasetPoolImpl<T extends Sample, D extends DatasetMeta> implements DatasetPool<T, D> {
+class ArrayDatasetPoolImpl<T extends Sample, D extends Types.DatasetMeta> implements Types.DatasetPool<T, D> {
   private meta?: D;
 
   public train?: Dataset<T>;
@@ -31,7 +17,7 @@ class DatasetPoolImpl<T extends Sample, D extends DatasetMeta> implements Datase
   public valid?: Dataset<T>;
   public predicted?: Dataset<T>;
 
-  constructor(datasetData: DatasetData<T>, datasetMeta?: D) {
+  constructor(datasetData: Types.DatasetData<T>, datasetMeta?: D) {
     this.meta = datasetMeta;
     this.train = datasetData.trainData ? new ArrayDatasetImpl(datasetData.trainData) : undefined;
     this.test = datasetData.testData ? new ArrayDatasetImpl(datasetData.testData) : undefined;
@@ -51,30 +37,20 @@ class DatasetPoolImpl<T extends Sample, D extends DatasetMeta> implements Datase
   }
 }
 
-export function makeDatasetPool<T extends Sample, D extends DatasetMeta> (datasetData: DatasetData<T>, datasetMeta?: D): DatasetPool<T, D> {
-  return new DatasetPoolImpl(datasetData, datasetMeta);
-}
-
-export interface TransformOption<
-  IN_SAMPLE extends Sample,
-  IN_META extends DatasetMeta,
-  OUT_SAMPLE extends Sample = IN_SAMPLE,
-  OUT_META extends DatasetMeta = IN_META
-> {
-  transform: (sample: IN_SAMPLE) => Promise<OUT_SAMPLE>,
-  metadata: (meta?: IN_META) => Promise<OUT_META>
+export function makeDatasetPool<T extends Sample, D extends Types.DatasetMeta> (datasetData: Types.DatasetData<T>, datasetMeta?: D): Types.DatasetPool<T, D> {
+  return new ArrayDatasetPoolImpl(datasetData, datasetMeta);
 }
 
 export function transformDatasetPool<
   IN_SAMPLE extends Sample,
-  IN_META extends DatasetMeta,
+  IN_META extends Types.DatasetMeta,
   OUT_SAMPLE extends Sample = IN_SAMPLE,
-  OUT_META extends DatasetMeta = IN_META
+  OUT_META extends Types.DatasetMeta = IN_META
 >
-(transformOption: TransformOption<IN_SAMPLE, IN_META, OUT_SAMPLE, OUT_META>, dataset: DatasetPool<IN_SAMPLE, IN_META>): DatasetPool<OUT_SAMPLE, OUT_META> {
+(transformOption: Types.TransformOption<IN_SAMPLE, IN_META, OUT_SAMPLE, OUT_META>, dataset: Types.DatasetPool<IN_SAMPLE, IN_META>): Types.DatasetPool<OUT_SAMPLE, OUT_META> {
   const { metadata, transform } = transformOption;
 
-  const internalDatasetPool: DatasetPool<OUT_SAMPLE, OUT_META> = {
+  const internalDatasetPool: Types.DatasetPool<OUT_SAMPLE, OUT_META> = {
     shuffle: (seed?: string) => dataset.shuffle(seed),
     getDatasetMeta: async () => metadata(await dataset.getDatasetMeta()),
     train: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.train, transform),
@@ -86,9 +62,9 @@ export function transformDatasetPool<
   return internalDatasetPool;
 }
 
-export function transformSampleInDataset<IN_SAMPLE extends Sample, IN_META extends DatasetMeta = any, OUT_SAMPLE extends Sample = IN_SAMPLE>
-(transform: (sample: IN_SAMPLE) => Promise<OUT_SAMPLE>, dataset: DatasetPool<IN_SAMPLE, IN_META>): DatasetPool<OUT_SAMPLE, IN_META> {
-  const internalDatasetPool: DatasetPool<OUT_SAMPLE, IN_META> = {
+export function transformSampleInDataset<IN_SAMPLE extends Sample, IN_META extends Types.DatasetMeta = any, OUT_SAMPLE extends Sample = IN_SAMPLE>
+(transform: (sample: IN_SAMPLE) => Promise<OUT_SAMPLE>, dataset: Types.DatasetPool<IN_SAMPLE, IN_META>): Types.DatasetPool<OUT_SAMPLE, IN_META> {
+  const internalDatasetPool: Types.DatasetPool<OUT_SAMPLE, IN_META> = {
     shuffle: (seed?: string) => dataset.shuffle(seed),
     getDatasetMeta: () => dataset.getDatasetMeta(),
     train: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.train, transform),

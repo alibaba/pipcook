@@ -6,7 +6,8 @@ import {
   ScriptContext,
   FrameworkModule,
   TaskType,
-  PredictResult
+  PredictResult,
+  DatasetPool
 } from '@pipcook/core';
 import {
   PipcookScript,
@@ -23,15 +24,15 @@ const debug = Debug('costa.runnable');
 
 export * from './types';
 
-export type DefaultRuntime = Runtime<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultRuntime = Runtime<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultDataSet = Datacook.Dataset.Types.Dataset<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataSet = DatasetPool.Types.DatasetPool<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultDataflowEntry = DataflowEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataflowEntry = DataflowEntry<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultDataSourceEntry = DatasourceEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataSourceEntry = DatasourceEntry<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultModelEntry = ExtModelEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultModelEntry = ExtModelEntry<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
 export interface PipelineWorkSpace {
   /**

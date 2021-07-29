@@ -1,5 +1,5 @@
 import * as DataCook from '@pipcook/datacook';
-import { makeDatasetPool, DatasetPool } from '../dataset-pool';
+import { makeDatasetPool, Types } from '../';
 import DatasetType = DataCook.Dataset.Types.DatasetType;
 import PascalVoc = DataCook.Dataset.Types.PascalVoc;
 
@@ -39,7 +39,12 @@ export interface Options {
   predictedAnnotationList?: Array<PascalVoc.Annotation>;
 }
 
-export const makeDatasetFromPascalVocFormat = async (options: Options): Promise<DatasetPool<PascalVoc.Sample, PascalVoc.DatasetMeta>> => {
+export interface DatasetMeta extends Types.BaseDatasetMeta {
+  type: DatasetType.Image;
+  labelMap: Array<string>;
+}
+
+export const makeDatasetFromPascalVocFormat = async (options: Options): Promise<Types.DatasetPool<PascalVoc.Sample, Types.PascalVoc.DatasetMeta>> => {
   const labelNames: Array<string> = [];
   const trainData = options.trainAnnotationList?.map((annotation: PascalVoc.Annotation) => {
     const extObjs = annotation.object?.map((obj) => {
@@ -75,14 +80,15 @@ export const makeDatasetFromPascalVocFormat = async (options: Options): Promise<
       },
       label: []
     };
-  });;
+  });
 
-  const datasetMeta: PascalVoc.DatasetMeta = {
+  const datasetMeta: Types.PascalVoc.DatasetMeta = {
     type: DatasetType.Image,
     size: {
       train: trainData?.length || 0,
       test: testData?.length || 0,
-      valid: validData?.length || 0
+      valid: validData?.length || 0,
+      predicted: predictedData?.length || 0
     },
     labelMap: labelNames
   };

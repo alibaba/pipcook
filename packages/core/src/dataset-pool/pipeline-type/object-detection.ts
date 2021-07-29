@@ -1,16 +1,15 @@
 import * as DataCook from '@pipcook/datacook';
-import { Coco as CocoDataset, PascalVoc as PascalVocDataset } from '../dataset-format';
-import { transformDatasetPool, makeDatasetPool, DatasetData, DatasetPool } from '../dataset-pool';
+import { Coco as CocoDataset, PascalVoc as PascalVocDataset } from '../format';
+import { transformDatasetPool, makeDatasetPool, Types } from '../';
+
 import Sample = DataCook.Dataset.Types.Sample;
 import Coco = DataCook.Dataset.Types.Coco;
 import PascalVoc = DataCook.Dataset.Types.PascalVoc;
 import ObjectDetection = DataCook.Dataset.Types.ObjectDetection;
 
-export type ObjectDetectionDatasetPool = DatasetPool<ObjectDetection.Sample, ObjectDetection.DatasetMeta>;
-
-export const makeObjectDetectionDatasetFromCoco = async (options: CocoDataset.Options): Promise<ObjectDetectionDatasetPool> => {
+export const makeObjectDetectionDatasetFromCoco = async (options: CocoDataset.Options): Promise<Types.ObjectDetection.DatasetPool> => {
   const dataset = await CocoDataset.makeDatasetPoolFromCocoFormat(options);
-  return transformDatasetPool<Sample<Coco.Image, Coco.Label>, Coco.DatasetMeta, ObjectDetection.Sample, ObjectDetection.DatasetMeta>({
+  return transformDatasetPool<Sample<Coco.Image, Coco.Label>, Types.Coco.DatasetMeta, ObjectDetection.Sample, Types.ObjectDetection.DatasetMeta>({
     transform: async (sample: Sample<Coco.Image, Coco.Label>): Promise<ObjectDetection.Sample> => {
       const newLabels = sample.label.map((lable) => {
         return {
@@ -23,7 +22,7 @@ export const makeObjectDetectionDatasetFromCoco = async (options: CocoDataset.Op
         label: newLabels
       };
     },
-    metadata: async (meta: Coco.DatasetMeta): Promise<ObjectDetection.DatasetMeta> => {
+    metadata: async (meta: Types.Coco.DatasetMeta): Promise<Types.ObjectDetection.DatasetMeta> => {
       const labelMap: Record<number, string> = {};
       for (const labelId in meta.labelMap) {
         labelMap[labelId] = meta.labelMap[labelId].name;
@@ -37,13 +36,13 @@ export const makeObjectDetectionDatasetFromCoco = async (options: CocoDataset.Op
   }, dataset);
 };
 
-export const makeObjectDetectionDatasetFromPascalVoc = async (options: PascalVocDataset.Options): Promise<ObjectDetectionDatasetPool> => {
+export const makeObjectDetectionDatasetFromPascalVoc = async (options: PascalVocDataset.Options): Promise<Types.ObjectDetection.DatasetPool> => {
   const dataset = await PascalVocDataset.makeDatasetFromPascalVocFormat(options);
   return transformDatasetPool<
-      PascalVoc.DatasetMeta,
       Sample<PascalVoc.ExtAnnotation, Array<PascalVoc.ExtPascalVocObject>>,
+      Types.PascalVoc.DatasetMeta,
       ObjectDetection.Sample,
-      ObjectDetection.DatasetMeta
+      Types.ObjectDetection.DatasetMeta
     >({
       transform: async (sample: Sample<PascalVoc.ExtAnnotation, Array<PascalVoc.ExtPascalVocObject>>)
         : Promise<ObjectDetection.Sample> => {
@@ -63,7 +62,7 @@ export const makeObjectDetectionDatasetFromPascalVoc = async (options: PascalVoc
           label: newLabels
         };
       },
-      metadata: async (meta: PascalVoc.DatasetMeta): Promise<ObjectDetection.DatasetMeta> => {
+      metadata: async (meta: Types.PascalVoc.DatasetMeta): Promise<Types.ObjectDetection.DatasetMeta> => {
         const labelMap: Record<number, string> = {};
         for (const labelId in meta.labelMap) {
           labelMap[labelId] = meta.labelMap[labelId];
@@ -78,8 +77,8 @@ export const makeObjectDetectionDatasetFromPascalVoc = async (options: PascalVoc
 };
 
 export const makeObjectDetectionDataset = async (
-  datasetData: DatasetData<ObjectDetection.Sample>,
-  meta: ObjectDetection.DatasetMeta
-): Promise<ObjectDetectionDatasetPool> => {
-  return makeDatasetPool<ObjectDetection.Sample, ObjectDetection.DatasetMeta>(datasetData, meta);
+  datasetData: Types.DatasetData<ObjectDetection.Sample>,
+  meta: Types.ObjectDetection.DatasetMeta
+): Promise<Types.ObjectDetection.DatasetPool> => {
+  return makeDatasetPool<ObjectDetection.Sample, Types.ObjectDetection.DatasetMeta>(datasetData, meta);
 };

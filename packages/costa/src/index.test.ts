@@ -165,7 +165,7 @@ test.serial('import from script', async (t) => {
   const stubFn = {
     train: sinon.stub(),
     predict: sinon.stub()
-  }
+  };
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(stubFn);
   const fn = await costa.importScript<any>(script, ScriptType.Model);
   t.is(fn, stubFn, 'fn should be equal');

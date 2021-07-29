@@ -1,5 +1,5 @@
 import * as DataCook from '@pipcook/datacook';
-import { DatasetData, makeDatasetPool, DatasetPool } from '../dataset-pool';
+import { Types as DatasetTypes, makeDatasetPool } from '..';
 
 async function checkCocoMeta(metaObj: Record<string, any>) {
   if (!Array.isArray(metaObj.images)) {
@@ -65,9 +65,9 @@ export type Options = {
 export const makeDatasetPoolFromCocoFormat = async (
   options: Options
 ): Promise<
-  DatasetPool<
+  DatasetTypes.DatasetPool<
     DataCook.Dataset.Types.Sample<DataCook.Dataset.Types.Coco.Image, DataCook.Dataset.Types.Coco.Label>,
-    DataCook.Dataset.Types.Coco.DatasetMeta
+    DatasetTypes.Coco.DatasetMeta
   >
 > => {
   const { meta: trainMeta, datasetData: trainDatasetData } = await process(options.trainAnnotationObj);
@@ -76,7 +76,7 @@ export const makeDatasetPoolFromCocoFormat = async (
   if (options.validAnnotationObj) {
     validDatasetData = (await process(options.validAnnotationObj)).datasetData;
   }
-  const data: DatasetData<DataCook.Dataset.Types.Sample<DataCook.Dataset.Types.Coco.Image, DataCook.Dataset.Types.Coco.Label>> = {
+  const data: DatasetTypes.DatasetData<DataCook.Dataset.Types.Sample<DataCook.Dataset.Types.Coco.Image, DataCook.Dataset.Types.Coco.Label>> = {
     trainData: trainDatasetData,
     testData: testDatasetData,
     validData: validDatasetData
@@ -85,12 +85,13 @@ export const makeDatasetPoolFromCocoFormat = async (
   (trainMeta as DataCook.Dataset.Types.Coco.Meta).categories.forEach((category: DataCook.Dataset.Types.Coco.Category) => {
     labelMap[category.id] = category;
   });
-  const datasetMeta: DataCook.Dataset.Types.Coco.DatasetMeta = {
+  const datasetMeta: DatasetTypes.Coco.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Image,
     size: {
       train: trainDatasetData.length,
       test: testDatasetData.length,
-      valid: Array.isArray(validDatasetData) ? validDatasetData.length : 0
+      valid: Array.isArray(validDatasetData) ? validDatasetData.length : 0,
+      predicted: Array.isArray(validDatasetData) ? validDatasetData.length : 0
     },
     labelMap,
     info: trainMeta.info,

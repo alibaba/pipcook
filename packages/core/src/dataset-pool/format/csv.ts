@@ -1,6 +1,6 @@
 import * as DataCook from '@pipcook/datacook';
 import * as Papaparse from 'papaparse';
-import { makeDatasetPool, DatasetPool } from '../dataset-pool';
+import { makeDatasetPool, Types } from '..';
 import Csv = DataCook.Dataset.Types.Csv;
 
 export interface Options {
@@ -31,7 +31,7 @@ function toSamples(
   });
 }
 
-export const makeDatasetPoolFromCsv = async (options: Options): Promise<DatasetPool<Csv.Sample, Csv.DatasetMeta>> => {
+export const makeDatasetPoolFromCsv = async (options: Options): Promise<Types.DatasetPool<Csv.Sample, Types.Csv.DatasetMeta>> => {
   const config = {
     header: options.hasHeader, delimiter: options.delimiter
   };
@@ -45,12 +45,13 @@ export const makeDatasetPoolFromCsv = async (options: Options): Promise<DatasetP
     validData: parsedValidData ? toSamples(parsedValidData, options.labels) : undefined,
     predictedData: parsedPredictedData ? toSamples(parsedPredictedData, options.labels) : undefined
   };
-  const meta: Csv.DatasetMeta = {
+  const meta: Types.Csv.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Table,
     size: {
       train: data.trainData?.length || 0,
       test: data.testData?.length || 0,
-      valid: data.validData?.length || 0
+      valid: data.validData?.length || 0,
+      predicted: data.predictedData?.length || 0
     },
     labelMap: undefined
   };

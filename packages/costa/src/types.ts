@@ -134,12 +134,12 @@ export interface Artifact {
 /**
  * Pipeline type
  */
- export enum PipelineType {
+export enum PipelineType {
   ObjectDetection = 'ObjectDetection',
   TextClassification = 'TextClassification',
   ImageClassification = 'ImageClassification'
 }
-  
+
 /**
  * pipeline configuration stucture
  */

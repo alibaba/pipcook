@@ -79,13 +79,13 @@ export class StandaloneRuntime {
   }
 
   async predict(input: PredictDataset.PredictInput): Promise<PredictResult> {
-    switch(this.pipelineMeta.type) {
-      case PipelineType.ImageClassification:
-      case PipelineType.ObjectDetection:
-      case PipelineType.TextClassification:
-        break;
-      default:
-        throw new TypeError(`invalid pipeline type: ${this.pipelineMeta.type}`);
+    switch (this.pipelineMeta.type) {
+    case PipelineType.ImageClassification:
+    case PipelineType.ObjectDetection:
+    case PipelineType.TextClassification:
+      break;
+    default:
+      throw new TypeError(`invalid pipeline type: ${this.pipelineMeta.type}`);
     }
     logger.info('running data source script');
     let datasource = await PredictDataset.makePredictDataset(input, this.pipelineMeta.type);

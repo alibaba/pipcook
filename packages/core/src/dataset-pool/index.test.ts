@@ -1,15 +1,17 @@
 import test from 'ava';
 import * as sinon from 'sinon';
 import * as DataCook from '@pipcook/datacook';
-import { makeDatasetPool, transformDatasetPool, transformSampleInDataset } from './dataset-pool';
+import { makeDatasetPool, transformDatasetPool, transformSampleInDataset, Types as DatasetTypes } from '.';
 
 import Types = DataCook.Dataset.Types;
 
-class TestDatasetMeta implements Types.DatasetMeta {
+class TestDatasetMeta implements DatasetTypes.DatasetMeta {
   type: Types.DatasetType = Types.DatasetType.Image;
-  size: Types.DatasetSize = {
+  size: DatasetTypes.DatasetSize = {
     train: 3,
-    test: 3
+    test: 3,
+    valid: 0,
+    predicted: 0
   };
   labelMap: { 1: '1' }
 }
@@ -19,14 +21,14 @@ test('should install and has version number and module exists', async (t) => {
     data: 1,
     label: 1
   };
-  const trainSamples: Array<Types.Sample> = [sample, sample, sample];
-  const testSamples: Array<Types.Sample> = [sample, sample, sample];
+  const trainSamples: Array<Types.Sample> = [ sample, sample, sample ];
+  const testSamples: Array<Types.Sample> = [ sample, sample, sample ];
 
   const meta = new TestDatasetMeta();
 
   const dataset = makeDatasetPool({
     trainData: trainSamples,
-    testData: testSamples,
+    testData: testSamples
   }, meta);
 
   t.deepEqual(await dataset.getDatasetMeta(), meta);
@@ -41,10 +43,10 @@ test('should iter a dataset after shuffle', async (t) => {
     return {
       data: num,
       label: num
-    }
-  }
-  const trainSamples: Array<Types.Sample> = [sampleMaker(0), sampleMaker(1), sampleMaker(2)];
-  const testSamples: Array<Types.Sample> = [sampleMaker(3), sampleMaker(4), sampleMaker(5)];
+    };
+  };
+  const trainSamples: Array<Types.Sample> = [ sampleMaker(0), sampleMaker(1), sampleMaker(2) ];
+  const testSamples: Array<Types.Sample> = [ sampleMaker(3), sampleMaker(4), sampleMaker(5) ];
 
   const meta = new TestDatasetMeta();
 
@@ -70,9 +72,9 @@ test('should read a zero batch', async (t) => {
   const sample: Types.Sample<number> = {
     data: 1,
     label: 1
-  }
-  const trainSamples: Array<Types.Sample> = [sample, sample, sample];
-  const testSamples: Array<Types.Sample> = [sample, sample, sample];
+  };
+  const trainSamples: Array<Types.Sample> = [ sample, sample, sample ];
+  const testSamples: Array<Types.Sample> = [ sample, sample, sample ];
 
   const meta = new TestDatasetMeta();
 
@@ -90,9 +92,9 @@ test('should read a whole batch', async (t) => {
   const sample: Types.Sample<number> = {
     data: 1,
     label: 1
-  }
-  const trainSamples: Array<Types.Sample> = [sample, sample, sample];
-  const testSamples: Array<Types.Sample> = [sample, sample, sample];
+  };
+  const trainSamples: Array<Types.Sample> = [ sample, sample, sample ];
+  const testSamples: Array<Types.Sample> = [ sample, sample, sample ];
 
   const meta = new TestDatasetMeta();
 
@@ -125,11 +127,11 @@ test('should transform dataset pool', async (t) => {
     data: 2,
     label: 2
   };
-  const metaTransformed: Types.DatasetMeta = {
+  const metaTransformed: DatasetTypes.DatasetMeta = {
     type: Types.DatasetType.General
   };
 
-  const samples: Array<Types.Sample> = [sample, sample, sample];
+  const samples: Array<Types.Sample> = [ sample, sample, sample ];
 
   const dataset = makeDatasetPool({
     trainData: samples,
@@ -163,7 +165,7 @@ test('should transform dataset', async (t) => {
     label: 2
   };
 
-  const samples: Array<Types.Sample> = [sample, sample, sample];
+  const samples: Array<Types.Sample> = [ sample, sample, sample ];
 
   const dataset = makeDatasetPool({
     trainData: samples,
@@ -187,17 +189,17 @@ test('should throw an error', async (t) => {
     data: 1,
     label: 1
   };
-  const trainSamples: Array<Types.Sample> = [sample, sample, sample];
-  const testSamples: Array<Types.Sample> = [sample, sample, sample];
+  const trainSamples: Array<Types.Sample> = [ sample, sample, sample ];
+  const testSamples: Array<Types.Sample> = [ sample, sample, sample ];
 
   const meta = new TestDatasetMeta();
 
   const dataset = makeDatasetPool({
     trainData: trainSamples,
-    testData: testSamples,
+    testData: testSamples
   }, meta);
   if (!dataset.train) {
     return t.fail();
   }
   await t.throwsAsync(dataset.train.nextBatch(-2), { message: 'Batch size should be larger than -1 but -2 is present' });
-})
+});
