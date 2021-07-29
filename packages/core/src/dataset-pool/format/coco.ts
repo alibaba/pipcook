@@ -47,11 +47,14 @@ function cocoMetaToDatasetData(
 }
 
 async function process(
-  annotationObj: DataCook.Dataset.Types.Coco.Meta
+  annotationObj: DataCook.Dataset.Types.Coco.Meta | undefined
 ): Promise<{
-  meta: DataCook.Dataset.Types.Coco.Meta,
-  datasetData: Array<DataCook.Dataset.Types.Sample<DataCook.Dataset.Types.Coco.Image, DataCook.Dataset.Types.Coco.Label>>
+  meta: DataCook.Dataset.Types.Coco.Meta | undefined,
+  datasetData: Array<DataCook.Dataset.Types.Sample<DataCook.Dataset.Types.Coco.Image, DataCook.Dataset.Types.Coco.Label>> | undefined
 }> {
+  if (!annotationObj) {
+    return { meta: undefined, datasetData: undefined };
+  }
   await checkCocoMeta(annotationObj);
   return { meta: annotationObj as DataCook.Dataset.Types.Coco.Meta, datasetData: cocoMetaToDatasetData(annotationObj) };
 }
@@ -60,6 +63,7 @@ export type Options = {
   trainAnnotationObj: DataCook.Dataset.Types.Coco.Meta;
   testAnnotationObj: DataCook.Dataset.Types.Coco.Meta;
   validAnnotationObj?: DataCook.Dataset.Types.Coco.Meta;
+  predictedAnnotationObj?: DataCook.Dataset.Types.Coco.Meta;
 };
 
 export const makeDatasetPoolFromCocoFormat = async (
@@ -82,20 +86,20 @@ export const makeDatasetPoolFromCocoFormat = async (
     validData: validDatasetData
   };
   const labelMap: Record<number, DataCook.Dataset.Types.Coco.Category> = {};
-  (trainMeta as DataCook.Dataset.Types.Coco.Meta).categories.forEach((category: DataCook.Dataset.Types.Coco.Category) => {
+  (trainMeta as DataCook.Dataset.Types.Coco.Meta)?.categories?.forEach((category: DataCook.Dataset.Types.Coco.Category) => {
     labelMap[category.id] = category;
   });
   const datasetMeta: DatasetTypes.Coco.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Image,
     size: {
-      train: trainDatasetData.length,
-      test: testDatasetData.length,
+      train: Array.isArray(trainDatasetData) ? trainDatasetData.length : 0,
+      test: Array.isArray(testDatasetData) ? testDatasetData.length : 0,
       valid: Array.isArray(validDatasetData) ? validDatasetData.length : 0,
       predicted: Array.isArray(validDatasetData) ? validDatasetData.length : 0
     },
     labelMap,
-    info: trainMeta.info,
-    licenses: trainMeta.licenses
+    info: trainMeta?.info,
+    licenses: trainMeta?.licenses
   };
   return makeDatasetPool(data, datasetMeta);
 };
