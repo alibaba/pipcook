@@ -1,4 +1,5 @@
 import type * as Datacook from '@pipcook/datacook';
+import { DatasetPool } from './dataset-pool';
 
 /**
  * The model script can emit the training progress through the API `Runtime.notifyProgress`.
@@ -26,7 +27,7 @@ export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends
   // read model file
   readModel: () => Promise<string>;
   // datasource
-  dataset: Datacook.Dataset.Types.Dataset<T, M>;
+  dataset: DatasetPool<T, M>;
 }
 
 export type FrameworkModule = any;
@@ -93,13 +94,13 @@ export type PredictResult = any;
  * type of data source script entry
  */
 export type DatasourceEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta> =
-  (options: Record<string, any>, context: ScriptContext) => Promise<Datacook.Dataset.Types.Dataset<SAMPLE, META>>;
+  (options: Record<string, any>, context: ScriptContext) => Promise<DatasetPool<SAMPLE, META>>;
 
 /**
  * type of data flow script entry
  */
 export type DataflowEntry<IN extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta, OUT extends Datacook.Dataset.Types.Sample<any> = IN> =
-  (api: Datacook.Dataset.Types.Dataset<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<Datacook.Dataset.Types.Dataset<OUT, META>>;
+  (api: DatasetPool<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<DatasetPool<OUT, META>>;
 
 /**
  * type of model script entry for train
