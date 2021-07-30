@@ -4,17 +4,18 @@
   "dataflow": [
     "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@32c5ffb/scripts/image-classification/build/dataflow.js?size=224&size=224"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@32c5ffb/scripts/image-classification/build/model.js",
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "/tmp/mobilenet-model.zip"
   }],
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@32c5ffb/scripts/image-classification/build/model.js",
   "options": {
     "framework": "mobilenet@1.0.0",
     "train": {
       "epochs": 1,
       "validationRequired": true,
-      "modelUrl": "https://pc-github.oss-us-west-1.aliyuncs.com/model/mobilenet_tfjs/web_model/model.json"
+      "modelUrl": "https://pc-github.oss-us-west-1.aliyuncs.com/model/resnet50_tfjs/model.json"
     }
   }
 }
+

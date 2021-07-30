@@ -77,3 +77,6 @@ jobs:
     - name: Run mobilenet
       run: |
         ./packages/cli/dist/bin/pipcook.js run ./test/pipelines/image-classification-mobilenet.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
+    - name: Run resnet
+      run: |
+        ./packages/cli/dist/bin/pipcook.js run ./test/pipelines/image-classification-resnet.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
