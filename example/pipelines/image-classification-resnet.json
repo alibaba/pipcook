@@ -9,7 +9,8 @@
     "framework": "mobilenet@1.0.0",
     "train": {
       "epochs": 10,
-      "validationRequired": true
+      "validationRequired": true,
+      "modelUrl": "resnet"
     }
   }
 }
