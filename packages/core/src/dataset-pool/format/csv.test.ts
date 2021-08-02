@@ -68,7 +68,7 @@ const sampleNoHead3: Sample = {
 };
 
 test('should make a dataset from csv', async (t) => {
-  const dataset = await makeDatasetPoolFromCsv({
+  const dataset = makeDatasetPoolFromCsv({
     trainData: csvDataWithHead,
     testData: csvDataWithHead,
     validData: undefined,
@@ -78,8 +78,7 @@ test('should make a dataset from csv', async (t) => {
 
   const metadata: Types.Csv.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Table,
-    size: { train: 3, test: 3, valid: 0, predicted: 0 },
-    labelMap: undefined
+    size: { train: 3, test: 3, valid: 0, predicted: 0 }
   };
 
   t.deepEqual(await dataset.getDatasetMeta(), metadata);
@@ -90,7 +89,7 @@ test('should make a dataset from csv', async (t) => {
   t.deepEqual(await dataset.test?.nextBatch(1), [ sample2 ]);
 });
 test('should make a dataset from csv with valid', async (t) => {
-  const dataset = await makeDatasetPoolFromCsv({
+  const dataset = makeDatasetPoolFromCsv({
     trainData: csvDataWithHead,
     testData: csvDataWithHead,
     validData: csvDataWithHead,
@@ -100,8 +99,7 @@ test('should make a dataset from csv with valid', async (t) => {
 
   const metadata: Types.Csv.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Table,
-    size: { train: 3, test: 3, valid: 3, predicted: 0 },
-    labelMap: undefined
+    size: { train: 3, test: 3, valid: 3, predicted: 0 }
   };
 
   t.deepEqual(await dataset.getDatasetMeta(), metadata);
@@ -114,7 +112,7 @@ test('should make a dataset from csv with valid', async (t) => {
 });
 
 test('should make a dataset from csv without head', async (t) => {
-  const dataset = await makeDatasetPoolFromCsv({
+  const dataset = makeDatasetPoolFromCsv({
     trainData: csvDataWithoutHead,
     testData: csvDataWithoutHead,
     validData: csvDataWithoutHead,
@@ -124,8 +122,7 @@ test('should make a dataset from csv without head', async (t) => {
 
   const metadata: Types.Csv.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Table,
-    size: { train: 3, test: 3, valid: 3, predicted: 0 },
-    labelMap: undefined
+    size: { train: 3, test: 3, valid: 3, predicted: 0 }
   };
 
   t.deepEqual(await dataset.getDatasetMeta(), metadata);

@@ -38,7 +38,7 @@ export interface TransformOption<
   OUT_META extends DatasetMeta = IN_META
 > {
   transform: (sample: IN_SAMPLE) => Promise<OUT_SAMPLE>,
-  metadata: (meta?: IN_META) => Promise<OUT_META>
+  metadata: (meta: IN_META) => Promise<OUT_META>
 }
 
 export interface DatasetData<T extends Sample> {

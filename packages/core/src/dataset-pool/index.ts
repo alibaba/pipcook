@@ -64,7 +64,13 @@ export function transformDatasetPool<
 
   const internalDatasetPool: Types.DatasetPool<OUT_SAMPLE, OUT_META> = {
     shuffle: (seed?: string) => dataset.shuffle(seed),
-    getDatasetMeta: async () => metadata(await dataset.getDatasetMeta()),
+    getDatasetMeta: async () => {
+      const meta = await dataset.getDatasetMeta();
+      if (!meta) {
+        return undefined;
+      }
+      return metadata(meta);
+    },
     train: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.train, transform),
     test: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.test, transform),
     valid: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.valid, transform),

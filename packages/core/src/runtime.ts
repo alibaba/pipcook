@@ -1,4 +1,4 @@
-import type * as Datacook from '@pipcook/datacook';
+import * as Datacook from '@pipcook/datacook';
 import { Types } from './dataset-pool';
 
 /**
@@ -99,8 +99,13 @@ export type DatasourceEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, M
 /**
  * type of data flow script entry
  */
-export type DataflowEntry<IN extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta, OUT extends Datacook.Dataset.Types.Sample<any> = IN> =
-  (api: Types.DatasetPool<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<Types.DatasetPool<OUT, META>>;
+export type DataflowEntry<
+  IN extends Datacook.Dataset.Types.Sample<any>,
+  IN_META extends Types.DatasetMeta,
+  OUT extends Datacook.Dataset.Types.Sample<any> = IN,
+  OUT_META extends Types.DatasetMeta = IN_META
+> =
+  (api: Types.DatasetPool<IN, IN_META>, options: Record<string, any>, context: ScriptContext) => Promise<Types.DatasetPool<OUT, OUT_META>>;
 
 /**
  * type of model script entry for train

@@ -52,8 +52,7 @@ export const makeDatasetPoolFromCsv = async (options: Options): Promise<Types.Da
       test: data.testData?.length || 0,
       valid: data.validData?.length || 0,
       predicted: data.predictedData?.length || 0
-    },
-    labelMap: undefined
+    }
   };
   return makeDatasetPool(data, meta);
 };
