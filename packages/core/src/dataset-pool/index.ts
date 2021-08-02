@@ -9,7 +9,7 @@ export * from './pipeline-type';
 export * from './format';
 export * as Types from './types';
 
-class ArrayDatasetPoolImpl<T extends Sample, D extends Types.DatasetMeta> implements Types.DatasetPool<T, D> {
+export class ArrayDatasetPoolImpl<T extends Sample, D extends Types.DatasetMeta> implements Types.DatasetPool<T, D> {
   private meta?: D;
 
   public train?: Dataset<T>;
@@ -17,15 +17,27 @@ class ArrayDatasetPoolImpl<T extends Sample, D extends Types.DatasetMeta> implem
   public valid?: Dataset<T>;
   public predicted?: Dataset<T>;
 
-  constructor(datasetData: Types.DatasetData<T>, datasetMeta?: D) {
-    this.meta = datasetMeta;
-    this.train = datasetData.trainData ? new ArrayDatasetImpl(datasetData.trainData) : undefined;
-    this.test = datasetData.testData ? new ArrayDatasetImpl(datasetData.testData) : undefined;
-    this.valid = datasetData.validData ? new ArrayDatasetImpl(datasetData.validData) : undefined;
-    this.predicted = datasetData.predictedData ? new ArrayDatasetImpl(datasetData.predictedData) : undefined;
+  static fromArray<DATA extends Sample, META extends Types.DatasetMeta>(datasetData: Types.DatasetData<DATA>, datasetMeta?: META): ArrayDatasetPoolImpl<DATA, META> {
+    const obj = new ArrayDatasetPoolImpl<DATA, META>();
+    obj.meta = datasetMeta;
+    obj.train = datasetData.trainData ? new ArrayDatasetImpl(datasetData.trainData) : undefined;
+    obj.test = datasetData.testData ? new ArrayDatasetImpl(datasetData.testData) : undefined;
+    obj.valid = datasetData.validData ? new ArrayDatasetImpl(datasetData.validData) : undefined;
+    obj.predicted = datasetData.predictedData ? new ArrayDatasetImpl(datasetData.predictedData) : undefined;
+    return obj;
   }
 
-  async getDatasetMeta() {
+  static fromDataset<DATA extends Sample, META extends Types.DatasetMeta>(datasetGrp: Types.DatasetGroup<DATA>, datasetMeta?: META): ArrayDatasetPoolImpl<DATA, META> {
+    const obj = new ArrayDatasetPoolImpl<DATA, META>();
+    obj.meta = datasetMeta;
+    obj.train = datasetGrp.train;
+    obj.test = datasetGrp.test;
+    obj.valid = datasetGrp.valid;
+    obj.predicted = datasetGrp.predicted;
+    return obj;
+  }
+
+  async getDatasetMeta(): Promise<D | undefined> {
     return this.meta;
   }
 
@@ -38,7 +50,7 @@ class ArrayDatasetPoolImpl<T extends Sample, D extends Types.DatasetMeta> implem
 }
 
 export function makeDatasetPool<T extends Sample, D extends Types.DatasetMeta> (datasetData: Types.DatasetData<T>, datasetMeta?: D): Types.DatasetPool<T, D> {
-  return new ArrayDatasetPoolImpl(datasetData, datasetMeta);
+  return ArrayDatasetPoolImpl.fromArray(datasetData, datasetMeta);
 }
 
 export function transformDatasetPool<
@@ -53,10 +65,10 @@ export function transformDatasetPool<
   const internalDatasetPool: Types.DatasetPool<OUT_SAMPLE, OUT_META> = {
     shuffle: (seed?: string) => dataset.shuffle(seed),
     getDatasetMeta: async () => metadata(await dataset.getDatasetMeta()),
-    train: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.train, transform),
-    test: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.test, transform),
-    valid: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.valid, transform),
-    predicted: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.predicted, transform)
+    train: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.train, transform),
+    test: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.test, transform),
+    valid: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.valid, transform),
+    predicted: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.predicted, transform)
   };
 
   return internalDatasetPool;
@@ -67,10 +79,10 @@ export function transformSampleInDataset<IN_SAMPLE extends Sample, IN_META exten
   const internalDatasetPool: Types.DatasetPool<OUT_SAMPLE, IN_META> = {
     shuffle: (seed?: string) => dataset.shuffle(seed),
     getDatasetMeta: () => dataset.getDatasetMeta(),
-    train: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.train, transform),
-    test: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.test, transform),
-    valid: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.valid, transform),
-    predicted: DataCook.Dataset.makeTransformDataset<IN_SAMPLE, OUT_SAMPLE>(dataset.predicted, transform)
+    train: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.train, transform),
+    test: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.test, transform),
+    valid: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.valid, transform),
+    predicted: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.predicted, transform)
   };
 
   return internalDatasetPool;

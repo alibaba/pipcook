@@ -1,9 +1,8 @@
 import * as DataCook from '@pipcook/datacook';
-import { DatasetMeta as BaseDatasetMeta } from '../';
+import { ClassificationDatasetMeta } from '../';
 
 import DatasetType = DataCook.Dataset.Types.DatasetType;
 
-export interface DatasetMeta extends BaseDatasetMeta {
-  type: DatasetType.Image,
-  labelMap: Array<string>;
+export interface DatasetMeta extends ClassificationDatasetMeta {
+  type: DatasetType.Image
 }

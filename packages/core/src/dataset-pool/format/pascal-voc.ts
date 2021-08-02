@@ -1,36 +1,7 @@
 import * as DataCook from '@pipcook/datacook';
-import { makeDatasetPool, Types } from '../';
+import { ArrayDatasetPoolImpl, Types } from '../';
 import DatasetType = DataCook.Dataset.Types.DatasetType;
 import PascalVoc = DataCook.Dataset.Types.PascalVoc;
-
-function attachId(
-  labelMap: Array<string>,
-  annotationList: Array<PascalVoc.Annotation> | undefined,
-): Array<PascalVoc.Sample> | undefined {
-  if (!Array.isArray(annotationList)) {
-    return undefined;
-  }
-  return annotationList.map((annotation: PascalVoc.Annotation) => {
-    const extObjs = annotation.object?.map((obj) => {
-      const index = labelMap.indexOf(obj.name);
-      if (index >= 0) {
-        return {
-          ...obj,
-          id: index
-        };
-      } else {
-        throw TypeError(`'${obj.name}' not exists in train dataset.`);
-      }
-    });
-    return {
-      data: {
-        ...annotation,
-        object: extObjs
-      },
-      label: extObjs
-    };
-  });
-}
 
 export interface Options {
   trainAnnotationList?: Array<PascalVoc.Annotation>;
@@ -39,66 +10,33 @@ export interface Options {
   predictedAnnotationList?: Array<PascalVoc.Annotation>;
 }
 
-export interface DatasetMeta extends Types.BaseDatasetMeta {
-  type: DatasetType.Image;
-  labelMap: Array<string>;
-}
-
-export const makeDatasetFromPascalVocFormat = async (options: Options): Promise<Types.DatasetPool<PascalVoc.Sample, Types.PascalVoc.DatasetMeta>> => {
-  const labelNames: Array<string> = [];
-  const trainData = options.trainAnnotationList?.map((annotation: PascalVoc.Annotation) => {
-    const extObjs = annotation.object?.map((obj) => {
-      const index = labelNames.indexOf(obj.name);
-      if (index >= 0) {
-        return {
-          ...obj,
-          id: index
-        };
-      } else {
-        labelNames.push(obj.name);
-        return {
-          ...obj,
-          id: labelNames.length - 1
-        };
-      }
-    });
-    return {
-      data: {
-        ...annotation,
-        object: extObjs
-      },
-      label: extObjs
-    };
-  });
-  const testData = attachId(labelNames, options.testAnnotationList);
-  const validData = attachId(labelNames, options.validAnnotationList);
-  const predictedData = options.predictedAnnotationList?.map((annotation: PascalVoc.Annotation) => {
-    return {
-      data: {
-        ...annotation,
-        object: []
-      },
-      label: []
-    };
-  });
+export const makeDatasetPoolFromPascalVoc = async (options: Options): Promise<Types.DatasetPool<PascalVoc.Sample, Types.PascalVoc.DatasetMeta>> => {
+  const train = options.trainAnnotationList ? DataCook.Dataset.makeDatasetFromPascalVoc(options.trainAnnotationList) : undefined;
+  const test = options.testAnnotationList ? DataCook.Dataset.makeDatasetFromPascalVoc(options.testAnnotationList) : undefined;
+  const valid = options.validAnnotationList ? DataCook.Dataset.makeDatasetFromPascalVoc(options.validAnnotationList) : undefined;
+  const predicted = options.predictedAnnotationList ? DataCook.Dataset.makeDatasetFromPascalVoc(options.predictedAnnotationList) : undefined;
+  const categories: Array<string> = options.trainAnnotationList ? DataCook.Dataset.extractCategoriesFromPascalVoc(options.trainAnnotationList) : [];
 
   const datasetMeta: Types.PascalVoc.DatasetMeta = {
     type: DatasetType.Image,
     size: {
-      train: trainData?.length || 0,
-      test: testData?.length || 0,
-      valid: validData?.length || 0,
-      predicted: predictedData?.length || 0
+      train: (await train?.nextBatch(-1))?.length || 0,
+      test: (await test?.nextBatch(-1))?.length || 0,
+      valid: (await valid?.nextBatch(-1))?.length || 0,
+      predicted: (await predicted?.nextBatch(-1))?.length || 0
     },
-    labelMap: labelNames
+    categories
   };
-  return makeDatasetPool(
-    {
-      trainData,
-      testData,
-      validData,
-      predictedData
-    },
-    datasetMeta
-  );
+  await Promise.all([
+    train?.seek(0),
+    test?.seek(0),
+    valid?.seek(0),
+    predicted?.seek(0)
+  ]);
+  return ArrayDatasetPoolImpl.fromDataset({
+    train,
+    test,
+    valid,
+    predicted
+  }, datasetMeta);
 };

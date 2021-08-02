@@ -1,6 +1,6 @@
 import * as DataCook from '@pipcook/datacook';
 import { Coco as CocoDataset, PascalVoc as PascalVocDataset } from '../format';
-import { transformDatasetPool, makeDatasetPool, Types } from '../';
+import { transformDatasetPool, transformSampleInDataset, makeDatasetPool, Types } from '../';
 
 import Sample = DataCook.Dataset.Types.Sample;
 import Coco = DataCook.Dataset.Types.Coco;
@@ -9,11 +9,18 @@ import ObjectDetection = DataCook.Dataset.Types.ObjectDetection;
 
 export const makeObjectDetectionDatasetFromCoco = async (options: CocoDataset.Options): Promise<Types.ObjectDetection.DatasetPool> => {
   const dataset = await CocoDataset.makeDatasetPoolFromCocoFormat(options);
+  const categoryFiner: Record<number, Coco.Category> = {};
+  const categorySet = new Set<string>();
+  (await dataset.getDatasetMeta())?.categories?.forEach((item) => {
+    categoryFiner[item.id] = item;
+    categorySet.add(item.name);
+  });
+  const categories = Array.from(categorySet);
   return transformDatasetPool<Sample<Coco.Image, Coco.Label>, Types.Coco.DatasetMeta, ObjectDetection.Sample, Types.ObjectDetection.DatasetMeta>({
     transform: async (sample: Sample<Coco.Image, Coco.Label>): Promise<ObjectDetection.Sample> => {
       const newLabels = sample.label.map((lable) => {
         return {
-          id: lable.id,
+          name: categoryFiner[lable.category_id].name,
           bbox: lable.bbox
         };
       });
@@ -23,32 +30,26 @@ export const makeObjectDetectionDatasetFromCoco = async (options: CocoDataset.Op
       };
     },
     metadata: async (meta: Types.Coco.DatasetMeta): Promise<Types.ObjectDetection.DatasetMeta> => {
-      const labelMap: Record<number, string> = {};
-      for (const labelId in meta.labelMap) {
-        labelMap[labelId] = meta.labelMap[labelId].name;
-      }
       return {
         type: meta.type,
         size: meta.size,
-        labelMap
+        categories
       };
     }
   }, dataset);
 };
 
 export const makeObjectDetectionDatasetFromPascalVoc = async (options: PascalVocDataset.Options): Promise<Types.ObjectDetection.DatasetPool> => {
-  const dataset = await PascalVocDataset.makeDatasetFromPascalVocFormat(options);
-  return transformDatasetPool<
-      Sample<PascalVoc.ExtAnnotation, Array<PascalVoc.ExtPascalVocObject>>,
+  const dataset = await PascalVocDataset.makeDatasetPoolFromPascalVoc(options);
+
+  return transformSampleInDataset<PascalVoc.Sample,
       Types.PascalVoc.DatasetMeta,
-      ObjectDetection.Sample,
-      Types.ObjectDetection.DatasetMeta
-    >({
-      transform: async (sample: Sample<PascalVoc.ExtAnnotation, Array<PascalVoc.ExtPascalVocObject>>)
-        : Promise<ObjectDetection.Sample> => {
+      ObjectDetection.Sample
+    >(
+      async (sample: PascalVoc.Sample): Promise<ObjectDetection.Sample> => {
         const newLabels: ObjectDetection.Label = sample.label.map((lable) => {
           return {
-            id: lable.id,
+            name: lable.name,
             bbox: [
               lable.bndbox.xmin,
               lable.bndbox.ymin,
@@ -62,18 +63,8 @@ export const makeObjectDetectionDatasetFromPascalVoc = async (options: PascalVoc
           label: newLabels
         };
       },
-      metadata: async (meta: Types.PascalVoc.DatasetMeta): Promise<Types.ObjectDetection.DatasetMeta> => {
-        const labelMap: Record<number, string> = {};
-        for (const labelId in meta.labelMap) {
-          labelMap[labelId] = meta.labelMap[labelId];
-        }
-        return {
-          type: meta.type,
-          size: meta.size,
-          labelMap
-        };
-      }
-    }, dataset);
+      dataset
+    );
 };
 
 export const makeObjectDetectionDataset = async (

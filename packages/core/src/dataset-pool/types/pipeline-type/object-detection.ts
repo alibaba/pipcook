@@ -1,13 +1,12 @@
 import * as DataCook from '@pipcook/datacook';
-import { DatasetPool as BaseDatasetPool, DatasetMeta as BaseDatasetMeta } from '../';
+import { DatasetPool as BaseDatasetPool, ClassificationDatasetMeta } from '../';
 
 import Sample = DataCook.Dataset.Types.ObjectDetection.Sample;
 import DatasetType = DataCook.Dataset.Types.DatasetType;
 import BaseDataset = DataCook.Dataset.Types.Dataset;
 
-export interface DatasetMeta extends BaseDatasetMeta {
-  type: DatasetType.Image,
-  labelMap: Record<number, string>;
+export interface DatasetMeta extends ClassificationDatasetMeta {
+  type: DatasetType.Image
 }
 
 export type Dataset = BaseDataset<Sample>;

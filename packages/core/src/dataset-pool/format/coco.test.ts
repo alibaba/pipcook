@@ -132,10 +132,10 @@ test('should make a dataset from coco', async (t) => {
   const metadata: Coco.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Image,
     size: { train: 3, test: 3, valid: 0, predicted: 0 },
-    labelMap: {
-      '1': { supercategory: 'abovePicture', id: 1, name: 'abovePicture' },
-      '2': { supercategory: 'button', id: 2, name: 'button' }
-    },
+    categories: [
+      { supercategory: 'abovePicture', id: 1, name: 'abovePicture' },
+      { supercategory: 'button', id: 2, name: 'button' }
+    ],
     info: undefined,
     licenses: undefined
   };
@@ -157,10 +157,10 @@ test('should make a dataset from coco with valid', async (t) => {
   const metadata: Coco.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Image,
     size: { train: 3, test: 3, valid: 3, predicted: 0 },
-    labelMap: {
-      '1': { supercategory: 'abovePicture', id: 1, name: 'abovePicture' },
-      '2': { supercategory: 'button', id: 2, name: 'button' }
-    },
+    categories: [
+      { supercategory: 'abovePicture', id: 1, name: 'abovePicture' },
+      { supercategory: 'button', id: 2, name: 'button' }
+    ],
     info: undefined,
     licenses: undefined
   };

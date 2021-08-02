@@ -48,13 +48,17 @@ export interface DatasetData<T extends Sample> {
   predictedData?: Array<T>
 }
 
-export interface BaseDatasetMeta {
+export interface DatasetMeta {
   type: DatasetType;
   size?: DatasetSize;
 }
 
-export interface DatasetMeta extends BaseDatasetMeta {
-  labelMap?: Record<number, any>;
+export interface ClassificationDatasetMeta extends DatasetMeta {
+  categories?: Array<any>;
+}
+
+export interface ObjectDetectionDatasetMeta extends DatasetMeta {
+  categories?: Array<any>;
 }
 
 /**
@@ -70,4 +74,11 @@ export interface ImageDatasetMeta extends DatasetMeta {
 export interface TableDatasetMeta extends DatasetMeta {
   tableSchema: TableSchema;
   dataKeys: Array<string> | null;
+}
+
+export interface DatasetGroup<T extends Sample> {
+  train?: Dataset<T>,
+  test?: Dataset<T>,
+  valid?: Dataset<T>,
+  predicted?: Dataset<T>
 }

@@ -3,7 +3,7 @@ import { Types } from '../';
 import { makeObjectDetectionDatasetFromCoco, makeObjectDetectionDatasetFromPascalVoc } from './object-detection';
 import * as DataCook from '@pipcook/datacook';
 
-export const cocoAnnotation: DataCook.Dataset.Types.Coco.Meta = {
+const cocoAnnotation: DataCook.Dataset.Types.Coco.Meta = {
   images: [
     {
       file_name: 'f984d880-1cb6-11ea-a3c0-69b27346a20f-screenshot.png',
@@ -108,7 +108,7 @@ export const cocoAnnotation: DataCook.Dataset.Types.Coco.Meta = {
   ]
 };
 
-export const pascalVocAnnotation: Array<DataCook.Dataset.Types.PascalVoc.Annotation> = [
+const pascalVocAnnotation: Array<DataCook.Dataset.Types.PascalVoc.Annotation> = [
   {
     folder: 'images',
     filename: '0001.jpg',
@@ -263,11 +263,11 @@ test('should make a dataset from coco', async (t) => {
     data: { uri: cocoAnnotation.images[0].url },
     label: [
       {
-        id: cocoAnnotation.annotations[0].id,
+        name: 'abovePicture',
         bbox: cocoAnnotation.annotations[0].bbox
       },
       {
-        id: cocoAnnotation.annotations[1].id,
+        name: 'abovePicture',
         bbox: cocoAnnotation.annotations[1].bbox
       }
     ]
@@ -277,11 +277,11 @@ test('should make a dataset from coco', async (t) => {
     data: { uri: cocoAnnotation.images[1].url },
     label: [
       {
-        id: cocoAnnotation.annotations[2].id,
+        name: 'abovePicture',
         bbox: cocoAnnotation.annotations[2].bbox
       },
       {
-        id: cocoAnnotation.annotations[3].id,
+        name: 'button',
         bbox: cocoAnnotation.annotations[3].bbox
       }
     ]
@@ -291,7 +291,7 @@ test('should make a dataset from coco', async (t) => {
     data: { uri: cocoAnnotation.images[2].url },
     label: [
       {
-        id: cocoAnnotation.annotations[4].id,
+        name: 'abovePicture',
         bbox: cocoAnnotation.annotations[4].bbox
       }
     ]
@@ -305,10 +305,10 @@ test('should make a dataset from coco', async (t) => {
   const metadata: Types.ObjectDetection.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Image,
     size: { train: 3, test: 3, valid: 0, predicted: 0 },
-    labelMap: {
-      '1': 'abovePicture',
-      '2': 'button'
-    }
+    categories: [
+      'abovePicture',
+      'button'
+    ]
   };
 
   t.deepEqual(await dataset.getDatasetMeta(), metadata);
@@ -319,12 +319,12 @@ test('should make a dataset from coco', async (t) => {
   t.deepEqual(await dataset.test?.nextBatch(1), [ sample2 ]);
 });
 
-test('should make a dataset from pascol', async (t) => {
+test('should make a dataset from pascal', async (t) => {
   const sample1: DataCook.Dataset.Types.ObjectDetection.Sample = {
     data: { uri: pascalVocAnnotation[0].path },
     label: [
       {
-        id: 0,
+        name: 'dog',
         bbox: [
           pascalVocAnnotation[0].object[0].bndbox.xmin,
           pascalVocAnnotation[0].object[0].bndbox.ymin,
@@ -333,7 +333,7 @@ test('should make a dataset from pascol', async (t) => {
         ]
       },
       {
-        id: 1,
+        name: 'person',
         bbox: [
           pascalVocAnnotation[0].object[1].bndbox.xmin,
           pascalVocAnnotation[0].object[1].bndbox.ymin,
@@ -348,7 +348,7 @@ test('should make a dataset from pascol', async (t) => {
     data: { uri: pascalVocAnnotation[1].path },
     label: [
       {
-        id: 0,
+        name: 'dog',
         bbox: [
           pascalVocAnnotation[1].object[0].bndbox.xmin,
           pascalVocAnnotation[1].object[0].bndbox.ymin,
@@ -357,7 +357,7 @@ test('should make a dataset from pascol', async (t) => {
         ]
       },
       {
-        id: 1,
+        name: 'person',
         bbox: [
           pascalVocAnnotation[1].object[1].bndbox.xmin,
           pascalVocAnnotation[1].object[1].bndbox.ymin,
@@ -372,7 +372,7 @@ test('should make a dataset from pascol', async (t) => {
     data: { uri: pascalVocAnnotation[2].path },
     label: [
       {
-        id: 2,
+        name: 'dog2',
         bbox: [
           pascalVocAnnotation[2].object[0].bndbox.xmin,
           pascalVocAnnotation[2].object[0].bndbox.ymin,
@@ -381,7 +381,7 @@ test('should make a dataset from pascol', async (t) => {
         ]
       },
       {
-        id: 3,
+        name: 'person2',
         bbox: [
           pascalVocAnnotation[2].object[1].bndbox.xmin,
           pascalVocAnnotation[2].object[1].bndbox.ymin,
@@ -396,16 +396,10 @@ test('should make a dataset from pascol', async (t) => {
     trainAnnotationList: pascalVocAnnotation,
     testAnnotationList: pascalVocAnnotation
   });
-
   const metadata: Types.ObjectDetection.DatasetMeta = {
     type: DataCook.Dataset.Types.DatasetType.Image,
     size: { train: 3, test: 3, valid: 0, predicted: 0 },
-    labelMap: {
-      '0': 'dog',
-      '1': 'person',
-      '2': 'dog2',
-      '3': 'person2'
-    }
+    categories: [ 'dog', 'person', 'dog2', 'person2' ]
   };
 
   t.deepEqual(await dataset.getDatasetMeta(), metadata);
