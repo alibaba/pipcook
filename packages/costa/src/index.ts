@@ -7,7 +7,8 @@ import {
   FrameworkModule,
   TaskType,
   PredictResult,
-  DatasetPool
+  DatasetPool,
+  DataCook
 } from '@pipcook/core';
 import {
   PipcookScript,
@@ -15,7 +16,6 @@ import {
   ScriptType
 } from './types';
 import * as boa from '@pipcook/boa';
-import * as Datacook from '@pipcook/datacook';
 import * as path from 'path';
 import Debug from 'debug';
 import { importFrom } from './utils';
@@ -24,15 +24,15 @@ const debug = Debug('costa.runnable');
 
 export * from './types';
 
-export type DefaultRuntime = Runtime<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
+export type DefaultRuntime = Runtime<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultDataSet = DatasetPool.Types.DatasetPool<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
+export type DefaultDataSet = DatasetPool.Types.DatasetPool<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultDataflowEntry = DataflowEntry<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
+export type DefaultDataflowEntry = DataflowEntry<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultDataSourceEntry = DatasourceEntry<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
+export type DefaultDataSourceEntry = DatasourceEntry<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultModelEntry = ExtModelEntry<Datacook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
+export type DefaultModelEntry = ExtModelEntry<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
 export interface PipelineWorkSpace {
   /**
@@ -99,10 +99,12 @@ export class Costa {
   async initFramework(): Promise<void> {
     boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
     const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
+
+    module.paths.push(nodeModules);
     const paths = [ nodeModules, ...(require.resolve.paths(__dirname) || []) ];
     this.context = {
       boa,
-      dataCook: Datacook,
+      dataCook: DataCook,
       importJS: (jsModuleName: string): Promise<FrameworkModule> => {
         const module = require.resolve(jsModuleName, { paths });
         return import(module);
@@ -209,6 +211,9 @@ export class Costa {
    * @param options options of the pipeline
    */
   async runModel(runtime: DefaultRuntime, script: PipcookScript, options: Record<string, any>, taskType = TaskType.TRAIN): Promise<void | PredictResult> {
+    const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
+    module.paths.push(nodeModules);
+    process.env['']
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
     const entry = await this.importScript<DefaultModelEntry>(script, ScriptType.Model);

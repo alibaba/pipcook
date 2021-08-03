@@ -22,6 +22,8 @@ export interface RunOptions {
   npmClient: string;
   // NPM registry
   registry?: string;
+  // Development mode
+  dev: boolean;
 }
 
 export interface CacheCleanOptions {
@@ -56,7 +58,11 @@ export const run = async (filename: string, opts: RunOptions): Promise<void> => 
     }
     pipelineConfig = await readJson(pipelinePath);
     // TODO(feely): check pipeline file
+<<<<<<< HEAD
     const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache, opts.npmClient, opts.registry);
+=======
+    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache, opts.dev);
+>>>>>>> fixup
     await runtime.prepare();
     await runtime.train();
   } catch (err) {
@@ -92,6 +98,7 @@ export const cacheClean = async (): Promise<void> => {
     .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
     .option('--nocache', 'disabel cache for framework and scripts', false)
     .option('-d --debug', 'debug mode', false)
+    .option('--dev', 'development mode', false)
     .option('-m --mirror <mirror>', 'framework mirror', '')
     .option('-c --npmClient <npm>', 'npm client binary for artifact installing', 'npm')
     .option('--registry <registry>', 'npm registry for artifact installing')

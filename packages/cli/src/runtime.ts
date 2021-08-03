@@ -5,7 +5,7 @@ import * as path from 'path';
 import { createStandaloneRT } from './standalone-impl';
 import { logger, Framework, Plugin, Script, PredictDataset } from './utils';
 import { PipelineType } from '../../costa/dist';
-
+import { JSModuleDirName } from './constants';
 /**
  * runtime for standalone environment,
  * input pipeline configuration file, run the pipeline
@@ -28,7 +28,8 @@ export class StandaloneRuntime {
     private mirror: string,
     private enableCache: boolean,
     private npmClient: string,
-    private registry?: string
+    private registry: string | undefined,
+    private devMode: boolean
   ) {
     this.scriptDir = path.join(workspaceDir, 'scripts');
     this.workspace = {
@@ -49,7 +50,7 @@ export class StandaloneRuntime {
     logger.info('preparing framework');
     const framework = await Framework.prepareFramework(this.pipelineMeta, this.workspace.frameworkDir, this.mirror, this.enableCache);
     logger.info('preparing scripts');
-    this.scripts = await Script.prepareScript(this.pipelineMeta, this.scriptDir, this.enableCache);
+    this.scripts = await Script.prepareScript(this.pipelineMeta, this.scriptDir, this.enableCache, this.devMode);
     logger.info('preparing artifact plugins');
     this.artifactPlugins = await Plugin.prepareArtifactPlugin(this.pipelineMeta, this.npmClient, this.registry);
     this.costa = new Costa({
@@ -58,6 +59,10 @@ export class StandaloneRuntime {
     });
     logger.info('initializing framework packages');
     await this.costa.initFramework();
+    const modulePath = path.join(this.workspace.frameworkDir, JSModuleDirName);
+    if (await fs.pathExists(modulePath)) {
+      await fs.symlink(modulePath, path.join(this.scriptDir, JSModuleDirName));
+    }
   }
 
   async train(): Promise<void> {
