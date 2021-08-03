@@ -60,8 +60,9 @@ export class StandaloneRuntime {
     logger.info('initializing framework packages');
     await this.costa.initFramework();
     const modulePath = path.join(this.workspace.frameworkDir, JSModuleDirName);
-    if (await fs.pathExists(modulePath)) {
-      await fs.symlink(modulePath, path.join(this.scriptDir, JSModuleDirName));
+    const scriptModulePath = path.join(this.scriptDir, JSModuleDirName);
+    if (await fs.pathExists(modulePath) && !await fs.pathExists(scriptModulePath)) {
+      await fs.symlink(modulePath, scriptModulePath);
     }
   }
 
@@ -83,7 +84,7 @@ export class StandaloneRuntime {
     }
   }
 
-  async predict(input: PredictDataset.PredictInput): Promise<PredictResult> {
+  async predict(inputs: Array<PredictDataset.PredictInput>): Promise<PredictResult> {
     switch (this.pipelineMeta.type) {
     case PipelineType.ImageClassification:
     case PipelineType.ObjectDetection:
@@ -93,7 +94,7 @@ export class StandaloneRuntime {
       throw new TypeError(`invalid pipeline type: ${this.pipelineMeta.type}`);
     }
     logger.info('running data source script');
-    let datasource = await PredictDataset.makePredictDataset(input, this.pipelineMeta.type);
+    let datasource = await PredictDataset.makePredictDataset(inputs, this.pipelineMeta.type);
     logger.info('running data flow script');
     if (this.scripts.dataflow) {
       datasource = await this.costa.runDataflow(datasource, this.scripts.dataflow, TaskType.PREDICT);

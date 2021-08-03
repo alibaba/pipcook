@@ -6,28 +6,26 @@ import { PipelineType } from '@pipcook/costa';
  */
 export type PredictInput = string | Buffer;
 
-export function makePredictDataset(input: PredictInput, pipelineType: PipelineType): DatasetPool.Types.DatasetPool<any, any> {
+export function makePredictDataset(inputs: Array<PredictInput>, pipelineType: PipelineType): DatasetPool.Types.DatasetPool<any, any> {
   let samples;
   if (pipelineType === PipelineType.ObjectDetection) {
-    if (typeof input === 'string') {
-      samples = [
-        {
+    samples = inputs.map((input) => {
+      if (typeof input === 'string') {
+        return {
           data: {
             uri: input
           },
           label: []
-        } as DataCook.Dataset.Types.ObjectDetection.Sample
-      ];
-    } else if (Buffer.isBuffer(input)) {
-      samples = [
-        {
+        } as DataCook.Dataset.Types.ObjectDetection.Sample;
+      } else {
+        return {
           data: {
             buffer: input.buffer
           },
           label: []
-        } as DataCook.Dataset.Types.ObjectDetection.Sample
-      ];
-    }
+        } as DataCook.Dataset.Types.ObjectDetection.Sample;
+      }
+    });
 
     const datasetData: DatasetPool.Types.DatasetData<DataCook.Dataset.Types.ObjectDetection.Sample> = {
       predictedData: samples
