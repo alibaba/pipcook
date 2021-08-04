@@ -23,10 +23,10 @@ export const makeImageClassificationDatasetFromList = (opts: Types.ImageClassifi
     categories: categories.size > 0 ? Array.from(categories) : undefined
   };
   return ArrayDatasetPoolImpl.fromDataset({
-    train: opts.train ? DataCook.Dataset.makeClassificationDatasetFromList(opts.train) : undefined,
-    test: opts.test ? DataCook.Dataset.makeClassificationDatasetFromList(opts.test) : undefined,
-    valid: opts.valid ? DataCook.Dataset.makeClassificationDatasetFromList(opts.valid) : undefined,
-    predicted: opts.predicted ? DataCook.Dataset.makeClassificationDatasetFromList(opts.predicted) : undefined
+    train: opts.train ? DataCook.Dataset.makeImageClassificationDatasetFromList(opts.train) : undefined,
+    test: opts.test ? DataCook.Dataset.makeImageClassificationDatasetFromList(opts.test) : undefined,
+    valid: opts.valid ? DataCook.Dataset.makeImageClassificationDatasetFromList(opts.valid) : undefined,
+    predicted: opts.predicted ? DataCook.Dataset.makeImageClassificationDatasetFromList(opts.predicted) : undefined
   }, meta);
 };
 
