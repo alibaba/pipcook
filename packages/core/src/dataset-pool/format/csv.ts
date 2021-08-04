@@ -31,7 +31,7 @@ function toSamples(
   });
 }
 
-export const makeDatasetPoolFromCsv = async (options: Options): Promise<Types.DatasetPool<Csv.Sample, Types.Csv.DatasetMeta>> => {
+export const makeDatasetPoolFromCsv = (options: Options): Types.DatasetPool<Csv.Sample, Types.Csv.DatasetMeta> => {
   const config = {
     header: options.hasHeader, delimiter: options.delimiter
   };

@@ -66,9 +66,6 @@ export function transformDatasetPool<
     shuffle: (seed?: string) => dataset.shuffle(seed),
     getDatasetMeta: async () => {
       const meta = await dataset.getDatasetMeta();
-      if (!meta) {
-        return undefined;
-      }
       return metadata(meta);
     },
     train: DataCook.Dataset.makeTransform<IN_SAMPLE, OUT_SAMPLE>(dataset.train, transform),

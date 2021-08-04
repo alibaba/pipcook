@@ -16,7 +16,7 @@ test('constructor', (t) => {
   };
   const workspace = '/tmp';
   const mirror = 'http://a.b.c';
-  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, false, 'npm');
+  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, false, 'npm', undefined, false);
   t.deepEqual((rt as any).workspace, {
     dataDir: path.join(workspace, 'data'),
     modelDir: path.join(workspace, 'model'),
@@ -47,7 +47,7 @@ test('prepare workspace', async (t) => {
   };
   const workspace = '/tmp';
   const mirror = 'http://a.b.c';
-  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, false, 'npm', 'my-registry');
+  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, false, 'npm', 'my-registry', false);
   const stubMkdir = sinon.stub(fs, 'mkdirp').resolves();
   await (rt as any).prepareWorkspace();
   t.is(stubMkdir.callCount, 5, 'should create 4 directories');
@@ -86,7 +86,7 @@ async function run(t: any, runDataflow: boolean) {
   const datasourceMock: any = { mock: 'value' };
   const dataflowMock: any = { mock: 'value' };
   const enableCache = false;
-  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, enableCache, 'npm');
+  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, enableCache, 'npm', undefined, false);
   const stubPrepareFramework = sinon.stub(utils.Framework, 'prepareFramework').resolves();
   const mockScript = {
     datasource: {
@@ -134,6 +134,7 @@ async function run(t: any, runDataflow: boolean) {
   const stubRT = sinon.createStubInstance(RT.StandaloneImpl);
   const stubCreateStandaloneRT = sinon.stub(RT, 'createStandaloneRT').returns(stubRT);
   const stubPrepareWorkspace = sinon.stub(rt as any, 'prepareWorkspace').resolves();
+  await rt.prepare();
   await rt.train();
   t.true(stubPrepareWorkspace.calledOnce, 'should call prepareWorkspace once');
   t.true(stubPrepareFramework.calledOnce, 'should call prepareFramework once');
@@ -145,7 +146,7 @@ async function run(t: any, runDataflow: boolean) {
   t.true(stubPrepareScript.calledOnce, 'should call prepareScripts once');
   t.deepEqual(
     stubPrepareScript.args[0],
-    [ pipelineMeta, path.join(workspace, 'scripts'), enableCache ],
+    [ pipelineMeta, path.join(workspace, 'scripts'), enableCache, false ],
     'should call prepareScripts with correct arguments'
   );
   t.true(stubPrepareArtifactPlugin.calledOnce, 'prepareArtifactPlugin should be called once');

@@ -52,5 +52,8 @@ async function processObjectDetection(predictResult: DatasetPool.Types.ObjectDet
     });
     await img.write(`${path.join(process.cwd(), `predict-result-${i}.png`)}`);
   }
-  logger.success('Object detection result has saved to tmp.png');
+  logger.success('Object detection result has saved to:');
+  for (let i = 0; i < opts.inputs.length; ++i) {
+    logger.info(`predict-result-${i}.png`);
+  }
 }
