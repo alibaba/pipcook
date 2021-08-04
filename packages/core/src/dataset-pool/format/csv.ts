@@ -1,6 +1,6 @@
 import * as DataCook from '@pipcook/datacook';
 import * as Papaparse from 'papaparse';
-import { makeDatasetPool, Types } from '..';
+import { ArrayDatasetPoolImpl, Types } from '..';
 import Csv = DataCook.Dataset.Types.Csv;
 
 export interface Options {
@@ -54,5 +54,5 @@ export const makeDatasetPoolFromCsv = (options: Options): Types.DatasetPool<Csv.
       predicted: data.predictedData?.length || 0
     }
   };
-  return makeDatasetPool(data, meta);
+  return ArrayDatasetPoolImpl.from(data, meta);
 };

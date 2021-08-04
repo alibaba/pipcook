@@ -29,6 +29,8 @@ export interface DatasetPool<T extends Sample, D extends DatasetMeta> {
   valid?: Dataset<T>;
   predicted?: Dataset<T>;
   shuffle: (seed?: string) => void;
+  transform<TARGET_SAMPLE extends Sample> (transformFun: (sample: T) => Promise<TARGET_SAMPLE>): DatasetPool<TARGET_SAMPLE, D>;
+  transform<TARGET_SAMPLE extends Sample, TARGET_META extends DatasetMeta = D> (opts: TransformOption<T, D, TARGET_SAMPLE, TARGET_META>): DatasetPool<TARGET_SAMPLE, TARGET_META>;
 }
 
 export interface TransformOption<

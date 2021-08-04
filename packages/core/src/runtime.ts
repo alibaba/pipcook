@@ -88,7 +88,7 @@ export interface ScriptContext {
   taskType: TaskType;
 }
 
-export type PredictResult = any;
+export type PredictResult = Types.ObjectDetection.PredictResult | Types.TextClassification.PredictResult | Types.ImageClassification.PredictResult | any;
 
 /**
  * type of data source script entry
@@ -114,9 +114,16 @@ export type ModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META e
   (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>;
 
 /**
- * type of model script entry for train and predict
+ * type of model script entry for predict
  */
-export interface ExtModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> {
-  train: (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>;
-  predict: (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<PredictResult>;
-}
+ export type PredictEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
+   (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<PredictResult>;
+
+ /**
+  * type of model script entry for train and predict
+  */
+ export interface ExtModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> {
+     train: ModelEntry<SAMPLE, META>;
+     predict: PredictEntry<SAMPLE, META>;
+ }
+ 

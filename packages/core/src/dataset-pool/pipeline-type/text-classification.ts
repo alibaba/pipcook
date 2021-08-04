@@ -1,5 +1,5 @@
 import * as DataCook from '@pipcook/datacook';
-import { makeDatasetPool, Types, ArrayDatasetPoolImpl } from '..';
+import { Types, ArrayDatasetPoolImpl } from '..';
 
 import TextClassification = DataCook.Dataset.Types.TextClassification;
 import Sample = TextClassification.Sample;
@@ -22,7 +22,7 @@ export const makeTextClassificationDatasetFromList = (opts: Types.TextClassifica
     },
     categories: categories.size > 0 ? Array.from(categories) : undefined
   };
-  return ArrayDatasetPoolImpl.fromDataset({
+  return ArrayDatasetPoolImpl.from({
     train: opts.train ? DataCook.Dataset.makeTextClassificationDatasetFromList(opts.train) : undefined,
     test: opts.test ? DataCook.Dataset.makeTextClassificationDatasetFromList(opts.test) : undefined,
     valid: opts.valid ? DataCook.Dataset.makeTextClassificationDatasetFromList(opts.valid) : undefined,
@@ -35,5 +35,5 @@ export const makeTextClassificationDataset = (
   datasetData: Types.DatasetData<Sample>,
   meta: DatasetMate
 ): Types.TextClassification.DatasetPool => {
-  return makeDatasetPool<Sample, DatasetMate>(datasetData, meta);
+  return ArrayDatasetPoolImpl.from(datasetData, meta);
 };

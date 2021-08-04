@@ -1,7 +1,7 @@
 import test from 'ava';
 import * as sinon from 'sinon';
 import * as DataCook from '@pipcook/datacook';
-import { makeDatasetPool, transformDatasetPool, transformSampleInDataset, Types as DatasetTypes } from '.';
+import { ArrayDatasetPoolImpl, Types as DatasetTypes } from '.';
 
 import Types = DataCook.Dataset.Types;
 
@@ -26,7 +26,7 @@ test('should install and has version number and module exists', async (t) => {
 
   const meta = new TestDatasetMeta();
 
-  const dataset = makeDatasetPool({
+  const dataset = ArrayDatasetPoolImpl.from({
     trainData: trainSamples,
     testData: testSamples
   }, meta);
@@ -50,7 +50,7 @@ test('should iter a dataset after shuffle', async (t) => {
 
   const meta = new TestDatasetMeta();
 
-  const dataset = makeDatasetPool({
+  const dataset = ArrayDatasetPoolImpl.from({
     trainData: trainSamples,
     testData: testSamples,
     validData: testSamples,
@@ -78,7 +78,7 @@ test('should read a zero batch', async (t) => {
 
   const meta = new TestDatasetMeta();
 
-  const dataset = makeDatasetPool({
+  const dataset = ArrayDatasetPoolImpl.from({
     trainData: trainSamples,
     testData: testSamples,
     validData: testSamples,
@@ -98,7 +98,7 @@ test('should read a whole batch', async (t) => {
 
   const meta = new TestDatasetMeta();
 
-  const dataset = makeDatasetPool({
+  const dataset = ArrayDatasetPoolImpl.from({
     trainData: trainSamples,
     testData: testSamples,
     validData: testSamples,
@@ -109,7 +109,7 @@ test('should read a whole batch', async (t) => {
 });
 
 test('should make an empty dataset pool', async (t) => {
-  const dataset = makeDatasetPool({}, undefined);
+  const dataset = ArrayDatasetPoolImpl.from({}, undefined);
   t.notThrows(() => dataset.shuffle());
   t.falsy(dataset.train);
   t.falsy(dataset.test);
@@ -133,7 +133,7 @@ test('should transform dataset pool', async (t) => {
 
   const samples: Array<Types.Sample> = [ sample, sample, sample ];
 
-  const dataset = makeDatasetPool({
+  const dataset = ArrayDatasetPoolImpl.from({
     trainData: samples,
     testData: samples,
     validData: samples,
@@ -143,7 +143,7 @@ test('should transform dataset pool', async (t) => {
     transform: sinon.stub().resolves(sampleTransformed),
     metadata: sinon.stub().resolves(metaTransformed)
   };
-  const transform = transformDatasetPool(opt, dataset);
+  const transform = dataset.transform(opt);
   t.deepEqual(await transform.train?.next(), sampleTransformed);
   t.deepEqual(await transform.test?.next(), sampleTransformed);
   t.deepEqual(await transform.valid?.next(), sampleTransformed);
@@ -167,14 +167,14 @@ test('should transform dataset', async (t) => {
 
   const samples: Array<Types.Sample> = [ sample, sample, sample ];
 
-  const dataset = makeDatasetPool({
+  const dataset = ArrayDatasetPoolImpl.from({
     trainData: samples,
     testData: samples,
     validData: samples,
     predictedData: samples
   }, undefined);
   const transformFunction = sinon.stub().resolves(sampleTransformed);
-  const transform = transformSampleInDataset(transformFunction, dataset);
+  const transform = dataset.transform(transformFunction);
   t.deepEqual(await transform.train?.next(), sampleTransformed);
   t.deepEqual(await transform.test?.next(), sampleTransformed);
   t.deepEqual(await transform.valid?.next(), sampleTransformed);
@@ -194,7 +194,7 @@ test('should throw an error', async (t) => {
 
   const meta = new TestDatasetMeta();
 
-  const dataset = makeDatasetPool({
+  const dataset = ArrayDatasetPoolImpl.from({
     trainData: trainSamples,
     testData: testSamples
   }, meta);

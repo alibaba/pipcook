@@ -1,6 +1,6 @@
 import * as DataCook from '@pipcook/datacook';
 import { Coco as CocoDataset, PascalVoc as PascalVocDataset } from '../format';
-import { transformDatasetPool, transformSampleInDataset, makeDatasetPool, Types } from '../';
+import { ArrayDatasetPoolImpl, Types } from '../';
 
 import Sample = DataCook.Dataset.Types.Sample;
 import Coco = DataCook.Dataset.Types.Coco;
@@ -16,7 +16,7 @@ export const makeObjectDetectionDatasetFromCoco = async (options: CocoDataset.Op
     categorySet.add(item.name);
   });
   const categories = Array.from(categorySet);
-  return transformDatasetPool<Sample<Coco.Image, Coco.Label>, Types.Coco.DatasetMeta, ObjectDetection.Sample, Types.ObjectDetection.DatasetMeta>({
+  return dataset.transform({
     transform: async (sample: Sample<Coco.Image, Coco.Label>): Promise<ObjectDetection.Sample> => {
       const newLabels = sample.label.map((lable) => {
         return {
@@ -36,40 +36,34 @@ export const makeObjectDetectionDatasetFromCoco = async (options: CocoDataset.Op
         categories
       };
     }
-  }, dataset);
+  });
 };
 
 export const makeObjectDetectionDatasetFromPascalVoc = async (options: PascalVocDataset.Options): Promise<Types.ObjectDetection.DatasetPool> => {
-  const dataset = await PascalVocDataset.makeDatasetPoolFromPascalVoc(options);
-
-  return transformSampleInDataset<PascalVoc.Sample,
-      Types.PascalVoc.DatasetMeta,
-      ObjectDetection.Sample
-    >(
-      async (sample: PascalVoc.Sample): Promise<ObjectDetection.Sample> => {
-        const newLabels: ObjectDetection.Label = sample.label.map((lable) => {
-          return {
-            name: lable.name,
-            bbox: [
-              lable.bndbox.xmin,
-              lable.bndbox.ymin,
-              lable.bndbox.xmax - lable.bndbox.xmin,
-              lable.bndbox.ymax - lable.bndbox.ymin
-            ]
-          };
-        });
+  return (await PascalVocDataset.makeDatasetPoolFromPascalVoc(options)).transform<ObjectDetection.Sample>(
+    async (sample: PascalVoc.Sample): Promise<ObjectDetection.Sample> => {
+      const newLabels: ObjectDetection.Label = sample.label.map((lable) => {
         return {
-          data: { uri: sample.data.path },
-          label: newLabels
+          name: lable.name,
+          bbox: [
+            lable.bndbox.xmin,
+            lable.bndbox.ymin,
+            lable.bndbox.xmax - lable.bndbox.xmin,
+            lable.bndbox.ymax - lable.bndbox.ymin
+          ]
         };
-      },
-      dataset
-    );
+      });
+      return {
+        data: { uri: sample.data.path },
+        label: newLabels
+      };
+    }
+  );
 };
 
 export const makeObjectDetectionDataset = (
   datasetData: Types.DatasetData<ObjectDetection.Sample>,
   meta: Types.ObjectDetection.DatasetMeta
 ): Types.ObjectDetection.DatasetPool => {
-  return makeDatasetPool<ObjectDetection.Sample, Types.ObjectDetection.DatasetMeta>(datasetData, meta);
+  return ArrayDatasetPoolImpl.from(datasetData, meta);
 };

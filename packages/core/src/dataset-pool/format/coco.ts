@@ -41,7 +41,7 @@ export const makeDatasetPoolFromCocoFormat = async (
     valid?.seek(0),
     predicted?.seek(0)
   ]);
-  return ArrayDatasetPoolImpl.fromDataset({
+  return ArrayDatasetPoolImpl.from({
     train,
     test,
     valid,

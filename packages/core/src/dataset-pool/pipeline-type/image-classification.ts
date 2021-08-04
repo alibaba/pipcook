@@ -1,5 +1,5 @@
 import * as DataCook from '@pipcook/datacook';
-import { makeDatasetPool, Types, ArrayDatasetPoolImpl } from '../';
+import { Types, ArrayDatasetPoolImpl } from '../';
 
 import ImageClassification = DataCook.Dataset.Types.ImageClassification;
 import Sample = ImageClassification.Sample;
@@ -22,7 +22,7 @@ export const makeImageClassificationDatasetFromList = (opts: Types.ImageClassifi
     },
     categories: categories.size > 0 ? Array.from(categories) : undefined
   };
-  return ArrayDatasetPoolImpl.fromDataset({
+  return ArrayDatasetPoolImpl.from({
     train: opts.train ? DataCook.Dataset.makeImageClassificationDatasetFromList(opts.train) : undefined,
     test: opts.test ? DataCook.Dataset.makeImageClassificationDatasetFromList(opts.test) : undefined,
     valid: opts.valid ? DataCook.Dataset.makeImageClassificationDatasetFromList(opts.valid) : undefined,
@@ -35,5 +35,5 @@ export const makeImageClassificationDataset = (
   datasetData: Types.DatasetData<Sample>,
   meta: DatasetMate
 ): Types.ImageClassification.DatasetPool => {
-  return makeDatasetPool<Sample, DatasetMate>(datasetData, meta);
+  return ArrayDatasetPoolImpl.from(datasetData, meta);
 };

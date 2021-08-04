@@ -33,7 +33,7 @@ export const makeDatasetPoolFromPascalVoc = async (options: Options): Promise<Ty
     valid?.seek(0),
     predicted?.seek(0)
   ]);
-  return ArrayDatasetPoolImpl.fromDataset({
+  return ArrayDatasetPoolImpl.from({
     train,
     test,
     valid,
