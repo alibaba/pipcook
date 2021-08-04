@@ -29,7 +29,7 @@ export function makePredictDataset(inputs: Array<PredictInput>, pipelineType: Pi
     const datasetData: DatasetPool.Types.DatasetData<DataCook.Dataset.Types.ObjectDetection.Sample> = {
       predictedData: samples
     };
-    return DatasetPool.makeDatasetPool(datasetData, { type: DataCook.Dataset.Types.DatasetType.Image });
+    return DatasetPool.ArrayDatasetPoolImpl.from(datasetData, { type: DataCook.Dataset.Types.DatasetType.Image });
   } else if (pipelineType === PipelineType.ImageClassification) {
     samples = inputs.map((input) => {
       if (typeof input === 'string') {
@@ -52,7 +52,7 @@ export function makePredictDataset(inputs: Array<PredictInput>, pipelineType: Pi
     const datasetData: DatasetPool.Types.DatasetData<DataCook.Dataset.Types.ImageClassification.Sample> = {
       predictedData: samples
     };
-    return DatasetPool.makeDatasetPool(datasetData, { type: DataCook.Dataset.Types.DatasetType.Image });
+    return DatasetPool.ArrayDatasetPoolImpl.from(datasetData, { type: DataCook.Dataset.Types.DatasetType.Image });
   } else {
     return null;
   }
