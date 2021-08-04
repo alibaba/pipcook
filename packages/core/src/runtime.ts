@@ -116,14 +116,13 @@ export type ModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META e
 /**
  * type of model script entry for predict
  */
- export type PredictEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
-   (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<PredictResult>;
+export type PredictEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
+  (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<PredictResult>;
 
- /**
-  * type of model script entry for train and predict
-  */
- export interface ExtModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> {
-     train: ModelEntry<SAMPLE, META>;
-     predict: PredictEntry<SAMPLE, META>;
- }
- 
+/**
+ * type of model script entry for train and predict
+ */
+export interface ExtModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> {
+  train: ModelEntry<SAMPLE, META>;
+  predict: PredictEntry<SAMPLE, META>;
+}
