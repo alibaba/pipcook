@@ -118,7 +118,7 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
     console.log(JSON.stringify(predictResult));
     await PostPredict.processData(predictResult, {
       type: pipelineConfig.type,
-      input: opts.str || opts.uri
+      inputs: [ opts.str || opts.uri ]
     });
   } catch (err) {
     throw new TypeError(`predict error: ${ opts.debug ? err.stack : err.message }`);

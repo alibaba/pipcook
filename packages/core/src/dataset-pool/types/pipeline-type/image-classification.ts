@@ -14,7 +14,7 @@ export interface Options {
 export type Sample = DataCook.Dataset.Types.ImageClassification.Sample;
 
 export interface DatasetMeta extends ClassificationDatasetMeta {
-  type: DatasetType.Image
+  type: DatasetType.Image;
 }
 
 export type Dataset = BaseDataset<Sample>;
@@ -22,7 +22,8 @@ export type Dataset = BaseDataset<Sample>;
 export type DatasetPool = BaseDatasetPool<Sample, DatasetMeta>;
 
 export interface SinglePredictResult {
-  class: string;
+  id: number;
+  category: string;
   score: number;
 }
 

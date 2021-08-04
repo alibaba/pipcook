@@ -14,10 +14,13 @@ export type Dataset = BaseDataset<Sample>;
 
 export type DatasetPool = BaseDatasetPool<Sample, DatasetMeta>;
 
-export interface SinglePredictResult {
-  class: string;
+export interface PredictObject {
+  id: number;
+  category: string;
   score: number;
   box: DataCook.Dataset.Types.ObjectDetection.Bbox;
 }
+
+export type SinglePredictResult = Array<PredictObject>;
 
 export type PredictResult = Array<SinglePredictResult>;
