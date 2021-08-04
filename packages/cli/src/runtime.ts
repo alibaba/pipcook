@@ -4,7 +4,6 @@ import { TaskType, PredictResult } from '@pipcook/core';
 import * as path from 'path';
 import { createStandaloneRT } from './standalone-impl';
 import { logger, Framework, Plugin, Script, PredictDataset } from './utils';
-import { PipelineType } from '../../costa/dist';
 import { JSModuleDirName } from './constants';
 /**
  * runtime for standalone environment,
@@ -85,16 +84,11 @@ export class StandaloneRuntime {
   }
 
   async predict(inputs: Array<PredictDataset.PredictInput>): Promise<PredictResult> {
-    switch (this.pipelineMeta.type) {
-    case PipelineType.ImageClassification:
-    case PipelineType.ObjectDetection:
-    case PipelineType.TextClassification:
-      break;
-    default:
-      throw new TypeError(`invalid pipeline type: ${this.pipelineMeta.type}`);
-    }
     logger.info('running data source script');
     let datasource = await PredictDataset.makePredictDataset(inputs, this.pipelineMeta.type);
+    if (!datasource) {
+      throw new TypeError(`invalid pipeline type: ${this.pipelineMeta.type}`);
+    }
     logger.info('running data flow script');
     if (this.scripts.dataflow) {
       datasource = await this.costa.runDataflow(datasource, this.scripts.dataflow, TaskType.PREDICT);
