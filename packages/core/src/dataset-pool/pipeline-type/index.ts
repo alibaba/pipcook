@@ -1,1 +1,2 @@
-export * as ObjectDetection from './object-detection';
+export * from './object-detection';
+export * from './image-classification';

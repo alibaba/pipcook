@@ -54,7 +54,7 @@ export interface DatasetMeta {
 }
 
 export interface ClassificationDatasetMeta extends DatasetMeta {
-  categories?: Array<any>;
+  categories?: Array<string>;
 }
 
 export interface ObjectDetectionDatasetMeta extends DatasetMeta {

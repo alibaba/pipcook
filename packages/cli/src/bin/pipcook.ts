@@ -8,7 +8,7 @@ import { parse } from 'url';
 import * as constants from '../constants';
 import { readJson, mkdirp, remove, copy, readFile } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
-import { logger, dateToString, downloadWithProgress, DownloadProtocol } from '../utils';
+import { logger, dateToString, downloadWithProgress, DownloadProtocol, PostPredict } from '../utils';
 import { PredictInput } from '../utils/predict-dataset';
 
 export interface TrainOptions {
@@ -29,15 +29,15 @@ export interface TrainOptions {
 
 export interface PredictOptions {
   // input for predict
-  text: string;
-  uri: string;
+  str?: string;
+  uri?: string;
   // Fetch the framework and script without cache
-  nocache: boolean;
+  nocache?: boolean;
   // Debug model
-  debug: boolean;
-  mirror: string;
+  debug?: boolean;
+  mirror?: string;
   // Development mode
-  dev: boolean;
+  dev?: boolean;
 }
 
 export interface CacheCleanOptions {
@@ -47,12 +47,17 @@ export interface CacheCleanOptions {
   script: boolean;
 }
 
-export const train = async (filename: string, opts: TrainOptions): Promise<void> => {
+/**
+ * Train model though pipeline.
+ * @param uri pipeline file uri
+ * @param opts 
+ */
+export const train = async (uri: string, opts: TrainOptions): Promise<void> => {
   let pipelineConfig;
   opts.output = resolve(opts.output);
   try {
     await mkdirp(opts.output);
-    const urlObj = parse(filename);
+    const urlObj = parse(uri);
     const name = basename(urlObj.path);
     const pipelinePath = join(opts.output, name);
     if (extname(name) !== '.json') {
@@ -65,7 +70,7 @@ export const train = async (filename: string, opts: TrainOptions): Promise<void>
       break;
     case DownloadProtocol.HTTPS:
     case DownloadProtocol.HTTP:
-      await downloadWithProgress(filename, pipelinePath);
+      await downloadWithProgress(uri, pipelinePath);
       break;
     default:
       throw new TypeError(`protocol '${urlObj.protocol}' not supported`);
@@ -102,17 +107,21 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
     const runtime = new StandaloneRuntime(workspace, pipelineConfig, opts.mirror, !opts.nocache, opts.dev);
     await runtime.prepare();
     const inputs: Array<PredictInput> = [];
-    if (opts.text) {
-      inputs.push(opts.text);
+    if (opts.str) {
+      inputs.push(opts.str);
     } else if (opts.uri) {
       inputs.push((await readFile(opts.uri)));
     } else {
-      throw new TypeError('Text or uri should be specified, see `pipcook predict --help` for more information.');
+      throw new TypeError('Str or uri should be specified, see `pipcook predict --help` for more information.');
     }
-
-    await runtime.predict([opts.text]);
+    const predictResult = await runtime.predict(inputs);
+    console.log(JSON.stringify(predictResult));
+    await PostPredict.processData(predictResult, {
+      type: pipelineConfig.type,
+      input: opts.str || opts.uri
+    });
   } catch (err) {
-    logger.fail(`run pipeline error: ${ opts.debug ? err.stack : err.message }`);
+    logger.fail(`predict error: ${ opts.debug ? err.stack : err.message }`);
   }
 };
 
@@ -140,7 +149,9 @@ export const cacheClean = async (): Promise<void> => {
   program.version(pkg.version, '-v, --version');
 
   program
-    .command('run <filename>')
+    .command('run <uri>')
+    .alias('train')
+    .alias('t')
     .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
     .option('-m --mirror <mirror>', 'framework mirror', '')
     .option('-d --debug', 'debug mode', false)
@@ -154,8 +165,9 @@ export const cacheClean = async (): Promise<void> => {
 
   program
     .command('predict <filename>')
-    .option('-t --text <text>', 'predict text')
-    .option('-u --uri <uri>', 'predict uri')
+    .alias('p')
+    .option('-s --str <str>', 'predict as string')
+    .option('-u --uri <uri>', 'predict file uri')
     .option('-m --mirror <mirror>', 'framework mirror', '')
     .option('-d --debug', 'debug mode', false)
     .option('--nocache', 'disabel cache for framework and scripts', false)

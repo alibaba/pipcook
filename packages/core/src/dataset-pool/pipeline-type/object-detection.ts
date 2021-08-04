@@ -67,9 +67,9 @@ export const makeObjectDetectionDatasetFromPascalVoc = async (options: PascalVoc
     );
 };
 
-export const makeObjectDetectionDataset = async (
+export const makeObjectDetectionDataset = (
   datasetData: Types.DatasetData<ObjectDetection.Sample>,
   meta: Types.ObjectDetection.DatasetMeta
-): Promise<Types.ObjectDetection.DatasetPool> => {
+): Types.ObjectDetection.DatasetPool => {
   return makeDatasetPool<ObjectDetection.Sample, Types.ObjectDetection.DatasetMeta>(datasetData, meta);
 };

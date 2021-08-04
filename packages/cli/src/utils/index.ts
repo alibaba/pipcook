@@ -22,6 +22,7 @@ export * as Plugin from './plugin';
 export * as Cache from './cache';
 export * as Framework from './framework';
 export * as PredictDataset from './predict-dataset';
+export * as PostPredict from './post-predict';
 
 const { pipeline } = require('stream');
 
