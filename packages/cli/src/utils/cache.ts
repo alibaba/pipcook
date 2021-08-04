@@ -20,7 +20,7 @@ export const fetchWithCache = async (cacheDir: string, url: string, target: stri
   await fs.remove(target);
   if (enableCache) {
     if (await fs.pathExists(cachePath)) {
-      await fs.symlink(cachePath, target);
+      await fs.copy(cachePath, target);
       return;
     }
     debug('cache missed');
@@ -31,6 +31,6 @@ export const fetchWithCache = async (cacheDir: string, url: string, target: stri
   await downloadAndExtractTo(url, cacheTmpPath);
   debug('move tmp file to cache');
   await fs.move(cacheTmpPath, cachePath);
-  debug(`link ${cachePath} to ${target}`);
-  await fs.symlink(cachePath, target);
+  debug(`copy ${cachePath} to ${target}`);
+  await fs.copy(cachePath, target, );
 };
