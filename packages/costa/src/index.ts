@@ -211,9 +211,6 @@ export class Costa {
    * @param options options of the pipeline
    */
   async runModel(runtime: DefaultRuntime, script: PipcookScript, options: Record<string, any>, taskType = TaskType.TRAIN): Promise<void | PredictResult> {
-    const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
-    module.paths.push(nodeModules);
-    process.env['']
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
     const entry = await this.importScript<DefaultModelEntry>(script, ScriptType.Model);

@@ -12,7 +12,7 @@ export interface Options {
 }
 
 export async function processData(predictResult: PredictResult, opts: Options): Promise<void> {
-  switch(opts.type) {
+  switch (opts.type) {
   case PipelineType.ObjectDetection:
     await processObjectDetection(predictResult, opts);
     break;

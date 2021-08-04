@@ -26,7 +26,7 @@ export const makeImageClassificationDatasetFromList = (opts: Types.ImageClassifi
     train: opts.train ? DataCook.Dataset.makeClassificationDatasetFromList(opts.train) : undefined,
     test: opts.test ? DataCook.Dataset.makeClassificationDatasetFromList(opts.test) : undefined,
     valid: opts.valid ? DataCook.Dataset.makeClassificationDatasetFromList(opts.valid) : undefined,
-    predicted: opts.predicted ? DataCook.Dataset.makeClassificationDatasetFromList(opts.predicted) : undefined,
+    predicted: opts.predicted ? DataCook.Dataset.makeClassificationDatasetFromList(opts.predicted) : undefined
   }, meta);
 };
 

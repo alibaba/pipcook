@@ -50,7 +50,7 @@ export interface CacheCleanOptions {
 /**
  * Train model though pipeline.
  * @param uri pipeline file uri
- * @param opts 
+ * @param opts train options
  */
 export const train = async (uri: string, opts: TrainOptions): Promise<void> => {
   let pipelineConfig;
@@ -90,13 +90,13 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
   try {
     const urlObj = parse(filename);
     switch (urlObj.protocol) {
-      case null:
-      case DownloadProtocol.FILE:
-        urlObj.path = resolve(urlObj.path);
-        break;
-      default:
-        throw new TypeError(`protocol '${urlObj.protocol}' not supported when predict`);
-    }  
+    case null:
+    case DownloadProtocol.FILE:
+      urlObj.path = resolve(urlObj.path);
+      break;
+    default:
+      throw new TypeError(`protocol '${urlObj.protocol}' not supported when predict`);
+    }
     const name = basename(urlObj.path);
     if (extname(name) !== '.json') {
       console.warn('pipeline configuration file should be a json file');
@@ -121,7 +121,7 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
       input: opts.str || opts.uri
     });
   } catch (err) {
-    logger.fail(`predict error: ${ opts.debug ? err.stack : err.message }`);
+    throw new TypeError(`predict error: ${ opts.debug ? err.stack : err.message }`);
   }
 };
 
