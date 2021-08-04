@@ -1,5 +1,4 @@
-import * as DataCook from '@pipcook/datacook';
-import { DatasetPool } from '@pipcook/core';
+import { DatasetPool, DataCook } from '@pipcook/core';
 import { PipelineType } from '@pipcook/costa';
 /**
  * Data type for predict tasks

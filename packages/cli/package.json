@@ -21,7 +21,6 @@
     "@pipcook/boa": "^2.1.0",
     "@pipcook/core": "^2.0.0",
     "@pipcook/costa": "^2.0.0",
-    "@pipcook/datacook": "0.0.8",
     "bent": "^7.3.12",
     "chalk": "^3.0.0",
     "cli-progress": "^3.9.0",
