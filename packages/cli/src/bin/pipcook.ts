@@ -115,13 +115,13 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
       throw new TypeError('Str or uri should be specified, see `pipcook predict --help` for more information.');
     }
     const predictResult = await runtime.predict(inputs);
-    console.log(JSON.stringify(predictResult));
+    logger.info(JSON.stringify(predictResult));
     await PostPredict.processData(predictResult, {
       type: pipelineConfig.type,
       inputs: [ opts.str || opts.uri ]
     });
   } catch (err) {
-    throw new TypeError(`predict error: ${ opts.debug ? err.stack : err.message }`);
+    logger.fail(`predict error: ${ opts.debug ? err.stack : err.message }`);
   }
 };
 

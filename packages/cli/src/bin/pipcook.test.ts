@@ -163,6 +163,76 @@ test.serial('fetch with url invalid extname', async (t) => {
   t.deepEqual(stubWarn.args[0], [ 'pipeline configuration file should be a json file' ], 'should console.warn with correct message');
 });
 
+test.serial('predict: fetch with file', async (t) => {
+  const mockUrl = '/a.b.c/path/to/filename.json';
+  const opts = {
+    str: 'test-input',
+    output: '/tmp',
+    nocache: true,
+    mirror: '',
+    debug: false,
+    dev: false
+  };
+  const mockPipelineConfig = { mock: 'value' };
+  const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
+  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'predict').resolves({ a: 1 });
+  const stubWarn = sinon.stub(console, 'warn').returns();
+  const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
+  await pipcook.predict(mockUrl, opts);
+  t.true(stubReadJson.calledOnce, 'readJson should be called once');
+  t.deepEqual(stubReadJson.args[0], [ '/a.b.c/path/to/filename.json' ] as any, 'should read the correct file');
+  t.true(stubRun.calledOnce, 'run should be called once');
+  t.true(stubPrepare.calledOnce, 'prepare should be called once');
+  t.false(stubWarn.called, 'should not call console.warn');
+});
+
+test.serial('predict: input file', async (t) => {
+  const mockUrl = '/a.b.c/path/to/filename.json';
+  const opts = {
+    uri: '/test-input.json',
+    output: '/tmp',
+    nocache: true,
+    mirror: '',
+    debug: false,
+    dev: false
+  };
+  const mockPipelineConfig = { mock: 'value' };
+  const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
+  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'predict').resolves({ a: 1 });
+  const stubReadFile = sinon.stub(fs, 'readFile').resolves(Buffer.from([ 1, 2, 3 ]));
+  const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
+  await pipcook.predict(mockUrl, opts);
+  t.true(stubReadJson.calledOnce, 'readJson should be called once');
+  t.deepEqual(stubReadJson.args[0], [ '/a.b.c/path/to/filename.json' ] as any, 'should read the correct file');
+  t.true(stubRun.calledOnce, 'run should be called once');
+  t.true(stubPrepare.calledOnce, 'prepare should be called once');
+  t.true(stubReadFile.calledOnce, 'should call fs.readFile once');
+});
+
+test.serial('predict: fetch with url invalid extname', async (t) => {
+  const mockUrl = '/a.b.c/path/to/filename.html';
+  const opts = {
+    str: 'test-input',
+    output: '/tmp',
+    nocache: true,
+    mirror: '',
+    debug: false,
+    dev: false
+  };
+  const mockPipelineConfig = { mock: 'value' };
+  const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
+  const stubRun = sinon.stub(StandaloneRuntime.prototype, 'predict').resolves({ a: 1 });
+  const stubWarn = sinon.stub(console, 'warn').returns();
+  const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
+  await pipcook.predict(mockUrl, opts);
+  t.true(stubReadJson.calledOnce, 'readJson should be called once');
+  t.deepEqual(stubReadJson.args[0], [ '/a.b.c/path/to/filename.html' ] as any, 'should read the correct file');
+  t.true(stubRun.calledOnce, 'run should be called once');
+  t.true(stubPrepare.calledOnce, 'prepare should be called once');
+  t.true(stubWarn.calledOnce, 'should call console.warn once');
+  t.deepEqual(stubWarn.args[0], [ 'pipeline configuration file should be a json file' ], 'should console.warn with correct message');
+});
+
 test.serial('clean cache', async (t) => {
   const stubRemove = sinon.stub(fs, 'remove').resolves();
   await pipcook.cacheClean();
