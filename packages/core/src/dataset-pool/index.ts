@@ -75,22 +75,22 @@ export class ArrayDatasetPoolImpl<T extends Sample, D extends Types.DatasetMeta>
     if (isTransformOption(optsOrFun)) {
       const { metadata, transform } = optsOrFun;
       const newDatasetPool = ArrayDatasetPoolImpl.from<TARGET_SAMPLE, TARGET_META>({
-        train: DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.train, transform),
-        test: DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.test, transform),
-        valid: DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.valid, transform),
-        predicted: DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.predicted, transform)
+        train: this.train ? DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.train, transform) : undefined,
+        test: this.test ? DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.test, transform) : undefined,
+        valid: this.valid ? DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.valid, transform) : undefined,
+        predicted: this.predicted ? DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.predicted, transform) : undefined
       });
-      const meta = this.meta;
+      const metaPromise = this.getDatasetMeta();
       newDatasetPool.getDatasetMeta = async () => {
-        return metadata(meta);
+        return metadata(await metaPromise);
       };
       return newDatasetPool;
     } else {
       return ArrayDatasetPoolImpl.from<TARGET_SAMPLE, D>({
-        train: DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.train, optsOrFun),
-        test: DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.test, optsOrFun),
-        valid: DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.valid, optsOrFun),
-        predicted: DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.predicted, optsOrFun)
+        train: this.train ? DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.train, optsOrFun) : undefined,
+        test: this.test ? DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.test, optsOrFun) : undefined,
+        valid: this.valid ? DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.valid, optsOrFun) : undefined,
+        predicted: this.predicted ? DataCook.Dataset.makeTransform<T, TARGET_SAMPLE>(this.predicted, optsOrFun) : undefined
       }, this.meta);
     }
   }
