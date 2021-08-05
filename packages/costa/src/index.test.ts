@@ -392,7 +392,7 @@ test.serial('import from model script which exports a function', async (t) => {
   const stubImportFrom = sinon.stub(utils, 'importFrom').resolves(fun);
   const r = await costa.importScript<any>(script);
   t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
-  t.deepEqual(r,{ train: fun, predict: null }, 'should get the right function');
+  t.deepEqual(r, { train: fun, predict: null }, 'should get the right function');
 });
 
 test.serial('import from model script which exports object', async (t) => {
