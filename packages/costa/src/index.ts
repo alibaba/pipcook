@@ -124,7 +124,7 @@ export class Costa {
    * @param script script infomation
    * @param moduleExport module export
    */
-  async importScript<T>(script: PipcookScript, type: ScriptType): Promise<T> {
+  async importScript<T>(script: PipcookScript): Promise<T> {
     const existEntry = this.entriesCache[script.path];
     if (existEntry) {
       return existEntry;
@@ -136,17 +136,17 @@ export class Costa {
     } else if (typeof scriptExports.default === 'function') {
       entry = scriptExports.default;
     }
-    if (!entry && type === ScriptType.DataSource) {
+    if (!entry && script.type === ScriptType.DataSource) {
       const { datasource } = scriptExports as any;
       if (typeof datasource === 'function') {
         entry = datasource;
       }
-    } else if (!entry && type === ScriptType.Dataflow) {
+    } else if (!entry && script.type === ScriptType.Dataflow) {
       const { dataflow } = scriptExports as any;
       if (typeof dataflow === 'function') {
         entry = dataflow;
       }
-    } else if (type === ScriptType.Model) {
+    } else if (script.type === ScriptType.Model) {
       if (entry) {
         entry = {
           train: entry,
@@ -157,7 +157,8 @@ export class Costa {
         const tmpEntry = model ? model : scriptExports;
         if (typeof tmpEntry === 'function') {
           entry = {
-            train: tmpEntry
+            train: tmpEntry,
+            predict: null
           };
         } else if (
           typeof tmpEntry === 'object'
@@ -184,7 +185,7 @@ export class Costa {
   async runDataSource(script: PipcookScript): Promise<DefaultDataSet> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
-    const fn = await this.importScript<DefaultDataSourceEntry>(script, ScriptType.DataSource);
+    const fn = await this.importScript<DefaultDataSourceEntry>(script);
     debug(`loaded the script(${script.name}), start it.`);
     return await fn(script.query, { ...this.context, taskType: TaskType.TRAIN });
   }
@@ -197,7 +198,7 @@ export class Costa {
   async runDataflow(dataset: DefaultDataSet, scripts: Array<PipcookScript>, taskType = TaskType.TRAIN): Promise<DefaultDataSet> {
     for (const script of scripts) {
       debug(`start loading the script(${script.name})`);
-      const fn = await this.importScript<DefaultDataflowEntry>(script, ScriptType.Dataflow);
+      const fn = await this.importScript<DefaultDataflowEntry>(script);
       debug(`loaded the script(${script.name}), start it.`);
       dataset = await fn(dataset, script.query, { ...this.context, taskType });
     }
@@ -213,7 +214,7 @@ export class Costa {
   async runModel(runtime: DefaultRuntime, script: PipcookScript, options: Record<string, any>, taskType = TaskType.TRAIN): Promise<void | PredictResult> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
-    const entry = await this.importScript<DefaultModelEntry>(script, ScriptType.Model);
+    const entry = await this.importScript<DefaultModelEntry>(script);
     // when the `load` is complete, start the plugin.
     debug(`loaded the script(${script.name}), start it.`);
     const opts = {
