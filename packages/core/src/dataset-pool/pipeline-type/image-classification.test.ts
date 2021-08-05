@@ -3,6 +3,8 @@ import * as DataCook from '@pipcook/datacook';
 import { makeImageClassificationDatasetFromList } from './image-classification';
 
 test('make dataset pool from train and test list', async (t) => {
+  const buffer1 = new ArrayBuffer(1);
+  const buffer2 = new ArrayBuffer(2);
   const opts = {
     train: [
       {
@@ -11,7 +13,7 @@ test('make dataset pool from train and test list', async (t) => {
       },
       {
         category: 'b',
-        buffer: Buffer.from([ 1 ]).buffer
+        buffer: buffer1
       }
     ],
     test: [
@@ -21,7 +23,7 @@ test('make dataset pool from train and test list', async (t) => {
       },
       {
         category: 'a',
-        buffer: Buffer.from([ 2 ]).buffer
+        buffer: buffer2
       }
     ],
     valid: undefined,
@@ -45,13 +47,15 @@ test('make dataset pool from train and test list', async (t) => {
     label: 'a'
   });
   t.deepEqual(sample2, {
-    data: { buffer: Buffer.from([ 1 ]).buffer, uri: undefined },
+    data: { buffer: buffer1, uri: undefined },
     label: 'b'
   });
   t.is(sample3, undefined);
 });
 
 test('make dataset pool from valid and predict list', async (t) => {
+  const buffer1 = new ArrayBuffer(1);
+  const buffer2 = new ArrayBuffer(2);
   const opts = {
     valid: [
       {
@@ -60,7 +64,7 @@ test('make dataset pool from valid and predict list', async (t) => {
       },
       {
         category: 'b',
-        buffer: Buffer.from([ 1 ]).buffer
+        buffer: buffer1
       }
     ],
     predicted: [
@@ -70,7 +74,7 @@ test('make dataset pool from valid and predict list', async (t) => {
       },
       {
         category: 'a',
-        buffer: Buffer.from([ 2 ]).buffer
+        buffer: buffer2
       }
     ],
     train: undefined,
@@ -94,7 +98,7 @@ test('make dataset pool from valid and predict list', async (t) => {
     label: 'a'
   });
   t.deepEqual(sample2, {
-    data: { buffer: Buffer.from([ 1 ]).buffer, uri: undefined },
+    data: { buffer: buffer1, uri: undefined },
     label: 'b'
   });
   t.is(sample3, undefined);
