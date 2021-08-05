@@ -5,6 +5,17 @@ import * as path from 'path';
 import { createStandaloneRT } from './standalone-impl';
 import { logger, Framework, Plugin, Script, PredictDataset } from './utils';
 import { JSModuleDirName } from './constants';
+
+export interface Options {
+  workspace: string;
+  pipelineMeta: PipelineMeta;
+  mirror: string;
+  enableCache: boolean;
+  npmClient: string;
+  registry?: string;
+  devMode: boolean;
+}
+
 /**
  * runtime for standalone environment,
  * input pipeline configuration file, run the pipeline
@@ -21,21 +32,27 @@ export class StandaloneRuntime {
 
   private scripts: ScriptConfig;
 
-  constructor(
-    workspaceDir: string,
-    private pipelineMeta: PipelineMeta,
-    private mirror: string,
-    private enableCache: boolean,
-    private npmClient: string,
-    private registry: string | undefined,
-    private devMode: boolean
-  ) {
-    this.scriptDir = path.join(workspaceDir, 'scripts');
+  private pipelineMeta: PipelineMeta;
+  private mirror: string;
+  private enableCache: boolean;
+  private npmClient: string;
+  private registry: string | undefined;
+  private devMode: boolean;
+
+  constructor(opts: Options) {
+    this.pipelineMeta = opts.pipelineMeta;
+    this.mirror = opts.mirror;
+    this.enableCache = opts.enableCache;
+    this.registry = opts.registry;
+    this.npmClient = opts.npmClient;
+    this.devMode = opts.devMode;
+
+    this.scriptDir = path.join(opts.workspace, 'scripts');
     this.workspace = {
-      dataDir: path.join(workspaceDir, 'data'),
-      modelDir: path.join(workspaceDir, 'model'),
-      cacheDir: path.join(workspaceDir, 'cache'),
-      frameworkDir: path.join(workspaceDir, 'framework')
+      dataDir: path.join(opts.workspace, 'data'),
+      modelDir: path.join(opts.workspace, 'model'),
+      cacheDir: path.join(opts.workspace, 'cache'),
+      frameworkDir: path.join(opts.workspace, 'framework')
     };
   }
 

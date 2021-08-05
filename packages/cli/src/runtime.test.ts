@@ -17,7 +17,15 @@ test('constructor', (t) => {
   };
   const workspace = '/tmp';
   const mirror = 'http://a.b.c';
-  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, false, 'npm', undefined, false);
+  const rt = new Runtime.StandaloneRuntime({
+    workspace,
+    pipelineMeta,
+    mirror,
+    enableCache: false,
+    npmClient: 'npm',
+    registry: undefined,
+    devMode: false
+  });
   t.deepEqual((rt as any).workspace, {
     dataDir: path.join(workspace, 'data'),
     modelDir: path.join(workspace, 'model'),
@@ -49,7 +57,15 @@ test('prepare workspace', async (t) => {
   };
   const workspace = '/tmp';
   const mirror = 'http://a.b.c';
-  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, false, 'npm', 'my-registry', false);
+  const rt = new Runtime.StandaloneRuntime({
+    workspace,
+    pipelineMeta,
+    mirror,
+    enableCache: false,
+    npmClient: 'npm',
+    registry: 'my-registry',
+    devMode: false
+  });
   const stubMkdir = sinon.stub(fs, 'mkdirp').resolves();
   await (rt as any).prepareWorkspace();
   t.is(stubMkdir.callCount, 5, 'should create 4 directories');
@@ -89,7 +105,14 @@ async function run(t: any, taskType: TaskType, runDataflow: boolean) {
   const datasourceMock: any = { mock: 'value' };
   const dataflowMock: any = { mock: 'value' };
   const enableCache = false;
-  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, enableCache, 'npm', undefined, false);
+  const rt = new Runtime.StandaloneRuntime({
+    workspace,
+    pipelineMeta,
+    mirror,
+    enableCache,
+    npmClient: 'npm',
+    devMode: false
+  });
   const stubPrepareFramework = sinon.stub(utils.Framework, 'prepareFramework').resolves();
   const mockScript = {
     datasource: {

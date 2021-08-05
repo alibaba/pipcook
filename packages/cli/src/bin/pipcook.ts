@@ -77,7 +77,15 @@ export const train = async (uri: string, opts: TrainOptions): Promise<void> => {
     }
     pipelineConfig = await readJson(pipelinePath);
     // TODO(feely): check pipeline file
-    const runtime = new StandaloneRuntime(opts.output, pipelineConfig, opts.mirror, !opts.nocache, opts.npmClient, opts.registry, opts.dev);
+    const runtime = new StandaloneRuntime({
+      workspace: opts.output,
+      pipelineMeta: pipelineConfig,
+      mirror: opts.mirror,
+      enableCache: !opts.nocache,
+      npmClient: opts.npmClient,
+      registry: opts.registry,
+      devMode: opts.dev
+    });
     await runtime.prepare();
     await runtime.train();
   } catch (err) {
@@ -104,7 +112,14 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
     const workspace = dirname(urlObj.path);
     pipelineConfig = await readJson(urlObj.path);
     // TODO(feely): check pipeline file
-    const runtime = new StandaloneRuntime(workspace, pipelineConfig, opts.mirror, !opts.nocache, opts.dev);
+    const runtime = new StandaloneRuntime({
+      workspace,
+      pipelineMeta: pipelineConfig,
+      mirror: opts.mirror,
+      enableCache: false,
+      npmClient: 'npm',
+      devMode: opts.dev
+    });
     await runtime.prepare();
     const inputs: Array<PredictInput> = [];
     if (opts.str) {
