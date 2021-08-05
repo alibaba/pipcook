@@ -18,7 +18,9 @@ export class StandaloneRuntime {
     workspaceDir: string,
     private pipelineMeta: PipelineMeta,
     private mirror: string,
-    private enableCache: boolean
+    private enableCache: boolean,
+    private npmClient: string,
+    private registry?: string
   ) {
     this.scriptDir = path.join(workspaceDir, 'scripts');
     this.workspace = {
@@ -42,7 +44,7 @@ export class StandaloneRuntime {
     logger.info('preparing scripts');
     const scripts = await Script.prepareScript(this.pipelineMeta, this.scriptDir, this.enableCache);
     logger.info('preparing artifact plugins');
-    const artifactPlugins = await Plugin.prepareArtifactPlugin(this.pipelineMeta);
+    const artifactPlugins = await Plugin.prepareArtifactPlugin(this.pipelineMeta, this.npmClient, this.registry);
     const costa = new Costa({
       workspace: this.workspace,
       framework
