@@ -29,7 +29,7 @@
     "clean": "lerna run clean --parallel --concurrency 10",
     "release": "lerna publish from-package --yes --no-verify-access",
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
-    "beta-release": "lerna publish from-package --no-verify-access --dist-tag beta",
+    "beta-release": "lerna publish from-package --no-verify-access --dist-tag beta -y",
     "cov": "./tools/coverage.sh",
     "cov:report": "nyc report -r=lcov"
   }
