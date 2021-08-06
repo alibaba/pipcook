@@ -116,7 +116,7 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
       workspace,
       pipelineMeta: pipelineConfig,
       mirror: opts.mirror,
-      enableCache: false,
+      enableCache: !opts.nocache,
       npmClient: 'npm',
       devMode: opts.dev
     });
@@ -130,7 +130,6 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
       throw new TypeError('Str or uri should be specified, see `pipcook predict --help` for more information.');
     }
     const predictResult = await runtime.predict(inputs);
-    logger.info(JSON.stringify(predictResult));
     await PostPredict.processData(predictResult, {
       type: pipelineConfig.type,
       inputs: [ opts.str || opts.uri ]

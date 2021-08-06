@@ -12,11 +12,13 @@ export interface Options {
 }
 
 export async function processData(predictResult: PredictResult, opts: Options): Promise<void> {
+  logger.info(`Origin result:${JSON.stringify(predictResult)}`);
   switch (opts.type) {
   case PipelineType.ObjectDetection:
     await processObjectDetection(predictResult, opts);
     break;
   default:
+    logger.info(JSON.stringify(predictResult));
     return;
   }
 }

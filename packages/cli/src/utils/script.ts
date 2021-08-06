@@ -35,7 +35,7 @@ export const downloadScript = async (scriptDir: string, scriptOrder: number, url
   } else {
     if (urlObj.protocol === DownloadProtocol.HTTP || urlObj.protocol === DownloadProtocol.HTTPS) {
       // maybe should copy the script with COW
-      await fetchWithCache(constants.PIPCOOK_SCRIPT_PATH, url, localPath, enableCache);
+      await fetchWithCache(constants.PIPCOOK_SCRIPT_PATH, url, localPath, enableCache, true);
     } else {
       throw new TypeError(`unsupported protocol ${urlObj.protocol}`);
     }
