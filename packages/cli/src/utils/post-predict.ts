@@ -12,13 +12,12 @@ export interface Options {
 }
 
 export async function processData(predictResult: PredictResult, opts: Options): Promise<void> {
-  logger.info(`Origin result:${JSON.stringify(predictResult)}`);
+  logger.success(`Origin result:${JSON.stringify(predictResult)}`);
   switch (opts.type) {
   case PipelineType.ObjectDetection:
     await processObjectDetection(predictResult, opts);
     break;
   default:
-    logger.info(JSON.stringify(predictResult));
     return;
   }
 }
@@ -54,7 +53,7 @@ async function processObjectDetection(predictResult: DatasetPool.Types.ObjectDet
     });
     await img.write(`${path.join(process.cwd(), `predict-result-${i}.png`)}`);
   }
-  logger.success('Object detection result has saved to:');
+  logger.success('Object detection result has been saved to:');
   for (let i = 0; i < opts.inputs.length; ++i) {
     logger.info(`predict-result-${i}.png`);
   }

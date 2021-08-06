@@ -1,7 +1,8 @@
 {
   "specVersion": "2.0",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@6bd0c93/scripts/text-classification-bayes/build/datasource.js?url=http://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip",
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@6bd0c93/scripts/text-classification-bayes/build/model.js",
+  "type": "TextClassification",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@2c516bc/scripts/text-classification-bayes/build/datasource.js?url=http://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@2c516bc/scripts/text-classification-bayes/build/model.js",
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "/tmp/bayes-model.zip"
