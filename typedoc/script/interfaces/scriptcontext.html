@@ -88,10 +88,6 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#boa" class="tsd-kind-icon">boa</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#datacook" class="tsd-kind-icon">data<wbr>Cook</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#importjs" class="tsd-kind-icon">importJS</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#importpy" class="tsd-kind-icon">importPY</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#tasktype" class="tsd-kind-icon">task<wbr>Type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#workspace" class="tsd-kind-icon">workspace</a></li>
 							</ul>
@@ -102,126 +98,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="boa" class="tsd-anchor"></a>
-					<h3>boa</h3>
-					<div class="tsd-signature tsd-kind-icon">boa<span class="tsd-signature-symbol">:</span> <a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5bf046c/packages/core/src/runtime.ts#L55">packages/core/src/runtime.ts:55</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The boa module, the bridge between node and python.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="datacook" class="tsd-anchor"></a>
-					<h3>data<wbr>Cook</h3>
-					<div class="tsd-signature tsd-kind-icon">data<wbr>Cook<span class="tsd-signature-symbol">:</span> <a href="../index.html#datacookmodule" class="tsd-signature-type">DataCookModule</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5bf046c/packages/core/src/runtime.ts#L59">packages/core/src/runtime.ts:59</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>DataCook module</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="importjs" class="tsd-anchor"></a>
-					<h3>importJS</h3>
-					<div class="tsd-signature tsd-kind-icon">importJS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>jsModuleName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5bf046c/packages/core/src/runtime.ts#L64">packages/core/src/runtime.ts:64</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>This function can import a node module from framework. if the module not exists,
-							an error will be thrown.</p>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-signature">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>jsModuleName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a><span class="tsd-signature-symbol">&gt;</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>jsModuleName: <span class="tsd-signature-type">string</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a><span class="tsd-signature-symbol">&gt;</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="importpy" class="tsd-anchor"></a>
-					<h3>importPY</h3>
-					<div class="tsd-signature tsd-kind-icon">importPY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>pyModuleName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5bf046c/packages/core/src/runtime.ts#L69">packages/core/src/runtime.ts:69</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>This function can import a python package from framework. if the module not exists,
-							an error will be thrown.</p>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-signature">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>pyModuleName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a><span class="tsd-signature-symbol">&gt;</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>pyModuleName: <span class="tsd-signature-type">string</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a><span class="tsd-signature-symbol">&gt;</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="tasktype" class="tsd-anchor"></a>
 					<h3>task<wbr>Type</h3>
 					<div class="tsd-signature tsd-kind-icon">task<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/tasktype.html" class="tsd-signature-type">TaskType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5bf046c/packages/core/src/runtime.ts#L88">packages/core/src/runtime.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/e0e828a/packages/core/src/runtime.ts#L68">packages/core/src/runtime.ts:68</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="workspace" class="tsd-anchor"></a>
 					<h3>workspace</h3>
-					<div class="tsd-signature tsd-kind-icon">workspace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>cacheDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>dataDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>modelDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">workspace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>cacheDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>dataDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>frameworkDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>modelDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/5bf046c/packages/core/src/runtime.ts#L73">packages/core/src/runtime.ts:73</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/e0e828a/packages/core/src/runtime.ts#L48">packages/core/src/runtime.ts:48</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -246,6 +138,14 @@
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
 										<p>Dataset directory, should save the dataset files here.</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>framework<wbr>Dir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>framework directory</p>
 									</div>
 								</div>
 							</li>
@@ -277,18 +177,6 @@
 					<li class="current tsd-kind-interface">
 						<a href="scriptcontext.html" class="tsd-kind-icon">Script<wbr>Context</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="scriptcontext.html#boa" class="tsd-kind-icon">boa</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="scriptcontext.html#datacook" class="tsd-kind-icon">data<wbr>Cook</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="scriptcontext.html#importjs" class="tsd-kind-icon">importJS</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="scriptcontext.html#importpy" class="tsd-kind-icon">importPY</a>
-							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="scriptcontext.html#tasktype" class="tsd-kind-icon">task<wbr>Type</a>
 							</li>
