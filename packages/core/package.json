@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@types/papaparse": "^5.2.6",
+    "@types/node": "^14.6.0",
     "@types/sinon": "^9.0.11",
     "ava": "^3.13.0",
     "nyc": "^15.1.0",
