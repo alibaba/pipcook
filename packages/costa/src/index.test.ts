@@ -2,10 +2,9 @@ import test from 'ava';
 import * as sinon from 'sinon';
 import * as os from 'os';
 import * as path from 'path';
-import * as boa from '@pipcook/boa';
 import { Costa, DefaultDataSourceEntry, CostaOption } from '.';
 import * as utils from './utils';
-import { ScriptContext, DataCook, TaskType } from '@pipcook/core';
+import { ScriptContext, TaskType } from '@pipcook/core';
 import { ScriptType } from './types';
 
 const workspaceDir = os.tmpdir();
@@ -34,16 +33,6 @@ const mockOpts: CostaOption = {
 
 test.serial.afterEach(() => sinon.restore());
 
-test('initialize framework', async (t) => {
-  const costa = new Costa(mockOpts);
-  await costa.initFramework();
-  const ctx = (costa as any).context as ScriptContext;
-  t.is(ctx.boa, boa, 'boa should be equal');
-  t.is(ctx.dataCook, DataCook, 'dataCook should be equal');
-  t.is(await ctx.importJS('path'), path, 'path should be equal');
-  await t.notThrowsAsync(ctx.importPY('sys'), 'should not throw error');
-});
-
 test('initialize framework with default path', async (t) => {
   const mockOpts: CostaOption = {
     workspace: {
@@ -67,12 +56,7 @@ test('initialize framework with default path', async (t) => {
     }
   };
   const costa = new Costa(mockOpts);
-  await costa.initFramework();
-  const ctx = (costa as any).context as ScriptContext;
-  t.is(ctx.boa, boa, 'boa should be equal');
-  t.is(ctx.dataCook, DataCook, 'dataCook should be equal');
-  t.is(await ctx.importJS('path'), path, 'path should be equal');
-  await t.notThrowsAsync(ctx.importPY('sys'), 'should not throw error');
+  await t.notThrowsAsync(costa.initFramework());
 });
 
 test.serial('run data source script', async (t) => {

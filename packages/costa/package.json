@@ -17,7 +17,6 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/boa": "^2.1.0",
     "@pipcook/core": "^2.0.0",
     "debug": "^4.3.1"
   },
