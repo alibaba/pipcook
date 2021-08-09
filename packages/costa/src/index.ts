@@ -4,7 +4,6 @@ import {
   ExtModelEntry,
   DataflowEntry,
   ScriptContext,
-  FrameworkModule,
   TaskType,
   PredictResult,
   DatasetPool,
@@ -15,8 +14,6 @@ import {
   PipcookFramework,
   ScriptType
 } from './types';
-import * as boa from '@pipcook/boa';
-import * as path from 'path';
 import Debug from 'debug';
 import { importFrom } from './utils';
 
@@ -97,21 +94,7 @@ export class Costa {
    * initialize framework, set python package path, node modules path and construct script context
    */
   async initFramework(): Promise<void> {
-    boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
-    const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
-
-    module.paths.push(nodeModules);
-    const paths = [ nodeModules, ...(require.resolve.paths(__dirname) || []) ];
     this.context = {
-      boa,
-      dataCook: DataCook,
-      importJS: (jsModuleName: string): Promise<FrameworkModule> => {
-        const module = require.resolve(jsModuleName, { paths });
-        return import(module);
-      },
-      importPY: async (pythonPackageName: string): Promise<FrameworkModule> => {
-        return boa.import(pythonPackageName);
-      },
       workspace: {
         ...this.options.workspace
       },

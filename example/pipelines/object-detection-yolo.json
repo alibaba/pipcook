@@ -1,11 +1,11 @@
 {
   "specVersion": "2.0",
   "type": "ObjectDetection",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@2c516bc/scripts/object-detection-yolo/build/datasource.js?url=https://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/object-detection-yolo.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fedfc66/scripts/object-detection-yolo/build/datasource.js?url=https://ai-sample.oss-cn-hangzhou.aliyuncs.com/pipcook/datasets/component-recognition-detection/object-detection-yolo.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@2c516bc/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fedfc66/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@2c516bc/scripts/object-detection-yolo/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fedfc66/scripts/object-detection-yolo/build/model.js",
   "options": {
     "framework": "mobilenet@1.0.0",
     "train": {

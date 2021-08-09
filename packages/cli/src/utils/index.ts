@@ -11,7 +11,6 @@ import * as os from 'os';
 import * as url from 'url';
 import { promisify } from 'util';
 import { customAlphabet } from 'nanoid';
-import * as boa from '@pipcook/boa';
 import * as constants from '../constants';
 import * as extract from 'extract-zip';
 import realOra = require('ora');
@@ -154,9 +153,7 @@ export function dateToString(date: Date): string {
 }
 
 export const mirrorUrl = (mirror: string, framework: string): string => {
-  let pyVersion: string = boa.import('platform').python_version();
-  const semver = pyVersion.split('.');
-  pyVersion = `py${semver[0]}${semver[1]}`;
+  const pyVersion = 'py37';
   const nodeVersion = `node${process.versions.node.substr(0, process.versions.node.indexOf('.'))}`;
   return url.resolve(
     mirror || constants.PIPCOOK_FRAMEWORK_MIRROR_BASE,

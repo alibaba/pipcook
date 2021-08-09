@@ -1,4 +1,4 @@
-import * as Datacook from '@pipcook/datacook';
+import * as DataCook from '@pipcook/datacook';
 import { Types } from './dataset-pool';
 
 /**
@@ -19,7 +19,7 @@ export interface ProgressInfo {
  * A Runtime is used to run pipelines on a specific platform. The interface `Runtime<T, M>`
  * declares APIs which the runtime implementation must or shall achieve.
  */
-export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends Types.DatasetMeta> {
+export interface Runtime<T extends DataCook.Dataset.Types.Sample<any>, M extends Types.DatasetMeta> {
   // report progress of pipeline
   notifyProgress: (progress: ProgressInfo) => void;
   // save the model file
@@ -33,13 +33,6 @@ export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends
 export type FrameworkModule = any;
 
 /**
- * A JavaScript library for feature engineering on datasets,
- * it helps you to cook trainable datus out as its name, datacook.
- * see [here][https://github.com/imgcook/datacook] for more details.
- */
-export type DataCookModule = typeof Datacook;
-
-/**
  * There ara 2 kinds of pipeline task type, `TaskType.TRAIN` means running for model training,
  * `TaskType.PREDICT` means running for predicting.
  */
@@ -49,24 +42,6 @@ export enum TaskType { TRAIN = 1, PREDICT = 2 }
  * The context of script running, includes `boa` and `DataCook`.
  */
 export interface ScriptContext {
-  /**
-   * The boa module, the bridge between node and python.
-   */
-  boa: FrameworkModule;
-  /**
-   * DataCook module
-   */
-  dataCook: DataCookModule;
-  /**
-   * This function can import a node module from framework. if the module not exists,
-   * an error will be thrown.
-   */
-  importJS: (jsModuleName: string) => Promise<FrameworkModule>;
-  /**
-   * This function can import a python package from framework. if the module not exists,
-   * an error will be thrown.
-   */
-  importPY: (pyModuleName: string) => Promise<FrameworkModule>;
   /**
    * The workspace for the pipeline. There are some directories to save temporary files.
    */
@@ -84,6 +59,11 @@ export interface ScriptContext {
      * The model file should be saved here.
      */
     modelDir: string;
+
+    /**
+     * framework directory
+     */
+    frameworkDir: string;
   },
   taskType: TaskType;
 }
@@ -93,16 +73,16 @@ export type PredictResult = Types.ObjectDetection.PredictResult | Types.TextClas
 /**
  * type of data source script entry
  */
-export type DatasourceEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
+export type DatasourceEntry<SAMPLE extends DataCook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
   (options: Record<string, any>, context: ScriptContext) => Promise<Types.DatasetPool<SAMPLE, META>>;
 
 /**
  * type of data flow script entry
  */
 export type DataflowEntry<
-  IN extends Datacook.Dataset.Types.Sample<any>,
+  IN extends DataCook.Dataset.Types.Sample<any>,
   IN_META extends Types.DatasetMeta,
-  OUT extends Datacook.Dataset.Types.Sample<any> = IN,
+  OUT extends DataCook.Dataset.Types.Sample<any> = IN,
   OUT_META extends Types.DatasetMeta = IN_META
 > =
   (api: Types.DatasetPool<IN, IN_META>, options: Record<string, any>, context: ScriptContext) => Promise<Types.DatasetPool<OUT, OUT_META>>;
@@ -110,19 +90,19 @@ export type DataflowEntry<
 /**
  * type of model script entry for train
  */
-export type ModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
+export type ModelEntry<SAMPLE extends DataCook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
   (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>;
 
 /**
  * type of model script entry for predict
  */
-export type PredictEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
+export type PredictEntry<SAMPLE extends DataCook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
   (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<PredictResult>;
 
 /**
  * type of model script entry for train and predict
  */
-export interface ExtModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> {
+export interface ExtModelEntry<SAMPLE extends DataCook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> {
   train: ModelEntry<SAMPLE, META>;
   predict: PredictEntry<SAMPLE, META>;
 }
