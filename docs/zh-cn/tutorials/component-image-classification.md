@@ -81,11 +81,11 @@
 ```json
 {
   "specVersion": "2.0",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fedfc66/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c1da85c/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fedfc66/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c1da85c/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fedfc66/scripts/image-classification-mobilenet/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c1da85c/scripts/image-classification-mobilenet/build/model.js",
   "artifact": [],
   "options": {
     "framework": "mobilenet@1.0.0",
