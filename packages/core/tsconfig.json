@@ -26,6 +26,7 @@
     "**/node_modules/**",
     "**/*.test.ts",
     "**/dist/**",
+    "**/*.test.ts",
     "**/*.d.ts"
   ]
 }

@@ -32,12 +32,12 @@ export interface PredictOptions {
   str?: string;
   uri?: string;
   // Fetch the framework and script without cache
-  nocache?: boolean;
+  nocache: boolean;
   // Debug model
-  debug?: boolean;
-  mirror?: string;
+  debug: boolean;
+  mirror: string;
   // Development mode
-  dev?: boolean;
+  dev: boolean;
 }
 
 export interface CacheCleanOptions {
@@ -168,25 +168,24 @@ export const cacheClean = async (): Promise<void> => {
     .alias('t')
     .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
     .option('-m --mirror <mirror>', 'framework mirror', '')
-    .option('-d --debug', 'debug mode', false)
-    .option('-m --mirror <mirror>', 'framework mirror', '')
     .option('-c --npmClient <npm>', 'npm client binary for artifact installing', 'npm')
     .option('--registry <registry>', 'npm registry for artifact installing')
-    .option('--nocache', 'disabel cache for framework and scripts', false)
+    .option('-d --debug', 'debug mode', false)
     .option('--dev', 'development mode', false)
+    .option('--nocache', 'disabel cache for framework and scripts', false)
     .description('run pipeline with a json file.')
     .action(train);
 
   program
-    .command('predict <filename>')
+    .command('predict <pipelineFile>')
     .alias('p')
     .option('-s --str <str>', 'predict as string')
     .option('-u --uri <uri>', 'predict file uri')
     .option('-m --mirror <mirror>', 'framework mirror', '')
     .option('-d --debug', 'debug mode', false)
-    .option('--nocache', 'disabel cache for framework and scripts', false)
     .option('--dev', 'development mode', false)
-    .description('predict with text or uri.')
+    .option('--nocache', 'disabel cache for framework and scripts', false)
+    .description('predict with string or uri.')
     .action(predict);
 
   program

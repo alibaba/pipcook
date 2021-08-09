@@ -15,7 +15,7 @@
     "nyc": "^15.1.0",
     "ts-node": "^8.6.2",
     "typedoc": "^0.17.8",
-    "typescript": "^4.1.2"
+    "typescript": "^4.3.5"
   },
   "scripts": {
     "build": "lerna run compile",
@@ -29,7 +29,7 @@
     "clean": "lerna run clean --parallel --concurrency 10",
     "release": "lerna publish from-package --yes --no-verify-access",
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
-    "beta-release": "lerna publish from-package --no-verify-access --dist-tag beta",
+    "beta-release": "lerna publish from-package --no-verify-access --dist-tag beta -y",
     "cov": "./tools/coverage.sh",
     "cov:report": "nyc report -r=lcov"
   }
