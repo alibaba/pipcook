@@ -1,4 +1,5 @@
 import { FrameworkModule } from '@pipcook/core';
+
 /**
  * import from path
  * @param path the path where import from

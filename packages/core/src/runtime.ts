@@ -1,4 +1,5 @@
-import type * as Datacook from '@pipcook/datacook';
+import * as Datacook from '@pipcook/datacook';
+import { Types } from './dataset-pool';
 
 /**
  * The model script can emit the training progress through the API `Runtime.notifyProgress`.
@@ -18,7 +19,7 @@ export interface ProgressInfo {
  * A Runtime is used to run pipelines on a specific platform. The interface `Runtime<T, M>`
  * declares APIs which the runtime implementation must or shall achieve.
  */
-export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends Datacook.Dataset.Types.DatasetMeta> {
+export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends Types.DatasetMeta> {
   // report progress of pipeline
   notifyProgress: (progress: ProgressInfo) => void;
   // save the model file
@@ -26,7 +27,7 @@ export interface Runtime<T extends Datacook.Dataset.Types.Sample<any>, M extends
   // read model file
   readModel: () => Promise<string>;
   // datasource
-  dataset: Datacook.Dataset.Types.Dataset<T, M>;
+  dataset: Types.DatasetPool<T, M>;
 }
 
 export type FrameworkModule = any;
@@ -37,6 +38,12 @@ export type FrameworkModule = any;
  * see [here][https://github.com/imgcook/datacook] for more details.
  */
 export type DataCookModule = typeof Datacook;
+
+/**
+ * There ara 2 kinds of pipeline task type, `TaskType.TRAIN` means running for model training,
+ * `TaskType.PREDICT` means running for predicting.
+ */
+export enum TaskType { TRAIN = 1, PREDICT = 2 }
 
 /**
  * The context of script running, includes `boa` and `DataCook`.
@@ -77,23 +84,45 @@ export interface ScriptContext {
      * The model file should be saved here.
      */
     modelDir: string;
-  }
+  },
+  taskType: TaskType;
 }
+
+export type PredictResult = Types.ObjectDetection.PredictResult | Types.TextClassification.PredictResult | Types.ImageClassification.PredictResult | any;
 
 /**
  * type of data source script entry
  */
-export type DatasourceEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta> =
-  (options: Record<string, any>, context: ScriptContext) => Promise<Datacook.Dataset.Types.Dataset<SAMPLE, META>>;
+export type DatasourceEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
+  (options: Record<string, any>, context: ScriptContext) => Promise<Types.DatasetPool<SAMPLE, META>>;
 
 /**
  * type of data flow script entry
  */
-export type DataflowEntry<IN extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta, OUT extends Datacook.Dataset.Types.Sample<any> = IN> =
-  (api: Datacook.Dataset.Types.Dataset<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<Datacook.Dataset.Types.Dataset<OUT, META>>;
+export type DataflowEntry<
+  IN extends Datacook.Dataset.Types.Sample<any>,
+  IN_META extends Types.DatasetMeta,
+  OUT extends Datacook.Dataset.Types.Sample<any> = IN,
+  OUT_META extends Types.DatasetMeta = IN_META
+> =
+  (api: Types.DatasetPool<IN, IN_META>, options: Record<string, any>, context: ScriptContext) => Promise<Types.DatasetPool<OUT, OUT_META>>;
 
 /**
- * type of model script entry
+ * type of model script entry for train
  */
-export type ModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Datacook.Dataset.Types.DatasetMeta> =
+export type ModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
   (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>;
+
+/**
+ * type of model script entry for predict
+ */
+export type PredictEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> =
+  (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<PredictResult>;
+
+/**
+ * type of model script entry for train and predict
+ */
+export interface ExtModelEntry<SAMPLE extends Datacook.Dataset.Types.Sample<any>, META extends Types.DatasetMeta> {
+  train: ModelEntry<SAMPLE, META>;
+  predict: PredictEntry<SAMPLE, META>;
+}

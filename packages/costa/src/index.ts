@@ -1,10 +1,14 @@
 import {
   Runtime,
   DatasourceEntry,
-  ModelEntry,
+  ExtModelEntry,
   DataflowEntry,
   ScriptContext,
-  FrameworkModule
+  FrameworkModule,
+  TaskType,
+  PredictResult,
+  DatasetPool,
+  DataCook
 } from '@pipcook/core';
 import {
   PipcookScript,
@@ -12,7 +16,6 @@ import {
   ScriptType
 } from './types';
 import * as boa from '@pipcook/boa';
-import * as Datacook from '@pipcook/datacook';
 import * as path from 'path';
 import Debug from 'debug';
 import { importFrom } from './utils';
@@ -21,15 +24,15 @@ const debug = Debug('costa.runnable');
 
 export * from './types';
 
-export type DefaultRuntime = Runtime<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultRuntime = Runtime<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultDataSet = Datacook.Dataset.Types.Dataset<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataSet = DatasetPool.Types.DatasetPool<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultDataflowEntry = DataflowEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataflowEntry = DataflowEntry<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultDataSourceEntry = DatasourceEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultDataSourceEntry = DatasourceEntry<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
-export type DefaultModelEntry = ModelEntry<Datacook.Dataset.Types.Sample<any>, Datacook.Dataset.Types.DatasetMeta>;
+export type DefaultModelEntry = ExtModelEntry<DataCook.Dataset.Types.Sample<any>, DatasetPool.Types.DatasetMeta>;
 
 export interface PipelineWorkSpace {
   /**
@@ -61,10 +64,20 @@ export interface CostaOption {
   framework: PipcookFramework;
 }
 
+export interface ScriptEntries {
+  datasource: DefaultDataSourceEntry;
+  dataflow: Array<DefaultDataflowEntry>;
+  model: DefaultModelEntry;
+}
+
 /**
  * The pipeline runner who executes the scripts in the pipeline.
  */
 export class Costa {
+  /**
+   * Cache for script entries.
+   */
+  private entriesCache: Record<string, any> = {};
   /**
    * The context of the pipeline script.
    */
@@ -86,10 +99,12 @@ export class Costa {
   async initFramework(): Promise<void> {
     boa.setenv(path.join(this.options.workspace.frameworkDir, this.options.framework.pythonPackagePath || 'site-packages'));
     const nodeModules = path.join(this.options.workspace.frameworkDir, this.options.framework.jsPackagePath || 'node_modules');
+
+    module.paths.push(nodeModules);
     const paths = [ nodeModules, ...(require.resolve.paths(__dirname) || []) ];
     this.context = {
       boa,
-      dataCook: Datacook,
+      dataCook: DataCook,
       importJS: (jsModuleName: string): Promise<FrameworkModule> => {
         const module = require.resolve(jsModuleName, { paths });
         return import(module);
@@ -99,7 +114,8 @@ export class Costa {
       },
       workspace: {
         ...this.options.workspace
-      }
+      },
+      taskType: TaskType.TRAIN
     };
   }
 
@@ -108,32 +124,56 @@ export class Costa {
    * @param script script infomation
    * @param moduleExport module export
    */
-  async importScript<T>(script: PipcookScript, type: ScriptType): Promise<T> {
-    const scriptMoudle = await importFrom(script.path);
-    let fn: T = scriptMoudle;
-    if (typeof fn !== 'function' && type === ScriptType.DataSource) {
-      const { datasource } = fn as any;
+  async importScript<T>(script: PipcookScript): Promise<T> {
+    const existEntry = this.entriesCache[script.path];
+    if (existEntry) {
+      return existEntry;
+    }
+    const scriptExports: any = await importFrom(script.path);
+    let entry: any;
+    if (typeof scriptExports === 'function') {
+      entry = scriptExports;
+    } else if (typeof scriptExports.default === 'function') {
+      entry = scriptExports.default;
+    }
+    if (!entry && script.type === ScriptType.DataSource) {
+      const { datasource } = scriptExports as any;
       if (typeof datasource === 'function') {
-        fn = datasource;
+        entry = datasource;
       }
-    }
-    if (typeof fn !== 'function' && type === ScriptType.Dataflow) {
-      const { dataflow } = fn as any;
+    } else if (!entry && script.type === ScriptType.Dataflow) {
+      const { dataflow } = scriptExports as any;
       if (typeof dataflow === 'function') {
-        fn = dataflow;
+        entry = dataflow;
+      }
+    } else if (script.type === ScriptType.Model) {
+      if (entry) {
+        entry = {
+          train: entry,
+          predict: null
+        };
+      } else {
+        const { model } = scriptExports as any;
+        const tmpEntry = model ? model : scriptExports;
+        if (typeof tmpEntry === 'function') {
+          entry = {
+            train: tmpEntry,
+            predict: null
+          };
+        } else if (
+          typeof tmpEntry === 'object'
+          && typeof tmpEntry.train === 'function'
+          && typeof tmpEntry.predict === 'function'
+        ) {
+          entry = tmpEntry;
+        }
       }
     }
-    if (typeof fn !== 'function' && type === ScriptType.Model) {
-      const { model } = fn as any;
-      if (typeof model === 'function') {
-        fn = model;
-      }
-    }
-    fn = typeof fn === 'function' ? fn : scriptMoudle.default;
-    if (typeof fn !== 'function') {
+    if (!entry) {
       throw new TypeError(`no entry found in ${script.name}(${script.path})`);
     }
-    return fn;
+    this.entriesCache[script.path] = entry;
+    return entry;
   }
 
   /**
@@ -145,9 +185,9 @@ export class Costa {
   async runDataSource(script: PipcookScript): Promise<DefaultDataSet> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
-    const fn = await this.importScript<DefaultDataSourceEntry>(script, ScriptType.DataSource);
+    const fn = await this.importScript<DefaultDataSourceEntry>(script);
     debug(`loaded the script(${script.name}), start it.`);
-    return await fn(script.query, this.context);
+    return await fn(script.query, { ...this.context, taskType: TaskType.TRAIN });
   }
 
   /**
@@ -155,12 +195,12 @@ export class Costa {
    * @param dataset api from data source script or another dataflow script
    * @param script the metadata of script
    */
-  async runDataflow(dataset: DefaultDataSet, scripts: Array<PipcookScript>): Promise<DefaultDataSet> {
+  async runDataflow(dataset: DefaultDataSet, scripts: Array<PipcookScript>, taskType = TaskType.TRAIN): Promise<DefaultDataSet> {
     for (const script of scripts) {
       debug(`start loading the script(${script.name})`);
-      const fn = await this.importScript<DefaultDataflowEntry>(script, ScriptType.Dataflow);
+      const fn = await this.importScript<DefaultDataflowEntry>(script);
       debug(`loaded the script(${script.name}), start it.`);
-      dataset = await fn(dataset, script.query, this.context);
+      dataset = await fn(dataset, script.query, { ...this.context, taskType });
     }
     return dataset;
   }
@@ -171,16 +211,23 @@ export class Costa {
    * @param script the metadata of script
    * @param options options of the pipeline
    */
-  async runModel(runtime: DefaultRuntime, script: PipcookScript, options: Record<string, any>): Promise<void> {
+  async runModel(runtime: DefaultRuntime, script: PipcookScript, options: Record<string, any>, taskType = TaskType.TRAIN): Promise<void | PredictResult> {
     // log all the requirements are ready to tell the debugger it's going to run.
     debug(`start loading the script(${script.name})`);
-    const fn = await this.importScript<DefaultModelEntry>(script, ScriptType.Model);
+    const entry = await this.importScript<DefaultModelEntry>(script);
     // when the `load` is complete, start the plugin.
     debug(`loaded the script(${script.name}), start it.`);
     const opts = {
       ...options.train,
       ...script.query
     };
-    return await fn(runtime, opts, this.context);
+    if (taskType === TaskType.TRAIN) {
+      return entry.train(runtime, opts, { ...this.context, taskType });
+    } else {
+      if (!entry.predict) {
+        throw new TypeError('predict is not supported.');
+      }
+      return entry.predict(runtime, opts, { ...this.context, taskType });
+    }
   }
 }

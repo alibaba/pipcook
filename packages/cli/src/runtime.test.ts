@@ -2,11 +2,12 @@ import test from 'ava';
 import * as path from 'path';
 import * as sinon from 'sinon';
 import * as fs from 'fs-extra';
-import { PipelineMeta, ScriptType } from '@pipcook/costa';
+import { PipelineMeta, PipelineType, ScriptType } from '@pipcook/costa';
 import * as Runtime from './runtime';
 import * as utils from './utils';
 import * as RT from './standalone-impl';
 import { Costa } from '@pipcook/costa';
+import { TaskType } from '@pipcook/core';
 
 test.serial.afterEach(() => sinon.restore());
 
@@ -16,7 +17,15 @@ test('constructor', (t) => {
   };
   const workspace = '/tmp';
   const mirror = 'http://a.b.c';
-  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, false, 'npm');
+  const rt = new Runtime.StandaloneRuntime({
+    workspace,
+    pipelineMeta,
+    mirror,
+    enableCache: false,
+    npmClient: 'npm',
+    registry: undefined,
+    devMode: false
+  });
   t.deepEqual((rt as any).workspace, {
     dataDir: path.join(workspace, 'data'),
     modelDir: path.join(workspace, 'model'),
@@ -32,6 +41,7 @@ test('constructor', (t) => {
 test('prepare workspace', async (t) => {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'v2.0',
+    type: PipelineType.ObjectDetection,
     datasource: 'file:///tmp/datasource.js',
     dataflow: [ 'file:///tmp/dataflow.js' ],
     model: 'file:///tmp/model.js',
@@ -47,9 +57,17 @@ test('prepare workspace', async (t) => {
   };
   const workspace = '/tmp';
   const mirror = 'http://a.b.c';
-  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, false, 'npm', 'my-registry');
+  const rt = new Runtime.StandaloneRuntime({
+    workspace,
+    pipelineMeta,
+    mirror,
+    enableCache: false,
+    npmClient: 'npm',
+    registry: 'my-registry',
+    devMode: false
+  });
   const stubMkdir = sinon.stub(fs, 'mkdirp').resolves();
-  await rt.prepareWorkspace();
+  await (rt as any).prepareWorkspace();
   t.is(stubMkdir.callCount, 5, 'should create 4 directories');
   const d = {
     dataDir: path.join(workspace, 'data'),
@@ -65,9 +83,10 @@ test('prepare workspace', async (t) => {
   t.is(path.join(workspace, 'scripts'), stubMkdir.args[i][0], 'directory of scripts is not correct');
 });
 
-async function run(t: any, runDataflow: boolean) {
+async function run(t: any, taskType: TaskType, runDataflow: boolean) {
   const pipelineMeta: PipelineMeta = {
     specVersion: 'v2.0',
+    type: PipelineType.ObjectDetection,
     datasource: 'file:///tmp/datasource.js',
     dataflow: [ 'file:///tmp/dataflow.js' ],
     model: 'file:///tmp/model.js',
@@ -86,7 +105,14 @@ async function run(t: any, runDataflow: boolean) {
   const datasourceMock: any = { mock: 'value' };
   const dataflowMock: any = { mock: 'value' };
   const enableCache = false;
-  const rt = new Runtime.StandaloneRuntime(workspace, pipelineMeta, mirror, enableCache, 'npm');
+  const rt = new Runtime.StandaloneRuntime({
+    workspace,
+    pipelineMeta,
+    mirror,
+    enableCache,
+    npmClient: 'npm',
+    devMode: false
+  });
   const stubPrepareFramework = sinon.stub(utils.Framework, 'prepareFramework').resolves();
   const mockScript = {
     datasource: {
@@ -128,13 +154,20 @@ async function run(t: any, runDataflow: boolean) {
   };
   const stubPrepareArtifactPlugin = sinon.stub(utils.Plugin, 'prepareArtifactPlugin').resolves([ mockArtifact ]);
   const stubInitFramework = sinon.stub(Costa.prototype, 'initFramework').resolves();
-  const stubRunDataSource = sinon.stub(Costa.prototype, 'runDataSource').resolves(datasourceMock);
+  const stubRunDataSource =
+    taskType === TaskType.TRAIN ? sinon.stub(Costa.prototype, 'runDataSource').resolves(datasourceMock) : sinon.stub(utils.PredictDataset, 'makePredictDataset').resolves(datasourceMock);
   const stubRunDataflow = sinon.stub(Costa.prototype, 'runDataflow').resolves(dataflowMock);
   const stubRunModel = sinon.stub(Costa.prototype, 'runModel').resolves();
   const stubRT = sinon.createStubInstance(RT.StandaloneImpl);
-  const stubCreateStandaloneRT = sinon.stub(RT, 'createStandaloneRT').returns(stubRT);
-  const stubPrepareWorkspace = sinon.stub(rt, 'prepareWorkspace').resolves();
-  await rt.run();
+  const stubCreateStandaloneRT = sinon.stub(RT, 'createStandaloneRT').returns(stubRT as any);
+  const stubPrepareWorkspace = sinon.stub(rt as any, 'prepareWorkspace').resolves();
+  await rt.prepare();
+  const inputs = [ 'mockpath' ];
+  if (taskType === TaskType.TRAIN) {
+    await rt.train();
+  } else {
+    await rt.predict(inputs);
+  }
   t.true(stubPrepareWorkspace.calledOnce, 'should call prepareWorkspace once');
   t.true(stubPrepareFramework.calledOnce, 'should call prepareFramework once');
   t.deepEqual(
@@ -145,7 +178,7 @@ async function run(t: any, runDataflow: boolean) {
   t.true(stubPrepareScript.calledOnce, 'should call prepareScripts once');
   t.deepEqual(
     stubPrepareScript.args[0],
-    [ pipelineMeta, path.join(workspace, 'scripts'), enableCache ],
+    [ pipelineMeta, path.join(workspace, 'scripts'), enableCache, false ],
     'should call prepareScripts with correct arguments'
   );
   t.true(stubPrepareArtifactPlugin.calledOnce, 'prepareArtifactPlugin should be called once');
@@ -156,16 +189,24 @@ async function run(t: any, runDataflow: boolean) {
   );
   t.true(stubInitFramework.calledOnce, 'initFramework should be called once');
   t.true(stubRunDataSource.calledOnce, 'runDataSource should be called once');
-  t.deepEqual(
-    stubRunDataSource.args[0],
-    [ mockScript.datasource ],
-    'should call runDataSource with correct arguments'
-  );
+  if (taskType === TaskType.TRAIN) {
+    t.deepEqual(
+      stubRunDataSource.args[0],
+      [ mockScript.datasource ],
+      'should call runDataSource with correct arguments'
+    );
+  } else {
+    t.deepEqual(
+      stubRunDataSource.args[0],
+      [ inputs, pipelineMeta.type ],
+      'should call runDataSource with correct arguments'
+    );
+  }
   if (runDataflow) {
     t.true(stubRunDataflow.calledOnce, 'runDataflow should be called once');
     t.deepEqual(
       stubRunDataflow.args[0],
-      [ datasourceMock, mockScript.dataflow ],
+      taskType === TaskType.TRAIN ? [ datasourceMock, mockScript.dataflow ] : [ datasourceMock, mockScript.dataflow, TaskType.PREDICT ],
       'should call runDataflow with correct arguments'
     );
   } else {
@@ -174,12 +215,16 @@ async function run(t: any, runDataflow: boolean) {
   t.true(stubRunModel.calledOnce, 'runModel should be called once');
   t.deepEqual(
     stubRunModel.args[0],
-    [ stubRT, mockScript.model, pipelineMeta.options ],
+    taskType === TaskType.TRAIN ? [ stubRT, mockScript.model, pipelineMeta.options ] : [ stubRT, mockScript.model, pipelineMeta.options, TaskType.PREDICT ],
     'should call runModel with correct arguments'
   );
   t.true(stubCreateStandaloneRT.calledOnce, 'should call createStandaloneRT once');
-  t.true(mockArtifact.artifactExports.build.calledOnce, 'should call artiface build once');
+  if (taskType === TaskType.TRAIN) {
+    t.true(mockArtifact.artifactExports.build.calledOnce, 'should call artiface build once');
+  }
 }
 
-test.serial('run with dataflow', (t) => run(t, true));
-test.serial('run without dataflow', (t) => run(t, false));
+test.serial('run train with dataflow', (t) => run(t, TaskType.TRAIN, true));
+test.serial('run train without dataflow', (t) => run(t, TaskType.TRAIN, false));
+test.serial('run predict with dataflow', (t) => run(t, TaskType.PREDICT, true));
+test.serial('run predict without dataflow', (t) => run(t, TaskType.PREDICT, false));

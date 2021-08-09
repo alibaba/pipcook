@@ -132,6 +132,15 @@ export interface Artifact {
 }
 
 /**
+ * Pipeline type
+ */
+export enum PipelineType {
+  ObjectDetection = 'ObjectDetection',
+  TextClassification = 'TextClassification',
+  ImageClassification = 'ImageClassification'
+}
+
+/**
  * pipeline configuration stucture
  */
 export interface PipelineMeta {
@@ -159,4 +168,9 @@ export interface PipelineMeta {
    * pipeline options
    */
   options: Record<string, any>;
+  /**
+   * Pipeline type which cloud be one of `PipelineType` or null.
+   * It should be specified if predict is needed.
+   */
+  type?: PipelineType;
 }

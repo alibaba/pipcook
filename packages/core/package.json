@@ -7,21 +7,38 @@
     "dist"
   ],
   "scripts": {
+    "test": "ava",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "compile": "tsc -b tsconfig.json"
+    "compile": "tsc -b tsconfig.json",
+    "cov": "nyc -r text-summary npm run test",
+    "cov:report": "nyc report -r lcov"
   },
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/datacook": "^0.0.8"
+    "@pipcook/datacook": "^0.0.9",
+    "papaparse": "^5.3.1"
   },
   "devDependencies": {
-    "typescript": "^4.1.2"
+    "@types/papaparse": "^5.2.6",
+    "@types/sinon": "^9.0.11",
+    "ava": "^3.13.0",
+    "nyc": "^15.1.0",
+    "sinon": "^10.0.0",
+    "typescript": "^4.3.5"
   },
   "publishConfig": {
     "access": "public"
   },
   "keywords": [],
-  "description": ""
+  "description": "",
+  "ava": {
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
 }

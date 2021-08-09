@@ -19,7 +19,6 @@
   "dependencies": {
     "@pipcook/boa": "^2.1.0",
     "@pipcook/core": "^2.0.0",
-    "@pipcook/datacook": "^0.0.8",
     "debug": "^4.1.1"
   },
   "devDependencies": {
@@ -29,7 +28,7 @@
     "nyc": "^15.1.0",
     "sinon": "^10.0.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.2"
+    "typescript": "^4.3.5"
   },
   "publishConfig": {
     "access": "public"

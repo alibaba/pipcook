@@ -14,11 +14,11 @@ test('download script with http protocol', async (t) => {
   const url = 'http://mockUrl.com/a.js';
   const enableCache = true;
   const stubFetch = sinon.stub(cache, 'fetchWithCache').resolves();
-  await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache, false);
   t.true(stubFetch.calledOnce, 'fetchWithCache should be called once');
   t.deepEqual(
     stubFetch.args[0],
-    [ constants.PIPCOOK_SCRIPT_PATH, url, `${localPath}/1-a.js`, enableCache ],
+    [ constants.PIPCOOK_SCRIPT_PATH, url, `${localPath}/1-a.js`, enableCache, true ],
     'fetchWithCache should called with currect args'
   );
 });
@@ -28,11 +28,11 @@ test.serial('download script with https protocol', async (t) => {
   const url = 'https://mockUrl.com/a.js';
   const enableCache = true;
   const stubFetch = sinon.stub(cache, 'fetchWithCache').resolves();
-  await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache, false);
   t.true(stubFetch.calledOnce, 'fetchWithCache should be called once');
   t.deepEqual(
     stubFetch.args[0],
-    [ constants.PIPCOOK_SCRIPT_PATH, url, `${localPath}/1-a.js`, enableCache ],
+    [ constants.PIPCOOK_SCRIPT_PATH, url, `${localPath}/1-a.js`, enableCache, true ],
     'fetchWithCache should called with currect args'
   );
 });
@@ -42,10 +42,25 @@ test.serial('download script with file protocol', async (t) => {
   const url = 'file:///data/a.js';
   const enableCache = true;
   const stubCopy = sinon.stub(fs, 'copy').resolves();
-  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache, false);
   t.deepEqual(scriptDesc, {
     name: 'a.js',
-    path: '/data/a.js',
+    path: localPath + '/1-a.js',
+    type: ScriptType.Model,
+    query: {}
+  }, 'should return correct script');
+  t.true(stubCopy.calledOnce, 'fs.copy should be called');
+});
+
+test.serial('download script with default file protocol and development mode', async (t) => {
+  const localPath = process.cwd();
+  const url = '/data/a.js';
+  const enableCache = true;
+  const stubCopy = sinon.stub(fs, 'copy').resolves();
+  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache, true);
+  t.deepEqual(scriptDesc, {
+    name: 'a.js',
+    path: url,
     type: ScriptType.Model,
     query: {}
   }, 'should return correct script');
@@ -57,14 +72,14 @@ test.serial('download script with default file protocol', async (t) => {
   const url = '/data/a.js';
   const enableCache = true;
   const stubCopy = sinon.stub(fs, 'copy').resolves();
-  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache, false);
   t.deepEqual(scriptDesc, {
     name: 'a.js',
-    path: '/data/a.js',
+    path: process.cwd() + '/1-a.js',
     type: ScriptType.Model,
     query: {}
   }, 'should return correct script');
-  t.false(stubCopy.called, 'fs.copy should not be called');
+  t.true(stubCopy.calledOnce, 'fs.copy should be called');
 });
 
 test.serial('download script with relative path file protocol', async (t) => {
@@ -72,14 +87,14 @@ test.serial('download script with relative path file protocol', async (t) => {
   const url = 'file:data/a.js';
   const enableCache = true;
   const stubCopy = sinon.stub(fs, 'copy').resolves();
-  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache, false);
   t.deepEqual(scriptDesc, {
     name: 'a.js',
-    path: path.join(process.cwd(), 'data/a.js'),
+    path: path.join(process.cwd(), '1-a.js'),
     type: ScriptType.Model,
     query: {}
   }, 'should return correct script');
-  t.false(stubCopy.called, 'fs.copy should not be called');
+  t.true(stubCopy.called, 'fs.copy should be called');
 });
 
 test.serial('download script with file protocol and query', async (t) => {
@@ -87,7 +102,7 @@ test.serial('download script with file protocol and query', async (t) => {
   const url = 'file:///data/a.js?a=1&b=http://a.b.c';
   const enableCache = true;
   const stubCopy = sinon.stub(fs, 'copy').resolves();
-  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache);
+  const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache, true);
   t.deepEqual(scriptDesc, {
     name: 'a.js',
     path: '/data/a.js',
@@ -132,8 +147,8 @@ async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
   const scriptConfig = await script.prepareScript(pipelineMeta, dir, enableCache);
   if (!withDataflow) {
     t.true(stubDownloadScript.calledTwice, 'downloadScript should be called twice');
-    t.deepEqual(stubDownloadScript.args[0], [ dir, 0, pipelineMeta.datasource, ScriptType.DataSource, enableCache ], 'downloadScript should be called with datasource');
-    t.deepEqual(stubDownloadScript.args[1], [ dir, 1, pipelineMeta.model, ScriptType.Model, enableCache ], 'downloadScript should be called with model');
+    t.deepEqual(stubDownloadScript.args[0], [ dir, 0, pipelineMeta.datasource, ScriptType.DataSource, enableCache, false ], 'downloadScript should be called with datasource');
+    t.deepEqual(stubDownloadScript.args[1], [ dir, 1, pipelineMeta.model, ScriptType.Model, enableCache, false ], 'downloadScript should be called with model');
     t.deepEqual(scriptConfig, {
       datasource: mockScript,
       dataflow: null,
@@ -141,9 +156,9 @@ async function runPrepare(t: any, enableCache: boolean, withDataflow: boolean) {
     }, 'script config should be equal');
   } else {
     t.true(stubDownloadScript.calledThrice, 'downloadScript should be called thrice');
-    t.deepEqual(stubDownloadScript.args[0], [ dir, 0, pipelineMeta.datasource, ScriptType.DataSource, enableCache ], 'downloadScript should be called with datasource');
-    t.deepEqual(stubDownloadScript.args[1], [ dir, 1, pipelineMeta.dataflow[0], ScriptType.Dataflow, enableCache ], 'downloadScript should be called with dataflow');
-    t.deepEqual(stubDownloadScript.args[2], [ dir, 2, pipelineMeta.model, ScriptType.Model, enableCache ], 'downloadScript should be called with model');
+    t.deepEqual(stubDownloadScript.args[0], [ dir, 0, pipelineMeta.datasource, ScriptType.DataSource, enableCache, false ], 'downloadScript should be called with datasource');
+    t.deepEqual(stubDownloadScript.args[1], [ dir, 1, pipelineMeta.dataflow[0], ScriptType.Dataflow, enableCache, false ], 'downloadScript should be called with dataflow');
+    t.deepEqual(stubDownloadScript.args[2], [ dir, 2, pipelineMeta.model, ScriptType.Model, enableCache, false ], 'downloadScript should be called with model');
     t.deepEqual(scriptConfig, {
       datasource: mockScript,
       dataflow: [ mockScript ],

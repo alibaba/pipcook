@@ -8,6 +8,8 @@
     "rootDir": "./src"
   },
   "exclude": [
+    "**/*test.ts",
+    "**/*.test.ts",
     "dist"
   ]
 }
