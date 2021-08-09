@@ -92,6 +92,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#datacook" class="tsd-kind-icon">data<wbr>Cook</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#importjs" class="tsd-kind-icon">importJS</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#importpy" class="tsd-kind-icon">importPY</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#tasktype" class="tsd-kind-icon">task<wbr>Type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptcontext.html#workspace" class="tsd-kind-icon">workspace</a></li>
 							</ul>
 						</section>
@@ -106,7 +107,7 @@
 					<div class="tsd-signature tsd-kind-icon">boa<span class="tsd-signature-symbol">:</span> <a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/2f2b4b5/packages/core/src/runtime.ts#L48">runtime.ts:48</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/runtime.ts#L55">packages/core/src/runtime.ts:55</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -121,7 +122,7 @@
 					<div class="tsd-signature tsd-kind-icon">data<wbr>Cook<span class="tsd-signature-symbol">:</span> <a href="../index.html#datacookmodule" class="tsd-signature-type">DataCookModule</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/2f2b4b5/packages/core/src/runtime.ts#L52">runtime.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/runtime.ts#L59">packages/core/src/runtime.ts:59</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -136,7 +137,7 @@
 					<div class="tsd-signature tsd-kind-icon">importJS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>jsModuleName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/2f2b4b5/packages/core/src/runtime.ts#L57">runtime.ts:57</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/runtime.ts#L64">packages/core/src/runtime.ts:64</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -173,7 +174,7 @@
 					<div class="tsd-signature tsd-kind-icon">importPY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>pyModuleName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#frameworkmodule" class="tsd-signature-type">FrameworkModule</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/2f2b4b5/packages/core/src/runtime.ts#L62">runtime.ts:62</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/runtime.ts#L69">packages/core/src/runtime.ts:69</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -205,12 +206,22 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tasktype" class="tsd-anchor"></a>
+					<h3>task<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">task<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/tasktype.html" class="tsd-signature-type">TaskType</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/runtime.ts#L88">packages/core/src/runtime.ts:88</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="workspace" class="tsd-anchor"></a>
 					<h3>workspace</h3>
 					<div class="tsd-signature tsd-kind-icon">workspace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>cacheDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>dataDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>modelDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/2f2b4b5/packages/core/src/runtime.ts#L66">runtime.ts:66</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/runtime.ts#L73">packages/core/src/runtime.ts:73</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -261,15 +272,6 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface">
-						<a href="artifactexports.html" class="tsd-kind-icon">Artifact<wbr>Exports</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="progressinfo.html" class="tsd-kind-icon">Progress<wbr>Info</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-has-type-parameter">
-						<a href="runtime.html" class="tsd-kind-icon">Runtime</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
@@ -288,27 +290,15 @@
 								<a href="scriptcontext.html#importpy" class="tsd-kind-icon">importPY</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="scriptcontext.html#tasktype" class="tsd-kind-icon">task<wbr>Type</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="scriptcontext.html#workspace" class="tsd-kind-icon">workspace</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-type-alias">
-						<a href="../index.html#datacookmodule" class="tsd-kind-icon">Data<wbr>Cook<wbr>Module</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="../index.html#dataflowentry" class="tsd-kind-icon">Dataflow<wbr>Entry</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="../index.html#datasourceentry" class="tsd-kind-icon">Datasource<wbr>Entry</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../index.html#frameworkmodule" class="tsd-kind-icon">Framework<wbr>Module</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="../index.html#modelentry" class="tsd-kind-icon">Model<wbr>Entry</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
@@ -321,6 +311,10 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 		</div>
 	</div>

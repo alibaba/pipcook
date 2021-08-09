@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PackageType | Costa Interfaces</title>
+	<title>ScriptEntries | Costa Interfaces</title>
 	<meta name="description" content="Documentation for Costa Interfaces">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,68 +56,70 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="packagetype.html">PackageType</a>
+					<a href="scriptentries.html">ScriptEntries</a>
 				</li>
 			</ul>
-			<h1>Enumeration PackageType</h1>
+			<h1>Interface ScriptEntries</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Type of package in the framework.</p>
-					</div>
-				</div>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">ScriptEntries</span>
+					</li>
+				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Enumeration members</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="packagetype.html#js" class="tsd-kind-icon">JS</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="packagetype.html#python" class="tsd-kind-icon">Python</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptentries.html#dataflow" class="tsd-kind-icon">dataflow</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptentries.html#datasource" class="tsd-kind-icon">datasource</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="scriptentries.html#model" class="tsd-kind-icon">model</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Enumeration members</h2>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="js" class="tsd-anchor"></a>
-					<h3>JS</h3>
-					<div class="tsd-signature tsd-kind-icon">JS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;js&quot;</span></div>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="dataflow" class="tsd-anchor"></a>
+					<h3>dataflow</h3>
+					<div class="tsd-signature tsd-kind-icon">dataflow<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../index.html#defaultdataflowentry" class="tsd-signature-type">DefaultDataflowEntry</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/costa/src/types.ts#L56">types.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/costa/src/index.ts#L69">index.ts:69</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>JS module which can be used through <code>import</code>.</p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="python" class="tsd-anchor"></a>
-					<h3>Python</h3>
-					<div class="tsd-signature tsd-kind-icon">Python<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;python&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="datasource" class="tsd-anchor"></a>
+					<h3>datasource</h3>
+					<div class="tsd-signature tsd-kind-icon">datasource<span class="tsd-signature-symbol">:</span> <a href="../index.html#defaultdatasourceentry" class="tsd-signature-type">DefaultDataSourceEntry</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/costa/src/types.ts#L52">types.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/costa/src/index.ts#L68">index.ts:68</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Python package which can be used through <code>boa.import</code>.</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="model" class="tsd-anchor"></a>
+					<h3>model</h3>
+					<div class="tsd-signature tsd-kind-icon">model<span class="tsd-signature-symbol">:</span> <a href="../index.html#defaultmodelentry" class="tsd-signature-type">DefaultModelEntry</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/costa/src/index.ts#L70">index.ts:70</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -131,54 +133,57 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-enum">
-						<a href="packagetype.html" class="tsd-kind-icon">Package<wbr>Type</a>
-						<ul>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="packagetype.html#js" class="tsd-kind-icon">JS</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="packagetype.html#python" class="tsd-kind-icon">Python</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-enum">
-						<a href="pipelinetype.html" class="tsd-kind-icon">Pipeline<wbr>Type</a>
+						<a href="../enums/packagetype.html" class="tsd-kind-icon">Package<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-enum">
-						<a href="scripttype.html" class="tsd-kind-icon">Script<wbr>Type</a>
+						<a href="../enums/pipelinetype.html" class="tsd-kind-icon">Pipeline<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="../enums/scripttype.html" class="tsd-kind-icon">Script<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="../classes/costa.html" class="tsd-kind-icon">Costa</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/artifact.html" class="tsd-kind-icon">Artifact</a>
+						<a href="artifact.html" class="tsd-kind-icon">Artifact</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/costaoption.html" class="tsd-kind-icon">Costa<wbr>Option</a>
+						<a href="costaoption.html" class="tsd-kind-icon">Costa<wbr>Option</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/pipcookframework.html" class="tsd-kind-icon">Pipcook<wbr>Framework</a>
+						<a href="pipcookframework.html" class="tsd-kind-icon">Pipcook<wbr>Framework</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/pipcookscript.html" class="tsd-kind-icon">Pipcook<wbr>Script</a>
+						<a href="pipcookscript.html" class="tsd-kind-icon">Pipcook<wbr>Script</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/pipelinemeta.html" class="tsd-kind-icon">Pipeline<wbr>Meta</a>
+						<a href="pipelinemeta.html" class="tsd-kind-icon">Pipeline<wbr>Meta</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/pipelineworkspace.html" class="tsd-kind-icon">Pipeline<wbr>Work<wbr>Space</a>
+						<a href="pipelineworkspace.html" class="tsd-kind-icon">Pipeline<wbr>Work<wbr>Space</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/scriptconfig.html" class="tsd-kind-icon">Script<wbr>Config</a>
+						<a href="scriptconfig.html" class="tsd-kind-icon">Script<wbr>Config</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/scriptentries.html" class="tsd-kind-icon">Script<wbr>Entries</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
+						<a href="scriptentries.html" class="tsd-kind-icon">Script<wbr>Entries</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="scriptentries.html#dataflow" class="tsd-kind-icon">dataflow</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="scriptentries.html#datasource" class="tsd-kind-icon">datasource</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="scriptentries.html#model" class="tsd-kind-icon">model</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-type-alias">
 						<a href="../index.html#defaultdataset" class="tsd-kind-icon">Default<wbr>Data<wbr>Set</a>
 					</li>

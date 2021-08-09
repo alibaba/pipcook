@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ProgressInfo | Pipcook Interfaces</title>
+	<title>PredictObject | Pipcook Interfaces</title>
 	<meta name="description" content="Documentation for Pipcook Interfaces">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,28 +56,21 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="progressinfo.html">ProgressInfo</a>
+					<a href="predictobject.html">PredictObject</a>
 				</li>
 			</ul>
-			<h1>Interface ProgressInfo</h1>
+			<h1>Interface PredictObject</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The model script can emit the training progress through the API <code>Runtime.notifyProgress</code>.</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ProgressInfo</span>
+						<span class="target">PredictObject</span>
 					</li>
 				</ul>
 			</section>
@@ -88,8 +81,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="progressinfo.html#extenddata" class="tsd-kind-icon">extend<wbr>Data</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="progressinfo.html#value" class="tsd-kind-icon">value</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="predictobject.html#box" class="tsd-kind-icon">box</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="predictobject.html#category" class="tsd-kind-icon">category</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="predictobject.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="predictobject.html#score" class="tsd-kind-icon">score</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,34 +93,44 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="extenddata" class="tsd-anchor"></a>
-					<h3>extend<wbr>Data</h3>
-					<div class="tsd-signature tsd-kind-icon">extend<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="box" class="tsd-anchor"></a>
+					<h3>box</h3>
+					<div class="tsd-signature tsd-kind-icon">box<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">DataCook.Dataset.Types.ObjectDetection.Bbox</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/runtime.ts#L15">packages/core/src/runtime.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/dataset-pool/types/pipeline-type/object-detection.ts#L21">packages/core/src/dataset-pool/types/pipeline-type/object-detection.ts:21</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Custom data.</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="value" class="tsd-anchor"></a>
-					<h3>value</h3>
-					<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="category" class="tsd-anchor"></a>
+					<h3>category</h3>
+					<div class="tsd-signature tsd-kind-icon">category<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/runtime.ts#L11">packages/core/src/runtime.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/dataset-pool/types/pipeline-type/object-detection.ts#L19">packages/core/src/dataset-pool/types/pipeline-type/object-detection.ts:19</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The training progress percentage, it should be [0, 100].</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/dataset-pool/types/pipeline-type/object-detection.ts#L18">packages/core/src/dataset-pool/types/pipeline-type/object-detection.ts:18</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="score" class="tsd-anchor"></a>
+					<h3>score</h3>
+					<div class="tsd-signature tsd-kind-icon">score<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alibaba/pipcook/blob/8f64a9b/packages/core/src/dataset-pool/types/pipeline-type/object-detection.ts#L20">packages/core/src/dataset-pool/types/pipeline-type/object-detection.ts:20</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -142,13 +147,19 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="progressinfo.html" class="tsd-kind-icon">Progress<wbr>Info</a>
+						<a href="predictobject.html" class="tsd-kind-icon">Predict<wbr>Object</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="progressinfo.html#extenddata" class="tsd-kind-icon">extend<wbr>Data</a>
+								<a href="predictobject.html#box" class="tsd-kind-icon">box</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="progressinfo.html#value" class="tsd-kind-icon">value</a>
+								<a href="predictobject.html#category" class="tsd-kind-icon">category</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="predictobject.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="predictobject.html#score" class="tsd-kind-icon">score</a>
 							</li>
 						</ul>
 					</li>
