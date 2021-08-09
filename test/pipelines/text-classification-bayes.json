@@ -8,7 +8,7 @@
     "target": "/tmp/bayes-model.zip"
   }],
   "options": {
-    "framework": "bayes@1.0.0",
+    "framework": "bayes@1.0.1",
     "train": {
       "epochs": 1,
       "validationRequired": true
