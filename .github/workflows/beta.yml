@@ -47,7 +47,7 @@ jobs:
         run: |
           npm install
           npm run build
-          
+
       - name: Publish npm beta packages
         if: env.UPDATED == 'true'
         run: |

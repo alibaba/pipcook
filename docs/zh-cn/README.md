@@ -2,6 +2,22 @@
 
 [Pipcook][] 项目是一个开源工具集，它能让 Web 开发者更好地使用机器学习，从而开启和加速前端智能化时代！
 
+## 用法
+使用 Pipcook 进行机器学习开发非常简单，只需 3 步：安装、训练、预测。
+安装 Pipcook-cli:
+```sh
+$ npm install -g @pipcook/cli
+```
+选择一个[内置 pipeline](../../../example/pipelines) 进行训练，比如图片分类：
+```sh
+$ pipcook train https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o output
+```
+使用训练结果进行预测：
+```sh
+$ pipcook predict ./output/image-classification-mobilenet.json -s ./output/data/test/blurBackground/4572_58__1500.94_453.jpg
+Origin result:[{"id":1,"category":"blurBackground","score":1}]
+```
+预测的结果显示当前输入的图片分类为 `blurBackground`，可信度为 1。
 ## 为什么要开发 Pipcook
 
 它旨在使 Web 工程师能够在零门槛的前提下使用机器学习，并拥有将前端技术领域带到智能领域的视角。[Pipcook][] 的目标就是成为机器学习和前端交互的跨领域工具包。
