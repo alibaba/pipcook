@@ -85,7 +85,7 @@ Prepare the following on your machine:
 
 | Installer   | Version Range |
 |-------------|---------------|
-| [Node.js][] | >= 12.17 || >= 14.0.0 |
+| [Node.js][] | >= 12.17 or >= 14.0.0 |
 | [npm][]    | >= 6.14.4       |
 
 Install the command-line tool for managing [Pipcook][] projects:
@@ -105,6 +105,7 @@ Predict the category of a image:
 $ pipcook predict ./output/image-classification-mobilenet.json -s ./output/data/validation/blurBackground/71197_223__30.7_36.jpg
 ✔ Origin result:[{"id":1,"category":"blurBackground","score":0.9998120665550232}]
 ```
+The category is `blurBackground`.
 
 ### Playground
 
