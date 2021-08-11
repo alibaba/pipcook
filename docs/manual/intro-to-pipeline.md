@@ -17,7 +17,7 @@ In Pipcook, we use Pipeline to represent the training process of a model, so in 
   "options": {
     "framework": "mobilenet@1.0.0",
     "train": {
-      "epochs": 100,
+      "epochs": 20,
       "validationRequired": true
     }
   }

@@ -105,7 +105,7 @@ Then define the [model script](https://github.com/imgcook/pipcook-script/blob/ma
   "options": {
     "framework": "mobilenet@1.0.0",
     "train": {
-      "epochs": 100,
+      "epochs": 20,
       "validationRequired": true
     }
   }
