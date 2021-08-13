@@ -9,9 +9,9 @@ At the same time, through a set of script specifications defined by [Pipcook][],
 
 We have defined the following script categories for the machine learning lifecycle.
 
-- datasource: [`DatasourceEntry<SAMPLE, META>: (options: Record<string, any>, context: ScriptContext) => Promise<Dataset<SAMPLE, META>>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry) Download data from data sources and provide data access interfaces.
-- dataflow: [`DataflowEntry<IN, META, OUT>: (api: Dataset<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<Dataset<OUT, META>>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry) Get the data from the datasource, process it and let the next dataflow script or model script get the processed data by returning the data access interface.
-- model: [`ModelEntry<SAMPLE, META>: (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#modelentry) Get sample data from dataflow or datasource scripts, train, validate, and output the model file.
+- datasource: [`DatasourceEntry<SAMPLE, META>: (options: Record<string, any>, context: ScriptContext) => Promise<DatasetPool<SAMPLE, META>>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry) Download data from data sources and provide data access interfaces.
+- dataflow: [`DataflowEntry<IN, IN_META, OUT, OUT_META>: (api: DatasetPool<IN, IN_META>, options: Record<string, any>, context: ScriptContext) => Promise<DatasetPool<OUT, OUT_META>>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry) Get the data from the datasource, process it and let the next dataflow script or model script get the processed data by returning the data access interface.
+- model: [`{ train: ModelEntry<SAMPLE, META>, predict: PredictEntry<SAMPLE, META> }`](https://alibaba.github.io/pipcook/typedoc/script/interfaces/extmodelentry.html) Get sample data from dataflow or datasource scripts, train, validate, and output the model file. And predict from the input.
 
 ## Developing
 

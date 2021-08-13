@@ -79,6 +79,7 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
 ```json
 {
   "specVersion": "2.0",
+  "type": "ImageClassification",
   "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c1da85c/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
   "dataflow": [
     "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@c1da85c/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
@@ -88,7 +89,7 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
   "options": {
     "framework": "mobilenet@1.0.0",
     "train": {
-      "epochs": 100,
+      "epochs": 20,
       "validationRequired": true
     }
   }

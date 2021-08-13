@@ -85,7 +85,7 @@ Prepare the following on your machine:
 
 | Installer   | Version Range |
 |-------------|---------------|
-| [Node.js][] | >= 12.17      |
+| [Node.js][] | >= 12.17 or >= 14.0.0 |
 | [npm][]    | >= 6.14.4       |
 
 Install the command-line tool for managing [Pipcook][] projects:
@@ -94,11 +94,18 @@ Install the command-line tool for managing [Pipcook][] projects:
 $ npm install -g @pipcook/cli
 ```
 
-Then run a pipeline:
+Then train from a [pipeline](./example/pipelines/):
 
 ```shell
-$ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/text-classification-bayes.json
+$ pipcook train https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o ./output
 ```
+Predict the category of a image:
+
+```shell
+$ pipcook predict ./output/image-classification-mobilenet.json -s ./output/data/validation/blurBackground/71197_223__30.7_36.jpg
+✔ Origin result:[{"id":1,"category":"blurBackground","score":0.9998120665550232}]
+```
+The category is `blurBackground`.
 
 ### Playground
 
