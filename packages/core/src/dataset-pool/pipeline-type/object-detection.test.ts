@@ -110,151 +110,157 @@ const cocoAnnotation: DataCook.Dataset.Types.Coco.Meta = {
 
 const pascalVocAnnotation: Array<DataCook.Dataset.Types.PascalVoc.Annotation> = [
   {
-    folder: 'images',
-    filename: '0001.jpg',
-    path: 'images/0001.jpg',
-    source: {
-      database: 'database',
-      annotation: 'source.annotation',
-      image: 'source.image',
-      flickrid: '123'
-    },
-    owner: {
-      flickrid: 'owner.flickerid',
-      name: 'owner.name'
-    },
-    size: {
-      width: 234,
-      height: 345,
-      depth: 3
-    },
-    segmented: 0,
-    object: [
-      {
-        // id: 0,
-        name: 'dog',
-        pose: 'Left',
-        truncated: 1,
-        difficult: 0,
-        bndbox: {
-          xmin: 48,
-          ymin: 240,
-          xmax: 195,
-          ymax: 371
-        }
+    annotation: {
+      folder: 'images',
+      filename: '0001.jpg',
+      path: 'images/0001.jpg',
+      source: {
+        database: 'database',
+        annotation: 'source.annotation',
+        image: 'source.image',
+        flickrid: '123'
       },
-      {
-        // id: 1,
-        name: 'person',
-        pose: 'Left',
-        truncated: 1,
-        difficult: 0,
-        bndbox: {
-          xmin: 8,
-          ymin: 12,
-          xmax: 352,
-          ymax: 498
+      owner: {
+        flickrid: 'owner.flickerid',
+        name: 'owner.name'
+      },
+      size: {
+        width: 234,
+        height: 345,
+        depth: 3
+      },
+      segmented: 0,
+      object: [
+        {
+          // id: 0,
+          name: 'dog',
+          pose: 'Left',
+          truncated: 1,
+          difficult: 0,
+          bndbox: {
+            xmin: 48,
+            ymin: 240,
+            xmax: 195,
+            ymax: 371
+          }
+        },
+        {
+          // id: 1,
+          name: 'person',
+          pose: 'Left',
+          truncated: 1,
+          difficult: 0,
+          bndbox: {
+            xmin: 8,
+            ymin: 12,
+            xmax: 352,
+            ymax: 498
+          }
         }
-      }
-    ]
+      ]
+    }
   },
   {
-    folder: 'images',
-    filename: '0002.jpg',
-    path: 'images/0002.jpg',
-    source: {
-      database: 'database',
-      annotation: 'source.annotation',
-      image: 'source.image',
-      flickrid: '123'
-    },
-    owner: {
-      flickrid: 'owner.flickerid',
-      name: 'owner.name'
-    },
-    size: {
-      width: 234,
-      height: 345,
-      depth: 3
-    },
-    segmented: 0,
-    object: [
-      {
-        // id: 0,
-        name: 'dog',
-        pose: 'Left',
-        truncated: 1,
-        difficult: 0,
-        bndbox: {
-          xmin: 48,
-          ymin: 240,
-          xmax: 195,
-          ymax: 371
-        }
+    annotation: {
+      folder: 'images',
+      filename: '0002.jpg',
+      path: 'images/0002.jpg',
+      source: {
+        database: 'database',
+        annotation: 'source.annotation',
+        image: 'source.image',
+        flickrid: '123'
       },
-      {
-        // id: 1,
-        name: 'person',
-        pose: 'Left',
-        truncated: 1,
-        difficult: 0,
-        bndbox: {
-          xmin: 8,
-          ymin: 12,
-          xmax: 352,
-          ymax: 498
+      owner: {
+        flickrid: 'owner.flickerid',
+        name: 'owner.name'
+      },
+      size: {
+        width: 234,
+        height: 345,
+        depth: 3
+      },
+      segmented: 0,
+      object: [
+        {
+          // id: 0,
+          name: 'dog',
+          pose: 'Left',
+          truncated: 1,
+          difficult: 0,
+          bndbox: {
+            xmin: 48,
+            ymin: 240,
+            xmax: 195,
+            ymax: 371
+          }
+        },
+        {
+          // id: 1,
+          name: 'person',
+          pose: 'Left',
+          truncated: 1,
+          difficult: 0,
+          bndbox: {
+            xmin: 8,
+            ymin: 12,
+            xmax: 352,
+            ymax: 498
+          }
         }
-      }
-    ]
+      ]
+    }
   },
   {
-    folder: 'images',
-    filename: '0003.jpg',
-    path: 'images/0003.jpg',
-    source: {
-      database: 'database',
-      annotation: 'source.annotation',
-      image: 'source.image',
-      flickrid: '123'
-    },
-    owner: {
-      flickrid: 'owner.flickerid',
-      name: 'owner.name'
-    },
-    size: {
-      width: 235,
-      height: 346,
-      depth: 3
-    },
-    segmented: 0,
-    object: [
-      {
-        // id: 2,
-        name: 'dog2',
-        pose: 'Left',
-        truncated: 1,
-        difficult: 0,
-        bndbox: {
-          xmin: 48,
-          ymin: 240,
-          xmax: 195,
-          ymax: 371
-        }
+    annotation: {
+      folder: 'images',
+      filename: '0003.jpg',
+      path: 'images/0003.jpg',
+      source: {
+        database: 'database',
+        annotation: 'source.annotation',
+        image: 'source.image',
+        flickrid: '123'
       },
-      {
-        // id: 3,
-        name: 'person2',
-        pose: 'Left',
-        truncated: 1,
-        difficult: 0,
-        bndbox: {
-          xmin: 8,
-          ymin: 12,
-          xmax: 352,
-          ymax: 498
+      owner: {
+        flickrid: 'owner.flickerid',
+        name: 'owner.name'
+      },
+      size: {
+        width: 235,
+        height: 346,
+        depth: 3
+      },
+      segmented: 0,
+      object: [
+        {
+          // id: 2,
+          name: 'dog2',
+          pose: 'Left',
+          truncated: 1,
+          difficult: 0,
+          bndbox: {
+            xmin: 48,
+            ymin: 240,
+            xmax: 195,
+            ymax: 371
+          }
+        },
+        {
+          // id: 3,
+          name: 'person2',
+          pose: 'Left',
+          truncated: 1,
+          difficult: 0,
+          bndbox: {
+            xmin: 8,
+            ymin: 12,
+            xmax: 352,
+            ymax: 498
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 ];
 
@@ -321,72 +327,72 @@ test('should make a dataset from coco', async (t) => {
 
 test('should make a dataset from pascal', async (t) => {
   const sample1: DataCook.Dataset.Types.ObjectDetection.Sample = {
-    data: { uri: pascalVocAnnotation[0].path },
+    data: { uri: pascalVocAnnotation[0].annotation.path },
     label: [
       {
         name: 'dog',
         bbox: [
-          pascalVocAnnotation[0].object[0].bndbox.xmin,
-          pascalVocAnnotation[0].object[0].bndbox.ymin,
-          pascalVocAnnotation[0].object[0].bndbox.xmax - pascalVocAnnotation[0].object[0].bndbox.xmin,
-          pascalVocAnnotation[0].object[0].bndbox.ymax - pascalVocAnnotation[0].object[0].bndbox.ymin
+          (pascalVocAnnotation[0].annotation.object as Array<any>)[0].bndbox.xmin,
+          (pascalVocAnnotation[0].annotation.object as Array<any>)[0].bndbox.ymin,
+          (pascalVocAnnotation[0].annotation.object as Array<any>)[0].bndbox.xmax - (pascalVocAnnotation[0].annotation.object as Array<any>)[0].bndbox.xmin,
+          (pascalVocAnnotation[0].annotation.object as Array<any>)[0].bndbox.ymax - (pascalVocAnnotation[0].annotation.object as Array<any>)[0].bndbox.ymin
         ]
       },
       {
         name: 'person',
         bbox: [
-          pascalVocAnnotation[0].object[1].bndbox.xmin,
-          pascalVocAnnotation[0].object[1].bndbox.ymin,
-          pascalVocAnnotation[0].object[1].bndbox.xmax - pascalVocAnnotation[0].object[1].bndbox.xmin,
-          pascalVocAnnotation[0].object[1].bndbox.ymax - pascalVocAnnotation[0].object[1].bndbox.ymin
+          (pascalVocAnnotation[0].annotation.object as Array<any>)[1].bndbox.xmin,
+          (pascalVocAnnotation[0].annotation.object as Array<any>)[1].bndbox.ymin,
+          (pascalVocAnnotation[0].annotation.object as Array<any>)[1].bndbox.xmax - (pascalVocAnnotation[0].annotation.object as Array<any>)[1].bndbox.xmin,
+          (pascalVocAnnotation[0].annotation.object as Array<any>)[1].bndbox.ymax - (pascalVocAnnotation[0].annotation.object as Array<any>)[1].bndbox.ymin
         ]
       }
     ]
   };
 
   const sample2: DataCook.Dataset.Types.ObjectDetection.Sample = {
-    data: { uri: pascalVocAnnotation[1].path },
+    data: { uri: pascalVocAnnotation[1].annotation.path },
     label: [
       {
         name: 'dog',
         bbox: [
-          pascalVocAnnotation[1].object[0].bndbox.xmin,
-          pascalVocAnnotation[1].object[0].bndbox.ymin,
-          pascalVocAnnotation[1].object[0].bndbox.xmax - pascalVocAnnotation[1].object[0].bndbox.xmin,
-          pascalVocAnnotation[1].object[0].bndbox.ymax - pascalVocAnnotation[1].object[0].bndbox.ymin
+          (pascalVocAnnotation[1].annotation.object as Array<any>)[0].bndbox.xmin,
+          (pascalVocAnnotation[1].annotation.object as Array<any>)[0].bndbox.ymin,
+          (pascalVocAnnotation[1].annotation.object as Array<any>)[0].bndbox.xmax - (pascalVocAnnotation[1].annotation.object as Array<any>)[0].bndbox.xmin,
+          (pascalVocAnnotation[1].annotation.object as Array<any>)[0].bndbox.ymax - (pascalVocAnnotation[1].annotation.object as Array<any>)[0].bndbox.ymin
         ]
       },
       {
         name: 'person',
         bbox: [
-          pascalVocAnnotation[1].object[1].bndbox.xmin,
-          pascalVocAnnotation[1].object[1].bndbox.ymin,
-          pascalVocAnnotation[1].object[1].bndbox.xmax - pascalVocAnnotation[1].object[1].bndbox.xmin,
-          pascalVocAnnotation[1].object[1].bndbox.ymax - pascalVocAnnotation[1].object[1].bndbox.ymin
+          (pascalVocAnnotation[1].annotation.object as Array<any>)[1].bndbox.xmin,
+          (pascalVocAnnotation[1].annotation.object as Array<any>)[1].bndbox.ymin,
+          (pascalVocAnnotation[1].annotation.object as Array<any>)[1].bndbox.xmax - (pascalVocAnnotation[1].annotation.object as Array<any>)[1].bndbox.xmin,
+          (pascalVocAnnotation[1].annotation.object as Array<any>)[1].bndbox.ymax - (pascalVocAnnotation[1].annotation.object as Array<any>)[1].bndbox.ymin
         ]
       }
     ]
   };
 
   const sample3: DataCook.Dataset.Types.ObjectDetection.Sample = {
-    data: { uri: pascalVocAnnotation[2].path },
+    data: { uri: pascalVocAnnotation[2].annotation.path },
     label: [
       {
         name: 'dog2',
         bbox: [
-          pascalVocAnnotation[2].object[0].bndbox.xmin,
-          pascalVocAnnotation[2].object[0].bndbox.ymin,
-          pascalVocAnnotation[2].object[0].bndbox.xmax - pascalVocAnnotation[2].object[0].bndbox.xmin,
-          pascalVocAnnotation[2].object[0].bndbox.ymax - pascalVocAnnotation[2].object[0].bndbox.ymin
+          (pascalVocAnnotation[2].annotation.object as Array<any>)[0].bndbox.xmin,
+          (pascalVocAnnotation[2].annotation.object as Array<any>)[0].bndbox.ymin,
+          (pascalVocAnnotation[2].annotation.object as Array<any>)[0].bndbox.xmax - (pascalVocAnnotation[2].annotation.object as Array<any>)[0].bndbox.xmin,
+          (pascalVocAnnotation[2].annotation.object as Array<any>)[0].bndbox.ymax - (pascalVocAnnotation[2].annotation.object as Array<any>)[0].bndbox.ymin
         ]
       },
       {
         name: 'person2',
         bbox: [
-          pascalVocAnnotation[2].object[1].bndbox.xmin,
-          pascalVocAnnotation[2].object[1].bndbox.ymin,
-          pascalVocAnnotation[2].object[1].bndbox.xmax - pascalVocAnnotation[2].object[1].bndbox.xmin,
-          pascalVocAnnotation[2].object[1].bndbox.ymax - pascalVocAnnotation[2].object[1].bndbox.ymin
+          (pascalVocAnnotation[2].annotation.object as Array<any>)[1].bndbox.xmin,
+          (pascalVocAnnotation[2].annotation.object as Array<any>)[1].bndbox.ymin,
+          (pascalVocAnnotation[2].annotation.object as Array<any>)[1].bndbox.xmax - (pascalVocAnnotation[2].annotation.object as Array<any>)[1].bndbox.xmin,
+          (pascalVocAnnotation[2].annotation.object as Array<any>)[1].bndbox.ymax - (pascalVocAnnotation[2].annotation.object as Array<any>)[1].bndbox.ymin
         ]
       }
     ]
