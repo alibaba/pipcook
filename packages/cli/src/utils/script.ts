@@ -78,4 +78,4 @@ export const linkCoreToScript = async (scriptModulePath: string): Promise<void> 
     await fs.mkdirp(path.join(scriptModulePath, '@pipcook'));
     await fs.symlink(coreSourcePath, path.join(scriptModulePath, '@pipcook/core'));
   }
-}
+};
