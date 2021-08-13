@@ -9,9 +9,9 @@
 
 下面是所有在 Pipcook 中支持的脚本分类。
 
-- datasource: [`DatasourceEntry<SAMPLE, META>: (options: Record<string, any>, context: ScriptContext) => Promise<Dataset<SAMPLE, META>>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry) 从数据源中下载数据，提供数据访问接口。
-- dataflow: [`DataflowEntry<IN, META, OUT>: (api: Dataset<IN, META>, options: Record<string, any>, context: ScriptContext) => Promise<Dataset<OUT, META>>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry) 从 datasource 获取数据，处理并通过返回数据访问接口让下一个 dataflow 脚本或 model 脚本获取处理后的数据。
-- model: [`ModelEntry<SAMPLE, META>: (api: Runtime<SAMPLE, META>, options: Record<string, any>, context: ScriptContext) => Promise<void>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#modelentry) 从 dataflow 或 datasource 脚本中获取样本数据，并进行训练，验证，产出模型。
+- datasource: [`DatasourceEntry<SAMPLE, META>: (options: Record<string, any>, context: ScriptContext) => Promise<DatasetPool<SAMPLE, META>>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#datasourceentry) 从数据源中下载数据，提供数据访问接口。
+- dataflow: [`DataflowEntry<IN, IN_META, OUT, OUT_META>: (api: DatasetPool<IN, IN_META>, options: Record<string, any>, context: ScriptContext) => Promise<DatasetPool<OUT, OUT_META>>`](https://alibaba.github.io/pipcook/typedoc/script/index.html#dataflowentry) 从 datasource 获取数据，处理并通过返回数据访问接口让下一个 dataflow 脚本或 model 脚本获取处理后的数据。
+- model: [`{ train: ModelEntry<SAMPLE, META>, predict: PredictEntry<SAMPLE, META> }`](https://alibaba.github.io/pipcook/typedoc/script/interfaces/extmodelentry.html) 从 dataflow 或 datasource 脚本中获取样本数据，并进行训练，验证，产出模型。或者从输入的数据进行预测。
 
 ## 开发
 

@@ -478,7 +478,7 @@ $ pipcook -v
   "options": {
     "framework": "tfjs@2.8.3",
     "train": {
-      "epochs": 100,
+      "epochs": 20,
       "validationRequired": true,
       "rnnLayerSize": 128,
       "digits": 2,

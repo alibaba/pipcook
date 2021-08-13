@@ -10,7 +10,7 @@ Currently the installation of Pipcook and plugins rely on npm registry and pip(p
 
 ## Can I use Pipcook in Electron?
 <a id="q3"></a>
-Thereotically as long as the environment supports Node.js >= 12.19 and corresponding N-API, you can run Pipcook smoothly. Meanwhile, Pipcook will support to produce WASM model so that you can easily integrate the model to your system.
+Thereotically as long as the environment supports Node.js >= 12.17 or >= 14.0.0 and corresponding N-API, you can run Pipcook smoothly. Meanwhile, Pipcook will support to produce WASM model so that you can easily integrate the model to your system.
 
 ## Does Pipcook support Windows platform?
 <a id="q4"></a>

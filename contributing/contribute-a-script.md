@@ -23,6 +23,7 @@ In order to write the script, we need to understand the Pipeline 2.0 data struct
 ```json
 {
   "specVersion": "2.0",
+  "type": "unknown",
   "datasource": "http://host/data-source-script.js?url=http://host/dataset.zip",
   "dataflow": [
     "http://host/dataflow-script.js?&param=addition"
@@ -43,9 +44,10 @@ In order to write the script, we need to understand the Pipeline 2.0 data struct
 ```
 
 * `specVersion`: pipeline version number, currently `2.0`.
+* `type`: task type, supported: `ObjectDetection`, `ImageClassification`, `TextClassification`.
 * `datasource`: DataSource script address, this script implements access to the data source, supports url, local path. we can define script parameters by query, e.g.: `file://home/pipcook/datasource.js?url=http://oss.host.com/dataset.zip`, which will run the script located at `/home/pipcook/datasource.js` on the local disk, with the script parameter `{ url: 'http://oss.host.com/dataset.zip' }`.
 * `dataflow`: array of dataflow script URI, this script implements transformations of data, such as resize, normalize, rotate, crop, salt, etc., and provides api to access the transformed data, Pipcook will execute the scripts in dataflow in the defined order.
-* `model`: model script address, which implements define, train, evaluate, and output models.
+* `model`: model script address, which implements define, train, evaluate, and output models, also provides predictive from input.
 * `artifacts`: an array of processing plugins for the model output, the plugins in the array will also be called by Pipcook in order. The plugins in the example implement compression of the model files.
 * `options`: contains the definition of framework and the definition of train parameters. framework definition supports url, local path, or framework name, Pipcook will look for the corresponding framework resource file on the default framework mirror.
 
@@ -286,7 +288,7 @@ module.exports = async (dataset, options, context) => {
 So far, we have implemented a DataSource script, a Dataflow script, and can read the sample object containing the two Tensors from the Dataset, and then the last part: implementing a Model script that defines the ML model object and the training logic. It's also required to export an [entry function](https://alibaba.github.io/pipcook/typedoc/script/index.html#modelentry).
 
 ```js
-let tf = null;
+const tf = require('@tensorflow/tfjs-node');
 
 function createAndCompileModel(
   hiddenSize, rnnType, digits, vocabularySize
@@ -434,7 +436,6 @@ module.exports = async (rt, options, context) => {
   vocabularySize = parseInt(vocabularySize);
   epochs = parseInt(epochs);
   batchSize = parseInt(batchSize);
-  tf = await context.importJS('@tensorflow/tfjs-node');
   const model = createAndCompileModel(rnnLayerSize, rnnType, digits, vocabularySize);
   await train(rt, model, epochs, batchSize);
   await model.save(`file://${context.workspace.modelDir}`);
@@ -443,10 +444,9 @@ module.exports = async (rt, options, context) => {
 ```
 
 1. As with other scripts, we first take the parameters from the URI and perform the type conversion.
-2. import `@tensorflow/tfjs` from Framework.
-3. Create and compile the model object based on the hyperparameters passed in.
-4. Pass in the runtime object containing the Dataset and train the model.
-5. Save the model file and finish training.
+2. Create and compile the model object based on the hyperparameters passed in.
+3. Pass in the runtime object containing the Dataset and train the model.
+4. Save the model file and finish training.
 
 ## Debugging
 
@@ -471,7 +471,7 @@ Then we can build a pipeline configuration file in the debug folder of the scrip
   "options": {
     "framework": "tfjs@2.8.3",
     "train": {
-      "epochs": 100,
+      "epochs": 20,
       "validationRequired": true,
       "rnnLayerSize": 128,
       "digits": 2,

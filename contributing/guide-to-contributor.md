@@ -16,7 +16,7 @@ Next, let ’s take a look at how to submit patches to Pipcook.
 ### Requirements
 
 - macOS / Linux
-- Node.js >= 12.19
+- Node.js >= 12.17 || >= 14.0.0
 
 ### Download source
 

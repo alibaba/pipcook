@@ -10,7 +10,7 @@ Pipcook 会在后台启动服务，用户可以通过 cli 工具或者可视化�
 
 ## 我可以在 Electron 里面使用 Pipcook 吗？
 <a id="q3"></a>
-理论上只要 Node.js >= 12.19 并且相应的 N-API 可用，你就可以使用 Pipcook。同时，Pipcook 也将会支持产出 WASM 模型所以你可以非常容易的集成到你的系统中去。
+理论上只要 Node.js >= 12.17 或者 >= 14.0.0 并且相应的 N-API 可用，你就可以使用 Pipcook。同时，Pipcook 也将会支持产出 WASM 模型所以你可以非常容易的集成到你的系统中去。
 
 ## Pipcook 支持 Windows 系统吗？
 <a id="q4"></a>
