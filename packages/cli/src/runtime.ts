@@ -78,7 +78,10 @@ export class StandaloneRuntime {
     const modulePath = path.join(this.workspace.frameworkDir, JSModuleDirName);
     const scriptModulePath = path.join(this.scriptDir, JSModuleDirName);
     if (await fs.pathExists(modulePath) && !await fs.pathExists(scriptModulePath)) {
+      // link node_module in framework to script directory
       await fs.symlink(modulePath, scriptModulePath);
+      // link @pipcook/core to node_module
+      await Script.linkCoreToScript(scriptModulePath);
     }
   }
 

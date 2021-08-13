@@ -10,7 +10,7 @@ import { readJson, mkdirp, remove, copy, readFile } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
 import { logger, dateToString, downloadWithProgress, DownloadProtocol, PostPredict } from '../utils';
 import { PredictInput } from '../utils/predict-dataset';
-
+import "@pipcook/core";
 export interface TrainOptions {
   // Workspace for running
   output: string;
