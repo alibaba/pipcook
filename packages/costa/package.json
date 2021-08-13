@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/costa",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "The Pipcook Script Runner",
   "main": "dist/index",
   "types": "dist/index",
@@ -17,7 +17,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/core": "^2.0.0",
+    "@pipcook/core": "^2.1.0",
     "debug": "^4.3.1"
   },
   "devDependencies": {
