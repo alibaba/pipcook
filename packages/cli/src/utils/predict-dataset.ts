@@ -53,6 +53,22 @@ export function makePredictDataset(inputs: Array<PredictInput>, pipelineType: Pi
       predictedData: samples
     };
     return DatasetPool.ArrayDatasetPoolImpl.from(datasetData, { type: DataCook.Dataset.Types.DatasetType.Image });
+  } else if (pipelineType === PipelineType.TextClassification) {
+    samples = inputs.map((input) => {
+      if (typeof input === 'string') {
+        return {
+          data: input,
+          label: undefined
+        } as DataCook.Dataset.Types.TextClassification.Sample;
+      } else {
+        throw new TypeError('Should input text for text classification.');
+      }
+    });
+
+    const datasetData: DatasetPool.Types.DatasetData<DataCook.Dataset.Types.TextClassification.Sample> = {
+      predictedData: samples
+    };
+    return DatasetPool.ArrayDatasetPoolImpl.from(datasetData, { type: DataCook.Dataset.Types.DatasetType.Table });
   } else {
     return null;
   }

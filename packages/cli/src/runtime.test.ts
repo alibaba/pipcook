@@ -8,6 +8,7 @@ import * as utils from './utils';
 import * as RT from './standalone-impl';
 import { Costa } from '@pipcook/costa';
 import { TaskType } from '@pipcook/core';
+import { PredictDataset } from './utils';
 
 test.serial.afterEach(() => sinon.restore());
 
@@ -155,7 +156,7 @@ async function run(t: any, taskType: TaskType, runDataflow: boolean) {
   const stubPrepareArtifactPlugin = sinon.stub(utils.Plugin, 'prepareArtifactPlugin').resolves([ mockArtifact ]);
   const stubInitFramework = sinon.stub(Costa.prototype, 'initFramework').resolves();
   const stubRunDataSource =
-    taskType === TaskType.TRAIN ? sinon.stub(Costa.prototype, 'runDataSource').resolves(datasourceMock) : sinon.stub(utils.PredictDataset, 'makePredictDataset').resolves(datasourceMock);
+    taskType === TaskType.TRAIN ? sinon.stub(Costa.prototype, 'runDataSource').resolves(datasourceMock) : undefined;
   const stubRunDataflow = sinon.stub(Costa.prototype, 'runDataflow').resolves(dataflowMock);
   const stubRunModel = sinon.stub(Costa.prototype, 'runModel').resolves();
   const stubRT = sinon.createStubInstance(RT.StandaloneImpl);
@@ -163,10 +164,11 @@ async function run(t: any, taskType: TaskType, runDataflow: boolean) {
   const stubPrepareWorkspace = sinon.stub(rt as any, 'prepareWorkspace').resolves();
   await rt.prepare();
   const inputs = [ 'mockpath' ];
+  const ds = PredictDataset.makePredictDataset(inputs, PipelineType.ObjectDetection);
   if (taskType === TaskType.TRAIN) {
     await rt.train();
   } else {
-    await rt.predict(inputs);
+    await rt.predict(ds);
   }
   t.true(stubPrepareWorkspace.calledOnce, 'should call prepareWorkspace once');
   t.true(stubPrepareFramework.calledOnce, 'should call prepareFramework once');
@@ -188,25 +190,27 @@ async function run(t: any, taskType: TaskType, runDataflow: boolean) {
     'should call prepareArtifactPlugin with correct arguments'
   );
   t.true(stubInitFramework.calledOnce, 'initFramework should be called once');
-  t.true(stubRunDataSource.calledOnce, 'runDataSource should be called once');
-  if (taskType === TaskType.TRAIN) {
-    t.deepEqual(
-      stubRunDataSource.args[0],
-      [ mockScript.datasource ],
-      'should call runDataSource with correct arguments'
-    );
-  } else {
-    t.deepEqual(
-      stubRunDataSource.args[0],
-      [ inputs, pipelineMeta.type ],
-      'should call runDataSource with correct arguments'
-    );
+  if (stubRunDataSource) {
+    t.true(stubRunDataSource.calledOnce, 'runDataSource should be called once');
+    if (taskType === TaskType.TRAIN) {
+      t.deepEqual(
+        stubRunDataSource.args[0],
+        [ mockScript.datasource ],
+        'should call runDataSource with correct arguments'
+      );
+    } else {
+      t.deepEqual(
+        stubRunDataSource.args[0],
+        [ inputs, pipelineMeta.type ],
+        'should call runDataSource with correct arguments'
+      );
+    }
   }
   if (runDataflow) {
     t.true(stubRunDataflow.calledOnce, 'runDataflow should be called once');
     t.deepEqual(
       stubRunDataflow.args[0],
-      taskType === TaskType.TRAIN ? [ datasourceMock, mockScript.dataflow ] : [ datasourceMock, mockScript.dataflow, TaskType.PREDICT ],
+      taskType === TaskType.TRAIN ? [ datasourceMock, mockScript.dataflow ] : [ ds, mockScript.dataflow, TaskType.PREDICT ],
       'should call runDataflow with correct arguments'
     );
   } else {

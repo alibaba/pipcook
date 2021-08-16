@@ -1,9 +1,9 @@
 import * as fs from 'fs-extra';
 import { PipelineMeta, Costa, PipelineWorkSpace, ScriptConfig } from '@pipcook/costa';
-import { TaskType, PredictResult } from '@pipcook/core';
+import { TaskType, PredictResult, DatasetPool } from '@pipcook/core';
 import * as path from 'path';
 import { createStandaloneRT } from './standalone-impl';
-import { logger, Framework, Plugin, Script, PredictDataset } from './utils';
+import { logger, Framework, Plugin, Script } from './utils';
 import { JSModuleDirName } from './constants';
 
 export interface Options {
@@ -100,12 +100,7 @@ export class StandaloneRuntime {
     }
   }
 
-  async predict(inputs: Array<PredictDataset.PredictInput>): Promise<PredictResult> {
-    logger.info('running data source script');
-    let datasource = await PredictDataset.makePredictDataset(inputs, this.pipelineMeta.type);
-    if (!datasource) {
-      throw new TypeError(`invalid pipeline type: ${this.pipelineMeta.type}`);
-    }
+  async predict(datasource: DatasetPool.Types.DatasetPool<any, any>): Promise<PredictResult> {
     logger.info('running data flow script');
     if (this.scripts.dataflow) {
       datasource = await this.costa.runDataflow(datasource, this.scripts.dataflow, TaskType.PREDICT);

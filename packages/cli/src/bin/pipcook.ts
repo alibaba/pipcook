@@ -8,7 +8,7 @@ import { parse } from 'url';
 import * as constants from '../constants';
 import { readJson, mkdirp, remove, copy, readFile } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
-import { logger, dateToString, downloadWithProgress, DownloadProtocol, PostPredict } from '../utils';
+import { logger, dateToString, downloadWithProgress, DownloadProtocol, PostPredict, PredictDataset } from '../utils';
 import { PredictInput } from '../utils/predict-dataset';
 
 export interface TrainOptions {
@@ -129,7 +129,12 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
     } else {
       throw new TypeError('Str or uri should be specified, see `pipcook predict --help` for more information.');
     }
-    const predictResult = await runtime.predict(inputs);
+    logger.info('prepare data source');
+    const datasource = await PredictDataset.makePredictDataset(inputs, pipelineConfig.type);
+    if (!datasource) {
+      throw new TypeError(`invalid pipeline type: ${pipelineConfig.type}`);
+    }
+    const predictResult = await runtime.predict(datasource);
     await PostPredict.processData(predictResult, {
       type: pipelineConfig.type,
       inputs: [ opts.str || opts.uri ]
