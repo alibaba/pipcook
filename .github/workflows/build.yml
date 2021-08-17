@@ -37,15 +37,13 @@ jobs:
         access_token: ${{ github.token }}
         exception: main
     - uses: actions/checkout@v2
-    - name: Restore node_modules and boa dependencies
+    - name: Restore node_modules
       uses: actions/cache@v2
       with:
         path: |
           node_modules
           */*/node_modules
-          packages/boa/pybind11
-          packages/boa/pyodide
-        key: ${{ runner.os }}-${{ matrix.node_version }}-nodepkg-${{ hashFiles('**/package-lock.json', 'packages/boa/pybind11/Makefile', 'packages/boa/pyodide/Makefile') }}
+        key: ${{ runner.os }}-${{ matrix.node_version }}-nodepkg-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-nodepkg-${{ matrix.node_version }}
           ${{ runner.os }}-nodepkg
