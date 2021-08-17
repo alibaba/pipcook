@@ -173,17 +173,23 @@ test.serial('predict: fetch with file', async (t) => {
     debug: false,
     dev: false
   };
-  const mockPipelineConfig = { mock: 'value' };
+  const mockPipelineConfig = { type: 'ObjectDetection', mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubRun = sinon.stub(StandaloneRuntime.prototype, 'predict').resolves({ a: 1 });
   const stubWarn = sinon.stub(console, 'warn').returns();
+  const stubFail = sinon.stub(utils.logger, 'fail').returns();
   const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
+  const stubMakeDataset = sinon.stub(utils.PredictDataset, 'makePredictDataset').resolves({ mockDataset: '' });
+  const stubProcessData = sinon.stub(utils.PostPredict, 'processData').resolves();
   await pipcook.predict(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
   t.deepEqual(stubReadJson.args[0], [ '/a.b.c/path/to/filename.json' ] as any, 'should read the correct file');
   t.true(stubRun.calledOnce, 'run should be called once');
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.false(stubWarn.called, 'should not call console.warn');
+  t.false(stubFail.called, 'should not call logger.fail');
+  t.true(stubMakeDataset.calledOnce);
+  t.true(stubProcessData.calledOnce);
 });
 
 test.serial('predict: input file', async (t) => {
@@ -196,17 +202,23 @@ test.serial('predict: input file', async (t) => {
     debug: false,
     dev: false
   };
-  const mockPipelineConfig = { mock: 'value' };
+  const mockPipelineConfig = { type: 'ObjectDetection', mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubRun = sinon.stub(StandaloneRuntime.prototype, 'predict').resolves({ a: 1 });
   const stubReadFile = sinon.stub(fs, 'readFile').resolves(Buffer.from([ 1, 2, 3 ]));
   const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
+  const stubMakeDataset = sinon.stub(utils.PredictDataset, 'makePredictDataset').resolves({ mockDataset: '' });
+  const stubProcessData = sinon.stub(utils.PostPredict, 'processData').resolves();
+  const stubFail = sinon.stub(utils.logger, 'fail').returns();
   await pipcook.predict(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
   t.deepEqual(stubReadJson.args[0], [ '/a.b.c/path/to/filename.json' ] as any, 'should read the correct file');
   t.true(stubRun.calledOnce, 'run should be called once');
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubReadFile.calledOnce, 'should call fs.readFile once');
+  t.false(stubFail.called, 'should not call logger.fail');
+  t.true(stubMakeDataset.calledOnce);
+  t.true(stubProcessData.calledOnce);
 });
 
 test.serial('predict: fetch with url invalid extname', async (t) => {
@@ -219,11 +231,14 @@ test.serial('predict: fetch with url invalid extname', async (t) => {
     debug: false,
     dev: false
   };
-  const mockPipelineConfig = { mock: 'value' };
+  const mockPipelineConfig = { type: 'ObjectDetection', mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubRun = sinon.stub(StandaloneRuntime.prototype, 'predict').resolves({ a: 1 });
   const stubWarn = sinon.stub(console, 'warn').returns();
   const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
+  const stubFail = sinon.stub(utils.logger, 'fail').returns();
+  const stubMakeDataset = sinon.stub(utils.PredictDataset, 'makePredictDataset').resolves({ mockDataset: '' });
+  const stubProcessData = sinon.stub(utils.PostPredict, 'processData').resolves();
   await pipcook.predict(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
   t.deepEqual(stubReadJson.args[0], [ '/a.b.c/path/to/filename.html' ] as any, 'should read the correct file');
@@ -231,6 +246,9 @@ test.serial('predict: fetch with url invalid extname', async (t) => {
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubWarn.calledOnce, 'should call console.warn once');
   t.deepEqual(stubWarn.args[0], [ 'pipeline configuration file should be a json file' ], 'should console.warn with correct message');
+  t.false(stubFail.called, 'should not call logger.fail');
+  t.true(stubMakeDataset.calledOnce);
+  t.true(stubProcessData.calledOnce);
 });
 
 test.serial('clean cache', async (t) => {

@@ -30,3 +30,13 @@ test('make image classification dataset from buffer', async (t) => {
   const dataset = makePredictDataset([ buffer ], PipelineType.ImageClassification);
   t.deepEqual(await dataset.predicted.next(), { data: { buffer: buffer.buffer }, label: undefined });
 });
+
+test('make text classification dataset from string', async (t) => {
+  const dataset = makePredictDataset([ 'text1' ], PipelineType.TextClassification);
+  t.deepEqual(await dataset.predicted.next(), { data: 'text1', label: undefined });
+});
+
+test('make text classification dataset from buffer', async (t) => {
+  const buffer = Buffer.from([ 1 ]);
+  t.throws(() => makePredictDataset([ buffer ], PipelineType.TextClassification), { message: 'Should input text for text classification.' });
+});
