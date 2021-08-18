@@ -19,9 +19,9 @@
     <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
 </p>
 
-<p align="center">
-  Read this in other languages: English | <a href="docs/zh-cn/README.md">简体中文</a>
-</p>
+## Documentation
+
+Please refer to [English](https://alibaba.github.io/pipcook/#/) | [中文](https://alibaba.github.io/pipcook/#/zh-cn/)
 
 ## Builds
 
@@ -140,10 +140,6 @@ $ pipcook run https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines
 ```
 
 After the above pipeline is completed, you have already trained a model at the current `output/model` directory, it's a tensorflow.js model.
-
-## Documentation
-
-Please refer to [English](https://alibaba.github.io/pipcook/#/) | [中文](https://alibaba.github.io/pipcook/#/zh-cn/)
 
 ## Developers
 
