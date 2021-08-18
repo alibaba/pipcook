@@ -8,7 +8,7 @@
 ```sh
 $ npm install -g @pipcook/cli
 ```
-选择一个[内置 pipeline](../../../example/pipelines) 进行训练，比如图片分类：
+选择一个[内置 pipeline](https://github.com/alibaba/pipcook/tree/main/example/pipelines) 进行训练，比如图片分类：
 ```sh
 $ pipcook train https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o output
 ```
