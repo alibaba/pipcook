@@ -19,9 +19,9 @@
     <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
 </p>
 
-## Documentation
-
-Please refer to [English](https://alibaba.github.io/pipcook/#/) | [中文](https://alibaba.github.io/pipcook/#/zh-cn/)
+<p align="center">
+  Documentation: <a href="https://alibaba.github.io/pipcook/#/">English</a> | <a href="https://alibaba.github.io/pipcook/#/zh-cn/">中文</a>
+</p>
 
 ## Builds
 
