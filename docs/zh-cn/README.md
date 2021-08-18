@@ -4,6 +4,7 @@
 
 ## 用法
 使用 Pipcook 进行机器学习开发非常简单，只需 3 步：安装、训练、预测。
+
 安装 Pipcook-cli:
 ```sh
 $ npm install -g @pipcook/cli
