@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  Read this in other languages: English | <a href="https://alibaba.github.io/pipcook/docs/zh-ch/README.md">简体中文</a>
+  Read this in other languages: English | <a href="docs/zh-ch/README.md">简体中文</a>
 </p>
 
 ## Builds
