@@ -4,11 +4,12 @@
 
 ## 用法
 使用 Pipcook 进行机器学习开发非常简单，只需 3 步：安装、训练、预测。
+
 安装 Pipcook-cli:
 ```sh
 $ npm install -g @pipcook/cli
 ```
-选择一个[内置 pipeline](../../../example/pipelines) 进行训练，比如图片分类：
+选择一个[内置 pipeline](https://github.com/alibaba/pipcook/tree/main/example/pipelines) 进行训练，比如图片分类：
 ```sh
 $ pipcook train https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o output
 ```
