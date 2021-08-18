@@ -2,6 +2,10 @@
 
 [Pipcook][] 项目是一个开源工具集，它能让 Web 开发者更好地使用机器学习，从而开启和加速前端智能化时代！
 
+<p align="center">
+  其他语言: <a href="https://alibaba.github.io/pipcook/README.md">English</a> | 简体中文
+</p>
+
 ## 用法
 使用 Pipcook 进行机器学习开发非常简单，只需 3 步：安装、训练、预测。
 安装 Pipcook-cli:

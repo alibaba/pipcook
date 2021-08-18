@@ -19,7 +19,9 @@
     <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
 </p>
 
-<center>Read this in other languages: English | [简体中文](docs/zh-ch/README.md)</center>
+<p align="center">
+  Read this in other languages: English | <a href="https://alibaba.github.io/pipcook/docs/zh-ch/README.md">简体中文</a>
+</p>
 
 ## Builds
 
