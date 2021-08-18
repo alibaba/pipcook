@@ -1,1 +1,5 @@
-.gitignore
+.*
+coverage
+*.tgz
+src
+tsconfig.*
