@@ -15,7 +15,7 @@ In Pipcook, we use Pipeline to represent the training process of a model, so in 
     "target": "/tmp/mobilenet-model.zip"
   }],
   "options": {
-    "framework": "mobilenet@1.0.0",
+    "framework": "tfjs@3.8",
     "train": {
       "epochs": 20,
       "validationRequired": true

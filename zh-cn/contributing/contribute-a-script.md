@@ -33,7 +33,7 @@ Pipcook 2.0 做了大量功能和性能优化，让开发者和用户可以以�
     "target": "/home/pipcook/mobilenet-model.zip"
   }],
   "options": {
-    "framework": "mobilenet@1.0.0",
+    "framework": "tfjs@3.8",
     "train": {
       "epochs": 10,
       "validationRequired": true
