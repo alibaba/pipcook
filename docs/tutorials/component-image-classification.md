@@ -87,7 +87,7 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
   "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fe00a8e/scripts/image-classification-mobilenet/build/model.js",
   "artifact": [],
   "options": {
-    "framework": "mobilenet@1.0.0",
+    "framework": "tfjs@3.8",
     "train": {
       "epochs": 20,
       "validationRequired": true

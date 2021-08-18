@@ -99,7 +99,7 @@ predictBookPrice('Dive into Pipcook'); // 199.0
 {
   "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fe00a8e/scripts/image-classification-mobilenet/build/model.js",
   "options": {
-    "framework": "mobilenet@1.0.0",
+    "framework": "tfjs@3.8",
     "train": {
       "epochs": 20,
       "validationRequired": true

@@ -39,7 +39,7 @@ export type FrameworkModule = any;
 export enum TaskType { TRAIN = 1, PREDICT = 2 }
 
 /**
- * The context of script running, includes `boa` and `DataCook`.
+ * The context of script running.
  */
 export interface ScriptContext {
   /**
