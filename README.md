@@ -19,6 +19,10 @@
     <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
 </p>
 
+<p align="center">
+  Read this in other languages: English | [简体中文](docs/zh-ch/README.md)
+</p>
+
 ## Builds
 
 | Build Types | Status |
