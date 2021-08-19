@@ -154,10 +154,10 @@ export const cacheClean = async (): Promise<void> => {
 
 (async function(): Promise<void> {
   // check node version
-  if (!semver.gte(process.version, '10.0.0')) {
+  if (!semver.gte(process.version, '12.17.0') || semver.major(process.version) === 13) {
     console.log(
       chalk.red(
-        `Pipcook requires node version higher than node 10.x. Howeverm your kicak node version is ${process.version}, ` +
+        `Pipcook requires node version higher than node 12.17.0 or 14.0.0. Howeverm your kicak node version is ${process.version}, ` +
         'Please update node.js'
       )
     );
@@ -170,14 +170,14 @@ export const cacheClean = async (): Promise<void> => {
   program
     .command('run <uri>')
     .alias('train')
-    .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
+    .option('--output <dir>', 'the output directory name', join(process.cwd(), `pipcook-workspace-${dateToString(new Date())}`))
     .option('-m --mirror <mirror>', 'framework mirror', '')
     .option('-c --npmClient <npm>', 'npm client binary for artifact installing', 'npm')
     .option('--registry <registry>', 'npm registry for artifact installing')
     .option('-d --debug', 'debug mode', false)
     .option('--dev', 'development mode', false)
     .option('--nocache', 'disabel cache for framework and scripts', false)
-    .description('run pipeline with a json file.')
+    .description('run pipeline with a json file.\nsee for detail:\nEnglish: https://alibaba.github.io/pipcook/#/\n中文: https://alibaba.github.io/pipcook/#/zh-cn')
     .action(train);
 
   program
@@ -189,7 +189,7 @@ export const cacheClean = async (): Promise<void> => {
     .option('-d --debug', 'debug mode', false)
     .option('--dev', 'development mode', false)
     .option('--nocache', 'disabel cache for framework and scripts', false)
-    .description('predict with string or uri.')
+    .description('predict with string or uri.\nsee for detail:\nEnglish: https://alibaba.github.io/pipcook/#/\n中文: https://alibaba.github.io/pipcook/#/zh-cn')
     .action(predict);
 
   program
