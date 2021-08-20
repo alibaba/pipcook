@@ -12,7 +12,7 @@
     "cov": "nyc --reporter=text-summary npm run test",
     "cov:report": "nyc report -r=lcov",
     "build": "npm run clean && npm run compile",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "clean": "((rm -rf ./dist && rm -rf tsconfig.tsbuildinfo) || (rmdir /Q /S ./dist && rmdir /Q /S tsconfig.tsbuildinfo))",
     "compile": "tsc -b tsconfig.json"
   },
   "license": "Apache-2.0",
