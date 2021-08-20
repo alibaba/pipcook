@@ -170,7 +170,7 @@ export const cacheClean = async (): Promise<void> => {
   program
     .command('run <uri>')
     .alias('train')
-    .option('--output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
+    .option('-o --output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
     .option('-m --mirror <mirror>', 'framework mirror', '')
     .option('-c --npmClient <npm>', 'npm client binary for artifact installing', 'npm')
     .option('--registry <registry>', 'npm registry for artifact installing')
