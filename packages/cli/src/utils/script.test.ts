@@ -18,7 +18,7 @@ test('download script with http protocol', async (t) => {
   t.true(stubFetch.calledOnce, 'fetchWithCache should be called once');
   t.deepEqual(
     stubFetch.args[0],
-    [ constants.PIPCOOK_SCRIPT_PATH, url, `${localPath}/1-a.js`, enableCache, true ],
+    [ constants.PIPCOOK_SCRIPT_PATH, url, path.join(localPath, '1-a.js'), enableCache, true ],
     'fetchWithCache should called with currect args'
   );
 });
@@ -32,7 +32,7 @@ test.serial('download script with https protocol', async (t) => {
   t.true(stubFetch.calledOnce, 'fetchWithCache should be called once');
   t.deepEqual(
     stubFetch.args[0],
-    [ constants.PIPCOOK_SCRIPT_PATH, url, `${localPath}/1-a.js`, enableCache, true ],
+    [ constants.PIPCOOK_SCRIPT_PATH, url, path.join(localPath, '1-a.js'), enableCache, true ],
     'fetchWithCache should called with currect args'
   );
 });
