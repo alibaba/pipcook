@@ -1,15 +1,15 @@
 {
   "specVersion": "2.0",
   "type": "ImageClassification",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/image-classification/build/datasource.js?url=http://pc-github.oss-us-west-1.aliyuncs.com/dataset/imageclass-test.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@f1611c2/scripts/image-classification/build/datasource.js?url=http://pc-github.oss-us-west-1.aliyuncs.com/dataset/imageclass-test.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/image-classification/build/dataflow.js?size=224&size=224"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@f1611c2/scripts/image-classification/build/dataflow.js?size=224&size=224"
   ],
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "/tmp/mobilenet-model.zip"
   }],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/image-classification/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@f1611c2/scripts/image-classification/build/model.js",
   "options": {
     "framework": "tfjs@3.8",
     "train": {
