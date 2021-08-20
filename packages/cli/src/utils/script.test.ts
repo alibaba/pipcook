@@ -45,7 +45,7 @@ test.serial('download script with file protocol', async (t) => {
   const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache, false);
   t.deepEqual(scriptDesc, {
     name: 'a.js',
-    path: localPath + '/1-a.js',
+    path: path.join(localPath, '1-a.js'),
     type: ScriptType.Model,
     query: {}
   }, 'should return correct script');
@@ -75,7 +75,7 @@ test.serial('download script with default file protocol', async (t) => {
   const scriptDesc = await script.downloadScript(localPath, 1, url, ScriptType.Model, enableCache, false);
   t.deepEqual(scriptDesc, {
     name: 'a.js',
-    path: process.cwd() + '/1-a.js',
+    path: path.join(process.cwd(), '1-a.js'),
     type: ScriptType.Model,
     query: {}
   }, 'should return correct script');

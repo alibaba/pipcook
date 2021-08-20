@@ -5,6 +5,7 @@ import * as semver from 'semver';
 import * as pipcook from './pipcook';
 import * as constants from '../constants';
 import { StandaloneRuntime } from '../runtime';
+import * as path from 'path';
 import * as utils from '../utils';
 const importFresh = require('import-fresh');
 
@@ -21,6 +22,7 @@ test.serial('fetch with cache', async (t) => {
     registry: 'my-registry',
     dev: false
   };
+  const tmpFilePath = path.join(path.resolve(opts.output), 'filename.json');
   const mockPipelineConfig = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
@@ -29,13 +31,13 @@ test.serial('fetch with cache', async (t) => {
   const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
   await pipcook.train(mockFile, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
-  t.deepEqual(stubReadJson.args[0], [ '/tmp/filename.json' ] as any, 'should read the correct file');
+  t.deepEqual(stubReadJson.args[0], [ tmpFilePath ] as any, 'should read the correct file');
   t.true(stubMkdirp.calledOnce, 'mkdirp should be called once');
   t.deepEqual(stubMkdirp.args[0], [ opts.output ] as any, 'should make the correct directory');
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubTrain.calledOnce, 'train should be called once');
   t.true(stubCopy.calledOnce, 'copy should be called once');
-  t.deepEqual(stubCopy.args[0], [ mockFile, '/tmp/filename.json' ] as any, 'should make the correct directory');
+  t.deepEqual(stubCopy.args[0], [ mockFile, tmpFilePath ] as any, 'should make the correct directory');
 });
 
 test.serial('fetch with http', async (t) => {
@@ -48,6 +50,7 @@ test.serial('fetch with http', async (t) => {
     npmClient: 'npm',
     dev: false
   };
+  const tmpFilePath = path.join(path.resolve(opts.output), 'filename.json');
   const mockPipelineConfig = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
@@ -56,13 +59,13 @@ test.serial('fetch with http', async (t) => {
   const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
   await pipcook.train(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
-  t.deepEqual(stubReadJson.args[0], [ '/tmp/filename.json' ] as any, 'should read the correct file');
+  t.deepEqual(stubReadJson.args[0], [ tmpFilePath ] as any, 'should read the correct file');
   t.true(stubMkdirp.calledOnce, 'mkdirp should be called once');
   t.deepEqual(stubMkdirp.args[0], [ opts.output ] as any, 'should make the correct directory');
   t.true(stubRun.calledOnce, 'run should be called once');
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubDownload.calledOnce, 'downloadWithProgress should be called once');
-  t.deepEqual(stubDownload.args[0], [ mockUrl, '/tmp/filename.json' ] as any, 'should download the correct file');
+  t.deepEqual(stubDownload.args[0], [ mockUrl, tmpFilePath ] as any, 'should download the correct file');
 });
 
 test.serial('fetch with https', async (t) => {
@@ -75,6 +78,7 @@ test.serial('fetch with https', async (t) => {
     npmClient: 'npm',
     dev: false
   };
+  const tmpFilePath = path.join(path.resolve(opts.output), 'filename.json');
   const mockPipelineConfig = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
@@ -83,13 +87,13 @@ test.serial('fetch with https', async (t) => {
   const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
   await pipcook.train(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
-  t.deepEqual(stubReadJson.args[0], [ '/tmp/filename.json' ] as any, 'should read the correct file');
+  t.deepEqual(stubReadJson.args[0], [ tmpFilePath ] as any, 'should read the correct file');
   t.true(stubMkdirp.calledOnce, 'mkdirp should be called once');
   t.deepEqual(stubMkdirp.args[0], [ opts.output ] as any, 'should make the correct directory');
   t.true(stubRun.calledOnce, 'run should be called once');
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubDownload.calledOnce, 'downloadWithProgress should be called once');
-  t.deepEqual(stubDownload.args[0], [ mockUrl, '/tmp/filename.json' ] as any, 'should download the correct file');
+  t.deepEqual(stubDownload.args[0], [ mockUrl, tmpFilePath ] as any, 'should download the correct file');
 });
 
 test.serial('fetch with invalid poptocol', async (t) => {
@@ -143,6 +147,7 @@ test.serial('fetch with url invalid extname', async (t) => {
     npmClient: 'npm',
     dev: false
   };
+  const tmpFilePath = path.join(path.resolve(opts.output), 'filename.html');
   const mockPipelineConfig = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
@@ -152,13 +157,13 @@ test.serial('fetch with url invalid extname', async (t) => {
   const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
   await pipcook.train(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
-  t.deepEqual(stubReadJson.args[0], [ '/tmp/filename.html' ] as any, 'should read the correct file');
+  t.deepEqual(stubReadJson.args[0], [ tmpFilePath ] as any, 'should read the correct file');
   t.true(stubMkdirp.calledOnce, 'mkdirp should be called once');
   t.deepEqual(stubMkdirp.args[0], [ opts.output ] as any, 'should make the correct directory');
   t.true(stubRun.calledOnce, 'run should be called once');
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubDownload.calledOnce, 'downloadWithProgress should be called once');
-  t.deepEqual(stubDownload.args[0], [ mockUrl, '/tmp/filename.html' ] as any, 'should download the correct file');
+  t.deepEqual(stubDownload.args[0], [ mockUrl, tmpFilePath ] as any, 'should download the correct file');
   t.true(stubWarn.calledOnce, 'should call console.warn once');
   t.deepEqual(stubWarn.args[0], [ 'pipeline configuration file should be a json file' ], 'should console.warn with correct message');
 });
@@ -173,6 +178,7 @@ test.serial('predict: fetch with file', async (t) => {
     debug: false,
     dev: false
   };
+  const tmpFilePath = path.resolve(mockUrl);
   const mockPipelineConfig = { type: 'ObjectDetection', mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubRun = sinon.stub(StandaloneRuntime.prototype, 'predict').resolves({ a: 1 });
@@ -183,7 +189,7 @@ test.serial('predict: fetch with file', async (t) => {
   const stubProcessData = sinon.stub(utils.PostPredict, 'processData').resolves();
   await pipcook.predict(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
-  t.deepEqual(stubReadJson.args[0], [ '/a.b.c/path/to/filename.json' ] as any, 'should read the correct file');
+  t.deepEqual(stubReadJson.args[0], [ tmpFilePath ] as any, 'should read the correct file');
   t.true(stubRun.calledOnce, 'run should be called once');
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.false(stubWarn.called, 'should not call console.warn');
@@ -202,6 +208,7 @@ test.serial('predict: input file', async (t) => {
     debug: false,
     dev: false
   };
+  const tmpFilePath = path.resolve(mockUrl);
   const mockPipelineConfig = { type: 'ObjectDetection', mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubRun = sinon.stub(StandaloneRuntime.prototype, 'predict').resolves({ a: 1 });
@@ -212,7 +219,7 @@ test.serial('predict: input file', async (t) => {
   const stubFail = sinon.stub(utils.logger, 'fail').returns();
   await pipcook.predict(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
-  t.deepEqual(stubReadJson.args[0], [ '/a.b.c/path/to/filename.json' ] as any, 'should read the correct file');
+  t.deepEqual(stubReadJson.args[0], [ tmpFilePath ] as any, 'should read the correct file');
   t.true(stubRun.calledOnce, 'run should be called once');
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubReadFile.calledOnce, 'should call fs.readFile once');
@@ -231,6 +238,7 @@ test.serial('predict: fetch with url invalid extname', async (t) => {
     debug: false,
     dev: false
   };
+  const tmpFilePath = path.resolve(mockUrl);
   const mockPipelineConfig = { type: 'ObjectDetection', mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockPipelineConfig);
   const stubRun = sinon.stub(StandaloneRuntime.prototype, 'predict').resolves({ a: 1 });
@@ -241,7 +249,7 @@ test.serial('predict: fetch with url invalid extname', async (t) => {
   const stubProcessData = sinon.stub(utils.PostPredict, 'processData').resolves();
   await pipcook.predict(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
-  t.deepEqual(stubReadJson.args[0], [ '/a.b.c/path/to/filename.html' ] as any, 'should read the correct file');
+  t.deepEqual(stubReadJson.args[0], [ tmpFilePath ] as any, 'should read the correct file');
   t.true(stubRun.calledOnce, 'run should be called once');
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubWarn.calledOnce, 'should call console.warn once');
