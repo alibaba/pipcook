@@ -1,6 +1,6 @@
 {
   "name": "@pipcook/cli",
-  "version": "2.1.1",
+  "version": "2.1.2-serve-beta.0",
   "description": "",
   "main": "dist/bin/pipcook.js",
   "scripts": {
@@ -18,8 +18,8 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/core": "^2.1.0",
-    "@pipcook/costa": "^2.1.0",
+    "@pipcook/core": "^2.1.2-serve-beta.0",
+    "@pipcook/costa": "^2.1.2-serve-beta.0",
     "bent": "^7.3.12",
     "chalk": "^3.0.0",
     "cli-progress": "^3.9.0",
