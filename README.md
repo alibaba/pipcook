@@ -101,13 +101,27 @@ Then train from a [pipeline](./example/pipelines/):
 ```shell
 $ pipcook train https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o ./output
 ```
+
 Predict the category of a image:
 
 ```shell
 $ pipcook predict ./output/image-classification-mobilenet.json -s ./output/data/validation/blurBackground/71197_223__30.7_36.jpg
 ✔ Origin result:[{"id":1,"category":"blurBackground","score":0.9998120665550232}]
 ```
+
 The category is `blurBackground`.
+
+Want to deploy it?
+```shell
+$ pipcook serve ./output/image-classification-mobilenet.json
+ℹ preparing framework
+ℹ preparing scripts
+ℹ preparing artifact plugins
+ℹ initializing framework packages
+Pipcook has served at: http://localhost:9091
+```
+
+Then you can open the browser and try your image classification service.
 
 ### Playground
 

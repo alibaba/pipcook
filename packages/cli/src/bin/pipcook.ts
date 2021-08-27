@@ -193,7 +193,10 @@ export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<
       devMode: opts.dev
     });
     await runtime.prepare();
-    servePredict(Number(opts.port), pipelineConfig.type, async (buf: Buffer[] | string[]): Promise<Record<string, any>[]> => {
+    servePredict(
+      Number(opts.port),
+      pipelineConfig.type,
+      async (buf: Buffer[] | string[]): Promise<Record<string, any>[]> => {
       logger.info('prepare data source');
         const datasource = await PredictDataset.makePredictDataset(buf, pipelineConfig.type);
         if (!datasource) {
