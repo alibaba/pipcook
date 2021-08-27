@@ -3,7 +3,7 @@
 The Pipcook Project is an open-source toolkit to enable and accelerate the intelligentization of front-end engineering for Web developers.
 
 # Usage
-Using Pipbook for machine learning development is very simple. It only takes four steps: install, train, predict and deploy.
+Using Pipbook for machine learning development is very simple. It only takes four steps: install, train, test and deploy.
 
 Install the [Pipcook][] command-line tool:
 

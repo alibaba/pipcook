@@ -3,7 +3,7 @@
 [Pipcook][] 项目是一个开源工具集，它能让 Web 开发者更好地使用机器学习，从而开启和加速前端智能化时代！
 
 ## 用法
-使用 Pipcook 进行机器学习开发非常简单，只需 4 步：安装、训练、预测、部署。
+使用 Pipcook 进行机器学习开发非常简单，只需 4 步：安装、训练、测试、部署。
 
 安装 Pipcook-cli:
 
@@ -26,10 +26,10 @@ Origin result:[{"id":1,"category":"blurBackground","score":1}]
 
 预测的结果显示当前输入的图片分类为 `blurBackground`，可信度为 1。
 
-部署服务:
+想要部署服务？:
 
 ```sh
-$ pipcook predict ./output/image-classification-mobilen
+$ pipcook predict ./output/image-classification-mobilen.json
 ℹ preparing framework
 ℹ preparing scripts
 ℹ preparing artifact plugins
