@@ -10,7 +10,7 @@ import { readJson, mkdirp, remove, copy, readFile } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
 import { logger, dateToString, downloadWithProgress, DownloadProtocol, PostPredict, PredictDataset } from '../utils';
 import { PredictInput } from '../utils/predict-dataset';
-
+import { servePredict } from '../utils/serve-predict';
 export interface TrainOptions {
   // Workspace for running
   output: string;
@@ -38,6 +38,18 @@ export interface PredictOptions {
   mirror: string;
   // Development mode
   dev: boolean;
+}
+
+export interface ServeOptions {
+  // Fetch the framework and script without cache
+  nocache: boolean;
+  // Debug model
+  debug: boolean;
+  mirror: string;
+  // Development mode
+  dev: boolean;
+  // listen port
+  port: number;
 }
 
 export interface CacheCleanOptions {
@@ -152,6 +164,48 @@ export const cacheClean = async (): Promise<void> => {
   logger.success('done');
 };
 
+export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<void> => {
+  let pipelineConfig: any;
+  let runtime: StandaloneRuntime;
+  try {
+    const urlObj = parse(pipelineFile);
+    switch (urlObj.protocol) {
+    case null:
+    case DownloadProtocol.FILE:
+      urlObj.path = resolve(urlObj.path);
+      break;
+    default:
+      throw new TypeError(`protocol '${urlObj.protocol}' not supported when predict`);
+    }
+    const name = basename(urlObj.path);
+    if (extname(name) !== '.json') {
+      console.warn('pipeline configuration file should be a json file');
+    }
+    const workspace = dirname(urlObj.path);
+    pipelineConfig = await readJson(urlObj.path);
+    // TODO(feely): check pipeline file
+    runtime = new StandaloneRuntime({
+      workspace,
+      pipelineMeta: pipelineConfig,
+      mirror: opts.mirror,
+      enableCache: !opts.nocache,
+      npmClient: 'npm',
+      devMode: opts.dev
+    });
+    await runtime.prepare();
+    servePredict(Number(opts.port), pipelineConfig.type, async (buf: Buffer[] | string[]): Promise<Record<string, any>[]> => {
+      logger.info('prepare data source');
+        const datasource = await PredictDataset.makePredictDataset(buf, pipelineConfig.type);
+        if (!datasource) {
+          throw new TypeError(`invalid pipeline type: ${pipelineConfig.type}`);
+        }
+        return await runtime.predict(datasource);
+    });
+  } catch (err) {
+    logger.fail(`predict error: ${ opts.debug ? err.stack : err.message }`);
+  }
+};
+
 (async function(): Promise<void> {
   // check node version
   if (!semver.gte(process.version, '12.17.0') || semver.major(process.version) === 13) {
@@ -196,6 +250,18 @@ export const cacheClean = async (): Promise<void> => {
     .command('clean')
     .action(cacheClean)
     .description('clean pipcook cache, include framework and script');
+
+  program
+    .command('serve <pipelineFile>')
+    .option('-p --port <port>', 'listen port', 9091)
+    .option('-s --str <str>', 'predict as string')
+    .option('-u --uri <uri>', 'predict file uri')
+    .option('-m --mirror <mirror>', 'framework mirror', '')
+    .option('-d --debug', 'debug mode', false)
+    .option('--dev', 'development mode', false)
+    .option('--nocache', 'disabel cache for framework and scripts', false)
+    .action(serve)
+    .description('serve model on specified port');
 
   program.parse(process.argv);
 })();
