@@ -9,8 +9,8 @@ export function servePredict(
   predictCallback: (input: Buffer[] | string[]) => Promise<Record<string, any>[]>
 ): void {
   const app = express();
-  app.use(express.static(path.join(__dirname, '../../serve-resource')));
   if (pipelineType === PipelineType.TextClassification) {
+    app.use(express.static(path.join(__dirname, '../../serve-resource/text')));
     app.get('/predict', async (req, res) => {
       if (req.query && req.query['input']) {
         let inputs: string[];
@@ -26,10 +26,16 @@ export function servePredict(
       }
     });
   } else {
+    app.use(express.static(path.join(__dirname, '../../serve-resource/image')));
     const upload = multer({ storage: multer.memoryStorage() });
-    app.post('/predict', upload.single('image'), async (req, res) => {
-      if (req.file) {
-        const result = await predictCallback([ req.file.buffer ]);
+    app.post('/predict', upload.array('image'), async (req, res) => {
+      let buf: Buffer[];
+      if (Array.isArray(req.files)) {
+        buf = (req.files as Express.Multer.File[]).map((file) => file.buffer);
+      }
+
+      if (buf) {
+        const result = await predictCallback(buf);
         res.json({ success: true, data: result });
       } else {
         res.json({ success: false, message: 'no file available' });
