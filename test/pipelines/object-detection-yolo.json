@@ -1,11 +1,11 @@
 {
   "specVersion": "2.0",
   "type": "ObjectDetection",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fe00a8e/scripts/object-detection-yolo/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/object-detection-yolo.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/object-detection-yolo/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/object-detection-yolo.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fe00a8e/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fe00a8e/scripts/object-detection-yolo/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/object-detection-yolo/build/model.js",
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "/tmp/mobilenet-model.zip"

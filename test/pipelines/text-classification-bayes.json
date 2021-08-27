@@ -1,14 +1,14 @@
 {
   "specVersion": "2.0",
   "type": "TextClassification",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fe00a8e/scripts/text-classification-bayes/build/datasource.js?url=http://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip",
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@fe00a8e/scripts/text-classification-bayes/build/model.js",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/text-classification-bayes/build/datasource.js?url=http://pc-github.oss-us-west-1.aliyuncs.com/dataset/textClassification.zip",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/text-classification-bayes/build/model.js",
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "/tmp/bayes-model.zip"
   }],
   "options": {
-    "framework": "bayes@1.0.1",
+    "framework": "tfjs@3.8-nlp",
     "train": {
       "epochs": 1,
       "validationRequired": true
