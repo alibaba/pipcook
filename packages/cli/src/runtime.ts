@@ -57,8 +57,12 @@ export class StandaloneRuntime {
   }
 
   private async prepareWorkspace(): Promise<void> {
-    const futures = Object.values(this.workspace).map((dir: string) => fs.mkdirp(dir));
-    futures.push(fs.mkdirp(this.scriptDir));
+    const futures = [
+      fs.mkdirp(this.workspace.cacheDir),
+      fs.mkdirp(this.workspace.dataDir),
+      fs.mkdirp(this.workspace.modelDir),
+      fs.mkdirp(this.scriptDir)
+    ];
     await Promise.all(futures);
   }
   async prepare(): Promise<void> {
@@ -78,6 +82,8 @@ export class StandaloneRuntime {
     const modulePath = path.join(this.workspace.frameworkDir, JSModuleDirName);
     const scriptModulePath = path.join(this.scriptDir, JSModuleDirName);
     if (await fs.pathExists(modulePath) && !await fs.pathExists(scriptModulePath)) {
+      // remove if it exists
+      await fs.remove(scriptModulePath);
       // link node_module in framework to script directory
       await fs.symlink(modulePath, scriptModulePath);
       // link @pipcook/core to node_module
@@ -110,8 +116,6 @@ export class StandaloneRuntime {
     }
     logger.info('running model script');
     const standaloneRT = createStandaloneRT(datasource, this.workspace.modelDir);
-    const predictResult = await this.costa.runModel(standaloneRT, this.scripts.model, this.pipelineMeta.options, TaskType.PREDICT);
-    console.log('predict result:', JSON.stringify(predictResult));
-    return predictResult;
+    return this.costa.runModel(standaloneRT, this.scripts.model, this.pipelineMeta.options, TaskType.PREDICT);
   }
 }

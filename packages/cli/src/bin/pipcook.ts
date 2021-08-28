@@ -194,10 +194,10 @@ export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<
       devMode: opts.dev
     });
     await runtime.prepare();
-    servePredict(
+    await servePredict(
       Number(opts.port),
       pipelineConfig.type,
-      async (buf: Buffer[] | string[]): Promise<Record<string, any>[]> => {
+      async (buf: Buffer[]): Promise<Record<string, any>[]> => {
         logger.info('prepare data source');
         const datasource = await PredictDataset.makePredictDataset(buf, pipelineConfig.type);
         if (!datasource) {
@@ -206,8 +206,9 @@ export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<
         return await runtime.predict(datasource);
       }
     );
+    logger.success(`Pipcook has served at: http://localhost:${opts.port}`);
   } catch (err) {
-    logger.fail(`predict error: ${ opts.debug ? err.stack : err.message }`);
+    logger.fail(`serve error: ${ opts.debug ? err.stack : err.message }`);
   }
 };
 

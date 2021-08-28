@@ -69,19 +69,16 @@ test('prepare workspace', async (t) => {
   });
   const stubMkdir = sinon.stub(fs, 'mkdirp').resolves();
   await (rt as any).prepareWorkspace();
-  t.is(stubMkdir.callCount, 5, 'should create 4 directories');
+  t.is(stubMkdir.callCount, 4, 'should create 4 directories');
   const d = {
     dataDir: path.join(workspace, 'data'),
     modelDir: path.join(workspace, 'model'),
-    cacheDir: path.join(workspace, 'cache'),
-    frameworkDir: path.join(workspace, 'framework')
+    cacheDir: path.join(workspace, 'cache')
   };
-  let i = 0;
-  Object.values(d).forEach((dir) => {
-    t.is(dir, stubMkdir.args[i][0], `should equal to ${dir}`);
-    ++i;
-  });
-  t.is(path.join(workspace, 'scripts'), stubMkdir.args[i][0], 'directory of scripts is not correct');
+  t.is(d.cacheDir, stubMkdir.args[0][0], `should equal to ${d.cacheDir}`);
+  t.is(d.dataDir, stubMkdir.args[1][0], `should equal to ${d.dataDir}`);
+  t.is(d.modelDir, stubMkdir.args[2][0], `should equal to ${d.modelDir}`);
+  t.is(path.join(workspace, 'scripts'), stubMkdir.args[3][0], 'directory of scripts is not correct');
 });
 
 async function run(t: any, taskType: TaskType, runDataflow: boolean) {
