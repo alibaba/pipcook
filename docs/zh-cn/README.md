@@ -17,16 +17,17 @@ $ npm install -g @pipcook/cli
 $ pipcook train https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o output
 ```
 
-使用训练结果进行预测：
+Pipeline 中指定的数据集包含了两类图片，分别是 `avatar` 和 `blurBackground`.
+在训练结束之后，我们可以使用训练结果进行预测：
 
 ```sh
 $ pipcook predict ./output/image-classification-mobilenet.json -s ./output/data/test/blurBackground/4572_58__1500.94_453.jpg
 Origin result:[{"id":1,"category":"blurBackground","score":1}]
 ```
 
-预测的结果显示当前输入的图片分类为 `blurBackground`，可信度为 1。
+模型的输入是一张验证数据集的图片，分类是 `blurBackground`, 预测的结果显示当前输入的图片分类为 `blurBackground`，可信度为 1。
 
-想要部署服务？:
+想要部署服务？
 
 ```sh
 $ pipcook predict ./output/image-classification-mobilen.json
@@ -37,7 +38,7 @@ $ pipcook predict ./output/image-classification-mobilen.json
 Pipcook has served at: http://localhost:9091
 ```
 
-接下来，打开浏览器并访问 `http://localhost:9091` 就可以访问到你的图片分类任务了。
+接下来，打开浏览器并访问 `http://localhost:9091` 就可以访问到你的图片分类服务了。
 
 ## 为什么要开发 Pipcook
 

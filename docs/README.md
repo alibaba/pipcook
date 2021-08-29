@@ -3,7 +3,7 @@
 The Pipcook Project is an open-source toolkit to enable and accelerate the intelligentization of front-end engineering for Web developers.
 
 # Usage
-Using Pipbook for machine learning development is very simple. It only takes four steps: install, train, test and deploy.
+Using Pipcook for machine learning development is very simple. It only takes four steps: install, train, test, and deploy.
 
 Install the [Pipcook][] command-line tool:
 
@@ -16,15 +16,15 @@ Then train from a [pipeline](./example/pipelines/):
 ```shell
 $ pipcook train https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o ./output
 ```
-
-Predict the category of a image:
+This dataset specfied by the pipeline includes 2 categories image: `avatar` and `blurBackground`.
+After training, we can predict the category of a image:
 
 ```shell
 $ pipcook predict ./output/image-classification-mobilenet.json -s ./output/data/validation/blurBackground/71197_223__30.7_36.jpg
 ✔ Origin result:[{"id":1,"category":"blurBackground","score":0.9998120665550232}]
 ```
 
-The category is `blurBackground`.
+The input is a `blurBackground` image from the vlidation dataset. And the model determines that its category is `blurBackground`.
 
 Want to deploy it?
 ```shell
@@ -36,7 +36,7 @@ $ pipcook serve ./output/image-classification-mobilenet.json
 Pipcook has served at: http://localhost:9091
 ```
 
-Then you can open the browser and try your image classification service.
+Then you can open the browser and try your image classification server.
 
 ## Why Pipcook
 
