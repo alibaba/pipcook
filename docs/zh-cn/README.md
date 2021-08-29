@@ -3,7 +3,7 @@
 [Pipcook][] 项目是一个开源工具集，它能让 Web 开发者更好地使用机器学习，从而开启和加速前端智能化时代！
 
 ## 用法
-使用 Pipcook 进行机器学习开发非常简单，只需 4 步：安装、训练、测试、部署。
+使用 Pipcook 进行机器学习开发非常简单，只需 4 步：安装、训练、测试和部署。
 
 安装 Pipcook-cli:
 
@@ -11,7 +11,7 @@
 $ npm install -g @pipcook/cli
 ```
 
-选择一个[内置 pipeline](https://github.com/alibaba/pipcook/tree/main/example/pipelines) 进行训练，比如图片分类：
+从[内置 pipeline](https://github.com/alibaba/pipcook/tree/main/example/pipelines) 选择一个进行训练，比如图片分类：
 
 ```sh
 $ pipcook train https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o output

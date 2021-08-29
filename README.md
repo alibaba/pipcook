@@ -96,7 +96,7 @@ Install the command-line tool for managing [Pipcook][] projects:
 $ npm install -g @pipcook/cli
 ```
 
-Then train from a [pipeline](./example/pipelines/):
+Then train from any of those [pipelines](./example/pipelines/), we take image classification as an example:
 
 ```shell
 $ pipcook train https://cdn.jsdelivr.net/gh/alibaba/pipcook@main/example/pipelines/image-classification-mobilenet.json -o ./output
