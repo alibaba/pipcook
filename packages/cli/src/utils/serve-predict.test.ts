@@ -2,7 +2,8 @@ import test from 'ava';
 import * as express from 'express';
 import * as sinon from 'sinon';
 import * as path from 'path';
-import { predictText, predictImage, serveText, serveImage } from './serve-predict';
+import { stop, predictText, predictImage, serveText, serveImage, servePredict } from './serve-predict';
+import { PipelineType } from '@pipcook/costa';
 
 test.serial.afterEach(() => sinon.restore());
 
@@ -44,8 +45,24 @@ test.serial('predict image', async (t) => {
     json: sinon.stub()
   };
   await predictImage(mockCb, req, resp);
+  t.true(mockCb.calledOnce);
   t.true(resp.json.calledOnce);
   t.deepEqual(resp.json.args[0][0], { success: true, data: mockPredictResult });
+});
+
+test.serial('predict image but no data', async (t) => {
+  const message = 'no file available';
+  const mockCb = sinon.stub();
+  const req: any = {
+    files: undefined
+  };
+  const resp: any = {
+    json: sinon.stub()
+  };
+  await predictImage(mockCb, req, resp);
+  t.false(mockCb.called);
+  t.true(resp.json.calledOnce);
+  t.deepEqual(resp.json.args[0][0], { success: false, message });
 });
 
 test.serial('predict text', async (t) => {
@@ -62,4 +79,34 @@ test.serial('predict text', async (t) => {
   t.deepEqual(mockCb.args[0][0], req.query.input);
   t.true(resp.json.calledOnce);
   t.deepEqual(resp.json.args[0][0], { success: true, data: mockPredictResult });
+});
+
+test.serial('predict text but no input', async (t) => {
+  const message = 'no input available';
+  const mockCb = sinon.stub();
+  const req: any = {
+    query: {}
+  };
+  const resp: any = {
+    json: sinon.stub()
+  };
+  await predictText(mockCb, req, resp);
+  t.false(mockCb.called);
+  t.true(resp.json.calledOnce);
+  t.deepEqual(resp.json.args[0][0], { success: false, message });
+});
+
+test('serve predict but pipeline type is not valid', async (t) => {
+  const mockCb = sinon.stub();
+  await t.throwsAsync(
+    servePredict(1234, undefined, mockCb),
+    { message: 'Pipeline type is not supported: undefined' }
+  );
+  t.false(mockCb.called);
+});
+
+test('start and stop', async (t) => {
+  const mockCb = sinon.stub();
+  await t.notThrowsAsync(servePredict(1234, PipelineType.TextClassification, mockCb));
+  await t.notThrowsAsync(stop());
 });
