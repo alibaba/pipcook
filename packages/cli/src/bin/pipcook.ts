@@ -49,6 +49,38 @@ export interface CacheCleanOptions {
   script: boolean;
 }
 
+export const preparePredict = async (
+  pipelineFile: string,
+  opts: BaseOptions
+): Promise<{ runtime: StandaloneRuntime, pipelineMeta: PipelineMeta }> => {
+  const urlObj = parse(pipelineFile);
+  switch (urlObj.protocol) {
+  case null:
+  case DownloadProtocol.FILE:
+    urlObj.path = resolve(urlObj.path);
+    break;
+  default:
+    throw new TypeError(`protocol '${urlObj.protocol}' not supported when predict`);
+  }
+  const name = basename(urlObj.path);
+  if (extname(name) !== '.json') {
+    console.warn('pipeline configuration file should be a json file');
+  }
+  const workspace = dirname(urlObj.path);
+  const pipelineConfig = await readJson(urlObj.path);
+  // TODO(feely): check pipeline file
+  const runtime = new StandaloneRuntime({
+    workspace,
+    pipelineMeta: pipelineConfig,
+    mirror: opts.mirror,
+    enableCache: !opts.nocache,
+    npmClient: 'npm',
+    devMode: opts.dev
+  });
+  await runtime.prepare();
+  return { runtime, pipelineMeta: pipelineConfig };
+};
+
 /**
  * Train model though pipeline.
  * @param uri pipeline file uri
@@ -129,40 +161,7 @@ export const cacheClean = async (): Promise<void> => {
   logger.success('done');
 };
 
-export const preparePredict = async (
-  pipelineFile: string,
-  opts: BaseOptions
-): Promise<{ runtime: StandaloneRuntime, pipelineMeta: PipelineMeta }> => {
-  const urlObj = parse(pipelineFile);
-  switch (urlObj.protocol) {
-  case null:
-  case DownloadProtocol.FILE:
-    urlObj.path = resolve(urlObj.path);
-    break;
-  default:
-    throw new TypeError(`protocol '${urlObj.protocol}' not supported when predict`);
-  }
-  const name = basename(urlObj.path);
-  if (extname(name) !== '.json') {
-    console.warn('pipeline configuration file should be a json file');
-  }
-  const workspace = dirname(urlObj.path);
-  const pipelineConfig = await readJson(urlObj.path);
-  // TODO(feely): check pipeline file
-  const runtime = new StandaloneRuntime({
-    workspace,
-    pipelineMeta: pipelineConfig,
-    mirror: opts.mirror,
-    enableCache: !opts.nocache,
-    npmClient: 'npm',
-    devMode: opts.dev
-  });
-  await runtime.prepare();
-  return { runtime, pipelineMeta: pipelineConfig };
-}
-
 export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<void> => {
-  let runtime: StandaloneRuntime;
   try {
     const { runtime, pipelineMeta } = await preparePredict(pipelineFile, opts);
     await servePredict(
