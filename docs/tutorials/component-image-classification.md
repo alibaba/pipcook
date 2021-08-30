@@ -49,21 +49,21 @@ In the training/validation/test set, we will organize the data according to the 
 
 ```
 - train
-  - avator
+  - avatar
     - xx.jpg
     - ...
   - blurBackground
     - xx.jpg
     - ...
 - validation
-  - avator
+  - avatar
     - xx.jpg
     - ...
   - blurBackground
     - xx.jpg
     - ...
 - test
-  - avator
+  - avatar
     - xx.jpg
     - ...
   - blurBackground
