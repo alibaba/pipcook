@@ -46,25 +46,25 @@
 
 当做类似于这样的图片分类任务时，我们需要按照一定格式组织我们的数据集，我们需要按照一定比例把我们的数据集分成训练集 (train)，验证集 (validation) 和测试集 (test)，其中，训练集主要用来训练模型，验证集和测试集用来评估模型。验证集主要用来在训练过程中评估模型，以方便查看模型过拟合和收敛情况，测试集是在全部训练结束之后用来对模型进行一个总体的评估的。
 
-在训练/验证/测试集里面，我们会按照分类的类别组织数据，例如，我们现在有两个分类，avator 和 blurBackground, 那么，我们可以创建两个文件夹分别为这两个分类名，在相应的文件夹下面放置图片。总体目录结构为：
+在训练/验证/测试集里面，我们会按照分类的类别组织数据，例如，我们现在有两个分类，avatar 和 blurBackground, 那么，我们可以创建两个文件夹分别为这两个分类名，在相应的文件夹下面放置图片。总体目录结构为：
 
 ```
 - train
-  - avator
+  - avatar
     - xx.jpg
     - ...
   - blurBackground
     - xx.jpg
     - ...
 - validation
-  - avator
+  - avatar
     - xx.jpg
     - ...
   - blurBackground
     - xx.jpg
     - ...
 - test
-  - avator
+  - avatar
     - xx.jpg
     - ...
   - blurBackground

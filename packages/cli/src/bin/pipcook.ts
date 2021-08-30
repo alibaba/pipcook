@@ -10,34 +10,36 @@ import { readJson, mkdirp, remove, copy, readFile } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
 import { logger, dateToString, downloadWithProgress, DownloadProtocol, PostPredict, PredictDataset } from '../utils';
 import { PredictInput } from '../utils/predict-dataset';
+import { servePredict } from '../utils/serve-predict';
+import { PipelineMeta } from '@pipcook/costa';
 
-export interface TrainOptions {
-  // Workspace for running
-  output: string;
+export interface BaseOptions {
   // Fetch the framework and script without cache
   nocache: boolean;
   // Debug model
   debug: boolean;
   mirror: string;
+  // Development mode
+  dev: boolean;
+}
+export interface TrainOptions extends BaseOptions {
+  // Workspace for running
+  output: string;
   // NPM client name
   npmClient: string;
   // NPM registry
   registry?: string;
-  // Development mode
-  dev: boolean;
 }
 
-export interface PredictOptions {
+export interface PredictOptions extends BaseOptions {
   // input for predict
   str?: string;
   uri?: string;
-  // Fetch the framework and script without cache
-  nocache: boolean;
-  // Debug model
-  debug: boolean;
-  mirror: string;
-  // Development mode
-  dev: boolean;
+}
+
+export interface ServeOptions extends BaseOptions {
+  // listen port
+  port: number;
 }
 
 export interface CacheCleanOptions {
@@ -46,6 +48,38 @@ export interface CacheCleanOptions {
   // clean script cache only
   script: boolean;
 }
+
+export const preparePredict = async (
+  pipelineFile: string,
+  opts: BaseOptions
+): Promise<{ runtime: StandaloneRuntime, pipelineMeta: PipelineMeta }> => {
+  const urlObj = parse(pipelineFile);
+  switch (urlObj.protocol) {
+  case null:
+  case DownloadProtocol.FILE:
+    urlObj.path = resolve(urlObj.path);
+    break;
+  default:
+    throw new TypeError(`protocol '${urlObj.protocol}' not supported when predict`);
+  }
+  const name = basename(urlObj.path);
+  if (extname(name) !== '.json') {
+    console.warn('pipeline configuration file should be a json file');
+  }
+  const workspace = dirname(urlObj.path);
+  const pipelineConfig = await readJson(urlObj.path);
+  // TODO(feely): check pipeline file
+  const runtime = new StandaloneRuntime({
+    workspace,
+    pipelineMeta: pipelineConfig,
+    mirror: opts.mirror,
+    enableCache: !opts.nocache,
+    npmClient: 'npm',
+    devMode: opts.dev
+  });
+  await runtime.prepare();
+  return { runtime, pipelineMeta: pipelineConfig };
+};
 
 /**
  * Train model though pipeline.
@@ -93,34 +127,9 @@ export const train = async (uri: string, opts: TrainOptions): Promise<void> => {
   }
 };
 
-export const predict = async (filename: string, opts: PredictOptions): Promise<void> => {
-  let pipelineConfig;
+export const predict = async (pipelineFile: string, opts: PredictOptions): Promise<void> => {
   try {
-    const urlObj = parse(filename);
-    switch (urlObj.protocol) {
-    case null:
-    case DownloadProtocol.FILE:
-      urlObj.path = resolve(urlObj.path);
-      break;
-    default:
-      throw new TypeError(`protocol '${urlObj.protocol}' not supported when predict`);
-    }
-    const name = basename(urlObj.path);
-    if (extname(name) !== '.json') {
-      console.warn('pipeline configuration file should be a json file');
-    }
-    const workspace = dirname(urlObj.path);
-    pipelineConfig = await readJson(urlObj.path);
-    // TODO(feely): check pipeline file
-    const runtime = new StandaloneRuntime({
-      workspace,
-      pipelineMeta: pipelineConfig,
-      mirror: opts.mirror,
-      enableCache: !opts.nocache,
-      npmClient: 'npm',
-      devMode: opts.dev
-    });
-    await runtime.prepare();
+    const { runtime, pipelineMeta } = await preparePredict(pipelineFile, opts);
     const inputs: Array<PredictInput> = [];
     if (opts.str) {
       inputs.push(opts.str);
@@ -130,13 +139,13 @@ export const predict = async (filename: string, opts: PredictOptions): Promise<v
       throw new TypeError('Str or uri should be specified, see `pipcook predict --help` for more information.');
     }
     logger.info('prepare data source');
-    const datasource = await PredictDataset.makePredictDataset(inputs, pipelineConfig.type);
+    const datasource = await PredictDataset.makePredictDataset(inputs, pipelineMeta.type);
     if (!datasource) {
-      throw new TypeError(`invalid pipeline type: ${pipelineConfig.type}`);
+      throw new TypeError(`invalid pipeline type: ${pipelineMeta.type}`);
     }
     const predictResult = await runtime.predict(datasource);
     await PostPredict.processData(predictResult, {
-      type: pipelineConfig.type,
+      type: pipelineMeta.type,
       inputs: [ opts.str || opts.uri ]
     });
   } catch (err) {
@@ -150,6 +159,27 @@ export const cacheClean = async (): Promise<void> => {
     remove(constants.PIPCOOK_SCRIPT_PATH)
   ]);
   logger.success('done');
+};
+
+export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<void> => {
+  try {
+    const { runtime, pipelineMeta } = await preparePredict(pipelineFile, opts);
+    await servePredict(
+      Number(opts.port),
+      pipelineMeta.type,
+      async (buf: Buffer[]): Promise<Record<string, any>[]> => {
+        logger.info('prepare data source');
+        const datasource = await PredictDataset.makePredictDataset(buf, pipelineMeta.type);
+        if (!datasource) {
+          throw new TypeError(`invalid pipeline type: ${pipelineMeta.type}`);
+        }
+        return await runtime.predict(datasource);
+      }
+    );
+    logger.success(`Pipcook has served at: http://localhost:${opts.port}`);
+  } catch (err) {
+    logger.fail(`serve error: ${ opts.debug ? err.stack : err.message }`);
+  }
 };
 
 (async function(): Promise<void> {
@@ -196,6 +226,18 @@ export const cacheClean = async (): Promise<void> => {
     .command('clean')
     .action(cacheClean)
     .description('clean pipcook cache, include framework and script');
+
+  program
+    .command('serve <pipelineFile>')
+    .option('-p --port <port>', 'listen port', 9091)
+    .option('-s --str <str>', 'predict as string')
+    .option('-u --uri <uri>', 'predict file uri')
+    .option('-m --mirror <mirror>', 'framework mirror', '')
+    .option('-d --debug', 'debug mode', false)
+    .option('--dev', 'development mode', false)
+    .option('--nocache', 'disabel cache for framework and scripts', false)
+    .action(serve)
+    .description('serve model on specified port');
 
   program.parse(process.argv);
 })();

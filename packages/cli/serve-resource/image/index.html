@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Pipcook Server</title>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js">
+  </script>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    form {
+      width: 600px;
+      background: #ccc;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid black;
+    }
+
+    form ol {
+      padding-left: 0;
+    }
+
+    form li,
+    div>p {
+      background: #eee;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      list-style-type: none;
+      border: 1px solid black;
+      white-space: pre-wrap;
+    }
+
+    form img {
+      height: 64px;
+      order: 1;
+    }
+
+    form p {
+      line-height: 32px;
+      padding-left: 10px;
+    }
+
+    form label,
+    form button {
+      background-color: #7F9CCB;
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px ridge black;
+      font-size: 0.8rem;
+      height: auto;
+    }
+
+    form label:hover,
+    form button:hover {
+      background-color: #2D5BA3;
+      color: white;
+    }
+
+    form label:active,
+    form button:active {
+      background-color: #0D3F8F;
+      color: white;
+    }
+
+    #result {
+      margin-top: 10px;
+      justify-content: space-between;
+      line-height: 20px;
+      padding: 20px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <form>
+    <div>
+      <label for="image_uploads">Choose image to predict (PNG, JPG)</label>
+      <input type="file" id="image_uploads" name="image" multiple>
+    </div>
+    <div class="preview">
+      <p>No files currently selected for predict</p>
+    </div>
+    <div>
+      <button id="predict">Predict</button>
+    </div>
+    <div>
+      <p id="result">Predict result...</p>
+    </div>
+  </form>
+  <script>
+    const input = document.querySelector('input');
+    const preview = document.querySelector('.preview');
+
+    input.style.opacity = 0;
+
+    input.addEventListener('change', updateImageDisplay);
+
+    function updateImageDisplay() {
+      while (preview.firstChild) {
+        preview.removeChild(preview.firstChild);
+      }
+
+      const curFiles = input.files;
+      if (curFiles.length === 0) {
+        const para = document.createElement('p');
+        para.textContent = 'No files currently selected for predict';
+        preview.appendChild(para);
+      } else {
+        const list = document.createElement('ol');
+        preview.appendChild(list);
+
+        for (const file of curFiles) {
+          const listItem = document.createElement('li');
+          const para = document.createElement('p');
+
+          if (validFileType(file)) {
+            para.textContent = `File name ${file.name}, file size ${returnFileSize(file.size)}.`;
+            const image = document.createElement('img');
+            image.src = URL.createObjectURL(file);
+
+            listItem.appendChild(image);
+            listItem.appendChild(para);
+          } else {
+            para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+            listItem.appendChild(para);
+          }
+
+          list.appendChild(listItem);
+        }
+      }
+    }
+
+    const fileTypes = [
+      'image/apng',
+      'image/bmp',
+      'image/gif',
+      'image/jpeg',
+      'image/pjpeg',
+      'image/png',
+      'image/svg+xml',
+      'image/tiff',
+      'image/webp',
+      `image/x-icon`
+    ];
+
+    function validFileType(file) {
+      return fileTypes.includes(file.type);
+    }
+
+    function returnFileSize(number) {
+      if (number < 1024) {
+        return number + 'bytes';
+      } else if (number > 1024 && number < 1048576) {
+        return (number / 1024).toFixed(1) + 'KB';
+      } else if (number > 1048576) {
+        return (number / 1048576).toFixed(1) + 'MB';
+      }
+    }
+    $(document).ready(function () {
+      $('#predict').click(function (event) {
+        event.preventDefault();
+        var fd = new FormData();
+        var files = $('#image_uploads')[0].files[0];
+        fd.append('image', files);
+
+        $.ajax({
+          url: 'predict',
+          type: 'post',
+          data: fd,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (resp) {
+            $('#result').html(JSON.stringify(resp, null, '  '));
+          },
+        });
+      });
+    });
+
+  </script>
+</body>
+
+</html>
