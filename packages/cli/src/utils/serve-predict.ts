@@ -21,7 +21,7 @@ export type PredictCallBack
  * @param pipelineType pipeline type.
  * @param predictCallback callback for predict.
  */
-export async function servePredict(
+export async function serve(
   port: number,
   pipelineType: PipelineType,
   predictCallback: PredictCallBack

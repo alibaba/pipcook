@@ -6,11 +6,22 @@ import * as program from 'commander';
 import { join, basename, extname, resolve, dirname } from 'path';
 import { parse } from 'url';
 import * as constants from '../constants';
-import { readJson, mkdirp, remove, copy, readFile } from 'fs-extra';
+import { readJson, mkdirp, remove, copy, readFile, stat } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
-import { logger, dateToString, downloadWithProgress, DownloadProtocol, PostPredict, PredictDataset } from '../utils';
+import {
+  logger,
+  dateToString,
+  downloadWithProgress,
+  unZipData,
+  fitModelDir,
+  makeWorkspace,
+  DownloadProtocol,
+  PostPredict,
+  PredictDataset,
+  downloadAndExtractTo
+} from '../utils';
 import { PredictInput } from '../utils/predict-dataset';
-import { servePredict } from '../utils/serve-predict';
+import { ServePredict } from '../utils';
 import { PipelineMeta } from '@pipcook/costa';
 
 export interface BaseOptions {
@@ -49,36 +60,70 @@ export interface CacheCleanOptions {
   script: boolean;
 }
 
+/**
+ * Prepare runtime for predict.
+ * @param uri could be workspace directory in local or artifact zip file
+ * @param opts predict options
+ * @returns runtime and pipeline metadata
+ */
 export const preparePredict = async (
-  pipelineFile: string,
+  uri: string,
   opts: BaseOptions
-): Promise<{ runtime: StandaloneRuntime, pipelineMeta: PipelineMeta }> => {
-  const urlObj = parse(pipelineFile);
+): Promise<{
+  runtime: StandaloneRuntime,
+  pipelineMeta: PipelineMeta,
+  workspace: string,
+  isNewWorkspace: boolean
+}> => {
+  let workspace: string;
+  let pipelineFilePath: string;
+  let newWorkspace = false;
+  const urlObj = parse(uri);
+  let st, modelDir;
   switch (urlObj.protocol) {
   case null:
   case DownloadProtocol.FILE:
     urlObj.path = resolve(urlObj.path);
+    st = await stat(urlObj.path);
+    if (st.isDirectory()) {
+      workspace = urlObj.path;
+      pipelineFilePath = join(workspace, 'model', constants.PipelineFileInModelDir);
+    } else if (extname(urlObj.path) === '.json') {
+      workspace = dirname(urlObj.path);
+      pipelineFilePath = urlObj.path;
+    } else if (extname(urlObj.path) === '.zip') {
+      workspace = await makeWorkspace();
+      modelDir = join(workspace, 'model');
+      await unZipData(urlObj.path, modelDir);
+      await fitModelDir(modelDir);
+      pipelineFilePath = join(modelDir, constants.PipelineFileInModelDir);
+      newWorkspace = true;
+    }
+    break;
+  case DownloadProtocol.HTTP:
+  case DownloadProtocol.HTTPS:
+    workspace = await makeWorkspace();
+    modelDir = join(workspace, 'model');
+    await downloadAndExtractTo(uri, modelDir);
+    await fitModelDir(modelDir);
+    pipelineFilePath = join(modelDir, constants.PipelineFileInModelDir);
+    newWorkspace = true;
     break;
   default:
     throw new TypeError(`protocol '${urlObj.protocol}' not supported when predict`);
   }
-  const name = basename(urlObj.path);
-  if (extname(name) !== '.json') {
-    console.warn('pipeline configuration file should be a json file');
-  }
-  const workspace = dirname(urlObj.path);
-  const pipelineConfig = await readJson(urlObj.path);
+  const pipelineMeta = await readJson(pipelineFilePath);
   // TODO(feely): check pipeline file
   const runtime = new StandaloneRuntime({
     workspace,
-    pipelineMeta: pipelineConfig,
+    pipelineMeta,
     mirror: opts.mirror,
     enableCache: !opts.nocache,
     npmClient: 'npm',
     devMode: opts.dev
   });
-  await runtime.prepare();
-  return { runtime, pipelineMeta: pipelineConfig };
+  await runtime.prepare(false);
+  return { runtime, pipelineMeta, workspace, isNewWorkspace: newWorkspace };
 };
 
 /**
@@ -129,7 +174,6 @@ export const train = async (uri: string, opts: TrainOptions): Promise<void> => {
 
 export const predict = async (pipelineFile: string, opts: PredictOptions): Promise<void> => {
   try {
-    const { runtime, pipelineMeta } = await preparePredict(pipelineFile, opts);
     const inputs: Array<PredictInput> = [];
     if (opts.str) {
       inputs.push(opts.str);
@@ -138,6 +182,7 @@ export const predict = async (pipelineFile: string, opts: PredictOptions): Promi
     } else {
       throw new TypeError('Str or uri should be specified, see `pipcook predict --help` for more information.');
     }
+    const { runtime, pipelineMeta, workspace, isNewWorkspace } = await preparePredict(pipelineFile, opts);
     logger.info('prepare data source');
     const datasource = await PredictDataset.makePredictDataset(inputs, pipelineMeta.type);
     if (!datasource) {
@@ -148,6 +193,9 @@ export const predict = async (pipelineFile: string, opts: PredictOptions): Promi
       type: pipelineMeta.type,
       inputs: [ opts.str || opts.uri ]
     });
+    if (isNewWorkspace) {
+      logger.warn(`The workspace has been created, and you should type 'pipcook predict ${workspace} -s/-t <data>' to predict next time.`);
+    }
   } catch (err) {
     logger.fail(`predict error: ${ opts.debug ? err.stack : err.message }`);
   }
@@ -163,8 +211,8 @@ export const cacheClean = async (): Promise<void> => {
 
 export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<void> => {
   try {
-    const { runtime, pipelineMeta } = await preparePredict(pipelineFile, opts);
-    await servePredict(
+    const { runtime, pipelineMeta, workspace, isNewWorkspace } = await preparePredict(pipelineFile, opts);
+    await ServePredict.serve(
       Number(opts.port),
       pipelineMeta.type,
       async (buf: Buffer[]): Promise<Record<string, any>[]> => {
@@ -176,7 +224,10 @@ export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<
         return await runtime.predict(datasource);
       }
     );
-    logger.success(`Pipcook has served at: http://localhost:${opts.port}`);
+    logger.success(`Pipcook workspace '${workspace}' served at: http://localhost:${opts.port}`);
+    if (isNewWorkspace) {
+      logger.warn(`The workspace has been created, and you should type 'pipcook serve ${workspace}' to serve it next time.`);
+    }
   } catch (err) {
     logger.fail(`serve error: ${ opts.debug ? err.stack : err.message }`);
   }
@@ -232,7 +283,7 @@ export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<
     .option('-p --port <port>', 'listen port', 9091)
     .option('-s --str <str>', 'predict as string')
     .option('-u --uri <uri>', 'predict file uri')
-    .option('-m --mirror <mirror>', 'framework mirror', '')
+    .option('-m --mirror <mirror>', 'framework mirror', constants.PIPCOOK_FRAMEWORK_MIRROR_BASE)
     .option('-d --debug', 'debug mode', false)
     .option('--dev', 'development mode', false)
     .option('--nocache', 'disabel cache for framework and scripts', false)

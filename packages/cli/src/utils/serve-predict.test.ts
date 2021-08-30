@@ -2,7 +2,7 @@ import test from 'ava';
 import * as express from 'express';
 import * as sinon from 'sinon';
 import * as path from 'path';
-import { stop, predictText, predictImage, serveText, serveImage, servePredict } from './serve-predict';
+import { stop, predictText, predictImage, serveText, serveImage, serve } from './serve-predict';
 import { PipelineType } from '@pipcook/costa';
 
 test.serial.afterEach(() => sinon.restore());
@@ -99,7 +99,7 @@ test.serial('predict text but no input', async (t) => {
 test('serve predict but pipeline type is not valid', async (t) => {
   const mockCb = sinon.stub();
   await t.throwsAsync(
-    servePredict(1234, undefined, mockCb),
+    serve(1234, undefined, mockCb),
     { message: 'Pipeline type is not supported: undefined' }
   );
   t.false(mockCb.called);
@@ -107,6 +107,6 @@ test('serve predict but pipeline type is not valid', async (t) => {
 
 test('start and stop', async (t) => {
   const mockCb = sinon.stub();
-  await t.notThrowsAsync(servePredict(1234, PipelineType.TextClassification, mockCb));
+  await t.notThrowsAsync(serve(1234, PipelineType.TextClassification, mockCb));
   await t.notThrowsAsync(stop());
 });

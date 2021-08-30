@@ -45,3 +45,8 @@ export const JSDescFilename = 'package.json';
  * Node module directory name in the framework directory.
  */
 export const JSModuleDirName = 'node_modules';
+
+/**
+ * Pipeline file name in the model directory.
+ */
+export const PipelineFileInModelDir = 'pipeline.json';
