@@ -24,7 +24,7 @@ $ pipcook predict ./output/image-classification-mobilenet.json -s ./output/data/
 ✔ Origin result:[{"id":1,"category":"blurBackground","score":0.9998120665550232}]
 ```
 
-The input is a `blurBackground` image from the vlidation dataset. And the model determines that its category is `blurBackground`.
+The input is a `blurBackground` image from the validation dataset. And the model determines that its category is `blurBackground`.
 
 Want to deploy it?
 ```shell
