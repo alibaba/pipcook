@@ -78,7 +78,7 @@ export const preparePredict = async (
 }> => {
   let workspace: string;
   let pipelineFilePath: string;
-  let newWorkspace = false;
+  let isNewWorkspace = false;
   const urlObj = parse(uri);
   let st, modelDir;
   switch (urlObj.protocol) {
@@ -98,7 +98,7 @@ export const preparePredict = async (
       await unZipData(urlObj.path, modelDir);
       await fitModelDir(modelDir);
       pipelineFilePath = join(modelDir, constants.PipelineFileInModelDir);
-      newWorkspace = true;
+      isNewWorkspace = true;
     } else {
       throw new TypeError(`'${uri}' is not a valid workspace or artifact.`);
     }
@@ -110,7 +110,7 @@ export const preparePredict = async (
     await downloadAndExtractTo(uri, modelDir);
     await fitModelDir(modelDir);
     pipelineFilePath = join(modelDir, constants.PipelineFileInModelDir);
-    newWorkspace = true;
+    isNewWorkspace = true;
     break;
   default:
     throw new TypeError(`protocol '${urlObj.protocol}' not supported when predict`);
@@ -126,7 +126,7 @@ export const preparePredict = async (
     devMode: opts.dev
   });
   await runtime.prepare(false);
-  return { runtime, pipelineMeta, workspace, isNewWorkspace: newWorkspace };
+  return { runtime, pipelineMeta, workspace, isNewWorkspace };
 };
 
 /**
