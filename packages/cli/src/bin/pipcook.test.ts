@@ -13,7 +13,7 @@ const importFresh = require('import-fresh');
 test.serial.afterEach(() => sinon.restore());
 
 test.serial('train: fetch with cache', async (t) => {
-  const mockFile = path.resolve('/path/to/filename.json');
+  const mockFile = '/path/to/filename.json';
   const opts = {
     output: path.resolve('/tmp'),
     nocache: true,
@@ -38,7 +38,7 @@ test.serial('train: fetch with cache', async (t) => {
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubTrain.calledOnce, 'train should be called once');
   t.true(stubCopy.calledOnce, 'copy should be called once');
-  t.deepEqual(stubCopy.args[0], [ mockFile, tmpFilePath ] as any, 'should make the correct directory');
+  t.deepEqual(stubCopy.args[0], [ path.resolve(mockFile), tmpFilePath ] as any, 'should make the correct directory');
 });
 
 test.serial('train: fetch with http', async (t) => {
@@ -170,7 +170,7 @@ test.serial('train: fetch with url invalid extname', async (t) => {
 });
 
 test.serial('predict: file in workspace, uri input', async (t) => {
-  const mockUrl = path.resolve('/a.b.c/path/to/filename.json');
+  const mockUrl = '/a.b.c/path/to/filename.json';
   const opts = {
     uri: path.resolve('/path/to/input-file'),
     output: path.resolve('/tmp'),
@@ -201,7 +201,7 @@ test.serial('predict: file in workspace, uri input', async (t) => {
 });
 
 test.serial('predict: zip, string input', async (t) => {
-  const mockUrl = path.resolve('/a.b.c/path/to/filename.zip');
+  const mockUrl = '/a.b.c/path/to/filename.zip';
   const opts = {
     str: 'test-input',
     output: path.resolve('/tmp'),
@@ -232,7 +232,7 @@ test.serial('predict: zip, string input', async (t) => {
 });
 
 test.serial('predict: zip, string input, can not make dataset', async (t) => {
-  const mockUrl = path.resolve('/a.b.c/path/to/filename.zip');
+  const mockUrl = '/a.b.c/path/to/filename.zip';
   const opts = {
     str: 'test-input',
     output: path.resolve('/tmp'),
@@ -263,7 +263,7 @@ test.serial('predict: zip, string input, can not make dataset', async (t) => {
 });
 
 test.serial('predict: invalid input', async (t) => {
-  const mockUrl = path.resolve('/a.b.c/path/to/filename.json');
+  const mockUrl = '/a.b.c/path/to/filename.json';
   const opts: any = {
     uri: undefined,
     output: path.resolve('/tmp'),
@@ -279,7 +279,7 @@ test.serial('predict: invalid input', async (t) => {
 });
 
 test.serial.cb('serve: new workspace', (t) => {
-  const mockUrl = path.resolve('/a.b.c/path/to/workspace');
+  const mockUrl = '/a.b.c/path/to/workspace';
   const opts: any = {
     uri: undefined,
     output: path.resolve('/tmp'),
