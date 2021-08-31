@@ -12,5 +12,5 @@ RUN apt-get update && apt-get install -y curl wget python git libglib2.0-0 libsm
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs
 
-RUN npm install @pipcook/cli@2.1.2-serve-beta.0 -g --unsafe-perm
+RUN npm install @pipcook/cli@${VER} -g --unsafe-perm
 
