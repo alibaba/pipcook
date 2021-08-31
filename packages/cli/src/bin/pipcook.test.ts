@@ -38,7 +38,7 @@ test.serial('train: fetch with cache', async (t) => {
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubTrain.calledOnce, 'train should be called once');
   t.true(stubCopy.calledOnce, 'copy should be called once');
-  t.deepEqual(stubCopy.args[0], [ path.resolve(mockFile), tmpFilePath ] as any, 'should make the correct directory');
+  t.deepEqual(stubCopy.args[0], [ mockFile, tmpFilePath ] as any, 'should make the correct directory');
 });
 
 test.serial('train: fetch with http', async (t) => {
@@ -333,7 +333,7 @@ test.serial('preparePredict from workspace', async (t) => {
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockMeta);
   const stubRuntimePrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
   const { pipelineMeta, workspace, isNewWorkspace } =
-    await pipcook.preparePredict(path.resolve('/path/to/workspace'), mockOptions);
+    await pipcook.preparePredict('/path/to/workspace', mockOptions);
   t.is(workspace, path.resolve('/path/to/workspace'));
   t.is(isNewWorkspace, false);
   t.deepEqual(pipelineMeta, mockMeta);
@@ -354,8 +354,8 @@ test.serial('preparePredict from invalid path', async (t) => {
     isDirectory: () => false
   } as any);
   await t.throwsAsync(
-    pipcook.preparePredict(path.resolve('/path/to/invalid-file.js'), mockOptions),
-    { message: `\'${path.resolve('/path/to/invalid-file.js')}\' is not a valid workspace or artifact.` }
+    pipcook.preparePredict('/path/to/invalid-file.js', mockOptions),
+    { message: '\'/path/to/invalid-file.js\' is not a valid workspace or artifact.' }
   );
   t.true(stubStat.called);
 });
@@ -374,7 +374,7 @@ test.serial('preparePredict from pipeline file', async (t) => {
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockMeta);
   const stubRuntimePrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
   const { pipelineMeta, workspace, isNewWorkspace } =
-    await pipcook.preparePredict(path.resolve('/path/to/workspace/pipeline-file.json'), mockOptions);
+    await pipcook.preparePredict('/path/to/workspace/pipeline-file.json', mockOptions);
   t.is(workspace, path.resolve('/path/to/workspace'));
   t.is(isNewWorkspace, false);
   t.deepEqual(pipelineMeta, mockMeta);
@@ -400,7 +400,7 @@ test.serial('preparePredict from artifact zip in local', async (t) => {
   const stubMakeWorkspace = sinon.stub(utils, 'makeWorkspace').resolves(path.resolve('/new/workspace'));
   const stubUnZipData = sinon.stub(utils, 'unZipData').resolves();
   const { pipelineMeta, workspace, isNewWorkspace } =
-    await pipcook.preparePredict(path.resolve('/path/to/artifact.zip'), mockOptions);
+    await pipcook.preparePredict('/path/to/artifact.zip', mockOptions);
   t.is(path.resolve('/new/workspace'), workspace);
   t.true(stubUnZipData.calledOnce);
   t.is(isNewWorkspace, true);
