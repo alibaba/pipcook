@@ -24,6 +24,7 @@
     "chalk": "^3.0.0",
     "cli-progress": "^3.9.0",
     "commander": "^4.0.1",
+    "dateformat": "^4.5.1",
     "debug": "^4.3.1",
     "express": "^4.17.1",
     "extract-zip": "^2.0.1",
@@ -31,7 +32,7 @@
     "jimp": "^0.16.1",
     "multer": "^1.4.3",
     "nanoid": "^3.1.22",
-    "ora": "^3.4.0",
+    "ora": "^5.4.1",
     "pretty-bytes": "^5.6.0",
     "query-string": "^6.14.1",
     "semver": "^6.3.0"
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@types/bent": "^7.3.2",
     "@types/cli-progress": "^3.9.1",
+    "@types/dateformat": "^3.0.1",
     "@types/express": "^4.17.13",
     "@types/extract-zip": "^1.6.2",
     "@types/fs-extra": "^9.0.9",
