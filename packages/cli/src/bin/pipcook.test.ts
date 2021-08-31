@@ -343,6 +343,23 @@ test.serial('preparePredict from workspace', async (t) => {
   t.is(stubRuntimePrepare.args[0][0], false);
 });
 
+test.serial('preparePredict from invalid path', async (t) => {
+  const mockOptions = {
+    nocache: true,
+    mirror: '',
+    debug: false,
+    dev: false
+  };
+  const stubStat = sinon.stub(fs, 'stat').resolves({
+    isDirectory: () => false
+  } as any);
+  await t.throwsAsync(
+    pipcook.preparePredict('/path/to/invalid-file.js', mockOptions),
+    { message: '\'/path/to/invalid-file.js\' is not a valid workspace or artifact.' }
+  );
+  t.true(stubStat.called);
+});
+
 test.serial('preparePredict from pipeline file', async (t) => {
   const mockOptions = {
     nocache: true,

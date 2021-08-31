@@ -99,6 +99,8 @@ export const preparePredict = async (
       await fitModelDir(modelDir);
       pipelineFilePath = join(modelDir, constants.PipelineFileInModelDir);
       newWorkspace = true;
+    } else {
+      throw new TypeError(`'${uri}' is not a valid workspace or artifact.`);
     }
     break;
   case DownloadProtocol.HTTP:
