@@ -87,13 +87,13 @@ export const preparePredict = async (
     st = await stat(urlObj.path);
     if (st.isDirectory()) {
       workspace = urlObj.path;
-      pipelineFilePath = join(workspace, 'model', constants.PipelineFileInModelDir);
+      pipelineFilePath = join(workspace, constants.WorkspaceModelDir, constants.PipelineFileInModelDir);
     } else if (extname(urlObj.path) === '.json') {
       workspace = dirname(urlObj.path);
       pipelineFilePath = urlObj.path;
     } else if (extname(urlObj.path) === '.zip') {
       workspace = await makeWorkspace();
-      modelDir = join(workspace, 'model');
+      modelDir = join(workspace, constants.WorkspaceModelDir);
       await unZipData(urlObj.path, modelDir);
       await fitModelDir(modelDir);
       pipelineFilePath = join(modelDir, constants.PipelineFileInModelDir);
@@ -103,7 +103,7 @@ export const preparePredict = async (
   case DownloadProtocol.HTTP:
   case DownloadProtocol.HTTPS:
     workspace = await makeWorkspace();
-    modelDir = join(workspace, 'model');
+    modelDir = join(workspace, constants.WorkspaceModelDir);
     await downloadAndExtractTo(uri, modelDir);
     await fitModelDir(modelDir);
     pipelineFilePath = join(modelDir, constants.PipelineFileInModelDir);

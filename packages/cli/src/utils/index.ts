@@ -62,8 +62,8 @@ export function unZipData(filePath: string, targetPath: string): Promise<void> {
  * @param filePath: path of zip
  */
 export async function fitModelDir(modelDir: string): Promise<void> {
-  if (await fs.pathExists(path.join(modelDir, 'model', constants.PipelineFileInModelDir))) {
-    await fs.move(path.join(modelDir, 'model'), `${modelDir}.tmp`);
+  if (await fs.pathExists(path.join(modelDir, constants.WorkspaceModelDir, constants.PipelineFileInModelDir))) {
+    await fs.move(path.join(modelDir, constants.WorkspaceModelDir), `${modelDir}.tmp`);
     await fs.remove(modelDir);
     await fs.move(`${modelDir}.tmp`, modelDir);
   }

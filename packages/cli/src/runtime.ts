@@ -4,7 +4,7 @@ import { TaskType, PredictResult, DatasetPool } from '@pipcook/core';
 import * as path from 'path';
 import { createStandaloneRT } from './standalone-impl';
 import { logger, Framework, Plugin, Script } from './utils';
-import { JSModuleDirName } from './constants';
+import * as constants from './constants';
 
 /**
  * Standalone runtime construct options.
@@ -67,12 +67,12 @@ export class StandaloneRuntime {
     this.npmClient = opts.npmClient;
     this.devMode = opts.devMode;
 
-    this.scriptDir = path.join(opts.workspace, 'scripts');
+    this.scriptDir = path.join(opts.workspace, constants.WorkspaceScriptDir);
     this.workspace = {
-      dataDir: path.join(opts.workspace, 'data'),
-      modelDir: path.join(opts.workspace, 'model'),
-      cacheDir: path.join(opts.workspace, 'cache'),
-      frameworkDir: path.join(opts.workspace, 'framework')
+      dataDir: path.join(opts.workspace, constants.WorkspaceDataDir),
+      modelDir: path.join(opts.workspace, constants.WorkspaceModelDir),
+      cacheDir: path.join(opts.workspace, constants.WorkspaceCacheDir),
+      frameworkDir: path.join(opts.workspace, constants.WorkspaceFrameworkDir)
     };
   }
 
