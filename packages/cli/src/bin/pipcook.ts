@@ -29,6 +29,7 @@ export interface BaseOptions {
   nocache: boolean;
   // Debug model
   debug: boolean;
+  // Framework mirror
   mirror: string;
   // Development mode
   dev: boolean;
