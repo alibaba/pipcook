@@ -13,8 +13,9 @@ import { promisify } from 'util';
 import { customAlphabet } from 'nanoid';
 import * as constants from '../constants';
 import * as extract from 'extract-zip';
-import realOra = require('ora');
+import * as realOra from 'ora';
 import * as prettyBytes from 'pretty-bytes';
+import * as dateformat from 'dateformat';
 
 export * as Script from './script';
 export * as Plugin from './plugin';
@@ -169,10 +170,13 @@ interface Logger {
 }
 
 export class TtyLogger implements Logger {
-  spinner: realOra.Ora;
+  private spinner: realOra.Ora;
 
   constructor() {
-    this.spinner = realOra({ stream: process.stdout });
+    this.spinner = realOra({
+      stream: process.stdout,
+      prefixText: (): string => dateformat(new Date(), '[hh:MM:ss:l]')
+    });
   }
 
   success(message: string): void {
