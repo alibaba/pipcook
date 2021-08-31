@@ -13,9 +13,9 @@ const importFresh = require('import-fresh');
 test.serial.afterEach(() => sinon.restore());
 
 test.serial('train: fetch with cache', async (t) => {
-  const mockFile = '/path/to/filename.json';
+  const mockFile = path.resolve('/path/to/filename.json');
   const opts = {
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: false,
@@ -44,7 +44,7 @@ test.serial('train: fetch with cache', async (t) => {
 test.serial('train: fetch with http', async (t) => {
   const mockUrl = 'http://a.b.c/path/to/filename.json';
   const opts = {
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: false,
@@ -72,7 +72,7 @@ test.serial('train: fetch with http', async (t) => {
 test.serial('train: fetch with https', async (t) => {
   const mockUrl = 'https://a.b.c/path/to/filename.json';
   const opts = {
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: false,
@@ -100,7 +100,7 @@ test.serial('train: fetch with https', async (t) => {
 test.serial('train: fetch with invalid poptocol', async (t) => {
   const mockUrl = 'ftp://a.b.c/path/to/filename.json';
   const opts = {
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: false,
@@ -119,7 +119,7 @@ test.serial('train: fetch with invalid poptocol', async (t) => {
 test.serial('train: fetch with invalid poptocol debug', async (t) => {
   const mockUrl = 'ftp://a.b.c/path/to/filename.json';
   const opts = {
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: true,
@@ -141,7 +141,7 @@ test.serial('train: fetch with invalid poptocol debug', async (t) => {
 test.serial('train: fetch with url invalid extname', async (t) => {
   const mockUrl = 'http://a.b.c/path/to/filename.html';
   const opts = {
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: false,
@@ -170,10 +170,10 @@ test.serial('train: fetch with url invalid extname', async (t) => {
 });
 
 test.serial('predict: file in workspace, uri input', async (t) => {
-  const mockUrl = '/a.b.c/path/to/filename.json';
+  const mockUrl = path.resolve('/a.b.c/path/to/filename.json');
   const opts = {
-    uri: '/path/to/input-file',
-    output: '/tmp',
+    uri: path.resolve('/path/to/input-file'),
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: false,
@@ -187,7 +187,7 @@ test.serial('predict: file in workspace, uri input', async (t) => {
   const stubPreparePredict = sinon.stub(pipcook, 'preparePredict').resolves({
     runtime: { predict: stubPredict } as any,
     pipelineMeta: { type: PipelineType.ImageClassification } as any,
-    workspace: '/path/to/workspace',
+    workspace: path.resolve('/path/to/workspace'),
     isNewWorkspace: false
   });
   await pipcook.predict(mockUrl, opts);
@@ -201,10 +201,10 @@ test.serial('predict: file in workspace, uri input', async (t) => {
 });
 
 test.serial('predict: zip, string input', async (t) => {
-  const mockUrl = '/a.b.c/path/to/filename.zip';
+  const mockUrl = path.resolve('/a.b.c/path/to/filename.zip');
   const opts = {
     str: 'test-input',
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: false,
@@ -218,24 +218,24 @@ test.serial('predict: zip, string input', async (t) => {
   const stubPreparePredict = sinon.stub(pipcook, 'preparePredict').resolves({
     runtime: { predict: stubPredict } as any,
     pipelineMeta: { type: PipelineType.ImageClassification } as any,
-    workspace: '/path/to/workspace',
+    workspace: path.resolve('/path/to/workspace'),
     isNewWorkspace: true
   });
   await pipcook.predict(mockUrl, opts);
   t.true(stubPreparePredict.calledOnce);
   t.true(stubPredict.calledOnce, 'run should be called once');
   t.true(stubWarn.called, 'should call console.warn');
-  t.is(stubWarn.args[0][0], 'The workspace has been created, and you should type \'pipcook predict /path/to/workspace -s/-t <data>\' to predict next time.');
+  t.is(stubWarn.args[0][0], `The workspace has been created, and you should type \'pipcook predict ${path.resolve('/path/to/workspace')} -s/-t <data>\' to predict next time.`);
   t.false(stubFail.called, 'should not call logger.fail');
   t.true(stubMakeDataset.calledOnce);
   t.true(stubProcessData.calledOnce);
 });
 
 test.serial('predict: zip, string input, can not make dataset', async (t) => {
-  const mockUrl = '/a.b.c/path/to/filename.zip';
+  const mockUrl = path.resolve('/a.b.c/path/to/filename.zip');
   const opts = {
     str: 'test-input',
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: true,
@@ -249,7 +249,7 @@ test.serial('predict: zip, string input, can not make dataset', async (t) => {
   const stubPreparePredict = sinon.stub(pipcook, 'preparePredict').resolves({
     runtime: { predict: stubPredict } as any,
     pipelineMeta: { type: PipelineType.ImageClassification } as any,
-    workspace: '/path/to/workspace',
+    workspace: path.resolve('/path/to/workspace'),
     isNewWorkspace: false
   });
   await pipcook.predict(mockUrl, opts);
@@ -263,10 +263,10 @@ test.serial('predict: zip, string input, can not make dataset', async (t) => {
 });
 
 test.serial('predict: invalid input', async (t) => {
-  const mockUrl = '/a.b.c/path/to/filename.json';
+  const mockUrl = path.resolve('/a.b.c/path/to/filename.json');
   const opts: any = {
     uri: undefined,
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: false,
@@ -279,10 +279,10 @@ test.serial('predict: invalid input', async (t) => {
 });
 
 test.serial.cb('serve: new workspace', (t) => {
-  const mockUrl = '/a.b.c/path/to/workspace';
+  const mockUrl = path.resolve('/a.b.c/path/to/workspace');
   const opts: any = {
     uri: undefined,
-    output: '/tmp',
+    output: path.resolve('/tmp'),
     nocache: true,
     mirror: '',
     debug: false,
@@ -296,7 +296,7 @@ test.serial.cb('serve: new workspace', (t) => {
   const stubPreparePredict = sinon.stub(pipcook, 'preparePredict').resolves({
     runtime: { predict: stubPredict } as any,
     pipelineMeta: { type: PipelineType.ImageClassification } as any,
-    workspace: '/path/to/workspace',
+    workspace: path.resolve('/path/to/workspace'),
     isNewWorkspace: true
   });
   const mockBuffers = [ Buffer.from('s0'), Buffer.from('s1') ];
@@ -333,8 +333,8 @@ test.serial('preparePredict from workspace', async (t) => {
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockMeta);
   const stubRuntimePrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
   const { pipelineMeta, workspace, isNewWorkspace } =
-    await pipcook.preparePredict('/path/to/workspace', mockOptions);
-  t.is(workspace, '/path/to/workspace');
+    await pipcook.preparePredict(path.resolve('/path/to/workspace'), mockOptions);
+  t.is(workspace, path.resolve('/path/to/workspace'));
   t.is(isNewWorkspace, false);
   t.deepEqual(pipelineMeta, mockMeta);
   t.true(stubReadJson.calledOnce);
@@ -354,8 +354,8 @@ test.serial('preparePredict from invalid path', async (t) => {
     isDirectory: () => false
   } as any);
   await t.throwsAsync(
-    pipcook.preparePredict('/path/to/invalid-file.js', mockOptions),
-    { message: '\'/path/to/invalid-file.js\' is not a valid workspace or artifact.' }
+    pipcook.preparePredict(path.resolve('/path/to/invalid-file.js'), mockOptions),
+    { message: `\'${path.resolve('/path/to/invalid-file.js')}\' is not a valid workspace or artifact.` }
   );
   t.true(stubStat.called);
 });
@@ -374,8 +374,8 @@ test.serial('preparePredict from pipeline file', async (t) => {
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockMeta);
   const stubRuntimePrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
   const { pipelineMeta, workspace, isNewWorkspace } =
-    await pipcook.preparePredict('/path/to/workspace/pipeline-file.json', mockOptions);
-  t.is(workspace, '/path/to/workspace');
+    await pipcook.preparePredict(path.resolve('/path/to/workspace/pipeline-file.json'), mockOptions);
+  t.is(workspace, path.resolve('/path/to/workspace'));
   t.is(isNewWorkspace, false);
   t.deepEqual(pipelineMeta, mockMeta);
   t.true(stubReadJson.calledOnce);
@@ -397,11 +397,11 @@ test.serial('preparePredict from artifact zip in local', async (t) => {
   const mockMeta: any = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockMeta);
   const stubRuntimePrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
-  const stubMakeWorkspace = sinon.stub(utils, 'makeWorkspace').resolves('/new/workspace');
+  const stubMakeWorkspace = sinon.stub(utils, 'makeWorkspace').resolves(path.resolve('/new/workspace'));
   const stubUnZipData = sinon.stub(utils, 'unZipData').resolves();
   const { pipelineMeta, workspace, isNewWorkspace } =
-    await pipcook.preparePredict('/path/to/artifact.zip', mockOptions);
-  t.is('/new/workspace', workspace);
+    await pipcook.preparePredict(path.resolve('/path/to/artifact.zip'), mockOptions);
+  t.is(path.resolve('/new/workspace'), workspace);
   t.true(stubUnZipData.calledOnce);
   t.is(isNewWorkspace, true);
   t.deepEqual(pipelineMeta, mockMeta);
@@ -432,11 +432,11 @@ async function remoteArtifact(t: any, url: string) {
   const mockMeta: any = { mock: 'value' };
   const stubReadJson = sinon.stub(fs, 'readJson').resolves(mockMeta);
   const stubRuntimePrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
-  const stubMakeWorkspace = sinon.stub(utils, 'makeWorkspace').resolves('/new/workspace');
+  const stubMakeWorkspace = sinon.stub(utils, 'makeWorkspace').resolves(path.resolve('/new/workspace'));
   const stubDownloadAndExtractTo = sinon.stub(utils, 'downloadAndExtractTo').resolves();
   const { pipelineMeta, workspace, isNewWorkspace } =
     await pipcook.preparePredict(url, mockOptions);
-  t.is('/new/workspace', workspace);
+  t.is(path.resolve('/new/workspace'), workspace);
   t.true(stubDownloadAndExtractTo.calledOnce);
   t.is(isNewWorkspace, true);
   t.deepEqual(pipelineMeta, mockMeta);
