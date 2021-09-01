@@ -30,7 +30,7 @@ Origin result:[{"id":1,"category":"blurBackground","score":1}]
 想要部署服务？
 
 ```sh
-$ pipcook predict ./output/image-classification-mobilen.json
+$ pipcook predict ./output
 ℹ preparing framework
 ℹ preparing scripts
 ℹ preparing artifact plugins
