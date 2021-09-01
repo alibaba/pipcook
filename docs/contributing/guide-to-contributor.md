@@ -15,7 +15,7 @@ Next, let ’s take a look at how to submit patches to Pipcook.
 
 ### Requirements
 
-- macOS / Linux / Windows (Parts of pipelines ready, see [PR 843](https://github.com/alibaba/pipcook/issues/843).)
+- macOS / Linux / Windows (Parts of pipelines ready, see [Issue 843](https://github.com/alibaba/pipcook/issues/843).)
 - Node.js >= 12.17 || >= 14.0.0
 
 ### Download source

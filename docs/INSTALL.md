@@ -7,7 +7,7 @@ There are different ways to install [Pipcook][]:
 
 Before starting the installation, please make sure the following environments are correct:
 
-- macOS, Linux, Windows (Parts of pipelines ready, see [PR 843](https://github.com/alibaba/pipcook/issues/843).)
+- macOS, Linux, Windows (Parts of pipelines ready, see [Issue 843](https://github.com/alibaba/pipcook/issues/843).)
 - Node.js >= 12.17 or >= 14.0.0
 
 ## Install via NPM
