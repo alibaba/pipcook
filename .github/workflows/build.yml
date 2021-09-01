@@ -70,7 +70,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Run bayes
-      if: ${{ runner.os != 'Windows'}}
       run: |
         node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/text-classification-bayes.json -o my-workspace -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
         node ./packages/cli/dist/bin/pipcook.js predict ./my-workspace -s testword
