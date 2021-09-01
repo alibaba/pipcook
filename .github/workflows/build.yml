@@ -72,7 +72,8 @@ jobs:
     - name: Run bayes
       if: ${{ runner.os != 'Windows'}}
       run: |
-        node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/text-classification-bayes.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
+        node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/text-classification-bayes.json -o my-workspace -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
+        node ./packages/cli/dist/bin/pipcook.js predict ./my-workspace -s testword
     - name: Run mobilenet
       run: |
         node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/image-classification-mobilenet.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
