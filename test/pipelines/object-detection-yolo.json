@@ -1,7 +1,7 @@
 {
   "specVersion": "2.0",
   "type": "ObjectDetection",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/object-detection-yolo/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/object-detection-yolo.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/object-detection-yolo/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/object-detection-yolo-min.zip",
   "dataflow": [
     "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@5ec4cdf/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
   ],
