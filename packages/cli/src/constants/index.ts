@@ -45,3 +45,30 @@ export const JSDescFilename = 'package.json';
  * Node module directory name in the framework directory.
  */
 export const JSModuleDirName = 'node_modules';
+
+/**
+ * Pipeline file name in the model directory.
+ */
+export const PipelineFileInModelDir = 'pipeline.json';
+
+/**
+ * Model directory name in the workspace directory.
+ */
+export const WorkspaceModelDir = 'model';
+
+/**
+ * Script directory name in the workspace directory.
+ */
+export const WorkspaceScriptDir = 'scripts';
+
+/**
+ * Framework directory name in the workspace directory.
+ */
+export const WorkspaceFrameworkDir = 'framework';
+
+/**
+ * Data directory name in the workspace directory.
+ */
+export const WorkspaceDataDir = 'data';
+
+export const WorkspaceCacheDir = 'cache';

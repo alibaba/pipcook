@@ -17,7 +17,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@pipcook/datacook": "^0.1.0",
+    "@pipcook/datacook": "^0.1.1",
     "papaparse": "^5.3.1"
   },
   "devDependencies": {

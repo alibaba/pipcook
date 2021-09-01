@@ -113,7 +113,7 @@ The input is a `blurBackground` image from the validation dataset. And the model
 
 Want to deploy it?
 ```shell
-$ pipcook serve ./output/image-classification-mobilenet.json
+$ pipcook serve ./output
 ℹ preparing framework
 ℹ preparing scripts
 ℹ preparing artifact plugins

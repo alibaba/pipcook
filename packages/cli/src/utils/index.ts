@@ -23,12 +23,19 @@ export * as Cache from './cache';
 export * as Framework from './framework';
 export * as PredictDataset from './predict-dataset';
 export * as PostPredict from './post-predict';
+export * as ServePredict from './serve-predict';
 
 const { pipeline } = require('stream');
 
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 8);
 
 export const pipelineAsync = promisify(pipeline);
+
+export const makeWorkspace = async (): Promise<string> => {
+  const workspace = path.resolve('./pipcook-output');
+  await fs.mkdirp(workspace);
+  return workspace;
+};
 
 /**
  * download the file and stored in specified directory
@@ -48,6 +55,18 @@ export async function download(url: string, fileName: string): Promise<void> {
  */
 export function unZipData(filePath: string, targetPath: string): Promise<void> {
   return extract(filePath, { dir: targetPath });
+}
+
+/**
+ * Fit model directory, if `model/model/pipeline.json` exists, move the subdirectory `model` to top level.
+ * @param filePath: path of zip
+ */
+export async function fitModelDir(modelDir: string): Promise<void> {
+  if (await fs.pathExists(path.join(modelDir, constants.WorkspaceModelDir, constants.PipelineFileInModelDir))) {
+    await fs.move(path.join(modelDir, constants.WorkspaceModelDir), `${modelDir}.tmp`);
+    await fs.remove(modelDir);
+    await fs.move(`${modelDir}.tmp`, modelDir);
+  }
 }
 
 /**
@@ -157,7 +176,7 @@ export const mirrorUrl = (mirror: string, framework: string): string => {
   const pyVersion = 'py37';
   const nodeVersion = `node${process.versions.node.substr(0, process.versions.node.indexOf('.'))}`;
   return url.resolve(
-    mirror || constants.PIPCOOK_FRAMEWORK_MIRROR_BASE,
+    mirror,
     `${nodeVersion}-${pyVersion}/${encodeURIComponent(framework)}-${os.platform()}-${os.arch()}-v${process.versions.napi}.zip`
   );
 };

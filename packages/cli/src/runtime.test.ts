@@ -150,6 +150,7 @@ async function run(t: any, taskType: TaskType, runDataflow: boolean) {
       mock: 'value'
     }
   };
+  const stubLinkCoreToScript = sinon.stub(utils.Script, 'linkCoreToScript').resolves();
   const stubPrepareArtifactPlugin = sinon.stub(utils.Plugin, 'prepareArtifactPlugin').resolves([ mockArtifact ]);
   const stubInitFramework = sinon.stub(Costa.prototype, 'initFramework').resolves();
   const stubRunDataSource =
@@ -167,6 +168,7 @@ async function run(t: any, taskType: TaskType, runDataflow: boolean) {
   } else {
     await rt.predict(ds);
   }
+  t.true(stubLinkCoreToScript.called);
   t.true(stubPrepareWorkspace.calledOnce, 'should call prepareWorkspace once');
   t.true(stubPrepareFramework.calledOnce, 'should call prepareFramework once');
   t.deepEqual(
