@@ -142,9 +142,6 @@ export const train = async (uri: string, opts: TrainOptions): Promise<void> => {
     const urlObj = parse(uri);
     const name = basename(urlObj.path);
     const pipelinePath = join(opts.output, name);
-    if (extname(name) !== '.json') {
-      console.warn('pipeline configuration file should be a json file');
-    }
     switch (urlObj.protocol) {
     case null:
     case DownloadProtocol.FILE:
@@ -255,7 +252,7 @@ export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<
     .command('run <uri>')
     .alias('train')
     .option('-o --output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
-    .option('-m --mirror <mirror>', 'framework mirror', '')
+    .option('-m --mirror <mirror>', 'framework mirror', constants.PIPCOOK_FRAMEWORK_MIRROR_BASE)
     .option('-c --npmClient <npm>', 'npm client binary for artifact installing', 'npm')
     .option('--registry <registry>', 'npm registry for artifact installing')
     .option('-d --debug', 'debug mode', false)
@@ -269,7 +266,7 @@ export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<
     .alias('p')
     .option('-s --str <str>', 'predict as string')
     .option('-u --uri <uri>', 'predict file uri')
-    .option('-m --mirror <mirror>', 'framework mirror', '')
+    .option('-m --mirror <mirror>', 'framework mirror', constants.PIPCOOK_FRAMEWORK_MIRROR_BASE)
     .option('-d --debug', 'debug mode', false)
     .option('--dev', 'development mode', false)
     .option('--nocache', 'disabel cache for framework and scripts', false)

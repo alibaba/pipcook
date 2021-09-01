@@ -157,6 +157,7 @@ async function run(t: any, taskType: TaskType, runDataflow: boolean) {
     taskType === TaskType.TRAIN ? sinon.stub(Costa.prototype, 'runDataSource').resolves(datasourceMock) : undefined;
   const stubRunDataflow = sinon.stub(Costa.prototype, 'runDataflow').resolves(dataflowMock);
   const stubRunModel = sinon.stub(Costa.prototype, 'runModel').resolves();
+  const stubWriteJson = sinon.stub(fs, 'writeJson').resolves();
   const stubRT = sinon.createStubInstance(RT.StandaloneImpl);
   const stubCreateStandaloneRT = sinon.stub(RT, 'createStandaloneRT').returns(stubRT as any);
   const stubPrepareWorkspace = sinon.stub(rt as any, 'prepareWorkspace').resolves();
@@ -165,6 +166,7 @@ async function run(t: any, taskType: TaskType, runDataflow: boolean) {
   const ds = PredictDataset.makePredictDataset(inputs, PipelineType.ObjectDetection);
   if (taskType === TaskType.TRAIN) {
     await rt.train();
+    t.true(stubWriteJson.calledOnce);
   } else {
     await rt.predict(ds);
   }
