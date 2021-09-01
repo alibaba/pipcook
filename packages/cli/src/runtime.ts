@@ -133,6 +133,7 @@ export class StandaloneRuntime {
     logger.info('running model script');
     const standaloneRT = createStandaloneRT(datasource, this.workspace.modelDir);
     await this.costa.runModel(standaloneRT, this.scripts.model, this.pipelineMeta.options);
+    await fs.writeJson(path.join(this.workspace.modelDir, constants.PipelineFileInModelDir), this.pipelineMeta);
     logger.info(`pipeline finished, the model has been saved at ${this.workspace.modelDir}`);
     for (const artifact of this.artifactPlugins) {
       logger.info(`running artifact ${artifact.options.processor}`);

@@ -142,9 +142,6 @@ export const train = async (uri: string, opts: TrainOptions): Promise<void> => {
     const urlObj = parse(uri);
     const name = basename(urlObj.path);
     const pipelinePath = join(opts.output, name);
-    if (extname(name) !== '.json') {
-      console.warn('pipeline configuration file should be a json file');
-    }
     switch (urlObj.protocol) {
     case null:
     case DownloadProtocol.FILE:
