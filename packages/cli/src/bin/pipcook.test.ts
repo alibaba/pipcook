@@ -154,7 +154,6 @@ test.serial('train: fetch with url invalid extname', async (t) => {
   const stubMkdirp = sinon.stub(fs, 'mkdirp').resolves();
   const stubDownload = sinon.stub(utils, 'downloadWithProgress').resolves();
   const stubRun = sinon.stub(StandaloneRuntime.prototype, 'train').resolves();
-  const stubWarn = sinon.stub(console, 'warn').returns();
   const stubPrepare = sinon.stub(StandaloneRuntime.prototype, 'prepare').resolves();
   await pipcook.train(mockUrl, opts);
   t.true(stubReadJson.calledOnce, 'readJson should be called once');
@@ -165,8 +164,6 @@ test.serial('train: fetch with url invalid extname', async (t) => {
   t.true(stubPrepare.calledOnce, 'prepare should be called once');
   t.true(stubDownload.calledOnce, 'downloadWithProgress should be called once');
   t.deepEqual(stubDownload.args[0], [ mockUrl, tmpFilePath ] as any, 'should download the correct file');
-  t.true(stubWarn.calledOnce, 'should call console.warn once');
-  t.deepEqual(stubWarn.args[0], [ 'pipeline configuration file should be a json file' ], 'should console.warn with correct message');
 });
 
 test.serial('predict: file in workspace, uri input', async (t) => {
