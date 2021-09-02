@@ -7,7 +7,7 @@
 
 在开始安装之前，需要保证下面的环境：
 
-- macOS, Linux
+- macOS，Linux，Windows
 - Node.js 12.17 以上 / 14.0.0 以上
 
 ## 通过 NPM 安装
