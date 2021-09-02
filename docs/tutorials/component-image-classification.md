@@ -80,11 +80,11 @@ After the dataset is ready, we can start training. Using Pipcook can be very con
 {
   "specVersion": "2.0",
   "type": "ImageClassification",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@4b3d60c/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@235497d/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@4b3d60c/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@235497d/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@4b3d60c/scripts/image-classification-mobilenet/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@235497d/scripts/image-classification-mobilenet/build/model.js",
   "artifact": [],
   "options": {
     "framework": "tfjs@3.8",
