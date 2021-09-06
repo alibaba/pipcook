@@ -6,6 +6,8 @@ import { Costa, DefaultDataSourceEntry, CostaOption } from '.';
 import * as utils from './utils';
 import { ScriptContext, TaskType } from '@pipcook/core';
 import { ScriptType } from './types';
+import * as fs from 'fs-extra';
+import { FrameworkIndexFile } from './constans';
 
 const workspaceDir = os.tmpdir();
 
@@ -33,7 +35,7 @@ const mockOpts: CostaOption = {
 
 test.serial.afterEach(() => sinon.restore());
 
-test('initialize framework with default path', async (t) => {
+test.serial('initialize framework with default path', async (t) => {
   const mockOpts: CostaOption = {
     workspace: {
       dataDir: path.join(workspaceDir, 'data'),
@@ -56,12 +58,74 @@ test('initialize framework with default path', async (t) => {
     }
   };
   const costa = new Costa(mockOpts);
-  await t.notThrowsAsync(costa.initFramework());
+  const mockFramworkOpts: Record<string, any> = {};
+  const initialize = sinon.stub().resolves();
+  const stubImportFrom = sinon.stub(utils, 'importFrom').resolves({
+    initialize
+  });
+  const stubPathExists = sinon.stub(fs, 'pathExists').resolves(true);
+  await t.notThrowsAsync(costa.initFramework(mockFramworkOpts));
+  t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
+  t.is(stubImportFrom.args[0][0], path.join(mockOpts.workspace.frameworkDir, FrameworkIndexFile));
+  t.true(initialize.calledOnce, 'initialize should be called once');
+  t.is(initialize.args[0][0], mockFramworkOpts, 'initialize should be called with framwork options');
+  t.true(stubPathExists.calledOnce, 'pathExists should be called once');
+  t.is(
+    stubPathExists.args[0][0],
+    path.join(mockOpts.workspace.frameworkDir, FrameworkIndexFile),
+    'pathExists should be called with framework file'
+  );
+});
+
+test.serial('initialize framework', async (t) => {
+  const mockOpts: CostaOption = {
+    workspace: {
+      dataDir: path.join(workspaceDir, 'data'),
+      cacheDir: path.join(workspaceDir, 'cache'),
+      modelDir: path.join(workspaceDir, 'model'),
+      frameworkDir: path.join(workspaceDir, 'framework')
+    },
+    framework: {
+      path: path.join(workspaceDir, 'framework'),
+      name: 'test-framework',
+      desc: 'it\'s a test framework',
+      version: '0.0.1',
+      arch: null,
+      platform: null,
+      pythonVersion: null,
+      nodeVersion: null,
+      napiVersion: null,
+      pythonPackagePath: null,
+      jsPackagePath: null
+    }
+  };
+  const costa = new Costa(mockOpts);
+  const mockFramworkOpts: Record<string, any> = {};
+  const initialize = sinon.stub().resolves();
+  const stubImportFrom = sinon.stub(utils, 'importFrom').resolves({
+    default: {
+      initialize
+    }
+  });
+  const stubPathExists = sinon.stub(fs, 'pathExists').resolves(true);
+  await t.notThrowsAsync(costa.initFramework(mockFramworkOpts));
+  t.true(stubImportFrom.calledOnce, 'importFrom should be called once');
+  t.is(stubImportFrom.args[0][0], path.join(mockOpts.workspace.frameworkDir, FrameworkIndexFile));
+  t.true(initialize.calledOnce, 'initialize should be called once');
+  t.is(initialize.args[0][0], mockFramworkOpts, 'initialize should be called with framwork options');
+  t.true(stubPathExists.calledOnce, 'pathExists should be called once');
+  t.is(
+    stubPathExists.args[0][0],
+    path.join(mockOpts.workspace.frameworkDir, FrameworkIndexFile),
+    'pathExists should be called with framework file'
+  );
 });
 
 test.serial('run data source script', async (t) => {
   const costa = new Costa(mockOpts);
-  await costa.initFramework();
+  const mockFramworkOpts: Record<string, any> = {};
+  const stubPathExists = sinon.stub(fs, 'pathExists').resolves(false);
+  await costa.initFramework(mockFramworkOpts);
   const script = {
     name: 'test script',
     path: 'mockpath',
@@ -81,11 +145,13 @@ test.serial('run data source script', async (t) => {
   t.true(stubImportScript.calledOnce, 'import should be called once');
   t.true(mockModule.calledOnce, 'module should be called once');
   t.is(api, mockResult, 'should return api');
+  t.true(stubPathExists.calledOnce);
 });
 
 test.serial('run data flow scripts', async (t) => {
   const costa = new Costa(mockOpts);
-  await costa.initFramework();
+  const stubPathExists = sinon.stub(fs, 'pathExists').resolves(false);
+  await costa.initFramework({});
   const script = {
     name: 'test script',
     path: 'mockpath',
@@ -106,11 +172,13 @@ test.serial('run data flow scripts', async (t) => {
   t.true(stubImportScript.calledTwice, 'import should be called twice');
   t.true(mockModule.calledTwice, 'module should be called twice');
   t.is(api, mockDataSourceApi, 'should return api');
+  t.true(stubPathExists.calledOnce);
 });
 
 test.serial('run model script for train', async (t) => {
   const costa = new Costa(mockOpts);
-  await costa.initFramework();
+  const stubPathExists = sinon.stub(fs, 'pathExists').resolves(false);
+  await costa.initFramework({});
   const script = {
     name: 'test script',
     path: 'model/mockpath',
@@ -133,11 +201,13 @@ test.serial('run model script for train', async (t) => {
   await t.notThrowsAsync(costa.runModel(mockRuntime, script, modelOpts), 'model script should end successfully');
   t.true(stubImportScript.calledOnce, 'import should be called once');
   t.true(mockModule.train.calledOnce, 'module should be called once');
+  t.true(stubPathExists.calledOnce);
 });
 
 test.serial('run model script for predict', async (t) => {
   const costa = new Costa(mockOpts);
-  await costa.initFramework();
+  const stubPathExists = sinon.stub(fs, 'pathExists').resolves(false);
+  await costa.initFramework({});
   const script = {
     name: 'test script',
     path: 'model/mockpath',
@@ -160,11 +230,13 @@ test.serial('run model script for predict', async (t) => {
   await t.notThrowsAsync(costa.runModel(mockRuntime, script, modelOpts, TaskType.PREDICT), 'model script should end successfully');
   t.true(stubImportScript.calledOnce, 'import should be called once');
   t.true(mockModule.predict.calledOnce, 'module should be called once');
+  t.true(stubPathExists.calledOnce);
 });
 
 test.serial('run model script for predict but no entry found', async (t) => {
   const costa = new Costa(mockOpts);
-  await costa.initFramework();
+  const stubPathExists = sinon.stub(fs, 'pathExists').resolves(false);
+  await costa.initFramework({});
   const script = {
     name: 'test script',
     path: 'model/mockpath',
@@ -182,6 +254,7 @@ test.serial('run model script for predict but no entry found', async (t) => {
   const stubImportScript = sinon.stub(costa, 'importScript').resolves(mockModule);
   await t.throwsAsync(costa.runModel(mockRuntime, script, modelOpts, TaskType.PREDICT), { message: 'predict is not supported.' }, 'model script should end successfully');
   t.true(stubImportScript.calledOnce, 'import should be called once');
+  t.true(stubPathExists.calledOnce);
 });
 
 test.serial('import from script', async (t) => {
