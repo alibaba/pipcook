@@ -159,19 +159,6 @@ export async function downloadAndExtractTo(resUrl: string, targetDir: string): P
   }
 }
 
-export function dateToString(date: Date): string {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDay();
-  const hour = date.getHours();
-  const min = date.getMinutes();
-  const sec = date.getSeconds();
-  function fillZero(i: number): string {
-    return i < 10 ? '0' + i : i.toString();
-  }
-  return `${year}${fillZero(month)}${fillZero(day)}${fillZero(hour)}${fillZero(min)}${fillZero(sec)}`;
-}
-
 export const mirrorUrl = (mirror: string, framework: string): string => {
   const pyVersion = 'py37';
   const nodeVersion = `node${process.versions.node.substr(0, process.versions.node.indexOf('.'))}`;

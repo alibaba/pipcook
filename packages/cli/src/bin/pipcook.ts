@@ -3,14 +3,15 @@
 import * as semver from 'semver';
 import * as chalk from 'chalk';
 import * as program from 'commander';
+import * as dateformat from 'dateformat';
+import { PipelineMeta } from '@pipcook/costa';
+import { readJson, mkdirp, remove, copy, readFile, stat } from 'fs-extra';
 import { join, basename, extname, resolve, dirname } from 'path';
 import { parse } from 'url';
 import * as constants from '../constants';
-import { readJson, mkdirp, remove, copy, readFile, stat } from 'fs-extra';
 import { StandaloneRuntime } from '../runtime';
 import {
   logger,
-  dateToString,
   downloadWithProgress,
   unZipData,
   fitModelDir,
@@ -18,11 +19,10 @@ import {
   DownloadProtocol,
   PostPredict,
   PredictDataset,
-  downloadAndExtractTo
+  downloadAndExtractTo,
+  ServePredict
 } from '../utils';
 import { PredictInput } from '../utils/predict-dataset';
-import { ServePredict } from '../utils';
-import { PipelineMeta } from '@pipcook/costa';
 
 export interface BaseOptions {
   // Fetch the framework and script without cache
@@ -251,7 +251,7 @@ export const serve = async (pipelineFile: string, opts: ServeOptions ): Promise<
   program
     .command('run <uri>')
     .alias('train')
-    .option('-o --output <dir>', 'the output directory name', join(process.cwd(), dateToString(new Date())))
+    .option('-o --output <dir>', 'the output directory name', join(process.cwd(), `pipcook-output-${dateformat(new Date(), 'hhMMss')}`))
     .option('-m --mirror <mirror>', 'framework mirror', constants.PIPCOOK_FRAMEWORK_MIRROR_BASE)
     .option('-c --npmClient <npm>', 'npm client binary for artifact installing', 'npm')
     .option('--registry <registry>', 'npm registry for artifact installing')
