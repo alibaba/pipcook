@@ -107,7 +107,7 @@ export class StandaloneRuntime {
       framework
     });
     logger.info('initializing framework packages');
-    await this.costa.initFramework();
+    await this.costa.initFramework(this.pipelineMeta.options);
     const modulePath = path.join(this.workspace.frameworkDir, constants.JSModuleDirName);
     const scriptModulePath = path.join(this.scriptDir, constants.JSModuleDirName);
     if (await fs.pathExists(modulePath) && !await fs.pathExists(scriptModulePath)) {

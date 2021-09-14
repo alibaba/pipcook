@@ -16,6 +16,9 @@ import {
 } from './types';
 import Debug from 'debug';
 import { importFrom } from './utils';
+import { FrameworkIndexFile } from './constans';
+import * as path from 'path';
+import * as fs from 'fs-extra';
 
 const debug = Debug('costa.runnable');
 
@@ -93,13 +96,22 @@ export class Costa {
   /**
    * initialize framework, set python package path, node modules path and construct script context
    */
-  async initFramework(): Promise<void> {
+  async initFramework(options: Record<string, any>): Promise<void> {
     this.context = {
       workspace: {
         ...this.options.workspace
       },
       taskType: TaskType.TRAIN
     };
+    const framworkIndex = path.join(this.options.workspace.frameworkDir, FrameworkIndexFile);
+    if (await fs.pathExists(framworkIndex)) {
+      const framework = await importFrom(framworkIndex);
+      if (typeof framework?.initialize === 'function') {
+        await framework.initialize(options);
+      } else if (typeof framework?.default?.initialize === 'function') {
+        await framework.default.initialize(options);
+      }
+    }
   }
 
   /**
