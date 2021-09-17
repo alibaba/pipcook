@@ -12,6 +12,8 @@ import { PredictDataset } from './utils';
 
 test.serial.afterEach(() => sinon.restore());
 
+console.log('runtime test start');
+
 test('constructor', (t) => {
   const pipelineMeta: any = {
     mock: 'mock value'
@@ -82,6 +84,7 @@ test('prepare workspace', async (t) => {
 });
 
 async function run(t: any, taskType: TaskType, runDataflow: boolean) {
+  console.log('runtime test: run start.', taskType, runDataflow);
   const pipelineMeta: PipelineMeta = {
     specVersion: 'v2.0',
     type: PipelineType.ObjectDetection,
@@ -227,6 +230,7 @@ async function run(t: any, taskType: TaskType, runDataflow: boolean) {
   if (taskType === TaskType.TRAIN) {
     t.true(mockArtifact.artifactExports.build.calledOnce, 'should call artiface build once');
   }
+  console.log('runtime test: run end.', taskType, runDataflow);
 }
 
 test.serial('run train with dataflow', (t) => run(t, TaskType.TRAIN, true));
