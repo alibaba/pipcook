@@ -80,7 +80,7 @@ export const linkCoreToScript = async (scriptModulePath: string): Promise<void> 
   const coreSourcePath = coreScriptPath.substr(0, coreScriptPath.lastIndexOf(coreDir) + coreDir.length - 1);
   console.log('mkdirp', path.join(scriptModulePath, '@pipcook'));
   const pipcookModulePath = path.join(scriptModulePath, '@pipcook');
-  if (await fs.pathExists(pipcookModulePath)) {
+  if (!await fs.pathExists(pipcookModulePath)) {
     await fs.mkdirp(pipcookModulePath);
   }
   console.log('mkdirp done');
