@@ -14,6 +14,7 @@
     "framework": "tfjs@3.8",
     "train": {
       "epochs": 1,
+      "gpu": false,
       "validationRequired": true,
       "modelUrl": "https://pc-github.oss-us-west-1.aliyuncs.com/model/resnet50_tfjs/model.json"
     }
