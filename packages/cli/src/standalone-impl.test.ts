@@ -5,6 +5,8 @@ import { createStandaloneRT } from './standalone-impl';
 
 test.serial.afterEach(() => sinon.restore());
 
+console.log('standalone-impl test start');
+
 test('create standalone runtime', (t) => {
   const mockDataSourceApi: any = {};
   const rt = createStandaloneRT(mockDataSourceApi, '/tmp');
@@ -31,3 +33,5 @@ test.serial('runtime save model with path', async (t) => {
   t.true(stubCopy.calledOnce, 'copy should be called once');
   t.deepEqual(stubCopy.args[0], [ '/data/file.json', '/tmp' ] as any, 'should copy to the correct path');
 });
+
+console.log('standalone-impl test end');
