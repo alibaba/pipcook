@@ -114,7 +114,7 @@ export class StandaloneRuntime {
       // remove if it exists
       // await fs.remove(scriptModulePath);
       // link node_module in framework to script directory
-      await fs.ensureSymlink(modulePath, scriptModulePath, 'junction');
+      await fs.ensureSymlink(modulePath, scriptModulePath, 'dir');
     }
     // link @pipcook/core to node_module
     await Script.linkCoreToScript(scriptModulePath);
