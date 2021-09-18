@@ -43,7 +43,7 @@ jobs:
       with:
         path: |
           node_modules
-          */*/node_modules
+          packages/*/node_modules
         key: ${{ runner.os }}-${{ matrix.node_version }}-nodepkg-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-nodepkg-${{ matrix.node_version }}
