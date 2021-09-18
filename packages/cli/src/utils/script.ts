@@ -70,14 +70,20 @@ export const prepareScript = async (pipelineMeta: PipelineMeta, scriptDir: strin
 };
 
 export const linkCoreToScript = async (scriptModulePath: string): Promise<void> => {
+  console.log('scriptModulePath', scriptModulePath);
   const coreTargetPath = path.join(scriptModulePath, '@pipcook/core');
   await fs.remove(coreTargetPath);
+  console.log('removed', coreTargetPath);
   const coreScriptPath = require.resolve('@pipcook/core');
   const coreDir = path.join('/core/');
+  console.log('coreDir', coreDir);
   const coreSourcePath = coreScriptPath.substr(0, coreScriptPath.lastIndexOf(coreDir) + coreDir.length - 1);
+  console.log('mkdirp', path.join(scriptModulePath, '@pipcook'));
   const pipcookModulePath = path.join(scriptModulePath, '@pipcook');
   if (!await fs.pathExists(pipcookModulePath)) {
     await fs.mkdirp(pipcookModulePath);
   }
+  console.log('mkdirp done');
   await fs.symlink(coreSourcePath, coreTargetPath);
+  console.log('symlink done', coreSourcePath, coreTargetPath);
 };
