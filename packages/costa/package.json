@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "ava",
+    "test": "ava -v",
     "cov": "nyc --reporter=text-summary npm run test",
     "cov:report": "nyc report -r=lcov",
     "build": "npm run clean && npm run compile",

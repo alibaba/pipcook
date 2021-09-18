@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/bin/pipcook.js",
   "scripts": {
-    "test": "ava",
+    "test": "ava -v",
     "build": "npm run clean && npm run compile",
     "clean": "((rm -rf ./dist && rm -rf tsconfig.tsbuildinfo) || (rmdir /Q /S ./dist && rmdir /Q /S tsconfig.tsbuildinfo))",
     "compile": "tsc -b tsconfig.json && (chmod +x ./dist/bin/pipcook.js || echo 'windows not support chmod for bin')",
@@ -28,7 +28,7 @@
     "debug": "^4.3.1",
     "express": "^4.17.1",
     "extract-zip": "^2.0.1",
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.1.0",
     "jimp": "^0.16.1",
     "multer": "^1.4.3",
     "nanoid": "^3.1.22",
@@ -64,6 +64,7 @@
     ],
     "require": [
       "ts-node/register"
-    ]
+    ],
+    "timeout": "2m"
   }
 }

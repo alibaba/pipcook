@@ -7,7 +7,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "ava",
+    "test": "ava -v",
     "build": "npm run clean && npm run compile",
     "clean": "((rm -rf ./dist && rm -rf tsconfig.tsbuildinfo) || (rmdir /Q /S ./dist && rmdir /Q /S tsconfig.tsbuildinfo))",
     "compile": "tsc -b tsconfig.json",
