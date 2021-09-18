@@ -77,10 +77,10 @@ jobs:
         node ./packages/cli/dist/bin/pipcook.js predict ./my-workspace -s testword -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
     - name: Run mobilenet
       run: |
-        node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/image-classification-mobilenet.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
+        node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/image-classification-mobilenet.json -o my-workspace -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
     - name: Run resnet
       run: |
-        node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/image-classification-resnet.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
+        node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/image-classification-resnet.json -o my-workspace -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
     - name: Run yolo
       run: |
-        node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/object-detection-yolo.json -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
+        node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/object-detection-yolo.json -o my-workspace -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
