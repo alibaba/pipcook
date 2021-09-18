@@ -12,7 +12,6 @@
   }],
   "options": {
     "framework": "tfjs@3.8",
-    "gpu": false,
     "train": {
       "epochs": 1,
       "batchSize": 1,

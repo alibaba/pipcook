@@ -1,7 +1,7 @@
 {
   "specVersion": "2.0",
   "type": "ImageClassification",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@3c1e102/scripts/image-classification/build/datasource.js?url=http://pc-github.oss-us-west-1.aliyuncs.com/dataset/imageclass-test.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@3c1e102/scripts/image-classification/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/image-classification-test.zip",
   "dataflow": [
     "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@3c1e102/scripts/image-classification/build/dataflow.js?size=224&size=224"
   ],
@@ -14,7 +14,6 @@
     "framework": "tfjs@3.8",
     "train": {
       "epochs": 1,
-      "gpu": false,
       "validationRequired": true,
       "modelUrl": "https://pc-github.oss-us-west-1.aliyuncs.com/model/resnet50_tfjs/model.json"
     }
