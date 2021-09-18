@@ -140,19 +140,19 @@ export async function downloadAndExtractTo(resUrl: string, targetDir: string): P
   const extname = path.extname(filename);
   if (protocol === 'file:') {
     if (extname === '.zip') {
-      await unZipData(pathname, targetDir);
+      await this.unZipData(pathname, targetDir);
     } else {
       await fs.copy(pathname, targetDir);
     }
   } else if (protocol === 'http:' || protocol === 'https:') {
     if (extname === '.zip') {
-      const tmpPath = path.join(constants.PIPCOOK_TMPDIR, generateId());
-      await downloadWithProgress(resUrl, tmpPath);
-      logger.start('extracting');
-      await unZipData(tmpPath, targetDir);
+      const tmpPath = path.join(constants.PIPCOOK_TMPDIR, this.generateId());
+      await this.downloadWithProgress(resUrl, tmpPath);
+      this.logger.start('extracting');
+      await this.unZipData(tmpPath, targetDir);
       await fs.remove(tmpPath);
     } else {
-      await downloadWithProgress(resUrl, targetDir);
+      await this.downloadWithProgress(resUrl, targetDir);
     }
   } else {
     throw new TypeError(`[${extname}] file format is not supported.`);
