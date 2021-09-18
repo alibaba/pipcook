@@ -29,8 +29,7 @@ jobs:
     strategy:
       matrix:
         node_version: ['12', '14']
-        # ubuntu-latest, macOS-latest, 
-        os: [windows-latest]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
     - name: Cancel previous runs
       uses: imgcook/cancel-workflow-action@81524cf38ed0e3a5865a550dde6118d26b7a5ede
@@ -57,14 +56,14 @@ jobs:
         npm install
         npm run build
         du -h -d 1
-    # - name: Running unit tests
-    #   if: ${{ runner.os != 'Linux' || matrix.node_version != 12 }}
-    #   run: |
-    #     npm run test
-    # - name: Run cov
-    #   if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
-    #   run: |
-    #     npm run cov && npm run cov:report
+    - name: Running unit tests
+      if: ${{ runner.os != 'Linux' || matrix.node_version != 12 }}
+      run: |
+        npm run test
+    - name: Run cov
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      run: |
+        npm run cov && npm run cov:report
     # Coveralls is down for maintenance, disable it for now
     # - name: Coveralls
     #   if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
