@@ -75,7 +75,7 @@ export const linkCoreToScript = async (scriptModulePath: string): Promise<void> 
   await fs.remove(coreTargetPath);
   console.log('removed', coreTargetPath);
   const coreScriptPath = require.resolve('@pipcook/core');
-  const coreDir = path.resolve('/core');
+  const coreDir = path.join('/core');
   console.log('coreDir', coreDir);
   const coreSourcePath = coreScriptPath.substr(0, coreScriptPath.lastIndexOf(coreDir) + coreDir.length);
   console.log('mkdirp', coreSourcePath, path.join(scriptModulePath, '@pipcook'));
