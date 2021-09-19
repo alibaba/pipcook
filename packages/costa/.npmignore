@@ -1,6 +1,0 @@
-.*
-tsconfig.*
-src
-*.tgz
-benchmark
-coverage

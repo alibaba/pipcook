@@ -1,7 +1,0 @@
-{
-  "include": [
-    "src/**/*.ts"
-  ],
-  "all": true,
-  "instrument": true
-}
