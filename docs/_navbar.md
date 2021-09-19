@@ -1,6 +1,0 @@
-- API Reference
-  - [Runtime](typedoc/runtime/index.html)
-  - [Script](typedoc/script/index.html)
-- Translations
-  - [English](/)
-  - [中文](/zh-cn/)
