@@ -1,7 +1,0 @@
-{
-  "ignorePatterns": [{
-    "pattern": "^/.*"
-  }, {
-    "pattern": "*/index.html"
-  }]
-}
