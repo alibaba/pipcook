@@ -1,8 +1,6 @@
 # Pipelines
 
-<p align="center">
-  <a href="https://alibaba.github.io/pipcook/tree/main/README.md">English</a>
-</p>
+[English](https://alibaba.github.io/pipcook/tree/main/README.md)
 
 ## 贝叶斯-文本分类
 

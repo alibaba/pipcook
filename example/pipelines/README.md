@@ -1,8 +1,6 @@
 # Pipelines
 
-<p align="center">
-  <a href="https://alibaba.github.io/pipcook/tree/main/README-CN.md">中文</a>
-</p>
+[中文](https://alibaba.github.io/pipcook/tree/main/README-CN.md)
 
 ## Bayesian Text Classification
 
