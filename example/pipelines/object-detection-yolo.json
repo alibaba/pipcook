@@ -10,7 +10,8 @@
     "framework": "tfjs@3.8",
     "train": {
       "epochs": 100,
-      "validationRequired": true
+      "batchSize": 16,
+      "patience": 10
     }
   }
 }
