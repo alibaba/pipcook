@@ -1,6 +1,6 @@
 # Pipelines
 
-[English](https://alibaba.github.io/pipcook/tree/main/README.md)
+[English](./README.md)
 
 ## 贝叶斯-文本分类
 
