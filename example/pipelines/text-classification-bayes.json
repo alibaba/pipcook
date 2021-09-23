@@ -5,10 +5,6 @@
   "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@d4bdfde/scripts/text-classification-bayes/build/model.js",
   "options": {
     "framework": "tfjs@3.8-nlp",
-    "backend": "@tensorflow/tfjs-backend-cpu",
-    "train": {
-      "epochs": 20,
-      "validationRequired": true
-    }
+    "backend": "@tensorflow/tfjs-backend-cpu"
   }
 }

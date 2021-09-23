@@ -10,7 +10,6 @@
     "framework": "tfjs@3.8",
     "train": {
       "epochs": 10,
-      "validationRequired": true,
       "modelUrl": "resnet"
     }
   }

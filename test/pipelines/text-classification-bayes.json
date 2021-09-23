@@ -9,10 +9,6 @@
   }],
   "options": {
     "framework": "tfjs@3.8-nlp",
-    "backend": "@tensorflow/tfjs-backend-cpu",
-    "train": {
-      "epochs": 1,
-      "validationRequired": true
-    }
+    "backend": "@tensorflow/tfjs-backend-cpu"
   }
 }
