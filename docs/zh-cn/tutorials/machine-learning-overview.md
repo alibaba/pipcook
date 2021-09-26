@@ -78,7 +78,7 @@ predictBookPrice('Dive into Pipcook'); // 199.0
 
 ```js
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@460ecdb/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/mnist.zip"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/mnist.zip"
 }
 ```
 
@@ -90,14 +90,14 @@ predictBookPrice('Dive into Pipcook'); // 199.0
 我们使用 [image classification dataflow](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/dataflow.ts) 脚本来调整每张图片的尺寸为 224x224，用一个数组 `[224, 224]` 表示：
 ```js
 {
-  "dataflow": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@460ecdb/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+  "dataflow": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
 }
 ```
 
 然后定义[模型脚本](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/model.ts)和参数：
 ```js
 {
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@460ecdb/scripts/image-classification-mobilenet/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification-mobilenet/build/model.js",
   "options": {
     "framework": "tfjs@3.8",
     "train": {
