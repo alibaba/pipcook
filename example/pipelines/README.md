@@ -30,7 +30,7 @@ You can change the data source to the local folder path, like:
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/text-classification-bayes/build/datasource.js?url=file:///path/to/dataset-directory"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/text-classification-bayes/build/datasource.js?url=file:///path/to/dataset-directory"
 }
 ```
 
@@ -40,7 +40,7 @@ Also, you can compress the `test` and `train` directories into a zip file and st
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/text-classification-bayes/build/datasource.js?url=http:///oss-host/my-dataset.zip"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/text-classification-bayes/build/datasource.js?url=http:///oss-host/my-dataset.zip"
 }
 ```
 
@@ -50,7 +50,7 @@ Bayesian model supports both Chinese and English modes, you can specify `cn` or 
 
 ```json
 {
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/text-classification-bayes/build/model.js?mode=en"
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/text-classification-bayes/build/model.js?mode=en"
 }
 ```
 
@@ -81,7 +81,7 @@ You can specify the `url` to the local folder path:
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification/build/datasource.js?url=file:///path/to/dataset-directory"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification/build/datasource.js?url=file:///path/to/dataset-directory"
 }
 ```
 
@@ -91,7 +91,7 @@ Or http url:
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification/build/datasource.js?url=http://oss-host/dataset.zip"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification/build/datasource.js?url=http://oss-host/dataset.zip"
 }
 ```
 
@@ -101,7 +101,7 @@ For the image classification task, the dimension (width and height) of all sampl
 ```json
 {
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification/build/dataflow.js?size=224&size=224"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification/build/dataflow.js?size=224&size=224"
   ]
 }
 ```
@@ -112,7 +112,7 @@ The image classification pipeline supports both MobileNet and ResNet models. The
 
 ```json
 {
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification/build/model.js?modelUrl=resnet",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification/build/model.js?modelUrl=resnet",
 }
 ```
 
@@ -140,7 +140,7 @@ Object Detection pipeline supports [PascalVoc](../../docs/spec/dataset.md) and [
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=https://host/dataset.zip"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=https://host/dataset.zip"
 }
 ```
 
@@ -148,7 +148,7 @@ You can specify the `url` as a local folder path:
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=file:///path/to/dataset-directory"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=file:///path/to/dataset-directory"
 }
 ```
 
@@ -158,7 +158,7 @@ As with the image classification pipeline, YOLO requires that the dimension (wid
 ```json
 {
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
   ]
 }
 ```

@@ -78,7 +78,7 @@ In the following, we start writing a Pipeline from loading the [MNIST][] dataset
 
 ```js
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/mnist.zip"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/mnist.zip"
 }
 ```
 
@@ -93,7 +93,7 @@ In [Pipcook][], building a model for classification is also `script` configurati
 we use [image classification dataflow](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/dataflow.ts) to resize the image to 224x224 in our dataset represented by an array `[224, 224]`, which is required for the next step.
 ```js
 {
-  "dataflow": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+  "dataflow": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
 }
 ```
 
@@ -101,7 +101,7 @@ we use [image classification dataflow](https://github.com/imgcook/pipcook-script
 Then define the [model script](https://github.com/imgcook/pipcook-script/blob/master/scripts/image-classification-mobilenet/src/model.ts) and paremeters for train:
 ```js
 {
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@1e84de0/scripts/image-classification-mobilenet/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification-mobilenet/build/model.js",
   "options": {
     "framework": "tfjs@3.8",
     "train": {
