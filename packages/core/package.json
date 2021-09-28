@@ -9,7 +9,7 @@
   "scripts": {
     "test": "ava -v",
     "build": "npm run clean && npm run compile",
-    "clean": "((rm -rf ./dist && rm -rf tsconfig.tsbuildinfo) || (rmdir /Q /S ./dist && rmdir /Q /S tsconfig.tsbuildinfo))",
+    "clean": "((rm -rf dist tsconfig.tsbuildinfo) || (rmdir /Q /S dist tsconfig.tsbuildinfo)) || echo 'nothing to clean'",
     "compile": "tsc -b tsconfig.json",
     "cov": "nyc -r text-summary npm run test",
     "cov:report": "nyc report -r lcov"
