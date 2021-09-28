@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/bin/pipcook.js",
   "scripts": {
-    "preinstall": "(mkdir -p ./dist/bin && touch ./dist/bin/pipcook.js) || (mkdir ./dist/bin && type nul > ./dist/bin/pipcook.js)",
+    "preinstall": "(mkdir -p ./dist/bin && touch ./dist/bin/pipcook.js) || ((mkdir ./dist/bin || echo 'exists') && echo '' > ./dist/bin/pipcook.js)",
     "test": "ava -v",
     "build": "npm run clean && npm run compile",
     "clean": "((rm -rf ./dist && rm -rf tsconfig.tsbuildinfo) || (rmdir /Q /S ./dist && rmdir /Q /S tsconfig.tsbuildinfo))",
