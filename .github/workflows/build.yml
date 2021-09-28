@@ -64,12 +64,11 @@ jobs:
       if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
       run: |
         npm run cov && npm run cov:report
-    # Coveralls is down for maintenance, disable it for now
-    # - name: Coveralls
-    #   if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
-    #   uses: coverallsapp/github-action@master
-    #   with:
-    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Coveralls
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Run bayes
       run: |
         node ./packages/cli/dist/bin/pipcook.js train ./test/pipelines/text-classification-bayes.json -o my-workspace -d -m http://pc-github.oss-us-west-1.aliyuncs.com/framework/
