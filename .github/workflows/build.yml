@@ -57,15 +57,15 @@ jobs:
         npm run build
         du -h -d 1
     - name: Running unit tests
-      if: ${{ runner.os != 'Linux' || matrix.node_version != 12 }}
+      if: ${{ runner.os != 'Linux' || matrix.node_version != 14 }}
       run: |
         npm run test
     - name: Run cov
-      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 14 }}
       run: |
         npm run cov && npm run cov:report
     - name: Coveralls
-      if: ${{ runner.os == 'Linux' && matrix.node_version == 12 }}
+      if: ${{ runner.os == 'Linux' && matrix.node_version == 14 }}
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
