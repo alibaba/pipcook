@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-node@v1
         if: env.UPDATED == 'true'
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install Dependencies
         if: env.UPDATED == 'true'

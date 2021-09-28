@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        node_version: ['12', '14']
+        node_version: ['14', '16']
         os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
     - name: Cancel previous runs
