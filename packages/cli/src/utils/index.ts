@@ -168,9 +168,9 @@ export const mirrorUrl = (mirror: string, framework: string): string => {
   );
 };
 
-interface Logger {
+export interface Logger {
   success(message: string): void;
-  fail(message: string, exit: boolean, code: number): void;
+  fail(message: string, exit?: boolean, code?: number): void;
   info(message: string): void;
   warn(message: string): void;
 }
@@ -235,4 +235,4 @@ export class DefaultLogger implements Logger {
 }
 
 const { rows, columns, isTTY } = process.stdout;
-export const logger = isTTY && rows > 0 && columns > 0 ? new TtyLogger() : new DefaultLogger();
+export const logger: Logger = isTTY && rows > 0 && columns > 0 ? new TtyLogger() : new DefaultLogger();
