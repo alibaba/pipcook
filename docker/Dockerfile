@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.1-cudnn7-devel
+FROM nvidia/cuda:11.2.2-cudnn8-runtime-ubuntu18.04
 ARG VER=latest
 
 LABEL version=${VER}
@@ -13,4 +13,4 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs
 
 RUN npm install @pipcook/cli@${VER} -g --unsafe-perm
-
+ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda-11.2/targets/x86_64-linux/lib/
