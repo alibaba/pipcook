@@ -1,0 +1,9 @@
+FROM node:14
+ARG VER=latest
+
+LABEL version=${VER}
+LABEL description="docker image for pipcook runtime without gpu"
+
+WORKDIR /root/
+
+RUN npm install @pipcook/cli@${VER} -g --unsafe-perm

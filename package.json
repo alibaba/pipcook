@@ -31,6 +31,8 @@
     "beta-release-tag": "lerna version prerelease --no-push --force-publish=* --yes",
     "beta-release": "lerna publish from-package --no-verify-access --dist-tag beta -y",
     "cov": "./tools/coverage.sh",
-    "cov:report": "nyc report -r=lcov"
+    "cov:report": "nyc report -r=lcov",
+    "build:docker-cpu": "docker build -t pipcook:latest-cpu -f docker/Dockerfile.cpu ./docker",
+    "build:docker": "docker build -t pipcook:latest -f docker/Dockerfile ./docker"
   }
 }
