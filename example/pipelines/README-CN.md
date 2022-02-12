@@ -30,7 +30,7 @@
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/text-classification-bayes/build/datasource.js?url=file:///path/to/dataset-directory"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/text-classification-bayes/build/datasource.js?url=file:///path/to/dataset-directory"
 }
 ```
 
@@ -40,7 +40,7 @@
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/text-classification-bayes/build/datasource.js?url=http:///oss-host/my-dataset.zip"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/text-classification-bayes/build/datasource.js?url=http:///oss-host/my-dataset.zip"
 }
 ```
 
@@ -50,7 +50,7 @@
 
 ```json
 {
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/text-classification-bayes/build/model.js?mode=en"
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/text-classification-bayes/build/model.js?mode=en"
 }
 ```
 
@@ -81,7 +81,7 @@
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification/build/datasource.js?url=file:///path/to/dataset-directory"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/image-classification/build/datasource.js?url=file:///path/to/dataset-directory"
 }
 ```
 
@@ -91,7 +91,7 @@
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification/build/datasource.js?url=http://oss-host/dataset.zip"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/image-classification/build/datasource.js?url=http://oss-host/dataset.zip"
 }
 ```
 
@@ -101,7 +101,7 @@
 ```json
 {
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification/build/dataflow.js?size=224&size=224"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/image-classification/build/dataflow.js?size=224&size=224"
   ]
 }
 ```
@@ -112,7 +112,7 @@
 
 ```json
 {
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/image-classification/build/model.js?modelUrl=resnet",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/image-classification/build/model.js?modelUrl=resnet",
 }
 ```
 
@@ -140,7 +140,7 @@ GPU 默认为启用。epochs 越大，训练时长越久。
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=https://host/dataset.zip"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=https://host/dataset.zip"
 }
 ```
 
@@ -148,7 +148,7 @@ GPU 默认为启用。epochs 越大，训练时长越久。
 
 ```json
 {
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=file:///path/to/dataset-directory"
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=file:///path/to/dataset-directory"
 }
 ```
 
@@ -158,7 +158,7 @@ GPU 默认为启用。epochs 越大，训练时长越久。
 ```json
 {
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b1f834c/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
   ]
 }
 ```
