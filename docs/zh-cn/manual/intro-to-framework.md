@@ -6,11 +6,11 @@ Pipcook 使用的脚本是没有 bundle 一些比较重的依赖的，比如 `@t
 {
   "specVersion": "2.0",
   "type": "ObjectDetection",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/object-detection-yolo/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/object-detection-yolo-min.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@59d3e2f/scripts/object-detection-yolo/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/object-detection-yolo-min.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@59d3e2f/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@e5503a0/scripts/object-detection-yolo/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@59d3e2f/scripts/object-detection-yolo/build/model.js",
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "./object-detection-yolo-model.zip"
