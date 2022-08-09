@@ -82,11 +82,11 @@
 {
   "specVersion": "2.0",
   "type": "ImageClassification",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@59d3e2f/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/image-classification-mobilenet/build/datasource.js?url=http://ai-sample.oss-cn-hangzhou.aliyuncs.com/image_classification/datasets/imageclass-test.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@59d3e2f/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/image-classification-mobilenet/build/dataflow.js?size=224&size=224"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@59d3e2f/scripts/image-classification-mobilenet/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/image-classification-mobilenet/build/model.js",
   "artifact": [],
   "options": {
     "framework": "tfjs@3.8",

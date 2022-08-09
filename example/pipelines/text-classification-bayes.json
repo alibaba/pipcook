@@ -1,8 +1,8 @@
 {
   "specVersion": "2.0",
   "type": "TextClassification",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@59d3e2f/scripts/text-classification-bayes/build/datasource.js?url=https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/dataset/text-classification.zip",
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@59d3e2f/scripts/text-classification-bayes/build/model.js",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/text-classification-bayes/build/datasource.js?url=https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/dataset/text-classification.zip",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/text-classification-bayes/build/model.js",
   "options": {
     "framework": "tfjs@3.8-nlp",
     "backend": "@tensorflow/tfjs-backend-cpu"
