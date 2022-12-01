@@ -49,7 +49,7 @@
     "@types/node": "^14.6.0",
     "@types/semver": "^7.3.4",
     "@types/sinon": "^9.0.11",
-    "ava": "^3.13.0",
+    "ava": "^5.1.0",
     "import-fresh": "^3.3.0",
     "nyc": "^15.1.0",
     "sinon": "^10.0.0",
