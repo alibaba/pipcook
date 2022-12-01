@@ -68,7 +68,7 @@ test('should iter a dataset after shuffle', async (t) => {
   t.deepEqual(testData, [ 4, 3, 5 ]);
 });
 
-test('should read a zero batch', async (t) => {
+test('should read all data', async (t) => {
   const sample: Types.Sample<number> = {
     data: 1,
     label: 1
@@ -85,7 +85,7 @@ test('should read a zero batch', async (t) => {
     predictedData: testSamples
   }, meta);
 
-  t.deepEqual(await dataset.train?.nextBatch(0), []);
+  t.deepEqual(await dataset.train?.nextBatch(0), [ sample, sample, sample ]);
 });
 
 test('should read a whole batch', async (t) => {
@@ -184,7 +184,7 @@ test('should transform dataset', async (t) => {
   t.notThrows(() => transform.shuffle());
 });
 
-test('should throw an error', async (t) => {
+test('should get all samples', async (t) => {
   const sample: Types.Sample<number> = {
     data: 1,
     label: 1
@@ -198,8 +198,5 @@ test('should throw an error', async (t) => {
     trainData: trainSamples,
     testData: testSamples
   }, meta);
-  if (!dataset.train) {
-    return t.fail();
-  }
-  await t.throwsAsync(dataset.train.nextBatch(-2), { message: 'Batch size should be larger than -1 but -2 is present' });
+  t.deepEqual(await dataset.train?.nextBatch(-2), [ sample, sample, sample ]);
 });

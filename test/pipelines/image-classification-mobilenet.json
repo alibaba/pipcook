@@ -1,11 +1,11 @@
 {
   "specVersion": "2.0",
   "type": "ImageClassification",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/image-classification/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/image-classification-test.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b84d8f6/scripts/image-classification/build/datasource.js?url=https://pc-github.oss-us-west-1.aliyuncs.com/dataset/image-classification-test.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/image-classification/build/dataflow.js?size=224&size=224"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b84d8f6/scripts/image-classification/build/dataflow.js?size=224&size=224"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/image-classification/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b84d8f6/scripts/image-classification/build/model.js",
   "artifact": [{
     "processor": "pipcook-artifact-zip@0.0.2",
     "target": "./image-classification-mobilenet-model.zip"

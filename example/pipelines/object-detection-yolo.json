@@ -1,11 +1,11 @@
 {
   "specVersion": "2.0",
   "type": "ObjectDetection",
-  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/dataset/mask.zip",
+  "datasource": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b84d8f6/scripts/object-detection-yolo/build/datasource.js?format=pascalvoc&url=https://pipcook-cloud.oss-cn-hangzhou.aliyuncs.com/dataset/mask.zip",
   "dataflow": [
-    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
+    "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b84d8f6/scripts/object-detection-yolo/build/dataflow.js?size=416&size=416"
   ],
-  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@9d210de/scripts/object-detection-yolo/build/model.js",
+  "model": "https://cdn.jsdelivr.net/gh/imgcook/pipcook-script@b84d8f6/scripts/object-detection-yolo/build/model.js",
   "options": {
     "framework": "tfjs@3.8",
     "train": {
