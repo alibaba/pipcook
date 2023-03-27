@@ -1,7 +1,7 @@
 {
   "name": "@pipcook/cli",
-  "version": "2.1.4",
-  "description": "",
+  "version": "2.1.5",
+  "description": "pipcook cli",
   "main": "dist/bin/pipcook.js",
   "scripts": {
     "preinstall": "(mkdir -p dist/bin && touch dist/bin/pipcook.js) || ((mkdir dist\\bin || echo 'exists') && echo '' > dist\\bin\\pipcook.js)",
