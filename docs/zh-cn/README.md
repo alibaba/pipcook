@@ -30,7 +30,7 @@ Origin result:[{"id":1,"category":"blurBackground","score":1}]
 想要部署服务？
 
 ```sh
-$ pipcook predict ./output
+$ pipcook serve ./output
 ℹ preparing framework
 ℹ preparing scripts
 ℹ preparing artifact plugins
